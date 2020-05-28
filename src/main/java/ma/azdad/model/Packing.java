@@ -1,0 +1,131 @@
+package ma.azdad.model;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+@Entity
+
+public class Packing extends GenericBean implements Serializable {
+
+	private String name;
+	private Integer quantity = 1;
+	private Boolean active = true;
+	private Integer totalItems = 0;
+	private Double grossWeight = 0.0;
+	private Double volume = 0.0;
+
+	private PartNumber partNumber;
+
+	private List<PackingDetail> detailList = new ArrayList<PackingDetail>();
+
+	public boolean filter(String query) {
+		boolean result = super.filter(query);
+		if (!result && name != null)
+			result = name.toLowerCase().contains(query);
+		return result;
+	}
+
+	public void addDetail(PackingDetail detail) {
+		detail.setParent(this);
+		detailList.add(detail);
+	}
+
+	public void removeDetail(PackingDetail detail) {
+		detail.setParent(null);
+		detailList.remove(detail);
+	}
+
+	public void calculateFields() {
+		totalItems = 0;
+		grossWeight = 0.0;
+		volume = 0.0;
+
+		for (PackingDetail packingDetail : detailList) {
+			totalItems += packingDetail.getQuantity();
+			if (packingDetail.getGrossWeight() != null)
+				grossWeight += packingDetail.getQuantity() * packingDetail.getGrossWeight();
+			if (packingDetail.getVolume() != null)
+				volume += packingDetail.getQuantity() * packingDetail.getVolume();
+		}
+	}
+
+	@Transient
+	public String getStatus() {
+		return active ? "Active" : "Non Active";
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public PartNumber getPartNumber() {
+		return partNumber;
+	}
+
+	public void setPartNumber(PartNumber partNumber) {
+		this.partNumber = partNumber;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<PackingDetail> getDetailList() {
+		return detailList;
+	}
+
+	public void setDetailList(List<PackingDetail> detailList) {
+		this.detailList = detailList;
+	}
+
+	public Integer getTotalItems() {
+		return totalItems;
+	}
+
+	public void setTotalItems(Integer totalItems) {
+		this.totalItems = totalItems;
+	}
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+	public Double getVolume() {
+		return volume;
+	}
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+
+}

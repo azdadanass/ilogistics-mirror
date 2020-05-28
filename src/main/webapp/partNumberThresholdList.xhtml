@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Part Number Threshold List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list bigger-110 green"></i>
+					<h:outputText value=" Part Number Threshold List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="widgetPanel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<f:subview rendered="#{projectView.project.customerStockManagement}">
+						<li>
+							<a data-toggle="tab" href="#tab2">
+								<i class="blue ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" Part Number Threshold List" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<div class="row">
+							<h5 class="lighter block green">
+								<h:outputText value="Project Informations" />
+							</h5>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project Name" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.name}" styleClass="pink" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Customer" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.customer.name}" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project Start Date" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.startDate}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project Duration" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.duration}" />
+												&nbsp;
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="LOB" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.costcenter.lob.name}" styleClass="blue" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project Manager" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.manager.fullName}" styleClass="orange" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project End Date" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.endDate}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project Status" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{projectView.project.status}" styleClass="#{projectView.project.status=='Open'?'green':'grey'}" />
+												&nbsp;
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<f:subview id="tab2" rendered="#{projectView.project.customerStockManagement}">
+						<div id="tab2" class="tab-pane">
+							<p:messages id="messages" closable="true" />
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Part Number Threshold List" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="main_tab" fileName="detailList" postProcessor="#{deliveryRequestView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}" rowKey="#{item.id}" selection="#{partNumberThresholdView.list4}" id="main_tab"
+											widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+											paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+											<p:column headerText="Part Number" width="200">
+												<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" rendered="#{!partNumberThresholdView.editMode}" />
+												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
+													itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{partNumberThresholdView.editMode}">
+													<p:column>
+														<h:outputText value="#{pn.name}" />
+													</p:column>
+
+													<p:column>
+														<h:outputText value="#{pn.description}" />
+													</p:column>
+
+													<p:ajax event="itemSelect" update="description" />
+												</p:autoComplete>
+
+											</p:column>
+
+											<p:column headerText="Description" width="200">
+												<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Stock Min" width="100">
+												<h:outputText value="#{item.stockMin}" rendered="#{!partNumberThresholdView.editMode}" />
+												<p:inputNumber value="#{item.stockMin}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
+											</p:column>
+
+											<p:column headerText="Stock Max" width="100">
+												<h:outputText value="#{item.stockMax}" rendered="#{!partNumberThresholdView.editMode}" />
+												<p:inputNumber value="#{item.stockMax}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
+											</p:column>
+
+											<p:column headerText="Dormancy" width="100">
+												<h:outputText value="#{item.dormancy}" rendered="#{!partNumberThresholdView.editMode}" />
+												<p:inputNumber value="#{item.dormancy}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
+											</p:column>
+
+											<p:column headerText="Actions" width="150" exportable="false">
+												<div class="action-buttons center">
+													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}" rendered="#{partNumberThresholdView.canDeleteRow()}" update="main_tab">
+														<i class="fa fa-trash-o red bigger-130" />
+													</p:commandLink>
+												</div>
+											</p:column>
+
+											<f:facet name="footer">
+												<div class="action-buttons center">
+													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="main_tab">
+														<i class="fa fa-edit orange" />
+														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
+													</p:commandLink>
+
+													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}" rendered="#{partNumberThresholdView.canAddNewRow()}"
+														update="main_tab">
+														<i class="fa fa-plus blue" />
+													</p:commandLink>
+
+													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{partNumberThresholdView.save()}" rendered="#{partNumberThresholdView.canSave()}"
+														update="main_tab,:main_form:tab2:messages">
+														<i class="fa fa-save green" />
+													</p:commandLink>
+
+												</div>
+											</f:facet>
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</div>
+					</f:subview>
+				</div>
+			</div>
+		</h:form>
+		<ui:include src="partNumberThresholdFooter.xhtml" />
+		<f:event type="preRenderView" listener="#{projectView.redirect}" />
+	</ui:define>
+</ui:composition>

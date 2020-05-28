@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<link rel="stylesheet" type="text/css" href="resources/templates/hover_effect_ideas/css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="resources/templates/hover_effect_ideas/css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="resources/templates/hover_effect_ideas/css/set1.css" />
+	</ui:define>
+	<!-- <ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define> -->
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Welcome Page" />
+			</li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="grid center">
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/se.jpg" width="400" height="270" /> <p:commandLink action="#{cacheView.getWelcomePage(1)}">
+					<figcaption>
+					<h2>
+						<span>
+							<h:outputText value="Administration" />
+						</span>
+					</h2>
+					<p>
+						<h:outputText value="description..." />
+					</p>
+					</figcaption>
+				</p:commandLink> </figure>
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/wm.jpg" width="400" height="270"
+					styleClass="#{sessionView.isPM or sessionView.isWM or sessionView.isUser?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(2)}">
+					<figcaption>
+					<h2>
+						<span>
+							<h:outputText value="Delivery" />
+						</span>
+						<h:outputText value="Management" />
+					</h2>
+					<p>
+						<h:outputText value="description..." />
+					</p>
+					</figcaption>
+				</p:commandLink> </figure>
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/tm.jpg" width="400" height="270"
+					styleClass="#{sessionView.isPM or sessionView.isTM or sessionView.isUser?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(3)}">
+					<figcaption>
+					<h2>
+						<span>
+							<h:outputText value="TRANSPORTATION" />
+						</span>
+						<h:outputText value="Management" />
+					</h2>
+					<p>
+						<h:outputText value="description..." />
+					</p>
+					</figcaption>
+				</p:commandLink> </figure>
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/reporting.jpg" width="400" height="270"
+					styleClass="#{sessionView.isUser or sessionView.isPM or sessionView.isWM or sessionView.isAdmin?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(4)}">
+					<figcaption>
+					<h2>
+						<span>
+							<h:outputText value="Reporting" />
+						</span>
+					</h2>
+					<p>
+						<h:outputText value="description..." />
+					</p>
+					</figcaption>
+				</p:commandLink> </figure>
+			</div>
+			<div class="row">
+				<button id="button1" type="button">tesssst</button>
+			</div>
+		</h:form>
+		<form id="login_form" method="post">
+			<input type="text" id="username" name="username" class="hide" required="required" style="width: 100%" placeholder="Username" />
+			<input type="password" id="password" name="password" class="hide" required="required" style="width: 100%" placeholder="Password" />
+		</form>
+		<script>
+			$('#button1').click(
+					function() {
+						$.get("http://localhost:8080/logout");
+						$('#login_form').attr('action','http://localhost:8080/login.xhtml');
+						$('#username').val('a.azdad');
+						$('#password').val('1a1dc91c907325c69271ddf0c944bc72');
+						$('#login_form').submit(); 
+					});
+		</script>
+	</ui:define>
+</ui:composition>

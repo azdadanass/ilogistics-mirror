@@ -1,0 +1,265 @@
+package ma.azdad.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+@Entity
+
+public class Project implements Serializable {
+
+	private Integer id;
+	private String name;
+	private String status;
+	private String type;
+	private String subType;
+	private Costcenter costcenter;
+	private User manager;
+	private Customer customer;
+	private Date startDate;
+	private Date endDate;
+	private String duration;
+
+	private Boolean customerWarehousing = false;
+	private Boolean customerStockManagement = false;
+
+	// tmp
+	private Integer tmpCustomerId;
+
+	public Project() {
+	}
+
+	public Project(Integer id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
+	public Project(Integer id, String name, String type) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+	}
+
+	public Project(Integer id, String name, String type, String managerFullName) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.setManagerFullName(managerFullName);
+	}
+
+	public Project(Integer id, String name, String type, Date startDate, Date endDate, Integer tmpCustomerId) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.tmpCustomerId = tmpCustomerId;
+	}
+
+	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.subType = subType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.setCustomerName(customerName);
+		this.customerWarehousing = customerWarehousing;
+		this.customerStockManagement = customerStockManagement;
+	}
+
+	public boolean filter(String query) {
+		boolean result = false;
+		if (!result && name != null)
+			result = name.toLowerCase().contains(query);
+		if (!result && type != null)
+			result = type.toLowerCase().contains(query);
+		if (!result && subType != null)
+			result = subType.toLowerCase().contains(query);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		try {
+			return id.equals(((Project) obj).getId());
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Transient
+	public Boolean getIsStockProject() {
+		return ProjectTypes.STOCK.getValue().equals(type);
+	}
+
+	@Transient
+	public String getManagerFullName() {
+		return manager == null ? null : manager.getFullName();
+	}
+
+	@Transient
+	public void setManagerFullName(String managerFullName) {
+		if (manager == null)
+			manager = new User();
+		manager.setFullName(managerFullName);
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "idproject", unique = true, nullable = false)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "manager_idmanager")
+	public User getManager() {
+		return manager;
+	}
+
+	public void setManager(User manager) {
+		this.manager = manager;
+	}
+
+	@Override
+	public String toString() {
+		return "Project [id=" + id + ", name=" + name + "]\n";
+	}
+
+	@Column(name = "project_type", length = 45)
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "costcenter_idcostcenter", nullable = false)
+	public Costcenter getCostcenter() {
+		return this.costcenter;
+	}
+
+	public void setCostcenter(Costcenter costcenter) {
+		this.costcenter = costcenter;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_idcustomer", nullable = false)
+	public Customer getCustomer() {
+		return this.customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "startdate", length = 10)
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "enddate", length = 10)
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+
+	public String getSubType() {
+		return subType;
+	}
+
+	public void setSubType(String subType) {
+		this.subType = subType;
+	}
+
+	public Boolean getCustomerWarehousing() {
+		return customerWarehousing;
+	}
+
+	public void setCustomerWarehousing(Boolean customerWarehousing) {
+		this.customerWarehousing = customerWarehousing;
+	}
+
+	public Boolean getCustomerStockManagement() {
+		return customerStockManagement;
+	}
+
+	public void setCustomerStockManagement(Boolean customerStockManagement) {
+		this.customerStockManagement = customerStockManagement;
+	}
+
+	@Transient
+	public Integer getTmpCustomerId() {
+		return tmpCustomerId;
+	}
+
+	@Transient
+	public String getCustomerName() {
+		if (customer == null)
+			return null;
+		return customer.getName();
+	}
+
+	public void setCustomerName(String name) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setName(name);
+	}
+
+}

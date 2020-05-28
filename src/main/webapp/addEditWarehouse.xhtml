@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="http://maps.google.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8" type="text/javascript" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{warehouseView.selectedId == null?'Add New':'Edit'} Warehouse" />
+			</li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa #{warehouseView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{warehouseView.selectedId == null?'Add New':'Edit'} Warehouse" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-5">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{warehouseView.saveWarehouse()}" update="messages" title="Save">
+							<i class="ace-icon fa fa-save bigger-230"></i>
+							<h:outputText value="Save" />
+						</p:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="tab-pane in active">
+							<p:messages id="messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="General informations" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Name" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{warehouseView.warehouse.name}" required="true" requiredMessage="Name should not be null" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Owner" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu value="#{warehouseView.warehouse.owner}" style="width: 178px" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
+												<f:selectItem itemLabel="3Gcom" noSelectionOption="true" />
+												<f:selectItems value="#{customerView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Customer)" itemValue="#{item}" />
+												<f:selectItems value="#{supplierView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Supplier)" itemValue="#{item}" />
+											</p:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<hr />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Surface" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{warehouseView.warehouse.surface}" thousandSeparator="" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Volume" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{warehouseView.warehouse.volume}" thousandSeparator="" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Phone" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{warehouseView.warehouse.phone}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Fax" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{warehouseView.warehouse.fax}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Manager List" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<i class="fa fa-list" />
+										<h:outputText value=" Manager List" />
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="managerList" value="#{warehouseView.warehouse.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Type">
+												<h:selectOneMenu value="#{item.internal}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItem itemLabel="Internal" itemValue="true" />
+													<f:selectItem itemLabel="External" itemValue="false" />
+													<p:ajax update="manager" />
+												</h:selectOneMenu>
+											</p:column>
+											<p:column headerText="Manager">
+												<h:panelGroup id="manager">
+													<p:selectOneMenu value="#{item.userUsername}" filter="true" filterMatchMode="contains" rendered="#{item.internal}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightAndActive()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{item.userId}" filter="true" filterMatchMode="contains" rendered="#{!item.internal}">
+														<f:selectItem itemLabel="-----" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLight()}" var="er" itemLabel="#{er.fullName}" itemValue="#{er.id}" />
+													</p:selectOneMenu>
+												</h:panelGroup>
+											</p:column>
+											<p:column headerText="Actions" styleClass="center" width="100">
+												<div class="action-buttons center">
+													<p:commandLink title="Remove row" action="#{warehouseView.deleteManager(item)}" update="managerList" partialSubmit="true" process="managerList"
+														rendered="#{warehouseView.canDeleteManager()}">
+														<i class="ace-icon fa fa-remove bigger-130 red" />
+													</p:commandLink>
+												</div>
+											</p:column>
+											<f:facet name="footer">
+												<div class="action-buttons center">
+													<p:commandLink title="Add New Item" action="#{warehouseView.addManager()}" update="managerList" partialSubmit="true" process="managerList" rendered="#{warehouseView.canAddManager()}">
+														<i class="fa fa-plus green" />
+													</p:commandLink>
+												</div>
+											</f:facet>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Address" />
+							</h4>
+							<div class="row center">
+								<p:inputText value="#{warehouseView.warehouse.address1}" style="width: 90%" required="true" requiredMessage="Address should not be null" />
+							</div>
+							<div class="space-4" />
+							<div class="row center">
+								<p:inputText value="#{warehouseView.warehouse.address2}" style="width: 90%" />
+							</div>
+							<div class="space-4" />
+							<div class="row center">
+								<p:inputText value="#{warehouseView.warehouse.address3}" style="width: 90%" />
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="GPS coordinates" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Latitude" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber id="lat" value="#{warehouseView.warehouse.latitude}" required="true" requiredMessage="Latitude should not be null" decimalPlaces="6">
+												<p:ajax listener="#{warehouseView.refreshMapModel()}" event="keyup" update="gmap" />
+											</p:inputNumber>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Longitude" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber id="lng" value="#{warehouseView.warehouse.longitude}" required="true" requiredMessage="Longitude should not be null" decimalPlaces="6">
+												<p:ajax listener="#{warehouseView.refreshMapModel()}" event="keyup" update="gmap" />
+											</p:inputNumber>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-8" />
+							<h:panelGroup id="gmap">
+								<p:gmap widgetVar="map" model="#{warehouseView.mapModel}" center="#{warehouseView.warehouse.latitude}, #{warehouseView.warehouse.longitude}" zoom="17" type="TERRAIN"
+									style="width:100%;height:500px">
+									<p:ajax event="pointSelect" listener="#{warehouseView.onPointSelect}" update="lat,lng,gmap" />
+								</p:gmap>
+							</h:panelGroup>
+							<div class="space-16" />
+						</div>
+						<div class="row"></div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

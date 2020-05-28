@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Action List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<h:outputText value="Action List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="actions-panel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Add New Action" value="#{actionView.addEditPage}" rendered="#{actionView.canSaveAction()}">
+								<i class="ace-icon fa fa-plus bigger-230"></i>
+								<h:outputText value="Add" />
+							</h:outputLink>
+
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup id="widgetPanel">
+						<div class="col-sm-5  hidden-xs infobox-container">
+							<span class="btn btn-app btn-sm btn-warning no-hover">
+								<span class="line-height-1 bigger-170">
+									<h:outputText value="#{actionView.rowsNumber}" />
+								</span>
+								<br />
+								<span class="line-height-1 smaller-90">
+									<h:outputText value="Total" />
+								</span>
+							</span>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Details" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab2">
+							<i class="orange ace-icon fa fa-bar-chart bigger-120"></i>
+							<h:outputText value=" Charts" />
+						</a>
+					</li>
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<div class="row">
+							<p:messages id="messages" />
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Action List" />
+									</div>
+									<div class="col-sm-2">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="main_tab" fileName="actionList" />
+											</h:commandLink>
+										</div>
+									</div>
+									<div class="col-sm-2 col-xs-4">
+										<div class="nav-search minimized">
+											<span class="input-icon">
+												<p:inputText value="#{actionView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="main_tab,widgetPanel" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel,:main_form:actions-panel" />
+									<p:dataTable value="#{actionView.list2}" filteredValue="#{actionView.list3}" rowKey="#{item.id}" selection="#{actionView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
+										styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+
+										<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
+
+										<p:column headerText="Date" sortBy="#{item.date}">
+											<h:outputText value="#{item.date}" styleClass="bolder blue">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Title">
+											<h:outputText value="#{item.title}" styleClass="bolder orange" />
+										</p:column>
+
+										<p:column headerText="Type">
+											<h:outputText value="#{item.isCost?'Cost':'Revenue'}" styleClass="#{item.isCost?'red':'green'}" />
+										</p:column>
+
+										<p:column headerText="Description">
+											<h:outputText value="#{item.description}" />
+										</p:column>
+
+										<p:column headerText="Amount">
+											<h:outputText value="#{item.amount}" styleClass="bolder #{item.isCost?'red':'green'}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" DH" styleClass="bolder #{item.isCost?'red':'green'}" />
+										</p:column>
+
+										<p:column headerText="Actions" style="width:150px">
+											<div class="action-buttons center">
+
+												<p:commandLink rendered="#{item.isVisit}">
+													<i class="ace-icon fa fa-edit bigger-130 grey" />
+												</p:commandLink>
+
+												<h:outputLink value="#{actionView.addEditPage}" title="Edit" styleClass="aa-tooltip" rendered="#{!item.isVisit}">
+													<i class="ace-icon fa fa-edit bigger-130 orange" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+
+												<p:commandLink rendered="#{item.isVisit}">
+													<i class="ace-icon fa fa-trash-o bigger-130 grey" />
+												</p:commandLink>
+
+												<p:commandLink action="#{actionView.deleteAction}" update="main_tab" rendered="#{!item.isVisit}">
+													<i class="ace-icon fa fa-trash-o bigger-130 red" />
+													<f:setPropertyActionListener value="#{item.id}" target="#{actionView.selectedId}" />
+												</p:commandLink>
+
+											</div>
+										</p:column>
+
+										<f:facet name="footer">
+											<div style="text-align: right" class="#{actionView.totalAmount lt 0 ? 'red':'green'}">
+												<h:outputText value="Total : " />
+												<h:outputText value="#{actionView.totalAmount}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" DH" style="margin-right: 30px" />
+											</div>
+										</f:facet>
+
+									</p:dataTable>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div id="tab2" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-6">
+								<div id="container" style="min-width: 80%; height: 400px; margin: 0 auto"></div>
+							</div>
+						</div>
+						<h:outputText value="#{actionView.chart()}" escape="false" />
+						<script src="/resources/templates/highcharts/js/highcharts.js"></script>
+						<script src="/resources/templates/highcharts/js/exporting.js"></script>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

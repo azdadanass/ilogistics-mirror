@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Project List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list bigger-110 green"></i>
+					<h:outputText value=" Project List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="widgetPanel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="row">
+				<p:messages id="messages" />
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="table-header col-sm-12 col-xs-12">
+						<div class="col-sm-8 hidden-xs">
+							<i class="fa fa-list" />
+							<h:outputText value=" Project List" />
+						</div>
+						<div class="col-sm-2">
+							<div class="action-buttons center">
+								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+									<img src="/resources/img/xls.png" width="20" height="20" />
+									<p:dataExporter type="xls" target="main_tab" fileName="projectList" />
+								</h:commandLink>
+							</div>
+						</div>
+						<div class="col-sm-2 col-xs-4">
+							<div class="nav-search minimized">
+								<span class="input-icon">
+									<p:inputText value="#{projectView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+										<p:ajax event="keyup" update="main_tab,widgetPanel" />
+									</p:inputText>
+									<i class="ace-icon fa fa-search nav-search-icon" />
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-xs-12 aa-datatable-container">
+						<p:dataTable value="#{projectView.list2}" filteredValue="#{projectView.list3}" rowKey="#{item.id}" selection="#{projectView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="40"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+
+							<p:column headerText="Name">
+								<h:outputText value="#{item.name}" styleClass="bolder blue" />
+							</p:column>
+
+							<p:column headerText="Customer">
+								<h:outputText value="#{item.customerName}" styleClass="orange" />
+							</p:column>
+
+							<p:column headerText="Type" width="70">
+								<h:outputText value="#{item.type}" styleClass="green" />
+							</p:column>
+
+							<p:column headerText="SubType" width="70">
+								<h:outputText value="#{item.subType}" styleClass="purple" />
+							</p:column>
+
+							<p:column headerText="Start Date" width="80">
+								<h:outputText value="#{item.startDate}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="End Date" width="80">
+								<h:outputText value="#{item.endDate}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Customer Warehousing" width="80">
+								<i class="ace-icon fa #{item.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							</p:column>
+
+							<p:column headerText="Customer Stock Management" width="80">
+								<i class="ace-icon fa #{item.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							</p:column>
+
+							<p:column headerText="Actions" width="100">
+								<div class="action-buttons center">
+									<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{projectView.setProject(item.id)}" update=":editForm" oncomplete="PF('editDlg').show()">
+										<i class="ace-icon fa fa-edit bigger-130 orange" />
+										<f:setPropertyActionListener value="#{item}" target="#{projectView.project}" />
+									</p:commandLink>
+									
+									<h:outputLink value="partNumberThresholdList.xhtml" title="Part Number Threshold List" styleClass="aa-tooltip tooltip-info">
+										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+										<f:param name="id" value="#{item.id}" />
+									</h:outputLink>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+					</div>
+
+				</div>
+			</div>
+		</h:form>
+		<ui:include src="projectFooter.xhtml" />
+	</ui:define>
+</ui:composition>

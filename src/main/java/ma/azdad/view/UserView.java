@@ -1,0 +1,554 @@
+package ma.azdad.view;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import ma.azdad.model.User;
+import ma.azdad.model.UserFile;
+import ma.azdad.model.UserHistory;
+import ma.azdad.service.CustomerService;
+import ma.azdad.service.ProjectService;
+import ma.azdad.service.SupplierService;
+import ma.azdad.service.UserService;
+import ma.azdad.service.UtilsFunctions;
+
+@ManagedBean
+@Component
+@Transactional
+@Scope("view")
+public class UserView {
+
+	@Autowired
+	private SessionView sessionView;
+
+	@Autowired
+	protected UserService userService;
+
+	@Autowired
+	protected FileView fileView;
+
+	@Autowired
+	protected CustomerService customerService;
+
+	@Autowired
+	protected SupplierService supplierService;
+
+	@Autowired
+	protected ProjectService projectService;
+
+	private String toNotifyUserUsername;
+	private Integer toNotifyExternalResourceId;
+
+	protected List<User> list1 = new ArrayList<>();
+	protected List<User> list2 = new ArrayList<>();
+	protected List<User> list3;
+	protected List<User> list4;
+	private String searchBean = "";
+	protected String listPage = "userList.xhtml";
+	protected String addEditPage = "addEditUser.xhtml";
+	protected String viewPage = "viewUser.xhtml";
+	protected Boolean isListPage = false;
+	protected Boolean isAddPage = false;
+	protected Boolean isEditPage = false;
+	protected Boolean isViewPage = false;
+	protected String currentPath;
+	protected String username;
+	protected User user;
+	private Integer parent;
+	private Boolean filterByUser = true;
+
+	@PostConstruct
+	public void init() {
+		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+		initParameters();
+		isListPage = ("/" + listPage).equals(currentPath);
+		isAddPage = ("/" + addEditPage).equals(currentPath) && username == null;
+		isEditPage = ("/" + addEditPage).equals(currentPath) && username != null;
+		isViewPage = ("/" + viewPage).equals(currentPath);
+
+		if (isListPage)
+			refreshList();
+		else if (isEditPage)
+			user = userService.findOne(username);
+		else if (isViewPage)
+			user = userService.findOne(username);
+	}
+
+	protected void initParameters() {
+		username = UtilsFunctions.getParameter("username");
+	}
+
+	private void filterBean(String query) {
+		list3 = null;
+		List<User> list = new ArrayList<>();
+		query = query.toLowerCase().trim();
+		for (User bean : list1) {
+			if (bean.filter(query))
+				list.add(bean);
+		}
+		list2 = list;
+	}
+
+	public void refreshList() {
+		if (isListPage)
+			list2 = list1 = filterByUser ? userService.findLightByUser(false, sessionView.getUsername()) : userService.findLight(false);
+	}
+
+	public Integer getRowsNumber() {
+		if (list3 != null)
+			return list3.size();
+		else
+			return list2.size();
+	}
+
+	public void refreshUser() {
+		userService.flush();
+		user = userService.findOne(user.getUsername());
+	}
+
+	// SAVE EXTERNALRESOURCE
+	public Boolean canSaveUser() {
+		if (isEditPage || isViewPage)
+			return sessionView.isTheConnectedUser(user.getUser());
+		return true;
+	}
+
+	public String saveUser() {
+		if (!canSaveUser())
+			return UtilsFunctions.addParameters(listPage, "faces-redirect=true");
+		if (!validateUser())
+			return null;
+
+		user.setFullName(user.getFirstName() + " " + user.getLastName());
+		user.setUser(sessionView.getUser());
+		user.setCompany(customerService.findOneNullable(user.getCustomerId()), supplierService.findOneNullable(user.getSupplierId()), user.getCompany());
+
+		if (isAddPage)
+			user.setPassword(UtilsFunctions.stringToMD5(user.getPassword()));
+
+		user.addHistory(new UserHistory(isEditPage ? "Edited" : "Created", user, null));
+
+		user = userService.save(user);
+
+		return UtilsFunctions.addParameters(viewPage, "faces-redirect=true", "username=" + user.getUsername());
+	}
+
+	public Boolean validateUser() {
+		formatFirstName();
+		formatLastName();
+		formatCin();
+		formatEmail();
+		formatPhone();
+
+		if (user.getEmail() != null && user.getEmail().isEmpty())
+			user.setEmail(null);
+
+		if (userService.isFirstNameAndLastNameExists(user)) {
+			FacesContextMessages.ErrorMessages("First name and Last name already exist in database ! ");
+			return false;
+		}
+
+		if (user.getCin() != null && !user.getCin().isEmpty())
+			if (userService.isCinExists(user)) {
+				FacesContextMessages.ErrorMessages("CIN already exists in database ! ");
+				return false;
+			}
+
+		if (user.getEmail() != null && !user.getEmail().isEmpty())
+			if (userService.isEmailExists(user)) {
+				FacesContextMessages.ErrorMessages("Email already exists in database ! ");
+				return false;
+			}
+
+		if (user.getPhone() != null && !user.getPhone().isEmpty())
+			if (userService.isPhoneExists(user)) {
+				FacesContextMessages.ErrorMessages("Phone already exists in database ! ");
+				return false;
+			}
+		return true;
+	}
+
+	public void formatFirstName() {
+		user.setFirstName(UtilsFunctions.formatName(user.getFirstName()));
+	}
+
+	public void formatLastName() {
+		user.setLastName(UtilsFunctions.formatName(user.getLastName()));
+	}
+
+	public void formatCin() {
+		user.setCin(UtilsFunctions.cleanString(user.getCin()).replace(" ", "").toUpperCase());
+	}
+
+	public void formatEmail() {
+		user.setEmail(UtilsFunctions.cleanString(user.getEmail()).replace(" ", "").toLowerCase());
+	}
+
+	public void formatPhone() {
+		user.setPhone(UtilsFunctions.cleanString(user.getPhone().replace(" ", "")));
+	}
+
+	// can update in place
+	public Boolean canUpdateInplace() {
+		return sessionView.isTheConnectedUser(user.getUser());
+	}
+
+	public void updateInplace() {
+		if (canUpdateInplace())
+			user = userService.saveAndRefresh(user);
+	}
+
+	// CHANGE PASSWORD
+	public Boolean canChangePassword() {
+		return sessionView.isTheConnectedUser(user.getUser());
+	}
+
+	public void changePassword() {
+		if (!canChangePassword())
+			return;
+		user.setPassword(UtilsFunctions.stringToMD5(user.getPassword()));
+		userService.save(user);
+		refreshUser();
+	}
+
+	// PHOTO MANAGEMENT
+	public Boolean canUploadPhoto() {
+		return sessionView.isTheConnectedUser(user.getUser());
+	}
+
+	public void uploadPhoto(FileUploadEvent event) {
+		if (!canUploadPhoto())
+			return;
+		String fileName = user.getUsername();
+		String link = fileView.uploadFileOld(event, fileName, "photos");
+		user.setPhoto(link);
+		userService.save(user);
+		refreshUser();
+	}
+
+	// TOGGLE STATUS
+	public Boolean canToggleStatus() {
+		return sessionView.isTheConnectedUser(user.getUser());
+	}
+
+	public void toggleStatus() {
+		if (!canToggleStatus())
+			return;
+		user.setActive(!user.getActive());
+		userService.save(user);
+		refreshUser();
+	}
+
+	// DELETE EXTERNALRESOURCE
+	public Boolean canDeleteUser() {
+		return sessionView.isTM();
+	}
+
+	public String deleteUser() {
+		if (canDeleteUser())
+			userService.delete(user);
+		return UtilsFunctions.addParameters(listPage, "faces-redirect=true");
+	}
+
+	// FILES MANAGEMENT
+	private UserFile userFile;
+	private String userFileType;
+	private Integer userFileId;
+
+	public void handleFileUpload(FileUploadEvent event) throws IOException {
+		File file = fileView.handleFileUpload(event);
+		UserFile userFile = new UserFile("user", file, userFileType, event.getFile().getFileName(), sessionView.getUser());
+		user.addFile(userFile);
+		userService.save(user);
+		synchronized (UserView.class) {
+			refreshUser();
+		}
+	}
+
+	public void deleteFile(UserFile file) {
+		user.removeFile(file);
+		userService.save(user);
+		refreshUser();
+	}
+
+	// GENERIC
+	public List<User> findLight() {
+		return userService.findLight();
+	}
+
+	public List<User> findLightByStatus(Boolean contractActive) {
+		return userService.findLightByStatus(contractActive);
+	}
+
+	public List<User> findLightAndActive() {
+		return userService.findLightByStatus(true);
+	}
+
+	public List<User> findWarehouseManagerList() {
+		return userService.findWarehouseManagerList();
+	}
+
+	public List<User> findLightByLineManagerAndActive(String lineManagerUsername) {
+		return userService.findLightByLineManagerAndActive(lineManagerUsername);
+	}
+
+	public List<User> findLightByLineManagerAndActive() {
+		return userService.findLightByLineManagerAndActive(sessionView.getUsername());
+	}
+
+	public List<User> findByJob(String job) {
+		return userService.findByJob(job);
+	}
+
+	public List<User> findLightByTransporter(Integer transporterId) {
+		return userService.findLightByTransporter(transporterId);
+	}
+
+	public List<User> findLightByProject(Integer projectId) {
+		return userService.findLightByProject(projectId);
+	}
+
+	public List<User> findLightByCompany(User user) {
+		return userService.findLightByCompany(user);
+	}
+
+	// getters & setters
+
+	public String getToNotifyUserUsername() {
+		return toNotifyUserUsername;
+	}
+
+	public void setToNotifyUserUsername(String toNotifyUserUsername) {
+		this.toNotifyUserUsername = toNotifyUserUsername;
+	}
+
+	public Integer getToNotifyExternalResourceId() {
+		return toNotifyExternalResourceId;
+	}
+
+	public void setToNotifyExternalResourceId(Integer toNotifyExternalResourceId) {
+		this.toNotifyExternalResourceId = toNotifyExternalResourceId;
+	}
+
+	public List<User> getList1() {
+		return list1;
+	}
+
+	public void setList1(List<User> list1) {
+		this.list1 = list1;
+	}
+
+	public List<User> getList2() {
+		return list2;
+	}
+
+	public void setList2(List<User> list2) {
+		this.list2 = list2;
+	}
+
+	public List<User> getList3() {
+		return list3;
+	}
+
+	public void setList3(List<User> list3) {
+		this.list3 = list3;
+	}
+
+	public List<User> getList4() {
+		return list4;
+	}
+
+	public void setList4(List<User> list4) {
+		this.list4 = list4;
+	}
+
+	public String getSearchBean() {
+		return searchBean;
+	}
+
+	public void setSearchBean(String searchBean) {
+		this.searchBean = searchBean;
+		filterBean(searchBean);
+	}
+
+	public Boolean getIsListPage() {
+		return isListPage;
+	}
+
+	public void setIsListPage(Boolean isListPage) {
+		this.isListPage = isListPage;
+	}
+
+	public Boolean getIsAddPage() {
+		return isAddPage;
+	}
+
+	public void setIsAddPage(Boolean isAddPage) {
+		this.isAddPage = isAddPage;
+	}
+
+	public Boolean getIsEditPage() {
+		return isEditPage;
+	}
+
+	public void setIsEditPage(Boolean isEditPage) {
+		this.isEditPage = isEditPage;
+	}
+
+	public Boolean getIsViewPage() {
+		return isViewPage;
+	}
+
+	public void setIsViewPage(Boolean isViewPage) {
+		this.isViewPage = isViewPage;
+	}
+
+	public Integer getParent() {
+		return parent;
+	}
+
+	public void setParent(Integer parent) {
+		this.parent = parent;
+	}
+
+	public SessionView getSessionView() {
+		return sessionView;
+	}
+
+	public void setSessionView(SessionView sessionView) {
+		this.sessionView = sessionView;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public FileView getFileView() {
+		return fileView;
+	}
+
+	public void setFileView(FileView fileView) {
+		this.fileView = fileView;
+	}
+
+	public CustomerService getCustomerService() {
+		return customerService;
+	}
+
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
+	public SupplierService getSupplierService() {
+		return supplierService;
+	}
+
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
+	}
+
+	public ProjectService getProjectService() {
+		return projectService;
+	}
+
+	public void setProjectService(ProjectService projectService) {
+		this.projectService = projectService;
+	}
+
+	public String getListPage() {
+		return listPage;
+	}
+
+	public void setListPage(String listPage) {
+		this.listPage = listPage;
+	}
+
+	public String getAddEditPage() {
+		return addEditPage;
+	}
+
+	public void setAddEditPage(String addEditPage) {
+		this.addEditPage = addEditPage;
+	}
+
+	public String getViewPage() {
+		return viewPage;
+	}
+
+	public void setViewPage(String viewPage) {
+		this.viewPage = viewPage;
+	}
+
+	public String getCurrentPath() {
+		return currentPath;
+	}
+
+	public void setCurrentPath(String currentPath) {
+		this.currentPath = currentPath;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Boolean getFilterByUser() {
+		return filterByUser;
+	}
+
+	public void setFilterByUser(Boolean filterByUser) {
+		this.filterByUser = filterByUser;
+	}
+
+	public String getUserFileType() {
+		return userFileType;
+	}
+
+	public void setUserFileType(String userFileType) {
+		this.userFileType = userFileType;
+	}
+
+	public Integer getUserFileId() {
+		return userFileId;
+	}
+
+	public void setUserFileId(Integer userFileId) {
+		this.userFileId = userFileId;
+	}
+
+	public UserFile getUserFile() {
+		return userFile;
+	}
+
+	public void setUserFile(UserFile userFile) {
+		this.userFile = userFile;
+	}
+
+}

@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="StockRow List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list bigger-110 green"></i>
+					<h:outputText value=" StockRow List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="widgetPanel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+
+							<!-- <p:commandLink title="Detailed View" action="#{stockRowView.refreshList()}" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" update="main_tab">
+								<i class="ace-icon fa fa-list-alt bigger-230"></i>
+								<h:outputText value="Details" />
+								<f:setPropertyActionListener value="#{!stockRowView.viewDetails}" target="#{stockRowView.viewDetails}" />
+							</p:commandLink> -->
+
+						</div>
+						<div class="col-sm-5  hidden-xs infobox-container">
+							<span class="btn btn-app btn-sm btn-warning no-hover">
+								<span class="line-height-1 bigger-170">
+									<h:outputText value="#{stockRowView.rowsNumber}" />
+								</span>
+								<br />
+								<span class="line-height-1 smaller-90">
+									<h:outputText value="Total" />
+								</span>
+							</span>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="row">
+				<p:messages id="messages" />
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="table-header col-sm-12 col-xs-12">
+						<div class="col-sm-3 hidden-xs">
+							<i class="fa fa-list" />
+							<h:outputText value=" StockRow List" />
+						</div>
+						<div class="col-sm-5 ">
+							<table class="#{deliveryRequestView.pageIndex !=  1?'hide':''}" style="margin-top: 5px">
+								<tr>
+									<td>
+										<h:outputText value="Filter by : " />
+									</td>
+									<td>
+										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-success" title="In Stock">
+											<div class="aa-icon-inbound" />
+											<f:setPropertyActionListener value="true" target="#{stockRowView.inStock}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-error" title="Out Of Stock">
+											<div class="aa-icon-outbound" />
+											<f:setPropertyActionListener value="false" target="#{stockRowView.inStock}" />
+										</p:commandLink>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-sm-2">
+							<div class="action-buttons center">
+								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+									<img src="/resources/img/xls.png" width="20" height="20" />
+									<p:dataExporter type="xls" target="main_tab" fileName="stockRowList" postProcessor="#{stockRowView.excelExportation}" />
+								</h:commandLink>
+							</div>
+						</div>
+						<div class="col-sm-2 col-xs-4">
+							<div class="nav-search minimized">
+								<span class="input-icon">
+									<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+										<p:ajax event="keyup" update="main_tab,widgetPanel" />
+									</p:inputText>
+									<i class="ace-icon fa fa-search nav-search-icon" />
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-xs-12 aa-datatable-container">
+						<p:dataTable value="#{stockRowView.list2}" filteredValue="#{stockRowView.list3}" rowKey="#{item.id}" selection="#{stockRowView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="50"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+							<p:column headerText="Part Number" exportable="false" width="120">
+								<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+									<h:outputText value="#{item.partNumber.name}" />
+									<f:param name="id" value="#{item.partNumber.id}" />
+								</h:outputLink>
+							</p:column>
+
+							<p:column headerText="Part Number" styleClass="hide">
+								<h:outputText value="#{item.partNumber.name}" />
+							</p:column>
+
+							<p:column headerText="Cost Center" width="190" rendered="#{stockRowView.pageIndex==3}">
+								<h:outputText value="#{item.tmpProjectName}" styleClass="bolder green" />
+							</p:column>
+
+							<p:column headerText="Description">
+								<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+							</p:column>
+
+							<p:column headerText="Industry"  width="80">
+								<h:outputText value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="bolder blue"/>
+							</p:column>
+							
+							<p:column headerText="Category" width="120">
+								<h:outputText value="#{item.partNumber.partNumberType.category.name}" styleClass="bolder green"/>
+							</p:column>
+							
+							<p:column headerText="Type" width="120">
+								<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="bolder orange"/>
+							</p:column>
+							
+							<p:column headerText="Brand" width="120">
+								<h:outputText value="#{item.partNumber.brand.name}" styleClass="bolder pink"/>
+							</p:column>
+
+							<p:column headerText="Physical Stock" width="70" rendered="#{stockRowView.pageIndex==1 or stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							
+							<p:column headerText="Available Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
+								<h:outputText value="#{item.availableQuantity}" styleClass="#{item.quantity!=item.availableQuantity?'bolder':''}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Actions" width="70" rendered="#{stockRowView.pageIndex==1}" exportable="false">
+								<div class="action-buttons center">
+									<h:outputLink value="partNumberReporting.xhtml" title="Show details" styleClass="aa-tooltip tooltip-info">
+										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+										<f:param name="id" value="#{item.partNumber.id}" />
+										<f:param name="companyId" value="#{stockRowView.companyId}" />
+										<f:param name="customerId" value="#{stockRowView.customerId}" />
+									</h:outputLink>
+								</div>
+							</p:column>
+
+							<p:column headerText="Project" width="190" rendered="#{stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.inboundDeliveryRequest.project.name}" styleClass="purple" />
+							</p:column>
+
+							<p:column headerText="DN" width="100" rendered="#{stockRowView.pageIndex==2}" exportable="false">
+								<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+									<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="#{item.inboundDeliveryRequest.type.color}" />
+									<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
+								</h:outputLink>
+							</p:column>
+
+							<p:column headerText="Warehouse" width="150" rendered="#{stockRowView.pageIndex==2}"  >
+								<h:outputText value="#{item.inboundDeliveryRequest.warehouse.name}" />
+							</p:column>
+
+
+							<p:column headerText="DN" styleClass="hide">
+								<h:outputText value="#{item.inboundDeliveryRequest.reference}" />
+							</p:column>
+
+							<p:column headerText="DN Deliver Date" width="100" rendered="#{stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.inboundDeliveryRequest.date4}">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="DN Storage Period" width="100" rendered="#{stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.inboundDeliveryRequest.approximativeStoragePeriod}" />
+							</p:column>
+
+							<p:column headerText="Overdue" width="100" sortBy="#{item.overdue}" rendered="#{stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.overdue}" styleClass="bolder red" />
+							</p:column>
+
+
+							<p:column headerText="Inbound Qty" width="90" rendered="#{stockRowView.pageIndex==3}">
+								<h:outputText value="#{item.inboundQuantity}" styleClass="green">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Outbound Qty" width="90" rendered="#{stockRowView.pageIndex==3}">
+								<h:outputText value="#{-item.outboundQuantity}" styleClass="red">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Stock" width="90" rendered="#{stockRowView.pageIndex==3}">
+								<h:outputText value="#{item.inboundQuantity+item.outboundQuantity}" styleClass="blue">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+
+
+							<p:column headerText="N.of Deliveries" width="90" rendered="#{stockRowView.pageIndex==3}" sortBy="#{item.tmpNumberOfOutbounds}">
+								<h:outputText value="#{item.tmpNumberOfOutbounds}" styleClass="bolder purple" />
+							</p:column>
+
+							<p:column headerText="N.of Customers" width="90" rendered="#{stockRowView.pageIndex==3}" sortBy="#{item.tmpNumberOfCustomers}">
+								<h:outputText value="#{item.tmpNumberOfCustomers}" />
+							</p:column>
+
+
+
+
+
+
+
+							<!-- <p:column headerText="Related Request" rendered="#{stockRowView.viewDetails}">
+								<h:outputText value="#{item.deliveryRequest.reference}" styleClass="bolder #{item.deliveryRequest.type.color}" />
+							</p:column>
+
+							<p:column headerText="Inbound Request" rendered="#{stockRowView.viewDetails}">
+								<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder #{item.inboundDeliveryRequest.type.color}" />
+							</p:column>
+
+							<p:column headerText="Project">
+								<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="blue" />
+							</p:column>
+
+							<p:column headerText="Warehouse">
+								<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="purple" />
+							</p:column>
+
+							<p:column headerText="Origin DN Number" rendered="#{stockRowView.viewDetails}">
+								<h:outputText value="#{item.originNumber}" />
+							</p:column>
+
+							<p:column headerText="Status">
+								<h:outputText value="#{item.status.value}" />
+							</p:column>
+
+							<p:column headerText="Location">
+								<h:outputText value="#{item.location.name}" />
+							</p:column>
+
+							 -->
+
+						</p:dataTable>
+					</div>
+
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

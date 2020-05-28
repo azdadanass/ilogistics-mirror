@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<h:form id="deleteForm">
+		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete PartNumbers" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{partNumberView.deletePartNumber()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="viewPackingForm">
+		<p:dialog widgetVar="viewPackingDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1650">
+			<button type="button" class="bootbox-close-button close" onclick="PF('viewPackingDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list-alt blue" />
+					<h:outputText value=" Packing Details" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-9 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Detail List" />
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="datatable-hidden-overflow table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+								<p:column headerText="Type" width="30">
+									<img src="#{item.typeImage}" width="10" />
+								</p:column>
+
+								<p:column headerText="Type" width="80">
+									<h:outputText value="#{item.type}" rendered="#{!packingView.editMode}" />
+									<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.editMode}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="Pallet" itemValue="Pallet" />
+										<f:selectItem itemLabel="Box" itemValue="Box" />
+										<f:selectItem itemLabel="Crate" itemValue="Crate" />
+										<f:selectItem itemLabel="Reel" itemValue="Reel" />
+										<f:selectItem itemLabel="Plastic Bag" itemValue="Plastic Bag" />
+										<f:selectItem itemLabel="Plastic Barrel" itemValue="Plastic Barrel" />
+									</h:selectOneMenu>
+								</p:column>
+
+								<p:column headerText="Quantity" width="40">
+									<h:outputText value="#{item.quantity}" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.quantity}" style="width: 40px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="SN" width="40">
+									<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
+									<p:commandLink id="hasSerialnumber" update="hasSerialnumber" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
+										<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										<f:setPropertyActionListener value="#{!item.hasSerialnumber}" target="#{item.hasSerialnumber}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="Gross Weight" width="70">
+									<h:outputText value="#{item.grossWeight} KG" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.grossWeight}" placeholder="(KG)" style="width: 60px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="Net Weight" width="70">
+									<h:outputText value="#{item.netWeight} KG" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.netWeight}" placeholder="(KG)" style="width: 60px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="Volume" width="70">
+									<h:outputText value="#{item.volume} m3" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.volume}" placeholder="(m3)" style="width: 60px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="length / Width / Height" width="100">
+									<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.length}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+									&nbsp;
+									<p:inputText value="#{item.width}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+									&nbsp;
+									<p:inputText value="#{item.height}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="Fragile" width="50">
+									<i class="ace-icon fa #{item.fragile?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
+									<p:commandLink id="fragile" update="fragile" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
+										<i class="ace-icon fa #{item.fragile?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										<f:setPropertyActionListener value="#{!item.fragile}" target="#{item.fragile}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="Stackable" width="50">
+									<i class="ace-icon fa #{item.stackable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
+									<p:commandLink id="stackable" update="stackable,maxStack" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
+										<i class="ace-icon fa #{item.stackable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										<f:setPropertyActionListener value="#{!item.stackable}" target="#{item.stackable}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="Max Stack" width="50">
+									<h:outputText value="#{item.maxStack}" rendered="#{!packingView.editMode}" />
+									<h:panelGroup id="maxStack" rendered="#{packingView.editMode}">
+										<p:inputText value="#{item.maxStack}" style="width: 40px" rendered="#{item.stackable}" />
+									</h:panelGroup>
+								</p:column>
+
+								<p:column headerText="Min Storage T°" width="80">
+									<h:outputText value="#{item.minStorageTemperature} C°" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.minStorageTemperature}" placeholder="(C°)" style="width: 60px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="Max Storage T°" width="80">
+									<h:outputText value="#{item.maxStorageTemperature} C°" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.maxStorageTemperature}" placeholder="(C°)" style="width: 60px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:column headerText="Flammable" width="50">
+									<i class="ace-icon fa #{item.flammable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
+									<p:commandLink id="flammable" update="flammable" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
+										<i class="ace-icon fa #{item.flammable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										<f:setPropertyActionListener value="#{!item.flammable}" target="#{item.flammable}" />
+									</p:commandLink>
+								</p:column>
+
+								<p:column headerText="Storage Humidty" width="100">
+									<h:outputText value="#{item.storageHumidity}" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.storageHumidity}" style="width: 80px" rendered="#{packingView.editMode}" />
+								</p:column>
+
+								<p:columnGroup type="footer">
+									<p:row>
+										<p:column colspan="2" footerText="Total:" />
+										<p:column footerText="#{packingView.packing.totalItems}" />
+										<p:column footerText="" />
+										<p:column footerText="#{packingView.packing.grossWeight} Kg" />
+										<p:column footerText="" />
+										<p:column footerText="#{packingView.packing.volume} m3" />
+										<p:column colspan="8" footerText="" />
+									</p:row>
+								</p:columnGroup>
+
+								<f:facet name="footer" >
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{packingView.canEdit()}" update="main_tab">
+											<i class="fa fa-edit orange" />
+											<f:setPropertyActionListener value="true" target="#{packingView.editMode}" />
+										</p:commandLink>
+
+										<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{packingView.addDetail()}" rendered="#{packingView.canAddDetail()}" update="main_tab">
+											<i class="fa fa-plus blue" />
+										</p:commandLink>
+
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{packingView.savePacking()}" rendered="#{packingView.canAddDetail()}" update="main_tab">
+											<i class="fa fa-save green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('viewPackingDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deletePartNumberFileForm">
+		<p:dialog widgetVar="deletePartNumberFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deletePartNumberFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deletePartNumberFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{partNumberView.deletePartNumberFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deletePartNumberFileDlg').hide()"
+					update=":main_form:files_table,:main_form:photoList" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="addPartNumberFileForm">
+		<p:dialog widgetVar="uploadPartNumberFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadPartNumberFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-partNumbername">
+								<h:outputText value="Doc Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{partNumberView.partNumberFileType}" style="width:178px">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{docTypeView.findByType(partNumberView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax update="fileUploadPanel" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{partNumberView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{partNumberView.partNumberFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							<f:attribute name="beanName" value="#{partNumberView.className2}" />
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadPartNumberFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="fileForm">
+		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list-alt blue" />
+					<h:outputText value=" Preview" />
+				</h4>
+			</div>
+			<div class="modal-body center" style="width: 100%">
+				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{partNumberView.partNumberFile.isPdf}">
+					<f:param name="fileName" value="#{partNumberView.partNumberFile.link}" />
+				</p:media>
+				<p:graphicImage value="#{fileView.stream}" rendered="#{partNumberView.partNumberFile.isImage}">
+					<f:param name="fileName" value="#{partNumberView.partNumberFile.link}" />
+				</p:graphicImage>
+				<h:outputText value="No preview for this file" rendered="#{!partNumberView.partNumberFile.isPdf and !partNumberView.partNumberFile.isImage}" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

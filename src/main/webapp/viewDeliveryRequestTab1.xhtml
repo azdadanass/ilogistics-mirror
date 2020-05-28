@@ -1,0 +1,758 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+
+
+
+
+	<div class="row">
+		<div class="col-xs-12 col-sm-6">
+			<div class="profile-user-info profile-user-info-striped">
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Reference" />
+					</div>
+
+					<div class="profile-info-value #{deliveryRequestView.deliveryRequest.type.color}">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.reference}" styleClass="bolder" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Project" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.project.name}" styleClass="green" />
+						&nbsp;
+					</div>
+				</div>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Destination Project" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" rendered="#{!deliveryRequestView.canEditDestinationProject()}" />
+							<p:commandLink update=":editDestinationProjectForm" styleClass="editable-click" oncomplete="PF('editDestinationProjectDlg').show()" rendered="#{deliveryRequestView.canEditDestinationProject()}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" />
+								<h:outputText value="None" rendered="#{deliveryRequestView.deliveryRequest.destinationProject==null}" />
+							</p:commandLink>
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Pref Storage Location" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.preferedLocation.name}" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Priority" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.priority.value}" styleClass="#{deliveryRequestView.deliveryRequest.priority.color}" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Is SN Required" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Requester" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.requester.fullName}" styleClass="bolder orange" />
+						&nbsp;
+					</div>
+				</div>
+				<f:subview rendered="#{deliveryRequestView.isCustomerRequesterDataNeeded}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Customer Requester" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.externalRequester.fullName}" styleClass="bolder pink" rendered="#{!deliveryRequestView.canUpdateExternalRequester()}" />
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateExternalRequester()}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.externalRequester.fullName}" />
+								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.tmpExternalRequesterId}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{userView.findLightByProject(deliveryRequestView.deliveryRequest.projectId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.id}" />
+								</h:selectOneMenu>
+								<p:ajax event="save" listener="#{deliveryRequestView.updateExternalRequester()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Transportation Needed" />
+					</div>
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationNeeded?'Yes':'No'}" rendered="#{!deliveryRequestView.canUpdateTransportationNeeded()}" />
+						<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateTransportationNeeded()}">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationNeeded?'Yes':'No'}" />
+							<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
+								<f:selectItem itemLabel="Yes" itemValue="true" />
+								<f:selectItem itemLabel="No" itemValue="false" />
+							</h:selectOneMenu>
+							<p:ajax event="save" listener="#{deliveryRequestView.updateTransportationNeeded()}" update=":main_form" />
+							<p:ajax event="cancel" />
+						</p:inplace>
+
+
+						&nbsp;
+					</div>
+				</div>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Transportation Request" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputLink value="viewTransportationRequest.xhtml">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationRequest.reference}" />
+								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.transportationRequest.id}" />
+							</h:outputLink>
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isForReturn}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Planned Return" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="No, #{deliveryRequestView.deliveryRequest.returnReason}" styleClass="bolder red" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isForReturn}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Planned Return" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="Yes, #{deliveryRequestView.deliveryRequest.returnReason}" styleClass="bolder red" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="profile-user-info profile-user-info-striped">
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Type" />
+					</div>
+
+					<div class="profile-info-value #{deliveryRequestView.deliveryRequest.type.color}">
+						<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type}">
+							<i class="ace-icon fa fa-long-arrow-right bigger-130  aa-tooltip tooltip-success" title="Inbound" style="margin-right: 10px" />
+						</f:subview>
+						<f:subview rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+							<i class="ace-icon fa fa-long-arrow-left bigger-130  aa-tooltip tooltip-error" title="Outbound" style="margin-right: 10px" />
+						</f:subview>
+						<f:subview rendered="#{DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+							<i class="ace-icon fa fa-exchange bigger-130  aa-tooltip tooltip-info" title="Xbound" style="margin-right: 10px" />
+						</f:subview>
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.type.value}" />
+						<h:outputText value=", #{deliveryRequestView.deliveryRequest.subType}" rendered="#{deliveryRequestView.deliveryRequest.subType!=null}" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Warehouse" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.warehouse.name}" styleClass="pink" />
+						&nbsp;
+					</div>
+				</div>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Destination Project" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.manager.fullName}" styleClass="bolder green" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Appr Storage Period" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Important" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.important?'Yes':'No'}" styleClass="#{deliveryRequestView.deliveryRequest.important?'red':'grey'}" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="Is Packing List Required" />
+					</div>
+
+					<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.isPackingListRequired?'Yes':'No'}" />
+						&nbsp;
+					</div>
+				</div>
+				<div class="profile-info-row">
+					<div class="profile-info-name">
+						<h:outputText value="REF" />
+					</div>
+
+					<div class="profile-info-value purple bolder">
+						<p:inplace editor="true" styleClass="#{deliveryRequestView.canUpdateSmsRef()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+							disabled="#{!deliveryRequestView.canUpdateSmsRef()}">
+							<p:inputText value="#{deliveryRequestView.deliveryRequest.smsRef}" />
+							<p:ajax event="save" listener="#{deliveryRequestView.updateSmsRef()}" update=":main_form" />
+							<p:ajax event="cancel" />
+						</p:inplace>
+						&nbsp;
+					</div>
+				</div>
+				<f:subview rendered="#{deliveryRequestView.isPoNeeded}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Po" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null}" />
+							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">
+								<h:outputText value="None" styleClass="grey bolder" />
+							</p:commandLink>
+
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.isCustomerRequesterDataNeeded}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Request Date / Form" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.requestDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateRequestDate()}">
+								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+							</h:outputText>
+
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateRequestDate()}">
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.requestDate}" navigator="true" pattern="dd-MM-yyyy HH:mm">
+									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								</p:calendar>
+								<p:ajax event="save" listener="#{deliveryRequestView.updateRequestDate()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+
+							<p:inplace editor="true" styleClass="#{deliveryRequestView.canUpdateRequestFrom()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								disabled="#{!deliveryRequestView.canUpdateRequestFrom()}">
+								<p:inputText value="#{deliveryRequestView.deliveryRequest.requestFrom}" />
+								<p:ajax event="save" listener="#{deliveryRequestView.updateRequestFrom()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+
+
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Transporter" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.transporter.name}" />
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="TR Status" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationRequest.status.value}" styleClass="#{deliveryRequestView.deliveryRequest.transportationRequest.status.color}" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
+				<!-- <f:subview rendered="#{deliveryRequestView.deliveryRequest.isForTransfer}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Transfer status" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.transferStatus}" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview> -->
+			</div>
+		</div>
+	</div>
+	<div class="space-8" />
+	<h4 class="header blue bolder smaller">
+		<h:outputText value="Delivery Details" />
+	</h4>
+	<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Owner" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.ownerName}" />
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Origin DN N°" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" rendered="#{deliveryRequestView.deliveryRequest.isInboundNew}" />
+							<h:outputLink value="viewDeliveryRequest.xhtml" target="_blank" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" />
+								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.id}" />
+							</h:outputLink>
+							<h:outputLink value="viewDeliveryRequest.xhtml" target="_blank" rendered="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" />
+								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestTransfer.id}" />
+							</h:outputLink>
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Origin Site" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="None" rendered="#{deliveryRequestView.deliveryRequest.origin==null}" />
+							<h:outputLink value="viewSite.xhtml">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.origin.name}" />
+								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.origin.id}" />
+							</h:outputLink>
+
+							&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Needed Delivery Date" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateNeededDeliveryDate()}">
+								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+							</h:outputText>
+
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="dd-MM-yyyy HH:mm">
+									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								</p:calendar>
+								<p:ajax event="save" listener="#{deliveryRequestView.updateNeededDeliveryDate()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Delivery Date" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.date4}" styleClass="bolder green">
+								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+							</h:outputText>
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Address" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.origin.googleAddress}" />
+							&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="space-8" />
+	</f:subview>
+	<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
+		<div class="row">
+			<div class="col-xs-12 col-sm-6">
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="End Customer" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.toCustomer.name}" styleClass="green bolder" />
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Destination Site" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="None" rendered="#{deliveryRequestView.deliveryRequest.destination==null}" />
+							<h:outputLink value="viewSite.xhtml">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.destination.name}" />
+								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.destination.id}" />
+							</h:outputLink>
+							&nbsp;
+						</div>
+					</div>
+					<f:subview rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+						<div class="profile-info-row">
+							<div class="profile-info-name">
+								<h:outputText value="Deliver To Company" />
+							</div>
+
+							<div class="profile-info-value">
+								<h:outputText value="External / #{deliveryRequestView.deliveryRequest.externalCompanyName}" styleClass="purple" />
+								&nbsp;
+							</div>
+						</div>
+					</f:subview>
+					<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
+						<div class="profile-info-row">
+							<div class="profile-info-name">
+								<h:outputText value="Deliver To Company" />
+							</div>
+
+							<div class="profile-info-value">
+								<h:outputText value="Internal / #{deliveryRequestView.deliveryRequest.internalCompany.name}" styleClass="blue" />
+								&nbsp;
+							</div>
+						</div>
+					</f:subview>
+
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6">
+				<div class="profile-user-info profile-user-info-striped">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Needed Delivery Date" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder">
+								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+							</h:outputText>
+							&nbsp;
+						</div>
+					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Address" />
+						</div>
+
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.destination.googleAddress}" />
+							&nbsp;
+						</div>
+					</div>
+					<f:subview rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+						<div class="profile-info-row">
+							<div class="profile-info-name">
+								<h:outputText value="Deliver to" />
+							</div>
+
+							<div class="profile-info-value orange">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.cin}" styleClass="purple" />
+								&nbsp;
+							</div>
+						</div>
+					</f:subview>
+					<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
+						<div class="profile-info-row">
+							<div class="profile-info-name">
+								<h:outputText value="Deliver To" />
+							</div>
+
+							<div class="profile-info-value">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
+								<h:outputText value="#{cacheView.getCin(deliveryRequestView.deliveryRequest.toUser.username)}" styleClass="purple" />
+								&nbsp;
+							</div>
+						</div>
+					</f:subview>
+				</div>
+			</div>
+		</div>
+	</f:subview>
+
+	<h4 class="header blue bolder smaller">
+		<h:outputText value="Details" />
+	</h4>
+	<div class="row">
+		<div class="col-sm-offset-1 col-sm-10">
+			<div class="table-header col-sm-12 col-xs-12">
+				<div class="col-sm-8 hidden-xs">
+					<i class="fa fa-list" />
+					<h:outputText value=" Details" />
+				</div>
+				<div class="col-sm-2">
+					<div class="action-buttons center">
+						<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+							<img src="/resources/img/xls.png" width="20" height="20" />
+							<p:dataExporter type="xls" target="main_tab" fileName="detailList" postProcessor="#{deliveryRequestView.excelExportation}" />
+						</h:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-12 col-xs-12 aa-datatable-container">
+				<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" id="main_tab" widgetVar="main_tab" var="item" rows="50" styleClass="table table-striped table-hover center"
+					paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+					<p:column headerText="Part Number" width="150">
+						<h:outputLink id="pn" value="viewPartNumber.xhtml" target="blank">
+							<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+							<f:param name="id" value="#{item.partNumber.id}" />
+						</h:outputLink>
+						<p:overlayPanel for="pn" style="text-align: left;width:600px;background-color:#e4e6e9" showEvent="mouseover" hideEvent="mouseout">
+							<div class="col-xs-4 center">
+								<p:graphicImage value="#{fileView.stream}" styleClass="grid_images">
+									<f:param name="fileName" value="#{item.partNumber.image}" />
+								</p:graphicImage>
+								 <br />
+								<span class="bolder green smaller-80">
+									<h:outputText value="#{item.partNumber.name}" />
+								</span>
+							</div>
+							<div class="col-xs-8">
+								<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+								<span class="bolder blue">
+									<h:outputText value="Industry : #{item.partNumber.partNumberType.category.industry.name}" />
+								</span>
+								<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+								<span class="pink">
+									<h:outputText value="Category : #{item.partNumber.partNumberType.category.name}" />
+								</span>
+								<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+								<span class="green">
+									<h:outputText value="Type : #{item.partNumber.partNumberType.name}" />
+								</span>
+								<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+								<span class="orange">
+									<h:outputText value="Brand : #{item.partNumber.brand.name}" />
+								</span>
+								<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
+								<span class="light-blue">
+									<h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+								</span>
+								<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
+								<span class="purple">
+									<h:outputText value="Description : #{item.partNumber.description}" />
+								</span>
+								<hr />
+							</div>
+						</p:overlayPanel>
+					</p:column>
+
+					<p:column headerText="Part Number" styleClass="hide">
+						<h:outputText value="#{item.partNumber.name}" />
+					</p:column>
+
+					<p:column headerText="Description" width="200">
+						<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+					</p:column>
+
+					<p:column headerText="Inbound Request" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100"
+						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+							<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder green" />
+							<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
+						</h:outputLink>
+					</p:column>
+
+					<p:column headerText="Inbound Date" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.inboundDeliveryRequest.date4}" styleClass="bolder green">
+							<f:convertDateTime pattern="dd-MM-yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Origin DN Number" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100"
+						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.originNumber}" />
+					</p:column>
+
+					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="60" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.status.value}" />
+					</p:column>
+
+					<p:column headerText="Unit / Kit" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit?'green':'blue'}" />
+					</p:column>
+
+					<p:column headerText="Unit Type" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value=" #{item.partNumber.unitType}" styleClass="bolder pink" />
+					</p:column>
+
+					<p:column headerText="Brand" width="75" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.partNumber.brand.name}" styleClass="purple" />
+					</p:column>
+
+					<p:column headerText="Industry" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+					</p:column>
+
+					<p:column headerText="Category" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+					</p:column>
+
+					<p:column headerText="Type" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+					</p:column>
+
+					<p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
+						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+							disabled="#{!deliveryRequestView.canUpdateUnitCost()}">
+							<p:inputNumber value="#{item.unitCost}" thousandSeparator="" decimalPlaces="6" styleClass="red" />
+							<p:ajax event="save" listener="#{deliveryRequestView.updateUnitCost(item)}" update="main_tab" />
+							<p:ajax event="cancel" />
+						</p:inplace>
+						<h:outputText value=" MAD" styleClass="red" />
+					</p:column>
+
+					<p:column headerText="Unit Price" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showPriceInformations()}">
+						<p:inplace editor="true" styleClass="blue #{deliveryRequestView.canUpdateUnitPrice()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+							disabled="#{!deliveryRequestView.canUpdateUnitPrice()}">
+							<p:inputNumber value="#{item.unitPrice}" thousandSeparator="" decimalPlaces="6" styleClass="blue" />
+							<p:ajax event="save" listener="#{deliveryRequestView.updateUnitPrice(item)}" update="main_tab" />
+							<p:ajax event="cancel" />
+						</p:inplace>
+						<h:outputText value=" MAD" styleClass="blue" />
+					</p:column>
+
+					<p:column headerText="Quantity" width="60">
+						<h:outputText value="#{item.quantity}" styleClass="bolder green">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Packing" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.packing.name}" styleClass="bolder light-blue" />
+					</p:column>
+
+					<p:column headerText="Packing Quantity" width="60">
+						<h:outputText value="#{item.quantity / item.packing.quantity}" styleClass="bolder blue">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gross Weight" width="60" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.grossWeight}">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
+						<h:outputText value=" Kg" />
+					</p:column>
+
+					<p:column headerText="Volume" width="60" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.volume}">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
+						<h:outputText value=" m3" />
+					</p:column>
+
+					<p:column headerText="Remaining Quantity" width="150" rendered="#{DeliveryRequestStatus.PARTIALLY_DELIVRED==deliveryRequestView.deliveryRequest.status}"
+						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+						<h:outputText value="#{item.remainingQuantity}">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Expirable" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.showExpiryData()}">
+						<i class="ace-icon fa #{item.partNumber.expirable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+					</p:column>
+
+				</p:dataTable>
+			</div>
+		</div>
+	</div>
+	<div class="space-8" />
+	<f:subview rendered="#{DeliveryRequestStatus.REJECTED==deliveryRequestView.deliveryRequest.status}">
+		<div class="well" style="background-color: #f2dede; color: #a94442;">
+			<h4 class="red smaller lighter">
+				<h:outputText value="Rejection Reason" />
+			</h4>
+			<h:outputText value="#{deliveryRequestView.deliveryRequest.rejectionReason}" />
+		</div>
+	</f:subview>
+
+</ui:composition>

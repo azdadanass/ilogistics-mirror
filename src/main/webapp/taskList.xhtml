@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Task List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.Severities" var="Severities" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<h:outputText value="Task List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="actions-panel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup id="widgetPanel">
+						<div class="col-sm-5  hidden-xs infobox-container">
+							<span class="btn btn-app btn-sm btn-warning no-hover">
+								<span class="line-height-1 bigger-170">
+									<h:outputText value="#{taskView.rowsNumber}" />
+								</span>
+								<br />
+								<span class="line-height-1 smaller-90">
+									<h:outputText value="Total" />
+								</span>
+							</span>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="row">
+				<p:messages id="messages" />
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="table-header col-sm-12 col-xs-12">
+						<div class="col-sm-2 hidden-xs">
+							<i class="fa fa-list" />
+							<h:outputText value=" Task List" />
+						</div>
+						<div class="col-sm-6">
+							<table>
+								<tr>
+									<td>
+										<h:outputText value="Filter by :" />
+									</td>
+									<td>
+										<p:commandLink action="#{taskView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip" title="All">
+											<div class="aa-icon-all" />
+											<f:setPropertyActionListener value="false" target="#{taskView.showCurrent}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{taskView.refreshList()}" update="main_tab,widgetPanel" styleClass="tooltip-success aa-tooltip" title="Current Day">
+											<div class="aa-icon-approved" />
+											<f:setPropertyActionListener value="true" target="#{taskView.showCurrent}" />
+										</p:commandLink>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-sm-2">
+							<div class="action-buttons center">
+								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+									<img src="/resources/img/xls.png" width="20" height="20" />
+									<p:dataExporter type="xls" target="main_tab" fileName="taskList" />
+								</h:commandLink>
+							</div>
+						</div>
+						<div class="col-sm-2 col-xs-4">
+							<div class="nav-search minimized">
+								<span class="input-icon">
+									<p:inputText value="#{taskView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+										<p:ajax event="keyup" update="main_tab,widgetPanel" />
+									</p:inputText>
+									<i class="ace-icon fa fa-search nav-search-icon" />
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-xs-12 aa-datatable-container">
+						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel,:main_form:actions-panel" />
+						<p:dataTable value="#{taskView.list2}" filteredValue="#{taskView.list3}" rowKey="#{item.id}" selection="#{taskView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+
+							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
+
+							<p:column headerText="Photo" width="60" styleClass="hidden-xs">
+								<p:graphicImage value="#{imageView.patientImage}" styleClass="img-circle aa-datatable-photo">
+									<f:param name="id" value="#{item.patientId}" />
+								</p:graphicImage>
+							</p:column>
+
+							<p:column headerText="Patient">
+								<h:outputText value="#{item.patientName}" styleClass="bolder orange" />
+							</p:column>
+
+							<p:column headerText="Date" sortBy="#{item.startDate}" styleClass="center">
+								<h:outputText value="#{item.startDate}" styleClass="bolder blue">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+								<h:outputText value=" / " />
+								<h:outputText value="#{item.startDate}" styleClass="bolder green">
+									<f:convertDateTime pattern="HH:mm" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Description">
+								<h:outputText value="#{item.description}" />
+							</p:column>
+
+							<p:column headerText="Severity">
+								<h:outputText value="#{item.severity.value}"
+									styleClass="bolder #{Severities.MINOR==item.severity?'green':(Severities.MEDIUM==item.severity?'blue':Severities.HIGH==item.severity?'orange':'red')}" />
+							</p:column>
+
+						</p:dataTable>
+					</div>
+
+				</div>
+			</div>
+		</h:form>
+
+		<!-- <ui:include src="taskFooter.xhtml" /> -->
+
+
+	</ui:define>
+</ui:composition>

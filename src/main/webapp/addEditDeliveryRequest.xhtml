@@ -1,0 +1,1279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="http://maps.google.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8" type="text/javascript" />
+		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
+		<link href="resources/css/addEditDeliveryRequest.css" rel="stylesheet" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{deliveryRequestView.selectedId == null?'Add New':'Edit'} DeliveryRequest" />
+			</li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.Priority" var="Priority" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliveryRequestType" var="DeliveryRequestType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.InboundType" var="InboundType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliverToType" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="widget-box">
+				<div class="widget-header widget-header-blue widget-header-flat">
+					<h4 class="widget-title lighter">
+						<i class="ace-icon fa #{deliveryRequestView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+						<h:outputText value=" #{deliveryRequestView.selectedId == null?'Add New':'Edit'} Delivery Request" />
+					</h4>
+				</div>
+				<div class="widget-body">
+					<div class="widget-main">
+						<h:panelGroup id="nav-wizard">
+							<ul class="nav nav-wizard">
+								<li class="#{deliveryRequestView.step==1?'active':''}">
+									<a href="#">
+										<h:outputText value="General informations" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==2?'active':''}">
+									<a href="#">
+										<h:outputText value="Request Informations" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==3?'active':''}">
+									<a href="#">
+										<h:outputText value="Delivery Details" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==4?'active':''}">
+									<a href="#">
+										<h:outputText value="Packing Details" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==5?'active':''}">
+									<a href="#">
+										<h:outputText value="Notification List" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==6?'active':''}">
+									<a href="#">
+										<h:outputText value="Add Comment" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==7?'active':''}">
+									<a href="#">
+										<h:outputText value="Summary" />
+									</a>
+								</li>
+							</ul>
+						</h:panelGroup>
+						<hr />
+						<p:messages id="messages" closable="true" />
+						<h:panelGroup id="steps">
+							<f:subview id="step1" rendered="#{deliveryRequestView.step==1}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" General informations" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Request Type " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{deliveryRequestView.deliveryRequest.type.value}" styleClass="col-xs-12 col-sm-6" readonly="true"
+												rendered="#{!deliveryRequestView.isAddPage or deliveryRequestView.templateId != null or deliveryRequestView.outboundDeliveryRequestId != null}" />
+											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.type}" required="true" requiredMessage="Type should not be null" styleClass="col-xs-12 col-sm-6"
+												rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.templateId==null and deliveryRequestView.outboundDeliveryRequestId==null}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{DeliveryRequestType.ALL_ENUM_VALUES}" />
+												<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<h:panelGroup id="isForTransfer">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="For Transfer " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="is for transfer field should not be null" styleClass="col-xs-12 col-sm-6">
+														<f:selectItem itemLabel="No" itemValue="false" />
+														<f:selectItem itemLabel="Yes" itemValue="true" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<h:panelGroup id="isForReturn">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Planned Return " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForReturn}" required="true" requiredMessage="is for return field should not be null" styleClass="col-xs-12 col-sm-6">
+														<f:selectItem itemLabel="No" itemValue="false" />
+														<f:selectItem itemLabel="Yes" itemValue="true" />
+														<p:ajax update=":main_form:step1:returnReason" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<h:panelGroup id="returnReason">
+									<f:subview
+										rendered="#{deliveryRequestView.deliveryRequest.isForReturn or (deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isForReturn)}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Return Reason " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
+														rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItem itemLabel="Repair &amp; Return" itemValue="Repair &amp; Return" />
+														<f:selectItem itemLabel="Training" itemValue="Training" />
+														<f:selectItem itemLabel="Expo" itemValue="Expo" />
+														<f:selectItem itemLabel="RFQ Samples" itemValue="RFQ Samples" />
+														<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
+														<f:selectItem itemLabel="Other" itemValue="Other" />
+													</h:selectOneMenu>
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
+														rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItem itemLabel="Payment Issue" itemValue="Payment Issue" />
+														<f:selectItem itemLabel="Physical Damage" itemValue="Physical Damage" />
+														<f:selectItem itemLabel="Faulty" itemValue="Faulty" />
+														<f:selectItem itemLabel="Wrong delivery" itemValue="Wrong delivery" />
+														<f:selectItem itemLabel="Wrong Specs" itemValue="Wrong Specs" />
+														<f:selectItem itemLabel="Destination site issue" itemValue="Destination site issue" />
+														<f:selectItem itemLabel="Other" itemValue="Other" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<h:panelGroup id="inboundType">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Inbound Type " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<!-- <h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.inboundType}" styleClass="col-xs-12 col-sm-6">
+														<f:selectItems value="#{InboundType.ALL_ENUM_VALUES}" />
+														<p:ajax update=":main_form:step1:inboundType,:main_form:step1:returnReason" />
+													</h:selectOneMenu> -->
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.inboundType.value}" readonly="true" styleClass="col-xs-12 col-sm-6" />
+													<br />
+												</div>
+											</div>
+										</div>
+										<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn}">
+											<div class="space-8" />
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Outbound DN " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:inputText value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" />
+														<br />
+													</div>
+												</div>
+											</div>
+										</f:subview>
+										<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
+											<div class="space-8" />
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Outbound DN " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:inputText value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestTransfer.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" />
+														<br />
+													</div>
+												</div>
+											</div>
+										</f:subview>
+									</f:subview>
+								</h:panelGroup>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Project " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{deliveryRequestView.deliveryRequest.project.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
+											<p:selectOneMenu id="project" value="#{deliveryRequestView.deliveryRequest.projectId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+												requiredMessage="Project should not be null" rendered="#{deliveryRequestView.isAddPage}"
+												disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType or InboundType.TRANSFER==deliveryRequestView.deliveryRequest.inboundType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{projectView.findLightByResource(deliveryRequestView.deliveryRequest.type)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+												<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
+												<p:ajax listener="#{deliveryRequestView.updateDestinationProject()}" update=":main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
+												<p:ajax listener="#{deliveryRequestView.changeOwner()}" />
+											</p:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<h:panelGroup id="destinationProject">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Destination Project " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.destinationProjectId}" styleClass="col-xs-12 col-sm-6" required="true" filter="true" filterMatchMode="contains"
+														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{projectView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po" />
+													</p:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<h:panelGroup id="po">
+									<f:subview rendered="#{deliveryRequestView.isPoNeeded}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Po " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" rendered="#{deliveryRequestView.isAddPage}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroInvoice}" itemValue="#{item.idpo}" />
+														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
+													</p:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<h:panelGroup id="warehouse">
+									<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Warehouse " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.warehouse.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.warehouse}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Warehouse should not be null"
+														converter="#{genericSecuredConverter}" rendered="#{deliveryRequestView.isAddPage}" disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{warehouseView.find(deliveryRequestView.deliveryRequest.type,deliveryRequestView.deliveryRequest.projectId)}" var="item" itemLabel="#{item.name}"
+															itemValue="#{item}" />
+														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+								<div class="space-8" />
+								<h:panelGroup id="customerRequesterData">
+									<f:subview rendered="#{deliveryRequestView.isCustomerRequesterDataNeeded}">
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Customer Requester " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:selectOneMenu id="externalRequester" value="#{deliveryRequestView.deliveryRequest.tmpExternalRequesterUsername}" styleClass="col-xs-12 col-sm-6" filter="true"
+														filterMatchMode="contains">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightByProject(deliveryRequestView.deliveryRequest.projectId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Request Date" />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:calendar value="#{deliveryRequestView.deliveryRequest.requestDate}" navigator="true" />
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Request form " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.requestFrom}" styleClass="col-xs-12 col-sm-6">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItem itemLabel="Email" itemValue="Email" />
+														<f:selectItem itemLabel="Fax" itemValue="Fax" />
+														<f:selectItem itemLabel="Phone Call" itemValue="Phone Call" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+									</f:subview>
+								</h:panelGroup>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Description " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputTextarea value="#{deliveryRequestView.deliveryRequest.description}" styleClass="col-xs-12 col-sm-6" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="REF " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{deliveryRequestView.deliveryRequest.smsRef}" styleClass="col-xs-12 col-sm-6" maxlength="15" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-sm-offset-3 col-sm-9">
+										<p:messages id="destinationProjectMessage" styleClass="col-sm-6" closable="true" />
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step2" rendered="#{deliveryRequestView.step==2}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" Request Informations" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Priority " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.priority}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Priority should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{Priority.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Needed Delivery Date" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+													requiredMessage="Needed Delivery Date should not be null" autocomplete="false" />
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+								</f:subview>
+								<f:subview id="subview1" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Origin Site" />
+												<!-- <span class="action-buttons center">
+													<p:commandLink actionListener="#{siteView.initSaveSite()}" action="#{deliveryRequestView.setAddOriginSite(true)}" styleClass="aa-tooltip tooltip-success" title="Add New Site"
+														update=":addSiteForm" oncomplete="PF('addSiteDlg').show()" partialSubmit="true" process="@this">
+														<i class="fa fa-plus green" />
+													</p:commandLink>
+												</span> -->
+											</label>
+										</div>
+										<!-- <div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:selectOneMenu id="origin" value="#{deliveryRequestView.deliveryRequest.originId}" styleClass="col-xs-12 col-sm-6" style="min-width: 50% !important" filter="true"
+													filterMatchMode="contains">
+													<f:selectItem itemLabel="None" noSelectionOption="true" />
+													<f:selectItems value="#{siteView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax listener="#{deliveryRequestView.deliveryRequest.setTransportationNeeded(deliveryRequestView.deliveryRequest.originId==null?false:null)}" update=":main_form:step2:transportation" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div> -->
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<span class="input-icon input-icon-right pointer" onclick="selectOrigin()" style="cursor: pointer">
+													<p:inputText id="origin" value="#{deliveryRequestView.deliveryRequest.origin.name}" readonly="true" />
+													<i class="ace-icon fa fa-edit green pointer #{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer?'hide':''}"
+														onclick="selectOrigin()" />
+												</span>
+												<p:remoteCommand name="selectOrigin" actionListener="#{deliveryRequestView.setSelectOrigin(true)}" oncomplete="PF('selectSiteDlg').show()" update=":selectSiteForm" partialSubmit="true"
+													process="@this" rendered="#{!(deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer)}" />
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Origin DN Number" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:inputText value="#{deliveryRequestView.deliveryRequest.originNumber}" styleClass="col-xs-12 col-sm-6" required="#{deliveryRequestView.deliveryRequest.isXbound}"
+													requiredMessage="origin Number should not be null in case of Xbound"
+													readonly="#{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer}" />
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Owner" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.owner}" styleClass="col-xs-12 col-sm-6" height="200" filter="true" filterMatchMode="contains"
+													converter="#{genericSecuredConverter}" required="true" requiredMessage="Owner should not be null"
+													disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{deliveryRequestView.companyAndSupplierAndCustomerList}" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+								</f:subview>
+								<f:subview id="subview2" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="End Customer " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+													requiredMessage="To Customer should not be null">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="'Deliver to' type " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="'Deliver to' type should not be null">
+													<f:selectItem itemLabel="---" itemValue="#{null}" />
+													<f:selectItems value="#{DeliverToType.ALL_ENUM_VALUES}" />
+													<p:ajax update="deliverTo" />
+												</h:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<h:panelGroup id="deliverTo">
+										<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Internal Resource " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUserUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+														</p:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Internal Company " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.internalCompany}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+															converter="#{genericSecuredConverter}" required="true" requiredMessage="Internal Company should not be null">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+														</p:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+										</f:subview>
+										<f:subview id="externalSubview" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="External Company Type " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanyType}" styleClass="col-xs-12 col-sm-6">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{CompanyType.ALL_ENUM_VALUES}" />
+															<!-- <p:ajax update="externalCompany,toUser" /> -->
+															<p:ajax update="externalCompany,:main_form:step2:subview2:externalSubview:toUser" />
+														</h:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+											<h:panelGroup id="externalCompany">
+												<f:subview rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="Company Name " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanyCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+																	requiredMessage="External Customer should not be null">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+												</f:subview>
+												<f:subview rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="Company Name " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanySupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+																	requiredMessage="External Customer should not be null">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+												</f:subview>
+												<f:subview rendered="#{CompanyType.OTHER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="Company Name " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:inputText value="#{deliveryRequestView.deliveryRequest.externalCompany}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="External Company should not be null">
+																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
+																</p:inputText>
+																<br />
+															</div>
+														</div>
+													</div>
+												</f:subview>
+												<div class="space-8" />
+											</h:panelGroup>
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="External Resource " />
+														<span class="action-buttons center">
+															<h:outputLink value="addEditUser.xhtml" target="_blank">
+																<i class="fa fa-plus green" />
+															</h:outputLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Refresh External Resource List" update="toUser" partialSubmit="true" process="@this">
+																<i class="fa fa-refresh blue" />
+															</p:commandLink>
+														</span>
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+															converter="#{genericSecuredConverter}" var="r">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{deliveryRequestView.findByExternalCompany()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+															<p:column>
+																<h:outputText value="#{r.firstName}" />
+															</p:column>
+															<p:column>
+																<h:outputText value="#{r.lastName}" />
+															</p:column>
+															<p:column>
+																<h:outputText value="#{r.cin}" />
+															</p:column>
+														</p:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+										</f:subview>
+									</h:panelGroup>
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Destination Site" />
+												<!-- <span class="action-buttons center">
+													<p:commandLink actionListener="#{siteView.initSaveSite()}" action="#{deliveryRequestView.setAddOriginSite(false)}" styleClass="aa-tooltip tooltip-success" title="Add New Site"
+														update=":addSiteForm" oncomplete="PF('addSiteDlg').show()" partialSubmit="true" process="@this">
+														<i class="fa fa-plus green" />
+													</p:commandLink>
+												</span> -->
+											</label>
+										</div>
+										<!-- <div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:selectOneMenu id="destination" value="#{deliveryRequestView.deliveryRequest.destinationId}" styleClass="col-xs-12 col-sm-6" style="min-width: 50% !important" filter="true"
+													filterMatchMode="contains">
+													<f:selectItem itemLabel="None" noSelectionOption="true" />
+													<f:selectItems value="#{siteView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax listener="#{deliveryRequestView.deliveryRequest.setTransportationNeeded(deliveryRequestView.deliveryRequest.destinationId==null?false:null)}"
+														update=":main_form:step2:transportation" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div> -->
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<span class="input-icon input-icon-right pointer" onclick="selectDestination()" style="cursor: pointer">
+													<p:inputText id="destination" value="#{deliveryRequestView.deliveryRequest.destination.name}" readonly="true" />
+													<i class="ace-icon fa fa-edit green pointer" onclick="selectDestination()" />
+												</span>
+												<p:remoteCommand name="selectDestination" actionListener="#{deliveryRequestView.setSelectOrigin(false)}" action="#{siteView.refreshList()}" oncomplete="PF('selectSiteDlg').show()"
+													update=":selectSiteForm" partialSubmit="true" process="@this" />
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+								</f:subview>
+								<h:panelGroup id="transportation">
+									<f:subview
+										rendered="#{(deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.origin != null) or (deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.destination != null) or (deliveryRequestView.deliveryRequest.isXbound and deliveryRequestView.deliveryRequest.origin != null and deliveryRequestView.deliveryRequest.destination != null)}">
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Transportation Needed" />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.transportationNeeded}" styleClass="col-xs-12 col-sm-6" required="true"
+														requiredMessage="Transportation Needed field should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
+														<f:selectItem itemLabel="Yes" itemValue="true" />
+														<f:selectItem itemLabel="No" itemValue="false" />
+														<p:ajax update="transporter" />
+													</h:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+										<h:panelGroup id="transporter">
+											<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
+												<div class="row">
+													<div class="col-xs-12 col-sm-3">
+														<label class="control-label pull-right">
+															<h:outputText value="Prefered Transporter " />
+														</label>
+													</div>
+													<div class="col-xs-12 col-sm-9">
+														<div class="clearfix">
+															<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.transporterId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains">
+																<f:selectItem itemLabel="---" noSelectionOption="true" />
+																<f:selectItems value="#{transporterView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+															</p:selectOneMenu>
+															<br />
+														</div>
+													</div>
+												</div>
+												<div class="space-8" />
+											</f:subview>
+										</h:panelGroup>
+									</f:subview>
+								</h:panelGroup>
+								<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Prefered Storage Location" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:selectOneMenu id="preferedLocation" value="#{deliveryRequestView.deliveryRequest.preferedLocation}" styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												</h:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Approximative Storage Period" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:inputNumber value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" required="true" requiredMessage="Approximative Storage Period should not be null"
+													styleClass="col-xs-12 col-sm-6" style="width : 100%" decimalPlaces="0" thousandSeparator="" placeholder="(in Days, max:#{deliveryRequestView.approximativeStoragePeriodMaxValue})"
+													maxValue="#{deliveryRequestView.approximativeStoragePeriodMaxValue}" />
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Is SN Required" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink id="isSnRequired" update="isSnRequired" partialSubmit="true" process="@this">
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Is Packing List Required" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink>
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isPackingListRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+								</f:subview>
+								<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Important " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink id="important" update="important" partialSubmit="true" process="@this">
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.important?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.important}" target="#{deliveryRequestView.deliveryRequest.important}" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</f:subview>
+							<f:subview id="step3" rendered="#{deliveryRequestView.step==3}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list" />
+									<h:outputText value=" Details" />
+								</h3>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<div class="col-sm-10 hidden-xs">
+												<i class="fa fa-list" />
+												<h:outputText value=" Detail List" />
+											</div>
+											<f:subview rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+												<div class="col-sm-2 col-xs-4">
+													<!-- <div class="nav-search minimized">
+														<span class="input-icon">
+															 <p:inputText value="#{deliveryRequestView.searchDetail}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+																<p:ajax event="keyup" update=":main_form:step3:outbound_tab" />
+															</p:inputText> 
+															<i class="ace-icon fa fa-search nav-search-icon" />
+														</span>
+													</div> -->
+												</div>
+											</f:subview>
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+												rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isXbound}">
+												<p:column headerText="Part Number">
+													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
+														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+														<p:column>
+															<h:outputText value="#{pn.name}" />
+														</p:column>
+														<p:column>
+															<h:outputText value="#{pn.description}" />
+														</p:column>
+														<p:ajax event="itemSelect" update="description,industry,unit,category,type" />
+													</p:autoComplete>
+													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}"
+														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+														<p:column>
+															<h:outputText value="#{pn.name}" />
+														</p:column>
+														<p:column>
+															<h:outputText value="#{pn.description}" />
+														</p:column>
+														<p:ajax event="itemSelect" update="description,industry,unit,category,type" />
+													</p:autoComplete>
+												</p:column>
+												<p:column headerText="Description">
+													<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+												</p:column>
+												<p:column headerText="Unit / Kit" width="70">
+													<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
+												</p:column>
+												<p:column headerText="Industry" width="90">
+													<h:outputText id="industry" value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+												</p:column>
+												<p:column headerText="Category" width="90">
+													<h:outputText id="category" value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+												</p:column>
+												<p:column headerText="Type" width="90">
+													<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+												</p:column>
+												<p:column headerText="Quantity" width="150">
+													<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 100%">
+														<p:ajax event="blur" />
+													</p:inputNumber>
+												</p:column>
+												<p:column headerText="Actions" styleClass="center" width="150">
+													<div class="action-buttons center">
+														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeDetail(rowIndexVar)}" update="inbound_tab" partialSubmit="true" process="inbound_tab">
+															<i class="ace-icon fa fa-remove bigger-130 red" />
+														</p:commandLink>
+													</div>
+												</p:column>
+												<f:facet name="footer">
+													<div class="action-buttons center">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.addDetail()}" update="inbound_tab" partialSubmit="true" process="inbound_tab"
+															rendered="#{deliveryRequestView.canAddDetail()}">
+															<i class="fa fa-plus green" />
+														</p:commandLink>
+														<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()" partialSubmit="true"
+															process="inbound_tab" rendered="#{deliveryRequestView.canAddDetail()}">
+															<i class="fa fa-file-excel-o blue" />
+														</p:commandLink>
+													</div>
+												</f:facet>
+											</p:dataTable>
+											<f:subview id="inbound_r_subview" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer}">
+												<p:dataTable id="inbound_r_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}" selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}"
+													var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+													paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox">
+													<p:ajax event="rowSelect" process="@this" update="inbound_r_tab" />
+													<p:ajax event="rowUnselect" process="@this" update="inbound_r_tab" />
+													<p:ajax event="rowSelectCheckbox" process="@this" update="inbound_r_tab" />
+													<p:ajax event="rowUnselectCheckbox" process="@this" update="inbound_r_tab" />
+													<p:ajax event="toggleSelect" process="@this" update="inbound_r_tab" />
+													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
+													<p:column headerText="Part Number">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
+													</p:column>
+													<p:column headerText="Description">
+														<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+													</p:column>
+													<p:column headerText="Remaining Quantity">
+														<h:outputText value="#{item.remainingQuantity}" styleClass="blue bolder">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</p:column>
+													<p:column headerText="Quantity">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" />
+														</p:inputNumber>
+													</p:column>
+													<f:facet name="footer">
+														<div class="action-buttons center">
+															<!--  <p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()" partialSubmit="true"
+																process="inbound_r_tab" >
+																<i class="fa fa-file-excel-o blue" />
+															</p:commandLink> -->
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.initAddDetailForInboundTransfer()}" update=":addDetailType3Form"
+																oncomplete="PF('addDetailType3Dlg').show()" partialSubmit="true" process="inbound_r_tab" rendered="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
+																<i class="fa fa-plus green" />
+															</p:commandLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_r_tab" partialSubmit="true"
+																process="inbound_r_tab">
+																<i class="fa fa-sort-desc red" />
+															</p:commandLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
+																update="inbound_r_tab" partialSubmit="true" process="inbound_r_tab">
+																<i class="fa fa-sort-asc green" />
+															</p:commandLink>
+														</div>
+													</f:facet>
+												</p:dataTable>
+											</f:subview>
+											<f:subview id="outbound" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+												<p:dataTable id="outbound_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}" selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}"
+													var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+													paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox"
+													rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+													<p:ajax event="rowSelect" process="@this" update="outbound_tab" />
+													<p:ajax event="rowUnselect" process="@this" update="outbound_tab" />
+													<p:ajax event="rowSelectCheckbox" process="@this" update="outbound_tab" />
+													<p:ajax event="rowUnselectCheckbox" process="@this" update="outbound_tab" />
+													<p:ajax event="toggleSelect" process="@this" update="outbound_tab" />
+													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
+													<p:column headerText="Part Number">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
+													</p:column>
+													<p:column headerText="Description">
+														<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+													</p:column>
+													<p:column headerText="Origin DN Number">
+														<h:outputText value="#{item.originNumber}" styleClass="orange bolder" />
+													</p:column>
+													<p:column headerText="Inbound Request">
+														<h:outputText value="#{item.inboundDeliveryRequest.reference}" />
+													</p:column>
+													<p:column headerText="Status">
+														<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+													</p:column>
+													<p:column headerText="Remaining Quantity">
+														<h:outputText value="#{item.remainingQuantity}" styleClass="blue bolder">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</p:column>
+													<p:column headerText="Quantity">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" update="packingQuantity" />
+														</p:inputNumber>
+													</p:column>
+													<p:column headerText="Packing">
+														<h:outputText value="#{item.packing.name}" styleClass="light-blue" />
+													</p:column>
+													<p:column headerText="Packing Qty">
+														<h:outputText id="packingQuantity" value="#{item.quantity/item.packing.quantity}" styleClass="blue" />
+													</p:column>
+													<f:facet name="footer">
+														<div class="action-buttons center">
+															<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()" partialSubmit="true"
+																process="outbound_tab">
+																<i class="fa fa-file-excel-o blue" />
+															</p:commandLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="outbound_tab" partialSubmit="true"
+																process="outbound_tab">
+																<i class="fa fa-sort-desc red" />
+															</p:commandLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
+																update="outbound_tab" partialSubmit="true" process="outbound_tab">
+																<i class="fa fa-sort-asc green" />
+															</p:commandLink>
+														</div>
+													</f:facet>
+												</p:dataTable>
+											</f:subview>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step4" rendered="#{deliveryRequestView.step==4}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list" />
+									<h:outputText value=" Details" />
+								</h3>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="row">
+											<div class="table-header col-sm-12 col-xs-12">
+												<div class="col-sm-10 hidden-xs">
+													<i class="fa fa-list" />
+													<h:outputText value=" Detail List" />
+												</div>
+											</div>
+											<div class="col-sm-12 col-xs-12 aa-datatable-container">
+												<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+													rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+													<p:column headerText="Part Number">
+														<p:inputText value="#{item.partNumber.name}" readonly="true" />
+													</p:column>
+													<p:column headerText="Description">
+														<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+													</p:column>
+													<p:column headerText="Unit / Kit" width="70">
+														<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
+													</p:column>
+													<p:column headerText="Industry" width="90">
+														<h:outputText id="industry" value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+													</p:column>
+													<p:column headerText="Category" width="90">
+														<h:outputText id="category" value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+													</p:column>
+													<p:column headerText="Type" width="90">
+														<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+													</p:column>
+													<p:column headerText="Quantity" width="150">
+														<h:outputText value="#{item.quantity}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</p:column>
+													<p:column headerText="Packing" width="150">
+														<h:selectOneMenu value="#{item.packing}" converter="#{genericSecuredConverter}">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{item.partNumber.tmpPackingList}" var="p" itemLabel="#{p.name}" itemValue="#{p}" />
+															<p:ajax update="packingQuantity" />
+														</h:selectOneMenu>
+													</p:column>
+													<p:column headerText="Packing qty" width="60">
+														<h:outputText id="packingQuantity" value="#{item.quantity / item.packing.quantity}" styleClass="bolder" />
+													</p:column>
+												</p:dataTable>
+											</div>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step5" rendered="#{deliveryRequestView.step==5}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-envelope" />
+									<h:outputText value=" My Notification List" />
+								</h3>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10 text-primary">
+										<i class="ace-icon fa fa-bell-o bigger-110 " />
+										<h:outputText value=" You can fill the notification list from " />
+										<h:outputText value="Administration/To Notify List" styleClass="bolder" />
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<i class="fa fa-list" />
+											<h:outputText value=" Notification List" />
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="notification_tab" value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+													<img src="#{item.photo}" class="img-circle aa-datatable-photo" />
+												</p:column>
+												<p:column headerText="Full Name">
+													<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+												</p:column>
+												<p:column headerText="Email">
+													<h:outputText value="#{item.email}" styleClass="light-blue" />
+												</p:column>
+												<p:column headerText="Phone">
+													<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+												</p:column>
+												<p:column headerText="Notify By Email ?">
+													<p:commandLink id="notifyByEmail" update="notifyByEmail" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyByEmail}" target="#{item.notifyByEmail}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Notify By SMS ?">
+													<p:commandLink id="notifyBySms" update="notifyBySms" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyBySms}" target="#{item.notifyBySms}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Actions" styleClass="center" width="100">
+													<div class="action-buttons center">
+														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true" process="notification_tab">
+															<i class="ace-icon fa fa-remove bigger-130 red" />
+														</p:commandLink>
+													</div>
+												</p:column>
+												<f:facet name="footer">
+													<div class="action-buttons center">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()" partialSubmit="true"
+															process="notification_tab">
+															<i class="fa fa-plus green" />
+														</p:commandLink>
+													</div>
+												</f:facet>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview rendered="#{deliveryRequestView.step==6}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-comment-o" />
+									<h:outputText value=" Add Comment" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Comment " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputTextarea value="#{deliveryRequestView.deliveryRequestComment.content}" styleClass="col-xs-12 col-sm-6" />
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview rendered="#{deliveryRequestView.step==7}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" Summary" />
+								</h3>
+								<ui:include src="viewDeliveryRequestTab1.xhtml" />
+							</f:subview>
+						</h:panelGroup>
+						<hr />
+						<div class="wizard-actions">
+							<p:commandLink action="#{deliveryRequestView.saveDeliveryRequestPreviousStep()}" immediate="true" update="messages,nav-wizard,steps" styleClass="btn  btn-prev">
+								<i class="ace-icon fa fa-arrow-left icon-on-right"></i>
+								<h:outputText value="Back" />
+							</p:commandLink>
+							<p:commandLink id="next" action="#{deliveryRequestView.saveDeliveryRequestNextStep()}" update="messages,nav-wizard,steps,next" styleClass="btn btn-success btn-next">
+								<h:outputText value="#{deliveryRequestView.step==7?'Finish':'Next'}" />
+								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+							</p:commandLink>
+						</div>
+						<div class="space-16" />
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<ui:include src="deliveryRequestFooter.xhtml" />
+	</ui:define>
+</ui:composition>

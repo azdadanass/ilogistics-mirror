@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+	<h:form id="requestForm">
+		<p:dialog widgetVar="requestDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('requestDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-external-link light-blue" />
+					<h:outputText value=" Request" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to request this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('requestDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.requestDeliveryRequest()}" value="Request" styleClass="btn btn-info" oncomplete="PF('requestDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="addFromExcelForm" rendered="#{deliveryRequestView.isAddPage or deliveryRequestView.isEditPage}">
+		<p:dialog widgetVar="addFromExcelDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addFromExcelDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Upload Excel File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<h:outputText value="You can download file template from " style="margin-left:20px" />
+					<h:outputLink target="blank" value="resources/doc/template2.xls">
+						<h:outputText value="here" styleClass="blue bolder" />
+					</h:outputLink>
+				</div>
+				<div class="space-8" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:messages id="messages" closable="true" />
+						<p:fileUpload fileUploadListener="#{deliveryRequestView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:step3:inbound_tab" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
+					</h:panelGroup>
+				</div>
+			</div>
+
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addFromExcelDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	
+	<h:form id="addSiteForm" rendered="#{deliveryRequestView.isAddPage or deliveryRequestView.isEditPage}">
+	</h:form>
+
+	<h:form id="addSiteForm" rendered="#{deliveryRequestView.isAddPage or deliveryRequestView.isEditPage}">
+		<p:dialog widgetVar="addSiteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addSiteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New Site" />
+				</h4>
+			</div>
+			<p:messages id="messages" closable="true" />
+			<h:panelGroup id="steps">
+				<f:subview rendered="#{siteView.step==1}">
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Name" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.name}" required="true" requiredMessage="Name should not be null" />
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Type" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.type}" required="true" requiredMessage="Type should not be null" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="space-4" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Phone" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.phone}" />
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Fax" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.fax}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="space-4" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Proprietary" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.proprietary}" />
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Contact Full Name" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.contactFullName}" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="space-4" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Contact Phone" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.contactPhone}" />
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Contact Email" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{siteView.site.contactEmail}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{siteView.step==2}">
+					<div class="modal-body">
+						<div class="row center">
+							<p:inputText value="#{siteView.site.address1}" style="width: 90%" placeholder="Address" />
+						</div>
+						<div class="space-4" />
+						<div class="row center">
+							<p:inputText value="#{siteView.site.address2}" style="width: 90%" placeholder="Address" />
+						</div>
+						<div class="space-4" />
+						<div class="row center">
+							<p:inputText value="#{siteView.site.address3}" style="width: 90%" placeholder="Address" />
+						</div>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{siteView.step==3}">
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Latitude" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputNumber id="lat" value="#{siteView.site.latitude}" required="true" requiredMessage="Latitude should not be null" decimalPlaces="6">
+											<p:ajax listener="#{siteView.refreshMapModel()}" event="keyup" update="gmap" />
+										</p:inputNumber>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Longitude" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputNumber id="lng" value="#{siteView.site.longitude}" required="true" requiredMessage="Longitude should not be null" decimalPlaces="6">
+											<p:ajax listener="#{siteView.refreshMapModel()}" event="keyup" update="gmap" />
+										</p:inputNumber>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="space-8" />
+						<h:panelGroup id="gmap">
+							<p:gmap widgetVar="map" model="#{siteView.mapModel}" center="#{siteView.site.latitude}, #{siteView.site.longitude}" zoom="17" type="TERRAIN" style="width:100%;height:300px">
+								<p:ajax event="pointSelect" listener="#{siteView.onPointSelect}" update="lat,lng,gmap" />
+							</p:gmap>
+						</h:panelGroup>
+					</div>
+				</f:subview>
+				<f:subview rendered="#{siteView.step==4}">
+					<div class="modal-body">
+						<div class="row">
+							<h:outputText value="Success" styleClass="text-success" />
+						</div>
+					</div>
+				</f:subview>
+			</h:panelGroup>
+			<div class="modal-footer">
+				<p:commandButton id="nextButton1" action="#{siteView.nextStep()}" rendered="#{deliveryRequestView.addOriginSite}" update=":addSiteForm:steps,messages,nextButton1,:main_form:step2:subview1:origin" styleClass="btn #{siteView.step!=4?'btn-info':'btn-success'} "
+					value="#{siteView.step!=4?'Next':'Confirm'}">
+					<f:setPropertyActionListener value="#{siteView.site.id}" target="#{deliveryRequestView.deliveryRequest.originId}" />
+				</p:commandButton>
+				<p:commandButton id="nextButton2" action="#{siteView.nextStep()}" rendered="#{!deliveryRequestView.addOriginSite}" update=":addSiteForm:steps,messages,nextButton2,:main_form:step2:subview2:origin" styleClass="btn #{siteView.step!=4?'btn-info':'btn-success'} "
+					value="#{siteView.step!=4?'Next':'Confirm'}">
+					<f:setPropertyActionListener value="#{siteView.site.id}" target="#{deliveryRequestView.deliveryRequest.destinationId}" />
+				</p:commandButton>
+				<p:commandButton onclick="PF('addSiteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="approveForm">
+		<p:dialog widgetVar="approveDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('approveDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check green" />
+					<h:outputText value=" Approve" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to approve this item(s) ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('approveDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.approveDeliveryRequest()}" value="Approve" styleClass="btn btn-success" oncomplete="PF('approveDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="acknowledgeForm">
+		<p:dialog widgetVar="acknowledgeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('acknowledgeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check purple" />
+					<h:outputText value=" Acknowledge" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to acknowledge this item(s) ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('acknowledgeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.acknowledgeDeliveryRequest()}" value="Acknowledge" styleClass="btn btn-purple" oncomplete="PF('acknowledgeDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="rejectForm">
+		<p:dialog widgetVar="rejectDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('rejectDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove red" />
+					<h:outputText value=" Reject" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to reject this item ?" style="margin-left: 20px" />
+				<br />
+				<div class="center">
+					<p:inputTextarea value="#{deliveryRequestView.deliveryRequest.rejectionReason}" required="true" requiredMessage="Reason Should not be not null" placeholder="Reason" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('rejectDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.rejectDeliveryRequest()}" value="Reject" styleClass="btn btn-danger" oncomplete="PF('rejectDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="cancelForm">
+		<p:dialog widgetVar="cancelDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('cancelDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove red" />
+					<h:outputText value=" Cancel" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to cancel this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('cancelDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.cancelDeliveryRequest()}" value="Cancel" styleClass="btn btn-danger" oncomplete="PF('cancelDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteForm">
+		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete DeliveryRequests" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.deleteDeliveryRequest()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteDeliveryRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="deleteDeliveryRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDeliveryRequestFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDeliveryRequestFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.deleteDeliveryRequestFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDeliveryRequestFileDlg').hide()" update=":main_form:files_table" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="addDeliveryRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="uploadDeliveryRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadDeliveryRequestFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-deliveryRequestname">
+								<h:outputText value="Doc Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax update="fileUploadPanel" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/"
+							styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadDeliveryRequestFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="fileForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list-alt blue" />
+					<h:outputText value=" Preview" />
+				</h4>
+			</div>
+			<div class="modal-body center" style="width: 100%">
+				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{deliveryRequestView.deliveryRequestFile.isPdf}">
+					<f:param name="fileName" value="#{deliveryRequestView.deliveryRequestFile.link}" />
+				</p:media>
+				<p:graphicImage value="#{fileView.stream}" rendered="#{deliveryRequestView.deliveryRequestFile.isImage}">
+					<f:param name="fileName" value="#{deliveryRequestView.deliveryRequestFile.link}" />
+				</p:graphicImage>
+				<h:outputText value="No preview for this file" rendered="#{!deliveryRequestView.deliveryRequestFile.isPdf and !deliveryRequestView.deliveryRequestFile.isImage}" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

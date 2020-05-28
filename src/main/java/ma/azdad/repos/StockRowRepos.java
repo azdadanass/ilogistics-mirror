@@ -1,0 +1,356 @@
+package ma.azdad.repos;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import ma.azdad.model.CompanyType;
+import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestStatus;
+import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.Location;
+import ma.azdad.model.Project;
+import ma.azdad.model.StockRow;
+import ma.azdad.model.StockRowStatus;
+
+@Repository
+public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
+
+	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
+	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	String select1 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber,a.inboundDeliveryRequest,a.unitCost,a.packing) ";
+
+	@Query(select1 + " from StockRow a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 group by a.status,a.originNumber,a.partNumber.id,a.inboundDeliveryRequest.id having sum(a.quantity) != 0")
+	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	String select2 = "select new StockRow(sum(a.quantity),a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.unitCost,a.location,a.packing) ";
+
+	@Query(select2 + " from StockRow a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and a.partNumber.id = ?3 and a.status = ?4 and a.originNumber = ?5 and a.inboundDeliveryRequest.id = ?6 group by a.location.id having sum(a.quantity) != 0 order by sum(a.quantity) ")
+	public List<StockRow> findRemainingToPrepare(Integer projectId, Integer warehouseId, Integer partNumberId, StockRowStatus status, String originNumber, Integer inboundDeliveryRequestId);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	String select3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber,a.inboundDeliveryRequest,a.unitCost,a.location)";
+
+	@Query(select3 + "from StockRow a where a.deliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id")
+	public List<StockRow> findByDeliveryRequest(Integer deliveryRequestId);
+
+	@Query(select3 + " from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
+	@Query(select3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	String select4 = "select new StockRow(sum(a.quantity),a.partNumber,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end))";
+
+	@Query(select4 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.partNumber.id")
+	public List<StockRow> findByInboundDeliveryRequest(Integer deliveryRequestId);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	String select5 = "select  new StockRow(sum(a.quantity),a.partNumber,a.deliveryRequest) ";
+
+	@Query(select5 + "from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.quantity < 0 group by a.partNumber.id,a.deliveryRequest.id")
+	public List<StockRow> findAttachedOutboundDeliveryRequestList(Integer deliveryRequestId);
+
+	// UPDATE UNIT COST
+	@Modifying
+	@Query("update StockRow set unitCost = ?2 where id = ?1 ")
+	public void updateUnitCost(Integer id, Double unitCost);
+
+	@Modifying
+	@Query("update StockRow set unitCost = ?2 where id in (?1) ")
+	public void updateUnitCost(List<Integer> idList, Double unitCost);
+
+	// UPDATE UNIT COST
+	@Modifying
+	@Query("update StockRow set unitPrice = ?2 where id = ?1 ")
+	public void updateUnitPrice(Integer id, Double unitPrice);
+
+	@Modifying
+	@Query("update StockRow set unitPrice = ?2 where id in (?1) ")
+	public void updateUnitPrice(List<Integer> idList, Double unitPrice);
+
+	@Query("select a.id from StockRow a where a.partNumber.id =?1  and a.inboundDeliveryRequest.id = ?2 ")
+	public List<Integer> findIdListByPartNumberAndInboundDeliveryRequest(Integer partNumberId, Integer inboundDeliveryRequestId);
+
+	@Query("select a.id from StockRow a where a.partNumber.id =?1  and a.deliveryRequest.id = ?2 ")
+	public List<Integer> findIdListByPartNumberAndDeliveryRequest(Integer partNumberId, Integer deliveryRequestId);
+
+	@Query("select a.id from StockRow a where a.deliveryRequest.type = ?1 and  a.deliveryRequest.id = ?2 and a.partNumber.id =?3")
+	public List<Integer> findIdList(DeliveryRequestType type, Integer deliveryRequestId, Integer partNumberId);
+
+	// UPDATE LOCATION
+
+	@Modifying
+	@Query("update StockRow a set a.location = ?1 where a.inboundDeliveryRequest.id = ?2 and a.partNumber.id = ?3 and a.location.id = ?4 and a.status = ?5")
+	public void updateLocation(Location newLocation, Integer inboundDeliveryRequestId, Integer partNumberId, Integer LocationId, StockRowStatus status);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// REPORTING
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	String from1 = " from StockRow a left join a.deliveryRequest.warehouse as warehouse ";
+	String from2 = " from StockRow a left join a.deliveryRequest.warehouse as warehouse left join a.deliveryRequest.company as company1 left join a.inboundDeliveryRequest.company as company2 ";
+	String from3 = " from StockRow a left join a.deliveryRequest.warehouse as warehouse left join a.deliveryRequest.customer as customer1 left join a.inboundDeliveryRequest.customer as customer2 ";
+	String usernameCondition = " (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) ";
+	String companyCondition = " (company1.id = ?4 or company2.id = ?4 ) ";
+	String customerCondition = " (customer1.id = ?4 or customer2.id = ?4 ) ";
+	String select6 = " select new StockRow(sum(a.quantity),a.partNumber) ";
+	String select7 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.location) ";
+	String select8 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest) ";
+	String select9 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber) ";
+	String select10 = " select new StockRow(sum(a.quantity),a.inboundDeliveryRequest,a.partNumber) ";
+	String select15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber,sum(a.unitCost*a.quantity),(select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id),a.deliveryRequest.externalCompany) ";
+	String projectCondition = "a.deliveryRequest.project.id = ?5";
+	String destinationCondition = "a.deliveryRequest.destination.id = ?5";
+	String externalCompanyCondition = " (?5 = (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) or ?5 = (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) or ?5 = (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) or ?5 = a.deliveryRequest.externalCompany) ";
+	String externalRequesterCondition = "a.deliveryRequest.externalRequester.id = ?5";
+	String poCondition = "a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo = ?5";
+	String destinationProjectCondition = "a.deliveryRequest.destinationProject.id = ?5";
+	String yearCondition = "year(a.deliveryRequest.date4) = ?5";
+	String yearAndMonthCondition = "concat(MONTHNAME(a.deliveryRequest.date4),'-',year(a.deliveryRequest.date4)) = ?5";
+
+	@Query("select a.deliveryRequest.company.id " + from1 + "  where a.deliveryRequest.company is not null and " + usernameCondition + " group by a.deliveryRequest.company.id")
+	public List<Integer> findCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
+	@Query("select a.deliveryRequest.customer.id " + from1 + "  where a.deliveryRequest.customer is not null and " + usernameCondition + " group by a.deliveryRequest.customer.id")
+	public List<Integer> findCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
+	@Query(select6 + from2 + " where " + usernameCondition + " and " + companyCondition + "  group by a.partNumber.id")
+	public List<StockRow> findByCompanyOwnerAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query(select6 + from3 + " where " + usernameCondition + " and " + customerCondition + "  group by a.partNumber.id")
+	public List<StockRow> findByCustomerOwnerAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query(select6 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + "  group by a.partNumber.id")
+	public List<StockRow> findByCompanyOwnerAndProjectAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query(select6 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + projectCondition + "  group by a.partNumber.id")
+	public List<StockRow> findByCustomerOwnerAndProjectAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query(select7 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.project.id,a.deliveryRequest.warehouse.id,a.status,a.location.id having sum(a.quantity) != 0")
+	public List<StockRow> findCurrentStockByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId);
+
+	@Query(select7 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.project.id,a.deliveryRequest.warehouse.id,a.status,a.location.id having sum(a.quantity) != 0")
+	public List<StockRow> findCurrentStockByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
+
+	@Query(select8 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.id,a.status")
+	public List<StockRow> findStockHistoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId);
+
+	@Query(select8 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.id,a.status")
+	public List<StockRow> findStockHistoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
+
+	@Query(select9 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + "  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query(select9 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + projectCondition + "  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + destinationCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDestinationAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer destinationId, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + externalRequesterCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByExternalRequesterAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer externalRequesterId, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + poCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByPoAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer poId, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + destinationProjectCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDestinationProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer destinationProjectId, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + destinationCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDestinationAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer destinationId, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + externalRequesterCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByExternalRequesterAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer externalRequesterId, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + poCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByPoAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer poId, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + yearCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByYearAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer year, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + yearCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByYearAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer year, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + yearAndMonthCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByYearAndMonthAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String yearAndMonth, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + yearAndMonthCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByYearAndMonthAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, String yearAndMonth, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + destinationProjectCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDestinationProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer destinationProjectId, Integer projectId);
+
+	@Query(select9 + from1 + " where " + usernameCondition + " and  a.inboundDeliveryRequest.company.id = ?4 and a.inboundDeliveryRequest.project.type = ?5 and a.deliveryRequest.destinationProject.customer.id = ?6" + " and a.quantity < 0  group by a.deliveryRequest.id,a.status,a.partNumber.id order by a.deliveryRequest.date4")
+	public List<StockRow> findStockHistoryByDestinationCustomerAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, Integer customerId);
+
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id")
+	public List<Integer> findProjectIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + "and a.deliveryRequest.project.type = ?5   group by a.deliveryRequest.project.id")
+	public List<Integer> findProjectIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectType);
+
+	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id")
+	public List<Integer> findProjectIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query("select a.deliveryRequest.destination.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.destination is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destination.id ")
+	public List<Integer> findDestinationIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select a.deliveryRequest.destination.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.destination is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destination.id ")
+	public List<Integer> findDestinationIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select a.deliveryRequest.externalRequester.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalRequester is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.externalRequester.id ")
+	public List<Integer> findExternalRequesterIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer companyId, Integer projectId);
+
+	@Query("select a.deliveryRequest.destinationProject.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.destinationProject is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destinationProject.id ")
+	public List<Integer> findDestinationProjectIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select a.deliveryRequest.externalRequester.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalRequester is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.externalRequester.id ")
+	public List<Integer> findExternalRequesterIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer customerId, Integer projectId);
+
+	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+	public List<Integer> findPoIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+	public List<Integer> findPoIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select a.deliveryRequest.destinationProject.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.destinationProject is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destinationProject.id ")
+	public List<Integer> findDestinationProjectIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select year(a.deliveryRequest.date4) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.date4 is not null and a.deliveryRequest.project.id = ?5 group by year(a.deliveryRequest.date4) ")
+	public List<Integer> findYearListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select year(a.deliveryRequest.date4) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.date4 is not null and a.deliveryRequest.project.id = ?5 group by year(a.deliveryRequest.date4) ")
+	public List<Integer> findYearListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select concat(MONTHNAME(a.deliveryRequest.date4),'-',year(a.deliveryRequest.date4))  " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.date4 is not null and a.deliveryRequest.project.id = ?5 group by year(a.deliveryRequest.date4),month(a.deliveryRequest.date4) ")
+	public List<String> findYearAndMonthListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select concat(MONTHNAME(a.deliveryRequest.date4),'-',year(a.deliveryRequest.date4)) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.date4 is not null and a.deliveryRequest.project.id = ?5 group by year(a.deliveryRequest.date4),month(a.deliveryRequest.date4)")
+	public List<String> findYearAndMonthListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	////////////////////////////////////////////
+
+	@Query("select (select b from Project b where b.id = a.deliveryRequest.project.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id")
+	public List<Project> findProjectListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query("select (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.id = ?5  group by a.deliveryRequest.internalCompany.name ")
+	public List<String> findInternalCompanyNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query("select (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanyCustomer.name ")
+	public List<String> findExternalCompanyCustomerNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeCustomer, Integer projectId);
+
+	@Query("select (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanySupplier.name ")
+	public List<String> findExternalCompanySupplierNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeSupplier, Integer projectId);
+
+	@Query("select a.deliveryRequest.externalCompany " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompany ")
+	public List<String> findExternalCompanyOtherNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeOther, Integer projectId);
+
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + externalCompanyCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByExternalCompanyAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String externalCompanyName, Integer projectId, String projectTypeStock);
+
+	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
+	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
+
+	//
+
+	@Query("select (select b from Project b where b.id = a.deliveryRequest.project.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id")
+	public List<Project> findProjectListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query("select (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.internalCompany.name ")
+	public List<String> findInternalCompanyNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanyCustomer.name ")
+	public List<String> findExternalCompanyCustomerNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeCustomer, Integer projectId);
+
+	@Query("select (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanySupplier.name ")
+	public List<String> findExternalCompanySupplierNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeSupplier, Integer projectId);
+
+	@Query("select a.deliveryRequest.externalCompany " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompany ")
+	public List<String> findExternalCompanyOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeOther, Integer projectId);
+
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + externalCompanyCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByExternalCompanyAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, String externalCompanyName, Integer projectId, String projectTypeStock);
+
+	////////////////////////////////////////////
+	@Query("select a.deliveryRequest.destinationProject.customer.id " + from1 + "  where  " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 " + " and a.deliveryRequest.destinationProject is not null and a.inboundDeliveryRequest.project.type = ?5 group by a.deliveryRequest.destinationProject.customer.id")
+	public List<Integer> findDestinationCustomerIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedDestinationCustomerList, Integer companyId, String projectTypeStock);
+
+	@Query(select10 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and  datediff(current_date,a.inboundDeliveryRequest.date4) > a.inboundDeliveryRequest.approximativeStoragePeriod group by a.deliveryRequest.id,a.partNumber.id having sum(a.quantity) > 0")
+	public List<StockRow> findOverdueByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query(select10 + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and  datediff(current_date,a.inboundDeliveryRequest.date4) > a.inboundDeliveryRequest.approximativeStoragePeriod group by a.inboundDeliveryRequest.id,a.partNumber.id having sum(a.quantity) > 0")
+	public List<StockRow> findOverdueByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	// only company
+	@Query(select6 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.partNumber.id having sum(a.quantity) > (select b.stockMax from PartNumber b where b.id = a.partNumber.id )")
+	public List<StockRow> findMaxStockThreshold(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query(select6 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.partNumber.id having sum(a.quantity) < (select b.stockMin from PartNumber b where b.id = a.partNumber.id )")
+	public List<StockRow> findMinStockThreshold(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	//// Cost Center Financial//////////////
+	String select12 = "select new StockRow(sum(a.quantity),a.partNumber,a.status,a.inboundDeliveryRequest.date4,sum(a.unitCost*a.quantity))";
+
+	@Query(select12 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	public List<StockRow> getCostCenterFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	// fast moving items
+	String select13 = " select new StockRow(a.quantity,a.partNumber,a.deliveryRequest) ";
+
+	@Query(select13 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.partNumber.stockItem = true group by a.partNumber.id,a.deliveryRequest.id")
+	public List<StockRow> findByCompanyOwnerGroupbyPartNumberAndDeliveryRequest(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	// CHART
+	@Query("select sum(a.quantity * a.unitCost) " + from1 + " where a.unitCost is not null and " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 and " + projectCondition + "  and date(a.creationDate) <= date(?5)")
+	public Double getTotalCostBeforeDate(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId, Date maxDate);
+
+	// RETURN FROM OUTBOUND
+	String select14 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber,a.unitCost,a.unitPrice) ";
+
+	@Query(select14 + " from StockRow a where a.deliveryRequest.id = ?1 group by a.partNumber.id having (sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0)) > 0")
+	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);
+
+	// TRANSFER FROM OUTBOUND
+	String select16 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber,a.unitCost,a.unitPrice) ";
+
+	@Query(select16 + " from StockRow a where a.deliveryRequest.id = ?1 group by a.partNumber.id having (sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0)) > 0")
+	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestTransfer(Integer outboundDeliveryRequestId);
+
+	@Query("select a.partNumber.id " + from3 + " where " + usernameCondition + " and " + customerCondition + "  group by a.partNumber.id having sum(a.quantity) > 0")
+	public Set<Integer> findInStockByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query("select a.partNumber.id " + from3 + " where (customer1.id = ?1 or customer2.id = ?1) group by a.partNumber.id having sum(a.quantity) > 0")
+	public Set<Integer> findInStockByCustomerOwner(Integer customerId);
+
+	@Query("select MONTHNAME(date1) from DeliveryRequest where id = 2")
+	public List<String> test();
+
+	@Query("select distinct a.deliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.deliveryRequest.type = ?2")
+	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId, DeliveryRequestType outbound);
+
+	@Query("select distinct a.inboundDeliveryRequest.id from StockRow a where a.deliveryRequest.id = ?1")
+	public List<Integer> findAssociatedInboundWithOutbound(Integer outboundDeliveryRequestId);
+
+	@Query("select new StockRow(a.id,a.quantity,a.status,a.partNumber,a.inboundDeliveryRequest,a.location) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and a.deliveryRequest.status not in (?2)")
+	public List<StockRow> findReturnedStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
+
+	@Query("select count(*) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and a.deliveryRequest.status not in (?2)")
+	public Long countReturnedStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
+
+	@Query("select new StockRow(a.id,a.quantity,a.status,a.partNumber,a.inboundDeliveryRequest,a.location) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and a.deliveryRequest.status not in (?2)")
+	public List<StockRow> findTransferredStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
+
+	@Query("select count(*) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and a.deliveryRequest.status not in (?2)")
+	public Long countTransferredStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
+
+}

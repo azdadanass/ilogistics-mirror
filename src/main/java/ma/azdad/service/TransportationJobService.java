@@ -1,0 +1,186 @@
+package ma.azdad.service;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import ma.azdad.model.Path;
+import ma.azdad.model.Stop;
+import ma.azdad.model.TransportationJob;
+import ma.azdad.model.TransportationJobStatus;
+import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.repos.TransportationJobRepos;
+import ma.azdad.repos.UserRepos;
+
+@Component
+@Transactional
+public class TransportationJobService extends GenericService<TransportationJob> {
+
+	@Autowired
+	TransportationJobRepos transportationJobRepos;
+
+	@Autowired
+	UserRepos userRepos;
+
+	@Autowired
+	TransportationJobHistoryService transportationJobHistoryService;
+
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
+
+	@Autowired
+	TransportationRequestService transportationRequestService;
+
+	@Autowired
+	PathService pathService;
+
+	@Autowired
+	StopService stopService;
+
+	@Override
+	public TransportationJob findOne(Integer id) {
+		TransportationJob transportationJob = super.findOne(id);
+		Hibernate.initialize(transportationJob.getFileList());
+		Hibernate.initialize(transportationJob.getHistoryList());
+		Hibernate.initialize(transportationJob.getTransportationRequestList());
+		if (transportationJob.getTransportationRequestList() != null)
+			for (TransportationRequest tr : transportationJob.getTransportationRequestList())
+				Hibernate.initialize(tr.getHistoryList());
+		Hibernate.initialize(transportationJob.getStopList());
+		Hibernate.initialize(transportationJob.getPathList());
+		Hibernate.initialize(transportationJob.getTransporter());
+		if (transportationJob.getTransporter() != null)
+			Hibernate.initialize(transportationJob.getTransporter().getSupplier());
+		Hibernate.initialize(transportationJob.getVehicle());
+		Hibernate.initialize(transportationJob.getDriver());
+		return transportationJob;
+	}
+
+	public List<TransportationJob> find() {
+		return transportationJobRepos.find();
+	}
+
+	public Map<String, Integer> getMapDateAndPlace(TransportationJob transportationJob) {
+		Map<String, Integer> result = new HashMap<>(); //positive:site, negative:warehouse
+		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+			String startDateStr = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
+			String endDateStr = UtilsFunctions.getFormattedDateTime(tr.getEndDate());
+			result.put(startDateStr, tr.getIsOutbound() ? -tr.getWarehouseId() : tr.getOriginId());
+			result.put(endDateStr, tr.getIsInbound() ? -tr.getWarehouseId() : tr.getDestinationId());
+		}
+		return result;
+	}
+
+	public Boolean validateTransportationRequestListDates(TransportationJob transportationJob, List<TransportationRequest> newList) {
+		//positive:site, negative:warehouse
+		Map<String, Integer> mapDateAndPlace = getMapDateAndPlace(transportationJob);
+		for (TransportationRequest tr : newList) {
+			String startDateStr = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
+			String endDateStr = UtilsFunctions.getFormattedDateTime(tr.getEndDate());
+			Integer old;
+			old = mapDateAndPlace.put(startDateStr, tr.getIsOutbound() ? -tr.getWarehouseId() : tr.getOriginId());
+			if (old != null && !old.equals(mapDateAndPlace.get(startDateStr)))
+				return false;
+			old = mapDateAndPlace.put(endDateStr, tr.getIsInbound() ? -tr.getWarehouseId() : tr.getDestinationId());
+			if (old != null && !old.equals(mapDateAndPlace.get(endDateStr)))
+				return false;
+		}
+		return true;
+	}
+
+	public Boolean validateTransportationRequestListDates(TransportationJob transportationJob) {
+		Map<String, Integer> mapDateAndPlace = new HashMap<>();
+		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+			String startDateStr = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
+			String endDateStr = UtilsFunctions.getFormattedDateTime(tr.getEndDate());
+			Integer old;
+			old = mapDateAndPlace.put(startDateStr, tr.getIsOutbound() ? -tr.getWarehouseId() : tr.getOriginId());
+			if (old != null && !old.equals(mapDateAndPlace.get(startDateStr)))
+				return false;
+			old = mapDateAndPlace.put(endDateStr, tr.getIsInbound() ? -tr.getWarehouseId() : tr.getDestinationId());
+			if (old != null && !old.equals(mapDateAndPlace.get(endDateStr)))
+				return false;
+		}
+		return true;
+	}
+
+	public List<TransportationJob> find(TransportationJobStatus status) {
+		return transportationJobRepos.find(status);
+	}
+
+	public List<TransportationJob> find(List<TransportationJobStatus> status) {
+		return transportationJobRepos.find(status);
+	}
+
+	public void calculateTransportationRequestListCosts(TransportationJob transportationJob, Boolean setCost) {
+		Double total1 = 0.0, total2 = 0.0;
+		Boolean test = true;
+		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+			Double grossWeight = deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
+			Double estimatedDistance = tr.getEstimatedDistance();
+			total1 += grossWeight * estimatedDistance;
+			total2 += estimatedDistance;
+			if (grossWeight.equals(0.0))
+				test = false;
+		}
+
+		if (total2.equals(0.0))
+			return;
+
+		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+			Double grossWeight = deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
+			Double estimatedDistance = tr.getEstimatedDistance();
+			tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+			if (setCost)
+				tr.setCost(transportationJob.getRealCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+			transportationRequestService.save(tr);
+		}
+	}
+
+	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
+		transportationJob.init();
+		transportationJob.calculateStartDate();
+		transportationJob.calculateEndDate();
+		transportationJob.calculateStatus();
+		for (Stop stop : transportationJob.getStopList())
+			stopService.delete(stop);
+		for (Path path : transportationJob.getPathList())
+			pathService.delete(path);
+		transportationJob.getPathList().clear();
+		transportationJob.getStopList().clear();
+		transportationJob.generateStopList();
+		transportationJob.generatePathList();
+		calculateTransportationRequestListCosts(transportationJob, setCost);
+		save(transportationJob);
+	}
+
+	@Transactional
+	public void correctExistingTransportationRequestList() {
+		List<TransportationRequest> list = transportationRequestService
+				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		for (TransportationRequest transportationRequest : list) {
+			TransportationJob tj = new TransportationJob();
+			tj.setTransporter(transportationRequest.getTransporter());
+			tj.setDriver(transportationRequest.getDriver());
+			tj.setVehicle(transportationRequest.getVehicle());
+			tj.setVehiclePrice(transportationRequest.getVehicle().getVehicleType().getPrice());
+			tj = save(tj);
+			transportationJobHistoryService.created(tj, userRepos.findOne("a.azdad"));
+			transportationRequestService.calculateEstimatedDistanceAndDuration(transportationRequest);
+			transportationRequest.setTransportationJob(tj);
+			transportationRequest = transportationRequestService.save(transportationRequest);
+			tj = findOne(tj.getId());
+			tj.getTransportationRequestList().add(transportationRequest);
+			System.out.println(tj.getTransportationRequestList());
+			updateCalculableFields(tj, true);
+		}
+
+	}
+}

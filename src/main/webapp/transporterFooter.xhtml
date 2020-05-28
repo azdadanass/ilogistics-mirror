@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+
+	<h:form id="addDriverForm">
+		<p:dialog widgetVar="addDriverDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addDriver').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New Driver" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Driver" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{transporterView.driver}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Driver should not be null" converter="#{genericSecuredConverter}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{userView.findByJob('Driver')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addDriver').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.addDriver()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addDriverDlg').hide()" update=":main_form:drivers_table" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteVehicleForm">
+		<p:dialog widgetVar="deleteVehicleDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteVehicleDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to deleteVehicle this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteVehicleDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.deleteVehicle()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteVehicleDlg').hide()" update=":main_form:vehicles_table" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+
+
+	<h:form id="addEditVehicleForm">
+		<p:dialog widgetVar="addEditVehicleDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addEditVehicleDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New Vehicle" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+								<h:outputText value="From Mytools" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transporterView.vehicle.fromMyTools}" required="true" requiredMessage="From Mytools Field should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+									<p:ajax update="panel1" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+								<h:outputText value="Geolocalised" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transporterView.vehicle.geolocalised}" required="true" requiredMessage="Geolocalised Field should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+								<h:outputText value="Vehicle Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transporterView.vehicle.vehicleType}" required="true" requiredMessage="Vehicle Type Field should not be null" converter="#{genericSecuredConverter}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{vehicleTypeView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr />
+				<h:panelGroup id="panel1">
+					<f:subview rendered="#{transporterView.vehicle.fromMyTools}">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+										<h:outputText value="Mytools Car" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{transporterView.vehicle.toolId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Car should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{toolView.findLightCarList()}" var="item" itemLabel="#{item.matricule}" itemValue="#{item.id}" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</div>
+					</f:subview>
+					<f:subview rendered="#{!transporterView.vehicle.fromMyTools}">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+										<h:outputText value="Matricule" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:inputText value="#{transporterView.vehicle.matricule}" required="true" requiredMessage="Matricule should not be null" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</f:subview>
+					<div class="space-4" />
+					<div class="row">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+									<h:outputText value="Max Weight" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:inputNumber value="#{transporterView.vehicle.maxWeight}" required="true" requiredMessage="Max Weight should not be null" placeholder="Kg"/>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+									<h:outputText value="Max Volume" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:inputNumber value="#{transporterView.vehicle.maxVolume}" required="true" requiredMessage="Max Volume should not be null" placeholder="m3"/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="space-4" />
+					<div class="row">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+									<h:outputText value="Category" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:inputText value="#{transporterView.vehicle.category}" />
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+									<h:outputText value="Type" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:inputText value="#{transporterView.vehicle.type}" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+				<div class="space-16" />
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addEditVehicleDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.saveVehicle()}" value="#{transporterView.vehicle.id==null?'Add':'Edit'}" styleClass="btn btn-success" update=":main_form:vehicles_table,messages" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteForm">
+		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete Transporters" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.deleteTransporter()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+
+	<h:form id="deleteTransporterFileForm">
+		<p:dialog widgetVar="deleteTransporterFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteTransporterFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteTransporterFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.deleteTransporterFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteTransporterFileDlg').hide()" update=":main_form:files_table" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="addTransporterFileForm">
+		<p:dialog widgetVar="uploadTransporterFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransporterFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Doc Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transporterView.transporterFileType}" style="width:178px">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{docTypeView.findByType(transporterView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax update="fileUploadPanel" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{transporterView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{transporterView.transporterFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							<f:attribute name="beanName" value="#{transporterView.className2}" />
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadTransporterFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="fileForm">
+		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list-alt blue" />
+					<h:outputText value=" Preview" />
+				</h4>
+			</div>
+			<div class="modal-body center" style="width: 100%">
+				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{transporterView.transporterFile.isPdf}">
+					<f:param name="fileName" value="#{transporterView.transporterFile.link}" />
+				</p:media>
+				<p:graphicImage value="#{fileView.stream}" rendered="#{transporterView.transporterFile.isImage}">
+					<f:param name="fileName" value="#{transporterView.transporterFile.link}" />
+				</p:graphicImage>
+				<h:outputText value="No preview for this file" rendered="#{!transporterView.transporterFile.isPdf and !transporterView.transporterFile.isImage}" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Storage Wizard" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.StockRowStatus" var="StockRowStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliverToType" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="widget-box">
+				<div class="widget-header widget-header-blue widget-header-flat">
+					<h4 class="widget-title lighter">
+						<h:outputText value="Storage Wizard" />
+					</h4>
+				</div>
+				<div class="widget-body">
+					<div class="widget-main">
+						<h:panelGroup id="nav-wizard">
+							<ul class="nav nav-wizard">
+								<li class="#{deliveryRequestView.step==1?'active':''}">
+									<a href="#">
+										<h:outputText value="STEP1" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==2?'active':''}">
+									<a href="#">
+										<h:outputText value="Deliver To Details" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==3?'active':''}">
+									<a href="#">
+										<h:outputText value="Attachements" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==4?'active':''}">
+									<a href="#">
+										<h:outputText value="Summary" />
+									</a>
+								</li>
+							</ul>
+						</h:panelGroup>
+						<hr />
+						<p:messages id="messages" closable="true" />
+						<h:panelGroup id="steps">
+							<f:subview id="step1" rendered="#{deliveryRequestView.step==1}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list" />
+									<h:outputText value=" STEP 1 TITLE" />
+								</h3>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<i class="fa fa-list" />
+											<h:outputText value=" Details" />
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="stock_row_tab" value="#{deliveryRequestView.deliveryRequest.stockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+												<p:column headerText="Part Number">
+													<h:outputLink value="viewPartNumber.xhtml" target="blank">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+														<f:param name="id" value="#{item.partNumber.id}" />
+													</h:outputLink>
+												</p:column>
+
+												<p:column headerText="Status">
+													<h:outputText value="#{item.status.value}" />
+												</p:column>
+
+												<p:column headerText="Origin DN Number">
+													<h:outputText value="#{item.originNumber}" />
+												</p:column>
+
+												<p:column headerText="Inbound Request">
+													<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder orange" />
+												</p:column>
+
+												<p:column headerText="Location">
+													<h:outputText value="#{item.location.name}" />
+												</p:column>
+
+												<p:column headerText="Quantity">
+													<h:outputText value="#{-item.quantity}" styleClass="bolder">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+
+
+
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+
+							</f:subview>
+							<f:subview id="step2" rendered="#{deliveryRequestView.step==2}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-aslt" />
+									<h:outputText value=" Deliver To Details" />
+								</h3>
+
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="'Deliver to' type " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="'Deliver to' type should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{DeliverToType.ALL_ENUM_VALUES}" />
+												<p:ajax update="deliverTo" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<h:panelGroup id="deliverTo">
+									<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="Internal Resource " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUserUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="'To Resource' should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+									</f:subview>
+									<f:subview id="toUser" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="External Resource " />
+													<span class="action-buttons center">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New External Resource" update=":addUserForm" oncomplete="PF('addUserDlg').show()"
+															partialSubmit="true" process="@this">
+															<i class="fa fa-plus green" />
+															<f:setPropertyActionListener value="1" target="#{userView.parent}" />
+														</p:commandLink>
+													</span>
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Deliver to should not be null"
+														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+
+														<p:column>
+															<h:outputText value="#{r.firstName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.lastName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.cin}" />
+														</p:column>
+													</p:selectOneMenu>
+													<br />
+												</div>
+											</div>
+										</div>
+										<div class="space-8" />
+									</f:subview>
+								</h:panelGroup>
+							</f:subview>
+							<f:subview rendered="#{deliveryRequestView.step==3}">
+								<h:form>
+									<h3 class="lighter block green">
+										<i class="ace-icon fa fa-file" />
+										<h:outputText value=" Upload Files" />
+									</h3>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-deliveryRequestname">
+													<h:outputText value="Doc Type" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px">
+														<f:selectItem noSelectionOption="true" itemLabel="---" />
+														<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2,1)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+														<p:ajax update="fileUploadPanel" />
+													</h:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="space-16" />
+									<div class="row">
+										<h:panelGroup id="fileUploadPanel">
+											<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload2}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,files_table"
+												sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}"
+												style="margin: auto;width: 80%">
+												<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
+											</p:fileUpload>
+											<p:growl id="messages" showDetail="true" />
+										</h:panelGroup>
+									</div>
+									<div class="space-16" />
+									<div class="row">
+										<div class="col-sm-offset-1 col-sm-10">
+											<div class="table-header col-sm-12 col-xs-12">
+												<i class="fa fa-list" />
+												<h:outputText value=" List Of Attachements" />
+											</div>
+											<div class="col-sm-12 col-xs-12 aa-datatable-container">
+												<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+													<p:column headerText="Name">
+														<h:outputText value="#{item.name}" />
+													</p:column>
+
+													<p:column headerText="Type">
+														<h:outputText value="#{item.type}" />
+													</p:column>
+
+													<p:column headerText="Added Date">
+														<h:outputText value="#{item.date}">
+															<f:convertDateTime pattern="dd-MM-yyyy" />
+														</h:outputText>
+													</p:column>
+
+													<p:column headerText="File Size">
+														<h:outputText value="#{item.size}" />
+													</p:column>
+
+													<p:column headerText="File Type" width="100" styleClass="center">
+														<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
+													</p:column>
+
+												</p:dataTable>
+											</div>
+										</div>
+									</div>
+								</h:form>
+							</f:subview>
+							<f:subview rendered="#{deliveryRequestView.step==4}">
+								GOOD ! SUMMARY
+							</f:subview>
+						</h:panelGroup>
+						<hr />
+						<div class="wizard-actions">
+							<!-- <p:commandLink action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-prev">
+								<i class="ace-icon fa fa-arrow-left"></i>
+								<h:outputText value="Prev" />
+							</p:commandLink> -->
+
+							<p:commandLink action="#{deliveryRequestView.preparationNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-success btn-next">
+								<h:outputText value="Next" />
+								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+							</p:commandLink>
+						</div>
+						<div class="space-16" />
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+		<h:form id="addUserForm">
+			<p:dialog widgetVar="addUserDlg" modal="true" closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close" onclick="PF('addUserDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header" style="margin-bottom: 20px">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-plus green" />
+						<h:outputText value=" Add New External Resource" />
+					</h4>
+				</div>
+				<p:messages id="messages" closable="true" />
+				<div class="modal-body">
+					<ui:include src="addEditUserBody.xhtml" />
+				</div>
+				<div class="modal-footer">
+					<p:commandButton actionListener="#{userView.saveUser()}" update=":main_form:messages,:main_form:step2:subview2:deliverTo" styleClass="btn btn-success "
+						value="Add External Resource" oncomplete="PF('addUserDlg').hide()" rendered="#{userView.parent==1}">
+						<f:setPropertyActionListener value="#{userView.user}" target="#{deliveryRequestView.deliveryRequest.toUser}" />
+					</p:commandButton>
+					<p:commandButton onclick="PF('addUserDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				</div>
+			</p:dialog>
+		</h:form>
+
+		<f:event type="preRenderView" listener="#{deliveryRequestView.redirect}" />
+	</ui:define>
+</ui:composition>
+

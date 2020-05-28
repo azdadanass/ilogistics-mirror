@@ -1,0 +1,122 @@
+Ubuntu 16.04
+
+Tomcat 8.5.9
+
+Apache2.4.25
+
+APR 1.5.2
+
+Tomcat-native 1.2.10
+
+Java 8
+
+These are the steps i used based on the older posts here:
+
+Install package
+
+sudo apt-get update
+
+sudo apt-get install libtcnative-1
+
+Verify these packages are installed
+
+sudo apt-get install make
+
+sudo apt-get install gcc
+
+sudo apt-get install openssl
+
+Install package
+
+sudo apt-get install libssl-dev
+
+Install and compile Apache APR
+
+cd /opt/tomcat/bin
+
+sudo wget http://apache.mirror.anlx.net//apr/apr-1.5.2.tar.gz
+
+sudo tar -xzvf apr-1.5.2.tar.gz
+
+cd apr-1.5.2
+
+sudo ./configure
+
+sudo make
+
+sudo make install
+
+verify installation
+
+cd /usr/local/apr/lib/
+
+ls
+
+you should see the compiled file as
+
+libapr-1.la
+
+Download and install Tomcat Native source package
+
+cd /opt/tomcat/bin
+
+sudo wget https://archive.apache.org/dist/tomcat/tomcat-connectors/native/1.2.10/source/tomcat-native-1.2.10-src.tar.gz
+
+sudo tar -xzvf tomcat-native-1.2.10-src.tar.gz
+
+cd tomcat-native-1.2.10-src/native
+
+verify JAVA_HOME
+
+sudo pico ~/.bashrc
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+source ~/.bashrc
+
+sudo ./configure --with-apr=/usr/local/apr --with-java-home=$JAVA_HOME
+
+sudo make
+
+sudo make install
+
+Edit the /opt/tomcat/bin/setenv.sh file with following line:
+
+sudo pico /opt/tomcat/bin/setenv.sh
+
+export LD_LIBRARY_PATH='$LD_LIBRARY_PATH:/usr/local/apr/lib'
+
+restart tomcat
+
+sudo service tomcat restart
+
+
+
+
+
+apt-get install haveged
+
+
+
+
+
+
+
+
+
+
+
+
+
+edit server.xml
+
+<Connector port="80" 
+	maxThreads="200" 
+	minSpareThreads="10" 
+	compression="on"
+	compressableMimeType="text/html,text/xml,text/plain,text/css,application/json,application/javascript,image/gif,image/jpg,image/png" 
+	protocol="org.apache.coyote.http11.Http11NioProtocol"
+	enableLookups="false" acceptCount="10" debug="0" URIEncoding="UTF-8"
+               connectionTimeout="20000"
+               redirectPort="8443" />
+

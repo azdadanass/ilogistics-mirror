@@ -1,0 +1,603 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{partNumberView.selectedId == null?'Add New':'Edit'} PartNumber" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.PartNumberStatus" var="PartNumberStatus" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa #{partNumberView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{partNumberView.selectedId == null?'Add New':'Edit'} PartNumber" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-5">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{partNumberView.savePartNumber()}" update="messages" title="Save">
+							<i class="ace-icon fa fa-save bigger-230"></i>
+							<h:outputText value="Save" />
+						</p:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="tab-pane in active">
+							<p:messages id="messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="General informations" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Part Number" styleClass="bolder" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.name}" required="true" requiredMessage="Part Number should not be null" styleClass="partNumberName scrollable" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Status" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.status}" required="true" requiredMessage="Status should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{PartNumberStatus.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Industry" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.industryId}" required="true" requiredMessage="Industry should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{partNumberIndustryView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+												<p:ajax update="category,type" />
+											</h:selectOneMenu>
+
+											<!-- <h:selectOneMenu value="#{partNumberView.partNumber.industry}" required="true" requiredMessage="Industry should not be null">
+												<f:selectItems value="#{partNumberView.partNumber.INDUSTRY_LIST}" />
+												<p:ajax update="panel1,type" />
+											</h:selectOneMenu> -->
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Category" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu id="category" value="#{partNumberView.partNumber.categoryId}" required="true" requiredMessage="Category should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{partNumberCategoryView.findByIndustry(partNumberView.partNumber.industryId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+												<p:ajax update="type" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Type" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu id="type" value="#{partNumberView.partNumber.partNumberType}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Type should not be null"
+												converter="#{genericSecuredConverter}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{partNumberTypeView.findByCategory(partNumberView.partNumber.categoryId)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+											</p:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Brand" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu value="#{partNumberView.partNumber.brand}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}" required="true"
+												requiredMessage="Brand should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{brandView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+											</p:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<!-- <div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Type" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu id="type" value="#{partNumberView.partNumber.type}" required="true" requiredMessage="Type should not be null">
+												<c:if test="#{partNumberView.partNumber.industry=='Telecom'}">
+													<f:selectItem itemLabel="FNE" itemValue="FNE" />
+													<f:selectItem itemLabel="ANE" itemValue="ANE" />
+												</c:if>
+												<c:if test="#{partNumberView.partNumber.industry=='IT'}">
+													<f:selectItem itemLabel="IT" itemValue="IT" />
+												</c:if>
+												<c:if test="#{partNumberView.partNumber.industry=='Medical'}">
+													<f:selectItem itemLabel="Medical" itemValue="Medical" />
+												</c:if>
+												<f:selectItem itemLabel="Other" itemValue="Other" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div> -->
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Partial Delivery" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.partialDelivery}" required="true" requiredMessage="Partial Delivery Field should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Country of origin" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu value="#{partNumberView.partNumber.countryOfOrigin}" filter="true" filterMatchMode="contains">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{staticView.countryList}" />
+											</p:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="space-4" />
+							<div class="row">
+								<h:panelGroup id="panel1">
+									<f:subview rendered="#{partNumberView.partNumber.industry=='Medical'}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Manufacture" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{partNumberView.partNumber.manufacture}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Manufacture should not be null">
+														<f:selectItems value="#{textView.findValueByBeanNameAndType('PartNumber','MANUFACTURE_MEDICAL')}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Manufacture" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{partNumberView.partNumber.manufacture}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Manufacture should not be null">
+														<f:selectItems value="#{textView.findValueByBeanNameAndType('PartNumber','MANUFACTURE_TELECOM')}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Technology" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<h:selectOneMenu value="#{partNumberView.partNumber.technology}" required="true" requiredMessage="Technology should not be null">
+														<f:selectItems value="#{partNumberView.partNumber.TECHNOLOGY_LIST}" />
+													</h:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+							</div> -->
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Unit / Kit" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.unit}" required="true" requiredMessage="Unit / Kit Field should not be null">
+												<f:selectItem itemLabel="Unit" itemValue="true" />
+												<f:selectItem itemLabel="Kit" itemValue="false" />
+												<p:ajax update="detailList" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Unit Type" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.unitType}" required="true" requiredMessage="Unit Type Field should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{textView.findValueByBeanNameAndType('partNumber','unitType')}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Stock Part Number" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.stockItem}" required="true" requiredMessage="Stock Part Number Field should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+												<!-- <p:ajax update="stock" /> -->
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Spare" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.spare}" required="true" requiredMessage="Spare Field should not be null">
+												<f:selectItem itemLabel="No" itemValue="false" />
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Expirable" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.expirable}" required="true" requiredMessage="Expirable Field should not be null">
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+												<p:ajax update="expiryDuration" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<h:panelGroup id="expiryDuration">
+									<f:subview rendered="#{partNumberView.partNumber.expirable}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Expiry Duration" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:inputNumber value="#{partNumberView.partNumber.expiryDuration}" required="true" requiredMessage="Expiry Duration should not be null" decimalPlaces="0" thousandSeparator="" minValue="1" />
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
+							</div>
+							<!-- <div class="space-4" />
+							<h:panelGroup id="stock">
+								<f:subview rendered="#{partNumberView.partNumber.stockItem}">
+									<h4 class="header blue bolder smaller">
+										<h:outputText value="Stock Details" />
+									</h4>
+									<div class="row">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Stock Min" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:inputNumber id="stockMin" value="#{partNumberView.partNumber.stockMin}" required="true" requiredMessage="Stock Min should not be null" decimalPlaces="0" thousandSeparator=""
+														maxValue="#{partNumberView.partNumber.stockMax}" />
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Stock Max" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:inputNumber value="#{partNumberView.partNumber.stockMax}" decimalPlaces="0" thousandSeparator="" required="true" requiredMessage="Stock Max should not be null">
+														<p:ajax event="blur" update="stockMin" />
+													</p:inputNumber>
+												</div>
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</h:panelGroup> -->
+							<!-- <div class="space-4" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Physical &amp; Storage specification" />
+							</h4> -->
+							<!-- <div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="GW" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.grossWeight}" placeholder="Gross weight (KG)" required="true" requiredMessage="Gross Weight should not be null" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="NW" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.netWeight}" placeholder="Net weight (KG)" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="CBM " />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.volume}" placeholder="Volume (m3)" required="true" requiredMessage="Volume should not be null" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="L-W-H" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.length}" style="width:59px" placeholder="Length" />
+											<p:inputText value="#{partNumberView.partNumber.width}" style="width:59px" placeholder="Width" />
+											<p:inputText value="#{partNumberView.partNumber.height}" style="width:59px" placeholder="Height" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Fragile" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.fragile}">
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Stackable" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.stackable}">
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Max Stack" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.maxStack}" placeholder="Example : 1-2-3" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Max Storage Duration " />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.maxStorageDuration}" placeholder="(in Days)" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Storage Temperature" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.storageTemperature}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Storage Humidity " />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{partNumberView.partNumber.storageHumidity}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Flammable" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.flammable}">
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+												<f:selectItem itemLabel="No" itemValue="false" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							<h:panelGroup id="detailList">
+								<f:subview rendered="#{!partNumberView.partNumber.unit}">
+									<h4 class="header blue bolder smaller">
+										<h:outputText value="Details" />
+									</h4>
+									<div class="row">
+										<div class="col-sm-offset-1 col-sm-10">
+											<div class="table-header col-sm-12 col-xs-12">
+												<i class="fa fa-list" />
+												<h:outputText value=" Details" />
+											</div>
+											<div class="col-sm-12 col-xs-12 aa-datatable-container">
+												<p:dataTable value="#{partNumberView.partNumber.detailList}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center"
+													paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+													<p:column headerText="Number" width="100">
+														<h:outputText value="#{rowIndexVar+1}" />
+													</p:column>
+
+													<p:column headerText="Part Number">
+														<p:selectOneMenu value="#{item.partNumberId}" style="width:100%" filter="true" filterMatchMode="contains" disabled="#{!partNumberView.isAddPage}">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{partNumberView.findLight(true)}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn.id}" />
+														</p:selectOneMenu>
+													</p:column>
+
+													<p:column headerText="Quantity" width="150">
+														<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 100%" readonly="#{!partNumberView.isAddPage}" />
+													</p:column>
+
+													<p:column headerText="Actions" styleClass="center" width="100">
+														<div class="action-buttons center">
+															<p:commandLink title="Remove row" action="#{partNumberView.removeDetail(rowIndexVar)}" update="main_tab" partialSubmit="true" process="main_tab" rendered="#{partNumberView.isAddPage}">
+																<i class="ace-icon fa fa-remove bigger-130 red" />
+															</p:commandLink>
+														</div>
+													</p:column>
+
+													<f:facet name="footer">
+														<div class="action-buttons center">
+															<p:commandLink title="Add New Item" action="#{partNumberView.addDetail()}" update="main_tab" partialSubmit="true" process="main_tab" rendered="#{partNumberView.canAddDetail()}">
+																<i class="fa fa-plus green" />
+															</p:commandLink>
+														</div>
+													</f:facet>
+												</p:dataTable>
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</h:panelGroup>
+
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Description" />
+							</h4>
+							<div class="row center">
+								<p:inputTextarea value="#{partNumberView.partNumber.description}" style="width: 90%" required="true" requiredMessage="Description should not be null" />
+							</div>
+							<div class="space-16" />
+						</div>
+						<div class="row"></div>
+					</div>
+				</div>
+			</div>
+
+			<script src="/resources/ace_template/assets/js/typeahead.jquery.js" />
+			<h:outputText value="#{partNumberView.autocompleteScript('partNumberName')}" escape="false" />
+
+		</h:form>
+	</ui:define>
+</ui:composition>

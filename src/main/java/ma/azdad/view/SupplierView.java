@@ -1,0 +1,34 @@
+package ma.azdad.view;
+
+import java.util.List;
+
+import javax.faces.bean.ManagedBean;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import ma.azdad.model.Supplier;
+import ma.azdad.service.SupplierService;
+import ma.azdad.utils.LabelValue;
+
+@ManagedBean
+@Component
+@Transactional
+@Scope("view")
+public class SupplierView {
+
+	@Autowired
+	protected SupplierService supplierService;
+
+	// GENERIC
+	public List<LabelValue> findLabelValueList() {
+		return supplierService.findLabelValueList();
+	}
+
+	public List<Supplier> findLight() {
+		return supplierService.findLight();
+	}
+
+}

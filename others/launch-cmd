@@ -1,0 +1,22 @@
+clean package
+
+anass@msi-u:~/Bureau/MedicalOfficeManagement-1.0/WEB-INF$ java -classpath "lib/*:classes/." ma.azdad.Main
+
+
+setsid java -Xmx7168m -Xss5120m -classpath "lib/*:classes/." ma.azdad.Main
+
+
+
+
+setsid java -Xmx7168m -Xss5120m -classpath "/home/azdad/apps/ilogistics/WEB-INF/lib/*:/home/azdad/apps/ilogistics/WEB-INF/classes/." ma.azdad.Main
+
+
+
+setsid java -Xmx7168m -Xss5120m -classpath "/home/izallalen/ILOGISTICS/WEB-INF/lib/*:/home/izallalen/ILOGISTICS/WEB-INF/classes/." ma.azdad.Main >> /home/izallalen/ilogistics.log
+
+
+
+
+WINDOWS
+
+java -classpath "lib/*;classes/." ma.azdad.Main

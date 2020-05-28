@@ -1,0 +1,666 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="resources/ace_template/assets/js/jquery.easypiechart.js" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="View PartNumber" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.PartNumberStatus" var="PartNumberStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.PartNumberState" var="PartNumberState" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
+					<h:outputText value=" View PartNumber" />
+					<small>
+						<i class="ace-icon fa fa-angle-double-right"></i>
+						<h:outputText value=" #{partNumberView.partNumber.numero}" />
+					</small>
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-8">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="/index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+					</div>
+					<div class=" col-sm-2 infobox-container">
+						<div class="infobox infobox-blue2">
+							<div class="infobox-progress">
+								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
+									<span class="percent">
+										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+											<f:convertNumber type="percent" maxFractionDigits="0" />
+										</h:outputText>
+									</span>
+									<canvas height="50" width="50"></canvas>
+								</div>
+							</div>
+
+							<div class="infobox-data">
+								<span class="infobox-text">
+									<h:outputText value="PN completeness" />
+								</span>
+
+								<div class="infobox-content">
+									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="user-profile row">
+				<div class="col-xs-12 col-sm-3 center">
+					<div class="profile-picture">
+						<p:graphicImage id="photo" value="#{fileView.stream}" styleClass="editable img-responsive editable-click editable-empty aa-avatar">
+							<f:param name="fileName" value="#{partNumberView.partNumber.selectedPhoto.link}" />
+						</p:graphicImage>
+					</div>
+					<div class="space-4" />
+
+					<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+						<div class="inline position-relative">
+							<a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+								<h:panelGroup id="activeIcon">
+									<i class="ace-icon fa fa-circle #{PartNumberStatus.ACTIVE==partNumberView.partNumber.status?'light-green':'red'}" />
+								</h:panelGroup>
+								&nbsp;
+								<span class="white">
+									<h:outputText value="#{partNumberView.partNumber.name}" />
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-9">
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-small">
+							<h4 class="smaller">
+								<i class="ace-icon fa fa-check-square-o bigger-110"></i>
+								<h:outputText value=" Description" />
+							</h4>
+						</div>
+						<div class="space-8" />
+						<div>
+							<h:outputText value="#{partNumberView.partNumber.description}" />
+						</div>
+						<div class="space-32" />
+						<h:panelGroup id="photoList">
+							<ul class="ace-thumbnails clearfix">
+								<ui:repeat var="item" value="#{partNumberView.partNumber.photoList}">
+									<li>
+										<p:commandLink update=":main_form:photo">
+											<p:graphicImage value="#{fileView.stream}" width="150" height="150">
+												<f:param name="fileName" value="#{item.link}" />
+											</p:graphicImage>
+											<div class="text">
+												<div class="inner">
+													<h:outputText value="#{item.name}" />
+												</div>
+											</div>
+											<f:setPropertyActionListener target="#{partNumberView.partNumber.selectedPhoto}" value="#{item}" />
+										</p:commandLink>
+										<div class="tools tools-bottom">
+											<p:commandLink ajax="false">
+												<p:fileDownload value="#{fileView.getFile(item.link)}" />
+												<i class="ace-icon fa fa-save  white" />
+											</p:commandLink>
+										</div>
+									</li>
+								</ui:repeat>
+							</ul>
+						</h:panelGroup>
+					</div>
+				</div>
+			</div>
+			<div class="space-16" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab2" onclick="currentStock()">
+							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Current Stock" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab3" onclick="stockHistory()">
+							<i class="purple ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Stock History" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<f:subview rendered="#{partNumberView.partNumber.stockItem and deliveryRequestDetailView.companyId != null}">
+						<li>
+							<a data-toggle="tab" href="#tab4" onclick="costHistory()">
+								<i class="purple ace-icon fa fa-dollar bigger-120"></i>
+								<h:outputText value=" Cost History" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Part Number" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder blue" />
+
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
+												title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Partial Delivery" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.partialDelivery?'Yes':'No'}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Industry" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.industry}" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.industry==null or partNumberView.partNumber.industry.isEmpty()?'':'hide'}"
+												title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Manufacture" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{partNumberView.partNumber.manufacture}" />
+												<i
+													class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.manufacture==null or partNumberView.partNumber.manufacture.isEmpty()?'':'hide'}"
+													title="Must be filled" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Unit / Kit" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{partNumberView.partNumber.unit?'green':'blue'}" />
+											&nbsp;
+										</div>
+									</div>
+									<f:subview rendered="#{partNumberView.partNumber.stockItem}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Min Stock" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{partNumberView.partNumber.stockMin}" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Type" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.type}" styleClass="purple" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.type==null or partNumberView.partNumber.type.isEmpty()?'':'hide'}"
+												title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Status" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.status.value}" styleClass="#{partNumberView.partNumber.statusStyleClass}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Country of origin" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.countryOfOrigin}" />
+											&nbsp;
+										</div>
+									</div>
+									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Technology" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{partNumberView.partNumber.technology}" />
+												<i
+													class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.technology==null or partNumberView.partNumber.technology.isEmpty()?'':'hide'}"
+													title="Must be filled" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="State" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.state.value}" styleClass="#{partNumberView.partNumber.stateStyleClass}" />
+											&nbsp;
+										</div>
+									</div>
+									<f:subview rendered="#{partNumberView.partNumber.stockItem}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Max Stock" />
+											</div>
+
+											<div class="profile-info-value">
+												<h:outputText value="#{partNumberView.partNumber.stockMax}" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
+								</div>
+							</div>
+						</div>
+						<div class="space-16" />
+						<div style="width: 90%; margin: auto;">
+							<div class="well">
+								<h4 class="green smaller lighter">
+									<h:outputText value="Description" />
+								</h4>
+								<h:outputText value="#{partNumberView.partNumber.description}" styleClass="preformatted" />
+							</div>
+						</div>
+					</div>
+					<div id="tab2" class="tab-pane">
+						<p:remoteCommand name="currentStock" action="#{stockRowView.getPartNumberReportingLists(true)}" update="currentStock" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-7 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Current Stock" />
+									</div>
+									<div class="col-sm-2">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="currentStock" fileName="stockRowList" postProcessor="#{stockRowView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+									<div class="col-sm-2 col-xs-4">
+										<div class="nav-search minimized">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="currentStock" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+										<p:column headerText="Part Number" exportable="false">
+											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+												<h:outputText value="#{partNumberView.partNumber.name}" />
+												<f:param name="id" value="#{partNumberView.partNumber.id}" />
+											</h:outputLink>
+										</p:column>
+
+										<p:column headerText="Part Number" styleClass="hide">
+											<h:outputText value="#{partNumberView.partNumber.name}" />
+										</p:column>
+
+										<p:column headerText="Description">
+											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
+										</p:column>
+
+										<p:column headerText="Project">
+											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="green bolder" />
+										</p:column>
+
+										<p:column headerText="Warehouse">
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
+										</p:column>
+
+										<p:column headerText="Status">
+											<h:outputText value="#{item.status.value}" />
+										</p:column>
+
+										<p:column headerText="Location">
+											<h:outputText value="#{item.location.name}" />
+										</p:column>
+
+										<p:column headerText="Stock Quantity" exportable="false">
+											<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Stock Quantity" styleClass="hide">
+											<h:outputText value="#{item.quantity}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<p:remoteCommand name="stockHistory" action="#{stockRowView.getPartNumberReportingLists(false)}" update="stockHistory" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-7 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Current Stock" />
+									</div>
+									<div class="col-sm-2">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="stockHistory" fileName="stockRowList" postProcessor="#{stockRowView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+									<div class="col-sm-2 col-xs-4">
+										<div class="nav-search minimized">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="stockHistory" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+										<p:column headerText="Part Number" exportable="false">
+											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+												<h:outputText value="#{partNumberView.partNumber.name}" />
+												<f:param name="id" value="#{partNumberView.partNumber.id}" />
+											</h:outputLink>
+										</p:column>
+
+										<p:column headerText="Part Number" styleClass="hide">
+											<h:outputText value="#{partNumberView.partNumber.name}" />
+										</p:column>
+
+										<p:column headerText="Description">
+											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
+										</p:column>
+
+										<p:column headerText="Warehouse" width="120">
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
+										</p:column>
+
+										<p:column headerText="Project">
+											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="green bolder" />
+										</p:column>
+
+										<p:column headerText="Destination Project">
+											<h:outputText value="#{item.deliveryRequest.destinationProject.name}" styleClass="orange bolder" />
+										</p:column>
+
+										<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.reference}" exportable="false">
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{item.deliveryRequest.reference}" styleClass="#{item.deliveryRequest.type.color} bolder" />
+												<f:param name="id" value="#{item.deliveryRequest.id}" />
+											</h:outputLink>
+										</p:column>
+
+										<p:column headerText="DN" styleClass="hide">
+											<h:outputText value="#{item.deliveryRequest.reference}" />
+										</p:column>
+
+										<p:column headerText="Origin Site">
+											<h:outputText value="#{item.deliveryRequest.origin.name}" rendered="#{!item.deliveryRequest.isOutbound}" />
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" rendered="#{item.deliveryRequest.isOutbound}" styleClass="purple" />
+										</p:column>
+
+										<p:column headerText="Destination Site">
+											<h:outputText value="#{item.deliveryRequest.destination.name}" rendered="#{!item.deliveryRequest.isInbound}" />
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" rendered="#{item.deliveryRequest.isInbound}" styleClass="purple" />
+										</p:column>
+
+										<p:column headerText="Status" width="70">
+											<h:outputText value="#{item.status.value}" />
+										</p:column>
+
+
+										<p:column headerText="Stock Quantity" width="90" exportable="false">
+											<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Stock Quantity" styleClass="hide">
+											<h:outputText value="#{item.quantity}" />
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<p:remoteCommand name="costHistory" action="#{deliveryRequestDetailView.refreshCostHistory(partNumberView.partNumber.id)}" update="tab4" />
+						<h:panelGroup id="tab4">
+							<div class="row">
+								<div class="col-sm-10 col-sm-offset-1">
+									<div class="widget-box transparent">
+										<div class="widget-body">
+											<div class="widget-main padding-24">
+												<div class="row">
+													<table class="table table-bordered" style="width: 80%; margin: auto">
+														<tr>
+															<th colspan="2" style="background: #ffb44b; color: white">
+																<h:outputText value="Resource Data" />
+															</th>
+														</tr>
+														<tr>
+															<td width="60%">
+																<h:outputText value="Higher Cost" />
+															</td>
+															<td style="text-align: right" class="bolder red">
+																<h:outputText value="#{deliveryRequestDetailView.maxCost}" >
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD"/>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<h:outputText value="Lower Cost" />
+															</td>
+															<td style="text-align: right" class="bolder green">
+																<h:outputText value="#{deliveryRequestDetailView.minCost}" >
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD"/>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<h:outputText value="Average Cost" />
+															</td>
+															<td style="text-align: right" class="bolder blue">
+																<h:outputText value="#{deliveryRequestDetailView.averageCost}" >
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD"/>
+															</td>
+														</tr>
+													</table>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Cost History" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="costHistory" fileName="costHistory" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="costHistory" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="costHistory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number" exportable="false">
+												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+													<h:outputText value="#{partNumberView.partNumber.name}" />
+													<f:param name="id" value="#{partNumberView.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Part Number" styleClass="hide">
+												<h:outputText value="#{partNumberView.partNumber.name}" />
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Unit Cost">
+												<h:outputText value="#{item.unitCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+
+											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.tmpDeliveryRequestReference}" exportable="false">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color} bolder" />
+													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="DN" styleClass="hide">
+												<h:outputText value="#{item.tmpDeliveryRequestReference}" />
+											</p:column>
+
+											<p:column headerText="DN Delivery Date">
+												<h:outputText value="#{item.tmpDeliveryRequestDeliveryDate}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Project">
+												<h:outputText value="#{item.tmpProjectName}" styleClass="purple" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+				</div>
+			</div>
+			<script src="resources/js/viewPartNumber.js" />
+		</h:form>
+	</ui:define>
+</ui:composition>

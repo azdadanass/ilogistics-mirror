@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="DeliveryRequest List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.DeliveryRequestType" var="DeliveryRequestType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliveryRequestState" var="DeliveryRequestState" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list bigger-110 green"></i>
+					<h:outputText value=" Delivery Request List" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<h:panelGroup id="widgetPanel">
+						<div class=" col-sm-offset-1 col-sm-6">
+							<f:subview rendered="#{DeliveryRequestState.WAITING==deliveryRequestView.state}">
+								<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add Request" value="#{deliveryRequestView.addEditPage}"
+									rendered="#{deliveryRequestView.canSaveDeliveryRequest() and deliveryRequestView.pageIndex==1}">
+									<i class="ace-icon fa fa-plus bigger-230"></i>
+									<h:outputText value="Add" />
+								</h:outputLink>
+							</f:subview>
+
+
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+								<i class="ace-icon fa fa-refresh bigger-230"></i>
+								<h:outputText value="Reload" />
+							</h:outputLink>
+
+							<p:commandLink title="Approve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('approveDlg').show()"
+								disabled="#{deliveryRequestView.list4==null or deliveryRequestView.list4.isEmpty()}" rendered="#{deliveryRequestView.pageIndex==3}">
+								<i class="ace-icon fa fa-check bigger-230"></i>
+								<h:outputText value="Approve" />
+							</p:commandLink>
+
+							<p:commandLink title="Reject" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" onclick="PF('rejectDlg').show()"
+								disabled="#{deliveryRequestView.list4==null or deliveryRequestView.list4.isEmpty()}" rendered="#{deliveryRequestView.pageIndex==3}">
+								<i class="ace-icon fa fa-remove bigger-230"></i>
+								<h:outputText value="Reject" />
+							</p:commandLink>
+
+							<p:commandLink title="Acknowledge" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('acknowledgeDlg').show()"
+								disabled="#{deliveryRequestView.list4==null or deliveryRequestView.list4.isEmpty()}" rendered="#{deliveryRequestView.pageIndex==2}">
+								<i class="ace-icon fa fa-check bigger-230"></i>
+								<h:outputText value="Acknow" />
+							</p:commandLink>
+
+							<p:commandLink title="Deliver" styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" onclick="PF('deliverDlg').show()"
+								disabled="#{deliveryRequestView.list4==null or deliveryRequestView.list4.isEmpty()}" rendered="#{deliveryRequestView.pageIndex==7}">
+								<i class="ace-icon fa fa-check bigger-230"></i>
+								<h:outputText value="Deliver" />
+							</p:commandLink>
+						</div>
+						<div class="col-sm-5  hidden-xs infobox-container">
+							<span class="btn btn-app btn-sm btn-warning no-hover">
+								<span class="line-height-1 bigger-170">
+									<h:outputText value="#{deliveryRequestView.rowsNumber}" />
+								</span>
+								<br />
+								<span class="line-height-1 smaller-90">
+									<h:outputText value="Total" />
+								</span>
+							</span>
+						</div>
+					</h:panelGroup>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="row">
+				<p:messages id="messages" />
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="table-header col-sm-12 col-xs-12">
+						<div class="col-sm-3 hidden-xs">
+							<i class="fa fa-list" />
+							<h:outputText value=" Delivery Request List" />
+						</div>
+						<div class="col-sm-5 ">
+							<table class="#{deliveryRequestView.pageIndex !=  1?'hide':''}" style="margin-top: 5px">
+								<tr>
+									<td>
+										<h:outputText value="Filter by : " />
+									</td>
+									<td>
+										<p:commandLink action="#{deliveryRequestView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip" title="All">
+											<div class="aa-icon-all" />
+											<f:setPropertyActionListener value="#{null}" target="#{deliveryRequestView.type}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{deliveryRequestView.refreshList()}" update="main_tab,widgetPanel" styleClass="tooltip-success aa-tooltip" title="Inbound">
+											<div class="aa-icon-inbound" />
+											<f:setPropertyActionListener value="#{DeliveryRequestType.INBOUND}" target="#{deliveryRequestView.type}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{deliveryRequestView.refreshList()}" update="main_tab,widgetPanel" styleClass="tooltip-error aa-tooltip" title="Outbound">
+											<div class="aa-icon-outbound" />
+											<f:setPropertyActionListener value="#{DeliveryRequestType.OUTBOUND}" target="#{deliveryRequestView.type}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{deliveryRequestView.refreshList()}" update="main_tab,widgetPanel" styleClass="tooltip-info aa-tooltip" title="Xbound">
+											<div class="aa-icon-xbound" />
+											<f:setPropertyActionListener value="#{DeliveryRequestType.XBOUND}" target="#{deliveryRequestView.type}" />
+										</p:commandLink>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="col-sm-2">
+							<div class="action-buttons center">
+								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+									<img src="/resources/img/xls.png" width="20" height="20" />
+									<p:dataExporter type="xls" target="main_tab" fileName="deliveryRequestList" postProcessor="#{deliveryRequestView.excelExportation}" />
+								</h:commandLink>
+							</div>
+						</div>
+						<div class="col-sm-2 col-xs-4">
+							<div class="nav-search minimized">
+								<span class="input-icon">
+									<p:inputText value="#{deliveryRequestView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+										<p:ajax event="keyup" update="main_tab,widgetPanel" />
+									</p:inputText>
+									<i class="ace-icon fa fa-search nav-search-icon" />
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-12 col-xs-12 aa-datatable-container">
+						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
+						<p:dataTable value="#{deliveryRequestView.list2}" filteredValue="#{deliveryRequestView.list3}" rowKey="#{item.id}" selection="#{deliveryRequestView.list4}" id="main_tab" widgetVar="main_tab"
+							var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+
+							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowUnselect" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowSelectCheckbox" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
+
+							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column"
+								rendered="#{deliveryRequestView.pageIndex == 2 or deliveryRequestView.pageIndex == 3 or deliveryRequestView.pageIndex == 7}" />
+
+							<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+								<img src="#{cacheView.getPhoto(item.requester.username)}" class="img-circle aa-datatable-photo" />
+							</p:column>
+
+							<p:column headerText="Requester" styleClass="hide">
+								<h:outputText value="#{item.requester.fullName}" />
+							</p:column>
+
+							<p:column headerText="Type" width="100" sortBy="#{item.type}">
+								<!-- <f:subview rendered="#{item.type==DeliveryRequestType.INBOUND}">
+									<i class="ace-icon fa fa-long-arrow-right bigger-130 green aa-tooltip tooltip-success" title="Inbound" style="margin-right: 10px" />
+								</f:subview>
+								<f:subview rendered="#{item.type==DeliveryRequestType.OUTBOUND}">
+									<i class="ace-icon fa fa-long-arrow-left bigger-130 red aa-tooltip tooltip-error" title="Outbound" style="margin-right: 10px" />
+								</f:subview>
+								<f:subview rendered="#{item.type==DeliveryRequestType.XBOUND}">
+									<i class="ace-icon fa fa-exchange bigger-130 blue aa-tooltip tooltip-info" title="Xbound" style="margin-right: 10px" />
+								</f:subview> -->
+								<h:outputText value=" #{item.type.value}" styleClass="#{item.type.color}" />
+							</p:column>
+
+							<p:column headerText="Priority" styleClass="center" width="70" sortBy="#{item.priority}">
+								<h:outputText value=" #{item.priority.value}" styleClass="#{item.priority.color} bolder" />
+							</p:column>
+
+							<p:column headerText="Numero" width="70" sortBy="#{item.reference}">
+								<h:outputText value="#{item.reference}" styleClass="bolder #{item.type.color}" />
+							</p:column>
+
+							<p:column headerText="Project">
+								<h:outputText value="#{item.project.name}" styleClass="blue" />
+							</p:column>
+
+							<p:column headerText="Owner" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type}">
+								<h:outputText value="#{item.ownerName}" styleClass="purple aa-cut-text" />
+							</p:column>
+
+							<p:column headerText="Origin Site" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type}">
+								<h:outputText value="#{item.originName}" />
+							</p:column>
+
+							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex != 5}">
+								<h:outputText value="#{item.originNumber}" styleClass="bolder" />
+							</p:column>
+
+							<p:column headerText="End Customer" rendered="#{deliveryRequestView.pageIndex == 5}">
+								<h:outputText value="#{item.toCustomerName}" />
+							</p:column>
+
+							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex == 5}">
+								<h:outputText value="#{item.totalCost}" styleClass="red">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" MAD" styleClass="red" />
+							</p:column>
+
+							<p:column headerText="DN Price" rendered="#{deliveryRequestView.pageIndex == 5}">
+								<h:outputText value="#{item.totalPrice}" styleClass="green">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" MAD" styleClass="green" />
+							</p:column>
+
+							<p:column headerText="DN Type">
+								<h:outputText value="#{item.subType}" styleClass="bolder #{item.subTypeColor}" />
+							</p:column>
+
+							<p:column headerText="REF">
+								<h:outputText value="#{item.smsRef}" />
+							</p:column>
+
+							<p:column headerText="Warehouse">
+								<h:outputText value="#{item.warehouse.name}" styleClass="purple" />
+							</p:column>
+
+							<p:column headerText="Status" width="125">
+								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />
+							</p:column>
+
+							<p:column headerText="Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}">
+								<h:outputText value="#{item.date4}" styleClass="red bolder">
+									<f:convertDateTime pattern="dd-MM-yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Transportation Request" styleClass="hide">
+								<h:outputText value="#{item.hasTransportationRequest?'Yes':'No'}" />
+							</p:column>
+
+
+							<p:column headerText="Transporter" styleClass="hide">
+								<h:outputText value="#{item.transporterName}" />
+							</p:column>
+
+							<p:column headerText="Actions" width="80" exportable="false">
+								<div class="action-buttons center">
+									<p:commandLink title="#{item.hasTransportationRequest?'Has TR':'No TR'}" rendered="#{item.transportationNeeded}">
+										<i class="ace-icon fa fa-truck bigger-130 #{item.hasTransportationRequest?'green':'grey'}" />
+									</p:commandLink>
+
+									<h:outputLink value="#{deliveryRequestView.storagePage}" title="Handle" styleClass="aa-tooltip tooltip-success"
+										rendered="#{deliveryRequestView.pageIndex==4 and DeliveryRequestType.INBOUND==item.type}">
+										<i class="ace-icon fa fa-sign-in bigger-130 green" />
+										<f:param name="id" value="#{item.id}" />
+									</h:outputLink>
+
+									<h:outputLink value="#{deliveryRequestView.preparationPage}" title="Handle" styleClass="aa-tooltip tooltip-error"
+										rendered="#{deliveryRequestView.pageIndex==4 and DeliveryRequestType.OUTBOUND==item.type}">
+										<i class="ace-icon fa fa-sign-out bigger-130 red" />
+										<f:param name="id" value="#{item.id}" />
+									</h:outputLink>
+
+									<h:outputLink value="#{deliveryRequestView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info"
+										rendered="#{deliveryRequestView.pageIndex!=8 and deliveryRequestView.pageIndex!=9}">
+										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+										<f:param name="id" value="#{item.id}" />
+									</h:outputLink>
+
+									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Transfer from this outbound" styleClass="aa-tooltip tooltip-success" rendered="#{deliveryRequestView.pageIndex==8}">
+										<i class="ace-icon fa fa-plus bigger-130 green" />
+										<f:param name="outboundDeliveryRequestId" value="#{item.id}" />
+										<f:param name="inboundType" value="2" />
+									</h:outputLink>
+
+									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Return from this outbound" styleClass="aa-tooltip tooltip-success" rendered="#{deliveryRequestView.pageIndex==9}">
+										<i class="ace-icon fa fa-plus bigger-130 green" />
+										<f:param name="outboundDeliveryRequestId" value="#{item.id}" />
+										<f:param name="inboundType" value="1" />
+									</h:outputLink>
+								</div>
+							</p:column>
+
+						</p:dataTable>
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<ui:include src="deliveryRequestFooter.xhtml" />
+	</ui:define>
+</ui:composition>

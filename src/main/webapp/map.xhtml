@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml" xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		
+
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			
+			#map {
+				height: 100%;
+			}
+			</style>
+
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Map" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+	
+			test
+
+			<div id="map"></div>
+			
+			<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&amp;signed_in=true&amp;callback=initMap" async="true" defer="true" />
+			
+
+			<script>
+				function initMap() {
+				  var directionsService = new google.maps.DirectionsService;
+				  var directionsDisplay = new google.maps.DirectionsRenderer;
+				  var map = new google.maps.Map(document.getElementById('map'), {
+				    zoom: 7,
+				    center: {lat: 41.85, lng: -87.65}
+				  });
+				  directionsDisplay.setMap(map);
+				  calculateAndDisplayRoute(directionsService, directionsDisplay);
+				}
+				
+				function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+				  directionsService.route({
+				    origin: '33.966171,-6.867866',
+				    destination: '34.029116,-6.839333',
+				    travelMode: google.maps.TravelMode.DRIVING
+				  }, function(response, status) {
+				    if (status === google.maps.DirectionsStatus.OK) {
+				      directionsDisplay.setDirections(response);
+				    } else {
+				      window.alert('Directions request failed due to ' + status);
+				    }
+				  });
+				}
+				
+				    </script>
+
+
+
+
+	</ui:define>
+</ui:composition>
+

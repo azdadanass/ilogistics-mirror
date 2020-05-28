@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml" xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="http://maps.google.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8" type="text/javascript" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{siteView.selectedId == null?'Add New':'Edit'} Site" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa #{siteView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{siteView.selectedId == null?'Add New':'Edit'} Site" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-4">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{siteView.saveSite()}" update="messages" title="Save">
+							<i class="ace-icon fa fa-save bigger-230"></i>
+							<h:outputText value="Save" />
+						</p:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="tab-pane in active">
+							<p:messages id="messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="General informations" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Name" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.name}" required="true" requiredMessage="Name should not be null" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Type" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.type}" required="true" requiredMessage="Type should not be null" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Phone" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.phone}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Fax" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.fax}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Proprietary" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.proprietary}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Contact Full Name" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.contactFullName}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Contact Phone" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.contactPhone}" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Contact Email" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{siteView.site.contactEmail}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Address" />
+							</h4>
+							<div class="row center">
+								<p:inputText value="#{siteView.site.address1}" style="width: 90%"  />
+							</div>
+							<div class="space-4" />
+							<div class="row center">
+								<p:inputText value="#{siteView.site.address2}" style="width: 90%" />
+							</div>
+							<div class="space-4" />
+							<div class="row center">
+								<p:inputText value="#{siteView.site.address3}" style="width: 90%" />
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="GPS coordinates" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Latitude" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber id="lat" value="#{siteView.site.latitude}" required="true" requiredMessage="Latitude should not be null" decimalPlaces="6">
+												<p:ajax listener="#{siteView.refreshMapModel()}" event="keyup" update="gmap" />
+											</p:inputNumber>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Longitude" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber id="lng" value="#{siteView.site.longitude}" required="true" requiredMessage="Longitude should not be null" decimalPlaces="6">
+												<p:ajax listener="#{siteView.refreshMapModel()}" event="keyup" update="gmap" />
+											</p:inputNumber>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-8" />
+
+							<h:panelGroup id="gmap">
+								<p:gmap widgetVar="map"  model="#{siteView.mapModel}" center="#{siteView.site.latitude}, #{siteView.site.longitude}" zoom="17" type="TERRAIN" style="width:100%;height:500px">
+									<p:ajax event="pointSelect" listener="#{siteView.onPointSelect}" update="lat,lng,gmap" />
+								</p:gmap>
+							</h:panelGroup>
+							<div class="space-16" />
+						</div>
+						<div class="row"></div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

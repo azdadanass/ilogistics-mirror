@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<h:form>
+		<p:dialog id="loading" widgetVar="loading" modal="true" showHeader="false" resizable="false" styleClass="center" style="padding:20px">
+			<p:graphicImage value="/resources/img/loading.gif" width="300" />
+			<br />
+			<h:outputText value="Looking for google api data...please wait" styleClass="blue bolder" />
+		</p:dialog>
+
+	</h:form>
+	
+	
+	<h:form id="returnBackForm">
+		<p:dialog widgetVar="returnBackDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('returnBackDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-undo " />
+					<h:outputText value=" Return Back" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to return back ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('returnBackDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.returnBack()}" value="Return Back" styleClass="btn" onstart="PF('returnBackDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"  update=":main_form"/>
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deliverForm">
+		<p:dialog widgetVar="deliverDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deliverDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-link light-blue" />
+					<h:outputText value=" Deliver" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Deliver Time " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<span class="input-icon input-icon-right">
+									<p:calendar value="#{transportationJobView.transportationRequest.deliveryDate}" maxdate="#{utilsView.currentDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+										requiredMessage="Deliver Time should not be null" />
+									<i class="ace-icon fa fa-clock-o blue"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br /> <br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deliverDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.deliverTransportationRequest()}" value="Deliver" onstart="PF('deliverDlg').hide();PF('loading').show()"  styleClass="btn btn-info" oncomplete="PF('loading').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="pickupForm">
+		<p:dialog widgetVar="pickupDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('pickupDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-link light-blue" />
+					<h:outputText value=" Pickup" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Pickup Time " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<span class="input-icon input-icon-right">
+									<p:calendar value="#{transportationJobView.transportationRequest.pickupDate}" maxdate="#{utilsView.currentDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+										requiredMessage="Pickup Time should not be null" />
+									<i class="ace-icon fa fa-clock-o blue"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Expected Delivery Time " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<span class="input-icon input-icon-right">
+									<p:calendar value="#{transportationJobView.transportationRequest.expectedDeliveryDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+										requiredMessage="Expected Delivery Time should not be null" />
+									<i class="ace-icon fa fa-clock-o green"></i>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<br /> <br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('pickupDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.pickupTransportationRequest()}" value="Pickup" onstart="PF('pickupDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()" styleClass="btn btn-info"  update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="closeForm">
+		<p:dialog widgetVar="closeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('closeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove green" />
+					<h:outputText value=" Close Transportation Job" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to close this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('closeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.closeTransportationJob()}" value="Close" styleClass="btn btn-success"  oncomplete="PF('closeDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	
+	<h:form id="openForm">
+		<p:dialog widgetVar="openDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('openDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-circle blue" />
+					<h:outputText value=" Open Transportation Job" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to open this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('openDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.openTransportationJob()}" value="Open" styleClass="btn btn-primary"  oncomplete="PF('openDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteForm">
+		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete TransportationJobs" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.deleteTransportationJob()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="removeTransportationRequestForm">
+		<p:dialog widgetVar="removeTransportationRequestDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('removeTransportationRequestDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-minus red" />
+					<h:outputText value=" Remove TR" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to remove this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('removeTransportationRequestDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.removeTransportationRequest()}" value="Remove" styleClass="btn btn-danger" onstart="PF('removeTransportationRequestDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"  update=":main_form"/>
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="deleteTransportationJobFileForm">
+		<p:dialog widgetVar="deleteTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteTransportationJobFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteTransportationJobFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.deleteTransportationJobFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteTransportationJobFileDlg').hide()"
+					update=":main_form:files_table" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="addTransportationJobFileForm">
+		<p:dialog widgetVar="uploadTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransportationJobFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Doc Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transportationJobView.transportationJobFileType}" style="width:178px">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{docTypeView.findByType(transportationJobView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax update="fileUploadPanel" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{transportationJobView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{transportationJobView.transportationJobFileType==null?'hide':''}"
+							style="margin: auto;width: 80%">
+							<f:attribute name="beanName" value="#{transportationJobView.className2}" />
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadTransportationJobFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+	<h:form id="fileForm">
+		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list-alt blue" />
+					<h:outputText value=" Preview" />
+				</h4>
+			</div>
+			<div class="modal-body center" style="width: 100%">
+				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{transportationJobView.transportationJobFile.isPdf}">
+					<f:param name="fileName" value="#{transportationJobView.transportationJobFile.link}" />
+				</p:media>
+				<p:graphicImage value="#{fileView.stream}" rendered="#{transportationJobView.transportationJobFile.isImage}">
+					<f:param name="fileName" value="#{transportationJobView.transportationJobFile.link}" />
+				</p:graphicImage>
+				<h:outputText value="No preview for this file" rendered="#{!transportationJobView.transportationJobFile.isPdf and !transportationJobView.transportationJobFile.isImage}" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+	
+
+
+</ui:composition>

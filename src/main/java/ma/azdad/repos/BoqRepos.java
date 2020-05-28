@@ -1,0 +1,37 @@
+package ma.azdad.repos;
+
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import ma.azdad.model.Boq;
+
+@Repository
+public interface BoqRepos extends JpaRepository<Boq, Integer> {
+
+	@Query("select a.partNumber.id from Boq a where a.podetails.po.idpo = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
+	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);
+
+	@Query("from Boq a where a.podetails.po.idpo = ?1 and (a.partNumber.id = ?2 or (select count(*) from PartNumberEquivalenceDetail b where b.partNumber.id = ?2 and b.parent.partNumber.id = a.partNumber.id) > 0) ")
+	public List<Boq> findByPoAndPartNumber(Integer poId, Integer partNumberId);
+
+	@Query("from Boq a where a.podetails.po.idpo = ?1 and a.partNumber.id in (?2) ")
+	public List<Boq> findByPoAndPartNumber(Integer poId, List<Integer> partNumberListId);
+
+	@Query("select COALESCE((select sum(b.quantity) from BoqMapping b where b.boq.id = a.id),0) from Boq a where a.id = ?1 ")
+	public Double getUsedQuantity(Integer boqId);
+
+	@Modifying
+	@Query("update Boq a set a.totalUsedQuantity = COALESCE((select sum(b.quantity) from BoqMapping b where b.boq.id = a.id),0) where a.id in (?1)")
+	public void updateTotalUsedQuantity(Set<Integer> idList);
+
+	@Query("select a.boq.id from BoqMapping a where a.deliveryRequest.id = ?1 group by a.boq.id")
+	public Set<Integer> getAssociatedBoqIdListWithDeliveryRequest(Integer deliveryRequestId);
+
+	@Query("select count(*) from Boq a where a.podetails.id = ?1 and  totalQuantity > totalUsedQuantity ")
+	public Long countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(Integer podetailsId);
+}

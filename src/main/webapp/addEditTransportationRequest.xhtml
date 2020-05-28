@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{transportationRequestView.selectedId == null?'Add New':'Edit'} Transportation Request" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.ContactType" var="ContactType" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa #{transportationRequestView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{transportationRequestView.selectedId == null?'Add New':'Edit'} Transportation Request" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-6">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationRequestView.saveTransportationRequest()}" update="messages" title="Save">
+							<i class="ace-icon fa fa-save bigger-230"></i>
+							<h:outputText value="Save" />
+						</p:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="tab-pane in active">
+							<p:messages id="messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="General informations" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Delivery Request" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputText value="#{transportationRequestView.transportationRequest.deliveryRequest.reference}" readonly="true"
+												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.type.color}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Needed Pickup Date" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+
+											<p:calendar value="#{transportationRequestView.transportationRequest.neededPickupDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+												requiredMessage="Needed Pickup Date should not be null" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Needed Delivery Date" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:calendar value="#{transportationRequestView.transportationRequest.neededDeliveryDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+												requiredMessage="Needed Delivery Date should not be null" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Contact Informations" />
+							</h4>
+							<f:subview rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound}">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Origin Contact Type" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<h:selectOneMenu value="#{transportationRequestView.transportationRequest.contactType1}" required="true" requiredMessage="Origin Contact Type should not be null">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{ContactType.ALL_ENUM_VALUES}" />
+													<p:ajax update="contact1" />
+												</h:selectOneMenu>
+											</div>
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Origin Site Contact" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<h:panelGroup id="contact1">
+													<p:selectOneMenu value="#{transportationRequestView.transportationRequest.contact1Username}" required="true" requiredMessage="Origin Site Contact should not be null" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														rendered="#{ContactType.INTERNAL==transportationRequestView.transportationRequest.contactType1}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu id="er1" value="#{transportationRequestView.transportationRequest.er1}" required="true" requiredMessage="Origin Site Contact should not be null" style="width: 178px" filter="true" filterMatchMode="contains" var="r"
+														converter="#{genericSecuredConverter}" rendered="#{ContactType.EXTERNAL==transportationRequestView.transportationRequest.contactType1}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+														<p:column>
+															<h:outputText value="#{r.firstName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.lastName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.cin}" />
+														</p:column>
+													</p:selectOneMenu>
+												</h:panelGroup>
+											</div>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound}">
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Destination Contact Type" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<h:selectOneMenu value="#{transportationRequestView.transportationRequest.contactType2}" required="true" requiredMessage="Destination Contact Type should not be null">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{ContactType.ALL_ENUM_VALUES}" />
+													<p:ajax update="contact2" />
+												</h:selectOneMenu>
+											</div>
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Destination Site Contact" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<h:panelGroup id="contact2">
+													<p:selectOneMenu value="#{transportationRequestView.transportationRequest.contact2Username}" required="true" requiredMessage="Destination Site Contact should not be null" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														rendered="#{ContactType.INTERNAL==transportationRequestView.transportationRequest.contactType2}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu id="er2" value="#{transportationRequestView.transportationRequest.er2}" required="true" requiredMessage="Destination Site Contact should not be null" style="width: 178px" filter="true" filterMatchMode="contains" var="r"
+														converter="#{genericSecuredConverter}" rendered="#{ContactType.EXTERNAL==transportationRequestView.transportationRequest.contactType2}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+														<p:column>
+															<h:outputText value="#{r.firstName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.lastName}" />
+														</p:column>
+
+														<p:column>
+															<h:outputText value="#{r.cin}" />
+														</p:column>
+													</p:selectOneMenu>
+												</h:panelGroup>
+											</div>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<div class="space-16" />
+						</div>
+						<div class="row"></div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

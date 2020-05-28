@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml" xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Page Title" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="col-sm-6">
+						<h3 class="header smaller lighter green">
+							<i class="fa fa-users" />
+							<h:outputText value=" User List" />
+						</h3>
+						<div class="table-header col-sm-12 col-xs-12">
+							<i class="fa fa-list" />
+							<h:outputText value=" User List" />
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="main_tab_1" value="#{sessionView.user.userToNotifyList}" widgetVar="main_tab" var="item" rows="30" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+
+								<p:column headerText="Photo" width="100" styleClass="hidden-xs">
+									<img src="#{item.photo}" class="img-circle aa-datatable-photo" />
+								</p:column>
+
+
+								<p:column headerText="Full Name">
+									<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+								</p:column>
+								
+								<p:column headerText="Phone">
+									<h:outputText value="#{cacheView.getPhone(item.username)}" styleClass="bolder red" />
+								</p:column>
+
+								<p:column headerText="Email">
+									<h:outputText value="#{item.email}" styleClass="bolder blue" />
+								</p:column>
+								
+
+								<p:column headerText="Actions" styleClass="center" width="100">
+									<div class="action-buttons center">
+										<p:commandLink title="Remove User" action="#{userView.removeUser(item)}" update="main_tab_1" partialSubmit="true" process="main_tab_1">
+											<i class="ace-icon fa fa-remove bigger-130 red" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink title="Add New User" onclick="PF('addUserDlg').show()">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<h3 class="header smaller lighter blue">
+							<i class="fa fa-users" />
+							<h:outputText value=" External Resource List" />
+						</h3>
+						<div class="table-header col-sm-12 col-xs-12">
+							<i class="fa fa-list" />
+							<h:outputText value=" External Resource List" />
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="main_tab_2" value="#{sessionView.user.userToNotifyList}" widgetVar="main_tab" var="item" rows="30" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+								<p:column headerText="Full Name">
+									<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+								</p:column>
+
+								<p:column headerText="CIN">
+									<h:outputText value="#{item.cin}" styleClass="bolder orange" />
+								</p:column>
+
+								<p:column headerText="Phone">
+									<h:outputText value="#{item.phone}" styleClass="bolder red" />
+								</p:column>
+								
+								<p:column headerText="Email">
+									<h:outputText value="#{item.email}" styleClass="bolder blue" />
+								</p:column>
+
+								<p:column headerText="Actions" styleClass="center" width="100">
+									<div class="action-buttons center">
+										<p:commandLink title="Remove User" action="#{userView.removeUser(item)}" update="main_tab_2" partialSubmit="true" process="main_tab_2">
+											<i class="ace-icon fa fa-remove bigger-130 red" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink title="Add New External Resource" onclick="PF('addUserDlg').show()">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+		<h:form id="addUserForm">
+			<p:dialog widgetVar="addUserDlg" modal="true" closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close" onclick="PF('addUserDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header" style="margin-bottom: 20px">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-plus green" />
+						<h:outputText value=" Add New User" />
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-partNumbername">
+									<h:outputText value="User" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:selectOneMenu value="#{userView.toNotifyUserUsername}" style="width:178px" filter="true" filterMatchMode="contains">
+										<f:selectItem noSelectionOption="true" itemLabel="---" />
+										<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="space-16" />
+				</div>
+				<br />
+				<br />
+				<div class="modal-footer">
+					<p:commandButton onclick="PF('addUserDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+					<p:commandButton action="#{userView.addNewUser()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addUserDlg').hide()" update=":main_form:main_tab_1" />
+				</div>
+			</p:dialog>
+		</h:form>
+
+		<h:form id="addUserForm">
+			<p:dialog widgetVar="addUserDlg" modal="true" closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close" onclick="PF('addUserDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header" style="margin-bottom: 20px">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-plus green" />
+						<h:outputText value=" Add New User" />
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-partNumbername">
+									<h:outputText value="User" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:selectOneMenu value="#{userView.toNotifyUserId}" style="width:178px" filter="true" filterMatchMode="contains">
+										<f:selectItem noSelectionOption="true" itemLabel="---" />
+										<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.id}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="space-16" />
+				</div>
+				<br />
+				<br />
+				<div class="modal-footer">
+					<p:commandButton onclick="PF('addUserDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+					<p:commandButton action="#{userView.addNewUser()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addUserDlg').hide()" update=":main_form:main_tab_2" />
+				</div>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+

@@ -1,0 +1,1676 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="View DeliveryRequest" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.DeliveryRequestStatus" var="DeliveryRequestStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliveryRequestType" var="DeliveryRequestType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliverToType" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
+					<h:outputText value=" View Delivery Request" />
+					<small>
+						<i class="ace-icon fa fa-angle-double-right"></i>
+						<h:outputText value=" #{deliveryRequestView.deliveryRequest.numero}" />
+					</small>
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-4">
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-error" title="Duplicate" value="addEditDeliveryRequest.xhtml">
+							<i class="ace-icon fa fa-files-o bigger-230"></i>
+							<h:outputText value="Duplicate" styleClass="smaller-80" />
+							<f:param name="templateId" value="#{deliveryRequestView.selectedId}" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditDeliveryRequest.xhtml"
+							rendered="#{deliveryRequestView.canSaveDeliveryRequest()}">
+							<i class="ace-icon fa fa-edit bigger-230"></i>
+							<h:outputText value="Edit" />
+							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+						</h:outputLink>
+
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
+							rendered="#{deliveryRequestView.canDeleteDeliveryRequest()}">
+							<i class="ace-icon fa fa-trash-o bigger-230"></i>
+							<h:outputText value="Delete" />
+						</p:commandLink>
+
+						<p:commandLink title="Request" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" onclick="PF('requestDlg').show()" rendered="#{deliveryRequestView.canRequestDeliveryRequest()}">
+							<i class="ace-icon fa fa-external-link bigger-230"></i>
+							<h:outputText value="Request" />
+						</p:commandLink>
+
+						<p:commandLink title="Approve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('approveDlg').show()" rendered="#{deliveryRequestView.canApproveDeliveryRequest()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Approve" />
+						</p:commandLink>
+
+						<p:commandLink title="Acknowledge" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('acknowledgeDlg').show()"
+							rendered="#{deliveryRequestView.canAcknowledgeDeliveryRequest()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Acknowledge" styleClass="smaller-80" />
+						</p:commandLink>
+
+
+						<p:commandLink title="Reject" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('rejectDlg').show()"
+							rendered="#{deliveryRequestView.canRejectDeliveryRequest()}">
+							<i class="ace-icon fa fa-remove bigger-230"></i>
+							<h:outputText value="Reject" />
+						</p:commandLink>
+
+						<p:commandLink title="Cancel" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('cancelDlg').show()"
+							rendered="#{deliveryRequestView.canCancelDeliveryRequest()}">
+							<i class="ace-icon fa fa-remove bigger-230"></i>
+							<h:outputText value="Cancel" />
+						</p:commandLink>
+
+						<p:commandLink title="Delivered" styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" onclick="PF('deliverDlg').show()" rendered="#{deliveryRequestView.canDeliverDeliveryRequest()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Delivered" />
+						</p:commandLink>
+
+
+						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadDeliveryRequestFileDlg').show()">
+							<i class="ace-icon fa fa-file bigger-230"></i>
+							<h:outputText value="Files" />
+						</p:commandLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Handle" value="storeDeliveryRequest.xhtml"
+							rendered="#{deliveryRequestView.canStoreDeliveryRequest()}">
+							<i class="ace-icon fa fa-sign-in bigger-230"></i>
+							<h:outputText value="Handle" />
+							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-danger  hover aa-tooltip tooltip-error" title="Handle" value="#{deliveryRequestView.preparationPage}"
+							rendered="#{deliveryRequestView.canPrepareOutboundDeliveryRequest()}">
+							<i class="ace-icon fa fa-sign-out bigger-230"></i>
+							<h:outputText value="Handle" />
+							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+						</h:outputLink>
+
+
+						<p:commandLink title="Add Transportation Request" action="#{deliveryRequestView.addTransport()}" styleClass="btn btn-app btn-sm btn-purple  hover aa-tooltip tooltip-purple"
+							rendered="#{deliveryRequestView.canAddTrasnport()}">
+							<i class="ace-icon fa fa-truck bigger-230"></i>
+							<h:outputText value="Add" />
+						</p:commandLink>
+
+
+						<!-- <p:commandLink title="Print" action="#{deliveryRequestView.generatePdf()}" update=":printForm" oncomplete="PF('printDlg').show()"
+							styleClass="btn btn-app btn-sm btn-info  hover aa-tooltip tooltip-purple">
+							<i class="ace-icon fa fa-print bigger-230"></i>
+							<h:outputText value="print" />
+						</p:commandLink> -->
+
+						<p:commandLink title="Generate Label" action="#{deliveryRequestView.generateStamp()}" update=":stampForm" oncomplete="PF('stampDlg').show()"
+							styleClass="btn btn-app btn-sm btn-warning  hover aa-tooltip tooltip-purple">
+							<i class="ace-icon fa fa-qrcode bigger-230"></i>
+							<h:outputText value="Label" />
+						</p:commandLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Print " value="#{deliveryRequestView.printPage}" target="blank">
+							<i class="ace-icon fa fa-print bigger-230"></i>
+							<h:outputText value="Print" />
+							<f:param name="id" value="#{deliveryRequestView.deliveryRequest.id}" />
+						</h:outputLink>
+
+
+						<p:commandLink title="Add Comment" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{deliveryRequestView.initComment()}" update=":addCommentForm"
+							oncomplete="PF('addCommentDlg').show()" rendered="#{deliveryRequestView.canAddComment()}">
+							<i class="ace-icon fa fa-comment bigger-230"></i>
+							<h:outputText value="Add" />
+						</p:commandLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Create Inbound (Return from this outbound) " value="#{deliveryRequestView.addEditPage}"
+							target="blank" rendered="#{deliveryRequestView.canReturnFromOutbound()}">
+							<i class="ace-icon fa fa-arrow-circle-left bigger-230"></i>
+							<h:outputText value="Return" />
+							<f:param name="outboundDeliveryRequestId" value="#{deliveryRequestView.deliveryRequest.id}" />
+							<f:param name="inboundType" value="1" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-purple" title="Create Inbound (Transfer from this outbound) " value="#{deliveryRequestView.addEditPage}"
+							target="blank" rendered="#{deliveryRequestView.canTransferFromOutbound()}">
+							<i class="ace-icon fa fa-arrow-circle-right bigger-230"></i>
+							<h:outputText value="Transfer" />
+							<f:param name="outboundDeliveryRequestId" value="#{deliveryRequestView.deliveryRequest.id}" />
+							<f:param name="inboundType" value="2" />
+						</h:outputLink>
+
+					</div>
+					<div class="col-sm-7  hidden-xs infobox-container">
+						<div class="row">
+							<div class="infobox infobox-blue">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-list" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Number Of Items" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{deliveryRequestView.deliveryRequest.numberOfItems}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-purple">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-anchor" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Gross Weight" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{deliveryRequestView.deliveryRequest.grossWeight}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" Kg" />
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-orange">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-cube" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Volume" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{deliveryRequestView.deliveryRequest.volume}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" m3" />
+									</div>
+								</div>
+							</div>
+						</div>
+						<f:subview rendered="#{deliveryRequestView.showCostInformations()}">
+							<div class="infobox infobox-red">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-dollar" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Total Cost" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{deliveryRequestView.deliveryRequest.totalCost}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" MAD" />
+									</div>
+								</div>
+							</div>
+							<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+								<div class="infobox infobox-green">
+									<div class="infobox-icon">
+										<i class="ace-icon fa fa-dollar" />
+									</div>
+									<div class="infobox-data">
+										<span class="infobox-data-number">
+											<h:outputText value="Total Price" />
+										</span>
+										<div class="infobox-content">
+											<h:outputText value="#{deliveryRequestView.deliveryRequest.totalPrice}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+										</div>
+									</div>
+								</div>
+								<div class="infobox infobox-blue">
+									<div class="infobox-icon">
+										<i class="ace-icon fa fa-dollar" />
+									</div>
+									<div class="infobox-data">
+										<span class="infobox-data-number">
+											<h:outputText value="Margin" />
+										</span>
+										<div class="infobox-content">
+											<h:outputText value="#{deliveryRequestView.deliveryRequest.totalPrice-deliveryRequestView.deliveryRequest.totalCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD " />
+											<h:outputText value="#{(deliveryRequestView.deliveryRequest.totalPrice-deliveryRequestView.deliveryRequest.totalCost)/deliveryRequestView.deliveryRequest.totalPrice}"
+												styleClass="bolder smaller-80">
+												<f:convertNumber type="percent" maxFractionDigits="2" />
+											</h:outputText>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+						</f:subview>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-flat">
+							<h4 class="lighter">
+								<i class="ace-icon fa fa-clock-o orange"></i>
+								<h:outputText value=" Time Line" />
+							</h4>
+						</div>
+						<div class="widget-body">
+							<ul class="steps">
+								<li class="complete">
+									<span class="step">
+										<h:outputText value="1" />
+									</span>
+									<span class="title">
+										<h:outputText id="step1" value="#{DeliveryRequestStatus.EDITED.value}" />
+									</span>
+									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date1)}" />
+									</p:overlayPanel>
+								</li>
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date2!=null || deliveryRequestView.deliveryRequest.date7==null}">
+									<li class="#{deliveryRequestView.deliveryRequest.date2!=null?'complete':''}">
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step2" value="#{DeliveryRequestStatus.REQUESTED.value}" />
+										</span>
+										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date2)}" />
+										</p:overlayPanel>
+									</li>
+								</f:subview>
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date6==null}">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date3!=null || deliveryRequestView.deliveryRequest.date7==null}">
+										<li class="#{deliveryRequestView.deliveryRequest.date3!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED.value}" />
+												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText escape="false"
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user3.username,deliveryRequestView.deliveryRequest.project.manager.username, deliveryRequestView.deliveryRequest.date3)}" />
+												</p:overlayPanel>
+											</span>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isPartial and (deliveryRequestView.deliveryRequest.date4!=null || deliveryRequestView.deliveryRequest.date7==null)}">
+										<li class="#{deliveryRequestView.deliveryRequest.date4!=null and deliveryRequestView.deliveryRequest.isPartial?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step4_1" value="#{DeliveryRequestStatus.PARTIALLY_DELIVRED.value}" />
+											</span>
+											<p:overlayPanel for="step4_1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false"
+													value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.identifier,deliveryRequestView.deliveryRequest.warehouse.firstManager.identifier, deliveryRequestView.deliveryRequest.date4)}" />
+											</p:overlayPanel>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date4!=null || deliveryRequestView.deliveryRequest.date7==null}">
+										<li class="#{deliveryRequestView.deliveryRequest.date4!=null and !deliveryRequestView.deliveryRequest.isPartial?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step4_2" value="#{DeliveryRequestStatus.DELIVRED.value}" />
+												<p:overlayPanel for="step4_2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText escape="false"
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.identifier,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.identifier.username:deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date4)}" />
+												</p:overlayPanel>
+											</span>
+										</li>
+									</f:subview>
+									<f:subview
+										rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type and (deliveryRequestView.deliveryRequest.date5!=null || deliveryRequestView.deliveryRequest.date7==null)}">
+										<li class="#{deliveryRequestView.deliveryRequest.date5!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
+											</span>
+											<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date5)}" />
+											</p:overlayPanel>
+										</li>
+									</f:subview>
+								</f:subview>
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date6!=null}">
+									<li class="error">
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step6" value="#{DeliveryRequestStatus.REJECTED.value}" />
+										</span>
+										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user6.username, deliveryRequestView.deliveryRequest.date6)}" />
+										</p:overlayPanel>
+									</li>
+								</f:subview>
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date7!=null}">
+									<li class="error">
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step7" value="#{DeliveryRequestStatus.CANCELED.value}" />
+										</span>
+										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user7.username, deliveryRequestView.deliveryRequest.date7)}" />
+										</p:overlayPanel>
+									</li>
+								</f:subview>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="space-16" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab12">
+							<i class="purple ace-icon fa fa-dropbox bigger-120"></i>
+							<h:outputText value=" Packing" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.date4!=null and DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type}">
+						<li>
+							<a data-toggle="tab" href="#tab2">
+								<i class="purple ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" Delivred Details" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and (deliveryRequestView.hasReturnedStockRowList or deliveryRequestView.hasTransferredStockRowList)}">
+						<li>
+							<a data-toggle="tab" href="#tab2">
+								<i class="purple ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" R / T Details" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="red ace-icon fa fa-comment-o bigger-120"></i>
+							<h:outputText value=" Comments" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4">
+							<i class="blue ace-icon fa fa-file bigger-120"></i>
+							<h:outputText value=" Attachements" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab5">
+							<i class="orange ace-icon fa fa-clock-o bigger-120"></i>
+							<h:outputText value=" History" />
+						</a>
+					</li>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound or deliveryRequestView.deliveryRequest.isXbound}">
+						<li>
+							<a data-toggle="tab" href="#tab6">
+								<i class="red ace-icon fa fa-dollar bigger-120"></i>
+								<h:outputText value=" Associated Costs" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
+						<li>
+							<a data-toggle="tab" href="#tab7">
+								<i class="blue ace-icon fa fa-dollar bigger-120"></i>
+								<h:outputText value=" Associated Revenues" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.project.isStockProject}">
+						<li>
+							<a data-toggle="tab" href="#tab8">
+								<i class="purple ace-icon fa fa-exchange bigger-120"></i>
+								<h:outputText value=" Associated Cross Charge" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.po != null}">
+						<li>
+							<a data-toggle="tab" href="#tab9">
+								<i class="green ace-icon fa fa-link bigger-120"></i>
+								<h:outputText value=" BoQ Mapping" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.showSerialNumberData()}">
+						<li>
+							<a data-toggle="tab" href="#tab10">
+								<i class="green ace-icon fa fa-barcode bigger-120"></i>
+								<h:outputText value=" Serial Number" />
+							</a>
+						</li>
+					</f:subview>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.showExpiryData()}">
+						<li>
+							<a data-toggle="tab" href="#tab11">
+								<i class="red ace-icon fa fa-remove bigger-120"></i>
+								<h:outputText value=" Expiry Status" />
+							</a>
+						</li>
+					</f:subview>
+				</ul>
+				<p:messages id="messages" closable="true" />
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<ui:include src="viewDeliveryRequestTab1.xhtml" />
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="To Notify List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" To Notify List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+											<img src="#{item.photo}" class="img-circle aa-datatable-photo" />
+										</p:column>
+
+										<p:column headerText="Full Name">
+											<h:outputText value="#{item.fullName}" styleClass="#{item.internal?'green':'blue'} bolder" />
+										</p:column>
+
+										<p:column headerText="Email">
+											<h:outputText value="#{item.email}" styleClass="light-blue" />
+										</p:column>
+
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+										</p:column>
+
+										<p:column headerText="Notify By Email ?">
+											<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+
+										<p:column headerText="Notify By SMS ?">
+											<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+
+
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<div id="tab2" class="tab-pane">
+						<f:subview id="tab2" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-list-alt green" />
+									<h:outputText value=" Summary" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Summary" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{stockRowView.findByInboundDeliveryRequest(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number">
+												<h:outputLink id="pn" value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+												<p:overlayPanel for="pn" style="text-align: left;width:600px" showEvent="mouseover" hideEvent="mouseout">
+													<div class="col-xs-4 center">
+														<p:graphicImage value="#{fileView.stream}" styleClass="grid_images">
+															<f:param name="fileName" value="#{item.partNumber.image}" />
+														</p:graphicImage>
+														<br />
+														<span class="bolder green smaller-80">
+															<h:outputText value="#{item.partNumber.name}" />
+														</span>
+													</div>
+													<div class="col-xs-8">
+														<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+														<span class="bolder blue">
+															<h:outputText value="Industry : #{item.partNumber.partNumberType.category.industry.name}" />
+														</span>
+														<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+														<span class="pink">
+															<h:outputText value="Category : #{item.partNumber.partNumberType.category.name}" />
+														</span>
+														<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+														<span class="green">
+															<h:outputText value="Type : #{item.partNumber.partNumberType.name}" />
+														</span>
+														<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+														<span class="orange">
+															<h:outputText value="Brand : #{item.partNumber.brand.name}" />
+														</span>
+														<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
+														<span class="light-blue">
+															<h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+														</span>
+														<br /> <i class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
+														<span class="purple">
+															<h:outputText value="Description : #{item.partNumber.description}" />
+														</span>
+														<hr />
+													</div>
+												</p:overlayPanel>
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+
+											<p:column headerText="Inbound Quantity">
+												<h:outputText value="#{item.inboundQuantity}" styleClass="bolder blue">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Outbound Quantity">
+												<h:outputText value="#{item.outboundQuantity!=0?-item.outboundQuantity:0}" styleClass="bolder red">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+
+											<p:column headerText="Remainder">
+												<h:outputText value="#{item.quantity}" styleClass="#{item.quantity != 0?'bolder':''} green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+
+											<p:column headerText="Totally delivered">
+												<div class="action-buttons center">
+													<p:commandLink title="Delivred">
+														<i class="ace-icon fa fa-check bigger-130 #{item.quantity==0?'green':'grey'}" />
+													</p:commandLink>
+												</div>
+											</p:column>
+
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-home purple" />
+									<h:outputText value=" Current Stock Situation" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Current Stock Situation" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="currentStockSituation" value="#{stockRowView.getStockSituationByInboundDeliveryRequest(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20"
+											styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+											paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Project">
+												<h:outputText value="#{item.deliveryRequest.project.name}" />
+											</p:column>
+
+											<p:column headerText="Warehouse">
+												<h:outputText value="#{item.deliveryRequest.warehouse.name}" />
+											</p:column>
+
+
+											<p:column headerText="Status">
+												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+											</p:column>
+
+											<p:column headerText="Location">
+												<h:outputText value="#{item.location.name}" />
+											</p:column>
+
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity lt 0 ?'red':'green'}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Actions" width="70" rendered="#{stockRowView.canUpdateLocation()}">
+												<div class="action-buttons center">
+													<p:commandLink title="Change Location" styleClass="aa-tooltip tooltip-info" update=":changeLocationForm" oncomplete="PF('changeLocationDlg').show()">
+														<i class="ace-icon fa fa-cubes bigger-130 blue" />
+														<f:setPropertyActionListener value="#{item}" target="#{stockRowView.stockRow}" />
+														<f:setPropertyActionListener value="#{item.location}" target="#{stockRowView.stockRow.newLocation}" />
+													</p:commandLink>
+												</div>
+											</p:column>
+
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-long-arrow-left red" />
+									<h:outputText value=" Associated Outbound Requests" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Associated Outbound Requests" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{stockRowView.findAttachedOutboundDeliveryRequestList(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Outbound Request">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.deliveryRequest.reference}" styleClass="bolder red" />
+													<f:param name="id" value="#{item.deliveryRequest.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Quantity">
+												<h:outputText value="#{-item.quantity}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.hasReturnedStockRowList}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-long-arrow-left red" />
+									<h:outputText value=" Returned Details" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Returned Details" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestView.returnedStockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Inbound DN">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.deliveryRequest.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Delivery Date" width="80">
+												<h:outputText value="#{item.inboundDeliveryRequest.date4}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Status">
+												<h:outputText value="#{item.status.value}" />
+											</p:column>
+
+											<p:column headerText="Location">
+												<h:outputText value="#{item.location.name}" />
+											</p:column>
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+
+
+						</f:subview>
+						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.hasTransferredStockRowList}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-long-arrow-left red" />
+									<h:outputText value=" Transferred Details" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Transferred Details" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestView.transferredStockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="Inbound DN">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.deliveryRequest.id}" />
+												</h:outputLink>
+											</p:column>
+
+											<p:column headerText="Delivery Date" width="80">
+												<h:outputText value="#{item.inboundDeliveryRequest.date4}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Status">
+												<h:outputText value="#{item.status.value}" />
+											</p:column>
+
+											<p:column headerText="Location">
+												<h:outputText value="#{item.location.name}" />
+											</p:column>
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+
+
+						</f:subview>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<h:panelGroup id="panel3">
+							<div class="row">
+								<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+									<div class="timeline-container timeline-style2">
+										<ui:repeat var="date" value="#{deliveryRequestView.datesTab}" varStatus="varStatus">
+											<div class="timeline-label">
+												<span class="label label-purple arrowed-in-right label-lg">
+													<b> <h:outputText value="#{date}" />
+													</b>
+												</span>
+											</div>
+											<div class="timeline-items">
+												<ui:repeat var="comment" value="#{deliveryRequestView.commentsTab[varStatus.index]}">
+													<div class="timeline-item clearfix">
+														<div class="timeline-info">
+															<img src="#{cacheView.getPhoto(comment.user.username)}" />
+															<!-- <span class="badge badge-success">
+															<h:outputText value="#{comment.date}">
+																<f:convertDateTime pattern="HH:mm" />
+															</h:outputText>
+														</span> -->
+															<i class="timeline-indicator btn btn-info no-hover"></i> <br />
+															<span class="orange">
+																<i class="ace-icon fa fa-clock-o bigger-120"></i>
+																<h:outputText value="#{comment.date}">
+																	<f:convertDateTime pattern="HH:mm" />
+																</h:outputText>
+															</span>
+														</div>
+														<div class="widget-box transparent">
+															<div class="widget-header widget-header-small">
+																<h5 class="widget-title smaller">
+																	<a href="#" class="blue">
+																		<h:outputText value="#{cacheView.getFullName(comment.user.username)}" />
+																	</a>
+																	<i class="ace-icon fa fa-angle-double-right"></i>
+																	<span class="grey">
+																		<h:outputText value="#{comment.title}" styleClass="green" />
+																	</span>
+																</h5>
+															</div>
+
+															<div class="widget-body">
+																<div class="widget-main">
+																	<f:subview rendered="#{comment.type!=null}">
+																		<h5 class="text-warning bigger-110 red">
+																			<i class="ace-icon fa fa-exclamation-triangle"></i>
+																			<h:outputText value=" #{comment.type}" />
+																		</h5>
+																	</f:subview>
+																	<h:outputText value="Comment : " styleClass="grey bolder" />
+																	<h:outputText value=" #{comment.content}" />
+																</div>
+															</div>
+														</div>
+													</div>
+												</ui:repeat>
+											</div>
+										</ui:repeat>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" List Of Attachements" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+										<p:column headerText="Name">
+											<h:outputText value="#{item.name}" />
+										</p:column>
+
+										<p:column headerText="Type">
+											<h:outputText value="#{item.type}" />
+										</p:column>
+
+										<p:column headerText="Added Date">
+											<h:outputText value="#{item.date}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="File Size">
+											<h:outputText value="#{item.size}" />
+										</p:column>
+
+										<p:column headerText="File Type" width="100" styleClass="center">
+											<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
+										</p:column>
+										
+										<p:column headerText="Added By" styleClass="center">
+											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
+											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
+											</p:overlayPanel>
+										</p:column>
+
+										<p:column headerText="Actions" width="150" style="text-align : center;">
+											<div class="action-buttons center">
+												<p:commandLink title="Delete File" oncomplete="PF('deleteDeliveryRequestFileDlg').show()" styleClass="aa-tooltip">
+													<i class="ace-icon fa fa-trash-o bigger-130 red" />
+													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFileId}" value="#{item.id}" />
+												</p:commandLink>
+
+												<p:commandLink ajax="false">
+													<p:fileDownload value="#{fileView.getFile(item.link)}" />
+													<i class="ace-icon fa fa-save bigger-130 green" />
+												</p:commandLink>
+
+												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFile}" value="#{item}" />
+												</p:commandLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab5" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" History" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="deliveryRequesthistoryList" value="#{deliveryRequestView.deliveryRequest.historyList}" var="item" rows="20" styleClass="table table-striped table-hover "
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+										<p:column headerText="Action" width="80" styleClass="center">
+											<span class="#{item.statusStyleClass}">
+												<h:outputText value="#{item.status}" styleClass="bolder" />
+											</span>
+										</p:column>
+
+										<p:column headerText="Date" width="90" styleClass="center">
+											<f:subview rendered="#{item.date==null}">
+												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
+											</f:subview>
+											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
+												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="User" width="120">
+											<h:outputText id="user" value="#{item.user.fullName}" styleClass="purple bolder" />
+											<p:overlayPanel for="user" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
+											</p:overlayPanel>
+										</p:column>
+
+										<p:column headerText="Description" width="400">
+											<h:outputText value="#{item.description}" escape="false" styleClass="aa-cut-text" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab6" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" Associated Costs" />
+									</div>
+									<div class="col-sm-3">
+										<h:outputText value="Total Amount : " />
+										<h:outputText value="#{appLinkView.totalAmount1}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" MAD" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{appLinkView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+										<p:column headerText="Cost Type" width="150">
+											<h:outputText value="#{item.costType.value}" styleClass="red bolder" />
+										</p:column>
+
+										<p:column headerText="Amount" width="100">
+											<h:outputText value="#{item.amount}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currency}" />
+										</p:column>
+
+										<p:column headerText="Amount MAD" width="100">
+											<h:outputText value="#{item.amount*item.madConversionRate}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+										</p:column>
+
+										<p:column headerText="System" width="100">
+											<h:outputText value="Ibuy" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
+											<h:outputText value="Iexpense" rendered="#{item.expensepaymentId!=null}" styleClass="bolder green" />
+										</p:column>
+
+										<p:column headerText="Invoice">
+											<h:outputText value="#{item.idInvoice}" />
+										</p:column>
+
+										<p:column headerText="Invoice Date">
+											<h:outputText value="#{item.invoiceDate}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Invoice Status">
+											<h:outputText value="#{item.invoiceStatus}" />
+										</p:column>
+
+										<p:column headerText="Po">
+											<h:outputText value="#{item.poNumeroIbuy}" />
+										</p:column>
+
+										<p:column headerText="Supplier" width="150">
+											<h:outputText value="#{item.supplierName}" />
+										</p:column>
+
+										<p:column headerText="Actions" width="70">
+											<div class="action-buttons center">
+												<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
+													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												</p:commandLink>
+
+												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()" title="Show details"
+													styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												</p:commandLink>
+											</div>
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab7" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" Associated Revenues" />
+									</div>
+									<div class="col-sm-2">
+										<h:outputText value="#{appLinkView.totalAmount2}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" MAD" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+
+										<p:column headerText="Revenue Type" width="150">
+											<h:outputText value="#{item.revenueType.value}" styleClass="blue bolder" />
+										</p:column>
+
+										<p:column headerText="Amount" width="100">
+											<h:outputText value="#{item.amount}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currency}" />
+										</p:column>
+
+										<p:column headerText="Amount MAD" width="100">
+											<h:outputText value="#{item.amount*item.madConversionRate}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+										</p:column>
+
+										<p:column headerText="System" width="100">
+											<h:outputText value="Invoice" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
+										</p:column>
+
+										<p:column headerText="Invoice">
+											<h:outputText value="#{item.idInvoice}" />
+										</p:column>
+
+										<p:column headerText="Invoice Date">
+											<h:outputText value="#{item.invoiceDate}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Invoice Status">
+											<h:outputText value="#{item.invoiceStatus}" />
+										</p:column>
+
+										<p:column headerText="Po">
+											<h:outputText value="#{item.poNumeroInvoice}" />
+										</p:column>
+
+										<p:column headerText="Customer" width="150">
+											<h:outputText value="#{item.customerName}" />
+										</p:column>
+
+										<p:column headerText="Actions" width="70">
+											<div class="action-buttons center">
+												<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
+													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												</p:commandLink>
+
+												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()" title="Show details"
+													styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												</p:commandLink>
+											</div>
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab8" class="tab-pane">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="From Project" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.fromProject.name}" styleClass="blue" />
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Type" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.type}" styleClass="label arrowed  label-danger" />
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Amount" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.amount}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Cash Amount" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.cashAmount}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="To Project" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.toProject.name}" styleClass="green" />
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Currency" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="MAD" styleClass="orange" />
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Date " />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.date}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Cash Date" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{deliveryRequestView.projectCross.cashDate}">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="space-16" />
+						<div style="width: 90%; margin: auto;">
+							<div class="well">
+								<h4 class="green smaller lighter">
+									<h:outputText value="Description" />
+								</h4>
+								<h:outputText value="#{deliveryRequestView.projectCross.description}" />
+							</div>
+						</div>
+					</div>
+					<div id="tab9" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" BoQ Mapping" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="boq_mapping" value="#{boqMappingView.bmiList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+										rowStyleClass="#{!deliveryRequestView.deliveryRequest.boqMappingList.isEmpty() and item.boq == null ?'aa-background-danger':''}">
+
+										<p:column headerText="DN Part Number">
+											<h:outputText value="#{item.partNumber.name}" styleClass="green bolder" />
+										</p:column>
+
+										<p:column headerText="Quantity" width="150">
+											<h:outputText value="#{item.quantity}" rendered="#{!boqMappingView.canSave()}" styleClass="blue" />
+											<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" thousandSeparator="" rendered="#{boqMappingView.canSave()}">
+												<p:ajax update="action-buttons" />
+											</p:inputNumber>
+											<span class="action-buttons center">
+												<h:panelGroup id="action-buttons">
+													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{boqMappingView.changeQuantityListener(item,rowIndexVar)}" update="boq_mapping">
+														<i class="ace-icon fa fa-check bigger-130 green" />
+													</p:commandLink>
+													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{boqMappingView.cancelChangeQuantityListener(item)}" update="boq_mapping">
+														<i class="ace-icon fa fa-remove bigger-130 red" />
+													</p:commandLink>
+												</h:panelGroup>
+											</span>
+										</p:column>
+
+										<p:column headerText="BoQ PN">
+											<h:outputText value="#{item.boq.partNumber.name}" rendered="#{!boqMappingView.canSave()}" styleClass="orange bolder" />
+											<p:commandLink action="#{boqMappingView.refreshBoqList()}" styleClass="editable-click" update=":mapForm" oncomplete="PF('mapDlg').show()" rendered="#{boqMappingView.canSave()}">
+												<h:outputText value="#{item.boq.partNumber.name}" styleClass="orange bolder" />
+												<h:outputText value="None" rendered="#{item.boq==null}" />
+												<f:setPropertyActionListener value="#{item}" target="#{boqMappingView.boqMappingInverse}" />
+											</p:commandLink>
+										</p:column>
+
+										<p:column headerText="Po Line">
+											<h:outputText value="#{item.boq.podetails.reference}" />
+										</p:column>
+
+										<p:column headerText="BoQ Line">
+											<h:outputText value="#{item.boq.reference}" />
+										</p:column>
+
+										<p:column headerText="Boq Quantity">
+											<h:outputText value="#{item.boqQuantity}" rendered="#{item.boq!=null}" styleClass="purple" />
+										</p:column>
+
+										<p:column headerText="Unit Price">
+											<h:outputText value="#{item.boq.unitPrice}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" rendered="#{item.boq!=null}" />
+										</p:column>
+
+										<p:column headerText="Type">
+											<h:outputText value="#{item.type}" styleClass="#{item.type=='Same PN'?'blue':item.type=='Formula'?'purple':'pink'}" />
+										</p:column>
+
+										<p:column headerText="Formula">
+											<h:outputText value="#{item.partNumberEquivalence.htmlFormula}" rendered="#{item.directEquivalence}" escape="false" />
+											<h:outputText value="#{item.partNumberEquivalence.inverseFormulaHtml}" rendered="#{!item.directEquivalence}" escape="false" />
+										</p:column>
+
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save" action="#{boqMappingView.save()}" update="boq_mapping,:main_form:messages" partialSubmit="true" process="boq_mapping"
+													rendered="#{boqMappingView.canSave()}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+
+												<p:commandLink styleClass="aa-tooltip tooltip-danger" title="Clear BoQ Mapping" action="#{deliveryRequestView.clearBoqMapping()}" update="boq_mapping,:main_form:messages"
+													partialSubmit="true" process="boq_mapping" rendered="#{deliveryRequestView.canClearBoqMapping()}">
+													<i class="fa fa-remove red" />
+												</p:commandLink>
+
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div style="width: 90%; margin: auto;">
+							<div class="hr hr8 hr-double hr-dotted"></div>
+							<div class="row">
+								<div class="col-sm-5 pull-right">
+									<h4 class="pull-right">
+										<h:outputText value="Total amount :" />
+										<span class="green">
+											<h:outputText value="#{boqMappingView.deliveryRequest.totalBoq}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+										</span>
+									</h4>
+								</div>
+								<div class="col-sm-7 pull-left">
+									<h:outputText value="Extra Information" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab10" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" Serial Number Details" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="serialNumberList" value="#{deliveryRequestSerialNumberView.list2}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+
+										<p:column headerText="#{deliveryRequestView.deliveryRequest.isOutbound?'Inbound DN / ':''} Part Number / Packing Numero" groupRow="true" width="300">
+											<h:outputText value="#{item.tmpInboundDeliveryRequest.reference} / " styleClass="green bolder" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
+											<h:outputText value="#{item.tmpPartNumber.name} / " styleClass="blue bolder" />
+											<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
+											<h:outputText value="*" rendered="#{deliveryRequestSerialNumberView.editMode and item.inboundStockRow == null and deliveryRequestView.deliveryRequest.isOutbound}" />
+										</p:column>
+
+										<p:column headerText="Packing Detail">
+											<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
+										</p:column>
+
+										<p:column headerText="Status">
+											<h:outputText value="#{item.inboundStockRow.status.value}" />
+											<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
+										</p:column>
+
+										<p:column headerText="Location">
+											<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
+											<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
+										</p:column>
+
+										<p:column headerText="Serial Number">
+											<h:outputText value="#{item.serialNumber}" styleClass="green bolder"
+												rendered="#{!deliveryRequestSerialNumberView.editMode or (item.inboundStockRow != null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound) }" />
+											<p:inputText value="#{item.serialNumber}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+											<p:selectOneMenu value="#{item.serialNumber}" filter="true" filterMatchMode="contains" style="width:100px"
+												rendered="#{item.inboundStockRow == null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{deliveryRequestSerialNumberView.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(item)}" var="i" itemLabel="#{i.serialNumber}"
+													itemValue="#{i.serialNumber}" />
+												<p:ajax listener="#{deliveryRequestSerialNumberView.selectSerialNumberListener(item,deliveryRequestView.deliveryRequest)}" update="serialNumberList" />
+											</p:selectOneMenu>
+										</p:column>
+
+										<p:column headerText="Box Id">
+											<h:outputText value="#{item.box}" styleClass="orange bolder" rendered="#{!deliveryRequestSerialNumberView.editMode}" />
+											<p:inputText value="#{item.box}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+										</p:column>
+
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{deliveryRequestSerialNumberView.initEdit(deliveryRequestView.deliveryRequest)}"
+													rendered="#{deliveryRequestSerialNumberView.canEdit(deliveryRequestView.deliveryRequest)}" update="serialNumberList">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{deliveryRequestSerialNumberView.editMode}" />
+												</p:commandLink>
+
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{deliveryRequestSerialNumberView.save(deliveryRequestView.deliveryRequest)}"
+													rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest)}" update="serialNumberList,:main_form:messages">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab11" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" Expiry Details" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="expiryDateList" value="#{deliveryRequestExpiryDateView.list1}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Inbound DN" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+											<h:outputText value="#{item.stockRow.inboundDeliveryRequest.reference}" styleClass="bolder green" />
+										</p:column>
+
+										<p:column headerText="Part Number">
+											<h:outputText value="#{item.stockRow.partNumber.name}" styleClass="bolder blue" />
+										</p:column>
+
+										<p:column headerText="Status">
+											<h:outputText value="#{item.stockRow.status.value}" styleClass="purple" />
+										</p:column>
+
+										<p:column headerText="Location">
+											<h:outputText value="#{item.stockRow.location.name}" styleClass="bolder orange" />
+										</p:column>
+
+										<p:column headerText="Quantity" width="150">
+											<h:outputText value="#{item.quantity}" rendered="#{!deliveryRequestExpiryDateView.editMode}" styleClass="bolder purple">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+
+											<p:inputNumber value="#{item.quantity}" readonly="#{item.id!=null}" maxValue="#{item.tmpQuantity}" minValue="0" rendered="#{deliveryRequestExpiryDateView.editMode}">
+												<p:ajax update="action-buttons" />
+											</p:inputNumber>
+
+											<span class="action-buttons center">
+												<h:panelGroup id="action-buttons">
+													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{deliveryRequestExpiryDateView.changeQuantityListener(item,rowIndexVar)}"
+														update="expiryDateList,:main_form:messages">
+														<i class="ace-icon fa fa-check bigger-130 green" />
+													</p:commandLink>
+													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{deliveryRequestExpiryDateView.cancelQuantityChange(item)}" update="expiryDateList,:main_form:messages">
+														<i class="ace-icon fa fa-remove bigger-130 red" />
+													</p:commandLink>
+												</h:panelGroup>
+											</span>
+										</p:column>
+
+										<p:column headerText="Expiry Date" width="150">
+											<h:outputText value="#{item.expiryDate}"
+												rendered="#{!deliveryRequestExpiryDateView.editMode or (deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isOutbound and item.id!=null) }"
+												styleClass="bolder #{item.expiryDate lt deliveryRequestView.deliveryRequest.date4?'red':'light-blue'} ">
+												<f:convertDateTime pattern="dd-MM-yyyy" />
+											</h:outputText>
+											<p:calendar value="#{item.expiryDate}" navigator="true" rendered="#{deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+											<h:selectOneMenu value="#{item.expiryDate}" rendered="#{deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isOutbound and item.id==null}"
+												converter="#{genericSecuredConverter}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{deliveryRequestExpiryDateView.findRemainingExpiryDateList(item.stockRow)}" var="date" itemLabel="#{date}" itemValue="#{date}" />
+											</h:selectOneMenu>
+
+
+										</p:column>
+
+										<p:column headerText="Actions" styleClass="center" width="100">
+											<div class="action-buttons center">
+												<p:commandLink title="Remove row" action="#{deliveryRequestExpiryDateView.remove(item,rowIndexVar)}" update="expiryDateList" partialSubmit="true" process="expiryDateList"
+													rendered="#{!item.initial and item.id==null and deliveryRequestExpiryDateView.editMode}">
+													<i class="ace-icon fa fa-remove bigger-130 red" />
+												</p:commandLink>
+											</div>
+										</p:column>
+
+
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{deliveryRequestExpiryDateView.initEdit(deliveryRequestView.deliveryRequest)}"
+													rendered="#{deliveryRequestExpiryDateView.canEdit(deliveryRequestView.deliveryRequest)}" update="expiryDateList">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{deliveryRequestExpiryDateView.editMode}" />
+												</p:commandLink>
+
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{deliveryRequestExpiryDateView.save(deliveryRequestView.deliveryRequest)}"
+													rendered="#{deliveryRequestExpiryDateView.canSave(deliveryRequestView.deliveryRequest)}" update="expiryDateList,:main_form:messages">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab12" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-10">
+										<i class="fa fa-list" />
+										<h:outputText value=" Packing" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="packingDetailSummaryList" value="#{deliveryRequestView.deliveryRequest.packingDetailSummaryList}" rows="40" var="item" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Type" styleClass="center" width="50">
+											<img src="#{item.typeImage}" width="20" height="20" />
+										</p:column>
+										<p:column headerText="Dimension">
+											<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" />
+										</p:column>
+										<p:column headerText="GW">
+											<h:outputText value="#{item.grossWeight} Kg" />
+										</p:column>
+										<p:column headerText="Volume">
+											<h:outputText value="#{item.volume} m3" />
+										</p:column>
+										<p:column headerText="Quantity">
+											<h:outputText value="#{item.quantity}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<f:event type="preRenderView" listener="#{deliveryRequestView.redirect}" />
+		<ui:include src="deliveryRequestFooter.xhtml" />
+		<ui:include src="acceptanceFooter.xhtml" />
+		<ui:include src="expensepaymentFooter.xhtml" />
+		<ui:include src="boqMappingFooter.xhtml" />
+	</ui:define>
+</ui:composition>

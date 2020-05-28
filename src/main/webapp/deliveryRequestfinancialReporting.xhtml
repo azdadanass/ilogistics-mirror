@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="resources/ace_template/assets/js/jquery.easypiechart.js" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="View PartNumber" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
+					<h:outputText value=" DN Financial" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-8">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="/index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1" onclick="outbound()">
+							<i class="red ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Outbound DN " styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab2" onclick="inbound()">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Inbound DN" styleClass="hidden-xs" />
+						</a>
+					</li>
+
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<p:remoteCommand name="outbound" action="#{deliveryRequestView.getFinancialLists(true)}" update="outbound" />
+						<h:panelGroup id="panel1">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Outbound DN" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="currentStock" fileName="outbound" postProcessor="#{deliveryRequestView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="outbound" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="outbound" value="#{deliveryRequestView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="DN" width="80">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.reference}" styleClass="red bolder" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</p:column>
+											
+											<p:column headerText="DN Status" width="100">
+												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+											</p:column>
+
+											<p:column headerText="Delivery Date" width="80">
+												<h:outputText value="#{item.date4}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+											</p:column>
+											
+											<p:column headerText="Po" width="100">
+												<h:outputText value="#{item.poNumero}" styleClass="blue bolder" />
+											</p:column>
+
+											<p:column headerText="Cost Center">
+												<h:outputText value="#{item.project.name}" styleClass="blue bolder" />
+											</p:column>
+
+											<p:column headerText="Destination Project">
+												<h:outputText value="#{item.destinationProject.name}" styleClass="green bolder" />
+											</p:column>
+
+											<p:column headerText="Customer">
+												<h:outputText value="#{item.destinationProjectCustomerName}" styleClass="purple aa-cut-text" />
+											</p:column>
+
+											<p:column headerText="DN Cost" width="100">
+												<h:outputText value="#{item.qTotalCost}" styleClass="green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.qTotalCost!=null}" styleClass="green" />
+											</p:column>
+
+											<p:column headerText="Cost Cross Charge" width="100">
+												<h:outputText value="#{item.qTotalCrossCharge}" styleClass="green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.qTotalCrossCharge!=null}" styleClass="green" />
+											</p:column>
+
+											<p:column headerText="DN revenue" width="100">
+												<h:outputText value="#{item.qTotalRevenue}" styleClass="blue">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.qTotalRevenue!=null}" styleClass="blue" />
+											</p:column>
+
+											<p:column headerText="Margin" width="100">
+												<h:outputText value="#{item.margin}" styleClass="#{item.margin ge 0 ?'blue':'red'}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.margin!=null}" styleClass="#{item.margin ge 0 ?'blue':'red'}" />
+											</p:column>
+
+											<p:column headerText="Margin %" width="70">
+												<h:outputText value="#{item.marginPercentage}" styleClass="#{item.margin ge 0 ?'blue':'red'}">
+													<f:convertNumber type="percent" maxFractionDigits="0" />
+												</h:outputText>
+											</p:column>
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab2" class="tab-pane">
+						<p:remoteCommand name="inbound" action="#{deliveryRequestView.getFinancialLists(false)}" update="inbound" />
+						<h:panelGroup id="panel2">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Inbound DN" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="inbound" fileName="inbound" postProcessor="#{deliveryRequestView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="inbound" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="inbound" value="#{deliveryRequestView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+											<p:column headerText="DN" width="80">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.reference}" styleClass="green bolder" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</p:column>
+											
+											<p:column headerText="Type" width="100">
+												<h:outputText value="#{item.inboundType.value}" styleClass="#{item.inboundType.color}"  />
+											</p:column>
+
+											<p:column headerText="DN Status" width="100">
+												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+											</p:column>
+
+											<p:column headerText="Delivery Date" width="80">
+												<h:outputText value="#{item.date4}">
+													<f:convertDateTime pattern="dd-MM-yyyy" />
+												</h:outputText>
+											</p:column>
+
+											<p:column headerText="Cost Center">
+												<h:outputText value="#{item.project.name}" styleClass="blue bolder" />
+											</p:column>
+
+
+											<p:column headerText="DN Cost" width="120">
+												<h:outputText value="#{item.qTotalCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.qTotalCost!=null}" />
+											</p:column>
+
+											<p:column headerText="Associated Cost" width="120">
+												<h:outputText value="#{item.qAssociatedCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.qAssociatedCost!=null}" />
+											</p:column>
+
+
+											<p:column headerText="Delta" width="120">
+												<h:outputText value="#{item.delta}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" rendered="#{item.delta!=null}" />
+											</p:column>
+
+
+											<p:column headerText="Delta %" width="120">
+												<h:outputText value="#{item.deltaPercentage}">
+													<f:convertNumber type="percent" maxFractionDigits="0" />
+												</h:outputText>
+											</p:column>
+
+
+
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

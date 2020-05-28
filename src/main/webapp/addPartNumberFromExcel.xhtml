@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="#{partNumberView.selectedId == null?'Add New':'Edit'} PartNumber" />
+			</li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.PartNumberStatus" var="PartNumberStatus" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa #{partNumberView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{partNumberView.selectedId == null?'Add New':'Edit'} PartNumber" />
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-5">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{partNumberView.saveFromExcel()}" update="messages,main_tab" title="Save">
+							<i class="ace-icon fa fa-save bigger-230"></i>
+							<h:outputText value="Save" />
+						</p:commandLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="tab-content profile-edit-tab-content">
+						<div class="tab-pane in active">
+							<p:messages id="messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Upload Excel File" />
+							</h4>
+							<div class="row">
+								<h:outputText value="You can download file template from " style="margin-left:20px" />
+								<h:outputLink target="blank" value="resources/doc/pn.xls">
+									<h:outputText value="here" styleClass="blue bolder" />
+								</h:outputLink>
+							</div>
+							<div class="space-8" />
+							<p:fileUpload fileUploadListener="#{partNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,main_tab" sizeLimit="20000000"
+								fileLimit="5" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%">
+							</p:fileUpload>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Preview" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<i class="fa fa-list" />
+										<h:outputText value=" Preview" />
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{partNumberView.list1}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Part Number">
+												<h:outputText value="#{item.name}" styleClass="bolder purple" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Industry" width="80">
+												<h:outputText value="#{item.partNumberType.category.industry.name}" styleClass="bolder blue" />
+											</p:column>
+											<p:column headerText="Category" width="120">
+												<h:outputText value="#{item.partNumberType.category.name}" styleClass="bolder green" />
+											</p:column>
+											<p:column headerText="Type" width="120">
+												<h:outputText value="#{item.partNumberType.name}" styleClass="bolder orange" />
+											</p:column>
+											<p:column headerText="Unit / Kit" width="70">
+												<h:outputText value="#{item.unit?'Unit':'Kit'}" styleClass="bolder #{item.unit?'green':'blue'}" />
+											</p:column>
+											<p:column headerText="Unit Type" width="80">
+												<h:outputText value="#{item.unitType}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<div class="space-16" />
+						</div>
+						<div class="row"></div>
+					</div>
+				</div>
+			</div>
+			<script src="/resources/ace_template/assets/js/typeahead.jquery.js" />
+			<h:outputText value="#{partNumberView.autocompleteScript('partNumberName')}" escape="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

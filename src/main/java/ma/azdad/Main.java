@@ -1,0 +1,100 @@
+package ma.azdad;
+
+import javax.faces.webapp.FacesServlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+@SpringBootApplication
+@EnableCaching
+@EnableScheduling
+@EnableAsync
+@EnableJpaRepositories(basePackages = { "ma.azdad" })
+@ComponentScan(basePackages = { "ma.azdad" })
+public class Main extends SpringBootServletInitializer {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Main.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(new Class[] { Main.class, Initializer.class });
+	}
+
+	@Bean
+	public FilterRegistrationBean FileUploadFilter() {
+		FilterRegistrationBean registration = new FilterRegistrationBean();
+		registration.setFilter(new org.primefaces.webapp.filter.FileUploadFilter());
+		registration.setName("PrimeFaces FileUpload Filter");
+		return registration;
+	}
+
+	@Bean
+	public ServletRegistrationBean servletRegistrationBean() {
+		FacesServlet servlet = new FacesServlet();
+		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(servlet, "*.xhtml");
+		return servletRegistrationBean;
+	}
+
+	@Bean
+	public ServletContextInitializer requestOrCommandScopeInitializer(final ConfigurableListableBeanFactory beanFactory) {
+		return new ServletContextInitializer() {
+			@Override
+			public void onStartup(ServletContext servletContext) throws ServletException {
+				beanFactory.registerScope("view", new SpringViewJsfScope());
+			}
+		};
+	}
+
+	@Bean
+	public EmbeddedServletContainerCustomizer containerCustomizer() {
+		return new EmbeddedServletContainerCustomizer() {
+			@Override
+			public void customize(ConfigurableEmbeddedServletContainer container) {
+				container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.xhtml"));
+			}
+		};
+	}
+
+	@Bean
+	public FilterRegistrationBean hiddenHttpMethodFilterDisabled(@Qualifier("hiddenHttpMethodFilter") HiddenHttpMethodFilter filter) {
+		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(filter);
+		filterRegistrationBean.setEnabled(false);
+		return filterRegistrationBean;
+	}
+
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurerAdapter() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+			}
+		};
+	}
+
+}

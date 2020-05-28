@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Schedule" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.Severities" var="Severities" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.TaskTypes" var="TaskTypes" allSuffix="ALL_ENUM_VALUES" />
+		<h:form id="main_form">
+
+			<p:growl id="growl" showDetail="true" />
+			<p:messages id="messages" closable="true" style="width : 600px" />
+
+			<div style="width: 1000px">
+				<p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT" timeFormat="HH">
+					<p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update=":task_form" oncomplete="PF('taskDlg').show();" />
+					<p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update=":task_form" oncomplete="PF('taskDlg').show();" />
+					<p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="growl" />
+					<p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="growl" />
+				</p:schedule>
+			</div>
+
+		</h:form>
+		<h:form id="task_form">
+			<p:dialog widgetVar="taskDlg" modal="true" closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close" onclick="PF('taskDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-check green" />
+						<h:outputText value=" Add / Edit Task" />
+					</h4>
+				</div>
+				<div class="modal-body">
+					<h:panelGroup id="eventDetails">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+										<h:outputText value="Type" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<h:selectOneMenu value="#{scheduleView.event.data.type}" required="true" requiredMessage="Type should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{TaskTypes.ALL_ENUM_VALUES}"></f:selectItems>
+											<p:ajax update="title,to,allDay" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+							</div>
+							<h:panelGroup id="title">
+								<f:subview rendered="#{scheduleView.event.data.type != TaskTypes.APPOINTMENT}">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+												<h:outputText value="Title" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:inputText value="#{scheduleView.event.title}" required="true" requiredMessage="Title should not be null" />
+											</div>
+										</div>
+									</div>
+								</f:subview>
+								<f:subview rendered="#{scheduleView.event.data != null and scheduleView.event.data.type == TaskTypes.APPOINTMENT}">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+												<h:outputText value="Patient" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:selectOneMenu value="#{scheduleView.event.data.patientId}" required="true" requiredMessage="Patient should not be null">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{patientView.findAllLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+												</p:selectOneMenu>
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</h:panelGroup>
+						</div>
+						<div class="space-4" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+										<h:outputText value="From" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:calendar value="#{scheduleView.event.startDate}" timeZone="GMT" pattern="dd/MM/yyyy HH:mm" />
+									</div>
+								</div>
+							</div>
+							<h:panelGroup id="to">
+								<f:subview rendered="#{scheduleView.event.data.type != TaskTypes.APPOINTMENT}">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+												<h:outputText value="To" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:calendar value="#{scheduleView.event.endDate}" timeZone="GMT" pattern="dd/MM/yyyy HH:mm" />
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</h:panelGroup>
+						</div>
+						<div class="space-4" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+										<h:outputText value="Severity" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<h:selectOneMenu value="#{scheduleView.event.data.severity}" required="true" requiredMessage="Severity should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{Severities.ALL_ENUM_VALUES}"></f:selectItems>
+										</h:selectOneMenu>
+									</div>
+								</div>
+							</div>
+							<h:panelGroup id="allDay">
+								<f:subview rendered="#{scheduleView.event.data.type != TaskTypes.APPOINTMENT}">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+												<h:outputText value="All Day" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<h:selectOneMenu value="#{scheduleView.event.allDay}">
+													<f:selectItem itemLabel="No" itemValue="false" />
+													<f:selectItem itemLabel="Yes" itemValue="true" />
+												</h:selectOneMenu>
+											</div>
+										</div>
+									</div>
+								</f:subview>
+							</h:panelGroup>
+						</div>
+						<div class="space-4" />
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Description" />
+						</h4>
+						<div class="row center">
+							<p:inputTextarea value="#{scheduleView.event.description}" style="width: 90%" />
+						</div>
+					</h:panelGroup>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-warning" onclick="PF('taskDlg').hide()">
+						<h:outputText value="Hide" />
+					</button>
+					
+					<p:commandButton actionListener="#{scheduleView.deleteEvent}" value="Delete" styleClass="btn btn-danger" partialSubmit="true" process="@this" update=":main_form:messages"
+						oncomplete="PF('myschedule').update();PF('taskDlg').hide()" rendered="#{scheduleView.event.id != null}" />
+					<p:commandButton actionListener="#{scheduleView.addEvent}" value="Save" styleClass="btn btn-success" update=":main_form:messages" oncomplete="PF('myschedule').update();PF('taskDlg').hide()" />
+
+				</div>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+

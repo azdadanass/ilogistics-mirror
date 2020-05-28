@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<h:form id="mapForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="mapDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('mapDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Select BoQ" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<br />
+				<div class="row">
+					<p:messages id="messages" closable="true" />
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-10 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" BoQ List" />
+							</div>
+
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="boqList" value="#{boqMappingView.boqList}" rowKey="#{item.id}" selection="#{boqMappingView.boqMappingInverse.boq}" var="item" rows="10"
+								styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+
+								<p:ajax event="rowSelectRadio" process="@this" update=":mapForm:formula" />
+
+								<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
+
+
+								<p:column headerText="Po Line">
+									<h:outputText value="#{item.podetails.reference}" styleClass="purple" />
+								</p:column>
+
+								<p:column headerText="BoQ Line">
+									<h:outputText value="#{item.reference}" styleClass="pink" />
+								</p:column>
+
+
+								<p:column headerText="Part Number">
+									<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+								</p:column>
+
+								<p:column headerText="Description" width="200">
+									<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+								</p:column>
+
+								<p:column headerText="Unit Price">
+									<h:outputText value="#{item.unitPrice}">
+										<f:convertNumber type="number" maxFractionDigits="2" />
+									</h:outputText>
+									<h:outputText value=" MAD" />
+								</p:column>
+
+
+								<p:column headerText="Boq Quantity">
+									<h:outputText value="#{item.totalQuantity}" styleClass="blue" />
+								</p:column>
+
+								<p:column headerText="Remaining Quantity">
+									<h:outputText value="#{item.remainingQuantity}" styleClass="green" />
+								</p:column>
+
+								<p:column headerText="Type">
+									<c:set var="test" value="#{item.partNumber.id == boqMappingView.boqMappingInverse.partNumber.id}" />
+									<h:outputText value="#{test?'Same PN':'Equivalence'}" styleClass="#{test?'blue':'purple'}" />
+								</p:column>
+
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<h:panelGroup id="formula">
+					<f:subview rendered="#{boqMappingView.boqMappingInverse.boq!=null and boqMappingView.boqMappingInverse.boq.partNumber.id != boqMappingView.boqMappingInverse.partNumber.id}">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
+										<h:outputText value="Select Formula " />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<h:selectOneMenu value="#{boqMappingView.boqMappingInverse.partNumberEquivalence}" converter="#{genericSecuredConverter}" required="true"
+											requiredMessage="Equivalence Formula should not be null" rendered="#{boqMappingView.boqMappingInverse.boq.directEquivalence}">
+											<f:selectItems value="#{boqMappingView.partNumberEquivalenceList}" var="item" itemLabel="#{item.formula}" itemValue="#{item}" />
+										</h:selectOneMenu>
+										<h:selectOneMenu value="#{boqMappingView.boqMappingInverse.partNumberEquivalence}" converter="#{genericSecuredConverter}" required="true"
+											requiredMessage="Equivalence Formula should not be null" rendered="#{!boqMappingView.boqMappingInverse.boq.directEquivalence}">
+											<f:selectItems value="#{boqMappingView.partNumberEquivalenceList}" var="item" itemLabel="#{item.inverseFormula}" itemValue="#{item}" />
+										</h:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</div>
+					</f:subview>
+				</h:panelGroup>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('mapDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{boqMappingView.map()}" value="Select" update="messages,boqList,formula,:main_form:boq_mapping" styleClass="btn btn-success" />
+			</div>
+		</p:dialog>
+	</h:form>
+
+
+</ui:composition>

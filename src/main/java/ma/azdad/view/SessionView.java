@@ -1,0 +1,164 @@
+package ma.azdad.view;
+
+import java.io.Serializable;
+import java.util.stream.Stream;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import ma.azdad.model.User;
+import ma.azdad.service.UserService;
+import ma.azdad.service.UtilsFunctions;
+
+@ManagedBean
+@Component
+@Transactional
+@Scope("session")
+public class SessionView implements Serializable {
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	@Autowired
+	protected UserService userService;
+
+	private String login;
+	private String serverName;
+	private User user;
+
+	@PostConstruct
+	public void init() {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		serverName = UtilsFunctions.getServerName();
+		login = auth.getName().toLowerCase().trim();
+		user = userService.findByLogin(login);
+		user.initRoles();
+		System.out.println("**********************************");
+		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");
+		System.out.println("serverName : " + serverName);
+		System.out.println("**********************************");
+	}
+
+	public Boolean getInternal() {
+		return user.getInternal();
+	}
+
+	public String getFullName() {
+		return user.getFullName();
+	}
+
+	public String getPhoto() {
+		return user.getPhoto();
+	}
+
+	public Boolean isTheConnectedUser(String identifier) {
+		return user.getUsername().equalsIgnoreCase(identifier);
+	}
+
+	public Boolean isTheConnectedUser(User user) {
+		if (user == null)
+			return false;
+		return isTheConnectedUser(user.getUsername());
+	}
+
+	public Boolean isTheConnectedUser(User... users) {
+		return Stream.of(users).anyMatch(i -> isTheConnectedUser(i));
+	}
+
+	public Boolean isUser() {
+		return user.getIsUser();
+	}
+
+	public Boolean getIsUser() {
+		return isUser();
+	}
+
+	public Boolean isSE() {
+		return user.getIsSE();
+	}
+
+	public Boolean getIsSE() {
+		return isSE();
+	}
+
+	public Boolean isPM() {
+		return user.getIsPM();
+	}
+
+	public Boolean getIsPM() {
+		return isPM();
+	}
+
+	public Boolean isWM() {
+		return user.getIsWM();
+	}
+
+	public Boolean getIsWM() {
+		return isWM();
+	}
+
+	public Boolean isTM() {
+		return user.getIsTM();
+	}
+
+	public Boolean getIsTM() {
+		return isTM();
+	}
+
+	public Boolean isAdmin() {
+		return user.getIsAdmin();
+	}
+
+	public Boolean getIsAdmin() {
+		return isAdmin();
+	}
+
+	public String getUsername() {
+		return user.getUserUsername();
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
+	}
+
+	public Logger getLog() {
+		return log;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+}

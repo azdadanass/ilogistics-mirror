@@ -1,0 +1,19 @@
+<script type="text/javascript">
+	$(function() {
+		Highcharts.chart('${id}', {
+			chart : {
+				type : 'column'
+			},
+			title : {
+				text : '${title}'
+			},
+			xAxis : {
+				categories : ${categories}
+			},
+			credits : {
+				enabled : false
+			},
+			series : ${series}
+		});
+	});
+</script>

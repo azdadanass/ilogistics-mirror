@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Base List" />
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="row">
+				<p:messages id="messages" closable="true" />
+				<h4 class="header blue bolder smaller">
+					<h:outputText value="Industries And Categories" />
+				</h4>
+
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-8 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Unit Type List" />
+							</div>
+							<div class="col-sm-2">
+								<div class="action-buttons center">
+									<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+										<img src="/resources/img/xls.png" width="20" height="20" />
+										<p:dataExporter type="xls" target="textTab" fileName="categoryList" />
+									</h:commandLink>
+								</div>
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{textView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="textTab" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{textView.list2}" rowKey="#{item.id}" id="textTab" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+								<p:column headerText="Name">
+									<h:outputText value="#{item.value}" styleClass="bolder purple" />
+								</p:column>
+
+
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{textView.deleteText()}"
+											rendered="#{textView.canDeleteText()}" update="textTab">
+											<i class="fa fa-trash-o red bigger-130" />
+											<f:setPropertyActionListener value="#{item}" target="#{textView.text}" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" action="#{textView.initText('partNumber','unitType')}" oncomplete="PF('addTextDlg').show()"
+											update=":addTextForm" rendered="#{textView.canAddText()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-8 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Industry List" />
+							</div>
+							<div class="col-sm-2">
+								<div class="action-buttons center">
+									<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+										<img src="/resources/img/xls.png" width="20" height="20" />
+										<p:dataExporter type="xls" target="partNumberIndustryTab" fileName="industryList" />
+									</h:commandLink>
+								</div>
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{partNumberIndustryView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="partNumberIndustryTab" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{partNumberIndustryView.list2}" rowKey="#{item.id}" id="partNumberIndustryTab" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+								<p:column headerText="Name">
+									<h:outputText value="#{item.name}" styleClass="bolder blue" />
+								</p:column>
+
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberIndustryView.deletePartNumberIndustry()}"
+											rendered="#{partNumberIndustryView.canDeletePartNumberIndustry()}" update="partNumberIndustryTab">
+											<i class="fa fa-trash-o red bigger-130" />
+											<f:setPropertyActionListener value="#{item}" target="#{partNumberIndustryView.partNumberIndustry}" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new industry" action="#{partNumberIndustryView.initPartNumberIndustry()}" oncomplete="PF('addIndustryDlg').show()"
+											update=":addIndustryForm" rendered="#{partNumberIndustryView.canSavePartNumberIndustry()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+				<div class="space-16"/>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-8 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Category List" />
+							</div>
+							<div class="col-sm-2">
+								<div class="action-buttons center">
+									<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+										<img src="/resources/img/xls.png" width="20" height="20" />
+										<p:dataExporter type="xls" target="partNumberCategoryTab" fileName="categoryList" />
+									</h:commandLink>
+								</div>
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{partNumberCategoryView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="partNumberCategoryTab" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{partNumberCategoryView.list2}" rowKey="#{item.id}" id="partNumberCategoryTab" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+								<p:column headerText="Name">
+									<h:outputText value="#{item.name}" styleClass="bolder green" />
+								</p:column>
+
+								<p:column headerText="Industry">
+									<h:outputText value="#{item.industry.name}" styleClass="blue" />
+								</p:column>
+
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberCategoryView.deletePartNumberCategory()}"
+											rendered="#{partNumberCategoryView.canDeletePartNumberCategory()}" update="partNumberCategoryTab">
+											<i class="fa fa-trash-o red bigger-130" />
+											<f:setPropertyActionListener value="#{item}" target="#{partNumberCategoryView.partNumberCategory}" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" action="#{partNumberCategoryView.initPartNumberCategory()}" oncomplete="PF('addCategoryDlg').show()"
+											update=":addCategoryForm" rendered="#{partNumberCategoryView.canSavePartNumberCategory()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-8 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Type List" />
+							</div>
+							<div class="col-sm-2">
+								<div class="action-buttons center">
+									<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+										<img src="/resources/img/xls.png" width="20" height="20" />
+										<p:dataExporter type="xls" target="partNumberTypeTab" fileName="typeList" />
+									</h:commandLink>
+								</div>
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{partNumberTypeView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="partNumberTypeTab" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{partNumberTypeView.list2}" rowKey="#{item.id}" id="partNumberTypeTab" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+
+								<p:column headerText="Name">
+									<h:outputText value="#{item.name}" styleClass="bolder orange" />
+								</p:column>
+
+								<p:column headerText="Category">
+									<h:outputText value="#{item.category.name}" styleClass="green" />
+								</p:column>
+								
+								<p:column headerText="Industry">
+									<h:outputText value="#{item.category.industry.name}" styleClass="blue" />
+								</p:column>
+
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberTypeView.deletePartNumberType()}" rendered="#{partNumberTypeView.canDeletePartNumberType()}"
+											update="partNumberTypeTab">
+											<i class="fa fa-trash-o red bigger-130" />
+											<f:setPropertyActionListener value="#{item}" target="#{partNumberTypeView.partNumberType}" />
+										</p:commandLink>
+									</div>
+								</p:column>
+
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" action="#{partNumberTypeView.initPartNumberType()}" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm"
+											rendered="#{partNumberTypeView.canSavePartNumberType()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+		</h:form>
+		<ui:include src="partNumberConfigurationFooter.xhtml" />
+	</ui:define>
+</ui:composition>

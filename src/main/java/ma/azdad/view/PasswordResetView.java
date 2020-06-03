@@ -71,7 +71,7 @@ public class PasswordResetView {
 			FacesContextMessages.ErrorMessages("Incorrect code !");
 	}
 
-	public void resetPassword() {
+	public void resetPassword() throws IOException {
 		if (step != 3)
 			return;
 		if (!password.equals(confirmation)) {
@@ -86,6 +86,7 @@ public class PasswordResetView {
 		step++;
 
 		FacesContextMessages.InfoMessages("Password Changed !");
+		emailService.sendPasswordChangedNotification(user);
 	}
 
 	private String generateRandomCode() {

@@ -113,7 +113,8 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select new User(a.id,a.fullName) from User a where a.customer.id = (select b.customer.id from Project b where b.id = ?1)")
 	public List<User> findLightByProject(Integer projectId);
 
-	@Query("from User where email = ?1")
-	public User findByEmail(String email);
+	User findByEmail(String email);
+
+	User findByPhone(String phone);
 
 }

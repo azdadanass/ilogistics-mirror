@@ -139,8 +139,8 @@ public class ExternalResourceService extends GenericService<ExternalResource> {
 
 			Affectation affectation = new Affectation();
 			affectation.setLineManager(user.getUser());
-			affectation.setHrManager(userRepos.findOne("l.sbay"));
-			affectation.setLogisticManager(userRepos.findOne("a.bassim"));
+			affectation.setHrManager(userRepos.findById("l.sbay").get());
+			affectation.setLogisticManager(userRepos.findById("a.bassim").get());
 			affectation.setUser(user);
 			affectationRepos.save(affectation);
 

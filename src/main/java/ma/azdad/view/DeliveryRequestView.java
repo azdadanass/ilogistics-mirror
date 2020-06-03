@@ -56,7 +56,7 @@ import ma.azdad.service.DeliveryRequestFileService;
 import ma.azdad.service.DeliveryRequestHistoryService;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
-import ma.azdad.service.EmailService;
+import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
@@ -111,7 +111,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	protected SiteService siteService;
 
 	@Autowired
-	protected EmailService emailService;
+	protected OldEmailService emailService;
 
 	@Autowired
 	protected TransporterService transporterService;
@@ -2221,7 +2221,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		return siteService;
 	}
 
-	public EmailService getEmailService() {
+	public OldEmailService getEmailService() {
 		return emailService;
 	}
 

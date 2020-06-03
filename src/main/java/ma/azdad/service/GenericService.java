@@ -24,12 +24,12 @@ public class GenericService<A extends GenericBean> {
 	protected CacheService cacheService;
 
 	public A findOneLight(Integer id) {
-		return repos.findOne(id);
+		return repos.findById(id).get();
 	}
 
 	@Transactional
 	public A findOne(Integer id) {
-		return repos.findOne(id);
+		return repos.findById(id).get();
 	}
 
 	public List<A> findAll() {
@@ -49,7 +49,7 @@ public class GenericService<A extends GenericBean> {
 	public void delete(Integer id) {
 		cacheEvict();
 		try {
-			repos.delete(id);
+			repos.deleteById(id);
 		} catch (DataIntegrityViolationException dataIntegrityViolationException) {
 			log.error(dataIntegrityViolationException.getMessage());
 		} catch (Exception e) {
@@ -81,7 +81,7 @@ public class GenericService<A extends GenericBean> {
 	}
 
 	public Boolean exists(Integer id) {
-		return repos.exists(id);
+		return repos.existsById(id);
 	}
 
 }

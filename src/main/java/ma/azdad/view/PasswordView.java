@@ -1,5 +1,7 @@
 package ma.azdad.view;
 
+import java.io.IOException;
+
 import javax.faces.bean.ManagedBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.service.EmailService;
+import ma.azdad.service.SmsService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 
@@ -22,11 +26,17 @@ public class PasswordView {
 	@Autowired
 	protected SessionView sessionView;
 
+	@Autowired
+	protected EmailService emailService;
+
+	@Autowired
+	protected SmsService smsService;
+
 	private String oldPassword;
 	private String newPassword;
 	private String confirmation;
 
-	public void updatePassword() {
+	public void updatePassword() throws IOException {
 		String oldPasswordMD5 = UtilsFunctions.stringToMD5(oldPassword);
 		if (!sessionView.getUser().getPassword().equals(oldPasswordMD5)) {
 			FacesContextMessages.ErrorMessages("Old Password Incorrect");
@@ -39,6 +49,8 @@ public class PasswordView {
 		String newPasswordMD5 = UtilsFunctions.stringToMD5(newPassword);
 		userService.updatePassword(sessionView.getUsername(), newPasswordMD5);
 		FacesContextMessages.InfoMessages("Password Changed !");
+		emailService.sendPasswordChangedNotification(sessionView.getUser());
+		smsService.sendSms(sessionView.getUser().getPhone(), "Dear " + sessionView.getUser().getFullName() + ", Your password has been changed successfully on the Orange application system");
 	}
 
 	public String getOldPassword() {

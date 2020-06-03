@@ -40,13 +40,13 @@ public class CustomerService {
 	}
 
 	public Customer findOne(Integer id) {
-		return customerRepos.findOne(id);
+		return customerRepos.findById(id).get();
 	}
 
 	public Customer findOneNullable(Integer id) {
 		if (id == null)
 			return null;
-		return customerRepos.findOne(id);
+		return customerRepos.findById(id).get();
 	}
 
 	public List<Customer> findLight() {

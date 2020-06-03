@@ -51,13 +51,11 @@ public class DeliveryRequestExpiryDateService extends GenericService<DeliveryReq
 	}
 
 	public List<Date> findRemainingExpiryDateList(StockRow outboundStockRow) {
-		return findRemainingExpiryDateList(outboundStockRow.getPartNumber().getId(), outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getStatus(),
-				outboundStockRow.getLocation().getId());
+		return findRemainingExpiryDateList(outboundStockRow.getPartNumber().getId(), outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
 	}
 
 	public Double findRemainingQuantity(DeliveryRequestExpiryDate dred) {
-		return deliveryRequestExpiryDateRepos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND,
-				dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
+		return deliveryRequestExpiryDateRepos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND, dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
 	}
 
 	public void generateForOutboundAssociatedWithInbound(Integer inboundDeliveryRequestId) {
@@ -79,9 +77,8 @@ public class DeliveryRequestExpiryDateService extends GenericService<DeliveryReq
 			List<DeliveryRequestExpiryDate> outboundExpiryList = findByDeliveryRequest(outboundDeliveryRequestId);
 			if (!outboundExpiryList.isEmpty())
 				continue;
-			for (StockRow stockRow : deliveryRequestRepos.findOne(outboundDeliveryRequestId).getStockRowList()) {
-				List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(),
-						stockRow.getStatus(), stockRow.getLocation().getId());
+			for (StockRow stockRow : deliveryRequestRepos.findById(outboundDeliveryRequestId).get().getStockRowList()) {
+				List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(), stockRow.getStatus(), stockRow.getLocation().getId());
 				if (list.size() != 1)
 					continue;
 				DeliveryRequestExpiryDate dred = new DeliveryRequestExpiryDate();
@@ -94,8 +91,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<DeliveryReq
 	}
 
 	public Date findOneExpiryDate(StockRow outboundStockRow) {
-		List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(),
-				outboundStockRow.getPartNumber().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
+		List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getPartNumber().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
 		if (list.size() == 1)
 			return list.get(0).getExpiryDate();
 		else

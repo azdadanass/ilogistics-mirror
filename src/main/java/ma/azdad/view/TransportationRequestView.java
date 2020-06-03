@@ -25,7 +25,7 @@ import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.service.DeliveryRequestService;
-import ma.azdad.service.EmailService;
+import ma.azdad.service.OldEmailService;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.SmsService;
@@ -79,7 +79,7 @@ public class TransportationRequestView extends GenericView<TransportationRequest
 	protected FileView fileView;
 
 	@Autowired
-	protected EmailService emailService;
+	protected OldEmailService emailService;
 
 	@Autowired
 	protected SmsService smsService;

@@ -4,18 +4,19 @@ import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.primefaces.webapp.filter.FileUploadFilter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.web.servlet.ErrorPage;
+import org.springframework.boot.web.server.ErrorPage;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,9 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
 @EnableCaching
@@ -46,17 +44,17 @@ public class Main extends SpringBootServletInitializer {
 	}
 
 	@Bean
-	public FilterRegistrationBean FileUploadFilter() {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(new org.primefaces.webapp.filter.FileUploadFilter());
+	public FilterRegistrationBean<FileUploadFilter> FileUploadFilter() {
+		FilterRegistrationBean<FileUploadFilter> registration = new FilterRegistrationBean<>();
+		registration.setFilter(new FileUploadFilter());
 		registration.setName("PrimeFaces FileUpload Filter");
 		return registration;
 	}
 
 	@Bean
-	public ServletRegistrationBean servletRegistrationBean() {
+	public ServletRegistrationBean<FacesServlet> servletRegistrationBean() {
 		FacesServlet servlet = new FacesServlet();
-		ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(servlet, "*.xhtml");
+		ServletRegistrationBean<FacesServlet> servletRegistrationBean = new ServletRegistrationBean<>(servlet, "*.xhtml");
 		return servletRegistrationBean;
 	}
 
@@ -71,30 +69,30 @@ public class Main extends SpringBootServletInitializer {
 	}
 
 	@Bean
-	public EmbeddedServletContainerCustomizer containerCustomizer() {
-		return new EmbeddedServletContainerCustomizer() {
+	public WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> containerCustomizer() {
+		return new WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>() {
 			@Override
-			public void customize(ConfigurableEmbeddedServletContainer container) {
-				container.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.xhtml"));
+			public void customize(ConfigurableServletWebServerFactory factory) {
+				factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/404.xhtml"));
 			}
 		};
 	}
 
 	@Bean
-	public FilterRegistrationBean hiddenHttpMethodFilterDisabled(@Qualifier("hiddenHttpMethodFilter") HiddenHttpMethodFilter filter) {
-		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(filter);
+	public FilterRegistrationBean<HiddenHttpMethodFilter> hiddenHttpMethodFilterDisabled(@Qualifier("hiddenHttpMethodFilter") HiddenHttpMethodFilter filter) {
+		FilterRegistrationBean<HiddenHttpMethodFilter> filterRegistrationBean = new FilterRegistrationBean<>(filter);
 		filterRegistrationBean.setEnabled(false);
 		return filterRegistrationBean;
 	}
 
-	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurerAdapter() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
-			}
-		};
-	}
+//	@Bean
+//	public WebMvcConfigurer corsConfigurer() {
+//		return new WebMvcConfigurerAdapter() {
+//			@Override
+//			public void addCorsMappings(CorsRegistry registry) {
+//				registry.addMapping("/**").allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
+//			}
+//		};
+//	}
 
 }

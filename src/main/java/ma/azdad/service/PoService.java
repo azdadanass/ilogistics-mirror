@@ -31,7 +31,7 @@ public class PoService {
 	private BoqService boqService;
 
 	public Po findOne(Integer id) {
-		return poRepos.findOne(id);
+		return poRepos.findById(id).get();
 	}
 
 	public List<Po> findByTypeAndProjectAndNotDelivered(String type, Integer projectId) {
@@ -44,8 +44,7 @@ public class PoService {
 			deliveryStatus = PoDeliveryStatus.PENDING;
 		else {
 			List<Podetails> podetailsList = podetailsRepos.findByPo(poId);
-			if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType())
-					&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+			if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 				deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
 			else
 				deliveryStatus = PoDeliveryStatus.DELIVERED;

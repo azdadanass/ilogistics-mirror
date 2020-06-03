@@ -27,6 +27,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.faces.context.FacesContext;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletContext;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -479,6 +481,15 @@ public class UtilsFunctions {
 			for (int i = 1; i < tab.length; i++)
 				path += "&" + tab[i];
 		return path;
+	}
+
+	public static Boolean validateEmail(String email) {
+		try {
+			new InternetAddress(email).validate();
+			return true;
+		} catch (AddressException e) {
+			return false;
+		}
 	}
 
 }

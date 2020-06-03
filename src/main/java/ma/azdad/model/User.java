@@ -139,6 +139,11 @@ public class User implements Serializable {
 	}
 
 	@Transient
+	public String getName() {
+		return this.fullName;
+	}
+
+	@Transient
 	public String getCompanyName() {
 		if (companyType == null)
 			return null;

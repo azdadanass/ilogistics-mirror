@@ -68,7 +68,7 @@ public class TransportationJobService extends GenericService<TransportationJob> 
 	}
 
 	public Map<String, Integer> getMapDateAndPlace(TransportationJob transportationJob) {
-		Map<String, Integer> result = new HashMap<>(); //positive:site, negative:warehouse
+		Map<String, Integer> result = new HashMap<>(); // positive:site, negative:warehouse
 		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 			String startDateStr = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
 			String endDateStr = UtilsFunctions.getFormattedDateTime(tr.getEndDate());
@@ -79,7 +79,7 @@ public class TransportationJobService extends GenericService<TransportationJob> 
 	}
 
 	public Boolean validateTransportationRequestListDates(TransportationJob transportationJob, List<TransportationRequest> newList) {
-		//positive:site, negative:warehouse
+		// positive:site, negative:warehouse
 		Map<String, Integer> mapDateAndPlace = getMapDateAndPlace(transportationJob);
 		for (TransportationRequest tr : newList) {
 			String startDateStr = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
@@ -163,8 +163,7 @@ public class TransportationJobService extends GenericService<TransportationJob> 
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService
-				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());
@@ -172,7 +171,7 @@ public class TransportationJobService extends GenericService<TransportationJob> 
 			tj.setVehicle(transportationRequest.getVehicle());
 			tj.setVehiclePrice(transportationRequest.getVehicle().getVehicleType().getPrice());
 			tj = save(tj);
-			transportationJobHistoryService.created(tj, userRepos.findOne("a.azdad"));
+			transportationJobHistoryService.created(tj, userRepos.findById("a.azdad").get());
 			transportationRequestService.calculateEstimatedDistanceAndDuration(transportationRequest);
 			transportationRequest.setTransportationJob(tj);
 			transportationRequest = transportationRequestService.save(transportationRequest);

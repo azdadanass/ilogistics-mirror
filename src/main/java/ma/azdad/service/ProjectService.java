@@ -26,7 +26,7 @@ public class ProjectService {
 	ProjectRepos repos;
 
 	public Project findOne(Integer id) {
-		Project p = repos.findOne(id);
+		Project p = repos.findById(id).get();
 		Hibernate.initialize(p.getManager());
 		Hibernate.initialize(p.getCustomer());
 		Hibernate.initialize(p.getCostcenter());

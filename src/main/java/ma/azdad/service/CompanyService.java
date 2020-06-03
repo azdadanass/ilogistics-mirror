@@ -22,7 +22,7 @@ public class CompanyService {
 	}
 
 	public Company findOne(Integer id) {
-		return companyRepos.findOne(id);
+		return companyRepos.findById(id).get();
 	}
 
 	public List<Company> find(List<Integer> idList) {

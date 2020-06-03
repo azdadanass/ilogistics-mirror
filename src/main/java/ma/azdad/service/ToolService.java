@@ -23,9 +23,8 @@ public class ToolService {
 	public List<Tool> findLightCarList() {
 		return findLight(1, "Active");
 	}
-	
-	
-	public Tool findOne(Integer id){
-		return toolRepos.findOne(id);
+
+	public Tool findOne(Integer id) {
+		return toolRepos.findById(id).get();
 	}
 }

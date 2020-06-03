@@ -52,9 +52,7 @@ public class ProjectCrossService {
 	}
 
 	public void addCrossCharge(DeliveryRequest deliveryRequest) {
-		Boolean canAddCrossCharge = deliveryRequest.getIsOutbound() && deliveryRequest.getDestinationProject() != null
-				&& !deliveryRequest.getProject().getId().equals(deliveryRequest.getDestinationProject().getId()) && UtilsFunctions.compareDoubles(deliveryRequest.getTotalCost(), 0.0) > 0
-				&& projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0;
+		Boolean canAddCrossCharge = deliveryRequest.getIsOutbound() && deliveryRequest.getDestinationProject() != null && !deliveryRequest.getProject().getId().equals(deliveryRequest.getDestinationProject().getId()) && UtilsFunctions.compareDoubles(deliveryRequest.getTotalCost(), 0.0) > 0 && projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0;
 
 		if (canAddCrossCharge)
 			System.err.println(deliveryRequest.getId());
@@ -73,15 +71,13 @@ public class ProjectCrossService {
 		pc.setCurrency(currencyService.findOne(1));
 		pc.setAmount(deliveryRequest.getTotalCost());
 		pc.setCashAmount(deliveryRequest.getTotalCost() * 1.2);
-		pc.setDescription("System Cross charge related to  " + deliveryRequest.getReference() + " from " + deliveryRequest.getProject().getName() + " delivered to "
-				+ deliveryRequest.getDestinationProject().getName() + " on " + UtilsFunctions.getFormattedDate(pc.getDate()));
+		pc.setDescription("System Cross charge related to  " + deliveryRequest.getReference() + " from " + deliveryRequest.getProject().getName() + " delivered to " + deliveryRequest.getDestinationProject().getName() + " on " + UtilsFunctions.getFormattedDate(pc.getDate()));
 		save(pc);
 
 	}
 
 	public void addCrossChargeForReturnFromOutbound(DeliveryRequest deliveryRequest) {
-		Boolean canAddCrossCharge = deliveryRequest.getIsInboundReturn() && UtilsFunctions.compareDoubles(deliveryRequest.getTotalCost(), 0.0) > 0
-				&& projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0 && projectCrossRepos.countByDeliveryRequest(deliveryRequest.getOutboundDeliveryRequestReturn().getId()) > 0;
+		Boolean canAddCrossCharge = deliveryRequest.getIsInboundReturn() && UtilsFunctions.compareDoubles(deliveryRequest.getTotalCost(), 0.0) > 0 && projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0 && projectCrossRepos.countByDeliveryRequest(deliveryRequest.getOutboundDeliveryRequestReturn().getId()) > 0;
 		if (!canAddCrossCharge)
 			return;
 		ProjectCross pc = new ProjectCross();
@@ -97,14 +93,13 @@ public class ProjectCrossService {
 		pc.setCurrency(currencyService.findOne(1));
 		pc.setAmount(deliveryRequest.getTotalCost());
 		pc.setCashAmount(deliveryRequest.getTotalCost() * 1.2);
-		pc.setDescription("System Cross charge related to  " + deliveryRequest.getReference() + " from " + pc.getFromProject().getName() + " delivered to " + pc.getToProject().getName() + " on "
-				+ UtilsFunctions.getFormattedDate(pc.getDate()));
+		pc.setDescription("System Cross charge related to  " + deliveryRequest.getReference() + " from " + pc.getFromProject().getName() + " delivered to " + pc.getToProject().getName() + " on " + UtilsFunctions.getFormattedDate(pc.getDate()));
 		save(pc);
 
 	}
 
 	public void delete(Integer id) {
-		projectCrossRepos.delete(id);
+		projectCrossRepos.deleteById(id);
 	}
 
 	public void addOrUpdateCrossChargeScript() {

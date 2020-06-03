@@ -15,7 +15,7 @@ public class CurrencyService {
 	private CurrencyRepos currencyRepos;
 
 	public Currency findOne(Integer id) {
-		return currencyRepos.findOne(id);
+		return currencyRepos.findById(id).get();
 	}
 
 }

@@ -30,7 +30,7 @@ public class UserService {
 	private CacheService cacheService;
 
 	public User findOne(String username) {
-		User u = repos.findOne(username);
+		User u = repos.findById(username).get();
 		Hibernate.initialize(u.getUserData());
 		Hibernate.initialize(u.getRoleList());
 		Hibernate.initialize(u.getFileList());
@@ -47,7 +47,7 @@ public class UserService {
 	public User findOneNullable(String username) {
 		if (username == null)
 			return null;
-		return repos.findOne(username);
+		return repos.findById(username).get();
 	}
 
 	public User save(User user) {
@@ -200,7 +200,7 @@ public class UserService {
 	public void delete(String username) {
 		cacheEvict();
 		try {
-			repos.delete(username);
+			repos.deleteById(username);
 		} catch (DataIntegrityViolationException dataIntegrityViolationException) {
 			log.error(dataIntegrityViolationException.getMessage());
 		} catch (Exception e) {
@@ -220,5 +220,13 @@ public class UserService {
 	@Cacheable("userService.find")
 	public List<User> find(Boolean internal) {
 		return repos.findByInternal(internal);
+	}
+
+	public User findByEmail(String email) {
+		return repos.findByEmail(email);
+	}
+
+	public User findByPhone(String phone) {
+		return repos.findByPhone(phone);
 	}
 }

@@ -1,20 +1,19 @@
 package ma.azdad.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Date;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -22,243 +21,142 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ma.azdad.model.DeliveryRequest;
-import ma.azdad.model.DeliveryRequestStatus;
-import ma.azdad.model.TransportationRequest;
-import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.utils.Mail;
-import ma.azdad.utils.To;
+import ma.azdad.utils.TemplateType;
 
 @Component
 @Transactional
 public class EmailService {
+	protected final Logger log = LoggerFactory.getLogger(EmailService.class);
 
 	@Autowired
 	private JavaMailSender mailSender;
 
 	@Autowired
-	private DeliveryRequestService deliveryRequestService;
+	private ThymeLeafService thymeLeafService;
 
 	@Autowired
-	private TransportationRequestService transportationRequestService;
+	private ResourceLoader resourceLoader;
 
 	@Value("${applicationName}")
 	private String applicationName;
 
-	private Mail erectMail(String to, Set<String> emailsInCc, String subject, String message) {
-		InternetAddress[] cc = generateInternetAddress(emailsInCc);
-		Mail mail = new Mail();
-		mail.setSubject(subject);
-
-		try {
-			mail.setFrom(new InternetAddress("system@3gcom-int.com", applicationName));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		mail.setTo(to);
-		mail.setCc(cc);
-		mail.setMessage(message);
-		return mail;
+	@Async
+	public void sendPasswordResetNotification(User user, String code) throws IOException {
+		String to = user.getEmail();
+		String subject = "Password Reset";
+		Mail mail = new Mail(to, subject, "passwordReset.html", TemplateType.HTML);
+		mail.addParameter("user", user);
+		mail.addParameter("code", code);
+		mail.addParameter("currentDate", new Date());
+		mail.addInline("app_icon", resourceLoader.getResource("classpath:img/app_icon.png").getFile());
+		mail.addInline("orange", resourceLoader.getResource("classpath:img/orange.png").getFile());
+		mail.addInline("telo", resourceLoader.getResource("classpath:img/telo.png").getFile());
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
 	}
 
-	private InternetAddress[] generateInternetAddress(Set<String> emails) {
-		if (emails == null || emails.isEmpty())
-			return null;
-		List<InternetAddress> list = new ArrayList<InternetAddress>();
-		for (String email : emails) {
-			try {
-				if (email == null)
-					continue;
-				InternetAddress internetAddress = new InternetAddress(email);
-				internetAddress.validate();
-				list.add(internetAddress);
-			} catch (AddressException e) {
-			}
-		}
-		return list.toArray(new InternetAddress[list.size()]);
+	@Async
+	public void sendPasswordChangedByAdminNotification(User user, String password) throws IOException {
+		String to = user.getEmail();
+		String subject = "Password Reset !";
+		Mail mail = new Mail(to, subject, "passwordChangedByAdmin.html", TemplateType.HTML);
+		mail.addParameter("user", user);
+		mail.addParameter("date", new Date());
+		mail.addParameter("password", password);
+		mail.addParameter("currentDate", new Date());
+		mail.addInline("app_icon", resourceLoader.getResource("classpath:img/app_icon.png").getFile());
+		mail.addInline("orange", resourceLoader.getResource("classpath:img/orange.png").getFile());
+		mail.addInline("img1", resourceLoader.getResource("classpath:img/passwordResetImg1.png").getFile());
+		mail.addInline("telo", resourceLoader.getResource("classpath:img/telo.png").getFile());
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
+
+	@Async
+	public void sendPasswordChangedNotification(User user) throws IOException {
+		String to = user.getEmail();
+		String subject = "Your password has been changed !";
+		Mail mail = new Mail(to, subject, "passwordChanged.html", TemplateType.HTML);
+		mail.addParameter("user", user);
+		mail.addParameter("currentDate", new Date());
+		mail.addInline("app_icon", resourceLoader.getResource("classpath:img/app_icon.png").getFile());
+		mail.addInline("orange", resourceLoader.getResource("classpath:img/orange.png").getFile());
+		mail.addInline("telo", resourceLoader.getResource("classpath:img/telo.png").getFile());
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
+
+	public void sendSimpleMail(String to, String subject, String message) {
+		send(new Mail(to, subject, message));
+	}
+
+	public void sendTestMail() {
+		String to = "a.azdad@3gcom-int.com";
+		String subject = "testMail";
+		String cc1 = "azdadanass@gmail.com";
+		String cc2 = "gcomappstest@gmail.com";
+
+		Mail mail = new Mail(to, subject, "test.html", TemplateType.HTML, cc1, cc2);
+		mail.addParameter("name", "A A");
+		mail.addParameter("subscriptionDate", new Date());
+		mail.addParameter("hobbies", Arrays.asList("Cinema", "Sports", "Music"));
+		mail.addInline("img1", new File("/home/azdad/Bureau/test.png"));
+		mail.addAttachment("attach1.pdf", new File("/home/azdad/Documents/sample.pdf"));
+		mail.generateMessageFromTemplate(thymeLeafService);
+
+		send(mail);
 	}
 
 	private void send(final Mail mail) {
+		if (!UtilsFunctions.validateEmail(mail.getTo()))
+			return;
 		mailSender.send(new MimeMessagePreparator() {
 			@Override
-			public void prepare(MimeMessage mimeMessage) throws MessagingException {
-				System.out.println("------------------------------------------------------");
-				System.out.println("Send mail");
-				System.out.println("------------------------------------------------------");
-				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
-				message.setFrom(mail.getFrom());
+			public void prepare(MimeMessage mimeMessage) throws MessagingException, UnsupportedEncodingException {
+				log.info("------------------------------------------------------");
+				log.info("Send mail");
+				log.info("\tto : " + mail.getTo());
+				log.info("\tmultipart : " + mail.getMultipart());
+				log.info("\tSubject : " + mail.getSubject());
+				log.info("------------------------------------------------------");
+				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, mail.getMultipart(), "UTF-8");
+				message.setFrom("system@3gcom-int.com", applicationName + " Orange");
 				message.setTo(mail.getTo());
-				if (mail.getCc() != null) {
-					message.setCc(mail.getCc());
-				}
 				message.setSubject(mail.getSubject());
 				message.setText(mail.getMessage(), true);
-				System.out.println("\tTo \t" + mail.getTo());
-				System.out.println("\tSubject \t" + mail.getSubject());
-				System.out.println("------------------------------------------------------");
+				if (mail.getCc() != null)
+					message.setCc(mail.getCc());
+
+				if (mail.getMultipart()) {
+					if (mail.getInlineMap() != null)
+						mail.getInlineMap().forEach((x, y) -> {
+							try {
+								message.addInline(x, y);
+							} catch (MessagingException e) {
+								e.printStackTrace();
+							}
+						});
+					if (mail.getAttachmentMap() != null)
+						mail.getAttachmentMap().forEach((x, y) -> {
+							try {
+								message.addAttachment(x, y);
+							} catch (MessagingException e) {
+								e.printStackTrace();
+							}
+						});
+					if (mail.getDataSourceAttachmentMap() != null)
+						mail.getDataSourceAttachmentMap().forEach((x, y) -> {
+							try {
+								message.addAttachment(x, y);
+							} catch (MessagingException e) {
+								e.printStackTrace();
+							}
+						});
+				}
 			}
 		});
 	}
-
-	private boolean validateEmail(String email) {
-		try {
-			new InternetAddress(email).validate();
-			;
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
-
-	// @Async
-	// public void deliveryRequestNotification(DeliveryRequest deliveryRequest) {
-	// System.out.println("send deliveryRequestNotification");
-	//
-	// String object = deliveryRequest.getType().getValue() + " " +
-	// deliveryRequest.getReference() + ", " + deliveryRequest.getStatus();
-	// if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
-	// object += deliveryRequest.getIsInbound() ? " to warehouse" :
-	// deliveryRequest.getDestination() != null ? " to " +
-	// deliveryRequest.getDestination().getName() : " to site";
-	//
-	// Set<To> toList = deliveryRequest.getToList();
-	// for (To to : toList) {
-	// if (!to.hasValidEmail())
-	// continue;
-	// try {
-	// send(erectMail(to.getEmail(), null, object,
-	// deliveryRequestService.generateEmailNotification(deliveryRequest, true)));
-	// } catch (Exception e) {
-	// System.out.println("deliveryRequestNotification error : " + e.getMessage());
-	// }
-	// }
-	// }
-
-	@Async
-	public void deliveryRequestNotification(DeliveryRequest deliveryRequest) {
-		if (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus()))
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())), deliveryRequest.getProject().getManager().getFullName());
-		else if (DeliveryRequestStatus.REJECTED.equals(deliveryRequest.getStatus()))
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
-		else if (Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())) {
-			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
-			cc.add(deliveryRequest.getProject().getManager().getEmail());
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
-			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
-		}
-	}
-
-	private void deliveryRequestNotification(DeliveryRequest deliveryRequest, String to, Set<String> cc, String dearFullName) {
-		if (!validateEmail(to))
-			return;
-		try {
-			String object = deliveryRequest.getType().getValue() + " " + deliveryRequest.getReference() + ", " + deliveryRequest.getStatus();
-			send(erectMail(to, cc, object, deliveryRequestService.generateEmailNotification(deliveryRequest, dearFullName, true)));
-		} catch (Exception e) {
-			System.out.println("deliveryRequestNotification error : " + e.getMessage());
-		}
-	}
-
-	// @Async
-	// public void deliveryRequestNotificationOld(DeliveryRequest deliveryRequest) {
-	// try {
-	// System.out.println("TRY deliveryRequestNotification ! ");
-	//
-	// String to = "";
-	// Set<String> cc = new HashSet<String>();
-	// if (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus())) {
-	// to = deliveryRequest.getProject().getManager().getEmail();
-	// cc.add(deliveryRequest.getRequester().getEmail());
-	// } else {
-	// to = deliveryRequest.getRequester().getEmail();
-	// cc.add(deliveryRequest.getProject().getManager().getEmail());
-	// for (ToNotify toNotify : deliveryRequest.getToNotifyList())
-	// if (toNotify.getNotifyByEmail() &&
-	// UtilsFunctions.isValidEmail(toNotify.getEmail()))
-	// cc.add(toNotify.getEmail());
-	// }
-	// if (!validateEmail(to))
-	// return;
-	//
-	// String object = deliveryRequest.getType().getValue() + " " +
-	// deliveryRequest.getReference() + ", " + deliveryRequest.getStatus();
-	// if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
-	// object += deliveryRequest.getIsInbound() ? " to warehouse" :
-	// deliveryRequest.getDestination() != null ? " to " +
-	// deliveryRequest.getDestination().getName() : " to site";
-	//
-	// Mail mail = erectMail(to, cc, object,
-	// deliveryRequestService.generateEmailNotification(deliveryRequest, true));
-	// send(mail);
-	// } catch (Exception e) {
-	// System.err.println("Emailservice deliveryRequestNotification error : ");
-	// System.err.println(e.getMessage());
-	// e.printStackTrace();
-	// }
-	// }
-
-	@Async
-	public void transportationRequestNotification(TransportationRequest transportationRequest) {
-		if (TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()))
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getRequester().getEmail())), transportationRequest.getDeliveryRequest().getProject().getManager().getFullName());
-		else if (TransportationRequestStatus.APPROVED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.ASSIGNED.equals(transportationRequest.getStatus()))
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail())), transportationRequest.getDeliveryRequest().getRequester().getFullName());
-		else if (TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus())) {
-			Set<String> cc = transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> item.getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
-			cc.add(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail());
-
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), cc, transportationRequest.getDeliveryRequest().getRequester().getFullName());
-			if (TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus()))
-				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> !item.getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).forEach(item -> transportationRequestNotification(transportationRequest, item.getEmail(), null, item.getFullName()));
-		}
-	}
-
-	private void transportationRequestNotification(TransportationRequest transportationRequest, String to, Set<String> cc, String dearFullName) {
-		if (!validateEmail(to))
-			return;
-		try {
-			String object = "Transportation Request " + transportationRequest.getStatus();
-			send(erectMail(to, cc, object, transportationRequestService.generateEmailNotification(transportationRequest, dearFullName)));
-		} catch (Exception e) {
-			System.out.println("deliveryRequestNotification error : " + e.getMessage());
-		}
-	}
-
-	// @Async
-	// public void transportationRequestNotificationOld(TransportationRequest
-	// transportationRequest) {
-	// try {
-	// System.out.println("TRY transportationRequestNotification ! ");
-	//
-	// String to = "";
-	// Set<String> cc = new HashSet<String>();
-	// if
-	// (TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()))
-	// {
-	// to =
-	// transportationRequest.getDeliveryRequest().getProject().getManager().getEmail();
-	// cc.add(transportationRequest.getDeliveryRequest().getRequester().getEmail());
-	// } else {
-	// to = transportationRequest.getDeliveryRequest().getRequester().getEmail();
-	// cc.add(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail());
-	// for (ToNotify toNotify :
-	// transportationRequest.getDeliveryRequest().getToNotifyList())
-	// if (toNotify.getNotifyByEmail() &&
-	// UtilsFunctions.isValidEmail(toNotify.getEmail()))
-	// cc.add(toNotify.getEmail());
-	// }
-	// if (!validateEmail(to))
-	// return;
-	// Mail mail = erectMail(to, cc, "Transportation Request " +
-	// transportationRequest.getStatus(),
-	// transportationRequestService.generateEmailNotification(transportationRequest));
-	// send(mail);
-	// } catch (Exception e) {
-	// System.err.println("Emailservice transportationRequestNotification error :
-	// ");
-	// System.err.println(e.getMessage());
-	// e.printStackTrace();
-	// }
-	// }
 
 }

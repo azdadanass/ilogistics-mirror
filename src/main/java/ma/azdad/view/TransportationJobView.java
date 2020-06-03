@@ -27,7 +27,7 @@ import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.service.DeliveryRequestService;
-import ma.azdad.service.EmailService;
+import ma.azdad.service.OldEmailService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.PathService;
 import ma.azdad.service.SmsService;
@@ -91,7 +91,7 @@ public class TransportationJobView extends GenericView<TransportationJob> {
 	protected UserService userService;
 
 	@Autowired
-	protected EmailService emailService;
+	protected OldEmailService emailService;
 
 	@Autowired
 	protected SmsService smsService;

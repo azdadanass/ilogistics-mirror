@@ -15,7 +15,7 @@ public class AcceptanceService {
 	private AcceptanceRepos acceptanceRepos;
 
 	public Acceptance findOne(Integer id) {
-		return acceptanceRepos.findOne(id);
+		return acceptanceRepos.findById(id).get();
 	}
 
 	public Long countPendingAcceptances(Integer transportationRequestId) {

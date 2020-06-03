@@ -22,13 +22,13 @@ public class SupplierService {
 	}
 
 	public Supplier findOne(Integer id) {
-		return supplierRepos.findOne(id);
+		return supplierRepos.findById(id).get();
 	}
 
 	public Supplier findOneNullable(Integer id) {
 		if (id == null)
 			return null;
-		return supplierRepos.findOne(id);
+		return supplierRepos.findById(id).get();
 	}
 
 	public List<Supplier> findLight() {

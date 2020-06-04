@@ -2,8 +2,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich" xmlns:p="http://primefaces.org/ui" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
-
-
 	<div id="sidebar" class="sidebar responsive">
 		<h:form id="sider_form">
 			<h:panelGroup id="sider-panel">
@@ -18,16 +16,17 @@
 								<b class="arrow fa fa-angle-down"></b>
 							</a>
 							<b class="arrow"></b>
-
 							<ul class="submenu">
-								<li>
-									<h:outputLink value="partNumberList.xhtml">
-										<i class="menu-icon fa fa-caret-right"></i>
-										<i class="ace-icon fa fa-database bigger-130 green" style="margin-right: 10px" />
-										<h:outputText value="Part Number List" />
-									</h:outputLink>
-									<b class="arrow"></b>
-								</li>
+								<f:subview rendered="#{sessionView.isSE}">
+									<li>
+										<h:outputLink value="partNumberList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-database bigger-130 green" style="margin-right: 10px" />
+											<h:outputText value="Part Number List" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</f:subview>
 								<f:subview rendered="#{sessionView.isTM}">
 									<li>
 										<h:outputLink value="vehicleTypeList.xhtml">
@@ -91,31 +90,15 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
+									<li>
+										<h:outputLink value="projectList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
+											<h:outputText value="Project List" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
 								</f:subview>
-								<li>
-									<h:outputLink value="userList.xhtml">
-										<i class="menu-icon fa fa-caret-right"></i>
-										<i class="ace-icon fa fa-user bigger-130 blue" style="margin-right: 10px" />
-										<h:outputText value="External Resources" />
-									</h:outputLink>
-									<b class="arrow"></b>
-								</li>
-								<li>
-									<h:outputLink value="toNotifyList.xhtml">
-										<i class="menu-icon fa fa-caret-right"></i>
-										<i class="ace-icon fa fa-envelope bigger-130 purple" style="margin-right: 10px" />
-										<h:outputText value="To Notify List" />
-									</h:outputLink>
-									<b class="arrow"></b>
-								</li>
-								<li>
-									<h:outputLink value="projectList.xhtml">
-										<i class="menu-icon fa fa-caret-right"></i>
-										<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
-										<h:outputText value="Project List" />
-									</h:outputLink>
-									<b class="arrow"></b>
-								</li>
 							</ul>
 						</li>
 					</f:subview>
@@ -130,7 +113,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="deliveryRequestList.xhtml">
@@ -196,7 +178,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="transportationRequestList.xhtml">
@@ -260,7 +241,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="transportationJobList.xhtml">
@@ -310,7 +290,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="transportationRequestList.xhtml">
@@ -343,7 +322,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="stockRowList.xhtml">
@@ -366,7 +344,6 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
-
 									<li>
 										<h:outputLink value="deliveryReporting.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
@@ -377,7 +354,6 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
-
 									<!-- <f:subview rendered="#{stockRowView.customerId!=null}">
 										<li>
 											<h:outputLink value="destinationReporting.xhtml">
@@ -431,7 +407,6 @@
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
 								<b class="arrow"></b>
-
 								<ul class="submenu">
 									<li>
 										<h:outputLink value="stockRowList.xhtml">
@@ -472,7 +447,6 @@
 											</h:outputLink>
 											<b class="arrow"></b>
 										</li>
-
 									</f:subview>
 								</ul>
 							</li>
@@ -486,7 +460,6 @@
 										<b class="arrow fa fa-angle-down"></b>
 									</a>
 									<b class="arrow"></b>
-
 									<ul class="submenu">
 										<li>
 											<h:outputLink value="projectFinancial.xhtml">
@@ -514,12 +487,9 @@
 				</ul>
 			</h:panelGroup>
 		</h:form>
-
-
 		<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
 			<i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
 		</div>
-
 		<p:ajaxStatus id="ajaxStatusPanel">
 			<f:facet name="start">
 				<i class="ace-icon fa fa-spinner fa-spin grey bigger-125" />
@@ -528,9 +498,5 @@
 				<h:outputText value="" />
 			</f:facet>
 		</p:ajaxStatus>
-
-
 	</div>
-
-
 </ui:composition>

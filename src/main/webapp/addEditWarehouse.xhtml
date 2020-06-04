@@ -83,7 +83,6 @@
 										</label>
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu value="#{warehouseView.warehouse.owner}" style="width: 178px" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
-												<f:selectItem itemLabel="3Gcom" noSelectionOption="true" />
 												<f:selectItems value="#{customerView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Customer)" itemValue="#{item}" />
 												<f:selectItems value="#{supplierView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Supplier)" itemValue="#{item}" />
 											</p:selectOneMenu>
@@ -150,25 +149,11 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="managerList" value="#{warehouseView.warehouse.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-											<p:column headerText="Type">
-												<h:selectOneMenu value="#{item.internal}">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItem itemLabel="Internal" itemValue="true" />
-													<f:selectItem itemLabel="External" itemValue="false" />
-													<p:ajax update="manager" />
-												</h:selectOneMenu>
-											</p:column>
 											<p:column headerText="Manager">
-												<h:panelGroup id="manager">
-													<p:selectOneMenu value="#{item.userUsername}" filter="true" filterMatchMode="contains" rendered="#{item.internal}">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightAndActive()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
-													</p:selectOneMenu>
-													<p:selectOneMenu value="#{item.userId}" filter="true" filterMatchMode="contains" rendered="#{!item.internal}">
-														<f:selectItem itemLabel="-----" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLight()}" var="er" itemLabel="#{er.fullName}" itemValue="#{er.id}" />
-													</p:selectOneMenu>
-												</h:panelGroup>
+												<p:selectOneMenu value="#{item.userUsername}" filter="true" filterMatchMode="contains">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{userView.findLightAndActive()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+												</p:selectOneMenu>
 											</p:column>
 											<p:column headerText="Actions" styleClass="center" width="100">
 												<div class="action-buttons center">

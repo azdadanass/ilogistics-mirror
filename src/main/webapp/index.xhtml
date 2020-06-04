@@ -84,23 +84,10 @@
 					</figcaption>
 				</p:commandLink> </figure>
 			</div>
-			<div class="row">
-				<button id="button1" type="button">tesssst</button>
-			</div>
 		</h:form>
 		<form id="login_form" method="post">
 			<input type="text" id="username" name="username" class="hide" required="required" style="width: 100%" placeholder="Username" />
 			<input type="password" id="password" name="password" class="hide" required="required" style="width: 100%" placeholder="Password" />
 		</form>
-		<script>
-			$('#button1').click(
-					function() {
-						$.get("http://localhost:8080/logout");
-						$('#login_form').attr('action','http://localhost:8080/login.xhtml');
-						$('#username').val('a.azdad');
-						$('#password').val('1a1dc91c907325c69271ddf0c944bc72');
-						$('#login_form').submit(); 
-					});
-		</script>
 	</ui:define>
 </ui:composition>

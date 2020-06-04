@@ -80,7 +80,7 @@ public class CacheView implements Serializable {
 		this.selectedMenu = selectedMenu;
 		switch (selectedMenu) {
 		case 1:
-			return addParameters("partNumberList.xhtml", "faces-redirect=true");
+			return addParameters(sessionView.getIsAdmin() ? "warehouseList.xhtml" : "partNumberList.xhtml", "faces-redirect=true");
 		case 2:
 			if (sessionView.isPM() || sessionView.isWM() || sessionView.isUser())
 				return addParameters("deliveryRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");

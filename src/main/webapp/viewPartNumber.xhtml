@@ -658,7 +658,7 @@
 										<p:column headerText="Added By" styleClass="center">
 											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
 											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.identifier)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>
 
@@ -717,7 +717,7 @@
 										<p:column headerText="User" width="120">
 											<h:outputText id="user" value="#{item.user.fullName}" styleClass="purple bolder" />
 											<p:overlayPanel for="user" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.identifier)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>
 

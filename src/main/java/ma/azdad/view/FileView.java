@@ -36,6 +36,9 @@ public class FileView {
 	@Value("${filesPath}")
 	private String path;
 
+	@Value("${photosPath}")
+	private String photosPath;
+
 	public StreamedContent getFile(String fileName) throws FileNotFoundException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
@@ -45,7 +48,8 @@ public class FileView {
 		log.info("fileName : " + fileName);
 		log.info("contentType : " + contentType);
 		log.info("contentLength : " + contentLength);
-		// InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/demo/images/optimus.jpg");
+		// InputStream stream =
+		// FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/demo/images/optimus.jpg");
 		InputStream stream = new FileInputStream(file);
 		return new DefaultStreamedContent(stream, contentType, fileName);
 	}
@@ -54,22 +58,46 @@ public class FileView {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		if (fc.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
-			// So, we're rendering the HTML. Return a stub StreamedContent so that it will generate right URL.
+			// So, we're rendering the HTML. Return a stub StreamedContent so that it will
+			// generate right URL.
 			return new DefaultStreamedContent();
 		} else {
-			// So, browser is requesting the media. Return a real StreamedContent with the media bytes.
+			// So, browser is requesting the media. Return a real StreamedContent with the
+			// media bytes.
 			String fileName = fc.getExternalContext().getRequestParameterMap().get("fileName");
 			String contentType = ec.getMimeType(fileName);
 			File file = new File(path + fileName);
 			try {
 				InputStream stream = new FileInputStream(file);
-				return new DefaultStreamedContent(stream, contentType, fileName);	
+				return new DefaultStreamedContent(stream, contentType, fileName);
 			} catch (Exception e) {
 				System.err.println(e.getMessage());
 				return null;
 			}
-			
+
 		}
+	}
+
+	public StreamedContent getStream(String path) throws IOException {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		ExternalContext ec = fc.getExternalContext();
+		if (fc.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			// So, we're rendering the HTML. Return a stub StreamedContent so that it will
+			// generate right URL.
+			return new DefaultStreamedContent();
+		} else {
+			// So, browser is requesting the media. Return a real StreamedContent with the
+			// media bytes.
+			String fileName = fc.getExternalContext().getRequestParameterMap().get("fileName");
+			String contentType = ec.getMimeType(fileName);
+			File file = new File(path + fileName);
+			InputStream stream = new FileInputStream(file);
+			return new DefaultStreamedContent(stream, contentType, fileName);
+		}
+	}
+
+	public StreamedContent getPhotoStream() throws IOException {
+		return getStream(photosPath);
 	}
 
 	public File handleFileUpload(FileUploadEvent event) throws IOException {
@@ -87,7 +115,7 @@ public class FileView {
 		return file;
 	}
 
-	//old uploading
+	// old uploading
 	public String uploadFileOld(FileUploadEvent event, String fileName, String folder) {
 		System.out.println("\n-------------------------------------------------------------------\n");
 		System.out.println("upload : " + event.getFile().getFileName() + "\t" + event.getFile().getContentType() + "\t" + event.getFile().getSize());

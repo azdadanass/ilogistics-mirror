@@ -334,7 +334,9 @@
 						</li>
 						<li class="light-blue">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
-								<img src="#{sessionView.photo}" class="nav-user-photo" />
+								<p:graphicImage value="#{fileView.photoStream}" styleClass="nav-user-photo">
+									<f:param name="fileName" value="#{sessionView.user.photo}" />
+								</p:graphicImage>
 								<span class="user-info hidden-xs">
 									<small>
 										<h:outputText value="Welcome," />

@@ -1189,7 +1189,9 @@
 											<p:dataTable id="notification_tab" value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
-													<img src="#{item.photo}" class="img-circle aa-datatable-photo" />
+													<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+														<f:param name="fileName" value="#{item.photo}" />
+													</p:graphicImage>
 												</p:column>
 												<p:column headerText="Full Name">
 													<h:outputText value="#{item.fullName}" styleClass="green bolder" />

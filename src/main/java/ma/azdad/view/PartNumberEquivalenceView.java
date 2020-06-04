@@ -38,6 +38,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 
 	private List<Integer> toDeleteDetailList = new ArrayList<>();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
@@ -51,6 +52,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 			partNumberEquivalence = partNumberEquivalenceService.findOne(selectedId);
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 		partNumberId = UtilsFunctions.getIntegerParameter("partNumberId");
@@ -85,7 +87,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 	// SAVE PARTNUMBEREQUIVALENCE
 	public Boolean canSavePartNumberEquivalence() {
 		if (isListPage || isAddPage)
-			return sessionView.isAdmin();
+			return sessionView.isSE();
 		else if (isViewPage || isEditPage)
 			return false;
 		return false;
@@ -114,16 +116,15 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 			return FacesContextMessages.ErrorMessages("Part Number should not be function of itself !");
 
 		if (partNumberEquivalence.getDetailList().size() == 1)
-			if (partNumberEquivalence.getPartNumber().getEquivalenceList().stream()
-					.filter(i -> i.getDetailList().size() == 1 && i.getDetailList().get(0).getPartNumber().equals(partNumberEquivalence.getDetailList().get(0).getPartNumber())).count() > 0)
+			if (partNumberEquivalence.getPartNumber().getEquivalenceList().stream().filter(i -> i.getDetailList().size() == 1 && i.getDetailList().get(0).getPartNumber().equals(partNumberEquivalence.getDetailList().get(0).getPartNumber())).count() > 0)
 				return FacesContextMessages.ErrorMessages("Part Number " + partNumberEquivalence.getDetailList().get(0).getPartNumber().getName() + " Already Used !");
 
 		return true;
 	}
 
-	//TOGGLE STATUS
+	// TOGGLE STATUS
 	public Boolean canToggleStatus() {
-		return sessionView.isAdmin();
+		return sessionView.isSE();
 	}
 
 	public void toggleStatus() {
@@ -136,7 +137,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 
 	// DELETE PARTNUMBEREQUIVALENCE
 	public Boolean canDeletePartNumberEquivalence() {
-		return sessionView.isAdmin();
+		return sessionView.isSE();
 	}
 
 	public String deletePartNumberEquivalence() {
@@ -147,7 +148,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 
 	// Detail management
 	public Boolean canAddDetail() {
-		return isAddPage && sessionView.isAdmin();
+		return isAddPage && sessionView.isSE();
 	}
 
 	public void addDetail() {
@@ -156,7 +157,7 @@ public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence
 	}
 
 	public Boolean canRemoveDetail() {
-		return sessionView.isAdmin();
+		return sessionView.isSE();
 	}
 
 	public void removeDetail(int index) {

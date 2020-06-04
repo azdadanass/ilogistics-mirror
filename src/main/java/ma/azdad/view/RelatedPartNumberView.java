@@ -35,6 +35,7 @@ public class RelatedPartNumberView extends GenericView<RelatedPartNumber> {
 	private RelatedPartNumber relatedPartNumber = new RelatedPartNumber();
 	private Boolean editMode = false;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
@@ -45,6 +46,7 @@ public class RelatedPartNumberView extends GenericView<RelatedPartNumber> {
 			relatedPartNumber = relatedPartNumberService.findOne(selectedId);
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 	}
@@ -115,11 +117,11 @@ public class RelatedPartNumberView extends GenericView<RelatedPartNumber> {
 
 	// EDIT MODE
 	public Boolean canEdit() {
-		return sessionView.isAdmin() && !editMode;
+		return sessionView.isSE() && !editMode;
 	}
 
 	public Boolean canAddRow() {
-		return sessionView.isAdmin() && editMode;
+		return sessionView.isSE() && editMode;
 	}
 
 	public void addRow() {
@@ -156,7 +158,6 @@ public class RelatedPartNumberView extends GenericView<RelatedPartNumber> {
 			relatedPartNumber.setPartNumber2(!relatedPartNumber.getIsPartNumber1() ? relatedPartNumber.getTmpPartNumber() : partNumber);
 			relatedPartNumberService.save(relatedPartNumber);
 		}
-		
 
 		refreshList();
 		editMode = false;

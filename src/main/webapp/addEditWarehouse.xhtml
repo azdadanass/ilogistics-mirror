@@ -83,6 +83,7 @@
 										</label>
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu value="#{warehouseView.warehouse.owner}" style="width: 178px" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
+												<f:selectItem itemLabel="---" noSelectionOption="true"/>
 												<f:selectItems value="#{customerView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Customer)" itemValue="#{item}" />
 												<f:selectItems value="#{supplierView.findLabelValueList()}" var="item" itemLabel="#{item.label} (Supplier)" itemValue="#{item}" />
 											</p:selectOneMenu>
@@ -99,7 +100,7 @@
 											<h:outputText value="Surface" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber value="#{warehouseView.warehouse.surface}" thousandSeparator="" />
+											<p:inputNumber value="#{warehouseView.warehouse.surface}" thousandSeparator="" decimalSeparator="." placeholder="(en m2)"/>
 										</div>
 									</div>
 								</div>
@@ -109,7 +110,7 @@
 											<h:outputText value="Volume" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber value="#{warehouseView.warehouse.volume}" thousandSeparator="" />
+											<p:inputNumber value="#{warehouseView.warehouse.volume}" thousandSeparator="" decimalSeparator="." placeholder="(en m3)"/>
 										</div>
 									</div>
 								</div>
@@ -152,7 +153,7 @@
 											<p:column headerText="Manager">
 												<p:selectOneMenu value="#{item.userUsername}" filter="true" filterMatchMode="contains">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{userView.findLightAndActive()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+													<f:selectItems value="#{userView.findWarehouseManagerList()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
 												</p:selectOneMenu>
 											</p:column>
 											<p:column headerText="Actions" styleClass="center" width="100">
@@ -198,7 +199,7 @@
 											<h:outputText value="Latitude" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber id="lat" value="#{warehouseView.warehouse.latitude}" required="true" requiredMessage="Latitude should not be null" decimalPlaces="6">
+											<p:inputNumber id="lat" value="#{warehouseView.warehouse.latitude}" required="true" requiredMessage="Latitude should not be null" decimalPlaces="6" thousandSeparator="" decimalSeparator=".">
 												<p:ajax listener="#{warehouseView.refreshMapModel()}" event="keyup" update="gmap" />
 											</p:inputNumber>
 										</div>
@@ -210,7 +211,7 @@
 											<h:outputText value="Longitude" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber id="lng" value="#{warehouseView.warehouse.longitude}" required="true" requiredMessage="Longitude should not be null" decimalPlaces="6">
+											<p:inputNumber id="lng" value="#{warehouseView.warehouse.longitude}" required="true" requiredMessage="Longitude should not be null" decimalPlaces="6" thousandSeparator="" decimalSeparator=".">
 												<p:ajax listener="#{warehouseView.refreshMapModel()}" event="keyup" update="gmap" />
 											</p:inputNumber>
 										</div>

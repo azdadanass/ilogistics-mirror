@@ -129,12 +129,6 @@
 							</p:column>
 
 
-							<p:column headerText="Manager">
-								<h:outputText id="manager" value="#{item.manager.fullName}" styleClass="purple bolder" />
-								<p:overlayPanel for="manager" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-									<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.manager.username)}" />
-								</p:overlayPanel>
-							</p:column>
 
 							<p:column headerText="Status">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />

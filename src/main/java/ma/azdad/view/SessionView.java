@@ -59,8 +59,8 @@ public class SessionView implements Serializable {
 		return user.getPhoto();
 	}
 
-	public Boolean isTheConnectedUser(String identifier) {
-		return user.getUsername().equalsIgnoreCase(identifier);
+	public Boolean isTheConnectedUser(String username) {
+		return user.getUsername().equalsIgnoreCase(username);
 	}
 
 	public Boolean isTheConnectedUser(User user) {

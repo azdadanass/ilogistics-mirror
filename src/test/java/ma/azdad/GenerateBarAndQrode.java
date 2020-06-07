@@ -54,7 +54,7 @@ public class GenerateBarAndQrode {
 		document.open();
 
 		// qrcode Cell
-		BarcodeQRCode barcodeQrcode = new BarcodeQRCode("http://qr.3gcom.ma/45496/dfcae9a98d1db2ca389ed075a70494d5", 300, 300, null);
+		BarcodeQRCode barcodeQrcode = new BarcodeQRCode("https://qr.orange.telodigital.com/45496/dfcae9a98d1db2ca389ed075a70494d5", 300, 300, null);
 		Image qrcodeImage = barcodeQrcode.getImage();
 		qrcodeImage.scaleToFit(100, 100);
 		cell1 = new PdfPCell();
@@ -125,7 +125,7 @@ public class GenerateBarAndQrode {
 		BarcodeQRCode barcodeQrcode = new BarcodeQRCode("DN10234;PN: XDGDD45454", 100, 100, null);
 		Image qrcodeImage = barcodeQrcode.getImage();
 		qrcodeImage.scaleToFit(95, 95);
-		//		qrcodeImage.scalePercent(100);
+		// qrcodeImage.scalePercent(100);
 		Image logo = Image.getInstance("/home/anass/Bureau/logo.png");
 		logo.scaleToFit(50, 60);
 		logo.setAlignment(Element.ALIGN_CENTER);
@@ -169,18 +169,18 @@ public class GenerateBarAndQrode {
 		table1.addCell(cell1);
 		document.add(table1);
 
-		//		document.add(new Chunk("00", normalFont));
+		// document.add(new Chunk("00", normalFont));
 		//
-		//		document.add(new Chunk("\nPN:", normalFont));
-		//		document.add(new Chunk("EAB-7M7MRS120350FF", boldFont));
+		// document.add(new Chunk("\nPN:", normalFont));
+		// document.add(new Chunk("EAB-7M7MRS120350FF", boldFont));
 		//
-		//		document.add(new Chunk("\nDelivery Date:", normalFont));
-		//		document.add(new Chunk("2018-01-01", boldFont));
+		// document.add(new Chunk("\nDelivery Date:", normalFont));
+		// document.add(new Chunk("2018-01-01", boldFont));
 
 		document.close();
 	}
 
-	//	@Test
+	// @Test
 	public void test1() throws InterruptedException, IOException, DocumentException {
 
 		// Document document = new Document(PageSize.A7.rotate(), 10, 10, 10, 10);

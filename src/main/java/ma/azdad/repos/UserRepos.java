@@ -15,33 +15,33 @@ import ma.azdad.model.User;
 public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query("select new User(username,fullName,photo,email,job,phone,cin) from User ")
-	public List<User> find();
+	List<User> find();
 
 	List<User> findByInternal(Boolean internal);
 
 	@Modifying
 	@Query("update User set password = ?2 where username = ?1")
-	public void updatePassword(String username, String password);
+	void updatePassword(String username, String password);
 
 	@Query("select new User(username,fullName) from User ")
-	public List<User> findLight();
+	List<User> findLight();
 
 	@Query("select new User(username,fullName,photo,email,job) from User ")
-	public List<User> findLight2();
+	List<User> findLight2();
 
 	@Query("select new User(user.username,user.fullName) from UserRole where role = ?1")
-	public List<User> findLightByRole(Role role);
+	List<User> findLightByRole(Role role);
 
 	@Query("select new User(username,fullName) from User where username in (?1)")
-	public List<User> findLightByUsernameList(List<String> list);
+	List<User> findLightByUsernameList(List<String> list);
 
 	@Query("select new User(a.username,a.fullName) from User a,Affectation b where a.username = b.user.username and b.lineManager.username = ?1 and a.contractActive = ?2")
-	public List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean contractActive);
+	List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean contractActive);
 
 	@Query("select new User(a.username,a.fullName) from User a where a.contractActive = ?1")
-	public List<User> findLightByStatus(Boolean contractActive);
+	List<User> findLightByStatus(Boolean contractActive);
 
-	public Long countByUsername(String username);
+	Long countByUsername(String username);
 
 	User findByLogin(String login);
 
@@ -56,62 +56,65 @@ public interface UserRepos extends JpaRepository<User, String> {
 	List<User> findLightByUser(Boolean internal, String userUsername);
 
 	@Query(select1 + " from User a where a.id in (?1)")
-	public List<User> findLight(List<Integer> idList);
+	List<User> findLight(List<Integer> idList);
 
 	@Query(select1 + " from User a where a.user.username = ?1")
-	public List<User> findLight(String username);
+	List<User> findLight(String username);
 
 	@Query(select1 + " from User a where a.companyType = ?1 and a.customer.id = ?2")
-	public List<User> findLightByCustomer(CompanyType companyType, Integer customerId);
+	List<User> findLightByCustomer(CompanyType companyType, Integer customerId);
 
 	@Query(select1 + " from User a where a.companyType = ?1 and a.supplier.id = ?2")
-	public List<User> findLightBySupplier(CompanyType companyType, Integer supplierId);
+	List<User> findLightBySupplier(CompanyType companyType, Integer supplierId);
 
 	@Query(select1 + " from User a where a.companyType = ?1 and a.company = ?2")
-	public List<User> findLightByCompany(CompanyType companyType, String company);
+	List<User> findLightByCompany(CompanyType companyType, String company);
 
-	public List<User> findByJob(String job);
+	List<User> findByJob(String job);
 
 	@Query("select count(*) from User where cin = ?1")
-	public Long countByCin(String cin);
+	Long countByCin(String cin);
 
 	@Query("select count(*) from User where cin = ?1 and username != ?2")
-	public Long countByCin(String cin, String username);
+	Long countByCin(String cin, String username);
 
 	@Query("select count(*) from User where email = ?1")
-	public Long countByEmail(String email);
+	Long countByEmail(String email);
 
 	@Query("select count(*) from User where email = ?1 and username != ?2")
-	public Long countByEmail(String email, String username);
+	Long countByEmail(String email, String username);
 
 	@Query("select count(*) from User where phone = ?1")
-	public Long countByPhone(String phone);
+	Long countByPhone(String phone);
 
 	@Query("select count(*) from User where phone = ?1 and username != ?2")
-	public Long countByPhone(String phone, String username);
+	Long countByPhone(String phone, String username);
 
 	@Query("select count(*) from User where firstName = ?1 and lastName = ?2")
-	public Long countByFirstNameAndLastName(String firstName, String lastName);
+	Long countByFirstNameAndLastName(String firstName, String lastName);
 
 	@Query("select count(*) from User where firstName = ?1 and lastName = ?2 and username != ?3")
-	public Long countByFirstNameAndLastName(String firstName, String lastName, String username);
+	Long countByFirstNameAndLastName(String firstName, String lastName, String username);
 
 	@Query(select1 + " from User a where a.transporter.id = ?1")
-	public List<User> findLightByTransporter(Integer transporterId);
+	List<User> findLightByTransporter(Integer transporterId);
 
 	@Query("select a.customer.id from User a where a.id = ?1")
-	public Integer findCustomerId(Integer id);
+	Integer findCustomerId(Integer id);
 
 	@Query("from User a where a.customer.id = ?1")
-	public List<User> findByCustomer(Integer customerId);
+	List<User> findByCustomer(Integer customerId);
 
 	@Query("from User a where a.supplier.id = ?1")
-	public List<User> findBySupplier(Integer supplierId);
+	List<User> findBySupplier(Integer supplierId);
 
-	public List<User> findByCompany(String company);
+	@Query("from User a where (a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2) and (select count(*) from UserRole b where b.user.id = a.id and b.role = ?3) > 0")
+	List<User> findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(Integer customerId, Integer supplierId, Role DeliveryRequestNotificationRole);
+
+	List<User> findByCompany(String company);
 
 	@Query("select new User(a.id,a.fullName) from User a where a.customer.id = (select b.customer.id from Project b where b.id = ?1)")
-	public List<User> findLightByProject(Integer projectId);
+	List<User> findLightByProject(Integer projectId);
 
 	User findByEmail(String email);
 

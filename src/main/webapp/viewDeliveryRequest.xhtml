@@ -315,7 +315,7 @@
 											</span>
 											<p:overlayPanel for="step4_1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false"
-													value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.identifier,deliveryRequestView.deliveryRequest.warehouse.firstManager.identifier, deliveryRequestView.deliveryRequest.date4)}" />
+													value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.username,deliveryRequestView.deliveryRequest.warehouse.firstManager.username, deliveryRequestView.deliveryRequest.date4)}" />
 											</p:overlayPanel>
 										</li>
 									</f:subview>
@@ -328,7 +328,7 @@
 												<h:outputText id="step4_2" value="#{DeliveryRequestStatus.DELIVRED.value}" />
 												<p:overlayPanel for="step4_2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.identifier,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.identifier.username:deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date4)}" />
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.username,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.username:deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date4)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -499,7 +499,7 @@
 											</p:graphicImage>
 										</p:column>
 										<p:column headerText="Full Name">
-											<h:outputText value="#{item.fullName}" styleClass="#{item.internal?'green':'blue'} bolder" />
+											<h:outputText value="#{item.fullName}" styleClass="#{item.internalResource.internal?'green':'blue'} bolder" />
 										</p:column>
 										<p:column headerText="Email">
 											<h:outputText value="#{item.email}" styleClass="light-blue" />

@@ -18,15 +18,15 @@ public class VehicleFile extends GenericFile<Vehicle> implements Serializable {
 
 	}
 
-	public VehicleFile(Date date, String name, String type, File file, Vehicle parent, User user) {
-		this.date = date;
-		this.name = name;
-		this.type = type;
-		this.link = file.getName();
+	public VehicleFile(String folder, File file, String type, String name, Vehicle parent, User user) {
+		this.date = new Date();
+		this.link = folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link);
 		this.size = UtilsFunctions.getFormattedSize(file.length());
-		this.parent = parent;
+		this.type = type;
+		this.name = name;
 		this.user = user;
+		this.parent = parent;
 	}
 
 }

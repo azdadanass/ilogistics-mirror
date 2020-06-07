@@ -2,7 +2,6 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -153,7 +152,7 @@ public class SiteView extends GenericView<Site> {
 
 		for (Site site : siteService.findAllCoordinates()) {
 			Marker marker = new Marker(new LatLng(site.getLatitude(), site.getLongitude()), site.getName());
-			marker.setIcon("http://maps.google.com/mapfiles/ms/micons/blue-dot.png");
+			marker.setIcon("https://maps.google.com/mapfiles/ms/micons/blue-dot.png");
 			mapModel.addOverlay(marker);
 		}
 		mapModel.addOverlay(new Marker(new LatLng(site.getLatitude(), site.getLongitude()), "Marker"));
@@ -414,8 +413,8 @@ public class SiteView extends GenericView<Site> {
 	private Integer siteFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		SiteFile siteFile = new SiteFile(new Date(), event.getFile().getFileName(), siteFileType, file, site, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		SiteFile siteFile = new SiteFile(getClassName2(), file, siteFileType, event.getFile().getFileName(), site, sessionView.getUser());
 		siteFileService.save(siteFile);
 		synchronized (SiteView.class) {
 			refreshSite();

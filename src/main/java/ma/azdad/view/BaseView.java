@@ -2,7 +2,6 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -36,6 +35,7 @@ public class BaseView extends GenericView<Base> {
 	private Base base = new Base();
 	private BaseFile baseFile;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
@@ -87,8 +87,8 @@ public class BaseView extends GenericView<Base> {
 	private Integer baseFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		BaseFile baseFile = new BaseFile(new Date(), event.getFile().getFileName(), baseFileType, file, base);
+		File file = fileView.handleFileUpload(event, getClassName2());
+		BaseFile baseFile = new BaseFile(getClassName2(), file, baseFileType, event.getFile().getFileName(), sessionView.getUser());
 		baseFileService.save(baseFile);
 		synchronized (BaseView.class) {
 			refreshBase();
@@ -101,10 +101,12 @@ public class BaseView extends GenericView<Base> {
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

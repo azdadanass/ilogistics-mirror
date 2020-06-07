@@ -144,10 +144,10 @@ public class OldEmailService {
 		else if (DeliveryRequestStatus.REJECTED.equals(deliveryRequest.getStatus()))
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
 		else if (Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())) {
-			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
+			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
 			cc.add(deliveryRequest.getProject().getManager().getEmail());
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
-			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
+			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
 		}
 	}
 
@@ -207,12 +207,12 @@ public class OldEmailService {
 		else if (TransportationRequestStatus.APPROVED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.ASSIGNED.equals(transportationRequest.getStatus()))
 			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail())), transportationRequest.getDeliveryRequest().getRequester().getFullName());
 		else if (TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus())) {
-			Set<String> cc = transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> item.getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
+			Set<String> cc = transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
 			cc.add(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail());
 
 			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), cc, transportationRequest.getDeliveryRequest().getRequester().getFullName());
 			if (TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus()))
-				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> !item.getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).forEach(item -> transportationRequestNotification(transportationRequest, item.getEmail(), null, item.getFullName()));
+				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).forEach(item -> transportationRequestNotification(transportationRequest, item.getEmail(), null, item.getFullName()));
 		}
 	}
 

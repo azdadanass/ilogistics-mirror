@@ -18,14 +18,14 @@ public class BaseFile extends GenericFile<Base> implements Serializable {
 
 	}
 
-	public BaseFile(Date date, String name, String type, File file, Base parent) {
-		this.date = date;
-		this.name = name;
-		this.type = type;
-		this.link = file.getName();
+	public BaseFile(String folder, File file, String type, String name, User user) {
+		this.date = new Date();
+		this.link = folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link);
 		this.size = UtilsFunctions.getFormattedSize(file.length());
-		this.parent = parent;
+		this.type = type;
+		this.name = name;
+		this.user = user;
 	}
 
 }

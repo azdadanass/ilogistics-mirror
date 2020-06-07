@@ -11,7 +11,6 @@ import javax.persistence.Transient;
 
 public class ToNotify extends GenericBean implements Serializable {
 
-	private Boolean internal;
 	private User internalResource;
 	private Boolean notifyByEmail = true;
 	private Boolean notifyBySms = true;
@@ -25,9 +24,12 @@ public class ToNotify extends GenericBean implements Serializable {
 		super();
 	}
 
-	public ToNotify(Boolean internal, User internalResource, DeliveryRequest deliveryRequest) {
+	public ToNotify(User internalResource) {
+		this.internalResource = internalResource;
+	}
+
+	public ToNotify(User internalResource, DeliveryRequest deliveryRequest) {
 		super();
-		this.internal = internal;
 		this.internalResource = internalResource;
 		this.deliveryRequest = deliveryRequest;
 	}
@@ -92,14 +94,6 @@ public class ToNotify extends GenericBean implements Serializable {
 
 	public void setDeliveryRequest(DeliveryRequest deliveryRequest) {
 		this.deliveryRequest = deliveryRequest;
-	}
-
-	public Boolean getInternal() {
-		return internal;
-	}
-
-	public void setInternal(Boolean internal) {
-		this.internal = internal;
 	}
 
 	@Transient

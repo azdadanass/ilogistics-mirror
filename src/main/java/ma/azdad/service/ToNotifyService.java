@@ -26,7 +26,7 @@ public class ToNotifyService extends GenericService<ToNotify> {
 
 	public List<ToNotify> findByUser(String username) {
 		List<ToNotify> result = toNotifyRepos.findByUser(username);
-		result.stream().filter(i -> !i.getInternal()).forEach(i -> {
+		result.stream().filter(i -> !i.getInternalResource().getInternal()).forEach(i -> {
 			Hibernate.initialize(i.getUser().getSupplier());
 			Hibernate.initialize(i.getUser().getCustomer());
 		});

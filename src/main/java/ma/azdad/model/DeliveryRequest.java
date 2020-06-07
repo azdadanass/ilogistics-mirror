@@ -291,6 +291,16 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		user7 = null;
 	}
 
+	public void addToNotify(ToNotify toNotify) {
+		toNotify.setDeliveryRequest(this);
+		toNotifyList.add(toNotify);
+	}
+
+	public void removeToNotify(ToNotify toNotify) {
+		toNotify.setDeliveryRequest(null);
+		toNotifyList.remove(toNotify);
+	}
+
 	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
@@ -363,7 +373,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 		if (!template.getToNotifyList().isEmpty())
 			for (ToNotify toNotify : template.getToNotifyList())
-				toNotifyList.add(new ToNotify(toNotify.getInternal(), toNotify.getInternalResource(), this));
+				toNotifyList.add(new ToNotify(toNotify.getInternalResource(), this));
 
 	}
 
@@ -418,6 +428,18 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 				return "Planned return";
 
 		return null;
+	}
+
+	@Transient
+	public Integer getCompanyId() {
+		return company == null ? null : company.getId();
+	}
+
+	@Transient
+	public void setCompanyId(Integer companyId) {
+		if (company == null || !company.getId().equals(companyId))
+			company = new Company();
+		company.setId(companyId);
 	}
 
 	@Transient

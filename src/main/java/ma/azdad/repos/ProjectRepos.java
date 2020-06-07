@@ -13,7 +13,7 @@ import ma.azdad.model.Project;
 @Repository
 public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	String select1 = "select new Project(id,name,type,startDate,endDate,customer.id) ";
-	String select2 = "select new Project(id,name,type,subType,startDate,endDate,customer.name,customerWarehousing,customerStockManagement) ";
+	String select2 = "select new Project(id,name,type,subType,startDate,endDate,customer.name,customerWarehousing,customerStockManagement,sdm) ";
 
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();

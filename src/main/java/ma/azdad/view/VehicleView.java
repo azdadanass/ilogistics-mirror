@@ -2,7 +2,6 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -109,8 +108,8 @@ public class VehicleView extends GenericView<Vehicle> {
 	private Integer vehicleFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		VehicleFile vehicleFile = new VehicleFile(new Date(), event.getFile().getFileName(), vehicleFileType, file, vehicle, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		VehicleFile vehicleFile = new VehicleFile(getClassName2(), file, vehicleFileType, event.getFile().getFileName(), vehicle, sessionView.getUser());
 		vehicleFileService.save(vehicleFile);
 		synchronized (VehicleView.class) {
 			refreshVehicle();

@@ -25,9 +25,9 @@ import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.service.DeliveryRequestService;
-import ma.azdad.service.OldEmailService;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.MapService;
+import ma.azdad.service.OldEmailService;
 import ma.azdad.service.SmsService;
 import ma.azdad.service.TransportationRequestFileService;
 import ma.azdad.service.TransportationRequestHistoryService;
@@ -502,8 +502,8 @@ public class TransportationRequestView extends GenericView<TransportationRequest
 	private Integer transportationRequestFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(new Date(), event.getFile().getFileName(), transportationRequestFileType, file, transportationRequest, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(getClassName2(), file, transportationRequestFileType, event.getFile().getFileName(), transportationRequest, sessionView.getUser());
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();

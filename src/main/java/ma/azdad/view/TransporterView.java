@@ -2,7 +2,6 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -187,8 +186,8 @@ public class TransporterView extends GenericView<Transporter> {
 	private Integer transporterFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		TransporterFile transporterFile = new TransporterFile(new Date(), event.getFile().getFileName(), transporterFileType, file, transporter, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		TransporterFile transporterFile = new TransporterFile(getClassName2(), file, transporterFileType, event.getFile().getFileName(), transporter, sessionView.getUser());
 		transporterFileService.save(transporterFile);
 		synchronized (TransporterView.class) {
 			refreshTransporter();

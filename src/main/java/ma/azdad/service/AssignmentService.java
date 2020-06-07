@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Assignment;
+import ma.azdad.model.Role;
+import ma.azdad.model.User;
 import ma.azdad.repos.AssignmentDetailRepos;
 import ma.azdad.repos.AssignmentRepos;
 
@@ -31,6 +33,10 @@ public class AssignmentService extends GenericService<Assignment> {
 
 	public List<Assignment> findByAssignator(String username) {
 		return assignmentRepos.findByAssignator(username);
+	}
+
+	public List<User> findByProjectAssignmentAndUserRoleAndInternal(Integer projectId) {
+		return assignmentDetailRepos.findByProjectAssignmentAndUserRole(projectId, Role.ROLE_ILOGISTICS_USER, true);
 	}
 
 }

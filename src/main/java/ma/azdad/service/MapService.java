@@ -19,9 +19,9 @@ public class MapService {
 		MapModel mapModel = new DefaultMapModel();
 
 		Marker marker1 = new Marker(new LatLng(p1.getLatitude(), p1.getLongitude()), p1.getName());
-		marker1.setIcon("http://maps.google.com/mapfiles/ms/micons/blue-dot.png");
+		marker1.setIcon("https://maps.google.com/mapfiles/ms/micons/blue-dot.png");
 		Marker marker2 = new Marker(new LatLng(p2.getLatitude(), p2.getLongitude()), p2.getName());
-		marker2.setIcon("http://maps.google.com/mapfiles/ms/micons/green-dot.png");
+		marker2.setIcon("https://maps.google.com/mapfiles/ms/micons/green-dot.png");
 
 		mapModel.addOverlay(marker1);
 		mapModel.addOverlay(marker2);

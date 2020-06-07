@@ -222,6 +222,11 @@ public class UserService {
 		return repos.findByInternal(internal);
 	}
 
+	@Cacheable("userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole")
+	public List<User> findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(Integer customerId, Integer supplierId) {
+		return repos.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(customerId, supplierId, Role.ROLE_ILOGISTICS_DN_NOTIFICATION);
+	}
+
 	public User findByEmail(String email) {
 		return repos.findByEmail(email);
 	}

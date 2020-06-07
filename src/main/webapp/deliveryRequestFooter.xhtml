@@ -269,10 +269,10 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<p:selectOneMenu value="#{deliveryRequestView.toNotify}" style="width:200px" filter="true" filterMatchMode="contains" required="true" requiredMessage="To notify item should not be null"
+							<p:selectOneMenu value="#{deliveryRequestView.toNotifyUserUsername}" style="width:200px" filter="true" filterMatchMode="contains" required="true" requiredMessage="To notify item should not be null"
 								converter="#{genericSecuredConverter}">
 								<f:selectItem itemLabel="---" noSelectionOption="true" />
-								<f:selectItems value="#{toNotifyView.findByUser()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+								<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 							</p:selectOneMenu>
 							<br />
 						</div>
@@ -281,7 +281,7 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addToNotifyItemDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{deliveryRequestView.addToNotifyItem()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addToNotifyItemDlg').hide()" update=":main_form:step5:notification_tab" />
+				<p:commandButton action="#{deliveryRequestView.addToNotifyItem()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addToNotifyItemDlg').hide()" update=":main_form:step5:notification_tab,:main_form:messages" />
 			</div>
 		</p:dialog>
 	</h:form>

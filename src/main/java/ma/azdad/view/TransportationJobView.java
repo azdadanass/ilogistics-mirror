@@ -27,8 +27,8 @@ import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.service.DeliveryRequestService;
-import ma.azdad.service.OldEmailService;
 import ma.azdad.service.MapService;
+import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PathService;
 import ma.azdad.service.SmsService;
 import ma.azdad.service.StopService;
@@ -614,8 +614,8 @@ public class TransportationJobView extends GenericView<TransportationJob> {
 	private Integer transportationJobFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		TransportationJobFile transportationJobFile = new TransportationJobFile(new Date(), event.getFile().getFileName(), transportationJobFileType, file, transportationJob, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		TransportationJobFile transportationJobFile = new TransportationJobFile(getClassName2(), file, transportationJobFileType, event.getFile().getFileName(), transportationJob, sessionView.getUser());
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();

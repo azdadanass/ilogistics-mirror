@@ -11,22 +11,21 @@ import org.apache.commons.io.FilenameUtils;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
-
 public class TransportationJobFile extends GenericFile<TransportationJob> implements Serializable {
 
 	public TransportationJobFile() {
 
 	}
 
-	public TransportationJobFile(Date date, String name, String type, File file, TransportationJob parent, User user) {
-		this.date = date;
-		this.name = name;
-		this.type = type;
-		this.link = file.getName();
+	public TransportationJobFile(String folder, File file, String type, String name, TransportationJob parent, User user) {
+		this.date = new Date();
+		this.link = folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link);
 		this.size = UtilsFunctions.getFormattedSize(file.length());
-		this.parent = parent;
+		this.type = type;
+		this.name = name;
 		this.user = user;
+		this.parent = parent;
 	}
 
 }

@@ -47,8 +47,8 @@ public class UtilsFunctions {
 	final static DateFormat dtf2 = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 	private static String[] backgroundTab = { "aa-background-0", "aa-background-1", "aa-background-2", "aa-background-3", "aa-background-4", "aa-background-5", "aa-background-6", "aa-background-7", "aa-background-8", "aa-background-9", "aa-background-10", "aa-background-11", "aa-background-12", "aa-background-13", "aa-background-14", "aa-background-15", "aa-background-16" };
 	private static String[] badgeTab = { "badge-success", "badge-danger", "badge-info", "badge-pink", "badge-warning", "badge-primary", "badge-purple", "badge-yellow" };
-	private static String[] mapIconTab = { "http://maps.google.com/mapfiles/ms/micons/green-dot.png", "http://maps.google.com/mapfiles/ms/micons/red-dot.png", "http://maps.google.com/mapfiles/ms/micons/ltblue-dot.png", "http://maps.google.com/mapfiles/ms/micons/pink-dot.png", "http://maps.google.com/mapfiles/ms/micons/orange-dot.png", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png",
-			"http://maps.google.com/mapfiles/ms/micons/purple-dot.png", "http://maps.google.com/mapfiles/ms/micons/yellow-dot.png" };
+	private static String[] mapIconTab = { "https://maps.google.com/mapfiles/ms/micons/green-dot.png", "https://maps.google.com/mapfiles/ms/micons/red-dot.png", "https://maps.google.com/mapfiles/ms/micons/ltblue-dot.png", "https://maps.google.com/mapfiles/ms/micons/pink-dot.png", "https://maps.google.com/mapfiles/ms/micons/orange-dot.png", "https://maps.google.com/mapfiles/ms/micons/blue-dot.png",
+			"https://maps.google.com/mapfiles/ms/micons/purple-dot.png", "https://maps.google.com/mapfiles/ms/micons/yellow-dot.png" };
 
 	public static String formatName(String name) {
 		if (name == null || name.isEmpty())

@@ -49,14 +49,12 @@ public class SmsService {
 		Set<String> numeroSet = new HashSet<>();
 
 		if (deliveryRequest.getToNotifyList() != null) {
-			//send to internal
-			deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone()))
-					.forEach(i -> numeroSet.add(i.getPhone()));
+			// send to internal
+			deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 
-			//send to external
+			// send to external
 			if (Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus()))
-				deliveryRequest.getToNotifyList().stream().filter(i -> !i.getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone()))
-						.forEach(i -> numeroSet.add(i.getPhone()));
+				deliveryRequest.getToNotifyList().stream().filter(i -> !i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 		}
 
 		numeroSet.add(deliveryRequest.getRequester().getPhone());
@@ -74,22 +72,19 @@ public class SmsService {
 	public void sendSms(TransportationRequest transportationRequest) {
 		String message = "Message from iLogistics : ";
 		message += transportationRequest.getReference() + ", ";
-		message += TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus())
-				? "requested by " + transportationRequest.getDeliveryRequest().getRequester().getFullName() + ", " : "";
+		message += TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()) ? "requested by " + transportationRequest.getDeliveryRequest().getRequester().getFullName() + ", " : "";
 		message += "project " + transportationRequest.getDeliveryRequest().getProject().getName() + ", ";
 		message += "REF " + transportationRequest.getDeliveryRequest().getSmsRef() + "\n";
 		message += TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()) ? "submitted for Approval" : transportationRequest.getStatus().getValue();
 		Set<String> numeroSet = new HashSet<>();
 
 		if (transportationRequest.getDeliveryRequest().getToNotifyList() != null) {
-			//send to internal
-			transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(i -> i.getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone()))
-					.forEach(i -> numeroSet.add(i.getPhone()));
+			// send to internal
+			transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(i -> i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 
-			//send to external
+			// send to external
 			if (TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus()))
-				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(i -> !i.getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone()))
-						.forEach(i -> numeroSet.add(i.getPhone()));
+				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(i -> !i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 		}
 
 		numeroSet.add(transportationRequest.getDeliveryRequest().getRequester().getPhone());

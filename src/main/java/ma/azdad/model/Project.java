@@ -1,8 +1,11 @@
 package ma.azdad.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -33,6 +37,9 @@ public class Project implements Serializable {
 
 	private Boolean customerWarehousing = false;
 	private Boolean customerStockManagement = false;
+	private Boolean sdm = false;
+
+	private List<ProjectManager> managerList = new ArrayList<>();
 
 	// tmp
 	private Integer tmpCustomerId;
@@ -71,7 +78,7 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement) {
+	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -82,6 +89,7 @@ public class Project implements Serializable {
 		this.setCustomerName(customerName);
 		this.customerWarehousing = customerWarehousing;
 		this.customerStockManagement = customerStockManagement;
+		this.sdm = sdm;
 	}
 
 	public boolean filter(String query) {
@@ -260,6 +268,23 @@ public class Project implements Serializable {
 		if (customer == null)
 			customer = new Customer();
 		customer.setName(name);
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ProjectManager> getManagerList() {
+		return managerList;
+	}
+
+	public void setManagerList(List<ProjectManager> managerList) {
+		this.managerList = managerList;
+	}
+
+	public Boolean getSdm() {
+		return sdm;
+	}
+
+	public void setSdm(Boolean sdm) {
+		this.sdm = sdm;
 	}
 
 }

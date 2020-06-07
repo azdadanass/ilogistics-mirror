@@ -9,6 +9,4 @@ import ma.azdad.model.AssignmentDetail;
 @Transactional
 public class AssignmentDetailService extends GenericService<AssignmentDetail> {
 
-
 }
-

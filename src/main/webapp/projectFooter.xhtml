@@ -22,10 +22,9 @@
 									<h:outputText value="Customer Warehousing " />
 								</label>
 								<div class="col-xs-9 col-sm-9">
-									<h:selectOneMenu value="#{projectView.project.customerWarehousing}" disabled="#{!projectView.canEditCustomerWarehousing()}">
+									<h:selectOneMenu value="#{projectView.project.customerWarehousing}" >
 										<f:selectItem itemLabel="No" itemValue="false"/>
 										<f:selectItem itemLabel="Yes" itemValue="true"/>
-										<p:ajax update="customerStockManagement"/>
 									</h:selectOneMenu>
 								</div>
 							</div>
@@ -36,7 +35,7 @@
 									<h:outputText value="Customer Stock Management " />
 								</label>
 								<div class="col-xs-9 col-sm-9">
-									<h:selectOneMenu id="customerStockManagement" value="#{projectView.project.customerStockManagement}" disabled="#{!projectView.canEditCustomerStockManagement()}">
+									<h:selectOneMenu value="#{projectView.project.customerStockManagement}" >
 										<f:selectItem itemLabel="No" itemValue="false"/>
 										<f:selectItem itemLabel="Yes" itemValue="true"/>
 									</h:selectOneMenu>
@@ -45,6 +44,21 @@
 						</div>
 					</div>
 					<div class="space-4" />
+					<div class="row">
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
+									<h:outputText value="SDM " />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<h:selectOneMenu value="#{projectView.project.sdm}" >
+										<f:selectItem itemLabel="No" itemValue="false"/>
+										<f:selectItem itemLabel="Yes" itemValue="true"/>
+									</h:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
 					<div class="space-4" />
 				</div>
 				<div class="modal-footer">

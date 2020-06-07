@@ -31,6 +31,18 @@ public class ProjectService {
 		Hibernate.initialize(p.getCustomer());
 		Hibernate.initialize(p.getCostcenter());
 		Hibernate.initialize(p.getCostcenter().getLob());
+		Hibernate.initialize(p.getCostcenter().getLob().getManager());
+		return p;
+	}
+
+	public Project findOne2(Integer id) {
+		Project p = repos.findById(id).get();
+		Hibernate.initialize(p.getManager());
+		Hibernate.initialize(p.getCustomer());
+		Hibernate.initialize(p.getCostcenter());
+		Hibernate.initialize(p.getCostcenter().getLob());
+		Hibernate.initialize(p.getCostcenter().getLob().getManager());
+		p.getManagerList().forEach(i -> Hibernate.initialize(i.getUser()));
 		return p;
 	}
 

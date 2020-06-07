@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
-
 public class SiteCategory extends GenericBean implements Serializable {
 
 	private String name;

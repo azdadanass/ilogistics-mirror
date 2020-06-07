@@ -3,7 +3,6 @@ package ma.azdad.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -240,8 +239,8 @@ public class PartNumberView extends GenericView<PartNumber> {
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		if (!canAddFile())
 			return;
-		File file = fileView.handleFileUpload(event);
-		PartNumberFile partNumberFile = new PartNumberFile(new Date(), event.getFile().getFileName(), partNumberFileType, file, partNumber, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		PartNumberFile partNumberFile = new PartNumberFile(getClassName2(), file, partNumberFileType, event.getFile().getFileName(), partNumber, sessionView.getUser());
 		partNumberFileService.save(partNumberFile);
 		synchronized (PartNumberView.class) {
 			refreshPartNumber();

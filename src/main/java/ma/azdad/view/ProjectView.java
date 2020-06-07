@@ -94,13 +94,13 @@ public class ProjectView {
 		list2 = list;
 	}
 
-	public Boolean canEditCustomerWarehousing() {
-		return deliveryRequestService.countByProject(project.getId()) == 0;
-	}
+//	public Boolean canEditCustomerWarehousing() {
+//		return project.getCustomerWarehousing() deliveryRequestService.countByProject(project.getId()) == 0;
+//	}
 
-	public Boolean canEditCustomerStockManagement() {
-		return project.getCustomerWarehousing();
-	}
+//	public Boolean canEditCustomerStockManagement() {
+//		return project.getCustomerWarehousing();
+//	}
 
 	public Boolean canEdit() {
 		return sessionView.isTheConnectedUser(project.getManager().getUsername());

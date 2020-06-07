@@ -2,7 +2,6 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -192,8 +191,8 @@ public class WarehouseView extends GenericView<Warehouse> {
 	private Integer warehouseFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		WarehouseFile warehouseFile = new WarehouseFile(new Date(), event.getFile().getFileName(), warehouseFileType, file, warehouse, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		WarehouseFile warehouseFile = new WarehouseFile(getClassName2(), file, warehouseFileType, event.getFile().getFileName(), warehouse, sessionView.getUser());
 		warehouseFileService.save(warehouseFile);
 		synchronized (WarehouseView.class) {
 			refreshWarehouse();

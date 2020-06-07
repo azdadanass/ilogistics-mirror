@@ -279,8 +279,8 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 		}
 
 		Div qrDiv = (Div) new Div().setStyle("text-align:center;margin:20px 0px 10px 0px");
-		A qrA = (A) new A("http://qr.3gcom.ma/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("text-align:right;margin:20px 0px 10px 0px;");
-		Img qrImg = (Img) new Img("http://qr.3gcom.ma/img/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("width:100px;height:100px");
+		A qrA = (A) new A("https://qr.orange.telodigital.com//dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("text-align:right;margin:20px 0px 10px 0px;");
+		Img qrImg = (Img) new Img("https://qr.orange.telodigital.com//img/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("width:100px;height:100px");
 		qrImg.setWidth("100");
 		qrImg.setHeight("100");
 		qrA.addElement(qrImg);
@@ -598,12 +598,12 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 			document.add(paragraph);
 
 			// qrcode Cell
-			BarcodeQRCode barcodeQrcode = new BarcodeQRCode("http://qr.3gcom.ma/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
+			BarcodeQRCode barcodeQrcode = new BarcodeQRCode("https://qr.orange.telodigital.com/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
 			Image qrcodeImage = barcodeQrcode.getImage();
 			qrcodeImage.scaleToFit(95, 95);
 			// qrcodeImage.scalePercent(100);
 
-			Image logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/3gcom_wb.png");
+			Image logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
 			logo.scaleToFit(50, 60);
 			logo.setAlignment(Element.ALIGN_CENTER);
 			cell1 = new PdfPCell();

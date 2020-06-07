@@ -18,15 +18,15 @@ public class SiteFile extends GenericFile<Site> implements Serializable {
 
 	}
 
-	public SiteFile(Date date, String name, String type, File file, Site parent, User user) {
-		this.date = date;
-		this.name = name;
-		this.type = type;
-		this.link = file.getName();
+	public SiteFile(String folder, File file, String type, String name, Site parent, User user) {
+		this.date = new Date();
+		this.link = folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link);
 		this.size = UtilsFunctions.getFormattedSize(file.length());
-		this.parent = parent;
+		this.type = type;
+		this.name = name;
 		this.user = user;
+		this.parent = parent;
 	}
 
 }

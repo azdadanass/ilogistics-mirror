@@ -27,12 +27,13 @@ public class UserFile extends GenericBean {
 	protected String type;
 	protected String size;
 	protected String name;
+	protected User parent;
 	protected User user;
 
 	public UserFile() {
 	}
 
-	public UserFile(String folder, File file, String type, String name, User user) {
+	public UserFile(String folder, File file, String type, String name, User parent, User user) {
 		this.date = new Date();
 		this.link = folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link);
@@ -40,6 +41,7 @@ public class UserFile extends GenericBean {
 		this.type = type;
 		this.name = name;
 		this.user = user;
+		this.parent = parent;
 	}
 
 	@Override
@@ -65,6 +67,15 @@ public class UserFile extends GenericBean {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	public User getParent() {
+		return parent;
+	}
+
+	public void setParent(User parent) {
+		this.parent = parent;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
 	public User getUser() {
 		return user;
 	}

@@ -47,6 +47,7 @@ import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.service.AppLinkService;
+import ma.azdad.service.AssignmentService;
 import ma.azdad.service.BoqService;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CurrencyService;
@@ -167,6 +168,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	@Autowired
 	protected DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 
+	@Autowired
+	AssignmentService assignmentService;
+
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
 	private DeliveryRequestComment deliveryRequestComment = new DeliveryRequestComment();
@@ -201,7 +205,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	private Integer templateId;
 
-	private ToNotify toNotify;
+	private String toNotifyUserUsername;
 
 	private String downloadPath;
 
@@ -1100,6 +1104,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				initPackingData();
 			else
 				step++;
+			if (isAddPage)
+				initToNotifyList();
 			break;
 		case 4:
 			System.err.println("step5");
@@ -1149,9 +1155,24 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		return true;
 	}
 
+	public void initToNotifyList() {
+		deliveryRequest.getToNotifyList().clear();
+		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
+		Set<User> toNotifyUserSet = new HashSet<User>();
+		toNotifyUserSet.add(deliveryRequest.getProject().getCostcenter().getLob().getManager());
+		toNotifyUserSet.add(deliveryRequest.getProject().getManager());
+		toNotifyUserSet.addAll(deliveryRequest.getProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
+		if (deliveryRequest.getIsOutbound())
+			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(deliveryRequest.getToCustomerId(), deliveryRequest.getToSupplierId()));
+		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
+	}
+
 	public void addToNotifyItem() {
-		if (deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternalResource().getUsername().equals(toNotify.getInternalResource().getUsername())).count() == 0)
-			deliveryRequest.getToNotifyList().add(new ToNotify(toNotify.getInternal(), toNotify.getInternalResource(), deliveryRequest));
+		System.out.println("addToNotifyItem");
+		User toNotifyUser = userService.findOne(toNotifyUserUsername);
+		if (deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternalResource().getUsername().equals(toNotifyUser.getUsername())).count() == 0)
+			deliveryRequest.getToNotifyList().add(new ToNotify(toNotifyUser, deliveryRequest));
+		System.out.println(deliveryRequest.getToNotifyList());
 	}
 
 	public void removeToNotifyItem(int index) {
@@ -1163,7 +1184,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.clearTimeLine();
 		deliveryRequest.setStatus(DeliveryRequestStatus.EDITED);
 		deliveryRequest.setDate1(new Date());
-		deliveryRequest.setProject(projectService.findOne(deliveryRequest.getProjectId()));
+//		deliveryRequest.setProject(projectService.findOne(deliveryRequest.getProjectId()));
 
 		if (deliveryRequest.getIsOutbound()) {
 			deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
@@ -1207,13 +1228,15 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setCompany(null);
 		deliveryRequest.setCustomer(null);
 		deliveryRequest.setSupplier(null);
-		if (deliveryRequest.getOwner() != null)
-			if ("company".equals(deliveryRequest.getOwner().getBeanName()))
-				deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getOwner().getIntegerValue()));
-			else if ("customer".equals(deliveryRequest.getOwner().getBeanName()))
-				deliveryRequest.setCustomer(customerService.findOne(deliveryRequest.getOwner().getIntegerValue()));
-			else if ("supplier".equals(deliveryRequest.getOwner().getBeanName()))
-				deliveryRequest.setSupplier(supplierService.findOne(deliveryRequest.getOwner().getIntegerValue()));
+		if (deliveryRequest.getCompanyId() != null)
+			deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
+//		if (deliveryRequest.getOwner() != null)
+//			if ("company".equals(deliveryRequest.getOwner().getBeanName()))
+//				deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getOwner().getIntegerValue()));
+//			else if ("customer".equals(deliveryRequest.getOwner().getBeanName()))
+//				deliveryRequest.setCustomer(customerService.findOne(deliveryRequest.getOwner().getIntegerValue()));
+//			else if ("supplier".equals(deliveryRequest.getOwner().getBeanName()))
+//				deliveryRequest.setSupplier(supplierService.findOne(deliveryRequest.getOwner().getIntegerValue()));
 
 		if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType())) {
 			deliveryRequest.setInternalCompany(null);
@@ -1609,8 +1632,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	private Integer deliveryRequestFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(new Date(), event.getFile().getFileName(), deliveryRequestFileType, file, deliveryRequest, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(getClassName2(), file, deliveryRequestFileType, event.getFile().getFileName(), deliveryRequest, sessionView.getUser());
 		deliveryRequestFileService.save(deliveryRequestFile);
 		synchronized (DeliveryRequestView.class) {
 			refreshDeliveryRequest();
@@ -1618,8 +1641,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public void handleFileUpload2(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event);
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(new Date(), event.getFile().getFileName(), deliveryRequestFileType, file, deliveryRequest, sessionView.getUser());
+		File file = fileView.handleFileUpload(event, getClassName2());
+		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(getClassName2(), file, deliveryRequestFileType, event.getFile().getFileName(), deliveryRequest, sessionView.getUser());
 		deliveryRequest.getFileList().add(deliveryRequestFile);
 	}
 
@@ -2176,12 +2199,12 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		this.downloadPath = downloadPath;
 	}
 
-	public ToNotify getToNotify() {
-		return toNotify;
+	public String getToNotifyUserUsername() {
+		return toNotifyUserUsername;
 	}
 
-	public void setToNotify(ToNotify toNotify) {
-		this.toNotify = toNotify;
+	public void setToNotifyUserUsername(String toNotifyUserUsername) {
+		this.toNotifyUserUsername = toNotifyUserUsername;
 	}
 
 	public DeliveryRequestDetail getDeliveryRequestDetail() {

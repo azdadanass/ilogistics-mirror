@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectManagerType;
 
 @Repository
 public interface ProjectRepos extends JpaRepository<Project, Integer> {
@@ -67,5 +68,8 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select a.customer.id from Project a where a.id = ?1")
 	public Integer getCustomerId(Integer customerId);
+
+	@Query("select count(*) from ProjectManager a where a.project.id = ?1 and a.user.username = ?2 and a.type = ?3")
+	Long countByManagerType(Integer projectId, String userUsername, ProjectManagerType type);
 
 }

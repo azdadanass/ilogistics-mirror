@@ -43,25 +43,26 @@ public class DeliveryRequestHistoryService extends GenericService<DeliveryReques
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void requestedNew(DeliveryRequest deliveryRequest) {
 		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Requested", deliveryRequest, deliveryRequest.getRequester()));
 	}
-	
+
 	public void approvedNew(DeliveryRequest deliveryRequest, User user) {
-		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Approved", deliveryRequest, user));
+		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Approved L1", deliveryRequest, user));
 	}
-	
-	
+
+	public void approvedHm(DeliveryRequest deliveryRequest, User user) {
+		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Approved L2", deliveryRequest, user));
+	}
+
 	public void rejectedNew(DeliveryRequest deliveryRequest, User user) {
 		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Rejected", deliveryRequest, user));
 	}
-	
-	
+
 	public void canceledNew(DeliveryRequest deliveryRequest, User user) {
 		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Canceled", deliveryRequest, user));
 	}
-	
 
 	public void approved(DeliveryRequest deliveryRequest, User user) {
 		try {
@@ -82,12 +83,11 @@ public class DeliveryRequestHistoryService extends GenericService<DeliveryReques
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void deliveredNew(DeliveryRequest deliveryRequest, User user) {
 		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Delivred", deliveryRequest, user));
 	}
-	
-	
+
 	public void acknowledgedNew(DeliveryRequest deliveryRequest) {
 		deliveryRequest.getHistoryList().add(new DeliveryRequestHistory(new Date(), "Acknowledged", deliveryRequest, deliveryRequest.getRequester()));
 	}

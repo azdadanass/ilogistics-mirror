@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
+import ma.azdad.model.User;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.UserService;
@@ -152,6 +154,14 @@ public class ProjectView {
 
 	public List<Project> findLightByResource(DeliveryRequestType deliveryRequestType) {
 		return findLightByResource(sessionView.getUsername(), deliveryRequestType);
+	}
+
+	public User findFirstManagerByType(Integer projectId, ProjectManagerType managerType) {
+		return projectService.findFirstManagerByType(projectId, managerType);
+	}
+
+	public User findFirstHardwareManager(Integer projectId) {
+		return findFirstManagerByType(projectId, ProjectManagerType.HARDWARE_MANAGER);
 	}
 
 	// GETTERS & SETTERS

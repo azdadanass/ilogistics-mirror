@@ -53,7 +53,7 @@ public class SmsService {
 			deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 
 			// send to external
-			if (Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus()))
+			if (Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus()))
 				deliveryRequest.getToNotifyList().stream().filter(i -> !i.getInternalResource().getInternal() && i.getNotifyBySms() && UtilsFunctions.isValidPhoneNumber(i.getPhone())).forEach(i -> numeroSet.add(i.getPhone()));
 		}
 

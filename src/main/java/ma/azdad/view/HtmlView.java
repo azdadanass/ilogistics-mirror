@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
 
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,12 +29,13 @@ public class HtmlView implements Serializable {
 	}
 
 	public String generateOverlayPanelContent(String identifer1, String identifer2, Date date) {
-		return generateOverlayPanelContent(ObjectUtils.firstNonNull(identifer1, identifer2), date);
+		return generateOverlayPanelContent(StringUtils.firstNonBlank(identifer1, identifer2), date);
 	}
 
 	public String generateOverlayPanelContent(String username, Date date) {
 		if (username == null || username.isEmpty())
 			return null;
+		System.out.println("---->" + username + "\n\n\n\n");
 		User user = userService.findAsMap().get(username);
 		StringBuilder sb = new StringBuilder();
 		sb.append("	<div class=\"col-xs-3\">");

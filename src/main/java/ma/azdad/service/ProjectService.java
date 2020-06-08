@@ -14,8 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
+import ma.azdad.model.User;
 import ma.azdad.repos.ProjectRepos;
 
 @Component
@@ -149,5 +151,16 @@ public class ProjectService {
 
 	public Project save(Project project) {
 		return repos.save(project);
+	}
+
+	public Boolean isHardwareManager(Integer projectId, String userUsername) {
+		return repos.countByManagerType(projectId, userUsername, ProjectManagerType.HARDWARE_MANAGER) > 0;
+	}
+
+	@Cacheable("projectService.findFirstManagerByType")
+	public User findFirstManagerByType(Integer projectId, ProjectManagerType managerType) {
+		if (projectId == null)
+			return null;
+		return repos.findById(projectId).get().getManagerList().stream().filter(i -> managerType.equals(i.getType())).map(i -> i.getUser()).findFirst().orElse(null);
 	}
 }

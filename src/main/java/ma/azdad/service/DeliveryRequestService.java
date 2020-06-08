@@ -142,9 +142,9 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 				return deliveryRequestRepos.findLight(username, warehouseList, assignedProjectList);
 		if (DeliveryRequestState.WAITING.equals(state))
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, assignedProjectList);
 			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, assignedProjectList);
 		else if (DeliveryRequestState.PARTIALLY_DELIVRED.equals(state))
 			if (type != null)
 				return deliveryRequestRepos.findLight(username, type, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, assignedProjectList);
@@ -259,7 +259,7 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 	}
 
 	public List<DeliveryRequest> findByCanBeTransported(String username) {
-		return deliveryRequestRepos.findByCanBeTransported(username, DeliveryRequestStatus.APPROVED);
+		return deliveryRequestRepos.findByCanBeTransported(username, DeliveryRequestStatus.APPROVED2);
 	}
 
 	public String generateEmailNotification(DeliveryRequest deliveryRequest, String dearFullName, Boolean showMessage) {
@@ -550,7 +550,9 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 			return deliveryRequest.getIsInbound() ? path + "1.png" : path + "a1.png";
 		case REQUESTED:
 			return deliveryRequest.getIsInbound() ? path + "2.png" : path + "a2.png";
-		case APPROVED:
+		case APPROVED1:
+			return deliveryRequest.getIsInbound() ? path + "3.png" : path + "a3.png";
+		case APPROVED2:
 			return deliveryRequest.getIsInbound() ? path + "3.png" : path + "a3.png";
 		case PARTIALLY_DELIVRED:
 			return path + "4.png";

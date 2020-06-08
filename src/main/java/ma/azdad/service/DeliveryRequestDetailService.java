@@ -63,8 +63,8 @@ public class DeliveryRequestDetailService extends GenericService<DeliveryRequest
 	}
 
 	public List<DeliveryRequestDetail> findByOutboundAndWaiting(Integer projectId, Integer warehouseId, Integer id) {
-		return id == null ? deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED))
-				: deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED), id);
+		return id == null ? deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
+				: deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), id);
 	}
 
 	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId, DeliveryRequest deliveryRequest) {
@@ -115,7 +115,7 @@ public class DeliveryRequestDetailService extends GenericService<DeliveryRequest
 		// Initialize packing information
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
-		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED);
+		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
 		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? deliveryRequestDetailRepos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : deliveryRequestDetailRepos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
@@ -156,7 +156,7 @@ public class DeliveryRequestDetailService extends GenericService<DeliveryRequest
 		// Initialize packing information
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
-		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED);
+		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
 		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? deliveryRequestDetailRepos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : deliveryRequestDetailRepos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
@@ -493,22 +493,22 @@ public class DeliveryRequestDetailService extends GenericService<DeliveryRequest
 	}
 
 	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED));
+		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCustomerOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED));
+		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, Integer projectId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED));
+		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, Integer projectId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED));
+		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 

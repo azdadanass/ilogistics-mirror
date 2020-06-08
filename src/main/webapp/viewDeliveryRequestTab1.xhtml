@@ -680,7 +680,7 @@
 						<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
 					</p:column>
 
-					<p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
+					<!-- <p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
 							disabled="#{!deliveryRequestView.canUpdateUnitCost()}">
 							<p:inputNumber value="#{item.unitCost}" thousandSeparator="" decimalPlaces="6" styleClass="red" />
@@ -698,7 +698,7 @@
 							<p:ajax event="cancel" />
 						</p:inplace>
 						<h:outputText value=" MAD" styleClass="blue" />
-					</p:column>
+					</p:column> -->
 
 					<p:column headerText="Quantity" width="60">
 						<h:outputText value="#{item.quantity}" styleClass="bolder green">

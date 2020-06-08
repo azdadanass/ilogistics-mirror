@@ -160,7 +160,7 @@ public class TransportationJobView extends GenericView<TransportationJob> {
 	}
 
 	private void refreshTransportationRequestList() {
-		transportationRequestList2 = transportationRequestList1 = transportationRequestService.findByNotHavingTransportationJob(TransportationRequestStatus.APPROVED, Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		transportationRequestList2 = transportationRequestList1 = transportationRequestService.findByNotHavingTransportationJob(TransportationRequestStatus.APPROVED, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 	}
 
 	/*

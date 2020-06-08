@@ -143,7 +143,7 @@ public class OldEmailService {
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())), deliveryRequest.getProject().getManager().getFullName());
 		else if (DeliveryRequestStatus.REJECTED.equals(deliveryRequest.getStatus()))
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
-		else if (Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())) {
+		else if (Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())) {
 			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
 			cc.add(deliveryRequest.getProject().getManager().getEmail());
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());

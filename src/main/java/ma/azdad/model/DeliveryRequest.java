@@ -104,7 +104,8 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	// TIMELINE
 	private Date date1; // Edited
 	private Date date2; // Requested
-	private Date date3; // Approved
+	private Date date3; // Approved PM
+	private Date date8; // Approved HM
 	private Date date4; // Delivered
 	private Date date5; // Acknowledged
 	private Date date6; // Rejected
@@ -115,6 +116,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private User user5;
 	private User user6;
 	private User user7;
+	private User user8;
 
 	// TMP
 	private LabelValue owner;
@@ -574,7 +576,9 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 			return "badge badge-warning";
 		case REQUESTED:
 			return "badge badge-pink";
-		case APPROVED:
+		case APPROVED1:
+			return "badge badge-success";
+		case APPROVED2:
 			return "badge badge-success";
 		case DELIVRED:
 			return "badge badge-primary";
@@ -948,6 +952,14 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		this.date3 = date3;
 	}
 
+	public Date getDate8() {
+		return date8;
+	}
+
+	public void setDate8(Date date8) {
+		this.date8 = date8;
+	}
+
 	public Date getDate4() {
 		return date4;
 	}
@@ -987,6 +999,15 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	public void setUser3(User user3) {
 		this.user3 = user3;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

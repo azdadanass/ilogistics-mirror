@@ -66,7 +66,7 @@
 							<i class="ace-icon fa fa-external-link bigger-230"></i>
 							<h:outputText value="Request" />
 						</p:commandLink>
-						<p:commandLink title="Approve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('approveDlg').show()" rendered="#{deliveryRequestView.canApproveDeliveryRequest()}">
+						<p:commandLink title="Approve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('approveDlg').show()" rendered="#{deliveryRequestView.canApprove()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Approve" />
 						</p:commandLink>
@@ -297,10 +297,24 @@
 												<i class="ace-icon fa fa-spinner fa-spin grey" />
 											</span>
 											<span class="title">
-												<h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED.value}" />
+												<h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED1.value}" />
 												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user3.username,deliveryRequestView.deliveryRequest.project.manager.username, deliveryRequestView.deliveryRequest.date3)}" />
+												</p:overlayPanel>
+											</span>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null}">
+										<li class="#{deliveryRequestView.deliveryRequest.date8!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step8" value="#{DeliveryRequestStatus.APPROVED2.value}" />
+												<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText escape="false"
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user8.username,projectView.findFirstHardwareManager(deliveryRequestView.deliveryRequest.project.id).username, deliveryRequestView.deliveryRequest.date8)}" />
 												</p:overlayPanel>
 											</span>
 										</li>

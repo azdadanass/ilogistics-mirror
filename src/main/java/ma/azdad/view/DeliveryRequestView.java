@@ -325,7 +325,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				list2 = list1 = deliveryRequestService.findLightByProjectManager(sessionView.getUsername(), DeliveryRequestStatus.REQUESTED);
 				break;
 			case 4:
-				list2 = list1 = deliveryRequestService.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED);
+				list2 = list1 = deliveryRequestService.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 				break;
 			case 5:
 				list2 = list1 = deliveryRequestService.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
@@ -334,7 +334,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				list2 = list1 = deliveryRequestService.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 				break;
 			case 7:
-				list2 = list1 = deliveryRequestService.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED);
+				list2 = list1 = deliveryRequestService.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
 				break;
 			case 8:
 				list2 = list1 = deliveryRequestService.findLightByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
@@ -428,7 +428,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	 * WM WIZARD OUTBOUND
 	 */
 	public Boolean canPrepareOutboundDeliveryRequest() {
-		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && Arrays.asList(DeliveryRequestStatus.APPROVED).contains(deliveryRequest.getStatus());
+		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && Arrays.asList(DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus());
 	}
 
 	public String preparationNextStep() {
@@ -499,7 +499,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	 */
 
 	public Boolean canStoreDeliveryRequest() {
-		return DeliveryRequestType.INBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && Arrays.asList(DeliveryRequestStatus.APPROVED, DeliveryRequestStatus.PARTIALLY_DELIVRED).contains(deliveryRequest.getStatus());
+		return DeliveryRequestType.INBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED).contains(deliveryRequest.getStatus());
 	}
 
 	public String storageNextStep() {
@@ -773,7 +773,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Boolean canDeliverDeliveryRequest(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestType.XBOUND.equals(deliveryRequest.getType()) && DeliveryRequestStatus.APPROVED.equals(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
+		return DeliveryRequestType.XBOUND.equals(deliveryRequest.getType()) && DeliveryRequestStatus.APPROVED2.equals(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 	}
 
 	public void deliverDeliveryRequest() {
@@ -833,6 +833,25 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	// APPROVE DELIVERY REQUEST
+	public Boolean canApprove() {
+		return canApprove(deliveryRequest);
+	}
+
+	public Boolean canApprove(DeliveryRequest deliveryRequest) {
+		return canApproveDeliveryRequest(deliveryRequest) || canApproveHm(deliveryRequest);
+	}
+
+	public void approve(DeliveryRequest deliveryRequest) {
+		if (canApproveDeliveryRequest(deliveryRequest))
+			approveDeliveryRequest(deliveryRequest);
+		else if (canApproveHm(deliveryRequest))
+			approveHm(deliveryRequest);
+	}
+
+	public void approve() {
+		approve(deliveryRequest);
+	}
+
 	public Boolean canApproveDeliveryRequest() {
 		return canApproveDeliveryRequest(deliveryRequest);
 	}
@@ -844,7 +863,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void approveDeliveryRequest(DeliveryRequest deliveryRequest) {
 		if (!canApproveDeliveryRequest(deliveryRequest))
 			return;
-		deliveryRequest.setStatus(DeliveryRequestStatus.APPROVED);
+		deliveryRequest.setStatus(DeliveryRequestStatus.APPROVED1);
 		deliveryRequest.setDate3(new Date());
 		deliveryRequest.setUser3(sessionView.getUser());
 		deliveryRequestHistoryService.approvedNew(deliveryRequest, sessionView.getUser());
@@ -867,6 +886,36 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		} else if (pageIndex == 3) {
 			for (DeliveryRequest deliveryRequest : list4)
 				approveDeliveryRequest(deliveryRequestService.findOne(deliveryRequest.getId()));
+			refreshList();
+		}
+	}
+
+	// approve dn hm
+	public Boolean canApproveHm() {
+		return canApproveHm(deliveryRequest);
+	}
+
+	public Boolean canApproveHm(DeliveryRequest deliveryRequest) {
+		return DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus()) && projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername());
+	}
+
+	public void approveHm(DeliveryRequest deliveryRequest) {
+		if (!canApproveHm(deliveryRequest))
+			return;
+		deliveryRequest.setStatus(DeliveryRequestStatus.APPROVED2);
+		deliveryRequest.setDate8(new Date());
+		deliveryRequest.setUser8(sessionView.getUser());
+		deliveryRequestHistoryService.approvedHm(deliveryRequest, sessionView.getUser());
+		deliveryRequestService.save(deliveryRequest);
+		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+	}
+
+	public void approveHm() {
+		if (isViewPage) {
+			approveHm(deliveryRequest);
+		} else if (pageIndex == 3) {
+			for (DeliveryRequest deliveryRequest : list4)
+				approveHm(deliveryRequestService.findOne(deliveryRequest.getId()));
 			refreshList();
 		}
 	}
@@ -942,7 +991,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelDeliveryRequest() {
-		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())) || (DeliveryRequestStatus.APPROVED.equals(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())) || (DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 
 		);
 	}
@@ -1517,7 +1566,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	// smsRef
 	public Boolean canUpdateSmsRef() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
 	}
 
 	public void updateSmsRef() {
@@ -1561,7 +1610,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	// needed delivery date
 	public Boolean canUpdateNeededDeliveryDate() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
 	}
 
 	public void updateNeededDeliveryDate() {
@@ -1574,7 +1623,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	// transportation needed
 	public Boolean canUpdateTransportationNeeded() {
 		if (deliveryRequest.getTransportationNeeded() == null || !deliveryRequest.getTransportationNeeded())
-			return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()))
+			return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()))
 					&& (deliveryRequest.getIsInbound() ? deliveryRequest.getOrigin() != null : deliveryRequest.getIsOutbound() ? deliveryRequest.getDestination() != null : deliveryRequest.getOrigin() != null && deliveryRequest.getDestination() != null);
 		else
 			return deliveryRequest.getTransportationRequest() == null || (deliveryRequest.getTransportationRequest() != null && Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(deliveryRequest.getTransportationRequest().getStatus()));
@@ -1864,7 +1913,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Long countToDeliverXboundRequests() {
-		return deliveryRequestService.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED);
+		return deliveryRequestService.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
 	}
 
 	public Long countToAcknowledgeRequests() {
@@ -1876,7 +1925,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Long countToDeliverRequests() {
-		return deliveryRequestService.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED);
+		return deliveryRequestService.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 	}
 
 	public List<DeliveryRequest> findLightByRequester() {

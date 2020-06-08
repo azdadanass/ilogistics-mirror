@@ -1225,9 +1225,6 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		else
 			deliveryRequest.setTransportationNeeded(false);
 
-		deliveryRequest.setCompany(null);
-		deliveryRequest.setCustomer(null);
-		deliveryRequest.setSupplier(null);
 		if (deliveryRequest.getCompanyId() != null)
 			deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
 //		if (deliveryRequest.getOwner() != null)

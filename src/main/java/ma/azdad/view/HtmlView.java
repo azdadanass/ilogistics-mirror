@@ -38,7 +38,7 @@ public class HtmlView implements Serializable {
 		User user = userService.findAsMap().get(username);
 		StringBuilder sb = new StringBuilder();
 		sb.append("	<div class=\"col-xs-3\">");
-		sb.append("		<img src=\"" + user.getPhoto() + "\" class=\"grid_images\" />");
+		sb.append("		<img src=\"" + user.getPublicPhoto() + "\" class=\"grid_images\" />");
 		sb.append("	</div>");
 		sb.append("	<div class=\"col-xs-9\">");
 		sb.append("		<span class=\"bolder green lead\" >" + user.getFullName() + "</span>");

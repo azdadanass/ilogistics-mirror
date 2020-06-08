@@ -87,7 +87,7 @@ public class FileView {
 	public File handleFileUpload(FileUploadEvent event, String beanName) throws IOException {
 		log.info("handleFileUpload");
 //		String beanName = (String) event.getComponent().getAttributes().get("beanName");
-		createFolderIfNotExist(beanName);
+		createFolderIfNotExist(filesPath + beanName);
 		File file = File.createTempFile(beanName + "-", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(filesPath + beanName));
 		writeFile(file, event);
 		return file;
@@ -98,7 +98,7 @@ public class FileView {
 //		String beanName = (String) event.getComponent().getAttributes().get("beanName");
 //		String id = (String) event.getComponent().getAttributes().get("id");
 //		File file = File.createTempFile(beanName + numero + "_", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(photosPath + beanName));
-		createFolderIfNotExist(beanName);
+		createFolderIfNotExist(photosPath + beanName);
 		File file = new File(photosPath + beanName + "/" + numero + "." + FilenameUtils.getExtension(event.getFile().getFileName()));
 		writeFile(file, event);
 		return file;
@@ -115,8 +115,8 @@ public class FileView {
 		}
 	}
 
-	private void createFolderIfNotExist(String folder) {
-		new File(filesPath + folder).mkdir();
+	private void createFolderIfNotExist(String path) {
+		new File(path).mkdir();
 	}
 
 	// old uploading

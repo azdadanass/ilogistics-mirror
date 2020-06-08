@@ -139,6 +139,11 @@ public class User implements Serializable {
 	}
 
 	@Transient
+	public String getPublicPhoto() {
+		return "https://iadmin.orange.telodigital.com/photos/" + photo;
+	}
+
+	@Transient
 	public String getName() {
 		return this.fullName;
 	}

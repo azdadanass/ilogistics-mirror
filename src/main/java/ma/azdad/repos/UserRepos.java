@@ -35,11 +35,11 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select new User(username,fullName) from User where username in (?1)")
 	List<User> findLightByUsernameList(List<String> list);
 
-	@Query("select new User(a.username,a.fullName) from User a,Affectation b where a.username = b.user.username and b.lineManager.username = ?1 and a.contractActive = ?2")
-	List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean contractActive);
+	@Query("select new User(a.username,a.fullName) from User a,Affectation b where a.username = b.user.username and b.lineManager.username = ?1 and a.active = ?2")
+	List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean active);
 
-	@Query("select new User(a.username,a.fullName) from User a where a.contractActive = ?1")
-	List<User> findLightByStatus(Boolean contractActive);
+	@Query("select new User(a.username,a.fullName) from User a where a.active = ?1")
+	List<User> findLightByStatus(Boolean active);
 
 	Long countByUsername(String username);
 

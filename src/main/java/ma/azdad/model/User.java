@@ -41,7 +41,6 @@ public class User implements Serializable {
 	private String cin;
 	private Boolean gender = true;
 	private Boolean active = true;
-	private Boolean contractActive;
 	private Date birthday;
 
 	private UserData userData = new UserData();
@@ -517,14 +516,6 @@ public class User implements Serializable {
 
 	public void setActive(Boolean active) {
 		this.active = active;
-	}
-
-	public Boolean getContractActive() {
-		return contractActive;
-	}
-
-	public void setContractActive(Boolean contractActive) {
-		this.contractActive = contractActive;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -107,7 +107,9 @@
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
 
 							<p:column headerText="Photo" width="5%" styleClass="hidden-xs">
-								<img src="#{cacheView.getPhoto(item.delegate.username)}" class="img-circle aa-datatable-photo" />
+								<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+									<f:param name="fileName" value="#{cacheView.getPhoto(item.user.username)}" />
+								</p:graphicImage>
 							</p:column>
 
 							<p:column headerText="Start Date">
@@ -126,8 +128,8 @@
 								<h:outputText value="#{item.description}" />
 							</p:column>
 
-							<p:column headerText="Delegate">
-								<h:outputText value="#{item.delegate.fullName}" styleClass="orange" />
+							<p:column headerText="User">
+								<h:outputText value="#{item.user.fullName}" styleClass="orange" />
 							</p:column>
 							
 							<p:column headerText="Status">

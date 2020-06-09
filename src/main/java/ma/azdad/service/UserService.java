@@ -70,16 +70,16 @@ public class UserService {
 		return findLightByRole(Role.ROLE_ILOGISTICS_WM);
 	}
 
-	public List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean contractActive) {
-		return repos.findLightByLineManagerAndStatus(lineManagerUsername, contractActive);
+	public List<User> findLightByLineManagerAndStatus(String lineManagerUsername, Boolean active) {
+		return repos.findLightByLineManagerAndStatus(lineManagerUsername, active);
 	}
 
 	public List<User> findLightByLineManagerAndActive(String lineManagerUsername) {
 		return findLightByLineManagerAndStatus(lineManagerUsername, true);
 	}
 
-	public List<User> findLightByStatus(Boolean contractActive) {
-		return repos.findLightByStatus(contractActive);
+	public List<User> findLightByStatus(Boolean active) {
+		return repos.findLightByStatus(active);
 	}
 
 	@Cacheable("userService.findAsMap")

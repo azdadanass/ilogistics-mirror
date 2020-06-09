@@ -99,9 +99,9 @@
 										</div>
 
 										<div class="profile-info-value">
-											<h:outputText id="delegate" value="#{assignmentView.assignment.delegate.fullName}" styleClass="bolder green" />
+											<h:outputText id="delegate" value="#{assignmentView.assignment.user.fullName}" styleClass="bolder green" />
 											<p:overlayPanel for="delegate" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(assignmentView.assignment.delegate.username)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(assignmentView.assignment.user.username)}" />
 											</p:overlayPanel>
 											&nbsp;
 										</div>

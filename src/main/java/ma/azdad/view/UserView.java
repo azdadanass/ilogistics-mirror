@@ -288,8 +288,8 @@ public class UserView {
 		return userService.findLight();
 	}
 
-	public List<User> findLightByStatus(Boolean contractActive) {
-		return userService.findLightByStatus(contractActive);
+	public List<User> findLightByStatus(Boolean active) {
+		return userService.findLightByStatus(active);
 	}
 
 	public List<User> findLightAndActive() {

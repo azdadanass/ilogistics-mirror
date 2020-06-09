@@ -1,19 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -27,7 +23,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -40,11 +35,11 @@
 				<div class="col-sm-12">
 					<h:panelGroup id="widgetPanel">
 						<div class=" col-sm-offset-1 col-sm-6">
-							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Assignment" value="#{assignmentView.addEditPage}" rendered="#{assignmentView.canSaveAssignment()}">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Assignment" value="#{assignmentView.addEditPage}"
+								rendered="#{assignmentView.canSaveAssignment()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
-
 							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
@@ -94,48 +89,43 @@
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
 						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
-						<p:dataTable value="#{assignmentView.list2}" filteredValue="#{assignmentView.list3}" rowKey="#{item.id}" selection="#{assignmentView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-							paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-
+						<p:dataTable value="#{assignmentView.list2}" filteredValue="#{assignmentView.list3}" rowKey="#{item.id}" selection="#{assignmentView.list4}" id="main_tab" widgetVar="main_tab" var="item"
+							rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="rowUnselect" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="rowSelectCheckbox" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
-
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
-
 							<p:column headerText="Photo" width="5%" styleClass="hidden-xs">
 								<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
 									<f:param name="fileName" value="#{cacheView.getPhoto(item.user.username)}" />
 								</p:graphicImage>
 							</p:column>
-
+							<p:column headerText="User">
+								<h:outputText value="#{item.user.fullName}" styleClass="orange" />
+							</p:column>
+							<p:column headerText="Status">
+								<h:outputText value="#{item.status}" styleClass="badge #{item.statusStyleClass}" />
+							</p:column>
+							<p:column headerText="Type" width="100">
+								<h:outputText value="#{item.internal?'Internal':'External'}" styleClass="badge #{item.internal?'badge-success':'badge-warning'}" />
+							</p:column>
 							<p:column headerText="Start Date">
 								<h:outputText value="#{item.startDate}">
 									<f:convertDateTime pattern="dd-MM-yyyy" />
 								</h:outputText>
 							</p:column>
-
 							<p:column headerText="End Date">
 								<h:outputText value="#{item.endDate}">
 									<f:convertDateTime pattern="dd-MM-yyyy" />
 								</h:outputText>
 							</p:column>
-
 							<p:column headerText="Description">
 								<h:outputText value="#{item.description}" />
 							</p:column>
-
-							<p:column headerText="User">
-								<h:outputText value="#{item.user.fullName}" styleClass="orange" />
-							</p:column>
-							
-							<p:column headerText="Status">
-								<h:outputText value="#{item.status}" styleClass="badge #{item.statusStyleClass}"/>
-							</p:column>
-
 							<p:column headerText="Actions" style="width:150px">
 								<div class="action-buttons center">
 									<h:outputLink value="#{assignmentView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
@@ -144,10 +134,8 @@
 									</h:outputLink>
 								</div>
 							</p:column>
-
 						</p:dataTable>
 					</div>
-
 				</div>
 			</div>
 		</h:form>

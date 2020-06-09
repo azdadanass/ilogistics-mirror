@@ -120,4 +120,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	User findByPhone(String phone);
 
+	@Query("from User a left join a.company company left join a.customer customer left join a.")
+	String getCompanyName(String username);
+
 }

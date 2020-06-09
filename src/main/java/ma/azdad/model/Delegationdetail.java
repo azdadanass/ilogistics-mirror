@@ -28,7 +28,7 @@ public class Delegationdetail implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "iddelegationDetail", unique = true, nullable = false)
+	@Column(name = "iddelegationdetail", unique = true, nullable = false)
 	public Integer getIddelegationDetail() {
 		return iddelegationDetail;
 	}

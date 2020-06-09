@@ -45,9 +45,10 @@ public class User implements Serializable {
 
 	private UserData userData = new UserData();
 	private CompanyType companyType;
+	private Company company;
 	private Customer customer;
 	private Supplier supplier;
-	private String company;
+	private String other;
 	private Transporter transporter;
 
 	private User user;
@@ -192,25 +193,25 @@ public class User implements Serializable {
 		return countFiles > 0;
 	}
 
-	@Transient
-	public void setCompany(Customer customer, Supplier supplier, String company) {
-		switch (companyType) {
-		case CUSTOMER:
-			this.customer = customer;
-			this.supplier = null;
-			this.company = null;
-			break;
-		case SUPPLIER:
-			this.customer = null;
-			this.supplier = supplier;
-			this.company = null;
-			break;
-		case OTHER:
-			this.customer = null;
-			this.supplier = null;
-			this.company = company;
-		}
-	}
+//	@Transient
+//	public void setCompany(Customer customer, Supplier supplier, String company) {
+//		switch (companyType) {
+//		case CUSTOMER:
+//			this.customer = customer;
+//			this.supplier = null;
+//			this.company = null;
+//			break;
+//		case SUPPLIER:
+//			this.customer = null;
+//			this.supplier = supplier;
+//			this.company = null;
+//			break;
+//		case OTHER:
+//			this.customer = null;
+//			this.supplier = null;
+//			this.company = company;
+//		}
+//	}
 
 	public void addRole(UserRole role) {
 		if (roleList.contains(role))
@@ -475,12 +476,21 @@ public class User implements Serializable {
 		this.supplier = supplier;
 	}
 
-	public String getCompany() {
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public Company getCompany() {
 		return company;
 	}
 
-	public void setCompany(String company) {
+	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(String other) {
+		this.other = other;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

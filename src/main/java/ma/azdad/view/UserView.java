@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
-import ma.azdad.model.UserHistory;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
@@ -123,26 +122,6 @@ public class UserView {
 		if (isEditPage || isViewPage)
 			return sessionView.isTheConnectedUser(user.getUser());
 		return true;
-	}
-
-	public String saveUser() {
-		if (!canSaveUser())
-			return UtilsFunctions.addParameters(listPage, "faces-redirect=true");
-		if (!validateUser())
-			return null;
-
-		user.setFullName(user.getFirstName() + " " + user.getLastName());
-		user.setUser(sessionView.getUser());
-		user.setCompany(customerService.findOneNullable(user.getCustomerId()), supplierService.findOneNullable(user.getSupplierId()), user.getCompany());
-
-		if (isAddPage)
-			user.setPassword(UtilsFunctions.stringToMD5(user.getPassword()));
-
-		user.addHistory(new UserHistory(isEditPage ? "Edited" : "Created", user, null));
-
-		user = userService.save(user);
-
-		return UtilsFunctions.addParameters(viewPage, "faces-redirect=true", "username=" + user.getUsername());
 	}
 
 	public Boolean validateUser() {
@@ -320,9 +299,9 @@ public class UserView {
 		return userService.findLightByProject(projectId);
 	}
 
-	public List<User> findLightByCompany(User user) {
-		return userService.findLightByCompany(user);
-	}
+//	public List<User> findLightByCompany(User user) {
+//		return userService.findLightByCompany(user);
+//	}
 
 	// getters & setters
 

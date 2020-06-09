@@ -11,7 +11,7 @@ import ma.azdad.GenericTest;
 public class Repos extends GenericTest {
 
 	@Autowired
-	AssignmentDetailRepos adr;
+	UserRepos ur;
 
 	@Test
 	@Transactional

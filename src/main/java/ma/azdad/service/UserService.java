@@ -91,11 +91,11 @@ public class UserService {
 		return repos.countByUsername(username);
 	}
 
-	public List<User> findLightByCompany(User user) {
-		if (user == null)
-			return null;
-		return findLightByCompany(user.getCompanyType(), user.getCustomerId(), user.getSupplierId(), user.getCompany());
-	}
+//	public List<User> findLightByCompany(User user) {
+//		if (user == null)
+//			return null;
+//		return findLightByCompany(user.getCompanyType(), user.getCustomerId(), user.getSupplierId(), user.getCompany());
+//	}
 
 	public List<User> findLightByCompany(CompanyType companyType, Integer customerId, Integer supplierId, String company) {
 		if (companyType != null)

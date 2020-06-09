@@ -1,22 +1,10 @@
 package ma.azdad.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ma.azdad.model.Affectation;
-import ma.azdad.model.Assignment;
-import ma.azdad.model.AssignmentDetail;
 import ma.azdad.model.ExternalResource;
-import ma.azdad.model.ExternalResourceFile;
-import ma.azdad.model.ExternalResourceHistory;
-import ma.azdad.model.ExternalResourceProjectAssignment;
-import ma.azdad.model.User;
-import ma.azdad.model.UserData;
-import ma.azdad.model.UserFile;
-import ma.azdad.model.UserHistory;
 import ma.azdad.repos.AffectationRepos;
 import ma.azdad.repos.AssignmentRepos;
 import ma.azdad.repos.ExternalResourceRepos;
@@ -41,112 +29,6 @@ public class ExternalResourceService extends GenericService<ExternalResource> {
 
 	@Autowired
 	AffectationRepos affectationRepos;
-
-	public void exportToUserScript() throws Exception {
-		List<ExternalResource> list = externalResourceRepos.findAll();
-
-		for (ExternalResource er : list) {
-			String username = generateUsername(er.getFirstName(), er.getLastName());
-
-			if (username == null)
-				throw new Exception("generateUsername error " + er.getFullName());
-
-			User user = new User();
-			user.setInternal(false);
-			user.setUsername(String.valueOf(er.getId()));
-			user.setLogin(username);
-
-			user.setFirstName(er.getFirstName());
-			user.setLastName(er.getLastName());
-			user.setFullName(er.getFullName());
-			user.setJob(er.getJob());
-			user.setCin(er.getCin());
-			user.setEmail(er.getEmail());
-			user.setEmail2(er.getEmail2());
-			user.setPassword(er.getPassword());
-			user.setActive(er.getActive());
-			user.setPhoto(er.getPhoto());
-			user.setPhone(er.getPhone());
-			user.setPhone2(er.getPhone2());
-			user.setGender(er.getGender());
-			user.setCompanyType(er.getCompanyType());
-			user.setCustomer(er.getCustomer());
-			user.setSupplier(er.getSupplier());
-			user.setCompany(er.getCompany());
-			user.setTransporter(er.getTransporter());
-			user.setUser(er.getUser());
-			user.setBirthday(er.getBirthday());
-			if (!er.getHistoryList().isEmpty())
-				user.setDate(er.getHistoryList().get(0).getDate());
-
-			for (ExternalResourceFile ef : er.getFileList()) {
-				UserFile us = new UserFile();
-				us.setDate(ef.getDate());
-				us.setExtension(ef.getExtension());
-				us.setType(ef.getType());
-				us.setName(ef.getName());
-				us.setUser(ef.getUser());
-				us.setLink(ef.getLink());
-				user.addFile(us);
-			}
-
-			for (ExternalResourceHistory eh : er.getHistoryList()) {
-				UserHistory uh = new UserHistory();
-				uh.setDate(eh.getDate());
-				uh.setDescription(eh.getDescription());
-				uh.setUser(eh.getUser());
-				uh.setStatus(eh.getStatus());
-				user.addHistory(uh);
-			}
-
-			UserData userData = new UserData();
-			userData.setId(er.getId());
-			userData.setPassportId(er.getPassportId());
-			userData.setPassportExpireDate(er.getPassportExpireDate());
-			userData.setDriveLicenceId(er.getDriveLicenceId());
-			userData.setDriveLicenceType(er.getDriveLicenceType());
-			userData.setDriveLicenceIssuedDate(er.getDriveLicenceIssuedDate());
-			userData.setDriveLicenceExpireDate(er.getDriveLicenceExpireDate());
-			userData.setBusinessPhone(er.getBusinessPhone());
-			userData.setBusinessFax(er.getBusinessFax());
-			userData.setHomeAddress(er.getHomeAddress());
-			userData.setHomePhone(er.getHomePhone());
-			userData.setEmergencyName1(er.getEmergencyName1());
-			userData.setEmergencyPhone1(er.getEmergencyPhone1());
-			userData.setEmergencyName2(er.getEmergencyName2());
-			userData.setEmergencyPhone2(er.getEmergencyPhone2());
-			userData.setSkypeId(er.getSkypeId());
-			userData.setImId(er.getImId());
-			userData.setDescription(er.getDescription());
-
-			user.addUserData(userData);
-
-			user = userRepos.save(user);
-
-			for (ExternalResourceProjectAssignment ea : er.getAssignmentList()) {
-				Assignment assignment = new Assignment();
-				assignment.setUser(user);
-				assignment.setCreationDate(ea.getStartDate());
-				assignment.setStartDate(ea.getStartDate());
-				assignment.setEndDate(ea.getEndDate());
-				assignment.setAssignator(ea.getProject().getManager());
-				AssignmentDetail assignmentDetail = new AssignmentDetail();
-				assignmentDetail.setAssignment(assignment);
-				assignmentDetail.setProject(ea.getProject());
-				assignment.getDetailList().add(assignmentDetail);
-				assignmentRepos.save(assignment);
-			}
-
-			Affectation affectation = new Affectation();
-			affectation.setLineManager(user.getUser());
-			affectation.setHrManager(userRepos.findById("l.sbay").get());
-			affectation.setLogisticManager(userRepos.findById("a.bassim").get());
-			affectation.setUser(user);
-			affectationRepos.save(affectation);
-
-		}
-
-	}
 
 	private String generateUsername(String firstName, String lastName) {
 		firstName = firstName.replace(" ", "").toLowerCase();

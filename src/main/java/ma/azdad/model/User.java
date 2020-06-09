@@ -101,7 +101,7 @@ public class User implements Serializable {
 		this.cin = cin;
 	}
 
-	public User(String username, String photo, String fullName, String job, String email, String phone, Boolean active, CompanyType companyType, String company, String customerName, String supplierName) {
+	public User(String username, String photo, String fullName, String job, String email, String phone, Boolean active, CompanyType companyType, String companyName, String customerName, String supplierName) {
 		this.username = username;
 		this.photo = photo;
 		this.fullName = fullName;
@@ -110,11 +110,13 @@ public class User implements Serializable {
 		this.phone = phone;
 		this.active = active;
 		this.companyType = companyType;
-		this.company = customerName != null ? customerName : supplierName != null ? supplierName : company;
+		setCompanyName(companyName);
+		setCustomerName(customerName);
+		setSupplierName(supplierName);
 	}
 
 	public boolean filter(String query) {
-		return contains(fullName, query) || contains(job, query) || contains(cin, query) || contains(company, query);
+		return contains(fullName, query) || contains(job, query) || contains(cin, query);
 	}
 
 	public void initRoles() {
@@ -150,18 +152,38 @@ public class User implements Serializable {
 
 	@Transient
 	public String getCompanyName() {
-		if (companyType == null)
-			return null;
-		switch (companyType) {
-		case CUSTOMER:
-			return customer.getName();
-		case SUPPLIER:
-			return supplier.getName();
-		case OTHER:
-			return company;
-		default:
-			return null;
-		}
+		return company == null ? null : company.getName();
+	}
+
+	@Transient
+	public void setCompanyName(String companyName) {
+		if (company == null)
+			company = new Company();
+		company.setName(companyName);
+	}
+
+	@Transient
+	public String getCustomerName() {
+		return customer == null ? null : customer.getName();
+	}
+
+	@Transient
+	public void setCustomerName(String customerName) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setName(customerName);
+	}
+
+	@Transient
+	public String getSupplierName() {
+		return supplier == null ? null : supplier.getName();
+	}
+
+	@Transient
+	public void setSupplierName(String supplierName) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setName(supplierName);
 	}
 
 	@Transient

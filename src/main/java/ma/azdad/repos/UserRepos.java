@@ -45,9 +45,10 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	User findByLogin(String login);
 
+	String companyName = " (select b.name from Company b where b.id = a.company.id) ";
 	String customerName = " (select b.name from Customer b where b.id = a.customer.id) ";
 	String supplierName = " (select b.name from Supplier b where b.id = a.supplier.id) ";
-	String select1 = "select new User(a.id,a.photo,a.fullName,a.job, a.email, a.phone,a.active,a.companyType, a.company, " + customerName + ", " + supplierName + ") ";
+	String select1 = "select new User(a.id,a.photo,a.fullName,a.job, a.email, a.phone,a.active,a.companyType, " + companyName + ", " + customerName + ", " + supplierName + ") ";
 
 	@Query(select1 + " from User a where a.internal = ?1")
 	List<User> findLight(Boolean interna);
@@ -119,8 +120,5 @@ public interface UserRepos extends JpaRepository<User, String> {
 	User findByEmail(String email);
 
 	User findByPhone(String phone);
-
-	@Query("from User a left join a.company company left join a.customer customer left join a.")
-	String getCompanyName(String username);
 
 }

@@ -189,7 +189,7 @@
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Deliver to should not be null"
 														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.externalCustomerId,deliveryRequestView.deliveryRequest.externalSupplierId)}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+														<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.externalCompanyCustomerId,deliveryRequestView.deliveryRequest.externalCompanySupplierId)}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
 
 														<p:column>
 															<h:outputText value="#{r.firstName}" />

@@ -95,16 +95,15 @@
 						</div>
 
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.externalRequester.fullName}" styleClass="bolder pink" rendered="#{!deliveryRequestView.canUpdateExternalRequester()}" />
-							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateExternalRequester()}">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.externalRequester.fullName}" styleClass="bolder pink" />
+							<!-- <p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateExternalRequester()}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.externalRequester.fullName}" />
 								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.tmpExternalRequesterId}">
-									<f:selectItem itemLabel="---" noSelectionOption="true" />
 									<f:selectItems value="#{userView.findLightByProject(deliveryRequestView.deliveryRequest.projectId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.id}" />
 								</h:selectOneMenu>
 								<p:ajax event="save" listener="#{deliveryRequestView.updateExternalRequester()}" update=":main_form" />
 								<p:ajax event="cancel" />
-							</p:inplace>
+							</p:inplace> -->
 							&nbsp;
 						</div>
 					</div>
@@ -547,7 +546,7 @@
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
-								<h:outputText value="#{cacheView.getCin(deliveryRequestView.deliveryRequest.toUser.username)}" styleClass="purple" />
+								<!-- <h:outputText value="#{cacheView.getCin(deliveryRequestView.deliveryRequest.toUser.username)}" styleClass="purple" /> -->
 								&nbsp;
 							</div>
 						</div>

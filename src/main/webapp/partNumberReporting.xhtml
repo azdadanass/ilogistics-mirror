@@ -217,27 +217,21 @@
 										</div>
 
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberView.partNumber.industry}" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.industry==null or partNumberView.partNumber.industry.isEmpty()?'':'hide'}"
-												title="Must be filled" />
+											<h:outputText value="#{partNumberView.partNumber.industryName}" />
 											&nbsp;
 										</div>
 									</div>
-									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Manufacture" />
-											</div>
-
-											<div class="profile-info-value">
-												<h:outputText value="#{partNumberView.partNumber.manufacture}" />
-												<i
-													class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.manufacture==null or partNumberView.partNumber.manufacture.isEmpty()?'':'hide'}"
-													title="Must be filled" />
-												&nbsp;
-											</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Type" />
 										</div>
-									</f:subview>
+
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.partNumberType.name}" styleClass="bolder pink" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
 											<h:outputText value="Unit / Kit" />
@@ -266,13 +260,26 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Type" />
+											<h:outputText value="Category" />
 										</div>
 
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberView.partNumber.type}" styleClass="purple" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.type==null or partNumberView.partNumber.type.isEmpty()?'':'hide'}"
+											<h:outputText value="#{partNumberView.partNumber.partNumberType.category.name}" styleClass="bolder purple" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}"
 												title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Brand" />
+										</div>
+
+										<div class="profile-info-value">
+											<h:outputLink value="viewBrand.xhtml" target="_balnk">
+												<h:outputText value="#{partNumberView.partNumber.brand.name}" styleClass="bolder orange" />
+												<f:param name="id" value="#{partNumberView.partNumber.brand.id}" />
+											</h:outputLink>
 											&nbsp;
 										</div>
 									</div>
@@ -296,21 +303,6 @@
 											&nbsp;
 										</div>
 									</div>
-									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Technology" />
-											</div>
-
-											<div class="profile-info-value">
-												<h:outputText value="#{partNumberView.partNumber.technology}" />
-												<i
-													class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.technology==null or partNumberView.partNumber.technology.isEmpty()?'':'hide'}"
-													title="Must be filled" />
-												&nbsp;
-											</div>
-										</div>
-									</f:subview>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
 											<h:outputText value="State" />

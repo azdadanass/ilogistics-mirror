@@ -62,14 +62,17 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query(select1 + " from User a where a.user.username = ?1")
 	List<User> findLight(String username);
 
+	@Query(select1 + " from User a where a.companyType = ?1 and a.company.id = ?2")
+	List<User> findLightByExternalCompany(CompanyType companyType, Integer companyId);
+
 	@Query(select1 + " from User a where a.companyType = ?1 and a.customer.id = ?2")
 	List<User> findLightByCustomer(CompanyType companyType, Integer customerId);
 
 	@Query(select1 + " from User a where a.companyType = ?1 and a.supplier.id = ?2")
 	List<User> findLightBySupplier(CompanyType companyType, Integer supplierId);
 
-	@Query(select1 + " from User a where a.companyType = ?1 and a.company = ?2")
-	List<User> findLightByCompany(CompanyType companyType, String company);
+	@Query(select1 + " from User a where a.companyType = ?1 and a.other = ?2")
+	List<User> findLightByOther(CompanyType companyType, String other);
 
 	List<User> findByJob(String job);
 
@@ -120,5 +123,8 @@ public interface UserRepos extends JpaRepository<User, String> {
 	User findByEmail(String email);
 
 	User findByPhone(String phone);
+
+	@Query("select case when company is not null then company.name else 'haha' end from User a left join a.company company left join a.customer customer left join a.supplier supplier where a.username = ?1")
+	String findCompanyName(String username);
 
 }

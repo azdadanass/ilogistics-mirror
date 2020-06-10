@@ -112,11 +112,6 @@
 												<f:selectItems value="#{partNumberIndustryView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 												<p:ajax update="category,type" />
 											</h:selectOneMenu>
-
-											<!-- <h:selectOneMenu value="#{partNumberView.partNumber.industry}" required="true" requiredMessage="Industry should not be null">
-												<f:selectItems value="#{partNumberView.partNumber.INDUSTRY_LIST}" />
-												<p:ajax update="panel1,type" />
-											</h:selectOneMenu> -->
 										</div>
 									</div>
 								</div>
@@ -168,28 +163,6 @@
 							</div>
 							<div class="space-4" />
 							<div class="row">
-								<!-- <div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Type" />
-										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu id="type" value="#{partNumberView.partNumber.type}" required="true" requiredMessage="Type should not be null">
-												<c:if test="#{partNumberView.partNumber.industry=='Telecom'}">
-													<f:selectItem itemLabel="FNE" itemValue="FNE" />
-													<f:selectItem itemLabel="ANE" itemValue="ANE" />
-												</c:if>
-												<c:if test="#{partNumberView.partNumber.industry=='IT'}">
-													<f:selectItem itemLabel="IT" itemValue="IT" />
-												</c:if>
-												<c:if test="#{partNumberView.partNumber.industry=='Medical'}">
-													<f:selectItem itemLabel="Medical" itemValue="Medical" />
-												</c:if>
-												<f:selectItem itemLabel="Other" itemValue="Other" />
-											</h:selectOneMenu>
-										</div>
-									</div>
-								</div> -->
 								<div class="col-xs-12 col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
@@ -218,51 +191,6 @@
 									</div>
 								</div>
 							</div>
-							<!-- <div class="space-4" />
-							<div class="row">
-								<h:panelGroup id="panel1">
-									<f:subview rendered="#{partNumberView.partNumber.industry=='Medical'}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Manufacture" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{partNumberView.partNumber.manufacture}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Manufacture should not be null">
-														<f:selectItems value="#{textView.findValueByBeanNameAndType('PartNumber','MANUFACTURE_MEDICAL')}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-									<f:subview rendered="#{partNumberView.partNumber.industry=='Telecom'}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Manufacture" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{partNumberView.partNumber.manufacture}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Manufacture should not be null">
-														<f:selectItems value="#{textView.findValueByBeanNameAndType('PartNumber','MANUFACTURE_TELECOM')}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Technology" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<h:selectOneMenu value="#{partNumberView.partNumber.technology}" required="true" requiredMessage="Technology should not be null">
-														<f:selectItems value="#{partNumberView.partNumber.TECHNOLOGY_LIST}" />
-													</h:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-								</h:panelGroup>
-							</div> -->
 							<div class="space-4" />
 							<div class="row">
 								<div class="col-xs-12 col-sm-6">

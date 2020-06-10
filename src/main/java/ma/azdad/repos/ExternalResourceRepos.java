@@ -28,7 +28,7 @@ public interface ExternalResourceRepos extends JpaRepository<ExternalResource, I
 //	public List<ExternalResource> findLightBySupplier(CompanyType companyType, Integer supplierId);
 //
 //	@Query(select1 + " from ExternalResource a where a.companyType = ?1 and a.company = ?2")
-//	public List<ExternalResource> findLightByCompany(CompanyType companyType, String company);
+//	public List<ExternalResource> findLightByExternalCompany(CompanyType companyType, String company);
 //
 //	public List<ExternalResource> findByJob(String job);
 //

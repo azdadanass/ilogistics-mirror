@@ -199,6 +199,18 @@ public class User implements Serializable {
 	}
 
 	@Transient
+	public Integer getCompanyId() {
+		return company == null ? null : company.getId();
+	}
+
+	@Transient
+	public void setCompanyId(Integer companyId) {
+		if (company == null || !companyId.equals(company.getId()))
+			company = new Company();
+		company.setId(companyId);
+	}
+
+	@Transient
 	public Integer getSupplierId() {
 		return supplier == null ? null : supplier.getId();
 	}

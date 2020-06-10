@@ -286,7 +286,7 @@
 						<p:selectOneMenu value="#{userView.user.lineManager}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Line Manager should not be null"
 							converter="#{genericSecuredConverter}" rendered="#{!userView.user.lineManager.internal}">
 							<f:selectItem itemLabel="---" noSelectionOption="true" />
-							<f:selectItems value="#{userView.findLightByCompany(userView.user)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+							<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 						</p:selectOneMenu>
 					</h:panelGroup>
 				</div>

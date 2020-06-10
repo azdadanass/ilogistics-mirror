@@ -843,7 +843,9 @@
 												<ui:repeat var="comment" value="#{deliveryRequestView.commentsTab[varStatus.index]}">
 													<div class="timeline-item clearfix">
 														<div class="timeline-info">
-															<img src="#{cacheView.getPhoto(comment.user.username)}" />
+															<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+																<f:param name="fileName" value="#{cacheView.getPhoto(comment.user.username)}" />
+															</p:graphicImage>
 															<!-- <span class="badge badge-success">
 															<h:outputText value="#{comment.date}">
 																<f:convertDateTime pattern="HH:mm" />

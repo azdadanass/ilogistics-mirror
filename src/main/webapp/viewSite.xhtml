@@ -259,7 +259,7 @@
 												<h:outputText value="#{siteView.site.contact.fullName}" styleClass="bolder purple" />
 												<p:selectOneMenu value="#{siteView.site.contact}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
 													<f:selectItem noSelectionOption="true" itemLabel="---"/>
-													<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}"/>
+													<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}"/>
 												</p:selectOneMenu>
 												<p:ajax event="save" listener="#{siteView.editInplace()}" update=":main_form" />
 												<p:ajax event="cancel" />

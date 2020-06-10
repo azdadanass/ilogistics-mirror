@@ -1,5 +1,6 @@
 package ma.azdad.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -91,23 +92,23 @@ public class UserService {
 		return repos.countByUsername(username);
 	}
 
-//	public List<User> findLightByCompany(User user) {
-//		if (user == null)
-//			return null;
-//		return findLightByCompany(user.getCompanyType(), user.getCustomerId(), user.getSupplierId(), user.getCompany());
-//	}
+	public List<User> findLightByExternalCompany(User user) {
+		if (user == null)
+			return null;
+		return findLightByExternalCompany(user.getCompanyType(), user.getCustomerId(), user.getSupplierId());
+	}
 
-	public List<User> findLightByCompany(CompanyType companyType, Integer customerId, Integer supplierId, String company) {
+	public List<User> findLightByExternalCompany(CompanyType companyType, Integer customerId, Integer supplierId) {
 		if (companyType != null)
 			switch (companyType) {
 			case CUSTOMER:
 				return repos.findLightByCustomer(companyType, customerId);
 			case SUPPLIER:
 				return repos.findLightBySupplier(companyType, supplierId);
-			case OTHER:
-				return repos.findLightByCompany(companyType, company);
+			default:
+				break;
 			}
-		return null;
+		return new ArrayList<User>();
 	}
 
 	public Long countByCin(String cin, String username) {

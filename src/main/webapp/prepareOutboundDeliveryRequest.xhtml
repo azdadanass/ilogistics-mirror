@@ -46,7 +46,7 @@
 							<ul class="nav nav-wizard">
 								<li class="#{deliveryRequestView.step==1?'active':''}">
 									<a href="#">
-										<h:outputText value="STEP1" />
+										<h:outputText value="DN Materials" />
 									</a>
 								</li>
 								<li class="#{deliveryRequestView.step==2?'active':''}">
@@ -185,7 +185,7 @@
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Deliver to should not be null"
 														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findAll()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+														<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
 
 														<p:column>
 															<h:outputText value="#{r.firstName}" />
@@ -314,7 +314,7 @@
 				</div>
 				<p:messages id="messages" closable="true" />
 				<div class="modal-body">
-					<ui:include src="addEditUserBody.xhtml" />
+					<!-- <ui:include src="addEditUserBody.xhtml" /> -->
 				</div>
 				<div class="modal-footer">
 					<p:commandButton actionListener="#{userView.saveUser()}" update=":main_form:messages,:main_form:step2:subview2:deliverTo" styleClass="btn btn-success "

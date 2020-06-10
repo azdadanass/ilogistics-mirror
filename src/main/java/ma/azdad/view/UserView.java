@@ -299,9 +299,9 @@ public class UserView {
 		return userService.findLightByProject(projectId);
 	}
 
-//	public List<User> findLightByCompany(User user) {
-//		return userService.findLightByCompany(user);
-//	}
+	public List<User> findLightByExternalCompany(User user) {
+		return userService.findLightByExternalCompany(user);
+	}
 
 	// getters & setters
 

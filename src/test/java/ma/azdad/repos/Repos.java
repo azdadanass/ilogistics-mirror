@@ -17,6 +17,7 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void testExample() throws Exception {
 
+		System.out.println(ur.findCompanyName("m.bougri"));
 	}
 
 }

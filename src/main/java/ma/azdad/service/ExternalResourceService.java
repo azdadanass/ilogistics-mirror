@@ -67,11 +67,11 @@ public class ExternalResourceService extends GenericService<ExternalResource> {
 //		return externalResourceRepos.findLight();
 //	}
 //
-//	public List<ExternalResource> findLightByCompany(ExternalResource externalResource) {
-//		return findLightByCompany(externalResource.getCompanyType(), externalResource.getCustomerId(), externalResource.getSupplierId(), externalResource.getCompany());
+//	public List<ExternalResource> findLightByExternalCompany(ExternalResource externalResource) {
+//		return findLightByExternalCompany(externalResource.getCompanyType(), externalResource.getCustomerId(), externalResource.getSupplierId(), externalResource.getCompany());
 //	}
 //
-//	public List<ExternalResource> findLightByCompany(CompanyType companyType, Integer customerId, Integer supplierId, String company) {
+//	public List<ExternalResource> findLightByExternalCompany(CompanyType companyType, Integer customerId, Integer supplierId, String company) {
 //		if (companyType != null)
 //			switch (companyType) {
 //			case CUSTOMER:
@@ -79,7 +79,7 @@ public class ExternalResourceService extends GenericService<ExternalResource> {
 //			case SUPPLIER:
 //				return externalResourceRepos.findLightBySupplier(companyType, supplierId);
 //			case OTHER:
-//				return externalResourceRepos.findLightByCompany(companyType, company);
+//				return externalResourceRepos.findLightByExternalCompany(companyType, company);
 //			}
 //		return null;
 //	}

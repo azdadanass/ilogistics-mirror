@@ -134,7 +134,7 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="Company / #{deliveryRequestView.deliveryRequest.company.name}"  readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}" />
+											<p:inputText value="Company / #{deliveryRequestView.deliveryRequest.internalCompany.name}"  readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}" />
 											<p:inputText value="Customer / #{deliveryRequestView.deliveryRequest.toCustomer.name}" readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.toCustomer != null}"/>
 											<p:inputText value="Supplier / #{deliveryRequestView.deliveryRequest.toSupplier.name}" readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.toSupplier != null}"/>
 											<br />

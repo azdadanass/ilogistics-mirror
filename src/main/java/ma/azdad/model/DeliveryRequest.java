@@ -1359,22 +1359,26 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public Integer getExternalCompanyCustomerId() {
-		return externalCompanyCustomerId;
+		return externalCompanyCustomer == null ? null : externalCompanyCustomer.getId();
 	}
 
 	@Transient
 	public void setExternalCompanyCustomerId(Integer externalCompanyCustomerId) {
-		this.externalCompanyCustomerId = externalCompanyCustomerId;
+		if (externalCompanyCustomerId == null || !externalCompanyCustomerId.equals(externalCompanyCustomer.getId()))
+			externalCompanyCustomer = new Customer();
+		externalCompanyCustomer.setId(externalCompanyCustomerId);
 	}
 
 	@Transient
 	public Integer getExternalCompanySupplierId() {
-		return externalCompanySupplierId;
+		return externalCompanySupplier == null ? null : externalCompanySupplier.getId();
 	}
 
 	@Transient
 	public void setExternalCompanySupplierId(Integer externalCompanySupplierId) {
-		this.externalCompanySupplierId = externalCompanySupplierId;
+		if (externalCompanySupplierId == null || !externalCompanySupplierId.equals(externalCompanySupplier.getId()))
+			externalCompanySupplier = new Supplier();
+		externalCompanySupplier.setId(externalCompanySupplierId);
 	}
 
 	@Transient

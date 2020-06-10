@@ -703,14 +703,6 @@
 												<div class="col-xs-12 col-sm-3">
 													<label class="control-label pull-right">
 														<h:outputText value="External Resource " />
-														<span class="action-buttons center">
-															<h:outputLink value="addEditUser.xhtml" target="_blank">
-																<i class="fa fa-plus green" />
-															</h:outputLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Refresh External Resource List" update="toUser" partialSubmit="true" process="@this">
-																<i class="fa fa-refresh blue" />
-															</p:commandLink>
-														</span>
 													</label>
 												</div>
 												<div class="col-xs-12 col-sm-9">
@@ -718,7 +710,7 @@
 														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
 															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
-															<f:selectItems value="#{deliveryRequestView.findByExternalCompany()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+															<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.toCustomerId,deliveryRequestView.deliveryRequest.toSupplierId)}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
 															<p:column>
 																<h:outputText value="#{r.firstName}" />
 															</p:column>

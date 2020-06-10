@@ -54,7 +54,7 @@ public class OldEmailService {
 		mail.setSubject(subject);
 
 		try {
-			mail.setFrom(new InternetAddress("system@3gcom-int.com", applicationName));
+			mail.setFrom(new InternetAddress("system.orange@telodigital.com", applicationName + " Orange"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

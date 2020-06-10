@@ -122,7 +122,7 @@ public class EmailService {
 				log.info("\tSubject : " + mail.getSubject());
 				log.info("------------------------------------------------------");
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, mail.getMultipart(), "UTF-8");
-				message.setFrom("system@3gcom-int.com", applicationName + " Orange");
+				message.setFrom("system.orange@telodigital.com", applicationName + " Orange");
 				message.setTo(mail.getTo());
 				message.setSubject(mail.getSubject());
 				message.setText(mail.getMessage(), true);

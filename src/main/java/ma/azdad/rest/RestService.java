@@ -54,4 +54,16 @@ public class RestService {
 		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
 
+	@GetMapping(value = "/rest/file/{folder}/{fileName}/{ext}")
+	public ResponseEntity<?> getFile(@PathVariable String folder, @PathVariable String fileName, @PathVariable String ext) throws IOException {
+		System.out.println("ilogistics rest getFile : " + path + folder + fileName + "." + ext);
+		File file = new File(path + folder + "/" + fileName + "." + ext);
+		InputStream in = new FileInputStream(file);
+		Resource resource = new ByteArrayResource(IOUtils.toByteArray(in));
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentLength(resource.contentLength());
+		headers.setContentDispositionFormData("attachment", fileName + "." + ext);
+		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
+	}
+
 }

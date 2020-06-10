@@ -130,7 +130,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private Integer poId;
 
 	private String toUserUsername;
-	private Integer toSupplierId;
 
 	private Integer externalCompanyCustomerId;
 	private Integer externalCompanySupplierId;
@@ -252,8 +251,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 			transporterId = transporter.getId();
 		if (toUser != null)
 			toUserUsername = toUser.getUsername();
-		if (toSupplier != null)
-			toSupplierId = toSupplier.getId();
 		if (externalCompanyCustomer != null)
 			externalCompanyCustomerId = externalCompanyCustomer.getId();
 		if (externalCompanySupplier != null)
@@ -1216,12 +1213,14 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public Integer getToSupplierId() {
-		return toSupplierId;
+		return toSupplier == null ? null : toSupplier.getId();
 	}
 
 	@Transient
 	public void setToSupplierId(Integer toSupplierId) {
-		this.toSupplierId = toSupplierId;
+		if (toSupplier == null || !toSupplier.getId().equals(toSupplierId))
+			toSupplier = new Supplier();
+		toSupplier.setId(toSupplierId);
 	}
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "deliveryRequest")

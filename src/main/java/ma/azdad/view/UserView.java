@@ -303,6 +303,10 @@ public class UserView {
 		return userService.findLightByExternalCompany(user);
 	}
 
+	public List<User> findActiveByCustomerOrSupplier(Integer customerId, Integer supplierId) {
+		return userService.findActiveByCustomerOrSupplier(customerId, supplierId);
+	}
+
 	// getters & setters
 
 	public String getToNotifyUserUsername() {

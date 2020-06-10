@@ -51,7 +51,7 @@
 								</li>
 								<li class="#{deliveryRequestView.step==2?'active':''}">
 									<a href="#">
-										<h:outputText value="Deliver To Details" />
+										<h:outputText value="Deliver to Company" />
 									</a>
 								</li>
 								<li class="#{deliveryRequestView.step==3?'active':''}">
@@ -72,7 +72,7 @@
 							<f:subview id="step1" rendered="#{deliveryRequestView.step==1}">
 								<h3 class="lighter block green">
 									<i class="ace-icon fa fa-list" />
-									<h:outputText value=" STEP 1 TITLE" />
+									<h:outputText value=" DN Materials" />
 								</h3>
 								<div class="row">
 									<div class="col-sm-offset-1 col-sm-10">
@@ -124,22 +124,33 @@
 							<f:subview id="step2" rendered="#{deliveryRequestView.step==2}">
 								<h3 class="lighter block green">
 									<i class="ace-icon fa fa-list-aslt" />
-									<h:outputText value=" Deliver To Details" />
+									<h:outputText value=" Deliver to Company" />
 								</h3>
-
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
 										<label class="control-label pull-right">
-											<h:outputText value="'Deliver to' type " />
+											<h:outputText value="Deliver to Company " />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="'Deliver to' type should not be null">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{DeliverToType.ALL_ENUM_VALUES}" />
-												<p:ajax update="deliverTo" />
-											</h:selectOneMenu>
+											<p:inputText value="Company / #{deliveryRequestView.deliveryRequest.company.name}"  readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}" />
+											<p:inputText value="Customer / #{deliveryRequestView.deliveryRequest.toCustomer.name}" readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.toCustomer != null}"/>
+											<p:inputText value="Supplier / #{deliveryRequestView.deliveryRequest.toSupplier.name}" readonly="true" styleClass="col-xs-12 col-sm-6" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.toSupplier != null}"/>
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Resource Type " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType?'Internal resource':'Extneral resource'}"  readonly="true" styleClass="col-xs-12 col-sm-6" />
 											<br />
 										</div>
 									</div>
@@ -166,18 +177,11 @@
 										</div>
 										<div class="space-8" />
 									</f:subview>
-									<f:subview id="toUser" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+									<f:subview rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
 										<div class="row">
 											<div class="col-xs-12 col-sm-3">
 												<label class="control-label pull-right">
 													<h:outputText value="External Resource " />
-													<span class="action-buttons center">
-														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New External Resource" update=":addUserForm" oncomplete="PF('addUserDlg').show()"
-															partialSubmit="true" process="@this">
-															<i class="fa fa-plus green" />
-															<f:setPropertyActionListener value="1" target="#{userView.parent}" />
-														</p:commandLink>
-													</span>
 												</label>
 											</div>
 											<div class="col-xs-12 col-sm-9">
@@ -185,7 +189,7 @@
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Deliver to should not be null"
 														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
+														<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.toCustomerId,deliveryRequestView.deliveryRequest.toSupplierId)}" var="item" itemLabel="#{item.firstName} #{item.lastName}, #{item.cin}" itemValue="#{item}" />
 
 														<p:column>
 															<h:outputText value="#{r.firstName}" />

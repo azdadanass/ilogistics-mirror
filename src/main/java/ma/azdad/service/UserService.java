@@ -111,6 +111,10 @@ public class UserService {
 		return new ArrayList<User>();
 	}
 
+	public List<User> findActiveByCustomerOrSupplier(Integer customerId, Integer supplierId) {
+		return repos.findByCustomerOrSupplier(customerId, supplierId, true);
+	}
+
 	public Long countByCin(String cin, String username) {
 		Long l = username == null ? repos.countByCin(cin) : repos.countByCin(cin, username);
 		return l != null ? l : 0;

@@ -222,7 +222,7 @@
 												<div class="col-xs-9 col-sm-9">
 													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px">
 														<f:selectItem noSelectionOption="true" itemLabel="---" />
-														<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2,1)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+														<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2,3)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
 														<p:ajax update="fileUploadPanel" />
 													</h:selectOneMenu>
 												</div>

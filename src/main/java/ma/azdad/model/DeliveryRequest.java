@@ -130,7 +130,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private Integer poId;
 
 	private String toUserUsername;
-	private Integer toCustomerId;
 	private Integer toSupplierId;
 
 	private Integer externalCompanyCustomerId;
@@ -253,8 +252,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 			transporterId = transporter.getId();
 		if (toUser != null)
 			toUserUsername = toUser.getUsername();
-		if (toCustomer != null)
-			toCustomerId = toCustomer.getId();
 		if (toSupplier != null)
 			toSupplierId = toSupplier.getId();
 		if (externalCompanyCustomer != null)
@@ -1207,12 +1204,14 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public Integer getToCustomerId() {
-		return toCustomerId;
+		return toCustomer == null ? null : toCustomer.getId();
 	}
 
 	@Transient
 	public void setToCustomerId(Integer toCustomerId) {
-		this.toCustomerId = toCustomerId;
+		if (toCustomer == null || !toCustomer.getId().equals(toCustomerId))
+			toCustomer = new Customer();
+		toCustomer.setId(toCustomerId);
 	}
 
 	@Transient

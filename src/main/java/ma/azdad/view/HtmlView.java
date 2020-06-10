@@ -35,7 +35,6 @@ public class HtmlView implements Serializable {
 	public String generateOverlayPanelContent(String username, Date date) {
 		if (username == null || username.isEmpty())
 			return null;
-		System.out.println("---->" + username + "\n\n\n\n");
 		User user = userService.findAsMap().get(username);
 		StringBuilder sb = new StringBuilder();
 		sb.append("	<div class=\"col-xs-3\">");

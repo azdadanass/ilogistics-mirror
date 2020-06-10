@@ -43,13 +43,14 @@ public class RestService {
 	}
 
 	@GetMapping(value = "/rest/file/{fileName}/{ext}")
-	public ResponseEntity<?> getFile(@PathVariable String fileName,@PathVariable String ext) throws IOException {
-		File file = new File(path + fileName+"."+ext);
+	public ResponseEntity<?> getFile(@PathVariable String fileName, @PathVariable String ext) throws IOException {
+		System.out.println("ilogistics rest getFile : " + path + fileName + "." + ext);
+		File file = new File(path + fileName + "." + ext);
 		InputStream in = new FileInputStream(file);
 		Resource resource = new ByteArrayResource(IOUtils.toByteArray(in));
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentLength(resource.contentLength());
-		headers.setContentDispositionFormData("attachment", fileName+"."+ext);
+		headers.setContentDispositionFormData("attachment", fileName + "." + ext);
 		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_OCTET_STREAM).body(resource);
 	}
 

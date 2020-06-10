@@ -581,7 +581,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		case APPROVED2:
 			return "badge badge-success";
 		case DELIVRED:
-			return "badge badge-primary";
+			return "badge badge-warning";
 		case PARTIALLY_DELIVRED:
 			return "badge badge-info";
 		case ACKNOWLEDGED:
@@ -593,7 +593,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		default:
 			break;
 		}
-
 		return null;
 	}
 

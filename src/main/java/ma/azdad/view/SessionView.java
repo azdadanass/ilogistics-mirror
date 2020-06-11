@@ -40,7 +40,6 @@ public class SessionView implements Serializable {
 		serverName = UtilsFunctions.getServerName();
 		login = auth.getName().toLowerCase().trim();
 		user = userService.findByLogin(login);
-		user.initRoles();
 		System.out.println("**********************************");
 		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");
 		System.out.println("serverName : " + serverName);
@@ -95,6 +94,10 @@ public class SessionView implements Serializable {
 
 	public Boolean getIsPM() {
 		return isPM();
+	}
+
+	public Boolean getIsLobManager() {
+		return user.getIsLobManager();
 	}
 
 	public Boolean isWM() {

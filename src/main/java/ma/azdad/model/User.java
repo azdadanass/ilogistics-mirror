@@ -62,12 +62,12 @@ public class User implements Serializable {
 	private List<UserRole> roleList = new ArrayList<>();
 
 	// TMP
-	private Boolean isUser = false;
-	private Boolean isSE = false;
-	private Boolean isPM = false;
-	private Boolean isWM = false;
-	private Boolean isTM = false;
-	private Boolean isAdmin = false;
+//	private Boolean isUser = false;
+//	private Boolean isSE = false;
+//	private Boolean isPM = false;
+//	private Boolean isWM = false;
+//	private Boolean isTM = false;
+//	private Boolean isAdmin = false;
 
 	private User lineManager;
 
@@ -118,15 +118,6 @@ public class User implements Serializable {
 
 	public boolean filter(String query) {
 		return contains(fullName, query) || contains(job, query) || contains(cin, query);
-	}
-
-	public void initRoles() {
-		isUser = hasRole(Role.ROLE_ILOGISTICS_USER);
-		isSE = hasRole(Role.ROLE_ILOGISTICS_SE);
-		isPM = hasRole(Role.ROLE_ILOGISTICS_PM);
-		isWM = hasRole(Role.ROLE_ILOGISTICS_WM);
-		isTM = hasRole(Role.ROLE_ILOGISTICS_TM);
-		isAdmin = hasRole(Role.ROLE_ILOGISTICS_ADMIN);
 	}
 
 	protected Boolean contains(String string, String query) {
@@ -305,62 +296,37 @@ public class User implements Serializable {
 
 	@Transient
 	public Boolean getIsSE() {
-		return isSE;
-	}
-
-	@Transient
-	public void setIsSE(Boolean isSE) {
-		this.isSE = isSE;
+		return hasRole(Role.ROLE_ILOGISTICS_SE);
 	}
 
 	@Transient
 	public Boolean getIsUser() {
-		return isUser;
-	}
-
-	@Transient
-	public void setIsUser(Boolean isUser) {
-		this.isUser = isUser;
+		return hasRole(Role.ROLE_ILOGISTICS_USER);
 	}
 
 	@Transient
 	public Boolean getIsPM() {
-		return isPM;
-	}
-
-	@Transient
-	public void setIsPM(Boolean isPM) {
-		this.isPM = isPM;
+		return hasRole(Role.ROLE_ILOGISTICS_PM);
 	}
 
 	@Transient
 	public Boolean getIsWM() {
-		return isWM;
-	}
-
-	@Transient
-	public void setIsWM(Boolean isWM) {
-		this.isWM = isWM;
+		return hasRole(Role.ROLE_ILOGISTICS_WM);
 	}
 
 	@Transient
 	public Boolean getIsTM() {
-		return isTM;
-	}
-
-	@Transient
-	public void setIsTM(Boolean isTM) {
-		this.isTM = isTM;
+		return hasRole(Role.ROLE_ILOGISTICS_TM);
 	}
 
 	@Transient
 	public Boolean getIsAdmin() {
-		return isAdmin;
+		return hasRole(Role.ROLE_ILOGISTICS_ADMIN);
 	}
 
 	@Transient
-	public void setIsAdmin(Boolean isAdmin) {
-		this.isAdmin = isAdmin;
+	public Boolean getIsLobManager() {
+		return hasRole(Role.ROLE_ILOGISTICS_LOB_MANAGER);
 	}
 
 	@Id

@@ -1184,6 +1184,9 @@
 												<p:column headerText="Full Name">
 													<h:outputText value="#{item.fullName}" styleClass="green bolder" />
 												</p:column>
+												<p:column headerText="Type" width="100">
+													<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+												</p:column>
 												<p:column headerText="Email">
 													<h:outputText value="#{item.email}" styleClass="light-blue" />
 												</p:column>

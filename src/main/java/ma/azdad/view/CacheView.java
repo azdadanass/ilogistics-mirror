@@ -82,13 +82,13 @@ public class CacheView implements Serializable {
 		case 1:
 			return addParameters(sessionView.getIsAdmin() ? "warehouseList.xhtml" : "partNumberList.xhtml", "faces-redirect=true");
 		case 2:
-			if (sessionView.isPM() || sessionView.isWM() || sessionView.isUser())
+			if (sessionView.isPM() || sessionView.isWM() || sessionView.isUser() || sessionView.getIsLobManager())
 				return addParameters("deliveryRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 		case 3:
 			if (sessionView.isAdmin() || sessionView.isPM() || sessionView.isTM() || sessionView.isUser())
 				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 		case 4:
-			if (sessionView.isAdmin() || sessionView.isPM() || sessionView.isWM() || sessionView.isUser())
+			if (sessionView.isAdmin() || sessionView.isPM() || sessionView.isWM() || sessionView.isUser() || sessionView.getIsLobManager())
 				return addParameters("reporting.xhtml", "faces-redirect=true");
 		default:
 			return null;

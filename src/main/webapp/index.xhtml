@@ -43,7 +43,7 @@
 					</figcaption>
 				</p:commandLink> </figure>
 				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/wm.jpg" width="400" height="270"
-					styleClass="#{sessionView.isPM or sessionView.isWM or sessionView.isUser?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(2)}">
+					styleClass="#{sessionView.isPM or sessionView.isWM or sessionView.isUser or sessionView.isLobManager?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(2)}">
 					<figcaption>
 					<h2>
 						<span>
@@ -71,7 +71,7 @@
 					</figcaption>
 				</p:commandLink> </figure>
 				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/reporting.jpg" width="400" height="270"
-					styleClass="#{sessionView.isUser or sessionView.isPM or sessionView.isWM or sessionView.isAdmin?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(4)}">
+					styleClass="#{sessionView.isUser or sessionView.isPM or sessionView.isWM or sessionView.isAdmin  or sessionView.isLobManager?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(4)}">
 					<figcaption>
 					<h2>
 						<span>

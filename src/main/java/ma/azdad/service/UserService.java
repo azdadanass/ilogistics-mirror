@@ -227,9 +227,9 @@ public class UserService {
 		return repos.findByInternal(internal);
 	}
 
-	@Cacheable("userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole")
-	public List<User> findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(Integer customerId, Integer supplierId) {
-		return repos.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(customerId, supplierId, Role.ROLE_ILOGISTICS_DN_NOTIFICATION);
+	@Cacheable("userService.findByCustomerOrSupplierAndHavingAssignement")
+	public List<User> findByCustomerOrSupplierAndHavingAssignement(Integer customerId, Integer supplierId, Integer projectId) {
+		return repos.findByCustomerOrSupplierAndHavingAssignement(customerId, supplierId, projectId);
 	}
 
 	public User findByEmail(String email) {
@@ -242,6 +242,18 @@ public class UserService {
 
 	public List<User> findLight(Boolean internal, Boolean active) {
 		return repos.findLight(internal, active);
+	}
+
+	public List<User> findByProjectAssignmentAndUserRoleAndInternal(Integer projectId) {
+		return repos.findByProjectAssignmentAndUserRole(projectId, Role.ROLE_ILOGISTICS_USER, true);
+	}
+
+	public List<User> findByProjectAssignment(Integer projectId, Boolean internal) {
+		return repos.findByProjectAssignment(projectId, internal);
+	}
+
+	public List<User> findByProjectDelegation(Integer projectId, Boolean internal) {
+		return repos.findByProjectDelegation(projectId, internal);
 	}
 
 }

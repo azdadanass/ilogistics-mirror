@@ -1208,8 +1208,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		toNotifyUserSet.add(deliveryRequest.getProject().getCostcenter().getLob().getManager());
 		toNotifyUserSet.add(deliveryRequest.getProject().getManager());
 		toNotifyUserSet.addAll(deliveryRequest.getProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
+		toNotifyUserSet.addAll(userService.findByProjectAssignment(deliveryRequest.getProject().getId(), true));
+		toNotifyUserSet.addAll(userService.findByProjectDelegation(deliveryRequest.getProject().getId(), true));
+
 		if (deliveryRequest.getIsOutbound())
-			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(deliveryRequest.getExternalCompanyCustomerId(), deliveryRequest.getExternalCompanySupplierId()));
+			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingAssignement(deliveryRequest.getExternalCompanyCustomerId(), deliveryRequest.getExternalCompanySupplierId(), deliveryRequest.getProjectId()));
 		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 

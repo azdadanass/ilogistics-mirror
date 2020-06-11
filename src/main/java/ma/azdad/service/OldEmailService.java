@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequest;
-import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.utils.OldMail;
@@ -139,15 +138,25 @@ public class OldEmailService {
 
 	@Async
 	public void deliveryRequestNotification(DeliveryRequest deliveryRequest) {
-		if (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus()))
+		switch (deliveryRequest.getStatus()) {
+		case REQUESTED:
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())), deliveryRequest.getProject().getManager().getFullName());
-		else if (DeliveryRequestStatus.REJECTED.equals(deliveryRequest.getStatus()))
+			break;
+		case APPROVED1:
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
-		else if (Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())) {
+			break;
+		case REJECTED:
+			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
+			break;
+		case APPROVED2:
+		case PARTIALLY_DELIVRED:
+		case DELIVRED:
 			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
 			cc.add(deliveryRequest.getProject().getManager().getEmail());
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
 			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
+		default:
+			break;
 		}
 	}
 

@@ -33,7 +33,6 @@ public class Site extends GenericPlace implements Serializable {
 	// TMP
 	private Integer customerId;
 	private Integer supplierId;
-	private Integer contactId;
 
 	// PERFORMANCE
 	private String customerName;
@@ -216,13 +215,15 @@ public class Site extends GenericPlace implements Serializable {
 	}
 
 	@Transient
-	public Integer getContactId() {
-		return contactId;
+	public String getContactUsername() {
+		return contact == null ? null : contact.getUsername();
 	}
 
 	@Transient
-	public void setContactId(Integer contactId) {
-		this.contactId = contactId;
+	public void setContactUsername(String contactUsername) {
+		if (contact == null || !contactUsername.equals(contact.getUsername()))
+			contact = new User();
+		contact.setUsername(contactUsername);
 	}
 
 	@Transient

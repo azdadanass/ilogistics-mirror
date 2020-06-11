@@ -1,8 +1,8 @@
 package ma.azdad.model;
 
 public enum DeliverToType {
-	USER("Internal Resource"),
-	EXTERNAL("External Resource");
+	USER("Internal"),
+	EXTERNAL("External");
 
 	private final String value;
 

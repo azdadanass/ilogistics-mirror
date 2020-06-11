@@ -244,8 +244,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select " + totalPriceCoalesce + " from DeliveryRequest a where a.id = ?1")
 	public Double getTotalPrice(Integer id);
 
-	@Query("select toCustomer.name from DeliveryRequest a where a.id = ?1 ")
-	public String getToCustomerName(Integer id);
+	@Query("select endCustomer.name from DeliveryRequest a where a.id = ?1 ")
+	public String getEndCustomerName(Integer id);
 
 	@Modifying
 	@Query("update DeliveryRequest set missingSerialNumber = ?2 where id = ?1")

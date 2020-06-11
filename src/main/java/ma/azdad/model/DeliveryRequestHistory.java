@@ -20,8 +20,8 @@ public class DeliveryRequestHistory extends GenericHistory<DeliveryRequest> impl
 		this.parent = parent;
 		this.user = user;
 	}
-	
-	public DeliveryRequestHistory(Date date, String status, DeliveryRequest parent, User user,String description) {
+
+	public DeliveryRequestHistory(Date date, String status, DeliveryRequest parent, User user, String description) {
 		this.date = date;
 		this.status = status;
 		this.parent = parent;
@@ -29,27 +29,32 @@ public class DeliveryRequestHistory extends GenericHistory<DeliveryRequest> impl
 		this.description = description;
 	}
 
+	@Override
 	@Transient
 	public String getStatusStyleClass() {
-		if ("Created".equals(status))
+		switch (status) {
+		case "Created":
 			return "badge badge-inverse";
-		else if ("Edited".equals(status))
+		case "Edited":
 			return "badge badge-warning";
-		else if ("Requested".equals(status))
+		case "Requested":
 			return "badge badge-pink";
-		else if ("Approved".equals(status))
+		case "Approved L1":
 			return "badge badge-success";
-		else if ("Partially Delivered".equals(status))
+		case "Approved L2":
+			return "badge badge-success";
+		case "Partially Delivered":
 			return "badge badge-info";
-		else if ("Delivred".equals(status))
+		case "Delivered":
 			return "badge badge-primary";
-		else if ("Acknowledged".equals(status))
+		case "Acknowledged":
 			return "badge badge-purple";
-		else if ("Rejected".equals(status))
+		case "Rejected":
 			return "badge badge-danger";
-		else if ("Canceled".equals(status))
+		case "Canceled":
 			return "badge badge-danger";
-		
-		return "badge badge-inverse";
+		default:
+			return "badge badge-inverse";
+		}
 	}
 }

@@ -64,8 +64,8 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private Supplier supplier; // Owner
 	private Transporter transporter;
 
-	private Customer toCustomer;
-	private Supplier toSupplier;
+	private Customer endCustomer;
+//	private Supplier toSupplier;
 	// private Transporter toTransporter;
 	private User toUser;
 	private Site origin;
@@ -344,8 +344,8 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		this.supplier = template.getSupplier();
 		this.company = template.getCompany();
 		this.approximativeStoragePeriod = template.getApproximativeStoragePeriod();
-		this.toCustomer = template.getToCustomer();
-		this.toSupplier = template.getToSupplier();
+		this.endCustomer = template.getEndCustomer();
+//		this.toSupplier = template.getToSupplier();
 		this.deliverToType = template.getDeliverToType();
 		this.toUser = template.getToUser();
 		this.internalCompany = template.getInternalCompany();
@@ -827,22 +827,22 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		this.destination = destination;
 	}
 
+//	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+//	public Supplier getToSupplier() {
+//		return toSupplier;
+//	}
+//
+//	public void setToSupplier(Supplier toSupplier) {
+//		this.toSupplier = toSupplier;
+//	}
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Supplier getToSupplier() {
-		return toSupplier;
+	public Customer getEndCustomer() {
+		return endCustomer;
 	}
 
-	public void setToSupplier(Supplier toSupplier) {
-		this.toSupplier = toSupplier;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Customer getToCustomer() {
-		return toCustomer;
-	}
-
-	public void setToCustomer(Customer toCustomer) {
-		this.toCustomer = toCustomer;
+	public void setEndCustomer(Customer endCustomer) {
+		this.endCustomer = endCustomer;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -1200,28 +1200,28 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	}
 
 	@Transient
-	public Integer getToCustomerId() {
-		return toCustomer == null ? null : toCustomer.getId();
+	public Integer getEndCustomerId() {
+		return endCustomer == null ? null : endCustomer.getId();
 	}
 
 	@Transient
-	public void setToCustomerId(Integer toCustomerId) {
-		if (toCustomer == null || !toCustomer.getId().equals(toCustomerId))
-			toCustomer = new Customer();
-		toCustomer.setId(toCustomerId);
+	public void setEndCustomerId(Integer endCustomerId) {
+		if (endCustomer == null || !endCustomer.getId().equals(endCustomerId))
+			endCustomer = new Customer();
+		endCustomer.setId(endCustomerId);
 	}
 
-	@Transient
-	public Integer getToSupplierId() {
-		return toSupplier == null ? null : toSupplier.getId();
-	}
-
-	@Transient
-	public void setToSupplierId(Integer toSupplierId) {
-		if (toSupplier == null || !toSupplier.getId().equals(toSupplierId))
-			toSupplier = new Supplier();
-		toSupplier.setId(toSupplierId);
-	}
+//	@Transient
+//	public Integer getToSupplierId() {
+//		return toSupplier == null ? null : toSupplier.getId();
+//	}
+//
+//	@Transient
+//	public void setToSupplierId(Integer toSupplierId) {
+//		if (toSupplier == null || !toSupplier.getId().equals(toSupplierId))
+//			toSupplier = new Supplier();
+//		toSupplier.setId(toSupplierId);
+//	}
 
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "deliveryRequest")
 	public TransportationRequest getTransportationRequest() {
@@ -1364,7 +1364,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public void setExternalCompanyCustomerId(Integer externalCompanyCustomerId) {
-		if (externalCompanyCustomerId == null || !externalCompanyCustomerId.equals(externalCompanyCustomer.getId()))
+		if (externalCompanyCustomer == null || !externalCompanyCustomer.getId().equals(externalCompanyCustomerId))
 			externalCompanyCustomer = new Customer();
 		externalCompanyCustomer.setId(externalCompanyCustomerId);
 	}
@@ -1376,7 +1376,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public void setExternalCompanySupplierId(Integer externalCompanySupplierId) {
-		if (externalCompanySupplierId == null || !externalCompanySupplierId.equals(externalCompanySupplier.getId()))
+		if (externalCompanySupplier == null || !externalCompanySupplier.getId().equals(externalCompanySupplierId))
 			externalCompanySupplier = new Supplier();
 		externalCompanySupplier.setId(externalCompanySupplierId);
 	}
@@ -1547,16 +1547,16 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	}
 
 	@Transient
-	public String getToCustomerName() {
-		if (toCustomer == null)
+	public String getEndCustomerName() {
+		if (endCustomer == null)
 			return null;
-		return toCustomer.getName();
+		return endCustomer.getName();
 	}
 
-	public void setToCustomerName(String name) {
-		if (toCustomer == null)
-			toCustomer = new Customer();
-		toCustomer.setName(name);
+	public void setEndCustomerName(String name) {
+		if (endCustomer == null)
+			endCustomer = new Customer();
+		endCustomer.setName(name);
 	}
 
 	public Boolean getMissingSerialNumber() {

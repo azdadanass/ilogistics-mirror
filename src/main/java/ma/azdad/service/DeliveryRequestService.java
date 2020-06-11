@@ -104,8 +104,8 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 		if (deliveryRequest.getTransporter() != null)
 			Hibernate.initialize(deliveryRequest.getTransporter().getSupplier());
 		Hibernate.initialize(deliveryRequest.getWarehouse());
-		Hibernate.initialize(deliveryRequest.getToCustomer());
-		Hibernate.initialize(deliveryRequest.getToSupplier());
+		Hibernate.initialize(deliveryRequest.getEndCustomer());
+//		Hibernate.initialize(deliveryRequest.getToSupplier());
 		Hibernate.initialize(deliveryRequest.getInternalCompany());
 		Hibernate.initialize(deliveryRequest.getExternalCompanyCustomer());
 		Hibernate.initialize(deliveryRequest.getExternalCompanySupplier());
@@ -170,7 +170,7 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 		result.forEach(i -> {
 			i.setTotalCost(deliveryRequestRepos.getTotalCost(i.getId()));
 			i.setTotalPrice(deliveryRequestRepos.getTotalPrice(i.getId()));
-			i.setToCustomerName(deliveryRequestRepos.getToCustomerName(i.getId()));
+			i.setEndCustomerName(deliveryRequestRepos.getEndCustomerName(i.getId()));
 		});
 
 		return result;
@@ -475,7 +475,7 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 
 			row = new TR();
 			row.addElement(new TD("End Customer").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getToCustomer() != null ? deliveryRequest.getToCustomer().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#ff851d"));
+			row.addElement(new TD(deliveryRequest.getEndCustomer() != null ? deliveryRequest.getEndCustomer().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#ff851d"));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Needed Delivery Date").setWidth(tdWidth1).setStyle(tdStyle1));
 			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#a069c3"));

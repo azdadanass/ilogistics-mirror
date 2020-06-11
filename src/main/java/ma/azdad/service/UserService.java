@@ -240,4 +240,8 @@ public class UserService {
 		return repos.findByPhone(phone);
 	}
 
+	public List<User> findLight(Boolean internal, Boolean active) {
+		return repos.findLight(internal, active);
+	}
+
 }

@@ -307,6 +307,10 @@ public class UserView {
 		return userService.findActiveByCustomerOrSupplier(customerId, supplierId);
 	}
 
+	public List<User> findLightActive(Boolean internal) {
+		return userService.findLight(internal, true);
+	}
+
 	// getters & setters
 
 	public String getToNotifyUserUsername() {

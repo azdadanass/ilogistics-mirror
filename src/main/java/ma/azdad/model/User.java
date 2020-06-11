@@ -101,10 +101,11 @@ public class User implements Serializable {
 		this.cin = cin;
 	}
 
-	public User(String username, String photo, String fullName, String job, String email, String phone, Boolean active, CompanyType companyType, String companyName, String customerName, String supplierName) {
+	public User(String username, String photo, String fullName, String cin, String job, String email, String phone, Boolean active, CompanyType companyType, String companyName, String customerName, String supplierName) {
 		this.username = username;
 		this.photo = photo;
 		this.fullName = fullName;
+		this.cin = cin;
 		this.job = job;
 		this.email = email;
 		this.phone = phone;

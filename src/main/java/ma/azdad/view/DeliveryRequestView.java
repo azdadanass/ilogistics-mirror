@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -455,11 +456,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
-			if (DeliverToType.USER.equals(deliveryRequest.getDeliverToType())) {
-				deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
-				deliveryRequest.setToUser(null);
-			} else
-				deliveryRequest.setToUser(null);
+			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			deliveryRequestService.save(deliveryRequest);
 			deliveryRequestHistoryService.delivred(deliveryRequest, sessionView.getUser());
 			emailService.deliveryRequestNotification(deliveryRequest);
@@ -1212,7 +1209,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		toNotifyUserSet.add(deliveryRequest.getProject().getManager());
 		toNotifyUserSet.addAll(deliveryRequest.getProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
 		if (deliveryRequest.getIsOutbound())
-			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(deliveryRequest.getToCustomerId(), deliveryRequest.getToSupplierId()));
+			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingDeliveryRequestNotificationRole(deliveryRequest.getExternalCompanyCustomerId(), deliveryRequest.getExternalCompanySupplierId()));
 		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 
@@ -1244,7 +1241,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setPo(poService.findOne(deliveryRequest.getPoId()));
 
 		if (getIsCustomerRequesterDataNeeded())
-			if (deliveryRequest.getTmpExternalRequesterUsername() != null)
+			if (!StringUtils.isBlank(deliveryRequest.getTmpExternalRequesterUsername()))
 				deliveryRequest.setExternalRequester(userService.findOne(deliveryRequest.getTmpExternalRequesterUsername()));
 
 		// if (deliveryRequest.getOriginId() != null &&
@@ -1258,12 +1255,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		// deliveryRequest.setDestination(siteService.findOne(deliveryRequest.getDestinationId()));
 
 		if (deliveryRequest.getIsOutbound() || deliveryRequest.getIsXbound()) {
-			deliveryRequest.setToCustomer(customerService.findOne(deliveryRequest.getToCustomerId()));
-			if (DeliverToType.USER.equals(deliveryRequest.getDeliverToType()) && deliveryRequest.getToUserUsername() != null) {
+			deliveryRequest.setEndCustomer(customerService.findOne(deliveryRequest.getEndCustomerId()));
+			if (deliveryRequest.getToUserUsername() != null)
 				deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
-				deliveryRequest.setToUser(null);
-			} else
-				deliveryRequest.setToUser(null);
 		}
 
 		if ((deliveryRequest.getIsInbound() && deliveryRequest.getOrigin() != null) || (deliveryRequest.getIsOutbound() && deliveryRequest.getDestination() != null) || (deliveryRequest.getIsXbound() && deliveryRequest.getOrigin() != null && deliveryRequest.getDestination() != null))
@@ -1286,16 +1280,16 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 		if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType())) {
 			deliveryRequest.setInternalCompany(null);
-			deliveryRequest.setExternalCompanyCustomer(null);
-			deliveryRequest.setExternalCompanySupplier(null);
 			if (deliveryRequest.getExternalCompanyType() != null)
 				switch (deliveryRequest.getExternalCompanyType()) {
 				case CUSTOMER:
 					deliveryRequest.setExternalCompanyCustomer(customerService.findOne(deliveryRequest.getExternalCompanyCustomerId()));
+					deliveryRequest.setExternalCompanySupplier(null);
 					deliveryRequest.setExternalCompany(null);
 					break;
 				case SUPPLIER:
 					deliveryRequest.setExternalCompanySupplier(supplierService.findOne(deliveryRequest.getExternalCompanySupplierId()));
+					deliveryRequest.setExternalCompanyCustomer(null);
 					deliveryRequest.setExternalCompany(null);
 					break;
 				default:
@@ -1649,7 +1643,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void changeDestinationProjectListener() {
 		System.out.println("changeDestinationProjectListener");
 		Integer destinationCustomerId = projectService.getCustomerId(deliveryRequest.getDestinationProjectId());
-		deliveryRequest.setToCustomerId(destinationCustomerId);
+		deliveryRequest.setEndCustomerId(destinationCustomerId);
 
 		Boolean isProjectStock = ProjectTypes.STOCK.getValue().equals(projectService.getType(deliveryRequest.getProjectId()));
 		if (!isProjectStock && deliveryRequest.getProjectId() != null && !deliveryRequest.getProjectId().equals(deliveryRequest.getDestinationProjectId())) {

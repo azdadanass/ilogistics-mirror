@@ -14,10 +14,15 @@ import ma.azdad.model.User;
 @Repository
 public interface UserRepos extends JpaRepository<User, String> {
 
+	String c1 = "select new User(a.username,a.fullName) ";
+
 	@Query("select new User(username,fullName,photo,email,job,phone,cin) from User ")
 	List<User> find();
 
 	List<User> findByInternal(Boolean internal);
+
+	@Query(c1 + "from User a where a.internal = ?1 and a.active = ?2")
+	List<User> findLight(Boolean internal, Boolean active);
 
 	@Modifying
 	@Query("update User set password = ?2 where username = ?1")
@@ -48,7 +53,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	String companyName = " (select b.name from Company b where b.id = a.company.id) ";
 	String customerName = " (select b.name from Customer b where b.id = a.customer.id) ";
 	String supplierName = " (select b.name from Supplier b where b.id = a.supplier.id) ";
-	String select1 = "select new User(a.id,a.photo,a.fullName,a.job, a.email, a.phone,a.active,a.companyType, " + companyName + ", " + customerName + ", " + supplierName + ") ";
+	String select1 = "select new User(a.id,a.photo,a.fullName,a.cin,a.job, a.email, a.phone,a.active,a.companyType, " + companyName + ", " + customerName + ", " + supplierName + ") ";
 
 	@Query(select1 + "from User a where (a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2) and a.active = ?3")
 	List<User> findByCustomerOrSupplier(Integer customerId, Integer supplierId, Boolean active);

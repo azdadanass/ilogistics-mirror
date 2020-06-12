@@ -1274,6 +1274,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setEndCustomer(customerService.findOne(deliveryRequest.getEndCustomerId()));
 			if (deliveryRequest.getToUserUsername() != null)
 				deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
+			else
+				deliveryRequest.setToUser(null);
 		}
 
 		if ((deliveryRequest.getIsInbound() && deliveryRequest.getOrigin() != null) || (deliveryRequest.getIsOutbound() && deliveryRequest.getDestination() != null) || (deliveryRequest.getIsXbound() && deliveryRequest.getOrigin() != null && deliveryRequest.getDestination() != null))

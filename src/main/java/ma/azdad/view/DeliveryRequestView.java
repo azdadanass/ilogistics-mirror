@@ -276,6 +276,10 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		}
 	}
 
+	public Boolean canDuplicate() {
+		return sessionView.getIsUser() && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
+	}
+
 	public void message() {
 		System.out.println(deliveryRequestDetailSelectionList);
 	}
@@ -1062,7 +1066,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Boolean canAddComment() {
-		return sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()) || (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
+		return sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+				|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
+				|| cacheView.hasDelegation(deliveryRequest.getProject().getId())//
+				|| sessionView.isTheConnectedUser(userService.findLobManagerByDeliveryRequest(deliveryRequest.getId()))//
+				|| (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
 	}
 
 	public void addComment() {

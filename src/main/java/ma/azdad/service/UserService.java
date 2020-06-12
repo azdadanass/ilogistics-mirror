@@ -256,4 +256,8 @@ public class UserService {
 		return repos.findByProjectDelegation(projectId, internal);
 	}
 
+	public User findLobManagerByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findLobManagerByDeliveryRequest(deliveryRequestId);
+	}
+
 }

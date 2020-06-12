@@ -46,7 +46,7 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-error" title="Duplicate" value="addEditDeliveryRequest.xhtml">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-error" title="Duplicate" value="addEditDeliveryRequest.xhtml" rendered="#{deliveryRequestView.canDuplicate()}">
 							<i class="ace-icon fa fa-files-o bigger-230"></i>
 							<h:outputText value="Duplicate" styleClass="smaller-80" />
 							<f:param name="templateId" value="#{deliveryRequestView.selectedId}" />

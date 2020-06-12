@@ -1689,6 +1689,10 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.getFileList().add(deliveryRequestFile);
 	}
 
+	public Boolean canDeleteFile(User user) {
+		return sessionView.isTheConnectedUser(user);
+	}
+
 	public void deleteDeliveryRequestFile() {
 		deliveryRequestFileService.delete(deliveryRequestFileId);
 		refreshDeliveryRequest();

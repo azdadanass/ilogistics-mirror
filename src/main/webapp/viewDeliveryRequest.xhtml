@@ -936,7 +936,7 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteDeliveryRequestFileDlg').show()" styleClass="aa-tooltip">
+												<p:commandLink title="Delete File" oncomplete="PF('deleteDeliveryRequestFileDlg').show()" styleClass="aa-tooltip" rendered="#{deliveryRequestView.canDeleteFile(item.user)}">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFileId}" value="#{item.id}" />
 												</p:commandLink>

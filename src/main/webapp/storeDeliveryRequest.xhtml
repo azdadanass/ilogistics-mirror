@@ -2,20 +2,16 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,7 +25,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.StockRowStatus" var="StockRowStatus" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
@@ -204,33 +199,27 @@
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="detail_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" widgetVar="detail_tab" var="item" styleClass="table table-striped table-hover center"
 												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
 												<p:column headerText="Part Number">
 													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
 												</p:column>
-
 												<p:column headerText="Quantity" width="150">
 													<h:outputText value="#{item.quantity}">
 														<f:convertNumber type="number" maxFractionDigits="2" />
 													</h:outputText>
 												</p:column>
-
 												<p:column headerText="Remaining Quantity" width="150">
 													<h:outputText value="#{item.remainingQuantity}">
 														<f:convertNumber type="number" maxFractionDigits="2" />
 													</h:outputText>
 												</p:column>
-
 												<p:column headerText="Received Quantity" width="150">
 													<p:inputNumber value="#{item.tmpQuantity}" maxValue="#{item.remainingQuantity}" minValue="0" readonly="#{deliveryRequestView.deliveryRequestComment.isOk}" thousandSeparator="">
 														<p:ajax event="blur" update="packingQuantity" />
 													</p:inputNumber>
 												</p:column>
-
 												<p:column headerText="Packing">
 													<h:outputText value="#{item.packing.name}" styleClass="bolder light-blue" />
 												</p:column>
-
 												<p:column headerText="Packing Qty">
 													<h:outputText id="packingQuantity" value="#{item.tmpQuantity / item.packing.quantity}" styleClass="blue" />
 												</p:column>
@@ -253,17 +242,13 @@
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="stock_row_tab" value="#{deliveryRequestView.deliveryRequest.stockRowList}" widgetVar="stock_row_tab" var="item" styleClass="table table-striped table-hover center"
 												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
 												<p:column headerText="Part Number">
 													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
 												</p:column>
-
 												<p:column headerText="Quantity" width="150">
-
 													<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" readonly="#{item.id!=null}">
 														<p:ajax update="action-buttons" />
 													</p:inputNumber>
-
 													<span class="action-buttons center">
 														<h:panelGroup id="action-buttons">
 															<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{deliveryRequestView.changeStockRowQuantityListener(item,rowIndexVar)}" update="stock_row_tab,:main_form:messages">
@@ -275,21 +260,17 @@
 														</h:panelGroup>
 													</span>
 												</p:column>
-
 												<p:column headerText="Status">
 													<h:selectOneMenu value="#{item.status}" disabled="#{item.id!=null}">
 														<f:selectItems value="#{StockRowStatus.ALL_ENUM_VALUES}" />
 													</h:selectOneMenu>
 												</p:column>
-												
 												<p:column headerText="Packing">
 													<h:outputText value="#{item.packing.name}" styleClass="bolder light-blue" />
 												</p:column>
-
 												<p:column headerText="Packing Qty">
 													<h:outputText id="packingQuantity" value="#{item.quantity / item.packing.quantity}" styleClass="blue" />
 												</p:column>
-
 												<p:column headerText="Actions" styleClass="center" width="100">
 													<div class="action-buttons center">
 														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeStockRow(item,rowIndexVar)}" update="stock_row_tab" partialSubmit="true" process="stock_row_tab"
@@ -317,17 +298,13 @@
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="stock_row_tab" value="#{deliveryRequestView.deliveryRequest.stockRowList}" widgetVar="stock_row_tab" var="item" styleClass="table table-striped table-hover center"
 												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
 												<p:column headerText="Part Number">
 													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
 												</p:column>
-
 												<p:column headerText="Quantity" width="150">
-
 													<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" readonly="#{item.id!=null}">
 														<p:ajax update="action-buttons" />
 													</p:inputNumber>
-
 													<span class="action-buttons center">
 														<h:panelGroup id="action-buttons">
 															<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{deliveryRequestView.changeStockRowQuantityListener(item,rowIndexVar)}" update="stock_row_tab,:main_form:messages">
@@ -339,28 +316,21 @@
 														</h:panelGroup>
 													</span>
 												</p:column>
-
 												<p:column headerText="Status">
 													<h:outputText value="#{item.status.value}" />
 												</p:column>
-
-
 												<p:column headerText="Location">
 													<h:selectOneMenu value="#{item.location}" converter="#{genericSecuredConverter}" disabled="#{item.id!=null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
 													</h:selectOneMenu>
 												</p:column>
-												
 												<p:column headerText="Packing">
 													<h:outputText value="#{item.packing.name}" styleClass="bolder light-blue" />
 												</p:column>
-
 												<p:column headerText="Packing Qty">
 													<h:outputText id="packingQuantity" value="#{item.quantity / item.packing.quantity}" styleClass="blue" />
 												</p:column>
-
-
 												<p:column headerText="Actions" styleClass="center" width="100">
 													<div class="action-buttons center">
 														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeStockRow(item,rowIndexVar)}" update="stock_row_tab" partialSubmit="true" process="stock_row_tab"
@@ -369,7 +339,6 @@
 														</p:commandLink>
 													</div>
 												</p:column>
-
 												<f:facet name="footer">
 													<div class="action-buttons center">
 														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set Same Location" action="#{deliveryRequestView.setSameLocation()}" update="stock_row_tab" partialSubmit="true"
@@ -378,7 +347,6 @@
 														</p:commandLink>
 													</div>
 												</f:facet>
-
 											</p:dataTable>
 										</div>
 									</div>
@@ -427,29 +395,31 @@
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
 												<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
 													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
 													<p:column headerText="Name">
 														<h:outputText value="#{item.name}" />
 													</p:column>
-
 													<p:column headerText="Type">
 														<h:outputText value="#{item.type}" />
 													</p:column>
-
 													<p:column headerText="Added Date">
 														<h:outputText value="#{item.date}">
 															<f:convertDateTime pattern="dd-MM-yyyy" />
 														</h:outputText>
 													</p:column>
-
 													<p:column headerText="File Size">
 														<h:outputText value="#{item.size}" />
 													</p:column>
-
+													<p:column headerText="Added By" styleClass="center">
+														<p:graphicImage id="photo" value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+															<f:param name="fileName" value="#{item.user.photo}" />
+														</p:graphicImage>
+														<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
+														</p:overlayPanel>
+													</p:column>
 													<p:column headerText="File Type" width="100" styleClass="center">
 														<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
 													</p:column>
-
 												</p:dataTable>
 											</div>
 										</div>
@@ -466,7 +436,6 @@
 								<i class="ace-icon fa fa-arrow-left"></i>
 								<h:outputText value="Prev" />
 							</p:commandLink> -->
-
 							<p:commandLink action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-success btn-next">
 								<h:outputText value="Next" />
 								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
@@ -480,4 +449,3 @@
 		<f:event type="preRenderView" listener="#{deliveryRequestView.redirect}" />
 	</ui:define>
 </ui:composition>
-

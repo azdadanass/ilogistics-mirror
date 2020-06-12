@@ -532,7 +532,7 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" height="200" filter="true" filterMatchMode="contains"
+												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6"  filter="true" filterMatchMode="contains"
 													converter="#{genericSecuredConverter}" required="true" requiredMessage="Owner should not be null"
 													disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />

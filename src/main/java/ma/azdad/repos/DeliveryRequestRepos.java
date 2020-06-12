@@ -114,10 +114,16 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightByProjectManager(DeliveryRequestType type, String username);
 
 	@Query(select1 + " from DeliveryRequest a where (a.project.manager.username = ?1) and a.status = ?2 order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLightByProjectManager(String username, DeliveryRequestStatus status);
+	public List<DeliveryRequest> findLightToApprovePm(String username, DeliveryRequestStatus requested);
 
-	@Query(select2 + " from DeliveryRequest a where (a.project.manager.username = ?1) and a.status = ?2")
-	public Long countByProjectManager(String username, DeliveryRequestStatus status);
+	@Query("select count(*) from DeliveryRequest a where (a.project.manager.username = ?1) and a.status = ?2 order by a.neededDeliveryDate desc")
+	public Long countToApprovePm(String username, DeliveryRequestStatus requested);
+
+	@Query(select1 + " from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
+	public List<DeliveryRequest> findLightToApproveHm(String username, DeliveryRequestStatus approved1);
+
+	@Query("select count(*) from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
+	public Long countToApproveHm(String username, DeliveryRequestStatus approved1);
 
 	@Query(select1 + " from DeliveryRequest a where a.type = ?1 and a.project.manager.username = ?2 and a.status in (?3) order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightByProjectManager(DeliveryRequestType type, String username, List<DeliveryRequestStatus> status);

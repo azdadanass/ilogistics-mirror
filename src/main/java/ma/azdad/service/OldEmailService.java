@@ -142,9 +142,6 @@ public class OldEmailService {
 		case REQUESTED:
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())), deliveryRequest.getProject().getManager().getFullName());
 			break;
-		case APPROVED1:
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
-			break;
 		case REJECTED:
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
 			break;

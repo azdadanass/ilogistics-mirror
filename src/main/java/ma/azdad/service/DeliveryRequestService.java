@@ -2,6 +2,7 @@ package ma.azdad.service;
 
 import java.io.FileOutputStream;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -228,14 +229,17 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 		return deliveryRequestRepos.countByPendingTransportation(username, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
-	@Cacheable(value = "deliveryRequestService.findLightByProjectManager")
-	public List<DeliveryRequest> findLightByProjectManager(String username, DeliveryRequestStatus status) {
-		return deliveryRequestRepos.findLightByProjectManager(username, status);
+	@Cacheable(value = "deliveryRequestService.findLightToApprove")
+	public List<DeliveryRequest> findLightToApprove(String username) {
+		List<DeliveryRequest> result = new ArrayList<DeliveryRequest>();
+		result.addAll(deliveryRequestRepos.findLightToApprovePm(username, DeliveryRequestStatus.REQUESTED));
+		result.addAll(deliveryRequestRepos.findLightToApproveHm(username, DeliveryRequestStatus.APPROVED1));
+		return result;
 	}
 
-	@Cacheable(value = "deliveryRequestService.countByProjectManager")
-	public Long countByProjectManager(String username, DeliveryRequestStatus status) {
-		return deliveryRequestRepos.countByProjectManager(username, status);
+	@Cacheable(value = "deliveryRequestService.countToApprove")
+	public Long countToApprove(String username) {
+		return deliveryRequestRepos.countToApprovePm(username, DeliveryRequestStatus.REQUESTED) + deliveryRequestRepos.countToApproveHm(username, DeliveryRequestStatus.APPROVED1);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightByWarehouseList")

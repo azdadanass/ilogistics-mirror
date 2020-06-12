@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//
 				.antMatchers("/partNumberConfiguration.xhtml").hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole())
 				//
-				.antMatchers(getPages("PartNumber")).hasRole(Role.ROLE_ILOGISTICS_SE.getRole())
+				.antMatchers(getPages("PartNumber")).hasAnyRole(Role.ROLE_ILOGISTICS_SE.getRole(), Role.ROLE_ILOGISTICS_WM.getRole(), Role.ROLE_ILOGISTICS_PM.getRole())
 				//
 				.antMatchers("/**").hasRole(applicationCode)
 				//

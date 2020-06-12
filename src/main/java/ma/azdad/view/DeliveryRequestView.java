@@ -31,6 +31,7 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestComment;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestFile;
+import ma.azdad.model.DeliveryRequestHistory;
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.DeliveryRequestState;
 import ma.azdad.model.DeliveryRequestStatus;
@@ -55,7 +56,6 @@ import ma.azdad.service.CurrencyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestFileService;
-import ma.azdad.service.DeliveryRequestHistoryService;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.OldEmailService;
@@ -86,7 +86,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	private static final long serialVersionUID = -2791229372979711793L;
 
 	@Autowired
-	protected DeliveryRequestService deliveryRequestService;
+	protected DeliveryRequestService service;
 
 	@Autowired
 	protected DeliveryRequestDetailService deliveryRequestDetailService;
@@ -129,9 +129,6 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	@Autowired
 	protected StockRowService stockRowService;
-
-	@Autowired
-	protected DeliveryRequestHistoryService deliveryRequestHistoryService;
 
 	@Autowired
 	protected UserService userService;
@@ -236,7 +233,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (isAddPage) {
 			deliveryRequest = new DeliveryRequest(type, sessionView.getUser());
 			if (templateId != null)
-				deliveryRequest.copyFromTemplate(deliveryRequestService.findOne(templateId));
+				deliveryRequest.copyFromTemplate(service.findOne(templateId));
 			else if (outboundDeliveryRequestId != null && inboundType != null) {
 				deliveryRequest.setType(DeliveryRequestType.INBOUND);
 				deliveryRequest.setInboundType(inboundType);
@@ -255,22 +252,22 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			}
 			saveDeliveryRequestNextStep();
 		} else if (isEditPage) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = service.findOne(selectedId);
 			deliveryRequest.init();
 			deliveryRequest.initDetailList();
 			saveDeliveryRequestNextStep();
 		} else if (isViewPage) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = service.findOne(selectedId);
 			deliveryRequest.init();
 			initCommentsVariables();
 			projectCross = projectCrossService.findByDeliveryRequest(selectedId);
 		} else if (isLightViewPage || isPrintPage) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = service.findOne(selectedId);
 		} else if (isStoragePage) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = service.findOne(selectedId);
 			storageNextStep();
 		} else if (isPreparationPage) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = service.findOne(selectedId);
 			deliveryRequest.init();
 			preparationNextStep();
 		}
@@ -321,40 +318,40 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (isListPage)
 			switch (pageIndex) {
 			case 1:
-				list2 = list1 = deliveryRequestService.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 				break;
 			case 2:
-				list2 = list1 = deliveryRequestService.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.OUTBOUND, DeliveryRequestStatus.DELIVRED);
+				list2 = list1 = service.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.OUTBOUND, DeliveryRequestStatus.DELIVRED);
 				break;
 			case 3:
-				list2 = list1 = deliveryRequestService.findLightByProjectManager(sessionView.getUsername(), DeliveryRequestStatus.REQUESTED);
+				list2 = list1 = service.findLightToApprove(sessionView.getUsername());
 				break;
 			case 4:
-				list2 = list1 = deliveryRequestService.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 				break;
 			case 5:
-				list2 = list1 = deliveryRequestService.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 				break;
 			case 6:
-				list2 = list1 = deliveryRequestService.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 				break;
 			case 7:
-				list2 = list1 = deliveryRequestService.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
+				list2 = list1 = service.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
 				break;
 			case 8:
-				list2 = list1 = deliveryRequestService.findLightByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findLightByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
 				break;
 			case 9:
-				list2 = list1 = deliveryRequestService.findLightByIsForReturnAndNotFullyReturned(sessionView.getUsername());
+				list2 = list1 = service.findLightByIsForReturnAndNotFullyReturned(sessionView.getUsername());
 				break;
 			case 10:
-				list2 = list1 = deliveryRequestService.findLightByPendingTransportation(sessionView.getUsername());
+				list2 = list1 = service.findLightByPendingTransportation(sessionView.getUsername());
 				break;
 			case 11:
-				list2 = list1 = deliveryRequestService.findLightByMissingSerialNumber(cacheView.getWarehouseList());
+				list2 = list1 = service.findLightByMissingSerialNumber(cacheView.getWarehouseList());
 				break;
 			case 12:
-				list2 = list1 = deliveryRequestService.findLightByMissingExpiry(cacheView.getWarehouseList());
+				list2 = list1 = service.findLightByMissingExpiry(cacheView.getWarehouseList());
 				break;
 			default:
 				break;
@@ -365,14 +362,14 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	public void getFinancialLists(Boolean outbound) {
 		if (outbound)
-			list2 = list1 = deliveryRequestService.findOutboundFinancialByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			list2 = list1 = service.findOutboundFinancialByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 		else
-			list2 = list1 = deliveryRequestService.findInboundFinancialByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			list2 = list1 = service.findInboundFinancialByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 	}
 
 	public void refreshDeliveryRequest() {
-		deliveryRequestService.flush();
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		service.flush();
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 	}
 
 	private void filterDetail(String query) {
@@ -421,7 +418,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	 */
 
 	public Boolean canAddTrasnport() {
-		return deliveryRequestService.canAddTrasnport(deliveryRequest, sessionView.getUsername());
+		return service.canAddTrasnport(deliveryRequest, sessionView.getUsername());
 	}
 
 	public String addTransport() {
@@ -461,8 +458,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
-			deliveryRequestService.save(deliveryRequest);
-			deliveryRequestHistoryService.delivred(deliveryRequest, sessionView.getUser());
+			deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+			service.save(deliveryRequest);
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
 
@@ -475,13 +472,13 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
 
 			// update field missing sn
-			deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+			deliveryRequest = service.findOne(deliveryRequest.getId());
 			if (deliveryRequest.getStockRowList().stream().filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getId(), i.getInboundDeliveryRequest().getId()) > 0).count() > 0)
-				deliveryRequestService.updateMissingSerialNumber(deliveryRequest.getId(), true);
+				service.updateMissingSerialNumber(deliveryRequest.getId(), true);
 
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
-				deliveryRequestService.updateMissingExpiry(deliveryRequest.getId(), true);
+				service.updateMissingExpiry(deliveryRequest.getId(), true);
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -557,13 +554,10 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
 			System.out.println("deliveryRequest.getStockRowList().size() " + deliveryRequest.getStockRowList().size());
-			deliveryRequestService.save(deliveryRequest);
-			if (deliveryRequest.getIsPartial())
-				deliveryRequestHistoryService.partiallyDelivred(deliveryRequest, sessionView.getUser());
-			else
-				deliveryRequestHistoryService.delivred(deliveryRequest, sessionView.getUser());
+			deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+			service.save(deliveryRequest);
 
-			deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+			deliveryRequest = service.findOne(deliveryRequest.getId());
 
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();
@@ -572,7 +566,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				projectCrossService.addCrossChargeForReturnFromOutbound(deliveryRequest);
 
 			if (deliveryRequest.getIsInboundReturn())
-				deliveryRequestService.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+				service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
@@ -582,7 +576,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
-				deliveryRequestService.updateMissingExpiry(deliveryRequest.getId(), true);
+				service.updateMissingExpiry(deliveryRequest.getId(), true);
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -614,7 +608,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		}
 
 		if (!map.isEmpty())
-			deliveryRequestService.updateMissingSerialNumber(deliveryRequest.getId(), true);
+			service.updateMissingSerialNumber(deliveryRequest.getId(), true);
 
 	}
 
@@ -783,7 +777,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			// refreshDeliveryRequest();
 		} else if (pageIndex == 7) {
 			for (DeliveryRequest deliveryRequest : list4)
-				deliverDeliveryRequest(deliveryRequestService.findOne(deliveryRequest.getId()));
+				deliverDeliveryRequest(service.findOne(deliveryRequest.getId()));
 			refreshList();
 		}
 	}
@@ -803,9 +797,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.getStockRowList().add(new StockRow(-detail.getQuantity(), currentDate, deliveryRequest.getOriginNumber(), detail.getPartNumber(), deliveryRequest, detail.getUnitCost(), detail.getPacking()));
 		}
 
-		deliveryRequestHistoryService.deliveredNew(deliveryRequest, sessionView.getUser());
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 
 		emailService.deliveryRequestNotification(deliveryRequest);
 		smsService.sendSms(deliveryRequest);
@@ -825,9 +819,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			return;
 		deliveryRequest.setStatus(DeliveryRequestStatus.REQUESTED);
 		deliveryRequest.setDate2(new Date());
-		deliveryRequestHistoryService.requestedNew(deliveryRequest);
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 		emailService.deliveryRequestNotification(deliveryRequest);
 		// smsService.sendSms(deliveryRequest);
 		// refreshDeliveryRequest();
@@ -839,57 +833,67 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Boolean canApprove(DeliveryRequest deliveryRequest) {
-		return canApproveDeliveryRequest(deliveryRequest) || canApproveHm(deliveryRequest);
+		return canApprovePm(deliveryRequest) || canApproveHm(deliveryRequest);
 	}
 
 	public void approve(DeliveryRequest deliveryRequest) {
-		if (canApproveDeliveryRequest(deliveryRequest))
-			approveDeliveryRequest(deliveryRequest);
+		if (canApprovePm(deliveryRequest))
+			approvePm(deliveryRequest);
 		else if (canApproveHm(deliveryRequest))
 			approveHm(deliveryRequest);
 	}
 
+//	public void approve() {
+//		approve(deliveryRequest);
+//	}
+
 	public void approve() {
-		approve(deliveryRequest);
+		if (isViewPage) {
+			approve(deliveryRequest);
+			deliveryRequest = service.findOne(deliveryRequest.getId());
+		} else if (isListPage && pageIndex == 3) {
+			for (DeliveryRequest deliveryRequest : list4)
+				approve(service.findOne(deliveryRequest.getId()));
+			refreshList();
+		}
 	}
 
-	public Boolean canApproveDeliveryRequest() {
-		return canApproveDeliveryRequest(deliveryRequest);
+	public Boolean canApprovePm() {
+		return canApprovePm(deliveryRequest);
 	}
 
-	public Boolean canApproveDeliveryRequest(DeliveryRequest deliveryRequest) {
+	public Boolean canApprovePm(DeliveryRequest deliveryRequest) {
 		return DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus()) && (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()));
 	}
 
-	public void approveDeliveryRequest(DeliveryRequest deliveryRequest) {
-		if (!canApproveDeliveryRequest(deliveryRequest))
+	public void approvePm(DeliveryRequest deliveryRequest) {
+		if (!canApprovePm(deliveryRequest))
 			return;
 		deliveryRequest.setStatus(DeliveryRequestStatus.APPROVED1);
 		deliveryRequest.setDate3(new Date());
 		deliveryRequest.setUser3(sessionView.getUser());
-		deliveryRequestHistoryService.approvedNew(deliveryRequest, sessionView.getUser());
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 
 		// TransportationRequest transportationRequest =
 		// transportationRequestService.findByDeliveryRequest(deliveryRequest.getId());
 		// if (transportationRequest != null)
 		// transportationRequestView.approveTransportationRequest(transportationRequest);
 
-		emailService.deliveryRequestNotification(deliveryRequest);
 		// smsService.sendSms(deliveryRequest);
 	}
 
-	public void approveDeliveryRequest() {
-		if (isViewPage) {
-			approveDeliveryRequest(deliveryRequest);
-			// refreshDeliveryRequest();
-		} else if (pageIndex == 3) {
-			for (DeliveryRequest deliveryRequest : list4)
-				approveDeliveryRequest(deliveryRequestService.findOne(deliveryRequest.getId()));
-			refreshList();
-		}
-	}
+//	public void approvePm() {
+//		if (isViewPage) {
+//			approvePm(deliveryRequest);
+//			// refreshDeliveryRequest();
+//		} else if (pageIndex == 3) {
+//			for (DeliveryRequest deliveryRequest : list4)
+//				approvePm(service.findOne(deliveryRequest.getId()));
+//			refreshList();
+//		}
+//	}
 
 	// approve dn hm
 	public Boolean canApproveHm() {
@@ -906,20 +910,21 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setStatus(DeliveryRequestStatus.APPROVED2);
 		deliveryRequest.setDate8(new Date());
 		deliveryRequest.setUser8(sessionView.getUser());
-		deliveryRequestHistoryService.approvedHm(deliveryRequest, sessionView.getUser());
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
+		emailService.deliveryRequestNotification(deliveryRequest);
 	}
 
-	public void approveHm() {
-		if (isViewPage) {
-			approveHm(deliveryRequest);
-		} else if (pageIndex == 3) {
-			for (DeliveryRequest deliveryRequest : list4)
-				approveHm(deliveryRequestService.findOne(deliveryRequest.getId()));
-			refreshList();
-		}
-	}
+//	public void approveHm() {
+//		if (isViewPage) {
+//			approveHm(deliveryRequest);
+//		} else if (pageIndex == 3) {
+//			for (DeliveryRequest deliveryRequest : list4)
+//				approveHm(service.findOne(deliveryRequest.getId()));
+//			refreshList();
+//		}
+//	}
 
 	// REJECT DELIVERY REQUEST
 	public Boolean canRejectDeliveryRequest() {
@@ -927,7 +932,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Boolean canRejectDeliveryRequest(DeliveryRequest deliveryRequest) {
-		return canApproveDeliveryRequest(deliveryRequest);
+		return canApprovePm(deliveryRequest) || canApproveHm(deliveryRequest);
 	}
 
 	public String rejectDeliveryRequest(DeliveryRequest deliveryRequest) {
@@ -940,11 +945,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setDate6(new Date());
 		deliveryRequest.setUser6(sessionView.getUser());
 
-		deliveryRequestHistoryService.rejectedNew(deliveryRequest, sessionView.getUser());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
 
 		deliveryRequest.clearBoqMappingList();
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 
 		emailService.deliveryRequestNotification(deliveryRequest);
 		// smsService.sendSms(deliveryRequest);
@@ -955,7 +960,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			projectCrossService.delete(projectCross.getIdprojectcross());
 
 		if (deliveryRequest.getIsInboundReturn())
-			deliveryRequestService.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+			service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
@@ -968,7 +973,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			// refreshDeliveryRequest();
 		} else if (pageIndex == 3) {
 			for (DeliveryRequest deliveryRequest : list4)
-				rejectDeliveryRequest(deliveryRequestService.findOne(deliveryRequest.getId()));
+				rejectDeliveryRequest(service.findOne(deliveryRequest.getId()));
 			refreshList();
 		}
 	}
@@ -984,7 +989,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
 		deliveryRequest.clearBoqMappingList();
-		deliveryRequestService.save(deliveryRequest);
+		service.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
@@ -1011,17 +1016,17 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setDate7(new Date());
 		deliveryRequest.setUser7(sessionView.getUser());
 
-		deliveryRequestHistoryService.canceledNew(deliveryRequest, sessionView.getUser());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
 		deliveryRequest.clearBoqMappingList();
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 		if (deliveryRequest.getTransportationRequest() != null)
 			transportationRequestService.cancelTransportationRequest(deliveryRequest.getTransportationRequest(), sessionView.getUser(), "DN Canceled");
 
 		if (projectCross != null && projectCross.getIdprojectcross() != null)
 			projectCrossService.delete(projectCross.getIdprojectcross());
 		if (deliveryRequest.getIsInboundReturn())
-			deliveryRequestService.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+			service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
@@ -1044,9 +1049,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setStatus(DeliveryRequestStatus.ACKNOWLEDGED);
 		deliveryRequest.setDate5(new Date());
 		deliveryRequest.setUser5(sessionView.getUser());
-		deliveryRequestHistoryService.acknowledgedNew(deliveryRequest);
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 	}
 
 	public void acknowledgeDeliveryRequest() {
@@ -1054,7 +1059,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			acknowledgeDeliveryRequest(deliveryRequest);
 		else if (pageIndex == 2) {
 			for (DeliveryRequest deliveryRequest : list4)
-				acknowledgeDeliveryRequest(deliveryRequestService.findOne(deliveryRequest.getId()));
+				acknowledgeDeliveryRequest(service.findOne(deliveryRequest.getId()));
 			refreshList();
 		}
 	}
@@ -1080,8 +1085,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequestComment.setParent(deliveryRequest);
 		deliveryRequestComment.setUser(sessionView.getUser());
 		deliveryRequest.getCommentList().add(deliveryRequestComment);
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 		deliveryRequest.init();
 		initCommentsVariables();
 	}
@@ -1323,7 +1328,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 				detail.setRemainingQuantity(detail.getQuantity());
 
 		if (isAddPage) {
-			deliveryRequest.setReferenceNumber(deliveryRequestService.getMaxReferenceNumber(deliveryRequest.getType()) + 1);
+			deliveryRequest.setReferenceNumber(service.getMaxReferenceNumber(deliveryRequest.getType()) + 1);
 			deliveryRequest.setQrKey(UtilsFunctions.generateQrKey());
 		}
 
@@ -1449,7 +1454,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 		// to be sure
 		if (isAddPage) {
-			deliveryRequest.setReferenceNumber(deliveryRequestService.getMaxReferenceNumber(deliveryRequest.getType()) + 1);
+			deliveryRequest.setReferenceNumber(service.getMaxReferenceNumber(deliveryRequest.getType()) + 1);
 			deliveryRequest.setQrKey(UtilsFunctions.generateQrKey());
 		}
 
@@ -1461,17 +1466,14 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (deliveryRequest.getReference() == null)
 			deliveryRequest.generateReference();
 
-		deliveryRequest = deliveryRequestService.save(deliveryRequest);
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser(), isAddPage ? "Created" : "Edited"));
+
+		deliveryRequest = service.save(deliveryRequest);
 
 		if (deliveryRequest.getIsInboundReturn())
-			deliveryRequestService.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+			service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(), deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 		if (deliveryRequest.getIsInboundTransfer())
-			deliveryRequestService.updateIsForTransfer(deliveryRequest.getOutboundDeliveryRequestTransfer().getId(), true);
-
-		if (isAddPage)
-			deliveryRequestHistoryService.created(deliveryRequest);
-		else
-			deliveryRequestHistoryService.edited(deliveryRequest);
+			service.updateIsForTransfer(deliveryRequest.getOutboundDeliveryRequestTransfer().getId(), true);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
@@ -1512,7 +1514,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (!canDeleteDeliveryRequest())
 			return null;
 		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
-		deliveryRequestService.delete(deliveryRequest);
+		service.delete(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		return addParameters(listPage, "faces-redirect=true");
 	}
@@ -1554,7 +1556,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	// GENERATE EMAIL NOTIFICATION
 	public String generateEmailNotification() {
-		return deliveryRequestService.generateEmailNotification(deliveryRequest, null, false);
+		return service.generateEmailNotification(deliveryRequest, null, false);
 	}
 
 	/*
@@ -1562,11 +1564,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	 */
 
 	public void generatePdf() {
-		downloadPath = deliveryRequestService.generatePdf(deliveryRequest);
+		downloadPath = service.generatePdf(deliveryRequest);
 	}
 
 	public void generateStamp() {
-		downloadPath = deliveryRequestService.generateStamp(deliveryRequest);
+		downloadPath = service.generateStamp(deliveryRequest);
 	}
 
 	// smsRef
@@ -1577,7 +1579,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void updateSmsRef() {
 		if (!canUpdateSmsRef())
 			return;
-		deliveryRequestService.updateSmsRef(deliveryRequest.getId(), deliveryRequest.getSmsRef());
+		service.updateSmsRef(deliveryRequest.getId(), deliveryRequest.getSmsRef());
 	}
 
 	// requestDate
@@ -1588,7 +1590,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void updateRequestDate() {
 		if (!canUpdateRequestDate())
 			return;
-		deliveryRequestService.updateRequestDate(deliveryRequest.getId(), deliveryRequest.getRequestDate());
+		service.updateRequestDate(deliveryRequest.getId(), deliveryRequest.getRequestDate());
 	}
 
 	// requestFrom
@@ -1599,7 +1601,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void updateRequestFrom() {
 		if (!canUpdateRequestFrom())
 			return;
-		deliveryRequestService.updateRequestFrom(deliveryRequest.getId(), deliveryRequest.getRequestFrom());
+		service.updateRequestFrom(deliveryRequest.getId(), deliveryRequest.getRequestFrom());
 	}
 
 	// external requester
@@ -1610,7 +1612,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void updateExternalRequester() {
 		if (!canUpdateExternalRequester())
 			return;
-		deliveryRequestService.updateExternalRequester(deliveryRequest.getId(), userService.findOne(deliveryRequest.getTmpExternalRequesterUsername()));
+		service.updateExternalRequester(deliveryRequest.getId(), userService.findOne(deliveryRequest.getTmpExternalRequesterUsername()));
 	}
 
 	// needed delivery date
@@ -1622,7 +1624,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (!canUpdateNeededDeliveryDate())
 			return;
 
-		deliveryRequestService.updateNeededDeliveryDate(deliveryRequest.getId(), deliveryRequest.getNeededDeliveryDate());
+		service.updateNeededDeliveryDate(deliveryRequest.getId(), deliveryRequest.getNeededDeliveryDate());
 	}
 
 	// transportation needed
@@ -1635,7 +1637,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public void updateTransportationNeeded() {
-		deliveryRequestService.updateTransportationNeeded(deliveryRequest.getId(), deliveryRequest.getTransportationNeeded());
+		service.updateTransportationNeeded(deliveryRequest.getId(), deliveryRequest.getTransportationNeeded());
 	}
 
 	// destination project
@@ -1673,7 +1675,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (!canEditDestinationProject())
 			return;
 		deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
-		deliveryRequestService.save(deliveryRequest);
+		service.save(deliveryRequest);
 		refreshDeliveryRequest();
 		projectCrossService.deleteAndReCreateCrossCharge(deliveryRequest);
 	}
@@ -1782,7 +1784,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void changeOutboundDeliveryRequestReturnListener() {
 		if (deliveryRequest.getOutboundDeliveryRequestReturnId() == null)
 			return;
-		deliveryRequest.setOutboundDeliveryRequestReturn(deliveryRequestService.findOne(deliveryRequest.getOutboundDeliveryRequestReturnId()));
+		deliveryRequest.setOutboundDeliveryRequestReturn(service.findOne(deliveryRequest.getOutboundDeliveryRequestReturnId()));
 		deliveryRequest.setOriginNumber(deliveryRequest.getOutboundDeliveryRequestReturn().getReference());
 		findRemainingDetailListByOutboundDeliveryRequest();
 		deliveryRequest.setProjectId(deliveryRequest.getOutboundDeliveryRequestReturn().getProject().getId());
@@ -1798,7 +1800,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void changeOutboundDeliveryRequestTransferListener() {
 		if (deliveryRequest.getOutboundDeliveryRequestTransferId() == null)
 			return;
-		deliveryRequest.setOutboundDeliveryRequestTransfer(deliveryRequestService.findOne(deliveryRequest.getOutboundDeliveryRequestTransferId()));
+		deliveryRequest.setOutboundDeliveryRequestTransfer(service.findOne(deliveryRequest.getOutboundDeliveryRequestTransferId()));
 		deliveryRequest.setOriginNumber(deliveryRequest.getOutboundDeliveryRequestTransfer().getReference());
 		findRemainingDetailListByOutboundDeliveryRequest();
 		deliveryRequest.setProjectId(deliveryRequest.getOutboundDeliveryRequestTransfer().getDestinationProject().getId());
@@ -1838,8 +1840,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (!canEditPo())
 			return;
 		deliveryRequest.setPo(poService.findOne(deliveryRequest.getPo().getIdpo()));
-		deliveryRequestService.save(deliveryRequest);
-		deliveryRequest = deliveryRequestService.findOne(deliveryRequest.getId());
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
 		deliveryRequest.init();
 	}
 
@@ -1852,11 +1854,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	public Boolean canTransferFromOutbound() {
 		return deliveryRequest.getIsOutbound() && Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(deliveryRequest.getStatus())
-				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId())) && deliveryRequest.getIsForTransfer() && deliveryRequestService.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId())) && deliveryRequest.getIsForTransfer() && service.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;
 	}
 
 	public String getTransferStatus() {
-		return deliveryRequestService.getTransferStatus(deliveryRequest.getId());
+		return service.getTransferStatus(deliveryRequest.getId());
 	}
 
 	public Boolean getHasReturnedStockRowList() {
@@ -1878,7 +1880,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	// GENERIC
 
 	public List<DeliveryRequest> findByCanBeTransported() {
-		return deliveryRequestService.findByCanBeTransported(sessionView.getUsername());
+		return service.findByCanBeTransported(sessionView.getUsername());
 	}
 
 	public List<SelectItem> getCompanyAndSupplierAndCustomerList() {
@@ -1914,51 +1916,51 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public Long countToTransfer() {
-		return deliveryRequestService.countByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
+		return service.countByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
 	}
 
 	public Long countToReturn() {
-		return deliveryRequestService.countByIsForReturnAndNotFullyReturned(sessionView.getUsername());
+		return service.countByIsForReturnAndNotFullyReturned(sessionView.getUsername());
 	}
 
 	public Long countToDeliverXboundRequests() {
-		return deliveryRequestService.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
+		return service.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
 	}
 
 	public Long countToAcknowledgeRequests() {
-		return deliveryRequestService.countByRequester(sessionView.getUsername(), DeliveryRequestType.OUTBOUND, DeliveryRequestStatus.DELIVRED);
+		return service.countByRequester(sessionView.getUsername(), DeliveryRequestType.OUTBOUND, DeliveryRequestStatus.DELIVRED);
 	}
 
 	public Long countToApproveRequests() {
-		return deliveryRequestService.countByProjectManager(sessionView.getUsername(), DeliveryRequestStatus.REQUESTED);
+		return service.countToApprove(sessionView.getUsername());
 	}
 
 	public Long countToDeliverRequests() {
-		return deliveryRequestService.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+		return service.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 	}
 
 	public List<DeliveryRequest> findLightByRequester() {
-		return deliveryRequestService.findLightByRequester(sessionView.getUsername());
+		return service.findLightByRequester(sessionView.getUsername());
 	}
 
 	public Long countByMissingPo() {
-		return deliveryRequestService.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 	}
 
 	public Long countByMissingBoqMapping() {
-		return deliveryRequestService.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 	}
 
 	public Long countToAddTransport() {
-		return deliveryRequestService.countByPendingTransportation(sessionView.getUsername());
+		return service.countByPendingTransportation(sessionView.getUsername());
 	}
 
 	public Long countMissingSerialNumber() {
-		return deliveryRequestService.countByMissingSerialNumber(cacheView.getWarehouseList());
+		return service.countByMissingSerialNumber(cacheView.getWarehouseList());
 	}
 
 	public Long countMissingExpiry() {
-		return deliveryRequestService.countByMissingExpiry(cacheView.getWarehouseList());
+		return service.countByMissingExpiry(cacheView.getWarehouseList());
 	}
 
 	public Long countTotal() {
@@ -1977,11 +1979,11 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	}
 
 	public DeliveryRequestService getDeliveryRequestService() {
-		return deliveryRequestService;
+		return service;
 	}
 
-	public void setDeliveryRequestService(DeliveryRequestService deliveryRequestService) {
-		this.deliveryRequestService = deliveryRequestService;
+	public void setDeliveryRequestService(DeliveryRequestService service) {
+		this.service = service;
 	}
 
 	public DeliveryRequest getDeliveryRequest() {
@@ -2317,10 +2319,6 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	public StockRowService getStockRowService() {
 		return stockRowService;
-	}
-
-	public DeliveryRequestHistoryService getDeliveryRequestHistoryService() {
-		return deliveryRequestHistoryService;
 	}
 
 	public UserService getUserService() {

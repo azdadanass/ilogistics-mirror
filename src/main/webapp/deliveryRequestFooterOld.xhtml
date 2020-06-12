@@ -261,7 +261,7 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('approveDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{deliveryRequestView.approveDeliveryRequest()}" value="Approve" styleClass="btn btn-success" oncomplete="PF('approveDlg').hide()" update=":main_form" />
+				<p:commandButton action="#{deliveryRequestView.approvePm()}" value="Approve" styleClass="btn btn-success" oncomplete="PF('approveDlg').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>

@@ -287,6 +287,16 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		user7 = null;
 	}
 
+	public void addHistory(DeliveryRequestHistory history) {
+		history.setParent(this);
+		historyList.add(history);
+	}
+
+	public void removeHistory(DeliveryRequestHistory history) {
+		history.setParent(null);
+		historyList.remove(history);
+	}
+
 	public void addToNotify(ToNotify toNotify) {
 		toNotify.setDeliveryRequest(this);
 		toNotifyList.add(toNotify);
@@ -710,7 +720,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		this.fileList = fileList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<DeliveryRequestHistory> getHistoryList() {
 		return historyList;
 	}

@@ -14,19 +14,21 @@ public class DeliveryRequestHistory extends GenericHistory<DeliveryRequest> impl
 
 	}
 
-	public DeliveryRequestHistory(Date date, String status, DeliveryRequest parent, User user) {
-		this.date = date;
-		this.status = status;
+	public DeliveryRequestHistory(DeliveryRequest parent, User user) {
+		this.date = new Date();
 		this.parent = parent;
 		this.user = user;
+		this.status = parent.getStatus().getValue();
 	}
 
-	public DeliveryRequestHistory(Date date, String status, DeliveryRequest parent, User user, String description) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
+	public DeliveryRequestHistory(DeliveryRequest parent, User user, String description) {
+		this(parent, user);
 		this.description = description;
+	}
+
+	public DeliveryRequestHistory(DeliveryRequest parent, User user, String description, String status) {
+		this(parent, user, description);
+		this.status = status;
 	}
 
 	@Override

@@ -39,6 +39,10 @@ public class UserService {
 		return u;
 	}
 
+	public List<User> findLightByCompany(Integer companyId, Boolean active) {
+		return repos.findLightByCompany(companyId, active);
+	}
+
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);
 		Hibernate.initialize(u.getRoleList());

@@ -311,6 +311,10 @@ public class UserView {
 		return userService.findLight(internal, true);
 	}
 
+	public List<User> findLightByCompany(Integer companyId, Boolean active) {
+		return userService.findLightByCompany(companyId, active);
+	}
+
 	// getters & setters
 
 	public String getToNotifyUserUsername() {

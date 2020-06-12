@@ -34,4 +34,8 @@ public class CompanyService {
 	public List<Company> findAll() {
 		return companyRepos.findAll();
 	}
+
+	public Integer findIdByProject(Integer projectId) {
+		return companyRepos.findIdByProject(projectId);
+	}
 }

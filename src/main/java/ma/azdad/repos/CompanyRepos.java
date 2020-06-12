@@ -18,4 +18,7 @@ public abstract interface CompanyRepos extends JpaRepository<Company, Integer> {
 	@Query("from Company where id in (?1)")
 	public List<Company> find(List<Integer> idList);
 
+	@Query("select a.costcenter.lob.bu.company.id from Project a where a.id = ?1")
+	Integer findIdByProject(Integer projectId);
+
 }

@@ -70,8 +70,8 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query(select1 + " from User a where a.user.username = ?1")
 	List<User> findLight(String username);
 
-	@Query(select1 + " from User a where a.companyType = ?1 and a.company.id = ?2")
-	List<User> findLightByExternalCompany(CompanyType companyType, Integer companyId);
+	@Query(c1 + " from User a where a.company.id = ?1 and a.active = ?2")
+	List<User> findLightByCompany(Integer companyId, Boolean active);
 
 	@Query(select1 + " from User a where a.companyType = ?1 and a.customer.id = ?2")
 	List<User> findLightByCustomer(CompanyType companyType, Integer customerId);

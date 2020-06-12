@@ -33,11 +33,17 @@ public class CompanyView {
 	@PostConstruct
 	public void init() {
 		cacheManager.getCache("companyView.findAll").clear();
+		cacheManager.getCache("companyView.findIdByProject").clear();
 	}
 
 	@Cacheable("companyView.findAll")
 	public List<Company> findAll() {
 		return companyService.findAll();
+	}
+
+	@Cacheable("companyView.findIdByProject")
+	public Integer findIdByProject(Integer projectId) {
+		return companyService.findIdByProject(projectId);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import ma.azdad.model.User;
 import ma.azdad.model.Warehouse;
 
 @Repository
@@ -23,4 +24,7 @@ public interface WarehouseRepos extends JpaRepository<Warehouse, Integer> {
 
 	@Query("select distinct a.warehouse.id from WarehouseManager a where a.user.username = ?1 ")
 	public List<Integer> findIdListByManager(String userUsername);
+
+	@Query("select a.user from WarehouseManager a where a.warehouse.id = ?1")
+	List<User> findManagerList(Integer id);
 }

@@ -42,7 +42,7 @@ public class OldEmailService {
 	private TransportationRequestService transportationRequestService;
 
 	@Autowired
-	private ThymeLeafService thymeLeafService;
+	private WarehouseService warehouseService;
 
 	@Value("${applicationName}")
 	private String applicationName;
@@ -150,6 +150,8 @@ public class OldEmailService {
 		case DELIVRED:
 			Set<String> cc = deliveryRequest.getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
 			cc.add(deliveryRequest.getProject().getManager().getEmail());
+			if (deliveryRequest.getWarehouse() != null)
+				cc.addAll(warehouseService.findManagerList(deliveryRequest.getWarehouse().getId()).stream().map(i -> i.getEmail()).collect(Collectors.toSet()));
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
 			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
 		default:

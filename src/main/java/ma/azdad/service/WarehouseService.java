@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.User;
 import ma.azdad.model.Warehouse;
 import ma.azdad.repos.WarehouseRepos;
 
@@ -53,6 +54,10 @@ public class WarehouseService extends GenericService<Warehouse> {
 
 	public List<Integer> findIdListByManager(String username) {
 		return warehouseRepos.findIdListByManager(username);
+	}
+
+	public List<User> findManagerList(Integer id) {
+		return warehouseRepos.findManagerList(id);
 	}
 
 }

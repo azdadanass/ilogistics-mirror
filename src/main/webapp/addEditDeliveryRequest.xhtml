@@ -293,6 +293,23 @@
 										</div>
 									</f:subview>
 								</h:panelGroup>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="SDM " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
+												<f:selectItem itemLabel="No" itemValue="false" />
+												<f:selectItem itemLabel="Yes" itemValue="true" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
 								<h:panelGroup id="po">
 									<f:subview rendered="#{deliveryRequestView.isPoNeeded}">
 										<div class="space-8" />
@@ -355,7 +372,8 @@
 													<p:selectOneMenu id="externalRequester" value="#{deliveryRequestView.deliveryRequest.tmpExternalRequesterUsername}" styleClass="col-xs-12 col-sm-6" filter="true"
 														filterMatchMode="contains">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightByCompany(companyView.findIdByProject(deliveryRequestView.deliveryRequest.projectId),true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+														<f:selectItems value="#{userView.findLightByCompany(companyView.findIdByProject(deliveryRequestView.deliveryRequest.projectId),true)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -532,9 +550,8 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6"  filter="true" filterMatchMode="contains"
-													converter="#{genericSecuredConverter}" required="true" requiredMessage="Owner should not be null"
-													disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}">
+												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
+													required="true" requiredMessage="Owner should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 												</p:selectOneMenu>
@@ -591,9 +608,16 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUserUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains">
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
+															var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
-															<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+															<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+															<p:column>
+																<h:outputText value="#{r.fullName}" />
+															</p:column>
+															<p:column>
+																<h:outputText value="#{r.cin}" />
+															</p:column>
 														</p:selectOneMenu>
 														<br />
 													</div>
@@ -707,11 +731,12 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUserUsername}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6" var="r">
+														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems
 																value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.externalCompanyCustomerId,deliveryRequestView.deliveryRequest.externalCompanySupplierId)}"
-																var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+																var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
 																<h:outputText value="#{r.fullName}" />
 															</p:column>

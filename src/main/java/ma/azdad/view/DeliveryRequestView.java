@@ -446,6 +446,9 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			break;
 		case 2:
 			System.out.println("step2");
+			System.out.println("##############" + deliveryRequest.getToUser());
+			System.out.println("##############" + deliveryRequest.getToUserUsername());
+			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			step++;
 			break;
 		case 3:
@@ -457,7 +460,6 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 			deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
-			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest, sessionView.getUser()));
 			service.save(deliveryRequest);
 			emailService.deliveryRequestNotification(deliveryRequest);
@@ -490,6 +492,12 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	private void preStep1() {
 		// init stock row list
 		deliveryRequest.setStockRowList(stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest));
+	}
+
+	// SAVE BY STEPS
+	public void preparationPreviousStep() {
+		if (step > 1)
+			step--;
 	}
 
 	/*

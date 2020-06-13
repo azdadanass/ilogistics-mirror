@@ -49,6 +49,7 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private String qrKey;
 	private String returnReason;
 	private Boolean isFullyReturned = false;
+	private Boolean sdm;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
@@ -128,11 +129,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	private Integer outboundDeliveryRequestReturnId;
 	private Integer outboundDeliveryRequestTransferId;
 	private Integer poId;
-
-	private String toUserUsername;
-
-	private Integer externalCompanyCustomerId;
-	private Integer externalCompanySupplierId;
 
 	private String tmpExternalRequesterUsername;
 
@@ -249,12 +245,6 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 			destinationId = destination.getId();
 		if (transporterId != null)
 			transporterId = transporter.getId();
-		if (toUser != null)
-			toUserUsername = toUser.getUsername();
-		if (externalCompanyCustomer != null)
-			externalCompanyCustomerId = externalCompanyCustomer.getId();
-		if (externalCompanySupplier != null)
-			externalCompanySupplierId = externalCompanySupplier.getId();
 		if (outboundDeliveryRequestReturn != null)
 			outboundDeliveryRequestReturnId = outboundDeliveryRequestReturn.getId();
 		if (outboundDeliveryRequestTransfer != null)
@@ -1202,11 +1192,13 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	@Transient
 	public String getToUserUsername() {
-		return toUserUsername;
+		return toUser == null ? null : toUser.getUsername();
 	}
 
 	public void setToUserUsername(String toUserUsername) {
-		this.toUserUsername = toUserUsername;
+		if (toUser == null || !toUserUsername.equals(toUser.getUsername()))
+			toUser = new User();
+		toUser.setUsername(toUserUsername);
 	}
 
 	@Transient
@@ -1583,6 +1575,14 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 
 	public void setMissingExpiry(Boolean missingExpiry) {
 		this.missingExpiry = missingExpiry;
+	}
+
+	public Boolean getSdm() {
+		return sdm;
+	}
+
+	public void setSdm(Boolean sdm) {
+		this.sdm = sdm;
 	}
 
 }

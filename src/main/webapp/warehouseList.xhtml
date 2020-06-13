@@ -1,19 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -27,7 +23,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -40,11 +35,15 @@
 				<div class="col-sm-12">
 					<h:panelGroup id="widgetPanel">
 						<div class=" col-sm-offset-1 col-sm-6">
-							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Warehouse" value="#{warehouseView.addEditPage}" rendered="#{warehouseView.canSaveWarehouse()}">
+							<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
+								<i class="ace-icon fa fa-home bigger-230"></i>
+								<h:outputText value="Home" />
+							</h:outputLink>
+							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Warehouse" value="#{warehouseView.addEditPage}"
+								rendered="#{warehouseView.canSaveWarehouse()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
-
 							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
@@ -77,7 +76,7 @@
 							<div class="action-buttons center">
 								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 									<img src="/resources/img/xls.png" width="20" height="20" />
-									<p:dataExporter type="xls" target="main_tab" fileName="warehouseList" postProcessor="#{warehouseView.excelExportation}"/>
+									<p:dataExporter type="xls" target="main_tab" fileName="warehouseList" postProcessor="#{warehouseView.excelExportation}" />
 								</h:commandLink>
 							</div>
 						</div>
@@ -94,47 +93,35 @@
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
 						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
-						<p:dataTable value="#{warehouseView.list2}" filteredValue="#{warehouseView.list3}" rowKey="#{item.id}" selection="#{warehouseView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-							paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-
+						<p:dataTable value="#{warehouseView.list2}" filteredValue="#{warehouseView.list3}" rowKey="#{item.id}" selection="#{warehouseView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
-
-
 							<p:column headerText="Name">
 								<h:outputText value="#{item.name}" styleClass="bolder green" />
 							</p:column>
-
 							<p:column headerText="Phone">
 								<h:outputText value="#{item.phone}" />
 							</p:column>
-
 							<p:column headerText="Surface">
 								<h:outputText value="#{item.surface}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" m" />
-								<sup>
-									<h:outputText value="2" />
+								<sup> <h:outputText value="2" />
 								</sup>
 							</p:column>
-
 							<p:column headerText="Volume">
 								<h:outputText value="#{item.volume}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" m" />
-								<sup>
-									<h:outputText value="3" />
+								<sup> <h:outputText value="3" />
 								</sup>
 							</p:column>
-
-
-
 							<p:column headerText="Status">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />
 							</p:column>
-
-
 							<p:column headerText="Actions" style="width:150px">
 								<div class="action-buttons center">
 									<h:outputLink value="#{warehouseView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
@@ -143,10 +130,8 @@
 									</h:outputLink>
 								</div>
 							</p:column>
-
 						</p:dataTable>
 					</div>
-
 				</div>
 			</div>
 		</h:form>

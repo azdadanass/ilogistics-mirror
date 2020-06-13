@@ -2,19 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -44,32 +39,27 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class=" col-sm-offset-1 col-sm-7">
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
+						<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditBrand.xhtml" rendered="#{brandView.canSaveBrand()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{brandView.selectedId}" />
 						</h:outputLink>
-
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{brandView.canDeleteBrand()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-
 					</div>
 				</div>
 			</div>
@@ -122,7 +112,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{brandView.brand.name}" styleClass="bolder orange" />
 											&nbsp;
@@ -132,7 +121,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Website" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{brandView.brand.website}" />
 											&nbsp;
@@ -146,7 +134,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Company Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{brandView.brand.company}" />
 											&nbsp;
@@ -175,29 +162,23 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable  value="#{brandView.brand.supplierList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+									<p:dataTable value="#{brandView.brand.supplierList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
 										</p:column>
-										
 										<p:column headerText="Description">
 											<h:outputText value="#{item.description}" />
 										</p:column>
-										
 										<p:column headerText="Category">
 											<h:outputText value="#{item.category}" />
 										</p:column>
-										
 										<p:column headerText="Email">
 											<h:outputText value="#{item.email}" />
 										</p:column>
-										
 										<p:column headerText="Phone">
 											<h:outputText value="#{item.phone}" />
 										</p:column>
-
-										
 									</p:dataTable>
 								</div>
 							</div>

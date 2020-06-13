@@ -37,6 +37,10 @@
 				<div class="col-sm-12">
 					<h:panelGroup id="widgetPanel">
 						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
+								<i class="ace-icon fa fa-home bigger-230"></i>
+								<h:outputText value="Home" />
+							</h:outputLink>
 							<f:subview rendered="#{DeliveryRequestState.WAITING==deliveryRequestView.state}">
 								<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add Request" value="#{deliveryRequestView.addEditPage}"
 									rendered="#{deliveryRequestView.canSaveDeliveryRequest() and deliveryRequestView.pageIndex==1}">

@@ -1,19 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -27,7 +23,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -40,11 +35,14 @@
 				<div class="col-sm-12">
 					<h:panelGroup id="widgetPanel">
 						<div class=" col-sm-offset-1 col-sm-6">
+							<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
+								<i class="ace-icon fa fa-home bigger-230"></i>
+								<h:outputText value="Home" />
+							</h:outputLink>
 							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Brand" value="#{brandView.addEditPage}" rendered="#{brandView.canSaveBrand()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
-
 							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
@@ -96,23 +94,18 @@
 						<p:dataTable value="#{brandView.list2}" filteredValue="#{brandView.list3}" rowKey="#{item.id}" selection="#{brandView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
 							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-							
 							<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
 								<img src="#{item.image}" class="img-circle aa-datatable-photo" />
 							</p:column>
-
 							<p:column headerText="Name">
 								<h:outputText value="#{item.name}" styleClass="bolder orange" />
 							</p:column>
-
 							<p:column headerText="Company">
 								<h:outputText value="#{item.company}" />
 							</p:column>
-
 							<p:column headerText="Website">
 								<h:outputText value="#{item.website}" />
 							</p:column>
-
 							<p:column headerText="Actions" width="150" exportable="false">
 								<div class="action-buttons center">
 									<h:outputLink value="#{brandView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
@@ -121,10 +114,8 @@
 									</h:outputLink>
 								</div>
 							</p:column>
-
 						</p:dataTable>
 					</div>
-
 				</div>
 			</div>
 		</h:form>

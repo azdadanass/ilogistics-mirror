@@ -30,10 +30,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String select2 = "select count(*) ";
 
 	@Query(select1 + " from DeliveryRequest a" + " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))" + " order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> projectList);
 
 	@Query(select1 + " from DeliveryRequest a" + " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4" + " order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type);
+	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> projectList, DeliveryRequestType type);
 
 	@Query(select1 + " from DeliveryRequest a " + " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))" + " and a.type = ?4 and a.project.type = 'Stock' and a.destinationProject.subType = 'DSTR' and a.po is null and a.status not in (?5) ")
 	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType deliveryRequestTypeOutbound, List<DeliveryRequestStatus> rejectedAndCanceledStatus);
@@ -48,13 +48,13 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType deliveryRequestTypeOutbound, List<DeliveryRequestStatus> rejectedAndCanceledStatus);
 
 	@Query(select1 + " from DeliveryRequest a where a.status = ?2 and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?3) or a.project.id in (?4)) order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, DeliveryRequestStatus status, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<DeliveryRequest> findLight(String username, DeliveryRequestStatus status, List<Integer> warehouseList, List<Integer> projectList);
 
 	@Query(select1 + " from DeliveryRequest a where a.requester.username = ?1")
 	public List<DeliveryRequest> findLightByRequester(String username);
 
 	@Query(select1 + " from DeliveryRequest a where a.status in (?2) and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?3) or a.project.id in (?4)) order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, List<DeliveryRequestStatus> status, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<DeliveryRequest> findLight(String username, List<DeliveryRequestStatus> status, List<Integer> warehouseList, List<Integer> projectList);
 
 	@Query(select2 + " from DeliveryRequest a where a.status = ?2 and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?3) or a.project.id in (?4)) order by a.neededDeliveryDate desc")
 	public Long count(String username, DeliveryRequestStatus status, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -63,10 +63,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long count(String username, List<DeliveryRequestStatus> status, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
 	@Query(select1 + " from DeliveryRequest a where a.type = ?2 and a.status = ?3 and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?4) or a.project.id in (?5)) order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, DeliveryRequestStatus status, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, DeliveryRequestStatus status, List<Integer> warehouseList, List<Integer> projectList);
 
 	@Query(select1 + " from DeliveryRequest a where a.type = ?2 and a.status in (?3) and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?4) or a.project.id in (?5)) order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, List<DeliveryRequestStatus> status, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, List<DeliveryRequestStatus> status, List<Integer> warehouseList, List<Integer> projectList);
 
 	@Query(select1 + " from DeliveryRequest a where a.type = ?1 and a.requester.username = ?2  order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightByRequester(DeliveryRequestType type, String username);

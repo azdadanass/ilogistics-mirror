@@ -163,4 +163,8 @@ public class ProjectService {
 			return null;
 		return repos.findById(projectId).get().getManagerList().stream().filter(i -> managerType.equals(i.getType())).map(i -> i.getUser()).findFirst().orElse(null);
 	}
+
+	public List<Integer> findIdListByManagerType(String username, ProjectManagerType type) {
+		return repos.findIdListByManagerType(username, type);
+	}
 }

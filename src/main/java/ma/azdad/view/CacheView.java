@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.service.AffectationService;
 import ma.azdad.service.AssignmentService;
 import ma.azdad.service.DelegationService;
@@ -59,6 +60,7 @@ public class CacheView implements Serializable {
 	private Map<String, String> lm = new HashMap<String, String>();
 
 	private List<Integer> assignedProjectList;
+	private List<Integer> hmProjectList;
 	private List<Integer> delegatedProjectList;
 	private List<Integer> warehouseList = new ArrayList<Integer>(Arrays.asList(-1));
 
@@ -66,9 +68,9 @@ public class CacheView implements Serializable {
 	public void init() {
 		refreshAffectationData();
 		lm = affectationService.getDatas(DataTypes.LM.getValue());
-
 		assignedProjectList = projectService.findAssignedProjectIdListByResource(sessionView.getUsername());
 		delegatedProjectList = delegationService.findDelegatedProjects(sessionView.getUsername());
+		hmProjectList = projectService.findIdListByManagerType(sessionView.getUsername(), ProjectManagerType.HARDWARE_MANAGER);
 		warehouseList.addAll(warehouseService.findIdListByManager(sessionView.getUsername()));
 	}
 
@@ -187,6 +189,14 @@ public class CacheView implements Serializable {
 
 	public void setWarehouseList(List<Integer> warehouseList) {
 		this.warehouseList = warehouseList;
+	}
+
+	public List<Integer> getHmProjectList() {
+		return hmProjectList;
+	}
+
+	public void setHmProjectList(List<Integer> hmProjectList) {
+		this.hmProjectList = hmProjectList;
 	}
 
 }

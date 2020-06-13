@@ -135,32 +135,32 @@ public class DeliveryRequestService extends GenericService<DeliveryRequest> {
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLight")
-	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, DeliveryRequestState state, List<Integer> warehouseList, List<Integer> assignedProjectList) {
+	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, DeliveryRequestState state, List<Integer> warehouseList, List<Integer> projectList) {
 		if (state == null)
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, warehouseList, assignedProjectList, type);
+				return deliveryRequestRepos.findLight(username, warehouseList, projectList, type);
 			else
-				return deliveryRequestRepos.findLight(username, warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, warehouseList, projectList);
 		if (DeliveryRequestState.WAITING.equals(state))
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, projectList);
 			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, projectList);
 		else if (DeliveryRequestState.PARTIALLY_DELIVRED.equals(state))
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, type, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
 			else
-				return deliveryRequestRepos.findLight(username, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
 		else if (DeliveryRequestState.DELIVRED.equals(state))
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, projectList);
 			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, projectList);
 		else if (DeliveryRequestState.REJECTED.equals(state))
 			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, projectList);
 			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, assignedProjectList);
+				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, projectList);
 		return null;
 
 	}

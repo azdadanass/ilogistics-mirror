@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -318,7 +319,7 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		if (isListPage)
 			switch (pageIndex) {
 			case 1:
-				list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), Stream.concat(cacheView.getAssignedProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
 				break;
 			case 2:
 				list2 = list1 = service.findLightByRequester(sessionView.getUsername(), DeliveryRequestType.OUTBOUND, DeliveryRequestStatus.DELIVRED);

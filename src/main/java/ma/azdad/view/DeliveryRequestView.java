@@ -1226,15 +1226,24 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 	public void initToNotifyList() {
 		deliveryRequest.getToNotifyList().clear();
 		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
+		if (deliveryRequest.getIsOutbound()) {
+			deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
+			deliveryRequest.setOriginNumber("");
+		}
 		Set<User> toNotifyUserSet = new HashSet<User>();
 		toNotifyUserSet.add(deliveryRequest.getProject().getCostcenter().getLob().getManager());
 		toNotifyUserSet.add(deliveryRequest.getProject().getManager());
 		toNotifyUserSet.addAll(deliveryRequest.getProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
 		toNotifyUserSet.addAll(userService.findByProjectAssignment(deliveryRequest.getProject().getId(), true));
 		toNotifyUserSet.addAll(userService.findByProjectDelegation(deliveryRequest.getProject().getId(), true));
-
-		if (deliveryRequest.getIsOutbound())
+		if (deliveryRequest.getIsOutbound()) {
+			toNotifyUserSet.add(deliveryRequest.getDestinationProject().getCostcenter().getLob().getManager());
+			toNotifyUserSet.add(deliveryRequest.getDestinationProject().getManager());
+			toNotifyUserSet.addAll(deliveryRequest.getDestinationProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
+			toNotifyUserSet.addAll(userService.findByProjectAssignment(deliveryRequest.getDestinationProject().getId(), true));
+			toNotifyUserSet.addAll(userService.findByProjectDelegation(deliveryRequest.getDestinationProject().getId(), true));
 			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingAssignement(deliveryRequest.getExternalCompanyCustomerId(), deliveryRequest.getExternalCompanySupplierId(), deliveryRequest.getDestinationProjectId()));
+		}
 		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 
@@ -1256,11 +1265,6 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 		deliveryRequest.setStatus(DeliveryRequestStatus.EDITED);
 		deliveryRequest.setDate1(new Date());
 //		deliveryRequest.setProject(projectService.findOne(deliveryRequest.getProjectId()));
-
-		if (deliveryRequest.getIsOutbound()) {
-			deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
-			deliveryRequest.setOriginNumber("");
-		}
 
 		if (getIsPoNeeded() && deliveryRequest.getPoId() != null)
 			deliveryRequest.setPo(poService.findOne(deliveryRequest.getPoId()));

@@ -16,7 +16,7 @@ import ma.azdad.repos.AssignmentRepos;
 public class AssignmentService extends GenericService<Assignment> {
 
 	@Autowired
-	AssignmentRepos assignmentRepos;
+	AssignmentRepos repos;
 
 	@Autowired
 	AssignmentDetailRepos assignmentDetailRepos;
@@ -29,8 +29,11 @@ public class AssignmentService extends GenericService<Assignment> {
 		return assignment;
 	}
 
-	public List<Assignment> findByAssignator(String username) {
-		return assignmentRepos.findByAssignator(username);
+	public List<Assignment> find(String username, Boolean assignator, Boolean active) {
+		if (assignator)
+			return active ? repos.findByAssignatorAndActive(username) : repos.findByAssignatorAndInactive(username);
+		else
+			return active ? repos.findByUserAndActive(username) : repos.findByUserAndInactive(username);
 	}
 
 }

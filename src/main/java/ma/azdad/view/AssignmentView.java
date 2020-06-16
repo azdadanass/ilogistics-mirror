@@ -51,6 +51,10 @@ public class AssignmentView extends GenericView<Assignment> {
 	private Assignment assignment = new Assignment();
 	private DualListModel<Project> projectDualList;
 
+	private Boolean assignator = true;
+	private Boolean showDetailList = false;
+	private Boolean active = true;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -73,7 +77,7 @@ public class AssignmentView extends GenericView<Assignment> {
 
 	public void refreshList() {
 		if (isListPage)
-			list2 = list1 = assignmentService.findByAssignator(sessionView.getUsername());
+			list2 = list1 = assignmentService.find(sessionView.getUsername(), assignator, active);
 	}
 
 	public void refreshAssignment() {
@@ -179,6 +183,30 @@ public class AssignmentView extends GenericView<Assignment> {
 
 	public void setProjectDualList(DualListModel<Project> projectDualList) {
 		this.projectDualList = projectDualList;
+	}
+
+	public Boolean getAssignator() {
+		return assignator;
+	}
+
+	public void setAssignator(Boolean assignator) {
+		this.assignator = assignator;
+	}
+
+	public Boolean getShowDetailList() {
+		return showDetailList;
+	}
+
+	public void setShowDetailList(Boolean showDetailList) {
+		this.showDetailList = showDetailList;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

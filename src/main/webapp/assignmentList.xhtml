@@ -19,7 +19,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="Assignment List" />
+				<h:outputText value=" Assignment List" />
 			</li>
 		</ul>
 	</ui:define>
@@ -28,23 +28,19 @@
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa fa-list bigger-110 green"></i>
-					<h:outputText value=" Assignment List" />
+					<h:outputText value="Assignment List" />
 				</h1>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<h:panelGroup id="widgetPanel">
 						<div class=" col-sm-offset-1 col-sm-6">
-							<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
-								<i class="ace-icon fa fa-home bigger-230"></i>
-								<h:outputText value="Home" />
-							</h:outputLink>
 							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Assignment" value="#{assignmentView.addEditPage}"
 								rendered="#{assignmentView.canSaveAssignment()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
-							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page" value="assignmentList.xhtml">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
 							</h:outputLink>
@@ -64,84 +60,216 @@
 				</div>
 			</div>
 			<div class="hr dotted" />
+			<div class="tabbable">
+				<ul id="tabs" class="nav nav-tabs padding-18">
+					<li id="tab1" class="active">
+						<p:commandLink onclick="openTab(1)" action="#{assignmentView.refreshList()}" update="panel1,widgetPanel">
+							<i class="blue ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" As Assignator" styleClass="hidden-xs" />
+							<f:setPropertyActionListener value="true" target="#{assignmentView.assignator}" />
+						</p:commandLink>
+					</li>
+					<li id="tab2">
+						<p:commandLink onclick="openTab(2)" action="#{assignmentView.refreshList()}" update="panel1,widgetPanel">
+							<i class="green ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" As Assigned to" styleClass="hidden-xs" />
+							<f:setPropertyActionListener value="false" target="#{assignmentView.assignator}" />
+						</p:commandLink>
+					</li>
+				</ul>
+			</div>
+			<div class="space-16" />
 			<div class="row">
 				<p:messages id="messages" />
 				<div class="col-sm-offset-1 col-sm-10">
-					<div class="table-header col-sm-12 col-xs-12">
-						<div class="col-sm-8 hidden-xs">
-							<i class="fa fa-list" />
-							<h:outputText value=" Assignment List" />
-						</div>
-						<div class="col-sm-2">
-							<div class="action-buttons center">
-								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-									<img src="/resources/img/xls.png" width="20" height="20" />
-									<p:dataExporter type="xls" target="main_tab" fileName="assignmentList" />
-								</h:commandLink>
-							</div>
-						</div>
-						<div class="col-sm-2 col-xs-4">
-							<div class="nav-search minimized">
-								<span class="input-icon">
-									<p:inputText value="#{assignmentView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-										<p:ajax event="keyup" update="main_tab,widgetPanel" />
-									</p:inputText>
-									<i class="ace-icon fa fa-search nav-search-icon" />
-								</span>
-							</div>
-						</div>
+					<div class="pull-right">
+						<h:panelGroup id="showDetailList">
+							<h:outputText value="Show Details" />
+							<p:commandLink update="panel1,widgetPanel,showDetailList" partialSubmit="true" process="@this" action="#{assignmentDetailView.refreshList()}" rendered="#{!assignmentView.showDetailList}">
+								<i class="ace-icon fa fa-toggle-off grey bigger-200 white" />
+								<f:setPropertyActionListener value="true" target="#{assignmentView.showDetailList}" />
+							</p:commandLink>
+							<p:commandLink update="panel1,widgetPanel,showDetailList" partialSubmit="true" process="@this" action="#{assignmentView.refreshList()}" rendered="#{assignmentView.showDetailList}">
+								<i class="ace-icon fa fa-toggle-on green bigger-200 white" />
+								<f:setPropertyActionListener value="false" target="#{assignmentView.showDetailList}" />
+							</p:commandLink>
+						</h:panelGroup>
 					</div>
-					<div class="col-sm-12 col-xs-12 aa-datatable-container">
-						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
-						<p:dataTable value="#{assignmentView.list2}" filteredValue="#{assignmentView.list3}" rowKey="#{item.id}" selection="#{assignmentView.list4}" id="main_tab" widgetVar="main_tab" var="item"
-							rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
-							<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
-							<p:ajax event="rowUnselect" oncomplete="panelUpdaters()" process="@this" />
-							<p:ajax event="rowSelectCheckbox" oncomplete="panelUpdaters()" process="@this" />
-							<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
-							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
-							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
-							<p:column headerText="Photo" width="5%" styleClass="hidden-xs">
-								<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
-									<f:param name="fileName" value="#{cacheView.getPhoto(item.user.username)}" />
-								</p:graphicImage>
-							</p:column>
-							<p:column headerText="User">
-								<h:outputText value="#{item.user.fullName}" styleClass="orange" />
-							</p:column>
-							<p:column headerText="Status">
-								<h:outputText value="#{item.status}" styleClass="badge #{item.statusStyleClass}" />
-							</p:column>
-							<p:column headerText="Type" width="100">
-								<h:outputText value="#{item.user.internal?'Internal':'External'}" styleClass="badge #{item.user.internal?'badge-success':'badge-warning'}" />
-							</p:column>
-							<p:column headerText="Start Date">
-								<h:outputText value="#{item.startDate}">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="End Date">
-								<h:outputText value="#{item.endDate}">
-									<f:convertDateTime pattern="dd-MM-yyyy" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="Description">
-								<h:outputText value="#{item.description}" />
-							</p:column>
-							<p:column headerText="Actions" style="width:150px">
-								<div class="action-buttons center">
-									<h:outputLink value="#{assignmentView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
-										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-										<f:param name="id" value="#{item.id}" />
-									</h:outputLink>
+					<h:panelGroup id="panel1">
+						<f:subview rendered="#{!assignmentView.showDetailList}">
+							<div class="table-header col-sm-12 col-xs-12">
+								<div class="col-sm-2 col-xs-2">
+									<i class="fa fa-list" />
+									<h:outputText value="Assignment List" />
 								</div>
-							</p:column>
-						</p:dataTable>
-					</div>
+								<div class="col-sm-6 ">
+									<table style="margin-top: 5px">
+										<tr>
+											<td>
+												<h:outputText value="Filter by : " />
+											</td>
+											<td>
+												<p:commandLink action="#{assignmentView.refreshList()}" update="assignmentList,:main_form:widgetPanel" styleClass="aa-tooltip tooltip-success" title="Active">
+													<div class="icon-a-green" />
+													<f:setPropertyActionListener value="true" target="#{assignmentView.active}" />
+												</p:commandLink>
+											</td>
+											<td>
+												<p:commandLink action="#{assignmentView.refreshList()}" update="assignmentList,:main_form:widgetPanel" styleClass="aa-tooltip tooltip-error" title="Inactive">
+													<div class="icon-i-red" />
+													<f:setPropertyActionListener value="false" target="#{assignmentView.active}" />
+												</p:commandLink>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="col-sm-2 hidden-xs">
+									<div class="action-buttons center">
+										<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+											<img src="/resources/img/xls.png" width="20" height="20" />
+											<p:dataExporter type="xls" target="assignmentList" fileName="assignmentList" postProcessor="#{utilsView.excelExportation}" />
+										</h:commandLink>
+									</div>
+								</div>
+								<div class="col-sm-2 col-xs-4">
+									<div class="nav-search minimized">
+										<span class="input-icon">
+											<p:inputText value="#{assignmentView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+												<p:ajax event="keyup" update="assignmentList,:main_form:widgetPanel" />
+											</p:inputText>
+											<i class="ace-icon fa fa-search nav-search-icon" />
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-xs-12 aa-datatable-container">
+								<p:dataTable value="#{assignmentView.list2}" filteredValue="#{assignmentView.list3}" rowKey="#{item.id}" selection="#{assignmentView.list4}" id="assignmentList" widgetVar="assignmentList"
+									var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
+										<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+											<f:param name="fileName" value="#{item.assignatorPhoto}" />
+										</p:graphicImage>
+									</p:column>
+									<p:column headerText="Start Date">
+										<h:outputText value="#{item.startDate}">
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="End Date">
+										<h:outputText value="#{item.endDate}">
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Description">
+										<h:outputText value="#{item.description}" />
+									</p:column>
+									<p:column headerText="Status">
+										<h:outputText value="#{item.status}" styleClass="orange" rendered="#{item.status=='Pending'}" />
+										<h:outputText value="#{item.status}" styleClass="green" rendered="#{item.status=='Active'}" />
+										<h:outputText value="#{item.status}" styleClass="red" rendered="#{item.status=='Expired'}" />
+									</p:column>
+									<p:column headerText="Assignator">
+										<h:outputText value="#{item.assignatorFullName}" styleClass="bolder green" />
+									</p:column>
+									<p:column headerText="Assigned To">
+										<h:outputText value="#{item.userFullName}" styleClass="bolder blue" />
+									</p:column>
+									<p:column headerText="Actions" width="150" exportable="false">
+										<div class="action-buttons center">
+											<h:outputLink value="#{assignmentView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+												<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												<f:param name="id" value="#{item.id}" />
+											</h:outputLink>
+										</div>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{assignmentView.showDetailList}">
+							<div class="table-header col-sm-12 col-xs-12">
+								<div class="col-sm-2 col-xs-2">
+									<i class="fa fa-list" />
+									<h:outputText value="Assignment Detail List" />
+								</div>
+								<div class="col-sm-6 ">
+									<table style="margin-top: 5px">
+										<tr>
+											<td>
+												<h:outputText value="Filter by : " />
+											</td>
+											<td>
+												<p:commandLink action="#{assignmentDetailView.refreshList()}" update="assignmentList,:main_form:widgetPanel" styleClass="aa-tooltip tooltip-success" title="Active">
+													<div class="icon-a-green" />
+													<f:setPropertyActionListener value="true" target="#{assignmentView.active}" />
+												</p:commandLink>
+											</td>
+											<td>
+												<p:commandLink action="#{assignmentDetailView.refreshList()}" update="assignmentList,:main_form:widgetPanel" styleClass="aa-tooltip tooltip-error" title="Inactive">
+													<div class="icon-i-red" />
+													<f:setPropertyActionListener value="false" target="#{assignmentView.active}" />
+												</p:commandLink>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div class="col-sm-2 hidden-xs">
+									<div class="action-buttons center">
+										<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+											<img src="/resources/img/xls.png" width="20" height="20" />
+											<p:dataExporter type="xls" target="assignmentList" fileName="assignmentList" postProcessor="#{utilsView.excelExportation}" />
+										</h:commandLink>
+									</div>
+								</div>
+								<div class="col-sm-2 col-xs-4">
+									<div class="nav-search minimized">
+										<span class="input-icon">
+											<p:inputText value="#{assignmentDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+												<p:ajax event="keyup" update="assignmentList,:main_form:widgetPanel" />
+											</p:inputText>
+											<i class="ace-icon fa fa-search nav-search-icon" />
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-xs-12 aa-datatable-container">
+								<p:dataTable value="#{assignmentDetailView.list2}" filteredValue="#{assignmentDetailView.list3}" rowKey="#{item.id}" selection="#{assignmentDetailView.list4}" id="assignmentList"
+									widgetVar="assignmentList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
+										<img src="#{item.assignatorPhoto}" class="img-circle aa-datatable-photo" />
+									</p:column>
+									<p:column headerText="Project / Resource Name">
+										<h:outputText value="#{item.projectName}" styleClass="#{item.type.color.name}" />
+									</p:column>
+									<p:column headerText="Start Date">
+										<h:outputText value="#{item.startDate}">
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="End Date">
+										<h:outputText value="#{item.endDate}">
+											<f:convertDateTime pattern="yyyy-MM-dd" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Assignator">
+										<h:outputText value="#{item.assignatorFullName}" styleClass="bolder green" />
+									</p:column>
+									<p:column headerText="Assigned To">
+										<h:outputText value="#{item.userFullName}" styleClass="bolder blue" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</f:subview>
+					</h:panelGroup>
 				</div>
 			</div>
 		</h:form>
+		<script>
+			function openTab(index) {
+				$('#tabs li[class="active"]').removeClass('active');
+				$('#tab' + index).addClass('active');
+			}
+		</script>
 	</ui:define>
 </ui:composition>

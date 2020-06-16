@@ -11,6 +11,17 @@ import ma.azdad.model.Assignment;
 @Repository
 public interface AssignmentRepos extends JpaRepository<Assignment, Integer> {
 
-	@Query("from Assignment a where a.assignator.username = ?1")
-	public List<Assignment> findByAssignator(String username);
+	String c1 = "select new Assignment(id,startDate,endDate,a.assignator.photo,assignator.fullName,a.user.photo, a.user.fullName) ";
+
+	@Query(c1 + "from Assignment a where a.assignator.username = ?1 and current_date between startDate and endDate")
+	List<Assignment> findByAssignatorAndActive(String username);
+
+	@Query(c1 + "from Assignment a where a.assignator.username = ?1 and current_date not between startDate and endDate")
+	List<Assignment> findByAssignatorAndInactive(String username);
+
+	@Query(c1 + "from Assignment a where a.user.username = ?1 and current_date between startDate and endDate")
+	List<Assignment> findByUserAndActive(String username);
+
+	@Query(c1 + "from Assignment a where a.user.username = ?1 and current_date not between startDate and endDate")
+	List<Assignment> findByUserAndInactive(String username);
 }

@@ -34,7 +34,16 @@ public class Assignment extends GenericBean implements Serializable {
 	private String userUsername;
 
 	public Assignment() {
-		super();
+	}
+
+	public Assignment(Integer id, Date startDate, Date endDate, String assignatorPhoto, String assignatorFullName, String userPhoto, String userFullName) {
+		super(id);
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.setAssignatorPhoto(assignatorPhoto);
+		this.setAssignatorFullName(assignatorFullName);
+		this.setUserPhoto(userPhoto);
+		this.setUserFullName(userFullName);
 	}
 
 	public Assignment(User assignator) {
@@ -62,6 +71,54 @@ public class Assignment extends GenericBean implements Serializable {
 			status = UtilsFunctions.compareDates(currentDate, startDate) >= 0 && UtilsFunctions.compareDates(currentDate, endDate) <= 0 ? "Active" : "Inactive";
 		}
 		return status;
+	}
+
+	@Transient
+	public String getAssignatorFullName() {
+		return assignator == null ? null : assignator.getFullName();
+	}
+
+	@Transient
+	public void setAssignatorFullName(String assignatorFullName) {
+		if (assignator == null)
+			assignator = new User();
+		assignator.setFullName(assignatorFullName);
+	}
+
+	@Transient
+	public String getAssignatorPhoto() {
+		return assignator == null ? null : assignator.getPhoto();
+	}
+
+	@Transient
+	public void setAssignatorPhoto(String assignatorPhoto) {
+		if (assignator == null)
+			assignator = new User();
+		assignator.setPhoto(assignatorPhoto);
+	}
+
+	@Transient
+	public String getUserFullName() {
+		return user == null ? null : user.getFullName();
+	}
+
+	@Transient
+	public void setUserFullName(String userFullName) {
+		if (user == null)
+			user = new User();
+		user.setFullName(userFullName);
+	}
+
+	@Transient
+	public String getUserPhoto() {
+		return user == null ? null : user.getPhoto();
+	}
+
+	@Transient
+	public void setUserPhoto(String userPhoto) {
+		if (user == null)
+			user = new User();
+		user.setPhoto(userPhoto);
 	}
 
 	@Transient

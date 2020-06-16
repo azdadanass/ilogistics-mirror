@@ -33,7 +33,7 @@ public class AssignmentDetailView extends GenericView<AssignmentDetail> {
 	}
 
 	public void refreshList() {
-		if ("/assignment.xhtml".equals(currentPath))
+		if ("/assignmentList.xhtml".equals(currentPath))
 			list2 = list1 = assignmentDetailService.find(sessionView.getUsername(), assignmentView.getAssignator(), assignmentView.getActive());
 	}
 

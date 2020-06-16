@@ -89,7 +89,7 @@ public class AssignmentView extends GenericView<Assignment> {
 	 * Redirection
 	 */
 	public void redirect() {
-		if (isViewPage && !sessionView.isTheConnectedUser(assignment.getAssignator()))
+		if (isViewPage && !(sessionView.isTheConnectedUser(assignment.getAssignator()) || sessionView.isTheConnectedUser(assignment.getUser())))
 			cacheView.accessDenied();
 
 	}

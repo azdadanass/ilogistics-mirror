@@ -148,7 +148,7 @@
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
 										<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
-											<f:param name="fileName" value="#{item.assignatorPhoto}" />
+											<f:param name="fileName" value="#{item.userPhoto}" />
 										</p:graphicImage>
 									</p:column>
 									<p:column headerText="Start Date">
@@ -237,10 +237,12 @@
 									widgetVar="assignmentList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
-										<img src="#{item.assignatorPhoto}" class="img-circle aa-datatable-photo" />
+										<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+											<f:param name="fileName" value="#{item.userPhoto}" />
+										</p:graphicImage>
 									</p:column>
-									<p:column headerText="Project / Resource Name">
-										<h:outputText value="#{item.projectName}" styleClass="#{item.type.color.name}" />
+									<p:column headerText="Project">
+										<h:outputText value="#{item.projectName}" />
 									</p:column>
 									<p:column headerText="Start Date">
 										<h:outputText value="#{item.startDate}">

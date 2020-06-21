@@ -298,19 +298,15 @@
 										</p:column>
 
 										<p:column headerText="Type" width="60">
-											<h:outputText value="#{item.partNumber.type}" />
+											<h:outputText value="#{item.partNumber.typeName}" />
 										</p:column>
 
 										<p:column headerText="Industry" width="75">
-											<h:outputText value="#{item.partNumber.industry}" />
+											<h:outputText value="#{item.partNumber.industryName}" />
 										</p:column>
 
-										<p:column headerText="Technology" width="75">
-											<h:outputText value="#{item.partNumber.technology}" />
-										</p:column>
-
-										<p:column headerText="Manufacture" width="85">
-											<h:outputText value="#{item.partNumber.manufacture}" />
+										<p:column headerText="Category" width="75">
+											<h:outputText value="#{item.partNumber.categoryName}" />
 										</p:column>
 
 										<p:column headerText="Physical Stock" width="70" exportable="false">

@@ -610,7 +610,9 @@
 											<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
 										<p:column headerText="Added By" styleClass="center">
-											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
+											<p:graphicImage id="photo" value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.user.photo}" />
+											</p:graphicImage>
 											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>

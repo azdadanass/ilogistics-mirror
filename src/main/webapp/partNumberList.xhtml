@@ -140,6 +140,9 @@
 							<p:column headerText="Description">
 								<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
 							</p:column>
+							<p:column headerText="Orange PN" width="100">
+								<h:outputText value="#{item.orangePartNumber}" styleClass="pink"/>
+							</p:column>
 							<p:column headerText="Industry" width="80">
 								<h:outputText value="#{item.partNumberType.category.industry.name}" styleClass="bolder blue" />
 							</p:column>

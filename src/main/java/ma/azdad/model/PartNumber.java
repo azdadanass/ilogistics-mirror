@@ -31,6 +31,7 @@ public class PartNumber extends GenericBean implements Serializable {
 	private PartNumberStatus status = PartNumberStatus.ACTIVE;
 	private PartNumberState state = PartNumberState.DRAFT;
 	private String description;
+	private String orangePartNumber;
 
 	private Double grossWeight = 0.0;
 	private Double netWeight = 0.0;
@@ -132,7 +133,12 @@ public class PartNumber extends GenericBean implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(name, query) || contains(description, query) || contains(getIndustryName(), query) || contains(getCategoryName(), query) || contains(getTypeName(), query);
+		return contains(name, query) //
+				|| contains(description, query) //
+				|| contains(getIndustryName(), query) //
+				|| contains(getCategoryName(), query) //
+				|| contains(getTypeName(), query)//
+				|| contains(orangePartNumber, query);
 	}
 
 	public void addPacking(Packing packing) {
@@ -711,6 +717,14 @@ public class PartNumber extends GenericBean implements Serializable {
 	@Transient
 	public void setTmpPackingList(List<Packing> tmpPackingList) {
 		this.tmpPackingList = tmpPackingList;
+	}
+
+	public String getOrangePartNumber() {
+		return orangePartNumber;
+	}
+
+	public void setOrangePartNumber(String orangePartNumber) {
+		this.orangePartNumber = orangePartNumber;
 	}
 
 }

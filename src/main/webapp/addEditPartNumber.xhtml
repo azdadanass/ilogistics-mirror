@@ -2,20 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.PartNumberStatus" var="PartNumberStatus" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
@@ -46,17 +40,14 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{partNumberView.savePartNumber()}" update="messages" title="Save">
 							<i class="ace-icon fa fa-save bigger-230"></i>
 							<h:outputText value="Save" />
@@ -283,6 +274,40 @@
 									</f:subview>
 								</h:panelGroup>
 							</div>
+							<div class="space-4" />
+							*
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Oorange Part Number" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{partNumberView.partNumber.orangePartNumber}" >
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="BPI16A" itemValue="BPI16A" />
+												<f:selectItem itemLabel="BFI8A" itemValue="BFI8A" />
+												<f:selectItem itemLabel="PBO" itemValue="PBO" />
+												<f:selectItem itemLabel="1x2PLCSK7" itemValue="1x2PLCSK7" />
+												<f:selectItem itemLabel="1x8PLCSK7" itemValue="1x8PLCSK7" />
+												<f:selectItem itemLabel="1x32PLCSK8" itemValue="1x32PLCSK8" />
+												<f:selectItem itemLabel="CFOIN48F G657A2" itemValue="CFOIN48F G657A2" />
+												<f:selectItem itemLabel="CFOIN12F G657A2" itemValue="CFOIN12F G657A2" />
+												<f:selectItem itemLabel="CFOIN24F G657A2" itemValue="CFOIN24F G657A2" />
+												<f:selectItem itemLabel="BPE144FK7" itemValue="BPE144FK7" />
+												<f:selectItem itemLabel="BPE72Fk7" itemValue="BPE72Fk7" />
+												<f:selectItem itemLabel="CFOOUT12F G652 D" itemValue="CFOOUT12F G652 D" />
+												<f:selectItem itemLabel="CFOOUT144F G652 D µ" itemValue="CFOOUT144F G652 D µ" />
+												<f:selectItem itemLabel="CFOOUT72FM G652 D µ" itemValue="CFOOUT72FM G652 D µ" />
+												<f:selectItem itemLabel="CFOOUT72F G652 D SG" itemValue="CFOOUT72F G652 D SG" />
+												<f:selectItem itemLabel="ODF12FO" itemValue="ODF12FO" />
+												<f:selectItem itemLabel="ODF72FO" itemValue="ODF72FO" />
+												<f:selectItem itemLabel="ODF144FO" itemValue="ODF144FO" />
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
 							<!-- <div class="space-4" />
 							<h:panelGroup id="stock">
 								<f:subview rendered="#{partNumberView.partNumber.stockItem}">
@@ -472,22 +497,18 @@
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
 												<p:dataTable value="#{partNumberView.partNumber.detailList}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center"
 													paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
 													<p:column headerText="Number" width="100">
 														<h:outputText value="#{rowIndexVar+1}" />
 													</p:column>
-
 													<p:column headerText="Part Number">
 														<p:selectOneMenu value="#{item.partNumberId}" style="width:100%" filter="true" filterMatchMode="contains" disabled="#{!partNumberView.isAddPage}">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{partNumberView.findLight(true)}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn.id}" />
 														</p:selectOneMenu>
 													</p:column>
-
 													<p:column headerText="Quantity" width="150">
 														<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 100%" readonly="#{!partNumberView.isAddPage}" />
 													</p:column>
-
 													<p:column headerText="Actions" styleClass="center" width="100">
 														<div class="action-buttons center">
 															<p:commandLink title="Remove row" action="#{partNumberView.removeDetail(rowIndexVar)}" update="main_tab" partialSubmit="true" process="main_tab" rendered="#{partNumberView.isAddPage}">
@@ -495,7 +516,6 @@
 															</p:commandLink>
 														</div>
 													</p:column>
-
 													<f:facet name="footer">
 														<div class="action-buttons center">
 															<p:commandLink title="Add New Item" action="#{partNumberView.addDetail()}" update="main_tab" partialSubmit="true" process="main_tab" rendered="#{partNumberView.canAddDetail()}">
@@ -509,7 +529,6 @@
 									</div>
 								</f:subview>
 							</h:panelGroup>
-
 							<h4 class="header blue bolder smaller">
 								<h:outputText value="Description" />
 							</h4>
@@ -522,10 +541,8 @@
 					</div>
 				</div>
 			</div>
-
 			<script src="/resources/ace_template/assets/js/typeahead.jquery.js" />
 			<h:outputText value="#{partNumberView.autocompleteScript('partNumberName')}" escape="false" />
-
 		</h:form>
 	</ui:define>
 </ui:composition>

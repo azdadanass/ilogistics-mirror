@@ -283,7 +283,7 @@
 											<h:outputText value="Oorange Part Number" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{partNumberView.partNumber.orangePartNumber}" >
+											<p:selectOneMenu value="#{partNumberView.partNumber.orangePartNumber}" filter="true" filterMatchMode="contains">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItem itemLabel="BPI16A" itemValue="BPI16A" />
 												<f:selectItem itemLabel="BFI8A" itemValue="BFI8A" />
@@ -303,7 +303,7 @@
 												<f:selectItem itemLabel="ODF12FO" itemValue="ODF12FO" />
 												<f:selectItem itemLabel="ODF72FO" itemValue="ODF72FO" />
 												<f:selectItem itemLabel="ODF144FO" itemValue="ODF144FO" />
-											</h:selectOneMenu>
+											</p:selectOneMenu>
 										</div>
 									</div>
 								</div>

@@ -31,7 +31,6 @@ public class PartNumber extends GenericBean implements Serializable {
 	private PartNumberStatus status = PartNumberStatus.ACTIVE;
 	private PartNumberState state = PartNumberState.DRAFT;
 	private String description;
-	private String orangePartNumber;
 
 	private Double grossWeight = 0.0;
 	private Double netWeight = 0.0;
@@ -58,6 +57,7 @@ public class PartNumber extends GenericBean implements Serializable {
 	private User user;
 	private Brand brand;
 	private PartNumberType partNumberType;
+	private PartNumberOrange partNumberOrange;
 
 	private String image = "resources/img/noimage.jpg";
 
@@ -138,7 +138,7 @@ public class PartNumber extends GenericBean implements Serializable {
 				|| contains(getIndustryName(), query) //
 				|| contains(getCategoryName(), query) //
 				|| contains(getTypeName(), query)//
-				|| contains(orangePartNumber, query);
+				|| contains(getPartNumberOrangeName(), query);
 	}
 
 	public void addPacking(Packing packing) {
@@ -204,6 +204,30 @@ public class PartNumber extends GenericBean implements Serializable {
 		if (partNumberType == null)
 			partNumberType = new PartNumberType();
 		partNumberType.setName(typeName);
+	}
+
+	@Transient
+	public String getPartNumberOrangeName() {
+		return partNumberOrange == null ? null : partNumberOrange.getName();
+	}
+
+	@Transient
+	public void setPartNumberOrangeName(String partNumberOrangeName) {
+		if (partNumberOrange == null)
+			partNumberOrange = new PartNumberOrange();
+		partNumberOrange.setName(partNumberOrangeName);
+	}
+
+	@Transient
+	public String getPartNumberOrangeDescription() {
+		return partNumberOrange == null ? null : partNumberOrange.getDescription();
+	}
+
+	@Transient
+	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
+		if (partNumberOrange == null)
+			partNumberOrange = new PartNumberOrange();
+		partNumberOrange.setDescription(partNumberOrangeDescription);
 	}
 
 	@Transient
@@ -719,12 +743,13 @@ public class PartNumber extends GenericBean implements Serializable {
 		this.tmpPackingList = tmpPackingList;
 	}
 
-	public String getOrangePartNumber() {
-		return orangePartNumber;
+	@ManyToOne(fetch = FetchType.EAGER)
+	public PartNumberOrange getPartNumberOrange() {
+		return partNumberOrange;
 	}
 
-	public void setOrangePartNumber(String orangePartNumber) {
-		this.orangePartNumber = orangePartNumber;
+	public void setPartNumberOrange(PartNumberOrange partNumberOrange) {
+		this.partNumberOrange = partNumberOrange;
 	}
 
 }

@@ -280,29 +280,12 @@
 								<div class="col-xs-12 col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Oorange Part Number" />
+											<h:outputText value="Orange Part Number" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{partNumberView.partNumber.orangePartNumber}" filter="true" filterMatchMode="contains">
+											<p:selectOneMenu value="#{partNumberView.partNumber.partNumberOrange}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItem itemLabel="BPI16A" itemValue="BPI16A" />
-												<f:selectItem itemLabel="BFI8A" itemValue="BFI8A" />
-												<f:selectItem itemLabel="PBO" itemValue="PBO" />
-												<f:selectItem itemLabel="1x2PLCSK7" itemValue="1x2PLCSK7" />
-												<f:selectItem itemLabel="1x8PLCSK7" itemValue="1x8PLCSK7" />
-												<f:selectItem itemLabel="1x32PLCSK8" itemValue="1x32PLCSK8" />
-												<f:selectItem itemLabel="CFOIN48F G657A2" itemValue="CFOIN48F G657A2" />
-												<f:selectItem itemLabel="CFOIN12F G657A2" itemValue="CFOIN12F G657A2" />
-												<f:selectItem itemLabel="CFOIN24F G657A2" itemValue="CFOIN24F G657A2" />
-												<f:selectItem itemLabel="BPE144FK7" itemValue="BPE144FK7" />
-												<f:selectItem itemLabel="BPE72Fk7" itemValue="BPE72Fk7" />
-												<f:selectItem itemLabel="CFOOUT12F G652 D" itemValue="CFOOUT12F G652 D" />
-												<f:selectItem itemLabel="CFOOUT144F G652 D µ" itemValue="CFOOUT144F G652 D µ" />
-												<f:selectItem itemLabel="CFOOUT72FM G652 D µ" itemValue="CFOOUT72FM G652 D µ" />
-												<f:selectItem itemLabel="CFOOUT72F G652 D SG" itemValue="CFOOUT72F G652 D SG" />
-												<f:selectItem itemLabel="ODF12FO" itemValue="ODF12FO" />
-												<f:selectItem itemLabel="ODF72FO" itemValue="ODF72FO" />
-												<f:selectItem itemLabel="ODF144FO" itemValue="ODF144FO" />
+												<f:selectItems value="#{partNumberOrangeView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
 											</p:selectOneMenu>
 										</div>
 									</div>

@@ -137,11 +137,14 @@
 							<p:column headerText="Part Number">
 								<h:outputText value="#{item.name}" styleClass="bolder purple" />
 							</p:column>
+							<p:column headerText="Orange Part Number">
+								<h:outputText id="partNumberOrangeName" value="#{item.partNumberOrangeName}" styleClass="bolder purple" />
+								<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<h:outputText value="#{item.partNumberOrangeDescription}"/>
+								</p:overlayPanel>
+							</p:column>
 							<p:column headerText="Description">
 								<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
-							</p:column>
-							<p:column headerText="Orange PN" width="100">
-								<h:outputText value="#{item.orangePartNumber}" styleClass="pink"/>
 							</p:column>
 							<p:column headerText="Industry" width="80">
 								<h:outputText value="#{item.partNumberType.category.industry.name}" styleClass="bolder blue" />

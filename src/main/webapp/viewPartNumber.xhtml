@@ -305,7 +305,10 @@
 											<h:outputText value="Orange Part Number" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberView.partNumber.orangePartNumber}" styleClass="bolder blue"/>
+											<h:outputText id="partNumberOrangeName" value="#{partNumberView.partNumber.partNumberOrangeName}" styleClass="bolder blue" />
+											<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText value="#{partNumberView.partNumber.partNumberOrangeDescription}" />
+											</p:overlayPanel>
 											&nbsp;
 										</div>
 									</div>

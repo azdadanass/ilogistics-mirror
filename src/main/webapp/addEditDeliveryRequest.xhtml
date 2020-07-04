@@ -293,23 +293,25 @@
 										</div>
 									</f:subview>
 								</h:panelGroup>
-								<div class="space-8" />
-								<div class="row">
-									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="SDM " />
-										</label>
-									</div>
-									<div class="col-xs-12 col-sm-9">
-										<div class="clearfix">
-											<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
-												<f:selectItem itemLabel="No" itemValue="false" />
-												<f:selectItem itemLabel="Yes" itemValue="true" />
-											</h:selectOneMenu>
-											<br />
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="SDM " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
+													<f:selectItem itemLabel="No" itemValue="false" />
+													<f:selectItem itemLabel="Yes" itemValue="true" />
+												</h:selectOneMenu>
+												<br />
+											</div>
 										</div>
 									</div>
-								</div>
+								</f:subview>
 								<h:panelGroup id="po">
 									<f:subview rendered="#{deliveryRequestView.isPoNeeded}">
 										<div class="space-8" />
@@ -968,8 +970,14 @@
 														<p:column>
 															<h:outputText value="#{pn.description}" />
 														</p:column>
-														<p:ajax event="itemSelect" update="description,industry,unit,category,type" />
+														<p:ajax event="itemSelect" update="partNumberOrangeName,description,industry,unit,category,type" />
 													</p:autoComplete>
+												</p:column>
+												<p:column headerText="Orange Part Number" width="150">
+													<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
+													<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+														<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+													</p:overlayPanel>
 												</p:column>
 												<p:column headerText="Description">
 													<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
@@ -1024,6 +1032,12 @@
 													<p:column headerText="Part Number">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
+													<p:column headerText="Orange Part Number" width="150">
+														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
+														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														</p:overlayPanel>
+													</p:column>
 													<p:column headerText="Description">
 														<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 													</p:column>
@@ -1072,6 +1086,12 @@
 													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
 													<p:column headerText="Part Number">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
+													</p:column>
+													<p:column headerText="Orange Part Number" width="150">
+														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
+														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														</p:overlayPanel>
 													</p:column>
 													<p:column headerText="Description">
 														<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
@@ -1143,6 +1163,12 @@
 													rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
 													<p:column headerText="Part Number">
 														<p:inputText value="#{item.partNumber.name}" readonly="true" />
+													</p:column>
+													<p:column headerText="Orange Part Number" width="150">
+														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
+														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														</p:overlayPanel>
 													</p:column>
 													<p:column headerText="Description">
 														<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />

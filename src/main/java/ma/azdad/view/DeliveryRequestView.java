@@ -1006,9 +1006,8 @@ public class DeliveryRequestView extends GenericView<DeliveryRequest> implements
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelDeliveryRequest() {
-		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())) || (DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-
-		);
+		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
+				|| (Arrays.asList(DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
 	}
 
 	public String cancelDeliveryRequest() {

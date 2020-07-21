@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().cacheControl().disable();
 		http.headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/resources/**", "/login.xhtml", "/blank", "/rest/**", "/passwordReset.xhtml", "/.well-known/**").permitAll()
+		http.authorizeRequests().antMatchers("/javax.faces.resource/**", "/resources/**", "/login.xhtml", "/blank", "/rest/**", "/passwordReset.xhtml", "/.well-known/**").permitAll()
 				//
 				.antMatchers(getPages("Warehouse", "Brand")).hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole())
 				//

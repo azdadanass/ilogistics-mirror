@@ -23,7 +23,7 @@ public class CacheController {
 
 	@GetMapping("/rest/cacheEvict/{cacheName}")
 	public void cacheEvict(@PathVariable String cacheName) {
-		cacheService.evictCachePrefix(cacheName);
+		cacheService.evictCachePrefixLocal(cacheName);
 	}
 
 }

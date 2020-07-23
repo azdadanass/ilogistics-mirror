@@ -9,21 +9,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.App;
+
 @Component
 public class CacheService {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	CacheManager cacheManager;
-	
+
 	@Autowired
 	RestTemplateService restTemplateService;
-	
-	@Value("${ibuyAddress}")
-	private String ibuyAddress;
-	
-	@Value("${invoiceAddress}")
-	private String invoiceAddress;
+
+	@Value("${applicationCode}")
+	private String applicationCode;
 
 	public void evictAllCaches() {
 		cacheManager.getCacheNames().stream().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
@@ -32,23 +31,12 @@ public class CacheService {
 	public void evictCachePrefix(String prefix) {
 		log.info("evictCachePrefix : " + prefix);
 		cacheManager.getCacheNames().stream().filter(i -> i.startsWith(prefix)).forEach(cacheName -> cacheManager.getCache(cacheName).clear());
+		// evict on other apps
+		Arrays.stream(App.values()).filter(i -> !applicationCode.equals(i.getValue())).forEach(i -> restTemplateService.consumRest(i.getLink() + "/rest/cacheEvict/" + prefix, String.class));
 	}
 
 	public void evictCache(String... names) {
 		Arrays.stream(names).forEach(cacheName -> cacheManager.getCache(cacheName).clear());
-	}
-	
-	public void evictCachePrefix(String erp, String prefix) {
-		switch (erp) {
-		case "ibuy":
-			restTemplateService.consumRest(ibuyAddress + "/rest/cacheEvict/" + prefix, String.class);
-			break;
-		case "invoice":
-			restTemplateService.consumRest(invoiceAddress + "/rest/cacheEvict/" + prefix, String.class);
-			break;
-		default:
-			break;
-		}
 	}
 
 }

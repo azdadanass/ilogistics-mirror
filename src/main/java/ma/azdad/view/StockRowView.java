@@ -32,7 +32,7 @@ import ma.azdad.utils.ChartContainer;
 @Component
 @Transactional
 @Scope("view")
-public class StockRowView extends GenericView<StockRow> {
+public class StockRowView extends GenericViewOld<StockRow> {
 
 	@Autowired
 	protected StockRowService stockRowService;

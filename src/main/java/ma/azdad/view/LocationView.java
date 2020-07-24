@@ -15,7 +15,7 @@ import ma.azdad.service.LocationService;
 @Component
 @Transactional
 @Scope("view")
-public class LocationView extends GenericView<Location> {
+public class LocationView extends GenericViewOld<Location> {
 
 	@Autowired
 	protected LocationService locationService;

@@ -20,7 +20,7 @@ import ma.azdad.service.RelatedPartNumberService;
 @Component
 @Transactional
 @Scope("view")
-public class RelatedPartNumberView extends GenericView<RelatedPartNumber> {
+public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
 
 	@Autowired
 	private RelatedPartNumberService relatedPartNumberService;

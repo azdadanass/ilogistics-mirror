@@ -83,7 +83,7 @@ import ma.azdad.utils.LabelValue;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestView extends GenericView<DeliveryRequest> implements Serializable {
+public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> implements Serializable {
 	private static final long serialVersionUID = -2791229372979711793L;
 
 	@Autowired

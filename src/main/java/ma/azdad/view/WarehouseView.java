@@ -36,7 +36,7 @@ import ma.azdad.service.WarehouseService;
 @Component
 @Transactional
 @Scope("view")
-public class WarehouseView extends GenericView<Warehouse> {
+public class WarehouseView extends GenericViewOld<Warehouse> {
 
 	@Autowired
 	protected WarehouseService warehouseService;

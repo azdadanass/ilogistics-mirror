@@ -20,7 +20,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestDetailView extends GenericView<DeliveryRequestDetail> {
+public class DeliveryRequestDetailView extends GenericViewOld<DeliveryRequestDetail> {
 
 	@Autowired
 	private DeliveryRequestDetailService deliveryRequestDetailService;

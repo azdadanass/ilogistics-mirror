@@ -17,7 +17,7 @@ import ma.azdad.service.PackingDetailService;
 @Component
 @Transactional
 @Scope("view")
-public class PackingDetailView extends GenericView<PackingDetail> {
+public class PackingDetailView extends GenericViewOld<PackingDetail> {
 
 	@Autowired
 	private PackingDetailService packingDetailService;

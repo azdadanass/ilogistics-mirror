@@ -17,7 +17,7 @@ import ma.azdad.service.TextService;
 @Component
 @Transactional
 @Scope("view")
-public class TextView extends GenericView<Text> {
+public class TextView extends GenericViewOld<Text> {
 
 	@Autowired
 	private TextService textService;

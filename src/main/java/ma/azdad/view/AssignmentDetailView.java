@@ -13,7 +13,7 @@ import ma.azdad.service.AssignmentDetailService;
 @ManagedBean
 @Component
 @Scope("view")
-public class AssignmentDetailView extends GenericView<AssignmentDetail> {
+public class AssignmentDetailView extends GenericViewOld<AssignmentDetail> {
 
 	@Autowired
 	AssignmentView assignmentView;

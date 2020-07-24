@@ -123,6 +123,10 @@ public class CacheView implements Serializable {
 		return userService.findAsMap().get(username).getPhoto();
 	}
 
+	public String getPublicPhoto(String username) {
+		return userService.findAsMap().get(username).getPublicPhoto();
+	}
+
 	public String getFullName(String username) {
 		return userService.findAsMap().get(username).getFullName();
 	}

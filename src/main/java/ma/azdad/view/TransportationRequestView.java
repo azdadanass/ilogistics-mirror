@@ -40,7 +40,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class TransportationRequestView extends GenericView<TransportationRequest> {
+public class TransportationRequestView extends GenericViewOld<TransportationRequest> {
 
 	@Autowired
 	protected TransportationRequestService transportationRequestService;

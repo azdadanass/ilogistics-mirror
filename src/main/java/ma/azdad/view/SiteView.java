@@ -38,7 +38,7 @@ import ma.azdad.utils.SiteExcelFileException;
 @Component
 @Transactional
 @Scope("view")
-public class SiteView extends GenericView<Site> {
+public class SiteView extends GenericViewOld<Site> {
 
 	@Autowired
 	protected SiteService siteService;

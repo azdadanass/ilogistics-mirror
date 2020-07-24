@@ -17,7 +17,7 @@ import ma.azdad.service.PartNumberIndustryService;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberIndustryView extends GenericView<PartNumberIndustry> {
+public class PartNumberIndustryView extends GenericViewOld<PartNumberIndustry> {
 
 	@Autowired
 	private PartNumberIndustryService partNumberIndustryService;

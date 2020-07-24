@@ -21,7 +21,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberEquivalenceView extends GenericView<PartNumberEquivalence> {
+public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivalence> {
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;

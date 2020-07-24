@@ -19,7 +19,7 @@ import ma.azdad.service.UserService;
 @Component
 @Transactional
 @Scope("view")
-public class ToNotifyView extends GenericView<ToNotify> {
+public class ToNotifyView extends GenericViewOld<ToNotify> {
 
 	@Autowired
 	protected ToNotifyService toNotifyService;

@@ -19,7 +19,7 @@ import ma.azdad.service.SiteTypeService;
 @Component
 @Transactional
 @Scope("view")
-public class SiteCategoryView extends GenericView<SiteCategory> {
+public class SiteCategoryView extends GenericViewOld<SiteCategory> {
 
 	@Autowired
 	protected SiteCategoryService siteCategoryService;

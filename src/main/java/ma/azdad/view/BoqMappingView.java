@@ -38,7 +38,7 @@ import ma.azdad.service.PartNumberService;
 @Component
 @Transactional
 @Scope("view")
-public class BoqMappingView extends GenericView<BoqMapping> implements Serializable {
+public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serializable {
 	private static final long serialVersionUID = 2888107105740674611L;
 
 	@Autowired

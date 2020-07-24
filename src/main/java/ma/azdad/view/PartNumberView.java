@@ -34,7 +34,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberView extends GenericView<PartNumber> {
+public class PartNumberView extends GenericViewOld<PartNumber> {
 
 	@Autowired
 	protected PartNumberService partNumberService;

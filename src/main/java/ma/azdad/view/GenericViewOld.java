@@ -1,52 +1,40 @@
 package ma.azdad.view;
 
-import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ma.azdad.model.GenericBean;
-import ma.azdad.service.CacheService;
-import ma.azdad.service.GenericService;
 import ma.azdad.service.UtilsFunctions;
-import ma.azdad.utils.PageType;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class GenericView<A extends GenericBean, B extends GenericService> {
+public class GenericViewOld<A extends GenericBean> {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	protected B service;
 
 	@Autowired
 	protected SessionView sessionView;
 
 	@Autowired
-	protected CacheService cacheService;
-
-	@Autowired
-	protected FileView fileView;
+	protected UtilsView utilsView;
 
 	protected List<A> list1 = new ArrayList<>();
 	protected List<A> list2 = new ArrayList<>();
 	protected List<A> list3;
 	protected List<A> list4;
 
-	protected A model;
-	protected A old;
-	protected Integer id;
+	protected Integer selectedId;
 
 	protected String currentPath;
 
-	protected String searchBean = "";
+	private String searchBean = "";
 
 	protected String className1 = getParameterClassName();
 	protected String className2 = className1.substring(0, 1).toLowerCase() + className1.substring(1);
@@ -54,116 +42,28 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 	protected String addEditPage = "addEdit" + className1 + ".xhtml";
 	protected String viewPage = "view" + className1 + ".xhtml";
 
-	protected PageType pageType = PageType.NONE;
+	protected Boolean isListPage = false;
+	protected Boolean isAddPage = false;
+	protected Boolean isEditPage = false;
+	protected Boolean isViewPage = false;
 
 	protected Integer pageIndex;
 
-	protected long start;
-	protected String username;
-
-	protected Boolean isViewPage = false;
-	protected Boolean isAddPage = false;
-	protected Boolean isEditPage = false;
-	protected Boolean isListPage = false;
-
 	public void init() {
-		log.info("init " + getClass().getSimpleName());
-//		cacheEvictView();
-		start();
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		initParameters();
-
-		if (("/" + listPage).equals(currentPath))
-			pageType = PageType.LIST;
-		else if (("/" + addEditPage).equals(currentPath) && id == null)
-			pageType = PageType.ADD;
-		else if (("/" + addEditPage).equals(currentPath) && id != null)
-			pageType = PageType.EDIT;
-		else if (("/" + viewPage).equals(currentPath))
-			pageType = PageType.VIEW;
-
-		switch (pageType) {
-		case ADD:
-			addPage();
-			isAddPage = true;
-			break;
-		case EDIT:
-			editPage();
-			isEditPage = true;
-			break;
-		case VIEW:
-			viewPage();
-			isViewPage = true;
-			break;
-		case LIST:
-			isListPage = true;
-			break;
-		default:
-			break;
-		}
-		username = sessionView.getUsername();
-		refreshList();
-	}
-
-	public void redirect() {
-		if (canAccess())
-			return;
-		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-		try {
-			ec.redirect(ec.getRequestContextPath() + "ad.xhtml");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected Boolean isPage(String page) {
-		return ("/" + page + ".xhtml").equals(currentPath);
-	}
-
-	protected Boolean canAccess() {
-		return true;
-	}
-
-	public void initLists(List<A> list) {
-		list2 = list1 = list;
-	}
-
-	public void refreshList() {
-		if (isListPage)
-			initLists(service.findAll());
-	}
-
-	protected void refreshModel(A a) {
-		model = (A) service.findOne(a.getId());
-	}
-
-	protected void addPage() {
-		ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
-		Class<A> type = (Class<A>) superClass.getActualTypeArguments()[0];
-		try {
-			model = type.newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected void editPage() {
-		model = (A) service.findOne(id);
-		cacheEvict();
-		old = (A) service.findOne(id);
-		System.err.println(model == old);
-	}
-
-	protected void viewPage() {
-		model = (A) service.findOne(id);
+		isListPage = ("/" + listPage).equals(currentPath);
+		isAddPage = ("/" + addEditPage).equals(currentPath) && selectedId == null;
+		isEditPage = ("/" + addEditPage).equals(currentPath) && selectedId != null;
+		isViewPage = ("/" + viewPage).equals(currentPath);
 	}
 
 	protected void initParameters() {
-		id = UtilsFunctions.getIntegerParameter("id");
+		selectedId = UtilsFunctions.getIntegerParameter("id");
 		pageIndex = UtilsFunctions.getIntegerParameter("pageIndex");
 	}
 
-	protected void filterBean(String query) {
+	private void filterBean(String query) {
 		list3 = null;
 		List<A> list = new ArrayList<A>();
 		query = query.toLowerCase().trim();
@@ -187,7 +87,7 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 		return 0;
 	}
 
-	public String addParameters(String path, String... tab) {
+	public static String addParameters(String path, String... tab) {
 		path += "?" + tab[0];
 		if (tab.length > 1)
 			for (int i = 1; i < tab.length; i++)
@@ -195,33 +95,92 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 		return path;
 	}
 
+	public void excelExportation(Object document) {
+		utilsView.excelExportation(document);
+
+		//		HSSFWorkbook wb = (HSSFWorkbook) document;
+		//		HSSFSheet sheet = wb.getSheetAt(0);
+		//		HSSFRow row;
+		//		int rows; // No of rows
+		//		rows = sheet.getPhysicalNumberOfRows();
+		//		int cols = 0; // No of columns
+		//		int tmp = 0;
+		//		for (int i = 0; i < 10 || i < rows; i++) {
+		//			row = sheet.getRow(i);
+		//			if (row != null) {
+		//				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+		//				if (tmp > cols)
+		//					cols = tmp;
+		//			}
+		//		}
+		//
+		//		for (int r = 0; r < rows; r++) {
+		//			row = sheet.getRow(r);
+		//			for (int c = 0; c < cols; c++)
+		//				formatCell(row.getCell(c));
+		//		}
+		//
+		//		HSSFCellStyle cellStyle = wb.createCellStyle();
+		//		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+		//		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		//		Font font = wb.createFont();
+		//		font.setColor(HSSFColor.WHITE.index);
+		//		cellStyle.setFont(font);
+		//
+		//		row = sheet.getRow(0);
+		//		for (int i = 0; i < row.getPhysicalNumberOfCells(); i++)
+		//			row.getCell(i).setCellStyle(cellStyle);
+
+	}
+
+	private void formatCell(HSSFCell cell) {
+		String str;
+		switch (cell.getCellType()) {
+		case HSSFCell.CELL_TYPE_STRING:
+			str = cell.getStringCellValue();
+			break;
+		case HSSFCell.CELL_TYPE_BOOLEAN:
+			str = String.valueOf(cell.getBooleanCellValue());
+			break;
+		case HSSFCell.CELL_TYPE_NUMERIC:
+			str = String.valueOf(cell.getNumericCellValue());
+			break;
+		default:
+			str = "";
+			break;
+		}
+		// CLEAN FROM HTML TAGS
+		str = str.replaceAll("<[^>]*>", "");
+		// DATE ?
+		Date date = UtilsFunctions.getDate(str);
+		if (date == null)
+			date = UtilsFunctions.getDateTime(str);
+		if (date != null) {
+			cell.setCellValue(date);
+			return;
+		}
+		// NUMERIC ?
+		if (!str.startsWith("0")) {
+			Double d = null;
+			try {
+				d = Double.valueOf(str.replace(" ", "").replace(" ", "").replace(",", ".").replace("'", ""));
+			} catch (Exception e) {
+				d = null;
+			}
+			if (d != null) {
+				cell.setCellValue(d);
+				return;
+			}
+		}
+
+		cell.setCellValue(str);
+	}
+
 	public void execJavascript(String script) {
 		RequestContext.getCurrentInstance().execute(script);
 	}
 
-	public String cacheEvict() {
-		service.cacheEvict();
-//		cacheEvictService();
-//		cacheEvictView();
-		return addParameters(currentPath, "faces-redirect=true", "id=" + id, "pageIndex=" + pageIndex);
-	}
-
-//	public void cacheEvictService() {
-//		service.cacheEvict();
-//	}
-
-//	public void cacheEvictView() {
-//		cacheService.evictCachePrefix(getClassName2() + "View");
-//	}
-
-	public void start() {
-		start = System.currentTimeMillis();
-	}
-
-	public void time() {
-		log.info("time: " + Long.toString(System.currentTimeMillis() - start) + " ms");
-	}
-
+	@SuppressWarnings("unchecked")
 	public String getParameterClassName() {
 		return ((Class<A>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
 	}
@@ -266,13 +225,12 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 		this.list4 = list4;
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getSelectedId() {
+		return selectedId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
-		model = (A) service.findOne(id);
+	public void setSelectedId(Integer selectedId) {
+		this.selectedId = selectedId;
 	}
 
 	public String getCurrentPath() {
@@ -336,28 +294,44 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 		this.viewPage = viewPage;
 	}
 
-	public Integer getPageIndex() {
-		return pageIndex;
+	public Boolean getIsListPage() {
+		return isListPage;
 	}
 
-	public void setPageIndex(Integer pageIndex) {
-		this.pageIndex = pageIndex;
-	}
-
-	public Boolean getIsViewPage() {
-		return isViewPage;
+	public void setIsListPage(Boolean isListPage) {
+		this.isListPage = isListPage;
 	}
 
 	public Boolean getIsAddPage() {
 		return isAddPage;
 	}
 
+	public void setIsAddPage(Boolean isAddPage) {
+		this.isAddPage = isAddPage;
+	}
+
 	public Boolean getIsEditPage() {
 		return isEditPage;
 	}
 
-	public Boolean getIsListPage() {
-		return isListPage;
+	public void setIsEditPage(Boolean isEditPage) {
+		this.isEditPage = isEditPage;
+	}
+
+	public Boolean getIsViewPage() {
+		return isViewPage;
+	}
+
+	public void setIsViewPage(Boolean isViewPage) {
+		this.isViewPage = isViewPage;
+	}
+
+	public Integer getPageIndex() {
+		return pageIndex;
+	}
+
+	public void setPageIndex(Integer pageIndex) {
+		this.pageIndex = pageIndex;
 	}
 
 }

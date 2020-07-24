@@ -22,7 +22,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class VehicleView extends GenericView<Vehicle> {
+public class VehicleView extends GenericViewOld<Vehicle> {
 
 	@Autowired
 	protected VehicleService vehicleService;

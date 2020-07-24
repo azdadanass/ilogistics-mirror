@@ -19,7 +19,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PackingView extends GenericView<Packing> {
+public class PackingView extends GenericViewOld<Packing> {
 
 	@Autowired
 	private PackingService packingService;

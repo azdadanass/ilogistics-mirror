@@ -25,7 +25,7 @@ import ma.azdad.service.UserService;
 @Component
 @Transactional
 @Scope("view")
-public class AssignmentView extends GenericView<Assignment> {
+public class AssignmentView extends GenericViewOld<Assignment> {
 
 	@Autowired
 	protected AssignmentService assignmentService;

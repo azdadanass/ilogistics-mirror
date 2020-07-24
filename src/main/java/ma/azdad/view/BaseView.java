@@ -21,7 +21,7 @@ import ma.azdad.service.BaseService;
 @Component
 @Transactional
 @Scope("view")
-public class BaseView extends GenericView<Base> {
+public class BaseView extends GenericViewOld<Base> {
 
 	@Autowired
 	protected BaseService baseService;

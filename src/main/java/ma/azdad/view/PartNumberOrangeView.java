@@ -19,7 +19,7 @@ import ma.azdad.service.PartNumberOrangeService;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberOrangeView extends GenericView<PartNumberOrange> {
+public class PartNumberOrangeView extends GenericViewOld<PartNumberOrange> {
 
 	@Autowired
 	PartNumberOrangeService service;

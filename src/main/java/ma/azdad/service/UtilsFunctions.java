@@ -492,4 +492,11 @@ public class UtilsFunctions {
 		}
 	}
 
+	public static String firstNotNullAndNotEmpty(String... params) {
+		for (int i = 0; i < params.length; i++)
+			if (params[i] != null && !params[i].isEmpty())
+				return params[i];
+		return null;
+	}
+
 }

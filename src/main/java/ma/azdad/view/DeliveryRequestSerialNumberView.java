@@ -27,7 +27,7 @@ import ma.azdad.service.StockRowService;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestSerialNumberView extends GenericView<DeliveryRequestSerialNumber> {
+public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequestSerialNumber> {
 
 	@Autowired
 	private DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;

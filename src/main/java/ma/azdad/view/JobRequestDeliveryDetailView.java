@@ -15,7 +15,7 @@ import ma.azdad.service.JobRequestDeliveryDetailService;
 @Component
 @Transactional
 @Scope("view")
-public class JobRequestDeliveryDetailView extends GenericView<JobRequestDeliveryDetail> {
+public class JobRequestDeliveryDetailView extends GenericViewOld<JobRequestDeliveryDetail> {
 
 	@Autowired
 	private JobRequestDeliveryDetailService jobRequestDeliveryDetailService;

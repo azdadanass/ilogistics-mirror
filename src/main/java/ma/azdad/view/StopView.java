@@ -15,7 +15,7 @@ import ma.azdad.service.StopService;
 @Component
 @Transactional
 @Scope("view")
-public class StopView extends GenericView<Stop> {
+public class StopView extends GenericViewOld<Stop> {
 
 	@Autowired
 	protected StopService stopService;

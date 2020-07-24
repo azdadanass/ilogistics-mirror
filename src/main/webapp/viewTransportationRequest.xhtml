@@ -149,7 +149,7 @@
 									</span>
 									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 										<h:outputText escape="false"
-											value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.deliveryRequest.requester.username, transportationRequestView.transportationRequest.date1)}" />
+											value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date1,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 									</p:overlayPanel>
 								</li>
 								<f:subview rendered="#{transportationRequestView.transportationRequest.date2!=null || transportationRequestView.transportationRequest.date9==null}">
@@ -162,7 +162,7 @@
 										</span>
 										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.deliveryRequest.requester.username, transportationRequestView.transportationRequest.date2)}" />
+												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date2,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
@@ -176,7 +176,7 @@
 												<h:outputText id="step3" value="#{TransportationRequestStatus.APPROVED.value}" />
 												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user3.username,transportationRequestView.transportationRequest.deliveryRequest.project.manager.username, transportationRequestView.transportationRequest.date3)}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date3,transportationRequestView.transportationRequest.user3.username,transportationRequestView.transportationRequest.deliveryRequest.project.manager.username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -190,7 +190,7 @@
 												<h:outputText id="step4" value="#{TransportationRequestStatus.ASSIGNED.value}" />
 												<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user4.username,'y.bouassem', transportationRequestView.transportationRequest.date4)}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,'y.bouassem')}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -204,7 +204,7 @@
 												<h:outputText id="step5" value="#{TransportationRequestStatus.PICKEDUP.value}" />
 												<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user5.username,'y.bouassem', transportationRequestView.transportationRequest.date5)}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,'y.bouassem')}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -218,7 +218,7 @@
 												<h:outputText id="step6" value="#{TransportationRequestStatus.DELIVERED.value}" />
 												<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user6.username,'y.bouassem', transportationRequestView.transportationRequest.date6)}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,'y.bouassem')}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -232,7 +232,7 @@
 												<h:outputText id="step7" value="#{TransportationRequestStatus.ACKNOWLEDGED.value}" />
 												<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.deliveryRequest.requester.username, transportationRequestView.transportationRequest.date7)}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date7,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -248,7 +248,7 @@
 										</span>
 										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user8.username, transportationRequestView.transportationRequest.date8)}" />
+												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date8,transportationRequestView.transportationRequest.user8.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
@@ -262,7 +262,7 @@
 										</span>
 										<p:overlayPanel for="step9" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.user9.username, transportationRequestView.transportationRequest.date9)}" />
+												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date9,transportationRequestView.transportationRequest.user9.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>

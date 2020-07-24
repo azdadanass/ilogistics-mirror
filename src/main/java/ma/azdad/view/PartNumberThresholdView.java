@@ -18,7 +18,7 @@ import ma.azdad.service.ProjectService;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberThresholdView extends GenericView<PartNumberThreshold> {
+public class PartNumberThresholdView extends GenericViewOld<PartNumberThreshold> {
 
 	@Autowired
 	private PartNumberThresholdService partNumberThresholdService;

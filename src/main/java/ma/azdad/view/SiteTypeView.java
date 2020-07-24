@@ -18,7 +18,7 @@ import ma.azdad.service.SiteTypeService;
 @Component
 @Transactional
 @Scope("view")
-public class SiteTypeView extends GenericView<SiteType> {
+public class SiteTypeView extends GenericViewOld<SiteType> {
 
 	@Autowired
 	protected SiteTypeService siteTypeService;

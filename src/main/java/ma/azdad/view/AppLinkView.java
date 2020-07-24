@@ -15,7 +15,7 @@ import ma.azdad.service.AppLinkService;
 @Component
 @Transactional
 @Scope("view")
-public class AppLinkView extends GenericView<AppLink> {
+public class AppLinkView extends GenericViewOld<AppLink> {
 
 	@Autowired
 	protected AppLinkService appLinkService;

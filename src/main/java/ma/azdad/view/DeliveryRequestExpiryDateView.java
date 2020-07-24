@@ -24,7 +24,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestExpiryDateView extends GenericView<DeliveryRequestExpiryDate> {
+public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryRequestExpiryDate> {
 
 	@Autowired
 	private DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;

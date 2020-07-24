@@ -24,7 +24,7 @@ import ma.azdad.service.SupplierService;
 @Component
 @Transactional
 @Scope("view")
-public class BrandView extends GenericView<Brand> {
+public class BrandView extends GenericViewOld<Brand> {
 
 	@Autowired
 	private BrandService brandService;

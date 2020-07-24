@@ -31,7 +31,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class TransporterView extends GenericView<Transporter> {
+public class TransporterView extends GenericViewOld<Transporter> {
 
 	@Autowired
 	protected TransporterService transporterService;

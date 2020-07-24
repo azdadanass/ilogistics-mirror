@@ -278,7 +278,7 @@
 										<h:outputText id="step1" value="#{DeliveryRequestStatus.EDITED.value}" />
 									</span>
 									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-										<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date1)}" />
+										<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date1,deliveryRequestView.deliveryRequest.requester.username)}" />
 									</p:overlayPanel>
 								</li>
 								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date2!=null || deliveryRequestView.deliveryRequest.date7==null}">
@@ -290,7 +290,7 @@
 											<h:outputText id="step2" value="#{DeliveryRequestStatus.REQUESTED.value}" />
 										</span>
 										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date2)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date2,deliveryRequestView.deliveryRequest.requester.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
@@ -304,7 +304,7 @@
 												<h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED1.value}" />
 												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user3.username,deliveryRequestView.deliveryRequest.project.manager.username, deliveryRequestView.deliveryRequest.date3)}" />
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date3,deliveryRequestView.deliveryRequest.user3.username,deliveryRequestView.deliveryRequest.project.manager.username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -318,7 +318,7 @@
 												<h:outputText id="step8" value="#{DeliveryRequestStatus.APPROVED2.value}" />
 												<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user8.username,projectView.findFirstHardwareManager(deliveryRequestView.deliveryRequest.project.id).username, deliveryRequestView.deliveryRequest.date8)}" />
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date8,deliveryRequestView.deliveryRequest.user8.username,projectView.findFirstHardwareManager(deliveryRequestView.deliveryRequest.project.id).username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -333,7 +333,7 @@
 											</span>
 											<p:overlayPanel for="step4_1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false"
-													value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.username,deliveryRequestView.deliveryRequest.warehouse.firstManager.username, deliveryRequestView.deliveryRequest.date4)}" />
+													value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date4,deliveryRequestView.deliveryRequest.user4.username,deliveryRequestView.deliveryRequest.warehouse.firstManager.username)}" />
 											</p:overlayPanel>
 										</li>
 									</f:subview>
@@ -346,7 +346,7 @@
 												<h:outputText id="step4_2" value="#{DeliveryRequestStatus.DELIVRED.value}" />
 												<p:overlayPanel for="step4_2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user4.username,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.username:deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date4)}" />
+														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date4,deliveryRequestView.deliveryRequest.user4.username,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.username:deliveryRequestView.deliveryRequest.requester.username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -361,7 +361,7 @@
 												<h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
 											</span>
 											<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.requester.username, deliveryRequestView.deliveryRequest.date5)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date5,deliveryRequestView.deliveryRequest.requester.username)}" />
 											</p:overlayPanel>
 										</li>
 									</f:subview>
@@ -375,7 +375,7 @@
 											<h:outputText id="step6" value="#{DeliveryRequestStatus.REJECTED.value}" />
 										</span>
 										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user6.username, deliveryRequestView.deliveryRequest.date6)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date6,deliveryRequestView.deliveryRequest.user6.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
@@ -388,7 +388,7 @@
 											<h:outputText id="step7" value="#{DeliveryRequestStatus.CANCELED.value}" />
 										</span>
 										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.user7.username, deliveryRequestView.deliveryRequest.date7)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date7,deliveryRequestView.deliveryRequest.user7.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>

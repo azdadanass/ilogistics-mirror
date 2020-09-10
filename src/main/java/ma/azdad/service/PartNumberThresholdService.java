@@ -12,7 +12,7 @@ import ma.azdad.repos.PartNumberThresholdRepos;
 
 @Component
 @Transactional
-public class PartNumberThresholdService extends GenericService<PartNumberThreshold> {
+public class PartNumberThresholdService extends GenericServiceOld<PartNumberThreshold> {
 
 	@Autowired
 	PartNumberThresholdRepos partNumberThresholdRepos;

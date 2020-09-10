@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberThreshold extends GenericBean implements Serializable {
+public class PartNumberThreshold extends GenericBeanOld implements Serializable {
 
 	private Integer stockMin = 0;
 	private Integer stockMax = 10;

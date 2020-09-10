@@ -13,7 +13,7 @@ import ma.azdad.repos.SiteRepos;
 
 @Component
 @Transactional
-public class GoogleGeocodeService extends GenericService<Site> {
+public class GoogleGeocodeService extends GenericServiceOld<Site> {
 
 	// KEYS MUST HAVE SERVICE --> Google Maps Geocoding API
 

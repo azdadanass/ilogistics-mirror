@@ -12,7 +12,7 @@ import ma.azdad.repos.PartNumberIndustryRepos;
 
 @Component
 @Transactional
-public class PartNumberIndustryService extends GenericService<PartNumberIndustry> {
+public class PartNumberIndustryService extends GenericServiceOld<PartNumberIndustry> {
 
 	@Autowired
 	PartNumberIndustryRepos partNumberIndustryRepos;

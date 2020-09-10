@@ -78,14 +78,6 @@ public class ProjectService {
 		return findLightByManagerAndStatus(managerUsername, ProjectStatus.OPEN.getValue());
 	}
 
-	public List<Project> findLightByAssignment(Integer assignmentId) {
-		List<Project> result = new ArrayList<>();
-		List<Project> list = repos.findLightByAssignment(assignmentId);
-		if (list != null && !list.isEmpty())
-			result.addAll(list);
-		return result;
-	}
-
 	// public List<Project> findLightByResource(String username) {
 	// return repos.findLightByResource(username);
 	// }

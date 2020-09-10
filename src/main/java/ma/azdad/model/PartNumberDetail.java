@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberDetail extends GenericBean implements Serializable {
+public class PartNumberDetail extends GenericBeanOld implements Serializable {
 
 	private Integer number;
 	private PartNumber partNumber;

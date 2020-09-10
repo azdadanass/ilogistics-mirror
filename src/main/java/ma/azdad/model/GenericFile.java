@@ -16,7 +16,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @MappedSuperclass
 
-public class GenericFile<A extends GenericBean> extends GenericBean implements Serializable {
+public class GenericFile<A extends GenericBeanOld> extends GenericBeanOld implements Serializable {
 
 	protected String name;
 	protected String extension;

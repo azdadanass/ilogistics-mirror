@@ -11,7 +11,7 @@ import ma.azdad.repos.PackingDetailRepos;
 
 @Component
 @Transactional
-public class PackingDetailService extends GenericService<PackingDetail> {
+public class PackingDetailService extends GenericServiceOld<PackingDetail> {
 
 	@Autowired
 	PackingDetailRepos packingDetailRepos;

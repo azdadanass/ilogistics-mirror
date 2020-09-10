@@ -7,7 +7,7 @@ import ma.azdad.model.PartNumberDetail;
 
 @Component
 @Transactional
-public class PartNumberDetailService extends GenericService<PartNumberDetail> {
+public class PartNumberDetailService extends GenericServiceOld<PartNumberDetail> {
 
 
 }

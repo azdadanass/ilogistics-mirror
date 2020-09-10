@@ -24,7 +24,7 @@ import ma.azdad.repos.TransportationRequestRepos;
 
 @Component
 @Transactional
-public class TransportationRequestService extends GenericService<TransportationRequest> {
+public class TransportationRequestService extends GenericServiceOld<TransportationRequest> {
 
 	@Autowired
 	TransportationRequestRepos transportationRequestRepos;

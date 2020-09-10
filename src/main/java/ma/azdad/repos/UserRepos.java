@@ -120,7 +120,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("from User a where a.supplier.id = ?1")
 	List<User> findBySupplier(Integer supplierId);
 
-	@Query("from User a where (a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2) and (select count(*) from  AssignmentDetail b where b.assignment.user.username = a.username and b.project.id = ?3 and current_date between b.assignment.startDate and b.assignment.endDate) > 0")
+	@Query("from User a where (a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2) and (select count(*) from  ProjectAssignment b where b.user.username = a.username and b.project.id = ?3 and current_date between b.startDate and b.endDate) > 0")
 	List<User> findByCustomerOrSupplierAndHavingAssignement(Integer customerId, Integer supplierId, Integer projectId);
 
 	List<User> findByCompany(String company);
@@ -135,10 +135,10 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select case when company is not null then company.name else 'haha' end from User a left join a.company company left join a.customer customer left join a.supplier supplier where a.username = ?1")
 	String findCompanyName(String username);
 
-	@Query("select distinct a.assignment.user from AssignmentDetail a where a.project.id =?1 and current_date between a.assignment.startDate and a.assignment.endDate and (select count(*) from UserRole b where b.user.username = a.assignment.user.username and  b.role = ?2) > 0 and a.assignment.user.internal = ?3 ")
+	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and (select count(*) from UserRole b where b.user.username = a.user.username and  b.role = ?2) > 0 and a.user.internal = ?3 ")
 	List<User> findByProjectAssignmentAndUserRole(Integer projectId, Role userRole, Boolean internal);
 
-	@Query("select distinct a.assignment.user from AssignmentDetail a where a.project.id =?1 and current_date between a.assignment.startDate and a.assignment.endDate and a.assignment.user.internal = ?2")
+	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and a.user.internal = ?2")
 	List<User> findByProjectAssignment(Integer projectId, Boolean internal);
 
 	@Query("select distinct a.delegation.delegate from Delegationdetail a where a.project.id =?1 and current_date between a.delegation.startDate and a.delegation.endDate and a.delegation.delegate.internal = ?2")

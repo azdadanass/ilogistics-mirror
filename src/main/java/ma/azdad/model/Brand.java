@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "il_brand")
 
-public class Brand extends GenericBean implements Serializable {
+public class Brand extends GenericBeanOld implements Serializable {
 
 	private String name;
 	private String description;

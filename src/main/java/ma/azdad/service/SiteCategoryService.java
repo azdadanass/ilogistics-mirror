@@ -8,7 +8,7 @@ import ma.azdad.model.SiteCategory;
 
 @Component
 @Transactional
-public class SiteCategoryService extends GenericService<SiteCategory> {
+public class SiteCategoryService extends GenericServiceOld<SiteCategory> {
 
 	@Override
 	public SiteCategory findOne(Integer id) {

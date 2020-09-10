@@ -11,7 +11,7 @@ import ma.azdad.model.VehicleTypeHistory;
 
 @Component
 @Transactional
-public class VehicleTypeHistoryService extends GenericService<VehicleTypeHistory> {
+public class VehicleTypeHistoryService extends GenericServiceOld<VehicleTypeHistory> {
 
 	public void created(VehicleType vehicleType, User user) {
 		try {

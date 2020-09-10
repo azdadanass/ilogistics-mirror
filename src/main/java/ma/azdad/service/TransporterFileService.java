@@ -7,7 +7,7 @@ import ma.azdad.model.TransporterFile;
 
 @Component
 @Transactional
-public class TransporterFileService extends GenericService<TransporterFile> {
+public class TransporterFileService extends GenericServiceOld<TransporterFile> {
 
 }
 

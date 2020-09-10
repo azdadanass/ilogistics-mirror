@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +14,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ma.azdad.model.GenericBean;
 
-public class GenericService<A extends GenericBean> {
+@Transactional
+public class GenericService<A extends GenericBean, B extends JpaRepository<A, Integer>> {
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	protected JpaRepository<A, Integer> repos;
+	protected B repos;
 
 	@Autowired
 	protected CacheService cacheService;
 
-	public A findOneLight(Integer id) {
+	public A findOne(Integer id) {
 		return repos.findById(id).get();
 	}
 
-	@Transactional
-	public A findOne(Integer id) {
+	public A findOneLight(Integer id) {
 		return repos.findById(id).get();
 	}
 
@@ -43,27 +44,30 @@ public class GenericService<A extends GenericBean> {
 
 	public A saveAndRefresh(A a) {
 		save(a);
-		return findOne(a.getId());
+		return findOne(a.id());
 	}
 
-	public void delete(Integer id) {
+	public void delete(Integer id) throws DataIntegrityViolationException, Exception {
 		cacheEvict();
-		try {
-			repos.deleteById(id);
-		} catch (DataIntegrityViolationException dataIntegrityViolationException) {
-			log.error(dataIntegrityViolationException.getMessage());
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
+		repos.deleteById(id);
 	}
 
-	public void delete(A a) {
+	public void delete(A a) throws DataIntegrityViolationException, Exception {
 		cacheEvict();
-		delete(a.getId());
+		repos.delete(a);
 	}
 
 	public Long count() {
 		return repos.count();
+	}
+
+	public Boolean exists(Integer id) {
+		return repos.existsById(id);
+	}
+
+	public A saveAndFlush(A a) {
+		cacheEvict();
+		return repos.saveAndFlush(a);
 	}
 
 	public void flush() {
@@ -75,13 +79,13 @@ public class GenericService<A extends GenericBean> {
 		cacheService.evictCachePrefix(className2 + "Service");
 	}
 
+	public void initialize(Object proxy) {
+		Hibernate.initialize(proxy);
+	}
+
 	@SuppressWarnings("unchecked")
 	public String getParameterClassName() {
 		return ((Class<A>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
-	}
-
-	public Boolean exists(Integer id) {
-		return repos.existsById(id);
 	}
 
 }

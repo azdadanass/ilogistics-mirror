@@ -31,16 +31,7 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query(select1 + "from Project where manager.username = ?1 and status = ?2")
 	public List<Project> findLightByManagerAndStatus(String managerUsername, String status);
 
-	@Query("select new Project(a.project.id,a.project.name,a.project.type) from AssignmentDetail a where a.assignment.id = ?1")
-	public List<Project> findLightByAssignment(Integer assignmentId);
-
-	// @Query("select new Project(id,name,type) from Project where status =
-	// 'Open' and (manager.username = ?1 or id in (select b.project.id from
-	// AssignmentDetail b where b.assignment.delegate.username = ?1 and
-	// current_date between b.assignment.startDate and b.assignment.endDate))")
-	// public List<Project> findLightByResource(String username);
-
-	String cond1 = " (manager.username = ?1 or id in (select b.project.id from AssignmentDetail b where b.assignment.user.username = ?1 and current_date between b.assignment.startDate and  b.assignment.endDate)) ";
+	String cond1 = " (manager.username = ?1 or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate)) ";
 
 	@Query(select1 + " from Project where " + cond1 + " and status = ?2")
 	public List<Project> findByResourceAndStatus(String username, String status);
@@ -54,7 +45,7 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select a.inboundDeliveryRequest.project.id from StockRow a where a.inboundDeliveryRequest is not null group by a.partNumber.id,a.inboundDeliveryRequest.project.id having sum(a.quantity) > 0 ")
 	public List<Integer> findNonEmptyProjectList();
 
-	@Query("select id from Project where status = 'Open' and (manager.username = ?1 or id in (select b.project.id from AssignmentDetail b where b.assignment.user.username = ?1 and current_date between b.assignment.startDate and  b.assignment.endDate))")
+	@Query("select id from Project where status = 'Open' and (manager.username = ?1 or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
 	public List<Integer> findAssignedProjectIdListByResource(String username);
 
 	@Query("select type from Project where id = ?1")

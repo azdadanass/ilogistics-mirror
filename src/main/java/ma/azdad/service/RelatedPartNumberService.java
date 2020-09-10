@@ -11,7 +11,7 @@ import ma.azdad.repos.RelatedPartNumberRepos;
 
 @Component
 @Transactional
-public class RelatedPartNumberService extends GenericService<RelatedPartNumber> {
+public class RelatedPartNumberService extends GenericServiceOld<RelatedPartNumber> {
 
 	@Autowired
 	RelatedPartNumberRepos relatedPartNumberRepos;

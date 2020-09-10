@@ -12,7 +12,7 @@ import ma.azdad.repos.TextRepos;
 
 @Component
 @Transactional
-public class TextService extends GenericService<Text> {
+public class TextService extends GenericServiceOld<Text> {
 
 	@Autowired
 	TextRepos textRepos;

@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Entity
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class JobRequest extends GenericBean implements Serializable {
+public class JobRequest extends GenericBeanOld implements Serializable {
 
 	private Boolean important = false;
 	private Priority priority;

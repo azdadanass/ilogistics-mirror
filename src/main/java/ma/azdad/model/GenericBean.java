@@ -3,18 +3,15 @@ package ma.azdad.model;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.Filterable;
 
 @MappedSuperclass
-public abstract class GenericBean implements Serializable {
-	protected static final long serialVersionUID = -2866941365258232556L;
+public abstract class GenericBean implements Serializable, Filterable {
+
 	protected Integer id;
 
 	public GenericBean() {
@@ -24,8 +21,16 @@ public abstract class GenericBean implements Serializable {
 		this.id = id;
 	}
 
+	public Integer id() {
+		return this.id;
+	}
+
 	protected Boolean contains(String string, String query) {
 		return string != null && string.toLowerCase().contains(query);
+	}
+
+	protected Boolean contains(Integer i, String query) {
+		return i != null && String.valueOf(i).toLowerCase().contains(query);
 	}
 
 	protected Boolean contains(Double d, String query) {
@@ -36,26 +41,20 @@ public abstract class GenericBean implements Serializable {
 		return date != null && UtilsFunctions.getFormattedDate(date).toLowerCase().contains(query);
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(unique = true, nullable = false)
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
+	@Transient
+	public String getIdentifierName() {
+		return getIdStr();
 	}
 
 	@Transient
-	public String getNumero() {
+	public String getIdStr() {
 		return String.format("%05d", id);
 	}
 
-	@Transient
+	@Override
 	public boolean filter(String query) {
 		if (id != null)
-			return getNumero().contains(query);
+			return getIdStr().contains(query);
 		return false;
 	}
 
@@ -79,11 +78,18 @@ public abstract class GenericBean implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		try {
-			return id.equals(((GenericBean) obj).getId());
-		} catch (Exception e) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
+		if (getClass() != obj.getClass())
+			return false;
+		GenericBean other = (GenericBean) obj;
+		if (id == null)
+			return false; // id == null && this != obj
+		else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 
 }

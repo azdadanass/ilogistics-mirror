@@ -9,7 +9,7 @@ import ma.azdad.model.Base;
 
 @Component
 @Transactional
-public class BaseService extends GenericService<Base> {
+public class BaseService extends GenericServiceOld<Base> {
 
 	@Override
 	public Base findOne(Integer id) {

@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 
 @MappedSuperclass
 
-public class GenericComment<A extends GenericBean> extends GenericBean implements Serializable {
+public class GenericComment<A extends GenericBeanOld> extends GenericBeanOld implements Serializable {
 
 	protected Date date;
 	protected String title;

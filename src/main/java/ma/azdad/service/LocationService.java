@@ -9,7 +9,7 @@ import ma.azdad.repos.LocationRepos;
 
 @Component
 @Transactional
-public class LocationService extends GenericService<Location> {
+public class LocationService extends GenericServiceOld<Location> {
 
 	@Autowired
 	private LocationRepos locationRepos;

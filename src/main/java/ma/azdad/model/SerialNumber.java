@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 
-public class SerialNumber extends GenericBean implements Serializable {
+public class SerialNumber extends GenericBeanOld implements Serializable {
 
 	private String name;
 

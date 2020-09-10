@@ -7,7 +7,7 @@ import ma.azdad.model.BaseHistory;
 
 @Component
 @Transactional
-public class BaseHistoryService extends GenericService<BaseHistory> {
+public class BaseHistoryService extends GenericServiceOld<BaseHistory> {
 
 
 }

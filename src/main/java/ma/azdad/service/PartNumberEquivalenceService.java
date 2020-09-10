@@ -14,7 +14,7 @@ import ma.azdad.repos.PartNumberEquivalenceRepos;
 
 @Component
 @Transactional
-public class PartNumberEquivalenceService extends GenericService<PartNumberEquivalence> {
+public class PartNumberEquivalenceService extends GenericServiceOld<PartNumberEquivalence> {
 
 	@Autowired
 	PartNumberEquivalenceRepos partNumberEquivalenceRepos;

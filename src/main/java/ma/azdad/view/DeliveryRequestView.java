@@ -50,7 +50,6 @@ import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.service.AppLinkService;
-import ma.azdad.service.AssignmentService;
 import ma.azdad.service.BoqService;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CurrencyService;
@@ -166,9 +165,6 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 
 	@Autowired
 	protected DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
-
-	@Autowired
-	AssignmentService assignmentService;
 
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;

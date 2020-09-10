@@ -7,7 +7,7 @@ import ma.azdad.model.VehicleHistory;
 
 @Component
 @Transactional
-public class VehicleHistoryService extends GenericService<VehicleHistory> {
+public class VehicleHistoryService extends GenericServiceOld<VehicleHistory> {
 
 
 }

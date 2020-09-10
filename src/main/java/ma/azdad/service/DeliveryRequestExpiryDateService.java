@@ -18,7 +18,7 @@ import ma.azdad.repos.StockRowRepos;
 
 @Component
 @Transactional
-public class DeliveryRequestExpiryDateService extends GenericService<DeliveryRequestExpiryDate> {
+public class DeliveryRequestExpiryDateService extends GenericServiceOld<DeliveryRequestExpiryDate> {
 
 	@Autowired
 	DeliveryRequestExpiryDateRepos deliveryRequestExpiryDateRepos;

@@ -36,7 +36,7 @@ import ma.azdad.utils.LabelValue;
 
 @Component
 @Transactional
-public class DeliveryRequestDetailService extends GenericService<DeliveryRequestDetail> {
+public class DeliveryRequestDetailService extends GenericServiceOld<DeliveryRequestDetail> {
 
 	@Autowired
 	DeliveryRequestDetailRepos deliveryRequestDetailRepos;

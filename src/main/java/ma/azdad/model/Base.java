@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 
-public class Base extends GenericBean implements Serializable {
+public class Base extends GenericBeanOld implements Serializable {
 
 	private String field1;
 	private String field2;

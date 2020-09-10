@@ -3,7 +3,7 @@ package ma.azdad.model;
 import javax.persistence.Entity;
 
 @Entity
-public class PartNumberOrange extends GenericBean {
+public class PartNumberOrange extends GenericBeanOld {
 
 	private String name;
 	private String description;

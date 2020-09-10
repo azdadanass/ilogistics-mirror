@@ -10,7 +10,7 @@ import ma.azdad.model.PartNumberHistory;
 
 @Component
 @Transactional
-public class PartNumberHistoryService extends GenericService<PartNumberHistory> {
+public class PartNumberHistoryService extends GenericServiceOld<PartNumberHistory> {
 
 	public void created(PartNumber partNumber) {
 		try {

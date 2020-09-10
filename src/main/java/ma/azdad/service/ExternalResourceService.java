@@ -6,14 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ExternalResource;
 import ma.azdad.repos.AffectationRepos;
-import ma.azdad.repos.AssignmentRepos;
 import ma.azdad.repos.ExternalResourceRepos;
 import ma.azdad.repos.UserDataRepos;
 import ma.azdad.repos.UserRepos;
 
 @Component
 @Transactional
-public class ExternalResourceService extends GenericService<ExternalResource> {
+public class ExternalResourceService extends GenericServiceOld<ExternalResource> {
 
 	@Autowired
 	ExternalResourceRepos externalResourceRepos;
@@ -23,9 +22,6 @@ public class ExternalResourceService extends GenericService<ExternalResource> {
 
 	@Autowired
 	UserDataRepos userDataRepos;
-
-	@Autowired
-	AssignmentRepos assignmentRepos;
 
 	@Autowired
 	AffectationRepos affectationRepos;

@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 
-public class Path extends GenericBean implements Serializable {
+public class Path extends GenericBeanOld implements Serializable {
 
 	private Double estimatedDuration = 0.0;
 	private String estimatedDurationText;

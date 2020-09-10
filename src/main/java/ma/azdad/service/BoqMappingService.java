@@ -12,7 +12,7 @@ import ma.azdad.repos.BoqMappingRepos;
 
 @Component
 @Transactional
-public class BoqMappingService extends GenericService<BoqMapping> {
+public class BoqMappingService extends GenericServiceOld<BoqMapping> {
 
 	@Autowired
 	BoqMappingRepos boqMappingRepos;

@@ -7,7 +7,7 @@ import ma.azdad.model.VehicleFile;
 
 @Component
 @Transactional
-public class VehicleFileService extends GenericService<VehicleFile> {
+public class VehicleFileService extends GenericServiceOld<VehicleFile> {
 
 }
 

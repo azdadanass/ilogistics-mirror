@@ -8,7 +8,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.ObjectUtils;
 
 @Entity
-public class WarehouseManager extends GenericBean {
+public class WarehouseManager extends GenericBeanOld {
 
 	private Warehouse warehouse;
 	private User user;

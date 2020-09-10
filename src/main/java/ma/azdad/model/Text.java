@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 
 @Entity
 
-public class Text extends GenericBean implements Serializable {
+public class Text extends GenericBeanOld implements Serializable {
 
 	private String app;
 	private String beanName;

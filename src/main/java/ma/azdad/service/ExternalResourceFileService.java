@@ -7,7 +7,7 @@ import ma.azdad.model.ExternalResourceFile;
 
 @Component
 @Transactional
-public class ExternalResourceFileService extends GenericService<ExternalResourceFile> {
+public class ExternalResourceFileService extends GenericServiceOld<ExternalResourceFile> {
 
 }
 

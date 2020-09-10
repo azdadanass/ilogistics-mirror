@@ -17,7 +17,7 @@ import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 
 @Component
 @Transactional
-public class DeliveryRequestSerialNumberService extends GenericService<DeliveryRequestSerialNumber> {
+public class DeliveryRequestSerialNumberService extends GenericServiceOld<DeliveryRequestSerialNumber> {
 
 	public static Comparator<DeliveryRequestSerialNumber> COMPARATOR = Comparator.comparingInt(DeliveryRequestSerialNumber::getNotNullInboundStockRowId)
 			.thenComparingInt(DeliveryRequestSerialNumber::getTmpPartNumberId).thenComparingInt(DeliveryRequestSerialNumber::getPackingNumero)

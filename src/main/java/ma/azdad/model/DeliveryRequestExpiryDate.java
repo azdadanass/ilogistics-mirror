@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class DeliveryRequestExpiryDate extends GenericBean implements Serializable {
+public class DeliveryRequestExpiryDate extends GenericBeanOld implements Serializable {
 
 	private Double quantity;
 	private Date expiryDate;

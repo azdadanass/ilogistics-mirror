@@ -11,7 +11,7 @@ import ma.azdad.repos.AppLinkRepos;
 
 @Component
 @Transactional
-public class AppLinkService extends GenericService<AppLink> {
+public class AppLinkService extends GenericServiceOld<AppLink> {
 
 	@Autowired
 	AppLinkRepos appLinkRepos;

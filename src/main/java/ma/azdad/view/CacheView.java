@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ProjectManagerType;
 import ma.azdad.service.AffectationService;
-import ma.azdad.service.AssignmentService;
 import ma.azdad.service.DelegationService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.UserService;
@@ -42,9 +41,6 @@ public class CacheView implements Serializable {
 
 	@Autowired
 	SessionView sessionView;
-
-	@Autowired
-	AssignmentService assignmentService;
 
 	@Autowired
 	DelegationService delegationService;

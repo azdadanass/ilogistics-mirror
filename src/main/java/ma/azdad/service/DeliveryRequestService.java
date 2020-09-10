@@ -63,7 +63,7 @@ import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 
 @Component
 @Transactional
-public class DeliveryRequestService extends GenericService<DeliveryRequest> {
+public class DeliveryRequestService extends GenericServiceOld<DeliveryRequest> {
 
 	@Autowired
 	DeliveryRequestRepos deliveryRequestRepos;

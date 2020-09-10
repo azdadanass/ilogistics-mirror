@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class ExternalResourceProjectAssignment extends GenericBean implements Serializable {
+public class ExternalResourceProjectAssignment extends GenericBeanOld implements Serializable {
 
 	private Date startDate;
 	private Date endDate;

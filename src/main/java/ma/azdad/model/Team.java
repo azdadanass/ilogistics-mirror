@@ -3,6 +3,7 @@ package ma.azdad.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,23 +16,26 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
-
-public class Team extends GenericBean implements Serializable {
+public class Team extends GenericBeanOld implements Serializable {
 
 	private String name;
 	private String comment;
-	private TeamType type;
+	private TeamCategory category;
+	private String type;
 	private Boolean active = true;
+	private String membersKey;
 
 	private User user;
+	private User teamLeader;
 
+	private List<TeamFile> fileList = new ArrayList<>();
+	private List<TeamHistory> historyList = new ArrayList<>();
 	private List<TeamDetail> detailList = new ArrayList<>();
+	private List<ProjectAssignment> assignmentList = new ArrayList<>();
 
 	// tmp
 	private Long tmpSize;
 	private Long tmpTotalActiveAssignments;
-	private String tmpTeamLeaderFullName;
-	private TeamDetail tmpTeamLeader;
 	private List<TeamDetail> tmpDetailList = new ArrayList<>();
 
 	public Team() {
@@ -43,14 +47,16 @@ public class Team extends GenericBean implements Serializable {
 		this.user = user;
 	}
 
-	public Team(Integer id, String name, TeamType type, Boolean active, Long tmpSize, Long tmpTotalActiveAssignments, String teamLeaderFullName) {
+	public Team(Integer id, String name, TeamCategory category, String type, Boolean active, Long tmpSize, Long tmpTotalActiveAssignments, String teamLeaderFullName, String teamLeaderPhoto) {
 		super(id);
 		this.name = name;
+		this.category = category;
 		this.type = type;
 		this.active = active;
 		this.tmpSize = tmpSize;
 		this.tmpTotalActiveAssignments = tmpTotalActiveAssignments;
-		this.tmpTeamLeaderFullName = teamLeaderFullName;
+		this.setTeamLeaderFullName(teamLeaderFullName);
+		this.setTeamLeaderPhoto(teamLeaderPhoto);
 	}
 
 	public void init() {
@@ -63,21 +69,11 @@ public class Team extends GenericBean implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && name != null)
-			result = name.toLowerCase().contains(query);
-		if (!result && tmpTeamLeaderFullName != null)
-			result = tmpTeamLeaderFullName.toLowerCase().contains(query);
-		return result;
+		return contains(name, query) || contains(getTeamLeaderFullName(), query);
 	}
 
-	@Transient
-	public void initTmpTeamLeader() {
-		for (TeamDetail td : detailList)
-			if (TeamDetailType.TEAM_LEADER.equals(td.getType())) {
-				tmpTeamLeader = td;
-				break;
-			}
+	public void calculateMembersKey() {
+		membersKey = detailList.stream().map(i -> i.getUserUsername() + "," + i.getType().ordinal()).sorted().collect(Collectors.joining(";"));
 	}
 
 	public String getName() {
@@ -88,6 +84,24 @@ public class Team extends GenericBean implements Serializable {
 		this.name = name;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	public List<TeamFile> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<TeamFile> fileList) {
+		this.fileList = fileList;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	public List<TeamHistory> getHistoryList() {
+		return historyList;
+	}
+
+	public void setHistoryList(List<TeamHistory> historyList) {
+		this.historyList = historyList;
+	}
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "team", cascade = CascadeType.ALL)
 	public List<TeamDetail> getDetailList() {
 		return detailList;
@@ -95,6 +109,15 @@ public class Team extends GenericBean implements Serializable {
 
 	public void setDetailList(List<TeamDetail> detailList) {
 		this.detailList = detailList;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "team", cascade = CascadeType.ALL)
+	public List<ProjectAssignment> getAssignmentList() {
+		return assignmentList;
+	}
+
+	public void setAssignmentList(List<ProjectAssignment> assignmentList) {
+		this.assignmentList = assignmentList;
 	}
 
 	@Column(columnDefinition = "TEXT")
@@ -107,12 +130,12 @@ public class Team extends GenericBean implements Serializable {
 	}
 
 	@Enumerated(EnumType.ORDINAL)
-	public TeamType getType() {
-		return type;
+	public TeamCategory getCategory() {
+		return category;
 	}
 
-	public void setType(TeamType type) {
-		this.type = type;
+	public void setCategory(TeamCategory category) {
+		this.category = category;
 	}
 
 	public Boolean getActive() {
@@ -130,6 +153,15 @@ public class Team extends GenericBean implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	public User getTeamLeader() {
+		return teamLeader;
+	}
+
+	public void setTeamLeader(User teamLeader) {
+		this.teamLeader = teamLeader;
 	}
 
 	@Transient
@@ -153,13 +185,27 @@ public class Team extends GenericBean implements Serializable {
 	}
 
 	@Transient
-	public String getTmpTeamLeaderFullName() {
-		return tmpTeamLeaderFullName;
+	public String getTeamLeaderFullName() {
+		return teamLeader == null ? null : teamLeader.getFullName();
 	}
 
 	@Transient
-	public void setTmpTeamLeaderFullName(String tmpTeamLeaderFullName) {
-		this.tmpTeamLeaderFullName = tmpTeamLeaderFullName;
+	public void setTeamLeaderFullName(String teamLeaderFullName) {
+		if (teamLeader == null)
+			teamLeader = new User();
+		teamLeader.setFullName(teamLeaderFullName);
+	}
+
+	@Transient
+	public String getTeamLeaderPhoto() {
+		return teamLeader == null ? null : teamLeader.getPhoto();
+	}
+
+	@Transient
+	public void setTeamLeaderPhoto(String teamLeaderPhoto) {
+		if (teamLeader == null)
+			teamLeader = new User();
+		teamLeader.setPhoto(teamLeaderPhoto);
 	}
 
 	@Transient
@@ -167,9 +213,20 @@ public class Team extends GenericBean implements Serializable {
 		return tmpTotalActiveAssignments;
 	}
 
-	@Transient
-	public TeamDetail getTmpTeamLeader() {
-		return tmpTeamLeader;
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getMembersKey() {
+		return membersKey;
+	}
+
+	public void setMembersKey(String membersKey) {
+		this.membersKey = membersKey;
 	}
 
 }

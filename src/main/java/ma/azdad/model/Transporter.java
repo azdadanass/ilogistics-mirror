@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class Transporter extends GenericBean implements Serializable {
+public class Transporter extends GenericBeanOld implements Serializable {
 
 	private TransporterType type;
 

@@ -7,7 +7,7 @@ import ma.azdad.model.BaseFile;
 
 @Component
 @Transactional
-public class BaseFileService extends GenericService<BaseFile> {
+public class BaseFileService extends GenericServiceOld<BaseFile> {
 
 }
 

@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class DeliveryRequestSerialNumber extends GenericBean implements Serializable {
+public class DeliveryRequestSerialNumber extends GenericBeanOld implements Serializable {
 
 	private Integer packingNumero;
 	private String serialNumber;

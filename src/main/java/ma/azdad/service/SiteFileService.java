@@ -7,7 +7,7 @@ import ma.azdad.model.SiteFile;
 
 @Component
 @Transactional
-public class SiteFileService extends GenericService<SiteFile> {
+public class SiteFileService extends GenericServiceOld<SiteFile> {
 
 }
 

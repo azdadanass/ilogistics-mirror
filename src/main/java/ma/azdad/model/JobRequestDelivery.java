@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class JobRequestDelivery extends GenericBean implements Serializable {
+public class JobRequestDelivery extends GenericBeanOld implements Serializable {
 
 	private DeliveryRequest deliveryRequest;
 	private List<JobRequestDeliveryDetail> detailList = new ArrayList<>();

@@ -10,8 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-
-public class TeamDetail extends GenericBean implements Serializable {
+public class TeamDetail extends GenericBeanOld implements Serializable {
 
 	private Boolean internal;
 	private TeamDetailType type;
@@ -19,24 +18,20 @@ public class TeamDetail extends GenericBean implements Serializable {
 	private User user;
 	private Team team;
 
-	// tmp
-	private String tmpUserUsername;
-
 	public void init() {
-		if (user != null)
-			tmpUserUsername = user.getUsername();
 	}
 
 	public TeamDetail() {
 		super();
 	}
 
-	public TeamDetail(Team team) {
+	public TeamDetail(Team team, TeamDetailType type) {
 		super();
 		this.team = team;
-		if (TeamType.INTERNAL.equals(team.getType()))
+		this.type = type;
+		if (TeamCategory.INTERNAL.equals(team.getCategory()))
 			this.internal = true;
-		else if (TeamType.EXTERNAL.equals(team.getType()))
+		else if (TeamCategory.EXTERNAL.equals(team.getCategory()))
 			this.internal = false;
 	}
 
@@ -44,6 +39,9 @@ public class TeamDetail extends GenericBean implements Serializable {
 		super();
 		this.type = type;
 		this.team = team;
+
+		if (team.getCategory() != null && !TeamCategory.MIXTE.equals(team.getCategory()))
+			this.internal = TeamCategory.INTERNAL.equals(team.getCategory());
 	}
 
 	@Override
@@ -52,6 +50,11 @@ public class TeamDetail extends GenericBean implements Serializable {
 		if (!result && type != null)
 			result = type.getValue().toLowerCase().contains(query);
 		return result;
+	}
+
+	@Transient
+	public Boolean getIsTeamLeader() {
+		return TeamDetailType.TEAM_LEADER.equals(type);
 	}
 
 	@Transient
@@ -110,13 +113,15 @@ public class TeamDetail extends GenericBean implements Serializable {
 	}
 
 	@Transient
-	public String getTmpUserUsername() {
-		return tmpUserUsername;
+	public String getUserUsername() {
+		return user != null ? user.getUsername() : null;
 	}
 
 	@Transient
-	public void setTmpUserUsername(String tmpUserUsername) {
-		this.tmpUserUsername = tmpUserUsername;
+	public void setUserUsername(String userUsername) {
+		if (user == null)
+			user = new User();
+		user.setUsername(userUsername);
 	}
 
 }

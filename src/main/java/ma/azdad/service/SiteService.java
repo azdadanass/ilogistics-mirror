@@ -29,7 +29,7 @@ import ma.azdad.utils.SiteExcelFileException;
 
 @Component
 @Transactional
-public class SiteService extends GenericService<Site> {
+public class SiteService extends GenericServiceOld<Site> {
 
 	@Autowired
 	SiteRepos siteRepos;

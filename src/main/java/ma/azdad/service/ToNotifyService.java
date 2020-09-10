@@ -13,7 +13,7 @@ import ma.azdad.repos.ToNotifyRepos;
 
 @Component
 @Transactional
-public class ToNotifyService extends GenericService<ToNotify> {
+public class ToNotifyService extends GenericServiceOld<ToNotify> {
 
 	@Autowired
 	ToNotifyRepos toNotifyRepos;

@@ -11,7 +11,7 @@ import ma.azdad.model.User;
 
 @Component
 @Transactional
-public class ExternalResourceHistoryService extends GenericService<ExternalResourceHistory> {
+public class ExternalResourceHistoryService extends GenericServiceOld<ExternalResourceHistory> {
 
 	public void created(ExternalResource externalResource, User user) {
 		try {

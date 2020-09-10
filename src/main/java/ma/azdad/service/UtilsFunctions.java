@@ -50,6 +50,12 @@ public class UtilsFunctions {
 	private static String[] mapIconTab = { "https://maps.google.com/mapfiles/ms/micons/green-dot.png", "https://maps.google.com/mapfiles/ms/micons/red-dot.png", "https://maps.google.com/mapfiles/ms/micons/ltblue-dot.png", "https://maps.google.com/mapfiles/ms/micons/pink-dot.png", "https://maps.google.com/mapfiles/ms/micons/orange-dot.png", "https://maps.google.com/mapfiles/ms/micons/blue-dot.png",
 			"https://maps.google.com/mapfiles/ms/micons/purple-dot.png", "https://maps.google.com/mapfiles/ms/micons/yellow-dot.png" };
 
+	public static Boolean isBetween(Date date, Date minDate, Date maxDate) {
+		if (date == null || minDate == null || maxDate == null)
+			return false;
+		return date.compareTo(minDate) >= 0 && date.compareTo(maxDate) <= 0;
+	}
+
 	public static String formatName(String name) {
 		if (name == null || name.isEmpty())
 			return null;

@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 
-public class SiteType extends GenericBean implements Serializable {
+public class SiteType extends GenericBeanOld implements Serializable {
 
 	private String name;
 	private String image;

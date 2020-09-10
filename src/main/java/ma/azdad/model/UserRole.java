@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class UserRole extends GenericBean {
+public class UserRole extends GenericBeanOld {
 	private Role role;
 	private User user;
 

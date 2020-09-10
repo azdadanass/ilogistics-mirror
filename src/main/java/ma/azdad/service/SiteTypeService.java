@@ -11,7 +11,7 @@ import ma.azdad.repos.SiteTypeRepos;
 
 @Component
 @Transactional
-public class SiteTypeService extends GenericService<SiteType> {
+public class SiteTypeService extends GenericServiceOld<SiteType> {
 	
 	@Autowired
 	SiteTypeRepos siteTypeRepos;

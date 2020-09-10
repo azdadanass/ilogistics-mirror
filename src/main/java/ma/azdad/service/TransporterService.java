@@ -12,7 +12,7 @@ import ma.azdad.repos.TransporterRepos;
 
 @Component
 @Transactional
-public class TransporterService extends GenericService<Transporter> {
+public class TransporterService extends GenericServiceOld<Transporter> {
 	
 	
 	@Autowired

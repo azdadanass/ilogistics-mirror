@@ -7,7 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class ExternalResourceRole extends GenericBean {
+public class ExternalResourceRole extends GenericBeanOld {
 
 	private Role role;
 	private ExternalResource externalResource;

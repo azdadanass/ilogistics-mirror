@@ -9,7 +9,7 @@ import ma.azdad.repos.PathRepos;
 
 @Component
 @Transactional
-public class PathService extends GenericService<Path> {
+public class PathService extends GenericServiceOld<Path> {
 
 	@Autowired
 	PathRepos pathRepos;

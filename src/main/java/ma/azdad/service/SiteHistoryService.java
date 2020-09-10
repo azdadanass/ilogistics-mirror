@@ -11,7 +11,7 @@ import ma.azdad.model.User;
 
 @Component
 @Transactional
-public class SiteHistoryService extends GenericService<SiteHistory> {
+public class SiteHistoryService extends GenericServiceOld<SiteHistory> {
 
 	public void created(Site site, User user) {
 		try {

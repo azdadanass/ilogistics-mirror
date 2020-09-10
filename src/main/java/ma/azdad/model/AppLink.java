@@ -16,7 +16,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class AppLink extends GenericBean implements Serializable {
+public class AppLink extends GenericBeanOld implements Serializable {
 
 	private CostType costType;
 	private RevenueType revenueType;

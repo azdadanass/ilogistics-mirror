@@ -11,7 +11,7 @@ import ma.azdad.model.User;
 
 @Component
 @Transactional
-public class TransportationRequestHistoryService extends GenericService<TransportationRequestHistory> {
+public class TransportationRequestHistoryService extends GenericServiceOld<TransportationRequestHistory> {
 
 	public void created(TransportationRequest transportationRequest) {
 		try {

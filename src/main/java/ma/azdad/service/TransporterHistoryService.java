@@ -10,7 +10,7 @@ import ma.azdad.model.TransporterHistory;
 
 @Component
 @Transactional
-public class TransporterHistoryService extends GenericService<TransporterHistory> {
+public class TransporterHistoryService extends GenericServiceOld<TransporterHistory> {
 
 	public void created(Transporter transporter) {
 		try {

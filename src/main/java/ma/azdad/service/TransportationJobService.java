@@ -21,7 +21,7 @@ import ma.azdad.repos.UserRepos;
 
 @Component
 @Transactional
-public class TransportationJobService extends GenericService<TransportationJob> {
+public class TransportationJobService extends GenericServiceOld<TransportationJob> {
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;

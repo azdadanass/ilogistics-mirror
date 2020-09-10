@@ -9,7 +9,7 @@ import org.primefaces.model.map.LatLng;
 
 @MappedSuperclass
 
-public class GenericPlace extends GenericBean implements Serializable {
+public class GenericPlace extends GenericBeanOld implements Serializable {
 
 	protected String name;
 	protected Double latitude = 33.966171;

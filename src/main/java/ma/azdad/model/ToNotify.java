@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class ToNotify extends GenericBean implements Serializable {
+public class ToNotify extends GenericBeanOld implements Serializable {
 
 	private User internalResource;
 	private Boolean notifyByEmail = true;

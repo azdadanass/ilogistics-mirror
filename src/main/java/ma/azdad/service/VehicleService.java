@@ -12,7 +12,7 @@ import ma.azdad.repos.VehicleRepos;
 
 @Component
 @Transactional
-public class VehicleService extends GenericService<Vehicle> {
+public class VehicleService extends GenericServiceOld<Vehicle> {
 	
 	@Autowired
 	VehicleRepos vehicleRepos;

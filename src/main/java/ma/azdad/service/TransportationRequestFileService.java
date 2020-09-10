@@ -7,7 +7,7 @@ import ma.azdad.model.TransportationRequestFile;
 
 @Component
 @Transactional
-public class TransportationRequestFileService extends GenericService<TransportationRequestFile> {
+public class TransportationRequestFileService extends GenericServiceOld<TransportationRequestFile> {
 
 }
 

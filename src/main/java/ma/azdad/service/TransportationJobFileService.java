@@ -7,6 +7,6 @@ import ma.azdad.model.TransportationJobFile;
 
 @Component
 @Transactional
-public class TransportationJobFileService extends GenericService<TransportationJobFile> {
+public class TransportationJobFileService extends GenericServiceOld<TransportationJobFile> {
 
 }

@@ -134,7 +134,7 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 	}
 
 	protected void refreshModel(A a) {
-		model = (A) service.findOne(a.getId());
+		model = (A) service.findOne(a.id());
 	}
 
 	protected void addPage() {

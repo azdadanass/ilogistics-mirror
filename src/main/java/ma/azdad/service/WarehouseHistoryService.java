@@ -11,7 +11,7 @@ import ma.azdad.model.WarehouseHistory;
 
 @Component
 @Transactional
-public class WarehouseHistoryService extends GenericService<WarehouseHistory> {
+public class WarehouseHistoryService extends GenericServiceOld<WarehouseHistory> {
 
 	public void created(Warehouse warehouse, User user) {
 		try {

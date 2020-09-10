@@ -7,6 +7,6 @@ import ma.azdad.model.WarehouseFile;
 
 @Component
 @Transactional
-public class WarehouseFileService extends GenericService<WarehouseFile> {
+public class WarehouseFileService extends GenericServiceOld<WarehouseFile> {
 
 }

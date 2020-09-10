@@ -39,6 +39,10 @@ public class UserService {
 		return u;
 	}
 
+	public User findOneLight(String username) {
+		return repos.findById(username).get();
+	}
+
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return repos.findLightByCompany(companyId, active);
 	}

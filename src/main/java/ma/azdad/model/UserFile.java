@@ -19,7 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
-public class UserFile extends GenericBean {
+public class UserFile extends GenericBeanOld {
 
 	protected Date date;
 	protected String link = "noimage.jpg";

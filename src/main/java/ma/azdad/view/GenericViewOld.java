@@ -13,10 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ma.azdad.model.GenericBean;
+import ma.azdad.model.GenericBeanOld;
 import ma.azdad.service.UtilsFunctions;
 
-public class GenericViewOld<A extends GenericBean> {
+public class GenericViewOld<A extends GenericBeanOld> {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired

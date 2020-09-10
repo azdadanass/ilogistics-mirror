@@ -19,7 +19,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class TransportationRequest extends GenericBean implements Serializable, Comparable<TransportationRequest> {
+public class TransportationRequest extends GenericBeanOld implements Serializable, Comparable<TransportationRequest> {
 
 	private String reference;
 	private TransportationRequestStatus status = TransportationRequestStatus.EDITED;

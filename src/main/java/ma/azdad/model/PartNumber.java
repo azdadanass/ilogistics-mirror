@@ -22,7 +22,7 @@ import org.springframework.beans.BeanUtils;
 
 @Entity
 
-public class PartNumber extends GenericBean implements Serializable {
+public class PartNumber extends GenericBeanOld implements Serializable {
 
 	private String name;
 	private String countryOfOrigin;

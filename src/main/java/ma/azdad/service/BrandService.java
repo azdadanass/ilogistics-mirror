@@ -13,7 +13,7 @@ import ma.azdad.repos.BrandRepos;
 
 @Component
 @Transactional
-public class BrandService extends GenericService<Brand> {
+public class BrandService extends GenericServiceOld<Brand> {
 
 	@Autowired
 	BrandRepos brandRepos;

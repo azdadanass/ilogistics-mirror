@@ -13,7 +13,7 @@ import ma.azdad.model.ProjectAssignmentType;
 @Repository
 public interface ProjectAssignmentRepos extends JpaRepository<ProjectAssignment, Integer> {
 
-	String c1 = "select new ProjectAssignment(a.id,a.type,a.startDate,a.endDate,a.project.name,(select b.fullName from User b where a.user.username = b.username),(select b.name from Team b where a.team.id = b.id),(select b.name from Supplier b where a.supplier.id = b.id)) ";
+	String c1 = "select new ProjectAssignment(a.id,a.type,a.startDate,a.endDate,a.project.name,(select b.fullName from User b where a.user.username = b.username),(select b.name from Team b where a.team.id = b.id),(select b.type from Team b where a.team.id = b.id),(select b.name from Supplier b where a.supplier.id = b.id)) ";
 
 	@Query(c1 + " from ProjectAssignment a where (a.project.id in (?1) or a.project.id in (?2)) and a.type = ?3")
 	List<ProjectAssignment> find(List<Integer> projectAssignmentList, List<Integer> delegatedProjectList, ProjectAssignmentType type);

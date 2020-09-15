@@ -49,7 +49,8 @@ public class ProjectAssignmentService extends GenericService<ProjectAssignment, 
 		case INTERNAL:
 		case EXTERNAL_PM:
 			return repos.countByUserAndOverlapsWidthDates(projectAssignment.getUserUsername(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
-		case TEAM:
+		case INTERNAL_TEAM:
+		case EXTERNAL_TEAM:
 			return repos.countByTeamAndOverlapsWidthDates(projectAssignment.getTeamId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
 		case SUPPLIER:
 			return repos.countBySupplierAndOverlapsWidthDates(projectAssignment.getSupplierId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
@@ -60,7 +61,7 @@ public class ProjectAssignmentService extends GenericService<ProjectAssignment, 
 
 	public void updateParentIdScript() {
 		for (ProjectAssignment pa : findAll()) {
-			if (ProjectAssignmentType.EXTERNAL_PM.equals(pa.getType()) || (ProjectAssignmentType.TEAM.equals(pa.getType()) && pa.getTeam().getTeamLeader().getSupplier() != null)) {
+			if (ProjectAssignmentType.EXTERNAL_PM.equals(pa.getType()) || (ProjectAssignmentType.EXTERNAL_TEAM.equals(pa.getType()) && pa.getTeam().getTeamLeader().getSupplier() != null)) {
 				Supplier supplier = ProjectAssignmentType.EXTERNAL_PM.equals(pa.getType()) ? pa.getUser().getSupplier() : pa.getTeam().getTeamLeader().getSupplier();
 				ProjectAssignment parent = repos.findByProjectAndSupplier(pa.getProjectId(), supplier.getId());
 				if (parent == null) {

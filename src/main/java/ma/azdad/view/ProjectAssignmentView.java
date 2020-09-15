@@ -48,7 +48,6 @@ public class ProjectAssignmentView extends GenericView<ProjectAssignment, Projec
 	@Override
 	protected void viewPage() {
 		super.viewPage();
-		type = ProjectAssignmentType.TEAM;
 	}
 
 	@Override
@@ -78,11 +77,12 @@ public class ProjectAssignmentView extends GenericView<ProjectAssignment, Projec
 						initLists(service.findBySupplierAndProjectList(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList()));
 					break;
 				case INTERNAL:
+				case INTERNAL_TEAM:
 					initLists(service.find(cacheView.getAssignedProjectList(), cacheView.getDelegatedProjectList(), type));
 					break;
-				case TEAM:
-					initLists(service.findInternalTeamsAssignement(cacheView.getAssignedProjectList(), cacheView.getDelegatedProjectList()));
-					break;
+//				case INTERNAL_TEAM:
+//					initLists(service.findInternalTeamsAssignement(cacheView.getUserProjectList(), cacheView.getDelegatedProjectList()));
+//					break;
 				default:
 					break;
 				}
@@ -111,7 +111,8 @@ public class ProjectAssignmentView extends GenericView<ProjectAssignment, Projec
 		case EXTERNAL_PM:
 			model.setUser(userService.findOneLight(model.getUserUsername()));
 			break;
-		case TEAM:
+		case INTERNAL_TEAM:
+		case EXTERNAL_TEAM:
 			model.setTeam(teamService.findOneLight(model.getTeamId()));
 			break;
 		case SUPPLIER:

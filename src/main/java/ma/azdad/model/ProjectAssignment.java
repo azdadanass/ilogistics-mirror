@@ -53,7 +53,7 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 	}
 
 	// c1
-	public ProjectAssignment(Integer id, ProjectAssignmentType type, Date startDate, Date endDate, String projectName, String userFullName, String teamName, String supplierName) {
+	public ProjectAssignment(Integer id, ProjectAssignmentType type, Date startDate, Date endDate, String projectName, String userFullName, String teamName, String teamType, String supplierName) {
 		super(id);
 		this.type = type;
 		this.startDate = startDate;
@@ -61,6 +61,7 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 		this.setProjectName(projectName);
 		this.setUserFullName(userFullName);
 		this.setTeamName(teamName);
+		this.setTeamType(teamType);
 		this.setSupplierName(supplierName);
 	}
 
@@ -72,7 +73,8 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 			return getUserFullName();
 		case SUPPLIER:
 			return getSupplierName();
-		case TEAM:
+		case INTERNAL_TEAM:
+		case EXTERNAL_TEAM:
 			return getTeamName();
 		default:
 			return null;
@@ -118,6 +120,18 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 		if (team == null)
 			team = new Team();
 		team.setName(teamName);
+	}
+
+	@Transient
+	public String getTeamType() {
+		return team == null ? null : team.getType();
+	}
+
+	@Transient
+	public void setTeamType(String teamType) {
+		if (team == null)
+			team = new Team();
+		team.setType(teamType);
 	}
 
 	@Transient
@@ -182,7 +196,7 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(getProjectName(), query) || contains(type.getValue(), query) || contains(getTeamName(), query) || contains(getSupplierName(), query);
+		return contains(getProjectName(), query) || contains(getUserUsername(), query) || contains(getTeamName(), query) || contains(getSupplierName(), query);
 	}
 
 	@Temporal(TemporalType.DATE)

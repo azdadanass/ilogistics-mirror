@@ -13,4 +13,4 @@ build/
 hs_err_pid*
 /bin/
 /target/
-/src/main/webapp/resources/templates/highcharts/
+#/src/main/webapp/resources/templates/highcharts/

@@ -18,6 +18,7 @@ import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -59,6 +60,8 @@ public class FileView {
 	}
 
 	public StreamedContent getStream(String path) throws IOException {
+		if (StringUtils.isBlank(path))
+			return null;
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		if (fc.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {

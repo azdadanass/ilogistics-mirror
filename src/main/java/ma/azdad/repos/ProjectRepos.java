@@ -1,6 +1,7 @@
 
 package ma.azdad.repos;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -19,8 +20,11 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();
 
+//	@Query("select new Project(id,name) from Project where id in (?1)")
+//	public List<Project> findLight(List<Integer> idList);
+
 	@Query("select new Project(id,name) from Project where id in (?1)")
-	public List<Project> findLight(List<Integer> idList);
+	public List<Project> findLight(Collection<Integer> idList);
 
 	@Query(select1 + "from Project where status = ?1")
 	public List<Project> findLight(String status);

@@ -1,6 +1,7 @@
 package ma.azdad.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,10 @@ public class ProjectService {
 
 	public List<Project> findLight() {
 		return repos.findLight();
+	}
+
+	public List<Project> findLight(Collection<Integer> idList) {
+		return repos.findLight(idList);
 	}
 
 	public List<Project> findLight(String status) {

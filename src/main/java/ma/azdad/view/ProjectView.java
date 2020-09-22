@@ -1,6 +1,7 @@
 package ma.azdad.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,6 +123,10 @@ public class ProjectView {
 
 	public List<Project> findLight() {
 		return projectService.findLight();
+	}
+
+	public List<Project> findLight(Collection<Integer> idList) {
+		return projectService.findLight(idList);
 	}
 
 	public List<Project> findLightByManagerAndOpen(String managerUsername) {

@@ -5,8 +5,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -58,6 +60,7 @@ public class CacheView implements Serializable {
 	private List<Integer> assignedProjectList;
 	private List<Integer> hmProjectList;
 	private List<Integer> delegatedProjectList;
+	private Set<Integer> allProjectList = new HashSet<Integer>();
 	private List<Integer> warehouseList = new ArrayList<Integer>(Arrays.asList(-1));
 
 	@PostConstruct
@@ -66,6 +69,9 @@ public class CacheView implements Serializable {
 		lm = affectationService.getDatas(DataTypes.LM.getValue());
 		assignedProjectList = projectService.findAssignedProjectIdListByResource(sessionView.getUsername());
 		delegatedProjectList = delegationService.findDelegatedProjects(sessionView.getUsername());
+		allProjectList.addAll(assignedProjectList);
+		allProjectList.addAll(delegatedProjectList);
+
 		hmProjectList = projectService.findIdListByManagerType(sessionView.getUsername(), ProjectManagerType.HARDWARE_MANAGER);
 		warehouseList.addAll(warehouseService.findIdListByManager(sessionView.getUsername()));
 	}
@@ -197,6 +203,14 @@ public class CacheView implements Serializable {
 
 	public void setHmProjectList(List<Integer> hmProjectList) {
 		this.hmProjectList = hmProjectList;
+	}
+
+	public Set<Integer> getAllProjectList() {
+		return allProjectList;
+	}
+
+	public void setAllProjectList(Set<Integer> allProjectList) {
+		this.allProjectList = allProjectList;
 	}
 
 }

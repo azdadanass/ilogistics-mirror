@@ -1028,4 +1028,9 @@ public class DeliveryRequestService extends GenericServiceOld<DeliveryRequest> {
 		deliveryRequestRepos.updateExternalRequester(id, user);
 	}
 
+	public void updateSdm(Integer id, Boolean sdm) {
+		deliveryRequestRepos.updateSdm(id, sdm);
+		cacheEvict();
+	}
+
 }

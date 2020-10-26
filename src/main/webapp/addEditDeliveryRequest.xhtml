@@ -293,7 +293,7 @@
 										</div>
 									</f:subview>
 								</h:panelGroup>
-								<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+								<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
 									<div class="space-8" />
 									<div class="row">
 										<div class="col-xs-12 col-sm-3">

@@ -274,6 +274,27 @@
 						</div>
 					</div>
 				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="SDM" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.sdm?'Yes':'No'}" styleClass="bolder #{deliveryRequestView.deliveryRequest.sdm?'green':'orange'}"
+								rendered="#{!deliveryRequestView.canEditSdm()}" />
+							<p:inplace editor="true" styleClass="editable-click green " saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canEditSdm()}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.sdm?'Yes':'No'}" />
+								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}">
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+								</h:selectOneMenu>
+								<p:ajax event="save" listener="#{deliveryRequestView.editSdm()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
 				<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
@@ -581,7 +602,7 @@
 					<p:column headerText="Part Number" styleClass="hide">
 						<h:outputText value="#{item.partNumber.name}" />
 					</p:column>
-					<p:column headerText="Orange Part Number" width="150"> 
+					<p:column headerText="Orange Part Number" width="150">
 						<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
 						<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 							<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />

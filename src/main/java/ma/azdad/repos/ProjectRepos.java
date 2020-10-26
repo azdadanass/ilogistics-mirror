@@ -70,4 +70,7 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select a.project.id from  ProjectManager a where a.user.username = ?1 and a.type = ?2")
 	List<Integer> findIdListByManagerType(String username, ProjectManagerType type);
 
+	@Query("select count(*) from ProjectManager a where a.user.username = ?1 and a.project.id = ?2 and a.type = ?3")
+	Long countByManagerAndProjectAndManagerType(String username, Integer projectId, ProjectManagerType type);
+
 }

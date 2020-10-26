@@ -16,4 +16,6 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	@Query(select1 + " from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	public List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
 
+	@Query("select count(*) from JobRequestDeliveryDetail where deliveryRequestDetail.deliveryRequest.id = ?1")
+	Long countByDeliveryRequest(Integer deliveryRequestId);
 }

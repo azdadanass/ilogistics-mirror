@@ -17,7 +17,7 @@ import ma.azdad.repos.SerialNumberRepos;
 public class JobRequestDeliveryDetailService extends GenericServiceOld<JobRequestDeliveryDetail> {
 
 	@Autowired
-	JobRequestDeliveryDetailRepos jobRequestDeliveryDetailRepos;
+	JobRequestDeliveryDetailRepos repos;
 
 	@Autowired
 	SerialNumberRepos serialNumberRepos;
@@ -25,23 +25,26 @@ public class JobRequestDeliveryDetailService extends GenericServiceOld<JobReques
 	@Override
 	public JobRequestDeliveryDetail findOne(Integer id) {
 		JobRequestDeliveryDetail jobRequestDeliveryDetail = super.findOne(id);
-		//		Hibernate.initialize(jobRequestDeliveryDetail.get..);
+		// Hibernate.initialize(jobRequestDeliveryDetail.get..);
 		return jobRequestDeliveryDetail;
 	}
 
 	public List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();
-		List<JobRequestDeliveryDetail> data = jobRequestDeliveryDetailRepos.findInstalledByProject(projectId);
+		List<JobRequestDeliveryDetail> data = repos.findInstalledByProject(projectId);
 		for (JobRequestDeliveryDetail jrdd : data)
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestDetail(jrdd.getTmpJobRequestId(), jrdd.getTmpDeliveryRequestDetailId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(), jrdd.getTmpPartNumberDescription(),
-							jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(), jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(), jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(), jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
 			}
 		return result;
+	}
+
+	public Long countByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.countByDeliveryRequest(deliveryRequestId);
 	}
 
 }

@@ -58,6 +58,7 @@ import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestFileService;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.JobRequestDeliveryDetailService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
@@ -165,6 +166,9 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 
 	@Autowired
 	protected DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+
+	@Autowired
+	JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
 
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
@@ -808,6 +812,18 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 
 		emailService.deliveryRequestNotification(deliveryRequest);
 		smsService.sendSms(deliveryRequest);
+	}
+
+	// inplace
+	public Boolean canEditSdm() {
+		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
+	}
+
+	public void editSdm() {
+		if (!canEditSdm())
+			return;
+		service.save(deliveryRequest);
 	}
 
 	/*

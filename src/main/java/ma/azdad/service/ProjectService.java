@@ -164,4 +164,13 @@ public class ProjectService {
 	public List<Integer> findIdListByManagerType(String username, ProjectManagerType type) {
 		return repos.findIdListByManagerType(username, type);
 	}
+
+	@Cacheable("projectService.countByManagerAndProjectAndManagerType")
+	public Long countByManagerAndProjectAndManagerType(String username, Integer projectId, ProjectManagerType type) {
+		return repos.countByManagerAndProjectAndManagerType(username, projectId, type);
+	}
+
+	public Boolean isHardwareManager(String username, Integer projectId) {
+		return countByManagerAndProjectAndManagerType(username, projectId, ProjectManagerType.HARDWARE_MANAGER) > 0;
+	}
 }

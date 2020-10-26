@@ -277,4 +277,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("update DeliveryRequest set externalRequester = ?2 where id = ?1")
 	public void updateExternalRequester(Integer id, User user);
 
+	@Modifying
+	@Query("update DeliveryRequest set sdm = ?2 where id = ?1")
+	public void updateSdm(Integer id, Boolean sdm);
+
 }

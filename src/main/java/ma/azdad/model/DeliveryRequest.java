@@ -49,7 +49,7 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	private String qrKey;
 	private String returnReason;
 	private Boolean isFullyReturned = false;
-	private Boolean sdm;
+	private Boolean sdm = true;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;

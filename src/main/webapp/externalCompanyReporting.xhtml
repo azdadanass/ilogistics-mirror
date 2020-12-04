@@ -73,7 +73,7 @@
 											<p:selectOneMenu value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
 												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												<p:ajax listener="#{stockRowView.refreshExternalCompanyNameList}" update="companyList" />
+												<p:ajax listener="#{stockRowView.refreshDeliverToOtherNameList}" update="companyList" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -84,10 +84,10 @@
 											<h:outputText value="Company " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="companyList" value="#{stockRowView.externalCompanyName}" filter="true" filterMatchMode="contains">
+											<p:selectOneMenu id="companyList" value="#{stockRowView.deliverToOtherName}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
-												<f:selectItems value="#{stockRowView.externalCompanyNameList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-												<p:ajax listener="#{stockRowView.getExternalCompanyReportingLists()}" update="stockHistory,summary,tab3" />
+												<f:selectItems value="#{stockRowView.deliverToOtherNameList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+												<p:ajax listener="#{stockRowView.getDeliverToOtherReportingLists()}" update="stockHistory,summary,tab3" />
 											</p:selectOneMenu>
 										</div>
 									</div>

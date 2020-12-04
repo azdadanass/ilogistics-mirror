@@ -47,7 +47,7 @@ public class StockRow extends GenericBeanOld implements Serializable {
 
 	private Double pendingQuantity;
 
-	private String deliverToCompany;
+	private String deliverToEntityName;
 
 	public StockRow(Double quantity, StockRowStatus status, String partNumberName, DeliveryRequestType deliveryRequestType, Integer deliveryRequestReferenceNumber, String originNumber) {
 		super();
@@ -95,7 +95,7 @@ public class StockRow extends GenericBeanOld implements Serializable {
 	// this.qTotalCost = qTotalCost;
 	// }
 
-	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber, Double qTotalCost, String internalCompany, String externalCompanyCustomer, String externalCompanySupplier, String externalCompany) {
+	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber, Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
@@ -103,7 +103,7 @@ public class StockRow extends GenericBeanOld implements Serializable {
 		this.partNumber = partNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.qTotalCost = qTotalCost;
-		this.deliverToCompany = internalCompany != null ? internalCompany : externalCompanyCustomer != null ? externalCompanyCustomer : externalCompanySupplier != null ? externalCompanySupplier : externalCompany;
+		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
 	}
 
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, Location location) {
@@ -538,8 +538,8 @@ public class StockRow extends GenericBeanOld implements Serializable {
 	}
 
 	@Transient
-	public String getDeliverToCompany() {
-		return deliverToCompany;
+	public String getDeliverToEntityName() {
+		return deliverToEntityName;
 	}
 
 	@Transient

@@ -299,8 +299,8 @@ public class UserView {
 		return userService.findLightByProject(projectId);
 	}
 
-	public List<User> findLightByExternalCompany(User user) {
-		return userService.findLightByExternalCompany(user);
+	public List<User> findLightByDeliverToOther(User user) {
+		return userService.findLightByDeliverToOther(user);
 	}
 
 	public List<User> findActiveByCustomerOrSupplier(Integer customerId, Integer supplierId) {

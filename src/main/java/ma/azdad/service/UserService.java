@@ -100,13 +100,13 @@ public class UserService {
 		return repos.countByUsername(username);
 	}
 
-	public List<User> findLightByExternalCompany(User user) {
+	public List<User> findLightByDeliverToOther(User user) {
 		if (user == null)
 			return null;
-		return findLightByExternalCompany(user.getCompanyType(), user.getCustomerId(), user.getSupplierId());
+		return findLightByDeliverToOther(user.getCompanyType(), user.getCustomerId(), user.getSupplierId());
 	}
 
-	public List<User> findLightByExternalCompany(CompanyType companyType, Integer customerId, Integer supplierId) {
+	public List<User> findLightByDeliverToOther(CompanyType companyType, Integer customerId, Integer supplierId) {
 		if (companyType != null)
 			switch (companyType) {
 			case CUSTOMER:

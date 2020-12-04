@@ -369,46 +369,46 @@ public class StockRowService extends GenericServiceOld<StockRow> {
 		return stockRowRepos.findProjectListByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
 	}
 
-	public List<String> findExternalCompanyNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
-		List<String> internalCompanyNameList = stockRowRepos.findInternalCompanyNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, projectId);
-		List<String> externalCompanyCustomerNameList = stockRowRepos.findExternalCompanyCustomerNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.CUSTOMER, projectId);
-		List<String> externalCompanySupplierNameList = stockRowRepos.findExternalCompanySupplierNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.SUPPLIER, projectId);
-		List<String> externalCompanyOtherNameList = stockRowRepos.findExternalCompanyOtherNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.OTHER, projectId);
+	public List<String> findDeliverToOtherNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
+		List<String> deliverToCompanyNameList = stockRowRepos.findDeliverToCompanyNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, projectId);
+		List<String> deliverToCustomerNameList = stockRowRepos.findDeliverToCustomerNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.CUSTOMER, projectId);
+		List<String> deliverToSupplierNameList = stockRowRepos.findDeliverToSupplierNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.SUPPLIER, projectId);
+//		List<String> deliverToOtherOtherNameList = stockRowRepos.findDeliverToOtherOtherNameListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, CompanyType.OTHER, projectId);
 		List<String> result = new ArrayList<>();
-		result.addAll(internalCompanyNameList);
-		result.addAll(externalCompanyCustomerNameList);
-		result.addAll(externalCompanySupplierNameList);
-		result.addAll(externalCompanyOtherNameList);
+		result.addAll(deliverToCompanyNameList);
+		result.addAll(deliverToCustomerNameList);
+		result.addAll(deliverToSupplierNameList);
+//		result.addAll(deliverToOtherOtherNameList);
 		if (result.isEmpty() || result == null)
 			return null;
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByExternalCompanyAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String externalCompanyName, Integer projectId) {
-		return stockRowRepos.findStockHistoryByExternalCompanyAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, externalCompanyName, projectId, ProjectTypes.STOCK.getValue());
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToOtherName, Integer projectId) {
+		return stockRowRepos.findStockHistoryByDeliverToEntityAndCompanyOwner(username, warehouseList, assignedProjectList, companyOwnerId, deliverToOtherName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
 	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList) {
 		return stockRowRepos.findStockHistoryByOutboundDeliveryRequestReturn(outboundSrouceList);
 	}
 
-	public List<String> findExternalCompanyNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId) {
-		List<String> internalCompanyNameList = stockRowRepos.findInternalCompanyNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId);
-		List<String> externalCompanyCustomerNameList = stockRowRepos.findExternalCompanyCustomerNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.CUSTOMER, projectId);
-		List<String> externalCompanySupplierNameList = stockRowRepos.findExternalCompanySupplierNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.SUPPLIER, projectId);
-		List<String> externalCompanyOtherNameList = stockRowRepos.findExternalCompanyOtherNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.OTHER, projectId);
+	public List<String> findDeliverToOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId) {
+		List<String> deliverToCompanyNameList = stockRowRepos.findDeliverToCompanyNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId);
+		List<String> deliverToCustomerNameList = stockRowRepos.findDeliverToCustomerNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.CUSTOMER, projectId);
+		List<String> deliverToSupplierNameList = stockRowRepos.findDeliverToSupplierNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.SUPPLIER, projectId);
+//		List<String> deliverToOtherOtherNameList = stockRowRepos.findDeliverToOtherOtherNameListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, CompanyType.OTHER, projectId);
 		List<String> result = new ArrayList<>();
-		result.addAll(internalCompanyNameList);
-		result.addAll(externalCompanyCustomerNameList);
-		result.addAll(externalCompanySupplierNameList);
-		result.addAll(externalCompanyOtherNameList);
+		result.addAll(deliverToCompanyNameList);
+		result.addAll(deliverToCustomerNameList);
+		result.addAll(deliverToSupplierNameList);
+//		result.addAll(deliverToOtherOtherNameList);
 		if (result.isEmpty() || result == null)
 			return null;
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByExternalCompanyAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, String externalCompanyName, Integer projectId) {
-		return stockRowRepos.findStockHistoryByExternalCompanyAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, externalCompanyName, projectId, ProjectTypes.STOCK.getValue());
+	public List<StockRow> findStockHistoryByDeliverToOtherAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToOtherName, Integer projectId) {
+		return stockRowRepos.findStockHistoryByDeliverToEntityAndCustomerOwner(username, warehouseList, assignedProjectList, customerOwnerId, deliverToOtherName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

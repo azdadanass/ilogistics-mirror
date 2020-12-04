@@ -48,7 +48,6 @@ public class User implements Serializable {
 	private Company company;
 	private Customer customer;
 	private Supplier supplier;
-	private String other;
 	private Transporter transporter;
 
 	private User user;
@@ -509,14 +508,6 @@ public class User implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
-	}
-
-	public String getOther() {
-		return other;
-	}
-
-	public void setOther(String other) {
-		this.other = other;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

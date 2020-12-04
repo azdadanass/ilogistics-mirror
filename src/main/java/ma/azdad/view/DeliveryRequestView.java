@@ -1253,7 +1253,7 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 			toNotifyUserSet.addAll(deliveryRequest.getDestinationProject().getManagerList().stream().map(i -> i.getUser()).collect(Collectors.toSet()));
 			toNotifyUserSet.addAll(userService.findByProjectAssignment(deliveryRequest.getDestinationProject().getId(), true));
 			toNotifyUserSet.addAll(userService.findByProjectDelegation(deliveryRequest.getDestinationProject().getId(), true));
-			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingAssignement(deliveryRequest.getExternalCompanyCustomerId(), deliveryRequest.getExternalCompanySupplierId(), deliveryRequest.getDestinationProjectId()));
+			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingAssignement(deliveryRequest.getDeliverToCustomerId(), deliveryRequest.getDeliverToSupplierId(), deliveryRequest.getDestinationProjectId()));
 		}
 		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
@@ -1321,26 +1321,26 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 //				deliveryRequest.setSupplier(supplierService.findOne(deliveryRequest.getOwner().getIntegerValue()));
 
 		if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType())) {
-			deliveryRequest.setInternalCompany(null);
-			if (deliveryRequest.getExternalCompanyType() != null)
-				switch (deliveryRequest.getExternalCompanyType()) {
+			deliveryRequest.setDeliverToCompany(null);
+			if (deliveryRequest.getDeliverToCompanyType() != null)
+				switch (deliveryRequest.getDeliverToCompanyType()) {
 				case CUSTOMER:
-					deliveryRequest.setExternalCompanyCustomer(customerService.findOne(deliveryRequest.getExternalCompanyCustomerId()));
-					deliveryRequest.setExternalCompanySupplier(null);
-					deliveryRequest.setExternalCompany(null);
+					deliveryRequest.setDeliverToCustomer(customerService.findOne(deliveryRequest.getDeliverToCustomerId()));
+					deliveryRequest.setDeliverToSupplier(null);
+					deliveryRequest.setDeliverToOther(null);
 					break;
 				case SUPPLIER:
-					deliveryRequest.setExternalCompanySupplier(supplierService.findOne(deliveryRequest.getExternalCompanySupplierId()));
-					deliveryRequest.setExternalCompanyCustomer(null);
-					deliveryRequest.setExternalCompany(null);
+					deliveryRequest.setDeliverToSupplier(supplierService.findOne(deliveryRequest.getDeliverToSupplierId()));
+					deliveryRequest.setDeliverToCustomer(null);
+					deliveryRequest.setDeliverToOther(null);
 					break;
 				default:
 					break;
 				}
 		} else {
-			deliveryRequest.setExternalCompanyCustomer(null);
-			deliveryRequest.setExternalCompanySupplier(null);
-			deliveryRequest.setExternalCompany(null);
+			deliveryRequest.setDeliverToCustomer(null);
+			deliveryRequest.setDeliverToSupplier(null);
+			deliveryRequest.setDeliverToOther(null);
 		}
 
 		for (Integer detailId : toDeleteDetailList)
@@ -1776,20 +1776,15 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 
 	// EXTERNAL COMPANY
 
-	public List<User> findByExternalCompany() {
-		System.out.println("findByExternalCompany !!!");
-		if (deliveryRequest.getExternalCompanyType() == null)
+	public List<User> findByDeliverToEntity() {
+		if (deliveryRequest.getDeliverToCompanyType() == null)
 			return userService.find(false);
 
-		System.out.println(deliveryRequest.getExternalCompanyType());
-
-		switch (deliveryRequest.getExternalCompanyType()) {
+		switch (deliveryRequest.getDeliverToCompanyType()) {
 		case CUSTOMER:
-			return userService.findByCustomer(deliveryRequest.getExternalCompanyCustomerId());
+			return userService.findByCustomer(deliveryRequest.getDeliverToCustomerId());
 		case SUPPLIER:
-			return userService.findBySupplier(deliveryRequest.getExternalCompanySupplierId());
-		case OTHER:
-			return userService.findByCompany(deliveryRequest.getExternalCompany());
+			return userService.findBySupplier(deliveryRequest.getDeliverToSupplierId());
 		default:
 			return null;
 		}

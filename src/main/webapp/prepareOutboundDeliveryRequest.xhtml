@@ -119,12 +119,12 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="Company / #{deliveryRequestView.deliveryRequest.internalCompany.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
+											<p:inputText value="Company / #{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
 												rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}" />
-											<p:inputText value="Customer / #{deliveryRequestView.deliveryRequest.externalCompanyCustomer.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
-												rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.externalCompanyCustomer != null}" />
-											<p:inputText value="Supplier / #{deliveryRequestView.deliveryRequest.externalCompanySupplier.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
-												rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.externalCompanySupplier != null}" />
+											<p:inputText value="Customer / #{deliveryRequestView.deliveryRequest.deliverToCustomer.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
+												rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.deliverToCustomer != null}" />
+											<p:inputText value="Supplier / #{deliveryRequestView.deliveryRequest.deliverToSupplier.name}" readonly="true" styleClass="col-xs-12 col-sm-6"
+												rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType and deliveryRequestView.deliveryRequest.deliverToSupplier != null}" />
 											<br />
 										</div>
 									</div>
@@ -184,7 +184,7 @@
 														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems
-															value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.externalCompanyCustomerId,deliveryRequestView.deliveryRequest.externalCompanySupplierId)}"
+															value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
 															var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 														<p:column>
 															<h:outputText value="#{r.fullName}" />

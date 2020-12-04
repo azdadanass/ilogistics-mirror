@@ -31,7 +31,7 @@
 		<p:importEnum type="ma.azdad.model.Priority" var="Priority" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.DeliveryRequestType" var="DeliveryRequestType" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.InboundType" var="InboundType" allSuffix="ALL_ENUM_VALUES" />
-		<p:importEnum type="ma.azdad.model.DeliverToType" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliverToType-" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="widget-box">
@@ -634,7 +634,7 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.internalCompany}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompany}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
 															converter="#{genericSecuredConverter}" required="true" requiredMessage="Internal Company should not be null">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
@@ -654,19 +654,19 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanyType}" styleClass="col-xs-12 col-sm-6">
+														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{CompanyType.ALL_ENUM_VALUES}" />
-															<!-- <p:ajax update="externalCompany,toUser" /> -->
-															<p:ajax update="externalCompany,:main_form:step2:subview2:externalSubview:toUser" />
+															<!-- <p:ajax update="deliverToOther,toUser" /> -->
+															<p:ajax update="deliverToOther,:main_form:step2:subview2:externalSubview:toUser" />
 														</h:selectOneMenu>
 														<br />
 													</div>
 												</div>
 											</div>
 											<div class="space-8" />
-											<h:panelGroup id="externalCompany">
-												<f:subview rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+											<h:panelGroup id="deliverToOther">
+												<f:subview rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
 													<div class="row">
 														<div class="col-xs-12 col-sm-3">
 															<label class="control-label pull-right">
@@ -675,7 +675,7 @@
 														</div>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanyCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 																	requiredMessage="External Customer should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
@@ -686,7 +686,7 @@
 														</div>
 													</div>
 												</f:subview>
-												<f:subview rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+												<f:subview rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
 													<div class="row">
 														<div class="col-xs-12 col-sm-3">
 															<label class="control-label pull-right">
@@ -695,7 +695,7 @@
 														</div>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.externalCompanySupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 																	requiredMessage="External Customer should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
@@ -706,7 +706,7 @@
 														</div>
 													</div>
 												</f:subview>
-												<f:subview rendered="#{CompanyType.OTHER==deliveryRequestView.deliveryRequest.externalCompanyType}">
+												<f:subview rendered="#{CompanyType.OTHER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
 													<div class="row">
 														<div class="col-xs-12 col-sm-3">
 															<label class="control-label pull-right">
@@ -715,7 +715,7 @@
 														</div>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<p:inputText value="#{deliveryRequestView.deliveryRequest.externalCompany}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="External Company should not be null">
+																<p:inputText value="#{deliveryRequestView.deliveryRequest.deliverToOther}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="External Company should not be null">
 																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
 																</p:inputText>
 																<br />
@@ -737,7 +737,7 @@
 															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems
-																value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.externalCompanyCustomerId,deliveryRequestView.deliveryRequest.externalCompanySupplierId)}"
+																value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
 																var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
 																<h:outputText value="#{r.fullName}" />

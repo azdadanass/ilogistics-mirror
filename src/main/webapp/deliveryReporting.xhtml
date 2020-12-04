@@ -106,9 +106,9 @@
 													<h:outputText value="Company " />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu id="companyList" value="#{stockRowView.externalCompanyName}" filter="true" filterMatchMode="contains">
+													<p:selectOneMenu id="companyList" value="#{stockRowView.deliverToOtherName}" filter="true" filterMatchMode="contains">
 														<f:selectItem noSelectionOption="true" itemLabel="---" />
-														<f:selectItems value="#{stockRowView.externalCompanyNameList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+														<f:selectItems value="#{stockRowView.deliverToOtherNameList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
 														<p:ajax listener="#{stockRowView.getReportingLists()}" update=":main_form:tab1,:main_form:tab2,:main_form:tab3" />
 													</p:selectOneMenu>
 												</div>
@@ -299,7 +299,7 @@
 										</p:column>
 										
 										<p:column headerText="3rd Party / Subcontractor"  rendered="#{stockRowView.reportType!=0}">
-											<h:outputText value="#{item.deliverToCompany}" />
+											<h:outputText value="#{item.deliverToEntityName}" />
 										</p:column>
 
 										<p:column headerText="Delivery Date" width="100">

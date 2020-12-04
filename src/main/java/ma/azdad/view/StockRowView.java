@@ -56,7 +56,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 	private String customerCategory;
 	private List<Project> projectList;
 	private List<Site> destinationList;
-	private List<String> externalCompanyNameList;
+	private List<String> deliverToOtherNameList;
 	private List<User> externalRequesterList;
 	private List<Po> poList;
 	private List<Project> destinationProjectList;
@@ -66,7 +66,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 	private Integer customerId;
 	private Integer projectId;
 	private Integer destinationId;
-	private String externalCompanyName;
+	private String deliverToOtherName;
 	private Integer externalRequesterId;
 	private Integer poId;
 	private Integer destinationProjectId;
@@ -143,7 +143,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 			else if (customerId != null)
 				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
-		} else if ("/externalCompanyReporting.xhtml".equals(currentPath)) {
+		} else if ("/deliverToOtherReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
 				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 			else if (customerId != null)
@@ -196,7 +196,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 
 		switch (reportType) {
 		case 0:
-			refreshExternalCompanyNameList();
+			refreshDeliverToOtherNameList();
 			break;
 		case 1:
 			refreshExternalRequesterNameList();
@@ -224,7 +224,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 	public void getReportingLists() {
 		switch (reportType) {
 		case 0:
-			getExternalCompanyReportingLists();
+			getDeliverToOtherReportingLists();
 			break;
 		case 1:
 			getExternalRequesterReportingLists();
@@ -261,14 +261,14 @@ public class StockRowView extends GenericViewOld<StockRow> {
 		}
 	}
 
-	public void refreshExternalCompanyNameList() {
+	public void refreshDeliverToOtherNameList() {
 		if (companyId != null)
-			externalCompanyNameList = stockRowService.findExternalCompanyNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
 		else if (customerId != null)
-			externalCompanyNameList = stockRowService.findExternalCompanyNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
 
-		if (externalCompanyNameList != null)
-			externalCompanyNameList = externalCompanyNameList.stream().distinct().collect(Collectors.toList());
+		if (deliverToOtherNameList != null)
+			deliverToOtherNameList = deliverToOtherNameList.stream().distinct().collect(Collectors.toList());
 	}
 
 	public void refreshExternalRequesterNameList() {
@@ -313,11 +313,11 @@ public class StockRowView extends GenericViewOld<StockRow> {
 			yearAndMonthList = stockRowService.findLightYearAndMonthCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
 	}
 
-	public void getExternalCompanyReportingLists() {
+	public void getDeliverToOtherReportingLists() {
 		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByExternalCompanyAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, externalCompanyName, projectId);
+			list2 = list1 = stockRowService.findStockHistoryByDeliverToEntityAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, deliverToOtherName, projectId);
 		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByExternalCompanyAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, externalCompanyName, projectId);
+			list2 = list1 = stockRowService.findStockHistoryByDeliverToOtherAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, deliverToOtherName, projectId);
 	}
 
 	public void getExternalRequesterReportingLists() {
@@ -593,12 +593,12 @@ public class StockRowView extends GenericViewOld<StockRow> {
 		this.destinationId = destinationId;
 	}
 
-	public String getExternalCompanyName() {
-		return externalCompanyName;
+	public String getDeliverToOtherName() {
+		return deliverToOtherName;
 	}
 
-	public void setExternalCompanyName(String externalCompanyName) {
-		this.externalCompanyName = externalCompanyName;
+	public void setDeliverToOtherName(String deliverToOtherName) {
+		this.deliverToOtherName = deliverToOtherName;
 	}
 
 	public Boolean getMaxThreshold() {
@@ -617,12 +617,12 @@ public class StockRowView extends GenericViewOld<StockRow> {
 		this.chartList = chartList;
 	}
 
-	public List<String> getExternalCompanyNameList() {
-		return externalCompanyNameList;
+	public List<String> getDeliverToOtherNameList() {
+		return deliverToOtherNameList;
 	}
 
-	public void setExternalCompanyNameList(List<String> externalCompanyNameList) {
-		this.externalCompanyNameList = externalCompanyNameList;
+	public void setDeliverToOtherNameList(List<String> deliverToOtherNameList) {
+		this.deliverToOtherNameList = deliverToOtherNameList;
 	}
 
 	public int getTab() {

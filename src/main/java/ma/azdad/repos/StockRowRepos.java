@@ -108,10 +108,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String select8 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest) ";
 	String select9 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber) ";
 	String select10 = " select new StockRow(sum(a.quantity),a.inboundDeliveryRequest,a.partNumber) ";
-	String select15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber,sum(a.unitCost*a.quantity),(select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id),a.deliveryRequest.externalCompany) ";
+	String select15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber,sum(a.unitCost*a.quantity),(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
 	String projectCondition = "a.deliveryRequest.project.id = ?5";
 	String destinationCondition = "a.deliveryRequest.destination.id = ?5";
-	String externalCompanyCondition = " (?5 = (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) or ?5 = (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) or ?5 = (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) or ?5 = a.deliveryRequest.externalCompany) ";
+	String deliverToEntityCondition = " (?5 = (select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id) or ?5 = (select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id) or ?5 = (select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id) or ?5 = a.deliveryRequest.deliverToOther) ";
 	String externalRequesterCondition = "a.deliveryRequest.externalRequester.id = ?5";
 	String poCondition = "a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo = ?5";
 	String destinationProjectCondition = "a.deliveryRequest.destinationProject.id = ?5";
@@ -243,20 +243,20 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select (select b from Project b where b.id = a.deliveryRequest.project.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id")
 	public List<Project> findProjectListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
-	@Query("select (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.id = ?5  group by a.deliveryRequest.internalCompany.name ")
-	public List<String> findInternalCompanyNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+	@Query("select (select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.id = ?5  group by a.deliveryRequest.deliverToCompany.name ")
+	public List<String> findDeliverToCompanyNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 
-	@Query("select (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanyCustomer.name ")
-	public List<String> findExternalCompanyCustomerNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeCustomer, Integer projectId);
+	@Query("select (select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToCustomer.name ")
+	public List<String> findDeliverToCustomerNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeCustomer, Integer projectId);
 
-	@Query("select (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanySupplier.name ")
-	public List<String> findExternalCompanySupplierNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeSupplier, Integer projectId);
+	@Query("select (select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id) " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToSupplier.name ")
+	public List<String> findDeliverToSupplierNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeSupplier, Integer projectId);
 
-	@Query("select a.deliveryRequest.externalCompany " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompany ")
-	public List<String> findExternalCompanyOtherNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeOther, Integer projectId);
+	@Query("select a.deliveryRequest.deliverToOther " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToOther ")
+	public List<String> findDeliverToOtherNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeOther, Integer projectId);
 
-	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + externalCompanyCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-	public List<StockRow> findStockHistoryByExternalCompanyAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String externalCompanyName, Integer projectId, String projectTypeStock);
+	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + deliverToEntityCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToOtherName, Integer projectId, String projectTypeStock);
 
 	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
 	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
@@ -266,20 +266,20 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select (select b from Project b where b.id = a.deliveryRequest.project.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id")
 	public List<Project> findProjectListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
-	@Query("select (select b.name from Company b where a.deliveryRequest.internalCompany.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.internalCompany.name ")
-	public List<String> findInternalCompanyNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+	@Query("select (select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.deliverToCompany.name ")
+	public List<String> findDeliverToCompanyNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
 
-	@Query("select (select b.name from Customer b where a.deliveryRequest.externalCompanyCustomer.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanyCustomer.name ")
-	public List<String> findExternalCompanyCustomerNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeCustomer, Integer projectId);
+	@Query("select (select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToCustomer.name ")
+	public List<String> findDeliverToCustomerNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeCustomer, Integer projectId);
 
-	@Query("select (select b.name from Supplier b where a.deliveryRequest.externalCompanySupplier.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompanySupplier.name ")
-	public List<String> findExternalCompanySupplierNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeSupplier, Integer projectId);
+	@Query("select (select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id) " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToSupplier.name ")
+	public List<String> findDeliverToSupplierNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeSupplier, Integer projectId);
 
-	@Query("select a.deliveryRequest.externalCompany " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.externalCompany ")
-	public List<String> findExternalCompanyOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeOther, Integer projectId);
+	@Query("select a.deliveryRequest.deliverToOther " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.deliverToCompanyType = ?5 and a.deliveryRequest.project.id = ?6 group by a.deliveryRequest.deliverToOther ")
+	public List<String> findDeliverToOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeOther, Integer projectId);
 
-	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + externalCompanyCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-	public List<StockRow> findStockHistoryByExternalCompanyAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, String externalCompanyName, Integer projectId, String projectTypeStock);
+	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + deliverToEntityCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToOtherName, Integer projectId, String projectTypeStock);
 
 	////////////////////////////////////////////
 	@Query("select a.deliveryRequest.destinationProject.customer.id " + from1 + "  where  " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 " + " and a.deliveryRequest.destinationProject is not null and a.inboundDeliveryRequest.project.type = ?5 group by a.deliveryRequest.destinationProject.customer.id")

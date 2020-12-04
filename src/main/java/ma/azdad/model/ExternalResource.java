@@ -138,25 +138,25 @@ public class ExternalResource extends GenericBeanOld {
 			addRole(new ExternalResourceRole(role));
 	}
 
-	@Transient
-	public void setCompany(Customer customer, Supplier supplier, String company) {
-		switch (companyType) {
-		case CUSTOMER:
-			this.customer = customer;
-			this.supplier = null;
-			this.company = null;
-			break;
-		case SUPPLIER:
-			this.customer = null;
-			this.supplier = supplier;
-			this.company = null;
-			break;
-		case OTHER:
-			this.customer = null;
-			this.supplier = null;
-			this.company = company;
-		}
-	}
+//	@Transient
+//	public void setCompany(Customer customer, Supplier supplier, String company) {
+//		switch (companyType) {
+//		case CUSTOMER:
+//			this.customer = customer;
+//			this.supplier = null;
+//			this.company = null;
+//			break;
+//		case SUPPLIER:
+//			this.customer = null;
+//			this.supplier = supplier;
+//			this.company = null;
+//			break;
+//		case OTHER:
+//			this.customer = null;
+//			this.supplier = null;
+//			this.company = company;
+//		}
+//	}
 
 	@Transient
 	public Boolean hasRole(Role role) {
@@ -172,21 +172,21 @@ public class ExternalResource extends GenericBeanOld {
 		isAdmin = hasRole(Role.ROLE_ILOGISTICS_ADMIN);
 	}
 
-	@Transient
-	public String getCompanyName() {
-		if (companyType == null)
-			return null;
-		switch (companyType) {
-		case CUSTOMER:
-			return customer.getName();
-		case SUPPLIER:
-			return supplier.getName();
-		case OTHER:
-			return company;
-		default:
-			return null;
-		}
-	}
+//	@Transient
+//	public String getCompanyName() {
+//		if (companyType == null)
+//			return null;
+//		switch (companyType) {
+//		case CUSTOMER:
+//			return customer.getName();
+//		case SUPPLIER:
+//			return supplier.getName();
+//		case OTHER:
+//			return company;
+//		default:
+//			return null;
+//		}
+//	}
 
 	public String getFullName() {
 		return fullName;

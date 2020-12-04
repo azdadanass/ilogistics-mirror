@@ -107,9 +107,9 @@ public class DeliveryRequestService extends GenericServiceOld<DeliveryRequest> {
 		Hibernate.initialize(deliveryRequest.getWarehouse());
 		Hibernate.initialize(deliveryRequest.getEndCustomer());
 //		Hibernate.initialize(deliveryRequest.getToSupplier());
-		Hibernate.initialize(deliveryRequest.getInternalCompany());
-		Hibernate.initialize(deliveryRequest.getExternalCompanyCustomer());
-		Hibernate.initialize(deliveryRequest.getExternalCompanySupplier());
+		Hibernate.initialize(deliveryRequest.getDeliverToCompany());
+		Hibernate.initialize(deliveryRequest.getDeliverToCustomer());
+		Hibernate.initialize(deliveryRequest.getDeliverToSupplier());
 		Hibernate.initialize(deliveryRequest.getPo());
 		if (deliveryRequest.getToUser() != null) {
 			Hibernate.initialize(deliveryRequest.getToUser().getCustomer());
@@ -505,7 +505,7 @@ public class DeliveryRequestService extends GenericServiceOld<DeliveryRequest> {
 			} else if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType())) {
 				row = new TR();
 				row.addElement(new TD("Deliver To Company").setWidth(tdWidth1).setStyle(tdStyle1));
-				row.addElement(new TD(deliveryRequest.getExternalCompanyName()).setWidth(tdWidth2).setStyle(tdStyle2));
+				row.addElement(new TD(deliveryRequest.getDeliverToEntityName()).setWidth(tdWidth2).setStyle(tdStyle2));
 				row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 				row.addElement(new TD("Deliver to").setWidth(tdWidth1).setStyle(tdStyle1));
 				row.addElement(new TD(deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone() : "").setWidth(tdWidth2).setStyle(tdStyle2));

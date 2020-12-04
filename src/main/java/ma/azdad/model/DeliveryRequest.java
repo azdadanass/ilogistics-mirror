@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -66,7 +67,7 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	private Transporter transporter;
 
 	private Customer endCustomer;
-//	private Supplier toSupplier;
+	// private Supplier toSupplier;
 	// private Transporter toTransporter;
 	private User toUser;
 	private Site origin;
@@ -77,11 +78,11 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 
 	private TransportationRequest transportationRequest;
 
-	private Company internalCompany;
-	private CompanyType externalCompanyType;
-	private Customer externalCompanyCustomer;
-	private Supplier externalCompanySupplier;
-	private String externalCompany;
+	private CompanyType deliverToCompanyType;
+	private Company deliverToCompany;
+	private Customer deliverToCustomer;
+	private Supplier deliverToSupplier;
+	private String deliverToOther;
 
 	private DeliveryRequest outboundDeliveryRequestReturn;
 	private DeliveryRequest outboundDeliveryRequestTransfer;
@@ -348,11 +349,11 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 //		this.toSupplier = template.getToSupplier();
 		this.deliverToType = template.getDeliverToType();
 		this.toUser = template.getToUser();
-		this.internalCompany = template.getInternalCompany();
-		this.externalCompanyType = template.externalCompanyType;
-		this.externalCompanyCustomer = template.externalCompanyCustomer;
-		this.externalCompanySupplier = template.externalCompanySupplier;
-		this.externalCompany = template.externalCompany;
+		this.deliverToCompany = template.getDeliverToCompany();
+		this.deliverToCompanyType = template.deliverToCompanyType;
+		this.deliverToCustomer = template.deliverToCustomer;
+		this.deliverToSupplier = template.deliverToSupplier;
+		this.deliverToOther = template.deliverToOther;
 		this.isSnRequired = template.getIsSnRequired();
 		this.isPackingListRequired = template.getIsPackingListRequired();
 		this.important = template.getImportant();
@@ -457,21 +458,57 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	}
 
 	@Transient
-	public String getExternalCompanyName() {
+	public String getDeliverToEntityName() {
 		try {
-			switch (externalCompanyType) {
+			switch (deliverToCompanyType) {
+			case COMPANY:
+				return "Company / " + getDeliverToCompanyName();
 			case CUSTOMER:
-				return "Customer / " + externalCompanyCustomer.getName();
+				return "Customer / " + getDeliverToCustomerName();
 			case SUPPLIER:
-				return "Supplier / " + externalCompanySupplier.getName();
-			case OTHER:
-				return "Other / " + externalCompany;
+				return "Supplier / " + getDeliverToSupplierName();
 			default:
 				return "";
 			}
 		} catch (Exception e) {
 			return "";
 		}
+	}
+
+	@Transient
+	public String getDeliverToCompanyName() {
+		return deliverToCompany != null ? deliverToCompany.getName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCompanyName(String deliverToCompanyName) {
+		if (deliverToCompany == null)
+			deliverToCompany = new Company();
+		deliverToCompany.setName(deliverToCompanyName);
+	}
+
+	@Transient
+	public String getDeliverToCustomerName() {
+		return deliverToCustomer != null ? deliverToCustomer.getName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCustomerName(String deliverToCustomerName) {
+		if (deliverToCustomer == null)
+			deliverToCustomer = new Customer();
+		deliverToCustomer.setName(deliverToCustomerName);
+	}
+
+	@Transient
+	public String getDeliverToSupplierName() {
+		return deliverToSupplier != null ? deliverToSupplier.getName() : null;
+	}
+
+	@Transient
+	public void setDeliverToSupplierName(String deliverToSupplierName) {
+		if (deliverToSupplier == null)
+			deliverToSupplier = new Supplier();
+		deliverToSupplier.setName(deliverToSupplierName);
 	}
 
 	@Transient
@@ -1070,39 +1107,43 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 		this.referenceNumber = referenceNumber;
 	}
 
-	@Enumerated
-	public CompanyType getExternalCompanyType() {
-		return externalCompanyType;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "external_company_type")
+	public CompanyType getDeliverToCompanyType() {
+		return deliverToCompanyType;
 	}
 
-	public void setExternalCompanyType(CompanyType externalCompanyType) {
-		this.externalCompanyType = externalCompanyType;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Customer getExternalCompanyCustomer() {
-		return externalCompanyCustomer;
-	}
-
-	public void setExternalCompanyCustomer(Customer externalCompanyCustomer) {
-		this.externalCompanyCustomer = externalCompanyCustomer;
+	public void setDeliverToCompanyType(CompanyType deliverToCompanyType) {
+		this.deliverToCompanyType = deliverToCompanyType;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Supplier getExternalCompanySupplier() {
-		return externalCompanySupplier;
+	@JoinColumn(name = "external_company_customer_idcustomer")
+	public Customer getDeliverToCustomer() {
+		return deliverToCustomer;
 	}
 
-	public void setExternalCompanySupplier(Supplier externalCompanySupplier) {
-		this.externalCompanySupplier = externalCompanySupplier;
+	public void setDeliverToCustomer(Customer deliverToCustomer) {
+		this.deliverToCustomer = deliverToCustomer;
 	}
 
-	public String getExternalCompany() {
-		return externalCompany;
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@JoinColumn(name = "external_company_supplier_idsupplier")
+	public Supplier getDeliverToSupplier() {
+		return deliverToSupplier;
 	}
 
-	public void setExternalCompany(String externalCompany) {
-		this.externalCompany = externalCompany;
+	public void setDeliverToSupplier(Supplier deliverToSupplier) {
+		this.deliverToSupplier = deliverToSupplier;
+	}
+
+	@Column(name = "external_company")
+	public String getDeliverToOther() {
+		return deliverToOther;
+	}
+
+	public void setDeliverToOther(String deliverToOther) {
+		this.deliverToOther = deliverToOther;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
@@ -1360,27 +1401,27 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	}
 
 	@Transient
-	public Integer getExternalCompanyCustomerId() {
-		return externalCompanyCustomer == null ? null : externalCompanyCustomer.getId();
+	public Integer getDeliverToCustomerId() {
+		return deliverToCustomer == null ? null : deliverToCustomer.getId();
 	}
 
 	@Transient
-	public void setExternalCompanyCustomerId(Integer externalCompanyCustomerId) {
-		if (externalCompanyCustomer == null || !externalCompanyCustomer.getId().equals(externalCompanyCustomerId))
-			externalCompanyCustomer = new Customer();
-		externalCompanyCustomer.setId(externalCompanyCustomerId);
+	public void setDeliverToCustomerId(Integer deliverToCustomerId) {
+		if (deliverToCustomer == null || !deliverToCustomer.getId().equals(deliverToCustomerId))
+			deliverToCustomer = new Customer();
+		deliverToCustomer.setId(deliverToCustomerId);
 	}
 
 	@Transient
-	public Integer getExternalCompanySupplierId() {
-		return externalCompanySupplier == null ? null : externalCompanySupplier.getId();
+	public Integer getDeliverToSupplierId() {
+		return deliverToSupplier == null ? null : deliverToSupplier.getId();
 	}
 
 	@Transient
-	public void setExternalCompanySupplierId(Integer externalCompanySupplierId) {
-		if (externalCompanySupplier == null || !externalCompanySupplier.getId().equals(externalCompanySupplierId))
-			externalCompanySupplier = new Supplier();
-		externalCompanySupplier.setId(externalCompanySupplierId);
+	public void setDeliverToSupplierId(Integer deliverToSupplierId) {
+		if (deliverToSupplier == null || !deliverToSupplier.getId().equals(deliverToSupplierId))
+			deliverToSupplier = new Supplier();
+		deliverToSupplier.setId(deliverToSupplierId);
 	}
 
 	@Transient
@@ -1493,12 +1534,13 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Company getInternalCompany() {
-		return internalCompany;
+	@JoinColumn(name = "internal_company_idcompany")
+	public Company getDeliverToCompany() {
+		return deliverToCompany;
 	}
 
-	public void setInternalCompany(Company internalCompany) {
-		this.internalCompany = internalCompany;
+	public void setDeliverToCompany(Company deliverToCompany) {
+		this.deliverToCompany = deliverToCompany;
 	}
 
 	public Boolean getIsForTransfer() {

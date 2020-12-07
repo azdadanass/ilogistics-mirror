@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -474,7 +475,7 @@ public class User implements Serializable {
 		this.phone2 = phone2;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public CompanyType getCompanyType() {
 		return companyType;
 	}

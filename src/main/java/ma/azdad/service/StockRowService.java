@@ -384,8 +384,8 @@ public class StockRowService extends GenericServiceOld<StockRow> {
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToOtherName, Integer projectId) {
-		return stockRowRepos.findStockHistoryByDeliverToEntityAndCompanyOwner(username, warehouseList, assignedProjectList, companyOwnerId, deliverToOtherName, projectId, ProjectTypes.STOCK.getValue());
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToName, Integer projectId) {
+		return stockRowRepos.findStockHistoryByDeliverToEntityAndCompanyOwner(username, warehouseList, assignedProjectList, companyOwnerId, deliverToName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
 	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList) {
@@ -407,8 +407,8 @@ public class StockRowService extends GenericServiceOld<StockRow> {
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByDeliverToOtherAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToOtherName, Integer projectId) {
-		return stockRowRepos.findStockHistoryByDeliverToEntityAndCustomerOwner(username, warehouseList, assignedProjectList, customerOwnerId, deliverToOtherName, projectId, ProjectTypes.STOCK.getValue());
+	public List<StockRow> findStockHistoryByDeliverToOtherAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToName, Integer projectId) {
+		return stockRowRepos.findStockHistoryByDeliverToEntityAndCustomerOwner(username, warehouseList, assignedProjectList, customerOwnerId, deliverToName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

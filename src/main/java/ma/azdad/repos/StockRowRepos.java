@@ -256,7 +256,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<String> findDeliverToOtherNameListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, CompanyType companyTypeOther, Integer projectId);
 
 	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + deliverToEntityCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToOtherName, Integer projectId, String projectTypeStock);
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToName, Integer projectId, String projectTypeStock);
 
 	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
 	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
@@ -279,7 +279,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<String> findDeliverToOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, CompanyType companyTypeOther, Integer projectId);
 
 	@Query(select15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + deliverToEntityCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-	public List<StockRow> findStockHistoryByDeliverToEntityAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToOtherName, Integer projectId, String projectTypeStock);
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToName, Integer projectId, String projectTypeStock);
 
 	////////////////////////////////////////////
 	@Query("select a.deliveryRequest.destinationProject.customer.id " + from1 + "  where  " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 " + " and a.deliveryRequest.destinationProject is not null and a.inboundDeliveryRequest.project.type = ?5 group by a.deliveryRequest.destinationProject.customer.id")

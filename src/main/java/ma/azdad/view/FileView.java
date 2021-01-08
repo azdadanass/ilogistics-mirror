@@ -72,6 +72,8 @@ public class FileView {
 			// So, browser is requesting the media. Return a real StreamedContent with the
 			// media bytes.
 			String fileName = fc.getExternalContext().getRequestParameterMap().get("fileName");
+			if (StringUtils.isBlank(fileName))
+				return null;
 			String contentType = ec.getMimeType(fileName);
 			File file = new File(path + fileName);
 			InputStream stream = new FileInputStream(file);

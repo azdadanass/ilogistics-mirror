@@ -21,7 +21,6 @@ import javax.persistence.Transient;
 import org.springframework.beans.BeanUtils;
 
 @Entity
-
 public class PartNumber extends GenericBeanOld implements Serializable {
 
 	private String name;

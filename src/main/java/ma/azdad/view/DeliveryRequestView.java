@@ -260,7 +260,7 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 		} else if (isViewPage) {
 			deliveryRequest = service.findOne(selectedId);
 			deliveryRequest.init();
-			initCommentsVariables();
+//			initCommentsVariables();
 			projectCross = projectCrossService.findByDeliveryRequest(selectedId);
 		} else if (isLightViewPage || isPrintPage) {
 			deliveryRequest = service.findOne(selectedId);
@@ -515,7 +515,7 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 		switch (step) {
 		case 0:
 			System.out.println("step0");
-			deliveryRequestComment = new DeliveryRequestComment(new Date(), "Visual Check", deliveryRequest, sessionView.getUser());
+			deliveryRequest.addComment(new DeliveryRequestComment("Visual Check", null, sessionView.getUser()));
 			step++;
 			break;
 		case 1:
@@ -523,7 +523,7 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 			if (deliveryRequestComment.getContent() != null && !deliveryRequestComment.getContent().isEmpty())
 				deliveryRequest.getCommentList().add(deliveryRequestComment);
 			step++;
-			deliveryRequestComment = new DeliveryRequestComment(new Date(), "Counts Validation", deliveryRequest, sessionView.getUser());
+			deliveryRequest.addComment(new DeliveryRequestComment("Counts Validation", null, sessionView.getUser()));
 			initTmpQuantites();
 			break;
 		case 2:
@@ -1085,45 +1085,72 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 	}
 
 	// COMMENTS MANAGEMENT
-	public void initComment() {
-		System.out.println("initComment !");
-		deliveryRequestComment = new DeliveryRequestComment();
-	}
+//	public void initComment() {
+//		System.out.println("initComment !");
+//		deliveryRequestComment = new DeliveryRequestComment();
+//	}
+//
+//	public Boolean canAddComment() {
+//		return sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+//				|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
+//				|| cacheView.hasDelegation(deliveryRequest.getProject().getId())//
+//				|| sessionView.isTheConnectedUser(userService.findLobManagerByDeliveryRequest(deliveryRequest.getId()))//
+//				|| (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
+//	}
+//
+//	public void addComment() {
+//		if (!canAddComment())
+//			return;
+//		deliveryRequestComment.setDate(new Date());
+//		deliveryRequestComment.setParent(deliveryRequest);
+//		deliveryRequestComment.setUser(sessionView.getUser());
+//		deliveryRequest.getCommentList().add(deliveryRequestComment);
+//		service.save(deliveryRequest);
+//		deliveryRequest = service.findOne(deliveryRequest.getId());
+//		deliveryRequest.init();
+//		initCommentsVariables();
+//	}
+//
+//	public void initCommentsVariables() {
+//		Map<String, List<DeliveryRequestComment>> map = new HashMap<>();
+//		for (DeliveryRequestComment comment : deliveryRequest.getCommentList()) {
+//			String date = UtilsFunctions.getFormattedDate(comment.getDate());
+//			if (!map.containsKey(date))
+//				map.put(date, new ArrayList<DeliveryRequestComment>());
+//			map.get(date).add(comment);
+//		}
+//
+//		datesTab = map.keySet().toArray(new String[map.keySet().size()]);
+//		commentsTab = new DeliveryRequestComment[datesTab.length][];
+//		for (int i = 0; i < datesTab.length; i++)
+//			commentsTab[i] = map.get(datesTab[i]).toArray(new DeliveryRequestComment[map.get(datesTab[i]).size()]);
+//	}
+
+	// comments
+	private DeliveryRequestComment comment = new DeliveryRequestComment();
 
 	public Boolean canAddComment() {
-		return sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
-				|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
-				|| cacheView.hasDelegation(deliveryRequest.getProject().getId())//
-				|| sessionView.isTheConnectedUser(userService.findLobManagerByDeliveryRequest(deliveryRequest.getId()))//
-				|| (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
+		return true;
 	}
 
 	public void addComment() {
 		if (!canAddComment())
 			return;
-		deliveryRequestComment.setDate(new Date());
-		deliveryRequestComment.setParent(deliveryRequest);
-		deliveryRequestComment.setUser(sessionView.getUser());
-		deliveryRequest.getCommentList().add(deliveryRequestComment);
-		service.save(deliveryRequest);
-		deliveryRequest = service.findOne(deliveryRequest.getId());
-		deliveryRequest.init();
-		initCommentsVariables();
+		comment.setDate(new Date());
+		comment.setUser(sessionView.getUser());
+		deliveryRequest.addComment(comment);
+		deliveryRequest = service.saveAndRefresh(deliveryRequest);
 	}
 
-	public void initCommentsVariables() {
-		Map<String, List<DeliveryRequestComment>> map = new HashMap<>();
-		for (DeliveryRequestComment comment : deliveryRequest.getCommentList()) {
-			String date = UtilsFunctions.getFormattedDate(comment.getDate());
-			if (!map.containsKey(date))
-				map.put(date, new ArrayList<DeliveryRequestComment>());
-			map.get(date).add(comment);
-		}
+	public Boolean canDeleteComment(DeliveryRequestComment comment) {
+		return sessionView.isTheConnectedUser(comment.getUser());
+	}
 
-		datesTab = map.keySet().toArray(new String[map.keySet().size()]);
-		commentsTab = new DeliveryRequestComment[datesTab.length][];
-		for (int i = 0; i < datesTab.length; i++)
-			commentsTab[i] = map.get(datesTab[i]).toArray(new DeliveryRequestComment[map.get(datesTab[i]).size()]);
+	public void deleteComment() {
+		if (!canDeleteComment(comment))
+			return;
+		deliveryRequest.removeComment(comment);
+		deliveryRequest = service.saveAndRefresh(deliveryRequest);
 	}
 
 	// SAVE DELIVERYREQUEST
@@ -1151,7 +1178,7 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 		switch (step) {
 		case 0:
 			System.err.println("step0");
-			deliveryRequestComment = new DeliveryRequestComment(new Date(), isAddPage ? "Delivery Request Creation" : "Delivery Request Edition", deliveryRequest, sessionView.getUser());
+			deliveryRequest.addComment(new DeliveryRequestComment(isAddPage ? "Delivery Request Creation" : "Delivery Request Edition", null, sessionView.getUser()));
 			step++;
 			break;
 		case 1:
@@ -2388,6 +2415,14 @@ public class DeliveryRequestView extends GenericViewOld<DeliveryRequest> impleme
 
 	public void setOutboundDeliveryRequestId(Integer outboundDeliveryRequestId) {
 		this.outboundDeliveryRequestId = outboundDeliveryRequestId;
+	}
+
+	public DeliveryRequestComment getComment() {
+		return comment;
+	}
+
+	public void setComment(DeliveryRequestComment comment) {
+		this.comment = comment;
 	}
 
 }

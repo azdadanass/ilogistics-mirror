@@ -129,10 +129,9 @@
 							<h:outputText value="Print" />
 							<f:param name="id" value="#{deliveryRequestView.deliveryRequest.id}" />
 						</h:outputLink>
-						<p:commandLink title="Add Comment" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{deliveryRequestView.initComment()}" update=":addCommentForm"
-							oncomplete="PF('addCommentDlg').show()" rendered="#{deliveryRequestView.canAddComment()}">
+						<p:commandLink title="Add Comment" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" onclick="PF('addCommentDlg').show()" rendered="#{deliveryRequestView.canAddComment()}">
 							<i class="ace-icon fa fa-comment bigger-230"></i>
-							<h:outputText value="Add" />
+							<h:outputText value="Comment" />
 						</p:commandLink>
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Create Inbound (Return from this outbound) " value="#{deliveryRequestView.addEditPage}"
 							target="blank" rendered="#{deliveryRequestView.canReturnFromOutbound()}">
@@ -835,31 +834,27 @@
 						</f:subview>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<h:panelGroup id="panel3">
+						<h:panelGroup id="commentPanel">
 							<div class="row">
 								<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 									<div class="timeline-container timeline-style2">
-										<ui:repeat var="date" value="#{deliveryRequestView.datesTab}" varStatus="varStatus">
+										<ui:repeat var="commentGroup" value="#{deliveryRequestView.deliveryRequest.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
-													<b> <h:outputText value="#{date}" />
+													<b> <h:outputText value="#{commentGroup.date}">
+															<f:convertDateTime pattern="dd-MM-yyyy" />
+														</h:outputText>
 													</b>
 												</span>
 											</div>
 											<div class="timeline-items">
-												<ui:repeat var="comment" value="#{deliveryRequestView.commentsTab[varStatus.index]}">
+												<ui:repeat var="comment" value="#{commentGroup.commentList}">
 													<div class="timeline-item clearfix">
 														<div class="timeline-info">
-															<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
-																<f:param name="fileName" value="#{cacheView.getPhoto(comment.user.username)}" />
+															<p:graphicImage value="#{fileView.photoStream}">
+																<f:param name="fileName" value="#{comment.userPhoto}" />
 															</p:graphicImage>
-															<!-- <span class="badge badge-success">
-															<h:outputText value="#{comment.date}">
-																<f:convertDateTime pattern="HH:mm" />
-															</h:outputText>
-														</span> -->
-															<i class="timeline-indicator btn btn-info no-hover"></i>
-															<br />
+															<i class="timeline-indicator btn btn-info no-hover"></i> <br />
 															<span class="orange">
 																<i class="ace-icon fa fa-clock-o bigger-120"></i>
 																<h:outputText value="#{comment.date}">
@@ -871,7 +866,7 @@
 															<div class="widget-header widget-header-small">
 																<h5 class="widget-title smaller">
 																	<a href="#" class="blue">
-																		<h:outputText value="#{cacheView.getFullName(comment.user.username)}" />
+																		<h:outputText value="#{comment.userFullName}" />
 																	</a>
 																	<i class="ace-icon fa fa-angle-double-right"></i>
 																	<span class="grey">
@@ -881,15 +876,15 @@
 															</div>
 															<div class="widget-body">
 																<div class="widget-main">
-																	<f:subview rendered="#{comment.type!=null}">
-																		<h5 class="text-warning bigger-110 red">
-																			<i class="ace-icon fa fa-exclamation-triangle"></i>
-																			<h:outputText value=" #{comment.type}" />
-																		</h5>
-																	</f:subview>
-																	<h:outputText value="Comment : " styleClass="grey bolder" />
-																	<h:outputText value=" #{comment.content}" />
+																	<h:outputText value=" #{comment.content}" escape="false"/>
 																</div>
+															</div>
+															<div class="pull-left action-buttons">
+																<i class="ace-icon fa fa-reply-all blue bigger-125" />
+																<p:commandLink title="Delete Comment" onclick="PF('deleteCommentDlg').show()" rendered="#{deliveryRequestView.canDeleteComment(comment)}" >
+																	<i class="ace-icon fa fa-trash-o red bigger-130" />
+																	<f:setPropertyActionListener value="#{comment}" target="#{deliveryRequestView.comment}"/>
+																</p:commandLink>
 															</div>
 														</div>
 													</div>

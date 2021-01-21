@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +151,8 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	private Double qTotalCrossCharge = 0.0;
 	private Double qAssociatedCost = 0.0;
 	private Integer crossChargeId;
+
+	private List<CommentGroup<DeliveryRequestComment>> commentGroupList;
 
 	public DeliveryRequest(Integer id, Double qTotalCost, Double qTotalCrossCharge, Integer crossChargeId) {
 		super(id);
@@ -382,6 +385,29 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 	public void clearBoqMappingList() {
 		boqMappingList.forEach(i -> i.setDeliveryRequest(null));
 		boqMappingList.clear();
+	}
+
+	public void addComment(DeliveryRequestComment comment) {
+		comment.setDeliveryRequest(this);
+		commentList.add(comment);
+	}
+
+	public void removeComment(DeliveryRequestComment comment) {
+		comment.setDeliveryRequest(null);
+		commentList.remove(comment);
+	}
+
+	private void generateCommentGroupList() {
+		Map<String, List<DeliveryRequestComment>> map = new HashMap<>();
+		for (DeliveryRequestComment comment : commentList) {
+			String dateStr = UtilsFunctions.getFormattedDate(comment.getDate());
+			map.putIfAbsent(dateStr, new ArrayList<DeliveryRequestComment>());
+			map.get(dateStr).add(comment);
+		}
+		commentGroupList = new ArrayList<>();
+		for (String dateStr : map.keySet())
+			commentGroupList.add(new CommentGroup<>(UtilsFunctions.getDate(dateStr), map.get(dateStr)));
+		Collections.sort(commentGroupList);
 	}
 
 	@Transient
@@ -729,7 +755,7 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 		this.detailList = detailList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
 	public List<DeliveryRequestComment> getCommentList() {
 		return commentList;
 	}
@@ -1625,6 +1651,18 @@ public class DeliveryRequest extends GenericBeanOld implements Serializable {
 
 	public void setSdm(Boolean sdm) {
 		this.sdm = sdm;
+	}
+
+	@Transient
+	public List<CommentGroup<DeliveryRequestComment>> getCommentGroupList() {
+		if (commentGroupList == null)
+			generateCommentGroupList();
+		return commentGroupList;
+	}
+
+	@Transient
+	public void setCommentGroupList(List<CommentGroup<DeliveryRequestComment>> commentGroupList) {
+		this.commentGroupList = commentGroupList;
 	}
 
 }

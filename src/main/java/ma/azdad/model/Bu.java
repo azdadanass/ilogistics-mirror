@@ -8,16 +8,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-
-
 public class Bu implements Serializable {
 
 	private Integer id;
 	private String name;
 	private Company company;
+
+	private User director;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +46,16 @@ public class Bu implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "director_id", nullable = true)
+	public User getDirector() {
+		return director;
+	}
+
+	public void setDirector(User director) {
+		this.director = director;
 	}
 
 }

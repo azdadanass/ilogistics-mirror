@@ -400,7 +400,7 @@
 							<h:outputText value="Old Password" />
 						</div>
 						<div class="col-sm-9 col-xs-7">
-							<p:password value="#{passwordView.oldPassword}" required="true" requiredMessage="You should insert your old password" />
+							<p:password value="#{passwordView.oldPassword}" required="true" requiredMessage="Old password should not be null" />
 						</div>
 					</div>
 					<div class="col-sm-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 form-group">
@@ -408,7 +408,8 @@
 							<h:outputText value="New Password" />
 						</div>
 						<div class="col-sm-9 col-xs-7">
-							<p:password value="#{passwordView.newPassword}" required="true" requiredMessage="New password is required" />
+							<p:password value="#{passwordView.newPassword}" id="password" required="true" feedback="true" onblur="validatePassword()" inline="true"/>
+							<p:message for="password" id="passwordMsg" />
 						</div>
 					</div>
 					<div class="col-sm-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 form-group">
@@ -416,7 +417,7 @@
 							<h:outputText value="Repeat Password" />
 						</div>
 						<div class="col-sm-9 col-xs-7">
-							<p:password value="#{passwordView.confirmation}" required="true" requiredMessage="Please do up your new password" />
+							<p:password value="#{passwordView.confirmation}" required="true" requiredMessage="Confirmation should not be null" />
 						</div>
 					</div>
 				</div>
@@ -424,7 +425,7 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('changePasswordDlg').hide()" value="Hide" styleClass="btn btn-warning" partialSubmit="true" process="@this" />
-				<p:commandButton action="#{passwordView.updatePassword()}" value="Change" styleClass="btn btn-success" update="messages" />
+				<p:commandButton action="#{passwordView.updatePassword()}" value="Change" styleClass="btn btn-success" update="messages" onclick="return validatePassword()" />
 			</div>
 		</p:dialog>
 	</h:form>

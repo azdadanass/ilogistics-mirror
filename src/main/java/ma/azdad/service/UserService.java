@@ -1,6 +1,7 @@
 package ma.azdad.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,9 @@ import ma.azdad.repos.UserRepos;
 @Transactional
 public class UserService {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	public static final int MAX_FAILED_ATTEMPTS = 3;
+	private static final long LOCK_TIME_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 	@Autowired
 	private UserRepos repos;
@@ -266,6 +270,38 @@ public class UserService {
 
 	public User findLobManagerByDeliveryRequest(Integer deliveryRequestId) {
 		return repos.findLobManagerByDeliveryRequest(deliveryRequestId);
+	}
+
+	// security
+	public void increaseFailedAttempts(User user) {
+		int newFailAttempts = user.getFailedAttempt() + 1;
+		repos.updateFailedAttempts(newFailAttempts, user.getLogin());
+	}
+
+	public void resetFailedAttempts(String login) {
+		repos.updateFailedAttempts(0, login);
+	}
+
+	public void lock(User user) {
+		user.setAccountNonLocked(false);
+		user.setLockTime(new Date());
+
+		repos.save(user);
+	}
+
+	public boolean unlockWhenTimeExpired(User user) {
+		long lockTimeInMillis = user.getLockTime().getTime();
+		long currentTimeInMillis = System.currentTimeMillis();
+
+		if (lockTimeInMillis + LOCK_TIME_DURATION < currentTimeInMillis) {
+			user.setAccountNonLocked(true);
+			user.setLockTime(null);
+			user.setFailedAttempt(0);
+			repos.save(user);
+			return true;
+		}
+
+		return false;
 	}
 
 }

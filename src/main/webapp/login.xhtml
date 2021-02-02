@@ -76,12 +76,7 @@
 												<i class="icon-lock"></i>
 											</span>
 										</label>
-										<f:subview rendered="#{param.error1 != null}">
-											<h:outputText value="Incorrect username or password" styleClass="bolder red" />
-										</f:subview>
-										<f:subview rendered="#{param.error2 != null}">
-											<h:outputText value="Access Not Allowed" styleClass="bolder red" />
-										</f:subview>
+										<h:outputText value="#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}" styleClass="bolder red" />
 										<div class="space"></div>
 										<div class="clearfix">
 											<button type="submit" class="width-35 pull-right btn btn-sm btn-primary" onclick="login();;">

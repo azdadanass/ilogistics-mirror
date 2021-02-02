@@ -147,4 +147,9 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select a.project.costcenter.lob.manager from DeliveryRequest a where a.id=  ?1")
 	User findLobManagerByDeliveryRequest(Integer deliveryRequestId);
 
+	// security
+	@Query("UPDATE User u SET u.failedAttempt = ?1 WHERE u.login = ?2")
+	@Modifying
+	void updateFailedAttempts(int failAttempts, String login);
+
 }

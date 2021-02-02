@@ -44,6 +44,10 @@ public class User implements Serializable {
 	private Boolean active = true;
 	private Date birthday;
 
+	private Boolean accountNonLocked;
+	private Integer failedAttempt;
+	private Date lockTime;
+
 	private UserData userData = new UserData();
 	private CompanyType companyType;
 	private Company company;
@@ -623,6 +627,40 @@ public class User implements Serializable {
 	@Transient
 	public void setLineManager(User lineManager) {
 		this.lineManager = lineManager;
+	}
+
+	public Boolean getAccountNonLocked() {
+		return accountNonLocked;
+	}
+
+	public void setAccountNonLocked(Boolean accountNonLocked) {
+		this.accountNonLocked = accountNonLocked;
+	}
+
+	public Integer getFailedAttempt() {
+		return failedAttempt;
+	}
+
+	public void setFailedAttempt(Integer failedAttempt) {
+		this.failedAttempt = failedAttempt;
+	}
+
+	public Date getLockTime() {
+		return lockTime;
+	}
+
+	public void setLockTime(Date lockTime) {
+		this.lockTime = lockTime;
+	}
+
+	@Transient
+	public Boolean isEnabled() {
+		return this.active;
+	}
+
+	@Transient
+	public Boolean isAccountNonLocked() {
+		return this.accountNonLocked;
 	}
 
 }

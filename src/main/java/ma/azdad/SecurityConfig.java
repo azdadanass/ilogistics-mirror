@@ -28,7 +28,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	DataSource dataSource;
 
 	@Autowired
-	UserDetailsService userDetailsService;
+	private CustomLoginFailureHandler loginFailureHandler;
+
+	@Autowired
+	private CustomLoginSuccessHandler loginSuccessHandler;
+
+	@Autowired
+	private UserDetailsService userDetailsService;
 
 	@Value("${applicationCode}")
 	public String applicationCode;
@@ -49,7 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				//
 				.antMatchers("/**").hasRole(applicationCode)
 				//
-				.and().formLogin().loginPage("/login.xhtml").successForwardUrl("/index.xhtml?faces-redirect=true").defaultSuccessUrl("/index.xhtml?faces-redirect=true", true).failureUrl("/login.xhtml?error1").and().exceptionHandling().accessDeniedPage("/login.xhtml?error2").and().logout().permitAll();
+				.and().formLogin().loginPage("/login.xhtml").failureHandler(loginFailureHandler).successHandler(loginSuccessHandler) //
+				.and().exceptionHandling().accessDeniedPage("/ad.xhtml").and().logout().permitAll();
 
 	}
 
@@ -60,9 +67,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		String usernameQuery = "select login,password, 1 from users where login=?";
-		String rolesQuery = "select b.login,a.role from user_role a,users b where a.user_username = b.username and b.login=?";
-		auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery(usernameQuery).authoritiesByUsernameQuery(rolesQuery);
+//		String usernameQuery = "select login,password, 1 from users where login=?";
+//		String rolesQuery = "select b.login,a.role from user_role a,users b where a.user_username = b.username and b.login=?";
+//		auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery(usernameQuery).authoritiesByUsernameQuery(rolesQuery);
+
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	private String[] getPages(String... models) {

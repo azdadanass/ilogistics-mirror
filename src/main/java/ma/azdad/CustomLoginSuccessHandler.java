@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.User;
 import ma.azdad.service.UserService;
 
 @Component
@@ -21,13 +22,9 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-		org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-
-//		if (user.getFailedAttempt() > 0) {
-		userService.resetFailedAttempts(user.getUsername());
-//		}
-
+		User user = userService.findByLogin(((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername());
+		if (user.getFailedAttempt() > 0)
+			userService.resetFailedAttempts(user.getLogin());
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 

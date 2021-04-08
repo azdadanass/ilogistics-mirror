@@ -11,7 +11,7 @@ import org.apache.commons.io.FilenameUtils;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
-@SuppressWarnings("serial")
+
 public class TeamFile extends GenericFile<Team> implements Serializable {
 
 	public TeamFile() {

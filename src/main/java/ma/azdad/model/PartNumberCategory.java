@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberCategory extends GenericBeanOld implements Serializable {
+public class PartNumberCategory extends GenericBean implements Serializable {
 
 	private String name;
 

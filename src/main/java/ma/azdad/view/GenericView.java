@@ -13,14 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ma.azdad.model.GenericBean;
 import ma.azdad.service.CacheService;
 import ma.azdad.service.GenericService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.Filterable;
 import ma.azdad.utils.PageType;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class GenericView<A extends GenericBean, B extends GenericService> {
+public class GenericView<A extends Filterable, B extends GenericService> {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -131,10 +131,6 @@ public class GenericView<A extends GenericBean, B extends GenericService> {
 	public void refreshList() {
 		if (isListPage)
 			initLists(service.findAll());
-	}
-
-	protected void refreshModel(A a) {
-		model = (A) service.findOne(a.id());
 	}
 
 	protected void addPage() {

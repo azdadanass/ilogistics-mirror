@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "myhr_external_resource")
 
-public class MyhrExternalResource extends GenericBeanOld implements Serializable {
+public class MyhrExternalResource extends GenericBean implements Serializable {
 
 	private String photo;
 	private String firstName;

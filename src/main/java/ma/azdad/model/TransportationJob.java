@@ -23,7 +23,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 
-public class TransportationJob extends GenericBeanOld implements Serializable {
+public class TransportationJob extends GenericBean implements Serializable {
 
 	private String comment;
 	private Date startDate; // Calculable

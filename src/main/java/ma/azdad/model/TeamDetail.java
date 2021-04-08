@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
-public class TeamDetail extends GenericBeanOld implements Serializable {
+public class TeamDetail extends GenericBean implements Serializable {
 
 	private Boolean internal;
 	private TeamDetailType type;

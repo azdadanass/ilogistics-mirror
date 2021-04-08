@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 
-public class PartNumberEquivalenceDetail extends GenericBeanOld implements Serializable {
+public class PartNumberEquivalenceDetail extends GenericBean implements Serializable {
 
 	private Integer quantity = 1;
 

@@ -1,5 +1,6 @@
 package ma.azdad.model;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -8,24 +9,36 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import org.apache.commons.io.FilenameUtils;
 
 import ma.azdad.service.UtilsFunctions;
 
 @MappedSuperclass
+public abstract class GenericFile<A extends GenericBean> extends GenericBean implements Serializable {
 
-public class GenericFile<A extends GenericBeanOld> extends GenericBeanOld implements Serializable {
-
-	protected String name;
-	protected String extension;
-	protected String link = "noimage.jpg";
 	protected Date date;
+	protected String link = "noimage.jpg";
+	protected String extension;
 	protected String type;
 	protected String size;
-	protected A parent;
+	protected String name;
 	protected User user;
+	protected A parent;
+
+	public GenericFile() {
+	}
+
+	public GenericFile(String folder, File file, String type, String name, User user) {
+		this.date = new Date();
+		this.link = folder + "/" + file.getName();
+		this.extension = FilenameUtils.getExtension(this.link);
+		this.size = UtilsFunctions.getFormattedSize(file.length());
+		this.type = type;
+		this.name = name;
+		this.user = user;
+	}
 
 	@Transient
 	public Boolean getIsImage() {
@@ -37,25 +50,15 @@ public class GenericFile<A extends GenericBeanOld> extends GenericBeanOld implem
 		return "pdf".equals(extension);
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_id", nullable = false)
-	public A getParent() {
-		return parent;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setParent(A parent) {
-		this.parent = parent;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
-	public String getExtension() {
-		return extension;
-	}
-
-	public void setExtension(String extension) {
-		this.extension = extension;
-	}
-
-	@Column(length = 100)
+	@Column(length = 200)
 	public String getLink() {
 		return link;
 	}
@@ -64,23 +67,12 @@ public class GenericFile<A extends GenericBeanOld> extends GenericBeanOld implem
 		this.link = link;
 	}
 
-	@Column(length = 500)
-	public String getName() {
-		return name;
+	public String getExtension() {
+		return extension;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
+	public void setExtension(String extension) {
+		this.extension = extension;
 	}
 
 	public String getType() {
@@ -99,7 +91,17 @@ public class GenericFile<A extends GenericBeanOld> extends GenericBeanOld implem
 		this.size = size;
 	}
 
+	@Column(length = 500)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_username")
 	public User getUser() {
 		return user;
 	}

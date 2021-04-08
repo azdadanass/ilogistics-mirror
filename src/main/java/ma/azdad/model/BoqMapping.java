@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class BoqMapping extends GenericBeanOld implements Serializable {
+public class BoqMapping extends GenericBean implements Serializable {
 
 	private Double quantity = 0.0;
 

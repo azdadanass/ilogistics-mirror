@@ -17,7 +17,7 @@ import ma.azdad.utils.Color;
 
 @Entity
 
-public class UserHistory extends GenericBeanOld {
+public class UserHistory extends GenericBean {
 
 	private Date date;
 	private String status;

@@ -15,7 +15,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 
-public class StockRow extends GenericBeanOld implements Serializable {
+public class StockRow extends GenericBean implements Serializable {
 
 	private Double quantity;
 	private Double unitCost;

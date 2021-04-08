@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class Boq extends GenericBeanOld implements Serializable {
+public class Boq extends GenericBean implements Serializable {
 
 	private Integer reference;
 	private Double quantity = 1.0;

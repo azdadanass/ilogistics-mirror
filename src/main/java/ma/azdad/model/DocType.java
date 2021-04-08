@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 @Entity
 
-public class DocType extends GenericBeanOld implements Serializable {
+public class DocType extends GenericBean implements Serializable {
 
 	private String app;
 	private String type;

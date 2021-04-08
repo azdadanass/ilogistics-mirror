@@ -13,7 +13,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 
-public class Stop extends GenericBeanOld implements Serializable, Comparable<Stop> {
+public class Stop extends GenericBean implements Serializable, Comparable<Stop> {
 
 	private Date date;
 	private StopType type;

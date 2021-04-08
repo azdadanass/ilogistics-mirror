@@ -30,7 +30,7 @@ import ma.azdad.utils.LabelValue;
 
 @Entity
 
-public class DeliveryRequest extends GenericBeanOld implements Serializable {
+public class DeliveryRequest extends GenericBean implements Serializable {
 
 	private String reference;
 	private String description;

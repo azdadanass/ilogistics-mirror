@@ -13,10 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ma.azdad.model.GenericBeanOld;
+import ma.azdad.model.GenericBean;
 import ma.azdad.service.UtilsFunctions;
 
-public class GenericViewOld<A extends GenericBeanOld> {
+public class GenericViewOld<A extends GenericBean> {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
@@ -98,38 +98,38 @@ public class GenericViewOld<A extends GenericBeanOld> {
 	public void excelExportation(Object document) {
 		utilsView.excelExportation(document);
 
-		//		HSSFWorkbook wb = (HSSFWorkbook) document;
-		//		HSSFSheet sheet = wb.getSheetAt(0);
-		//		HSSFRow row;
-		//		int rows; // No of rows
-		//		rows = sheet.getPhysicalNumberOfRows();
-		//		int cols = 0; // No of columns
-		//		int tmp = 0;
-		//		for (int i = 0; i < 10 || i < rows; i++) {
-		//			row = sheet.getRow(i);
-		//			if (row != null) {
-		//				tmp = sheet.getRow(i).getPhysicalNumberOfCells();
-		//				if (tmp > cols)
-		//					cols = tmp;
-		//			}
-		//		}
+		// HSSFWorkbook wb = (HSSFWorkbook) document;
+		// HSSFSheet sheet = wb.getSheetAt(0);
+		// HSSFRow row;
+		// int rows; // No of rows
+		// rows = sheet.getPhysicalNumberOfRows();
+		// int cols = 0; // No of columns
+		// int tmp = 0;
+		// for (int i = 0; i < 10 || i < rows; i++) {
+		// row = sheet.getRow(i);
+		// if (row != null) {
+		// tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+		// if (tmp > cols)
+		// cols = tmp;
+		// }
+		// }
 		//
-		//		for (int r = 0; r < rows; r++) {
-		//			row = sheet.getRow(r);
-		//			for (int c = 0; c < cols; c++)
-		//				formatCell(row.getCell(c));
-		//		}
+		// for (int r = 0; r < rows; r++) {
+		// row = sheet.getRow(r);
+		// for (int c = 0; c < cols; c++)
+		// formatCell(row.getCell(c));
+		// }
 		//
-		//		HSSFCellStyle cellStyle = wb.createCellStyle();
-		//		cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
-		//		cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-		//		Font font = wb.createFont();
-		//		font.setColor(HSSFColor.WHITE.index);
-		//		cellStyle.setFont(font);
+		// HSSFCellStyle cellStyle = wb.createCellStyle();
+		// cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+		// cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+		// Font font = wb.createFont();
+		// font.setColor(HSSFColor.WHITE.index);
+		// cellStyle.setFont(font);
 		//
-		//		row = sheet.getRow(0);
-		//		for (int i = 0; i < row.getPhysicalNumberOfCells(); i++)
-		//			row.getCell(i).setCellStyle(cellStyle);
+		// row = sheet.getRow(0);
+		// for (int i = 0; i < row.getPhysicalNumberOfCells(); i++)
+		// row.getCell(i).setCellStyle(cellStyle);
 
 	}
 

@@ -6,7 +6,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 
 @Entity
-@SuppressWarnings("serial")
+
 public class TeamHistory extends GenericHistory<Team> implements Serializable {
 
 	public TeamHistory() {

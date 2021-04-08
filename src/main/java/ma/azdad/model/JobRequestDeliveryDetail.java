@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class JobRequestDeliveryDetail extends GenericBeanOld implements Serializable {
+public class JobRequestDeliveryDetail extends GenericBean implements Serializable {
 
 	private Double quantity = 0.0;
 	private Double receivedQuantity = 0.0;

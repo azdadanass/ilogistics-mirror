@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class Packing extends GenericBeanOld implements Serializable {
+public class Packing extends GenericBean implements Serializable {
 
 	private String name;
 	private Integer quantity = 1;

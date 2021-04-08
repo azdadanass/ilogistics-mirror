@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberEquivalence extends GenericBeanOld implements Serializable {
+public class PartNumberEquivalence extends GenericBean implements Serializable {
 
 	private String formula;
 	private String htmlFormula;

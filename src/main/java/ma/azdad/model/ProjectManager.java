@@ -13,7 +13,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class ProjectManager extends GenericBeanOld {
+public class ProjectManager extends GenericBean {
 
 	private ProjectManagerType type;
 	private User user;

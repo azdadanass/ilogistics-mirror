@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ma.azdad.model.GenericBeanOld;
+import ma.azdad.model.GenericBean;
 
-public class GenericServiceOld<A extends GenericBeanOld> {
+public class GenericServiceOld<A extends GenericBean> {
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -42,8 +42,8 @@ public class GenericServiceOld<A extends GenericBeanOld> {
 	}
 
 	public A saveAndRefresh(A a) {
-		save(a);
-		return findOne(a.getId());
+		A ca = save(a);
+		return findOne(ca.id());
 	}
 
 	public void delete(Integer id) {
@@ -59,7 +59,7 @@ public class GenericServiceOld<A extends GenericBeanOld> {
 
 	public void delete(A a) {
 		cacheEvict();
-		delete(a.getId());
+		delete(a.id());
 	}
 
 	public Long count() {

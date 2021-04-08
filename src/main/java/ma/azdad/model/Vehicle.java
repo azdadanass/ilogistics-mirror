@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class Vehicle extends GenericBeanOld implements Serializable {
+public class Vehicle extends GenericBean implements Serializable {
 
 	private String category;
 	private String type;

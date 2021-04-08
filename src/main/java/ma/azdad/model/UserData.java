@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "e_general_data")
-public class UserData extends GenericBeanOld {
+public class UserData extends GenericBean {
 
 	private String firstName;
 	private String lastName;

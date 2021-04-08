@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 
-public class Location extends GenericBeanOld implements Serializable {
+public class Location extends GenericBean implements Serializable {
 
 	private String name;
 	private Double surface;

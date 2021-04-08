@@ -25,20 +25,21 @@ public abstract class GenericBean implements Serializable, Filterable {
 		return this.id;
 	}
 
-	protected Boolean contains(String string, String query) {
-		return string != null && string.toLowerCase().contains(query);
-	}
-
-	protected Boolean contains(Integer i, String query) {
-		return i != null && String.valueOf(i).toLowerCase().contains(query);
-	}
-
-	protected Boolean contains(Double d, String query) {
-		return d != null && String.valueOf(d).toLowerCase().contains(query);
-	}
-
-	protected Boolean contains(Date date, String query) {
-		return date != null && UtilsFunctions.getFormattedDate(date).toLowerCase().contains(query);
+	protected Boolean contains(String query, Object... objects) {
+		for (int i = 0; i < objects.length; i++) {
+			Object o = objects[i];
+			if (o == null)
+				continue;
+			if (o instanceof String && ((String) o).toLowerCase().contains(query))
+				return true;
+			if (o instanceof Double && ((Double) o).toString().contains(query))
+				return true;
+			if (o instanceof Integer && ((Integer) o).toString().contains(query))
+				return true;
+			if (o instanceof Date && UtilsFunctions.getFormattedDate(((Date) o)).contains(query))
+				return true;
+		}
+		return false;
 	}
 
 	@Transient

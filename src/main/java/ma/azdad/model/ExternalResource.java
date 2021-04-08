@@ -17,7 +17,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
-public class ExternalResource extends GenericBeanOld {
+public class ExternalResource extends GenericBean {
 
 	private String firstName;
 	private String lastName;

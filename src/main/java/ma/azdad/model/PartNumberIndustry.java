@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 @Entity
 
-public class PartNumberIndustry extends GenericBeanOld implements Serializable {
+public class PartNumberIndustry extends GenericBean implements Serializable {
 
 	private String name;
 

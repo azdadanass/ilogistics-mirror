@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 
-public class VehicleType extends GenericBeanOld implements Serializable {
+public class VehicleType extends GenericBean implements Serializable {
 
 	private String name;
 	private Double price;

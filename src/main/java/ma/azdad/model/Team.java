@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
-public class Team extends GenericBeanOld implements Serializable {
+public class Team extends GenericBean implements Serializable {
 
 	private String name;
 	private String comment;

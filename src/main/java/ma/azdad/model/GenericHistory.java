@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -36,13 +37,74 @@ public class GenericHistory<A extends GenericBean> extends GenericBean implement
 		return "badge badge-inverse";
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	public A getParent() {
-		return parent;
+	@Transient
+	public String getUserFullName() {
+		if (user != null)
+			return user.getFullName();
+		return null;
 	}
 
-	public void setParent(A parent) {
-		this.parent = parent;
+	@Transient
+	public String getUserPhoto() {
+		if (user != null)
+			return user.getPhoto();
+		return null;
+	}
+
+	@Transient
+	public String getUserPhone() {
+		if (user != null)
+			return user.getPhone();
+		return null;
+	}
+
+	@Transient
+	public String getUserEmail() {
+		if (user != null)
+			return user.getEmail();
+		return null;
+	}
+
+	@Transient
+	public String getUserJob() {
+		if (user != null)
+			return user.getJob();
+		return null;
+	}
+
+	@Transient
+	public String getFullName() {
+		if (user != null)
+			return user.getFullName();
+		return null;
+	}
+
+	@Transient
+	public String getPhoto() {
+		if (user != null)
+			return user.getPhoto();
+		return null;
+	}
+
+	@Transient
+	public String getPhone() {
+		if (user != null)
+			return user.getPhone();
+		return null;
+	}
+
+	@Transient
+	public String getEmail() {
+		if (user != null)
+			return user.getEmail();
+		return null;
+	}
+
+	@Transient
+	public String getJob() {
+		if (user != null)
+			return user.getJob();
+		return null;
 	}
 
 	public String getStatus() {
@@ -62,23 +124,33 @@ public class GenericHistory<A extends GenericBean> extends GenericBean implement
 		this.description = description;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = true)
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column
 	public Date getDate() {
 		return date;
 	}
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "parent_id")
+	public A getParent() {
+		return parent;
+	}
+
+	public void setParent(A parent) {
+		this.parent = parent;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_username")
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

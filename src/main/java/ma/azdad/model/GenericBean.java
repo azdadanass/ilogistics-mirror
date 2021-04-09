@@ -54,9 +54,7 @@ public abstract class GenericBean implements Serializable, Filterable {
 
 	@Override
 	public boolean filter(String query) {
-		if (id != null)
-			return getIdStr().contains(query);
-		return false;
+		return contains(query, getIdStr());
 	}
 
 	@Transient

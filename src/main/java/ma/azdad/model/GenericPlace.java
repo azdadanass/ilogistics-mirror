@@ -1,15 +1,13 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
-
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import org.primefaces.model.map.LatLng;
 
 @MappedSuperclass
-
-public class GenericPlace extends GenericBean implements Serializable {
+public class GenericPlace extends GenericBean {
 
 	protected String name;
 	protected Double latitude = 33.966171;
@@ -47,10 +45,7 @@ public class GenericPlace extends GenericBean implements Serializable {
 	}
 
 	public GenericPlace(String name, Double latitude, Double longitude, String address1, String address2, String address3, String phone, String fax) {
-		super();
-		this.name = name;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this(name, latitude, longitude);
 		this.address1 = address1;
 		this.address2 = address2;
 		this.address3 = address3;
@@ -58,21 +53,9 @@ public class GenericPlace extends GenericBean implements Serializable {
 		this.fax = fax;
 	}
 
+	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && name != null)
-			result = name.toLowerCase().contains(query);
-		if (!result && phone != null)
-			result = phone.toLowerCase().contains(query);
-		if (!result && fax != null)
-			result = fax.toLowerCase().contains(query);
-		if (!result && address1 != null)
-			result = address1.toLowerCase().contains(query);
-		if (!result && address2 != null)
-			result = address2.toLowerCase().contains(query);
-		if (!result && address3 != null)
-			result = address3.toLowerCase().contains(query);
-		return result;
+		return contains(query, name, phone, fax, address1, address2, address3, googleAddress, googleCity, googleRegion);
 	}
 
 	@Transient
@@ -154,6 +137,7 @@ public class GenericPlace extends GenericBean implements Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "google_address")
 	public String getGoogleAddress() {
 		return googleAddress;
 	}
@@ -162,6 +146,7 @@ public class GenericPlace extends GenericBean implements Serializable {
 		this.googleAddress = googleAddress;
 	}
 
+	@Column(name = "google_city")
 	public String getGoogleCity() {
 		return googleCity;
 	}
@@ -170,6 +155,7 @@ public class GenericPlace extends GenericBean implements Serializable {
 		this.googleCity = googleCity;
 	}
 
+	@Column(name = "google_region")
 	public String getGoogleRegion() {
 		return googleRegion;
 	}

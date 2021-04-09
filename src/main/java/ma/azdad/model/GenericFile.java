@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -33,21 +34,71 @@ public abstract class GenericFile<A extends GenericBean> extends GenericBean imp
 	public GenericFile(String folder, File file, String type, String name, User user) {
 		this.date = new Date();
 		this.link = folder + "/" + file.getName();
-		this.extension = FilenameUtils.getExtension(this.link);
+		this.extension = FilenameUtils.getExtension(this.link).toLowerCase();
 		this.size = UtilsFunctions.getFormattedSize(file.length());
 		this.type = type;
 		this.name = name;
 		this.user = user;
 	}
 
+	public GenericFile(String folder, File file, String type, String name, User user, A parent) {
+		this(folder, file, type, name, user);
+		this.parent = parent;
+	}
+
 	@Transient
 	public Boolean getIsImage() {
-		return UtilsFunctions.contains(extension, "png", "jpg", "jpeg", "gif", "bmp");
+		return Arrays.asList("png", "jpg", "jpeg", "gif", "bmp").contains(extension.toLowerCase());
+	}
+
+	@Transient
+	public Boolean getIsOfficeDocument() {
+		return Arrays.asList("doc", "docx", "xls", "xlsx").contains(extension.toLowerCase());
+	}
+
+	@Transient
+	public Boolean getIsTextFile() {
+		return Arrays.asList("txt", "conf", "kml", "kmz").contains(extension.toLowerCase());
 	}
 
 	@Transient
 	public Boolean getIsPdf() {
-		return "pdf".equals(extension);
+		return "pdf".equals(extension.toLowerCase());
+	}
+
+	@Transient
+	public String getUserFullName() {
+		if (user != null)
+			return user.getFullName();
+		return null;
+	}
+
+	@Transient
+	public String getUserPhoto() {
+		if (user != null)
+			return user.getPhoto();
+		return null;
+	}
+
+	@Transient
+	public String getUserPhone() {
+		if (user != null)
+			return user.getPhone();
+		return null;
+	}
+
+	@Transient
+	public String getUserEmail() {
+		if (user != null)
+			return user.getEmail();
+		return null;
+	}
+
+	@Transient
+	public String getUserJob() {
+		if (user != null)
+			return user.getJob();
+		return null;
 	}
 
 	public Date getDate() {
@@ -98,6 +149,16 @@ public abstract class GenericFile<A extends GenericBean> extends GenericBean imp
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "parent_id")
+	public A getParent() {
+		return parent;
+	}
+
+	public void setParent(A parent) {
+		this.parent = parent;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)

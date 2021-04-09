@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -12,7 +13,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-
 public class GenericComment<A extends GenericBean> extends GenericBean implements Serializable {
 
 	protected Date date;
@@ -23,21 +23,48 @@ public class GenericComment<A extends GenericBean> extends GenericBean implement
 	protected User user;
 
 	@Transient
-	public String getFullName() {
+	public String getUserFullName() {
 		if (user != null)
 			return user.getFullName();
 		return null;
 	}
 
 	@Transient
-	public String getPhoto() {
+	public String getUserPhoto() {
 		if (user != null)
 			return user.getPhoto();
 		return null;
 	}
 
+	@Transient
+	public String getUserPhone() {
+		if (user != null)
+			return user.getPhone();
+		return null;
+	}
+
+	@Transient
+	public String getUserEmail() {
+		if (user != null)
+			return user.getEmail();
+		return null;
+	}
+
+	@Transient
+	public String getUserJob() {
+		if (user != null)
+			return user.getJob();
+		return null;
+	}
+
+	@Transient
+	public String getFullName() {
+		if (user != null)
+			return user.getFullName();
+		return null;
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column
 	public Date getDate() {
 		return date;
 	}
@@ -64,6 +91,7 @@ public class GenericComment<A extends GenericBean> extends GenericBean implement
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "parent_id")
 	public A getParent() {
 		return parent;
 	}
@@ -72,18 +100,14 @@ public class GenericComment<A extends GenericBean> extends GenericBean implement
 		this.parent = parent;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "user_username")
 	public User getUser() {
 		return user;
 	}
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	@Override
-	public String toString() {
-		return "GenericComment [title=" + title + ", content=" + content + "]\n";
 	}
 
 }

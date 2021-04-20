@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberOrange;
+import ma.azdad.repos.PartNumberOrangeRepos;
 import ma.azdad.service.CacheService;
 import ma.azdad.service.PartNumberOrangeService;
 
@@ -19,7 +20,7 @@ import ma.azdad.service.PartNumberOrangeService;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberOrangeView extends GenericViewOld<PartNumberOrange> {
+public class PartNumberOrangeView extends GenericView<Integer, PartNumberOrange, PartNumberOrangeRepos, PartNumberOrangeService> {
 
 	@Autowired
 	PartNumberOrangeService service;

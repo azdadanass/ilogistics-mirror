@@ -12,8 +12,8 @@ import ma.azdad.repos.VehicleRepos;
 
 @Component
 @Transactional
-public class VehicleService extends GenericServiceOld<Vehicle> {
-	
+public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepos> {
+
 	@Autowired
 	VehicleRepos vehicleRepos;
 
@@ -24,11 +24,9 @@ public class VehicleService extends GenericServiceOld<Vehicle> {
 		Hibernate.initialize(vehicle.getHistoryList());
 		return vehicle;
 	}
-	
-	
-	public List<Vehicle> findLightByTransporter(Integer transporterId){
+
+	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleRepos.findLightByTransporter(transporterId);
 	}
 
 }
-

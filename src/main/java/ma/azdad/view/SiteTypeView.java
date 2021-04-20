@@ -12,13 +12,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.SiteType;
+import ma.azdad.repos.SiteTypeRepos;
 import ma.azdad.service.SiteTypeService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class SiteTypeView extends GenericViewOld<SiteType> {
+public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, SiteTypeService> {
 
 	@Autowired
 	protected SiteTypeService siteTypeService;
@@ -33,6 +34,7 @@ public class SiteTypeView extends GenericViewOld<SiteType> {
 
 	private Integer categoryId = null;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
@@ -41,12 +43,13 @@ public class SiteTypeView extends GenericViewOld<SiteType> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			siteType = siteTypeService.findOne(selectedId);
+			siteType = siteTypeService.findOne(id);
 		else if (isViewPage)
-			siteType = siteTypeService.findOne(selectedId);
+			siteType = siteTypeService.findOne(id);
 
 	}
 
+	@Override
 	public void initParameters() {
 		super.initParameters();
 		try {
@@ -57,6 +60,7 @@ public class SiteTypeView extends GenericViewOld<SiteType> {
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = siteTypeService.findByCategory(categoryId);
@@ -96,20 +100,28 @@ public class SiteTypeView extends GenericViewOld<SiteType> {
 
 	public String deleteSiteType() {
 		if (canDeleteSiteType())
-			siteTypeService.delete(siteType);
+			try {
+				siteTypeService.delete(siteType);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
-	
+
 	// generic
-	public List<SiteType> findAll(){
+	public List<SiteType> findAll() {
 		return siteTypeService.findAll();
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

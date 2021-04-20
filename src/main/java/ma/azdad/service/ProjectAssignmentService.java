@@ -12,7 +12,7 @@ import ma.azdad.repos.ProjectAssignmentRepos;
 
 @Component
 @Transactional
-public class ProjectAssignmentService extends GenericService<ProjectAssignment, ProjectAssignmentRepos> {
+public class ProjectAssignmentService extends GenericService<Integer, ProjectAssignment, ProjectAssignmentRepos> {
 
 	@Override
 	public ProjectAssignment findOne(Integer id) {

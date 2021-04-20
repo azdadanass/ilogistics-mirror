@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.RelatedPartNumber;
+import ma.azdad.repos.RelatedPartNumberRepos;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.RelatedPartNumberService;
 
@@ -20,7 +21,7 @@ import ma.azdad.service.RelatedPartNumberService;
 @Component
 @Transactional
 @Scope("view")
-public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
+public class RelatedPartNumberView extends GenericView<Integer, RelatedPartNumber, RelatedPartNumberRepos, RelatedPartNumberService> {
 
 	@Autowired
 	private RelatedPartNumberService relatedPartNumberService;
@@ -41,9 +42,9 @@ public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
 		super.init();
 		refreshList();
 		if (isEditPage)
-			relatedPartNumber = relatedPartNumberService.findOne(selectedId);
+			relatedPartNumber = relatedPartNumberService.findOne(id);
 		else if (isViewPage)
-			relatedPartNumber = relatedPartNumberService.findOne(selectedId);
+			relatedPartNumber = relatedPartNumberService.findOne(id);
 	}
 
 	@Override
@@ -51,11 +52,12 @@ public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/viewPartNumber.xhtml".equals(currentPath)) {
-			partNumber = partNumberService.findOne(selectedId);
-			list1 = relatedPartNumberService.findByPartNumber(selectedId);
-			list1.forEach(i -> i.setTmpPartNumber(!i.getPartNumber1().getId().equals(selectedId) ? i.getPartNumber1() : i.getPartNumber2()));
+			partNumber = partNumberService.findOne(id);
+			list1 = relatedPartNumberService.findByPartNumber(id);
+			list1.forEach(i -> i.setTmpPartNumber(!i.getPartNumber1().getId().equals(id) ? i.getPartNumber1() : i.getPartNumber2()));
 		}
 
 	}
@@ -72,6 +74,7 @@ public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewRelatedPartNumber())
 			cacheView.accessDenied();
@@ -111,7 +114,12 @@ public class RelatedPartNumberView extends GenericViewOld<RelatedPartNumber> {
 
 	public String deleteRelatedPartNumber() {
 		if (canDeleteRelatedPartNumber())
-			relatedPartNumberService.delete(relatedPartNumber);
+			try {
+				relatedPartNumberService.delete(relatedPartNumber);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

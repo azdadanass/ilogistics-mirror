@@ -12,7 +12,7 @@ import ma.azdad.repos.DocTypeRepos;
 
 @Component
 @Transactional
-public class DocTypeService extends GenericServiceOld<DocType> {
+public class DocTypeService extends GenericService<Integer, DocType, DocTypeRepos> {
 
 	@Value("${application}")
 	private String application;

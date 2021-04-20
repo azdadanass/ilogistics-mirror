@@ -5,11 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
 
-public class SerialNumber extends GenericBean implements Serializable {
+public class SerialNumber extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 
@@ -26,6 +29,7 @@ public class SerialNumber extends GenericBean implements Serializable {
 		this.jobRequest = jobRequest;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && name != null)
@@ -60,4 +64,13 @@ public class SerialNumber extends GenericBean implements Serializable {
 		this.jobRequest = jobRequest;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

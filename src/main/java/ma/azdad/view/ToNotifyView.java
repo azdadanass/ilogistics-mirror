@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ToNotify;
+import ma.azdad.repos.ToNotifyRepos;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.ToNotifyService;
 import ma.azdad.service.UserService;
@@ -19,7 +20,7 @@ import ma.azdad.service.UserService;
 @Component
 @Transactional
 @Scope("view")
-public class ToNotifyView extends GenericViewOld<ToNotify> {
+public class ToNotifyView extends GenericView<Integer, ToNotify, ToNotifyRepos, ToNotifyService> {
 
 	@Autowired
 	protected ToNotifyService toNotifyService;
@@ -42,12 +43,13 @@ public class ToNotifyView extends GenericViewOld<ToNotify> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage) {
-			toNotify = toNotifyService.findOne(selectedId);
+			toNotify = toNotifyService.findOne(id);
 			toNotify.init();
 		} else if (isViewPage)
-			toNotify = toNotifyService.findOne(selectedId);
+			toNotify = toNotifyService.findOne(id);
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = toNotifyService.findByUser(sessionView.getUsername());
@@ -61,6 +63,7 @@ public class ToNotifyView extends GenericViewOld<ToNotify> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		// if (false)
 		// cacheView.accessDenied();
@@ -104,7 +107,12 @@ public class ToNotifyView extends GenericViewOld<ToNotify> {
 
 	public String deleteToNotify() {
 		if (canDeleteToNotify())
-			toNotifyService.delete(toNotify);
+			try {
+				toNotifyService.delete(toNotify);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

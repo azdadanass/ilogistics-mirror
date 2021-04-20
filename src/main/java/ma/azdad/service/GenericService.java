@@ -12,80 +12,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ma.azdad.model.GenericBean;
+import ma.azdad.model.GenericModel;
 
 @Transactional
-public class GenericService<A extends GenericBean, B extends JpaRepository<A, Integer>> {
+public class GenericService<ID, M extends GenericModel<ID>, R extends JpaRepository<M, ID>> {
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	@SuppressWarnings("unchecked")
+	private String modelClassName1 = ((Class<M>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]).getSimpleName();
+	private String modelClassName2 = modelClassName1.substring(0, 1).toLowerCase() + modelClassName1.substring(1);
+
 	@Autowired
-	protected B repos;
+	protected R repos;
 
 	@Autowired
 	protected CacheService cacheService;
 
-	public A findOne(Integer id) {
+	public M findOne(ID id) {
 		return repos.findById(id).get();
 	}
 
-	public A findOneLight(Integer id) {
+	public M findOneLight(ID id) {
 		return repos.findById(id).get();
 	}
 
-	public List<A> findAll() {
+	public List<M> findAll() {
 		return repos.findAll();
 	}
 
-	public A save(A a) {
+	public M save(M model) {
 		cacheEvict();
-		return repos.save(a);
+		return repos.save(model);
 	}
 
-	public A saveAndRefresh(A a) {
-		save(a);
-		return findOne(a.id());
+	public M saveAndRefresh(M model) {
+		save(model);
+		return findOne(model.id());
 	}
 
-	public void delete(Integer id) throws DataIntegrityViolationException, Exception {
+	public void delete(ID id) throws DataIntegrityViolationException, Exception {
 		cacheEvict();
 		repos.deleteById(id);
 	}
 
-	public void delete(A a) throws DataIntegrityViolationException, Exception {
+	public void delete(M model) throws DataIntegrityViolationException, Exception {
 		cacheEvict();
-		repos.delete(a);
+		repos.delete(model);
 	}
 
 	public Long count() {
 		return repos.count();
 	}
 
-	public Boolean exists(Integer id) {
+	public Boolean exists(ID id) {
 		return repos.existsById(id);
 	}
 
-	public A saveAndFlush(A a) {
-		cacheEvict();
-		return repos.saveAndFlush(a);
+	public void cacheEvict() {
+		System.out.println(getClass().getSimpleName());
+		cacheService.evictCachePrefix(modelClassName2 + "Service");
+	}
+
+	public void initialize(Object object) {
+		Hibernate.initialize(object);
+	}
+
+	public void initialize(Object... objects) {
+		for (int i = 0; i < objects.length; i++)
+			Hibernate.initialize(objects[i]);
 	}
 
 	public void flush() {
 		repos.flush();
-	}
-
-	public void cacheEvict() {
-		String className2 = getParameterClassName().substring(0, 1).toLowerCase() + getParameterClassName().substring(1);
-		cacheService.evictCachePrefix(className2 + "Service");
-	}
-
-	public void initialize(Object proxy) {
-		Hibernate.initialize(proxy);
-	}
-
-	@SuppressWarnings("unchecked")
-	public String getParameterClassName() {
-		return ((Class<A>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
 	}
 
 }

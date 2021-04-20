@@ -1,6 +1,5 @@
 package ma.azdad.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,7 +12,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class ProjectManager extends GenericBean {
+public class ProjectManager extends GenericModel<Integer> {
 
 	private ProjectManagerType type;
 	private User user;
@@ -32,19 +31,6 @@ public class ProjectManager extends GenericBean {
 	}
 
 	// getters & setters
-
-	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	@Enumerated(EnumType.STRING)
 	public ProjectManagerType getType() {
@@ -73,4 +59,13 @@ public class ProjectManager extends GenericBean {
 		this.project = project;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

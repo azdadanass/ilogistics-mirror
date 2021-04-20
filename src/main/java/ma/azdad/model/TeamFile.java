@@ -1,32 +1,36 @@
 package ma.azdad.model;
 
 import java.io.File;
-import java.io.Serializable;
-import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-
-import org.apache.commons.io.FilenameUtils;
-
-import ma.azdad.service.UtilsFunctions;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-
-public class TeamFile extends GenericFile<Team> implements Serializable {
+public class TeamFile extends GenericFile<Team> {
 
 	public TeamFile() {
-
 	}
 
-	public TeamFile(Date date, String name, String type, File file, Team parent, User user) {
-		this.date = date;
-		this.name = name;
-		this.type = type;
-		this.link = file.getName();
-		this.extension = FilenameUtils.getExtension(this.link);
-		this.size = UtilsFunctions.getFormattedSize(file.length());
-		this.parent = parent;
-		this.user = user;
+	public TeamFile(String folder, File file, String type, String name, User user) {
+		super(folder, file, type, name, user);
+	}
+
+	public TeamFile(String folder, File file, String type, String name, User user, Team parent) {
+		super(folder, file, type, name, user, parent);
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

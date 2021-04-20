@@ -39,7 +39,7 @@ import ma.azdad.utils.Series;
 
 @Component
 @Transactional
-public class StockRowService extends GenericServiceOld<StockRow> {
+public class StockRowService extends GenericService<Integer, StockRow, StockRowRepos> {
 
 	@Autowired
 	StockRowRepos stockRowRepos;

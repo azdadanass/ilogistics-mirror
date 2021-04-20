@@ -65,14 +65,14 @@
 							rendered="#{transportationJobView.canSaveTransportationJob()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{transportationJobView.selectedId}" />
+							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
 
 						<h:outputLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Assign" value="#{transportationJobView.assignPage}"
 							rendered="#{transportationJobView.canAssignTransportationRequestList()}">
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
-							<f:param name="id" value="#{transportationJobView.selectedId}" />
+							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
 
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"

@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.JobRequestDeliveryDetail;
+import ma.azdad.repos.JobRequestDeliveryDetailRepos;
 import ma.azdad.service.JobRequestDeliveryDetailService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class JobRequestDeliveryDetailView extends GenericViewOld<JobRequestDeliveryDetail> {
+public class JobRequestDeliveryDetailView extends GenericView<Integer, JobRequestDeliveryDetail, JobRequestDeliveryDetailRepos, JobRequestDeliveryDetailService> {
 
 	@Autowired
 	private JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
@@ -25,21 +26,24 @@ public class JobRequestDeliveryDetailView extends GenericViewOld<JobRequestDeliv
 
 	private JobRequestDeliveryDetail jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(selectedId);
+			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(id);
 		else if (isViewPage)
-			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(selectedId);
+			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(id);
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = jobRequestDeliveryDetailService.findAll();
@@ -60,6 +64,7 @@ public class JobRequestDeliveryDetailView extends GenericViewOld<JobRequestDeliv
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewJobRequestDeliveryDetail())
 			cacheView.accessDenied();
@@ -99,7 +104,13 @@ public class JobRequestDeliveryDetailView extends GenericViewOld<JobRequestDeliv
 
 	public String deleteJobRequestDeliveryDetail() {
 		if (canDeleteJobRequestDeliveryDetail())
-			jobRequestDeliveryDetailService.delete(jobRequestDeliveryDetail);
+			try {
+				jobRequestDeliveryDetailService.delete(jobRequestDeliveryDetail);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

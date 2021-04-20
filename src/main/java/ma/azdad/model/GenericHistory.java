@@ -12,29 +12,40 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import ma.azdad.utils.Color;
+
 @MappedSuperclass
+@SuppressWarnings("rawtypes")
+public class GenericHistory<M extends GenericModel> extends GenericModel<Integer> implements Serializable {
 
-public class GenericHistory<A extends GenericBean> extends GenericBean implements Serializable {
-
-	protected Date date;
+	protected Date date = new Date();
 	protected String status;
 	protected String description;
-	protected A parent;
+
+	protected M parent;
 	protected User user;
+
+	public GenericHistory() {
+	}
+
+	public GenericHistory(String status, User user) {
+		this.status = status;
+		this.user = user;
+	}
+
+	public GenericHistory(String status, User user, String description) {
+		this(status, user);
+		this.description = description;
+	}
+
+	public GenericHistory(String status, User user, String description, M parent) {
+		this(status, user, description);
+		this.parent = parent;
+	}
 
 	@Transient
 	public String getStatusStyleClass() {
-		if ("Created".equals(status))
-			return "badge badge-primary";
-		else if ("Edited".equals(status))
-			return "badge badge-warning";
-		else if ("Approved".equals(status))
-			return "badge badge-success";
-		else if ("Rejected".equals(status))
-			return "badge badge-danger";
-		else if ("Canceled".equals(status))
-			return "badge badge-danger";
-		return "badge badge-inverse";
+		return Color.GREY.getBadge();
 	}
 
 	@Transient
@@ -135,11 +146,11 @@ public class GenericHistory<A extends GenericBean> extends GenericBean implement
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "parent_id")
-	public A getParent() {
+	public M getParent() {
 		return parent;
 	}
 
-	public void setParent(A parent) {
+	public void setParent(M parent) {
 		this.parent = parent;
 	}
 

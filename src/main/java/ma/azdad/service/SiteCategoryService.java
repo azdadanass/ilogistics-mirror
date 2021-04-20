@@ -5,10 +5,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.SiteCategory;
+import ma.azdad.repos.SiteCategoryRepos;
 
 @Component
 @Transactional
-public class SiteCategoryService extends GenericServiceOld<SiteCategory> {
+public class SiteCategoryService extends GenericService<Integer, SiteCategory, SiteCategoryRepos> {
 
 	@Override
 	public SiteCategory findOne(Integer id) {
@@ -18,4 +19,3 @@ public class SiteCategoryService extends GenericServiceOld<SiteCategory> {
 	}
 
 }
-

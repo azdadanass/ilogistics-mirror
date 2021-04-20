@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberThreshold;
 import ma.azdad.model.Project;
+import ma.azdad.repos.PartNumberThresholdRepos;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PartNumberThresholdService;
 import ma.azdad.service.ProjectService;
@@ -18,7 +19,7 @@ import ma.azdad.service.ProjectService;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberThresholdView extends GenericViewOld<PartNumberThreshold> {
+public class PartNumberThresholdView extends GenericView<Integer, PartNumberThreshold, PartNumberThresholdRepos, PartNumberThresholdService> {
 
 	@Autowired
 	private PartNumberThresholdService partNumberThresholdService;
@@ -38,22 +39,25 @@ public class PartNumberThresholdView extends GenericViewOld<PartNumberThreshold>
 
 	private Boolean editMode = false;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if ("/partNumberThresholdList.xhtml".contentEquals(currentPath)) {
-			project = projectService.findOne(selectedId);
+			project = projectService.findOne(id);
 			refreshList();
 		}
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/partNumberThresholdList.xhtml".contentEquals(currentPath))
-			list2 = list1 = partNumberThresholdService.findByProject(selectedId);
+			list2 = list1 = partNumberThresholdService.findByProject(id);
 	}
 
 	public void flushPartNumberThreshold() {
@@ -122,24 +126,29 @@ public class PartNumberThresholdView extends GenericViewOld<PartNumberThreshold>
 
 		return true;
 	}
-	
+
 	public Boolean canDeleteRow() {
 		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement() && editMode;
 	}
-	
+
 	public void deleteRow(int index) {
-		if(!canDeleteRow())
+		if (!canDeleteRow())
 			return;
-		PartNumberThreshold pnt = list2.get(index);
-		if(pnt.getId()!=null)
-			partNumberThresholdService.delete(pnt);
-		
-		list2.remove(index);
+		try {
+			PartNumberThreshold pnt = list2.get(index);
+			if (pnt.getId() != null)
+				partNumberThresholdService.delete(pnt);
+
+			list2.remove(index);
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPartNumberThreshold())
 			cacheView.accessDenied();
@@ -186,9 +195,14 @@ public class PartNumberThresholdView extends GenericViewOld<PartNumberThreshold>
 	public void deletePartNumberThreshold() {
 		if (!canDeletePartNumberThreshold())
 			return;
-		partNumberThresholdService.delete(partNumberThreshold);
-		refreshList();
-		execJavascript("PF('deleteDlg').hide()");
+		try {
+			partNumberThresholdService.delete(partNumberThreshold);
+			refreshList();
+			execJavascript("PF('deleteDlg').hide()");
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// GETTERS & SETTERS

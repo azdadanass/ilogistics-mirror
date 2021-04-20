@@ -53,13 +53,13 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-error" title="Duplicate" value="addEditDeliveryRequest.xhtml" rendered="#{deliveryRequestView.canDuplicate()}">
 							<i class="ace-icon fa fa-files-o bigger-230"></i>
 							<h:outputText value="Duplicate" styleClass="smaller-80" />
-							<f:param name="templateId" value="#{deliveryRequestView.selectedId}" />
+							<f:param name="templateId" value="#{deliveryRequestView.id}" />
 						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditDeliveryRequest.xhtml"
 							rendered="#{deliveryRequestView.canSaveDeliveryRequest()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+							<f:param name="id" value="#{deliveryRequestView.id}" />
 						</h:outputLink>
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
 							rendered="#{deliveryRequestView.canDeleteDeliveryRequest()}">
@@ -101,13 +101,13 @@
 							rendered="#{deliveryRequestView.canStoreDeliveryRequest()}">
 							<i class="ace-icon fa fa-sign-in bigger-230"></i>
 							<h:outputText value="Handle" />
-							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+							<f:param name="id" value="#{deliveryRequestView.id}" />
 						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm btn-danger  hover aa-tooltip tooltip-error" title="Handle" value="#{deliveryRequestView.preparationPage}"
 							rendered="#{deliveryRequestView.canPrepareOutboundDeliveryRequest()}">
 							<i class="ace-icon fa fa-sign-out bigger-230"></i>
 							<h:outputText value="Handle" />
-							<f:param name="id" value="#{deliveryRequestView.selectedId}" />
+							<f:param name="id" value="#{deliveryRequestView.id}" />
 						</h:outputLink>
 						<p:commandLink title="Add Transportation Request" action="#{deliveryRequestView.addTransport()}" styleClass="btn btn-app btn-sm btn-purple  hover aa-tooltip tooltip-purple"
 							rendered="#{deliveryRequestView.canAddTrasnport()}">

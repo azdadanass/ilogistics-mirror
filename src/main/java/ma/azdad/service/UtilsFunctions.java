@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +39,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import ma.azdad.model.GenericModel;
 import ma.azdad.model.GenericPlace;
 import ma.azdad.model.Path;
 
@@ -503,6 +506,64 @@ public class UtilsFunctions {
 			if (params[i] != null && !params[i].isEmpty())
 				return params[i];
 		return null;
+	}
+
+	public static String getChanges(GenericModel gb1, GenericModel gb2) {
+		if (gb1 == null || gb2 == null || gb1 == gb2 || gb1.getClass() != gb2.getClass())
+			return null;
+
+		System.out.println(gb1.getClass().getSimpleName());
+
+		String result = "";
+
+		Field[] m = gb1.getClass().getDeclaredFields();
+
+		for (int i = 0; i < m.length; i++)
+			try {
+				if (Collection.class.isAssignableFrom(m[i].getType()))
+					continue;
+				if (m[i].getName().startsWith("tmp"))
+					continue;
+				if (m[i].getName().toLowerCase().contains("password"))
+					continue;
+				String from, to;
+				m[i].setAccessible(true);
+				Object o1 = m[i].get(gb1);
+				Object o2 = m[i].get(gb2);
+
+				if (o1 == null && o2 == null)
+					continue;
+				if (o1 != null && o1.equals(o2))
+					continue;
+
+				to = o1 + "";
+				from = o2 + "";
+
+				if (o1 != null && o2 != null && o1 instanceof GenericModel && o2 instanceof GenericModel) {
+					GenericModel ogb1 = ((GenericModel) o1);
+					GenericModel ogb2 = ((GenericModel) o2);
+					if (ogb1.id().equals(ogb2.id()))
+						continue;
+
+					try {
+						to = ogb1.getIdentifierName();
+					} catch (Exception e) {
+						to = "#" + ogb1.getIdStr();
+					}
+					try {
+						from = ogb2.getIdentifierName();
+					} catch (Exception e) {
+						from = "#" + ogb2.getIdStr();
+					}
+				}
+
+				result += m[i].getName() + " from : " + from + ", to : " + to + "<br/>";
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		return result;
 	}
 
 }

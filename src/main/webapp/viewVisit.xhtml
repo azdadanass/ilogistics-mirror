@@ -57,7 +57,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip" title="Edit" value="addEditVisit.xhtml" rendered="#{visitView.canSaveVisit()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{visitView.selectedId}" />
+							<f:param name="id" value="#{visitView.id}" />
 						</h:outputLink>
 
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" onclick="PF('deleteDlg').show()" rendered="#{visitView.canDeleteVisit()}">

@@ -24,7 +24,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{assignmentView.selectedId == null?'Add New':'Edit'} Assignment" />
+				<h:outputText value="#{assignmentView.id == null?'Add New':'Edit'} Assignment" />
 			</li>
 		</ul>
 	</ui:define>
@@ -33,8 +33,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{assignmentView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{assignmentView.selectedId == null?'Add New':'Edit'} Assignment" />
+					<i class="ace-icon fa #{assignmentView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{assignmentView.id == null?'Add New':'Edit'} Assignment" />
 				</h1>
 			</div>
 			<div class="row">

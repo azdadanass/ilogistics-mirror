@@ -5,12 +5,15 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
 
-public class DeliveryRequestDetail extends GenericBean implements Serializable {
+public class DeliveryRequestDetail extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity = 0.0;
 	private Double unitCost = 0.0;
@@ -410,4 +413,13 @@ public class DeliveryRequestDetail extends GenericBean implements Serializable {
 		return "DRD [quantity=" + quantity + ", partNumber=" + partNumber.getName() + ", unitCost=" + unitCost + "]\n";
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

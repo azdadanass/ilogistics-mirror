@@ -14,6 +14,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -30,7 +33,7 @@ import ma.azdad.utils.LabelValue;
 
 @Entity
 
-public class DeliveryRequest extends GenericBean implements Serializable {
+public class DeliveryRequest extends GenericModel<Integer> implements Serializable {
 
 	private String reference;
 	private String description;
@@ -388,12 +391,12 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 	}
 
 	public void addComment(DeliveryRequestComment comment) {
-		comment.setDeliveryRequest(this);
+		comment.setParent(this);
 		commentList.add(comment);
 	}
 
 	public void removeComment(DeliveryRequestComment comment) {
-		comment.setDeliveryRequest(null);
+		comment.setParent(null);
 		commentList.remove(comment);
 	}
 
@@ -1665,4 +1668,13 @@ public class DeliveryRequest extends GenericBean implements Serializable {
 		this.commentGroupList = commentGroupList;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

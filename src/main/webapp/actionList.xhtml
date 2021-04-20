@@ -161,7 +161,7 @@
 
 												<p:commandLink action="#{actionView.deleteAction}" update="main_tab" rendered="#{!item.isVisit}">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener value="#{item.id}" target="#{actionView.selectedId}" />
+													<f:setPropertyActionListener value="#{item.id}" target="#{actionView.id}" />
 												</p:commandLink>
 
 											</div>

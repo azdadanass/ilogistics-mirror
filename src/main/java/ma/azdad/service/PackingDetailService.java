@@ -11,7 +11,7 @@ import ma.azdad.repos.PackingDetailRepos;
 
 @Component
 @Transactional
-public class PackingDetailService extends GenericServiceOld<PackingDetail> {
+public class PackingDetailService extends GenericService<Integer, PackingDetail, PackingDetailRepos> {
 
 	@Autowired
 	PackingDetailRepos packingDetailRepos;
@@ -19,13 +19,12 @@ public class PackingDetailService extends GenericServiceOld<PackingDetail> {
 	@Override
 	public PackingDetail findOne(Integer id) {
 		PackingDetail packingDetail = super.findOne(id);
-		//		Hibernate.initialize(packingDetail.get..);
+		// Hibernate.initialize(packingDetail.get..);
 		return packingDetail;
 	}
-	
-	public List<PackingDetail> findByPartNumber(Integer partNumberId){
+
+	public List<PackingDetail> findByPartNumber(Integer partNumberId) {
 		return packingDetailRepos.findByPartNumber(partNumberId);
 	}
 
 }
-

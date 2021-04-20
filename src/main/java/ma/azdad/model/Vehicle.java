@@ -7,6 +7,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -15,7 +18,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class Vehicle extends GenericBean implements Serializable {
+public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	private String category;
 	private String type;
@@ -41,6 +44,7 @@ public class Vehicle extends GenericBean implements Serializable {
 			toolId = tool.getId();
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		return result;
@@ -178,6 +182,16 @@ public class Vehicle extends GenericBean implements Serializable {
 
 	public void setMaxVolume(Double maxVolume) {
 		this.maxVolume = maxVolume;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

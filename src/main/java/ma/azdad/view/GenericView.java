@@ -12,19 +12,18 @@ import org.primefaces.context.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import ma.azdad.model.GenericModel;
 import ma.azdad.service.CacheService;
 import ma.azdad.service.GenericService;
-import ma.azdad.service.UtilsFunctions;
-import ma.azdad.utils.Filterable;
-import ma.azdad.utils.PageType;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class GenericView<A extends Filterable, B extends GenericService> {
+public class GenericView<K, M extends GenericModel<K>, R extends JpaRepository<M, K>, S extends GenericService<K, M, R>> {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	protected B service;
+	protected S service;
 
 	@Autowired
 	protected SessionView sessionView;
@@ -35,74 +34,58 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 	@Autowired
 	protected FileView fileView;
 
-	protected List<A> list1 = new ArrayList<>();
-	protected List<A> list2 = new ArrayList<>();
-	protected List<A> list3;
-	protected List<A> list4;
+	protected List<M> list1 = new ArrayList<>();
+	protected List<M> list2 = new ArrayList<>();
+	protected List<M> list3;
+	protected List<M> list4;
 
-	protected A model;
-	protected A old;
-	protected Integer id;
+	protected M model;
+	protected M old;
+	protected K id;
 
 	protected String currentPath;
-
 	protected String searchBean = "";
-
-	protected String className1 = getParameterClassName();
-	protected String className2 = className1.substring(0, 1).toLowerCase() + className1.substring(1);
-	protected String listPage = className2 + "List.xhtml";
-	protected String addEditPage = "addEdit" + className1 + ".xhtml";
-	protected String viewPage = "view" + className1 + ".xhtml";
-
-	protected PageType pageType = PageType.NONE;
-
 	protected Integer pageIndex;
 
 	protected long start;
-	protected String username;
 
 	protected Boolean isViewPage = false;
 	protected Boolean isAddPage = false;
 	protected Boolean isEditPage = false;
 	protected Boolean isListPage = false;
 
+	protected String listPage = getListPage();
+	protected String addEditPage = getAddEditPage();
+	protected String viewPage = getViewPage();
+
+	protected String username;
+
 	public void init() {
 		log.info("init " + getClass().getSimpleName());
-//		cacheEvictView();
 		start();
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		initParameters();
 
-		if (("/" + listPage).equals(currentPath))
-			pageType = PageType.LIST;
-		else if (("/" + addEditPage).equals(currentPath) && id == null)
-			pageType = PageType.ADD;
-		else if (("/" + addEditPage).equals(currentPath) && id != null)
-			pageType = PageType.EDIT;
-		else if (("/" + viewPage).equals(currentPath))
-			pageType = PageType.VIEW;
+		isListPage = getIsListPage();
+		isAddPage = getIsAddPage();
+		isEditPage = getIsEditPage();
+		isViewPage = getIsViewPage();
 
-		switch (pageType) {
-		case ADD:
-			addPage();
-			isAddPage = true;
-			break;
-		case EDIT:
-			editPage();
-			isEditPage = true;
-			break;
-		case VIEW:
-			viewPage();
-			isViewPage = true;
-			break;
-		case LIST:
-			isListPage = true;
-			break;
-		default:
-			break;
-		}
 		username = sessionView.getUsername();
+
+		if (isListPage)
+			listPage();
+		else if (isAddPage)
+			addPage();
+		else if (isEditPage)
+			editPage();
+		else if (isViewPage)
+			viewPage();
+
 		refreshList();
+	}
+
+	public void listPage() {
 	}
 
 	public void redirect() {
@@ -124,7 +107,7 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 		return true;
 	}
 
-	public void initLists(List<A> list) {
+	public void initLists(List<M> list) {
 		list2 = list1 = list;
 	}
 
@@ -133,9 +116,17 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 			initLists(service.findAll());
 	}
 
+	public void refreshModel(M a) {
+		model = service.findOne(a.id());
+	}
+
+	public void refreshModel(K id) {
+		model = service.findOne(id);
+	}
+
 	protected void addPage() {
 		ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
-		Class<A> type = (Class<A>) superClass.getActualTypeArguments()[0];
+		Class<M> type = (Class<M>) superClass.getActualTypeArguments()[1];
 		try {
 			model = type.newInstance();
 		} catch (Exception e) {
@@ -144,26 +135,50 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 	}
 
 	protected void editPage() {
-		model = (A) service.findOne(id);
+		model = service.findOne(id);
 		cacheEvict();
-		old = (A) service.findOne(id);
-		System.err.println(model == old);
+		old = service.findOne(id);
 	}
 
 	protected void viewPage() {
-		model = (A) service.findOne(id);
+		model = service.findOne(id);
+	}
+
+	protected String getParameter(String name) {
+		return FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get(name);
+	}
+
+	protected Object getParameter(String name, Class keyClass) {
+		try {
+			if (String.class.equals(keyClass))
+				return getParameter(name);
+			else if (Integer.class.equals(keyClass))
+				return Integer.valueOf(getParameter(name));
+			else if (Double.class.equals(keyClass))
+				return Integer.valueOf(getParameter(name));
+			else if (Boolean.class.equals(keyClass))
+				return "true".equals(getParameter(name));
+		} catch (Exception e) {
+			return null;
+		}
+		return null;
+	}
+
+	protected Integer getIntegerParameter(String name) {
+		return (Integer) getParameter(name, Integer.class);
 	}
 
 	protected void initParameters() {
-		id = UtilsFunctions.getIntegerParameter("id");
-		pageIndex = UtilsFunctions.getIntegerParameter("pageIndex");
+		getParameter("test", getKeyClass());
+		id = (K) getParameter("id", getKeyClass());
+		pageIndex = getIntegerParameter("pageIndex");
 	}
 
 	protected void filterBean(String query) {
 		list3 = null;
-		List<A> list = new ArrayList<A>();
+		List<M> list = new ArrayList<M>();
 		query = query.toLowerCase().trim();
-		for (A bean : list1) {
+		for (M bean : list1) {
 			if (bean.filter(query))
 				list.add(bean);
 		}
@@ -195,20 +210,18 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 		RequestContext.getCurrentInstance().execute(script);
 	}
 
-	public String cacheEvict() {
-		service.cacheEvict();
-//		cacheEvictService();
-//		cacheEvictView();
-		return addParameters(currentPath, "faces-redirect=true", "id=" + id, "pageIndex=" + pageIndex);
+	public void hideDialog(String dlgName) {
+		execJavascript("PF('" + dlgName + "').hide()");
 	}
 
-//	public void cacheEvictService() {
-//		service.cacheEvict();
-//	}
+	public void showDialog(String dlgName) {
+		execJavascript("PF('" + dlgName + "').show()");
+	}
 
-//	public void cacheEvictView() {
-//		cacheService.evictCachePrefix(getClassName2() + "View");
-//	}
+	public String cacheEvict() {
+		service.cacheEvict();
+		return addParameters(currentPath, "faces-redirect=true", "id=" + id, "pageIndex=" + pageIndex);
+	}
 
 	public void start() {
 		start = System.currentTimeMillis();
@@ -216,10 +229,6 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 
 	public void time() {
 		log.info("time: " + Long.toString(System.currentTimeMillis() - start) + " ms");
-	}
-
-	public String getParameterClassName() {
-		return ((Class<A>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
 	}
 
 	public SessionView getSessionView() {
@@ -230,45 +239,44 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 		this.sessionView = sessionView;
 	}
 
-	public List<A> getList1() {
+	public List<M> getList1() {
 		return list1;
 	}
 
-	public void setList1(List<A> list1) {
+	public void setList1(List<M> list1) {
 		this.list1 = list1;
 	}
 
-	public List<A> getList2() {
+	public List<M> getList2() {
 		return list2;
 	}
 
-	public void setList2(List<A> list2) {
+	public void setList2(List<M> list2) {
 		this.list2 = list2;
 	}
 
-	public List<A> getList3() {
+	public List<M> getList3() {
 		return list3;
 	}
 
-	public void setList3(List<A> list3) {
+	public void setList3(List<M> list3) {
 		this.list3 = list3;
 	}
 
-	public List<A> getList4() {
+	public List<M> getList4() {
 		return list4;
 	}
 
-	public void setList4(List<A> list4) {
+	public void setList4(List<M> list4) {
 		this.list4 = list4;
 	}
 
-	public Integer getId() {
+	public K getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(K id) {
 		this.id = id;
-		model = (A) service.findOne(id);
 	}
 
 	public String getCurrentPath() {
@@ -292,44 +300,39 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 		return log;
 	}
 
-	public String getClassName1() {
-		return className1;
+	public Class getKeyClass() {
+		return ((Class<K>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
 	}
 
-	public void setClassName1(String className1) {
-		this.className1 = className1;
+	public String getModelName1() {
+		String viewClassName = getClass().getSimpleName();
+		return viewClassName.substring(0, viewClassName.lastIndexOf("View"));
+	}
+
+	public String getModelName2() {
+		return getModelName1().substring(0, 1).toLowerCase() + getModelName1().substring(1);
+	}
+
+	public String getClassName1() {
+		return getModelName1();
+//		return ((Class<M>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1]).getSimpleName();
 	}
 
 	public String getClassName2() {
-		return className2;
-	}
-
-	public void setClassName2(String className2) {
-		this.className2 = className2;
+		return getModelName2();
+//		return getClassName1().substring(0, 1).toLowerCase() + getClassName1().substring(1);
 	}
 
 	public String getListPage() {
-		return listPage;
-	}
-
-	public void setListPage(String listPage) {
-		this.listPage = listPage;
+		return getClassName2() + "List.xhtml";
 	}
 
 	public String getAddEditPage() {
-		return addEditPage;
-	}
-
-	public void setAddEditPage(String addEditPage) {
-		this.addEditPage = addEditPage;
+		return "addEdit" + getClassName1() + ".xhtml";
 	}
 
 	public String getViewPage() {
-		return viewPage;
-	}
-
-	public void setViewPage(String viewPage) {
-		this.viewPage = viewPage;
+		return "view" + getClassName1() + ".xhtml";
 	}
 
 	public Integer getPageIndex() {
@@ -341,19 +344,19 @@ public class GenericView<A extends Filterable, B extends GenericService> {
 	}
 
 	public Boolean getIsViewPage() {
-		return isViewPage;
+		return ("/" + getViewPage()).equals(currentPath);
 	}
 
 	public Boolean getIsAddPage() {
-		return isAddPage;
+		return ("/" + getAddEditPage()).equals(currentPath) && id == null;
 	}
 
 	public Boolean getIsEditPage() {
-		return isEditPage;
+		return ("/" + getAddEditPage()).equals(currentPath) && id != null;
 	}
 
 	public Boolean getIsListPage() {
-		return isListPage;
+		return ("/" + getListPage()).equals(currentPath);
 	}
 
 }

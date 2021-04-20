@@ -24,6 +24,7 @@ import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.MapService;
@@ -40,7 +41,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class TransportationRequestView extends GenericViewOld<TransportationRequest> {
+public class TransportationRequestView extends GenericView<Integer, TransportationRequest, TransportationRequestRepos, TransportationRequestService> {
 
 	@Autowired
 	protected TransportationRequestService transportationRequestService;
@@ -111,12 +112,12 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 				}
 			}
 		} else if (isEditPage) {
-			transportationRequest = transportationRequestService.findOne(selectedId);
+			transportationRequest = transportationRequestService.findOne(id);
 			transportationRequest.init();
 		}
 
 		else if (isViewPage) {
-			transportationRequest = transportationRequestService.findOne(selectedId);
+			transportationRequest = transportationRequestService.findOne(id);
 			transportationRequest.init();
 			generateMap(transportationRequest);
 		}
@@ -146,6 +147,7 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			switch (pageIndex) {
@@ -186,6 +188,7 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (isViewPage) {
 			Boolean test = sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
@@ -493,7 +496,12 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 
 	public String deleteTransportationRequest() {
 		if (canDeleteTransportationRequest())
-			transportationRequestService.delete(transportationRequest);
+			try {
+				transportationRequestService.delete(transportationRequest);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
@@ -503,7 +511,7 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(getClassName2(), file, transportationRequestFileType, event.getFile().getFileName(), transportationRequest, sessionView.getUser());
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(getClassName2(), file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(), transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();
@@ -511,8 +519,12 @@ public class TransportationRequestView extends GenericViewOld<TransportationRequ
 	}
 
 	public void deleteTransportationRequestFile() {
-		transportationRequestFileService.delete(transportationRequestFileId);
-		refreshTransportationRequest();
+		try {
+			transportationRequestFileService.delete(transportationRequestFileId);
+			refreshTransportationRequest();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	/*

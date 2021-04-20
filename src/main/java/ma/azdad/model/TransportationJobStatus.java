@@ -1,5 +1,7 @@
 package ma.azdad.model;
 
+import java.util.stream.Stream;
+
 public enum TransportationJobStatus {
 	NOT_STARTED("Not Started", "orange"),
 	IN_PROGRESS("In Progress", "blue"),
@@ -22,8 +24,20 @@ public enum TransportationJobStatus {
 		return color;
 	}
 
+	public String getBadge() {
+		return "badge badge-" + color;
+	}
+
 	@Override
 	public String toString() {
 		return this.value;
+	}
+
+	public static TransportationJobStatus getByValue(String value) {
+		try {
+			return Stream.of(values()).filter(i -> value.equals(i.getValue())).findFirst().get();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

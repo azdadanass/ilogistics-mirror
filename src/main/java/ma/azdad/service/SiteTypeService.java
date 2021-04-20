@@ -11,8 +11,8 @@ import ma.azdad.repos.SiteTypeRepos;
 
 @Component
 @Transactional
-public class SiteTypeService extends GenericServiceOld<SiteType> {
-	
+public class SiteTypeService extends GenericService<Integer, SiteType, SiteTypeRepos> {
+
 	@Autowired
 	SiteTypeRepos siteTypeRepos;
 
@@ -22,10 +22,7 @@ public class SiteTypeService extends GenericServiceOld<SiteType> {
 		return siteType;
 	}
 
-	
-	
-	public List<SiteType> findByCategory(Integer categoryId){
+	public List<SiteType> findByCategory(Integer categoryId) {
 		return siteTypeRepos.findByCategory(categoryId);
 	}
 }
-

@@ -14,7 +14,7 @@ import ma.azdad.repos.SerialNumberRepos;
 
 @Component
 @Transactional
-public class JobRequestDeliveryDetailService extends GenericServiceOld<JobRequestDeliveryDetail> {
+public class JobRequestDeliveryDetailService extends GenericService<Integer, JobRequestDeliveryDetail, JobRequestDeliveryDetailRepos> {
 
 	@Autowired
 	JobRequestDeliveryDetailRepos repos;

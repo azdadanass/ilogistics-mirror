@@ -12,7 +12,7 @@ import ma.azdad.repos.PartNumberThresholdRepos;
 
 @Component
 @Transactional
-public class PartNumberThresholdService extends GenericServiceOld<PartNumberThreshold> {
+public class PartNumberThresholdService extends GenericService<Integer, PartNumberThreshold, PartNumberThresholdRepos> {
 
 	@Autowired
 	PartNumberThresholdRepos partNumberThresholdRepos;
@@ -20,17 +20,16 @@ public class PartNumberThresholdService extends GenericServiceOld<PartNumberThre
 	@Override
 	public PartNumberThreshold findOne(Integer id) {
 		PartNumberThreshold partNumberThreshold = super.findOne(id);
-		//		Hibernate.initialize(partNumberThreshold.get..);
+		// Hibernate.initialize(partNumberThreshold.get..);
 		return partNumberThreshold;
 	}
-	
-	public List<PartNumberThreshold> findByProject(Integer projectId){
+
+	public List<PartNumberThreshold> findByProject(Integer projectId) {
 		return partNumberThresholdRepos.findByProject(projectId);
 	}
-	
-	public Long countByProjectAndPartNumber(Integer projectId,Integer partNumberId) {
-		return ObjectUtils.firstNonNull(partNumberThresholdRepos.countByProjectAndPartNumber(projectId, partNumberId),0l);
+
+	public Long countByProjectAndPartNumber(Integer projectId, Integer partNumberId) {
+		return ObjectUtils.firstNonNull(partNumberThresholdRepos.countByProjectAndPartNumber(projectId, partNumberId), 0l);
 	}
 
 }
-

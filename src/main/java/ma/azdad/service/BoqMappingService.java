@@ -12,7 +12,7 @@ import ma.azdad.repos.BoqMappingRepos;
 
 @Component
 @Transactional
-public class BoqMappingService extends GenericServiceOld<BoqMapping> {
+public class BoqMappingService extends GenericService<Integer, BoqMapping, BoqMappingRepos> {
 
 	@Autowired
 	BoqMappingRepos boqMappingRepos;
@@ -20,7 +20,7 @@ public class BoqMappingService extends GenericServiceOld<BoqMapping> {
 	@Override
 	public BoqMapping findOne(Integer id) {
 		BoqMapping boqMapping = super.findOne(id);
-		//		Hibernate.initialize(boqMapping.get..);
+		// Hibernate.initialize(boqMapping.get..);
 		return boqMapping;
 	}
 

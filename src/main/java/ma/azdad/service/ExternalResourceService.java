@@ -12,7 +12,7 @@ import ma.azdad.repos.UserRepos;
 
 @Component
 @Transactional
-public class ExternalResourceService extends GenericServiceOld<ExternalResource> {
+public class ExternalResourceService extends GenericService<Integer, ExternalResource, ExternalResourceRepos> {
 
 	@Autowired
 	ExternalResourceRepos externalResourceRepos;

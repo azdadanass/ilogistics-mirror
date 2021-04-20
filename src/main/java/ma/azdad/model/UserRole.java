@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class UserRole extends GenericBean {
+public class UserRole extends GenericModel<Integer> {
 	private Role role;
 	private User user;
 
@@ -26,18 +26,6 @@ public class UserRole extends GenericBean {
 		super();
 		this.user = user;
 		this.role = role;
-	}
-
-	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -61,6 +49,16 @@ public class UserRole extends GenericBean {
 	@Override
 	public String toString() {
 		return "UserRole [user=" + user + ", role=" + role + "]";
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

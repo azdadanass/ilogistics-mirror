@@ -18,10 +18,11 @@ import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.repos.UserRepos;
+import ma.azdad.view.FacesContextMessages;
 
 @Component
 @Transactional
-public class TransportationJobService extends GenericServiceOld<TransportationJob> {
+public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;
@@ -145,20 +146,25 @@ public class TransportationJobService extends GenericServiceOld<TransportationJo
 	}
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
-		transportationJob.init();
-		transportationJob.calculateStartDate();
-		transportationJob.calculateEndDate();
-		transportationJob.calculateStatus();
-		for (Stop stop : transportationJob.getStopList())
-			stopService.delete(stop);
-		for (Path path : transportationJob.getPathList())
-			pathService.delete(path);
-		transportationJob.getPathList().clear();
-		transportationJob.getStopList().clear();
-		transportationJob.generateStopList();
-		transportationJob.generatePathList();
-		calculateTransportationRequestListCosts(transportationJob, setCost);
-		save(transportationJob);
+		try {
+			transportationJob.init();
+			transportationJob.calculateStartDate();
+			transportationJob.calculateEndDate();
+			transportationJob.calculateStatus();
+			for (Stop stop : transportationJob.getStopList())
+				stopService.delete(stop);
+			for (Path path : transportationJob.getPathList())
+				pathService.delete(path);
+			transportationJob.getPathList().clear();
+			transportationJob.getStopList().clear();
+			transportationJob.generateStopList();
+			transportationJob.generatePathList();
+			calculateTransportationRequestListCosts(transportationJob, setCost);
+			save(transportationJob);
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	@Transactional

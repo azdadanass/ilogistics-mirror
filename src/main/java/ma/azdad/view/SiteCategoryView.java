@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.SiteCategory;
+import ma.azdad.repos.SiteCategoryRepos;
 import ma.azdad.service.SiteCategoryService;
 import ma.azdad.service.SiteTypeService;
 
@@ -19,7 +20,7 @@ import ma.azdad.service.SiteTypeService;
 @Component
 @Transactional
 @Scope("view")
-public class SiteCategoryView extends GenericViewOld<SiteCategory> {
+public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCategoryRepos, SiteCategoryService> {
 
 	@Autowired
 	protected SiteCategoryService siteCategoryService;
@@ -37,6 +38,7 @@ public class SiteCategoryView extends GenericViewOld<SiteCategory> {
 
 	private Integer typeId = null;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
@@ -49,12 +51,13 @@ public class SiteCategoryView extends GenericViewOld<SiteCategory> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			siteCategory = siteCategoryService.findOne(selectedId);
+			siteCategory = siteCategoryService.findOne(id);
 		else if (isViewPage)
-			siteCategory = siteCategoryService.findOne(selectedId);
+			siteCategory = siteCategoryService.findOne(id);
 
 	}
 
+	@Override
 	public void initParameters() {
 		super.initParameters();
 		try {
@@ -65,6 +68,7 @@ public class SiteCategoryView extends GenericViewOld<SiteCategory> {
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage) {
 			List<SiteCategory> list = siteCategoryService.findAll();
@@ -113,15 +117,23 @@ public class SiteCategoryView extends GenericViewOld<SiteCategory> {
 
 	public String deleteSiteCategory() {
 		if (canDeleteSiteCategory())
-			siteCategoryService.delete(siteCategory);
+			try {
+				siteCategoryService.delete(siteCategory);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

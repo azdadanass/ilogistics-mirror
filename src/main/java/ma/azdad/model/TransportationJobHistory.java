@@ -1,31 +1,48 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
 @Entity
-
-public class TransportationJobHistory extends GenericHistory<TransportationJob> implements Serializable {
+public class TransportationJobHistory extends GenericHistory<TransportationJob> {
 
 	public TransportationJobHistory() {
-
 	}
 
-	public TransportationJobHistory(Date date, String status, TransportationJob parent, User user) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
+	public TransportationJobHistory(String status, User user) {
+		super(status, user);
 	}
 
-	public TransportationJobHistory(Date date, String status, TransportationJob parent, User user, String description) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
-		this.description = description;
+	public TransportationJobHistory(String status, User user, String description) {
+		super(status, user, description);
 	}
 
+	public TransportationJobHistory(String status, User user, String description, TransportationJob parent) {
+		super(status, user, description, parent);
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	@Transient
+	public String getStatusStyleClass() {
+		try {
+			return TransportationJobStatus.getByValue(status).getBadge();
+		} catch (Exception e) {
+			return "badge";
+		}
+	}
 }

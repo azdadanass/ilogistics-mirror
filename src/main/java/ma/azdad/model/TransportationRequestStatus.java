@@ -1,5 +1,7 @@
 package ma.azdad.model;
 
+import java.util.stream.Stream;
+
 public enum TransportationRequestStatus {
 	EDITED("Edited", "orange", "#e8b110"),
 	REQUESTED("Requested", "blue", "#ff851d"),
@@ -33,15 +35,20 @@ public enum TransportationRequestStatus {
 		return colorCode;
 	}
 
-	//	public static void main(String[] args) {
-	//		int i = 0;
-	//		for (TransportationRequestStatus c : TransportationRequestStatus.values()) {
-	//			System.out.println((i++) + "-" + c.getValue());
-	//		}
-	//	}
+	public String getBadge() {
+		return "badge badge-" + color;
+	}
 
 	@Override
 	public String toString() {
 		return this.value;
+	}
+
+	public static TransportationRequestStatus getByValue(String value) {
+		try {
+			return Stream.of(values()).filter(i -> value.equals(i.getValue())).findFirst().get();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
 
-public class PartNumberEquivalenceDetail extends GenericBean implements Serializable {
+public class PartNumberEquivalenceDetail extends GenericModel<Integer> implements Serializable {
 
 	private Integer quantity = 1;
 
@@ -24,10 +27,11 @@ public class PartNumberEquivalenceDetail extends GenericBean implements Serializ
 		this.parent = parent;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
-		//		if (!result && name != null)
-		//			result = name.toLowerCase().contains(query);
+		// if (!result && name != null)
+		// result = name.toLowerCase().contains(query);
 		return result;
 	}
 
@@ -57,4 +61,13 @@ public class PartNumberEquivalenceDetail extends GenericBean implements Serializ
 		this.parent = parent;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

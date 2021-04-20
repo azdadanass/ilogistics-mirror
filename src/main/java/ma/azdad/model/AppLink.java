@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -16,7 +19,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class AppLink extends GenericBean implements Serializable {
+public class AppLink extends GenericModel<Integer> implements Serializable {
 
 	private CostType costType;
 	private RevenueType revenueType;
@@ -47,11 +50,10 @@ public class AppLink extends GenericBean implements Serializable {
 		super();
 	}
 
-	public AppLink(CostType costType,RevenueType revenueType, Date startDate, Date endDate, Double amount, Double madConversionRate1, Double madConversionRate2, String currency1, String currency2,
-			Integer acceptanceId, Integer expensepaymentId,String supplierName,String customerName,String idInvoice,String invoiceStatus,Date invoiceDate,String poNumeroIbuy,String poNumeroInvoice) {
+	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount, Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
 		super();
 		this.costType = costType;
-		this.revenueType=revenueType;
+		this.revenueType = revenueType;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
@@ -59,13 +61,13 @@ public class AppLink extends GenericBean implements Serializable {
 		this.expensepaymentId = expensepaymentId;
 		this.madConversionRate = madConversionRate1 != null ? madConversionRate1 : madConversionRate2;
 		this.currency = currency1 != null ? currency1 : currency2;
-		this.supplierName=supplierName;
-		this.customerName=customerName;
-		this.idInvoice=idInvoice;
-		this.invoiceStatus=invoiceStatus;
-		this.invoiceDate=invoiceDate;
-		this.poNumeroIbuy=poNumeroIbuy;
-		this.poNumeroInvoice=poNumeroInvoice;
+		this.supplierName = supplierName;
+		this.customerName = customerName;
+		this.idInvoice = idInvoice;
+		this.invoiceStatus = invoiceStatus;
+		this.invoiceDate = invoiceDate;
+		this.poNumeroIbuy = poNumeroIbuy;
+		this.poNumeroInvoice = poNumeroInvoice;
 	}
 
 	@Override
@@ -228,7 +230,6 @@ public class AppLink extends GenericBean implements Serializable {
 		return poNumeroIbuy;
 	}
 
-	
 	@Transient
 	public String getPoNumeroInvoice() {
 		return poNumeroInvoice;
@@ -243,9 +244,15 @@ public class AppLink extends GenericBean implements Serializable {
 	public Date getInvoiceDate() {
 		return invoiceDate;
 	}
-	
-	
-	
-	
-}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+}

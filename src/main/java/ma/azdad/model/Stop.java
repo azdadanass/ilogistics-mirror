@@ -6,6 +6,9 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -13,7 +16,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 
-public class Stop extends GenericBean implements Serializable, Comparable<Stop> {
+public class Stop extends GenericModel<Integer> implements Serializable, Comparable<Stop> {
 
 	private Date date;
 	private StopType type;
@@ -34,13 +37,6 @@ public class Stop extends GenericBean implements Serializable, Comparable<Stop> 
 		this.site = site;
 		this.warehouse = warehouse;
 		this.transportationJob = transportationJob;
-	}
-
-	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && getNumero() != null)
-			result = getNumero().toLowerCase().contains(query);
-		return result;
 	}
 
 	@Transient
@@ -124,8 +120,7 @@ public class Stop extends GenericBean implements Serializable, Comparable<Stop> 
 
 	@Override
 	public String toString() {
-		return "Stop [date=" + UtilsFunctions.getFormattedDateTime(date) + ", date=" + date + ", type=" + type + ", expected=" + expected + ", site=" + (site != null ? site.getName() : null)
-				+ ", warehouse=" + (warehouse != null ? warehouse.getName() : null) + "]\n";
+		return "Stop [date=" + UtilsFunctions.getFormattedDateTime(date) + ", date=" + date + ", type=" + type + ", expected=" + expected + ", site=" + (site != null ? site.getName() : null) + ", warehouse=" + (warehouse != null ? warehouse.getName() : null) + "]\n";
 	}
 
 	@Override
@@ -133,4 +128,13 @@ public class Stop extends GenericBean implements Serializable, Comparable<Stop> 
 		return date.compareTo(o.getDate());
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

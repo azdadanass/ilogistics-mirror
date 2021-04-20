@@ -19,6 +19,7 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.StockRow;
+import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.StockRowService;
@@ -27,7 +28,7 @@ import ma.azdad.service.StockRowService;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequestSerialNumber> {
+public class DeliveryRequestSerialNumberView extends GenericView<Integer, DeliveryRequestSerialNumber, DeliveryRequestSerialNumberRepos, DeliveryRequestSerialNumberService> {
 
 	@Autowired
 	private DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
@@ -49,9 +50,9 @@ public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequ
 		super.init();
 		refreshList();
 		if (isEditPage)
-			deliveryRequestSerialNumber = deliveryRequestSerialNumberService.findOne(selectedId);
+			deliveryRequestSerialNumber = deliveryRequestSerialNumberService.findOne(id);
 		else if (isViewPage)
-			deliveryRequestSerialNumber = deliveryRequestSerialNumberService.findOne(selectedId);
+			deliveryRequestSerialNumber = deliveryRequestSerialNumberService.findOne(id);
 	}
 
 	@Override
@@ -59,9 +60,10 @@ public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequ
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath))
-			list2 = list1 = deliveryRequestSerialNumberService.findByDeliveryRequest(selectedId);
+			list2 = list1 = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
 	}
 
 	public void flushDeliveryRequestSerialNumber() {
@@ -76,6 +78,7 @@ public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequ
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewDeliveryRequestSerialNumber())
 			cacheView.accessDenied();
@@ -115,7 +118,12 @@ public class DeliveryRequestSerialNumberView extends GenericViewOld<DeliveryRequ
 
 	public String deleteDeliveryRequestSerialNumber() {
 		if (canDeleteDeliveryRequestSerialNumber())
-			deliveryRequestSerialNumberService.delete(deliveryRequestSerialNumber);
+			try {
+				deliveryRequestSerialNumberService.delete(deliveryRequestSerialNumber);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

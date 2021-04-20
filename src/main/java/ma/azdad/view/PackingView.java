@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.Packing;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
+import ma.azdad.repos.PackingRepos;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
@@ -19,7 +20,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PackingView extends GenericViewOld<Packing> {
+public class PackingView extends GenericView<Integer, Packing, PackingRepos, PackingService> {
 
 	@Autowired
 	private PackingService packingService;
@@ -44,9 +45,9 @@ public class PackingView extends GenericViewOld<Packing> {
 		if (isAddPage)
 			packing.setPartNumber(partNumberService.findOne(partNumberId));
 		else if (isEditPage)
-			packing = packingService.findOne(selectedId);
+			packing = packingService.findOne(id);
 		else if (isViewPage)
-			packing = packingService.findOne(selectedId);
+			packing = packingService.findOne(id);
 	}
 
 	@Override
@@ -55,9 +56,10 @@ public class PackingView extends GenericViewOld<Packing> {
 		partNumberId = UtilsFunctions.getIntegerParameter("partNumberId");
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/viewPartNumber.xhtml".equals(currentPath))
-			list2 = list1 = packingService.findByPartNumber(selectedId);
+			list2 = list1 = packingService.findByPartNumber(id);
 	}
 
 	public void flushPacking() {
@@ -73,6 +75,7 @@ public class PackingView extends GenericViewOld<Packing> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPacking())
 			cacheView.accessDenied();
@@ -136,9 +139,13 @@ public class PackingView extends GenericViewOld<Packing> {
 
 	public void deletePacking() {
 		if (canDeletePacking())
-			packingService.delete(packing);
-		partNumberService.updateHasPacking(packing.getPartNumber().getId());
-		refreshList();
+			try {
+				packingService.delete(packing);
+				partNumberService.updateHasPacking(packing.getPartNumber().getId());
+				refreshList();
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+			}
 	}
 
 	// TOGGLE STATUS

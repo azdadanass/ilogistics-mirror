@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteCategory;
 import ma.azdad.model.SiteFile;
+import ma.azdad.repos.SiteRepos;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.SiteFileService;
 import ma.azdad.service.SiteHistoryService;
@@ -38,7 +39,7 @@ import ma.azdad.utils.SiteExcelFileException;
 @Component
 @Transactional
 @Scope("view")
-public class SiteView extends GenericViewOld<Site> {
+public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService> {
 
 	@Autowired
 	protected SiteService siteService;
@@ -98,11 +99,11 @@ public class SiteView extends GenericViewOld<Site> {
 			}
 
 		} else if (isEditPage) {
-			site = siteService.findOne(selectedId);
+			site = siteService.findOne(id);
 			site.init();
 			siteCategory = site.getType().getCategory();
 		} else if (isViewPage || isEditSiteCoordinatesPage)
-			site = siteService.findOne(selectedId);
+			site = siteService.findOne(id);
 
 		if (isAddPage || isEditPage || isViewPage || isEditSiteCoordinatesPage)
 			refreshMapModel();
@@ -125,6 +126,7 @@ public class SiteView extends GenericViewOld<Site> {
 
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
 			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
@@ -384,7 +386,13 @@ public class SiteView extends GenericViewOld<Site> {
 
 	public String deleteSite() {
 		if (canDeleteSite())
-			siteService.delete(site);
+			try {
+				siteService.delete(site);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return listPage;
 	}
 
@@ -414,7 +422,7 @@ public class SiteView extends GenericViewOld<Site> {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		SiteFile siteFile = new SiteFile(getClassName2(), file, siteFileType, event.getFile().getFileName(), site, sessionView.getUser());
+		SiteFile siteFile = new SiteFile(getClassName2(), file, siteFileType, event.getFile().getFileName(), sessionView.getUser(), site);
 		siteFileService.save(siteFile);
 		synchronized (SiteView.class) {
 			refreshSite();
@@ -422,8 +430,12 @@ public class SiteView extends GenericViewOld<Site> {
 	}
 
 	public void deleteSiteFile() {
-		siteFileService.delete(siteFileId);
-		refreshSite();
+		try {
+			siteFileService.delete(siteFileId);
+			refreshSite();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	public void setSite(Integer siteId) {

@@ -10,7 +10,7 @@ import ma.azdad.repos.TeamDetailRepos;
 
 @Component
 @Transactional
-public class TeamDetailService extends GenericServiceOld<TeamDetail> {
+public class TeamDetailService extends GenericService<Integer, TeamDetail, TeamDetailRepos> {
 
 	@Autowired
 	TeamDetailRepos teamDetailRepos;

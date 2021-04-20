@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.VehicleType;
+import ma.azdad.repos.VehicleTypeRepos;
 import ma.azdad.service.VehicleTypeHistoryService;
 import ma.azdad.service.VehicleTypeService;
 
@@ -18,7 +19,7 @@ import ma.azdad.service.VehicleTypeService;
 @Component
 @Transactional
 @Scope("view")
-public class VehicleTypeView extends GenericViewOld<VehicleType> {
+public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTypeRepos, VehicleTypeService> {
 
 	@Autowired
 	protected VehicleTypeService vehicleTypeService;
@@ -26,25 +27,25 @@ public class VehicleTypeView extends GenericViewOld<VehicleType> {
 	@Autowired
 	protected CacheView cacheView;
 
-	
-
 	@Autowired
 	private VehicleTypeHistoryService vehicleTypeHistoryService;
 
 	private VehicleType vehicleType = new VehicleType();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			vehicleType = vehicleTypeService.findOne(selectedId);
+			vehicleType = vehicleTypeService.findOne(id);
 		else if (isViewPage)
-			vehicleType = vehicleTypeService.findOne(selectedId);
+			vehicleType = vehicleTypeService.findOne(id);
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = vehicleTypeService.findAll();
@@ -58,6 +59,7 @@ public class VehicleTypeView extends GenericViewOld<VehicleType> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		// if (false)
 		// cacheView.accessDenied();
@@ -98,20 +100,28 @@ public class VehicleTypeView extends GenericViewOld<VehicleType> {
 
 	public String deleteVehicleType() {
 		if (canDeleteVehicleType())
-			vehicleTypeService.delete(vehicleType);
+			try {
+				vehicleTypeService.delete(vehicleType);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	//GENERIC
+	// GENERIC
 	public List<VehicleType> findAll() {
 		return vehicleTypeService.findAll();
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

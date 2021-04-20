@@ -9,31 +9,34 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Location;
+import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.LocationService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class LocationView extends GenericViewOld<Location> {
+public class LocationView extends GenericView<Integer, Location, LocationRepos, LocationService> {
 
 	@Autowired
 	protected LocationService locationService;
 
 	private Location location = new Location();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			location = locationService.findOne(selectedId);
+			location = locationService.findOne(id);
 		else if (isViewPage)
-			location = locationService.findOne(selectedId);
+			location = locationService.findOne(id);
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = locationService.findAll();
@@ -64,15 +67,23 @@ public class LocationView extends GenericViewOld<Location> {
 
 	public String deleteLocation() {
 		if (canDeleteLocation())
-			locationService.delete(location);
+			try {
+				locationService.delete(location);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return listPage;
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

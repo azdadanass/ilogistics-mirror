@@ -5,12 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
 
-public class DeliveryRequestSerialNumber extends GenericBean implements Serializable {
+public class DeliveryRequestSerialNumber extends GenericModel<Integer> implements Serializable {
 
 	private Integer packingNumero;
 	private String serialNumber;
@@ -30,7 +33,7 @@ public class DeliveryRequestSerialNumber extends GenericBean implements Serializ
 			tmpPartNumber = inboundStockRow.getPartNumber();
 			tmpInboundDeliveryRequest = inboundStockRow.getDeliveryRequest();
 		}
-			
+
 	}
 
 	public DeliveryRequestSerialNumber() {
@@ -56,6 +59,7 @@ public class DeliveryRequestSerialNumber extends GenericBean implements Serializ
 		this.tmpStockRowStatus = outboundStockRow.getStatus();
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && serialNumber != null)
@@ -178,4 +182,13 @@ public class DeliveryRequestSerialNumber extends GenericBean implements Serializ
 		return tmpStockRowStatus;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

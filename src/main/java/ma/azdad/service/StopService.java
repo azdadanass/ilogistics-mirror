@@ -9,7 +9,7 @@ import ma.azdad.repos.StopRepos;
 
 @Component
 @Transactional
-public class StopService extends GenericServiceOld<Stop> {
+public class StopService extends GenericService<Integer, Stop, StopRepos> {
 
 	@Autowired
 	StopRepos stopRepos;

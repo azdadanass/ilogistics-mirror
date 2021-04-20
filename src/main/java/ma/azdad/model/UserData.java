@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "e_general_data")
-public class UserData extends GenericBean {
+public class UserData extends GenericModel<Integer> {
 
 	private String firstName;
 	private String lastName;
@@ -80,18 +80,6 @@ public class UserData extends GenericBean {
 	private User user;
 
 	public UserData() {
-	}
-
-	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getCnss() {
@@ -545,4 +533,13 @@ public class UserData extends GenericBean {
 		this.user = user;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

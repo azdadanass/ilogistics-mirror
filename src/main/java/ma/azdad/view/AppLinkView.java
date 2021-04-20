@@ -9,21 +9,20 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.AppLink;
+import ma.azdad.repos.AppLinkRepos;
 import ma.azdad.service.AppLinkService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class AppLinkView extends GenericViewOld<AppLink> {
+public class AppLinkView extends GenericView<Integer, AppLink, AppLinkRepos, AppLinkService> {
 
 	@Autowired
 	protected AppLinkService appLinkService;
 
 	@Autowired
 	protected CacheView cacheView;
-
-	
 
 	private AppLink appLink = new AppLink();
 
@@ -34,14 +33,15 @@ public class AppLinkView extends GenericViewOld<AppLink> {
 		refreshList();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
-			list1 = appLinkService.findByDeliveryRequest(selectedId, true);
-			list2 = appLinkService.findByDeliveryRequest(selectedId, false);
+			list1 = appLinkService.findByDeliveryRequest(id, true);
+			list2 = appLinkService.findByDeliveryRequest(id, false);
 		} else if ("/viewTransportationRequest.xhtml".equals(currentPath))
-			list2 = list1 = appLinkService.findByTransportationRequest(selectedId);
+			list2 = list1 = appLinkService.findByTransportationRequest(id);
 		else if ("/viewWarehouse.xhtml".equals(currentPath))
-			list2 = list1 = appLinkService.findByWarehouse(selectedId);
+			list2 = list1 = appLinkService.findByWarehouse(id);
 	}
 
 	public Double getTotalAmount1() {
@@ -60,7 +60,7 @@ public class AppLinkView extends GenericViewOld<AppLink> {
 		return result;
 	}
 
-	//GENERIC
+	// GENERIC
 
 	// GETTERS & SETTERS
 	@Override

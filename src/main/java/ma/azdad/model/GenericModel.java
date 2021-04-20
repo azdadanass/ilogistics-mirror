@@ -1,28 +1,30 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import ma.azdad.service.UtilsFunctions;
-import ma.azdad.utils.Filterable;
 
 @MappedSuperclass
-public abstract class GenericBean implements Serializable, Filterable {
+public abstract class GenericModel<ID> {
 
-	protected Integer id;
+	protected ID id;
 
-	public GenericBean() {
+	public GenericModel() {
 	}
 
-	public GenericBean(Integer id) {
+	public GenericModel(ID id) {
 		this.id = id;
 	}
 
-	public Integer id() {
+	public ID id() {
 		return this.id;
+	}
+
+	public boolean filter(String query) {
+		return contains(query, getIdStr());
 	}
 
 	protected Boolean contains(String query, Object... objects) {
@@ -49,22 +51,12 @@ public abstract class GenericBean implements Serializable, Filterable {
 
 	@Transient
 	public String getIdStr() {
-		return String.format("%05d", id);
-	}
-
-	@Override
-	public boolean filter(String query) {
-		return contains(query, getIdStr());
-	}
-
-	@Transient
-	public String getClassName() {
-		return getClass().getSimpleName();
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "[id=" + id + "]";
+		if (id == null)
+			return null;
+		if (id instanceof Integer)
+			return String.format("%05d", id);
+		else
+			return id.toString();
 	}
 
 	@Override
@@ -76,6 +68,7 @@ public abstract class GenericBean implements Serializable, Filterable {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -83,12 +76,17 @@ public abstract class GenericBean implements Serializable, Filterable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GenericBean other = (GenericBean) obj;
+		GenericModel<ID> other = (GenericModel<ID>) obj;
 		if (id == null)
 			return false; // id == null && this != obj
 		else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "[id=" + id + "]";
 	}
 
 }

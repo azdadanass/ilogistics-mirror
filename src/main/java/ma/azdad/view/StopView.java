@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Stop;
+import ma.azdad.repos.StopRepos;
 import ma.azdad.service.StopService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class StopView extends GenericViewOld<Stop> {
+public class StopView extends GenericView<Integer, Stop, StopRepos, StopService> {
 
 	@Autowired
 	protected StopService stopService;
@@ -23,22 +24,22 @@ public class StopView extends GenericViewOld<Stop> {
 	@Autowired
 	protected CacheView cacheView;
 
-	
-
 	private Stop stop = new Stop();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			stop = stopService.findOne(selectedId);
+			stop = stopService.findOne(id);
 		else if (isViewPage)
-			stop = stopService.findOne(selectedId);
+			stop = stopService.findOne(id);
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = stopService.findAll();
@@ -52,6 +53,7 @@ public class StopView extends GenericViewOld<Stop> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		// if (false)
 		// cacheView.accessDenied();
@@ -86,15 +88,23 @@ public class StopView extends GenericViewOld<Stop> {
 
 	public String deleteStop() {
 		if (canDeleteStop())
-			stopService.delete(stop);
+			try {
+				stopService.delete(stop);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
 	// GETTERS & SETTERS
+	@Override
 	public SessionView getSessionView() {
 		return sessionView;
 	}
 
+	@Override
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
 	}

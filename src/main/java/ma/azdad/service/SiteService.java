@@ -29,7 +29,7 @@ import ma.azdad.utils.SiteExcelFileException;
 
 @Component
 @Transactional
-public class SiteService extends GenericServiceOld<Site> {
+public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 
 	@Autowired
 	SiteRepos siteRepos;
@@ -60,6 +60,7 @@ public class SiteService extends GenericServiceOld<Site> {
 		return site;
 	}
 
+	@Override
 	public Site save(Site a) {
 		Site site = super.save(a);
 		googleGeocodeService.updateGoogleGeocodeDataAsync(site);
@@ -69,8 +70,8 @@ public class SiteService extends GenericServiceOld<Site> {
 	public List<Site> findLight() {
 		return siteRepos.findLight();
 	}
-	
-	public List<Site> findLightAndHavingWarehouse(){
+
+	public List<Site> findLightAndHavingWarehouse() {
 		return siteRepos.findLightAndHavingWarehouse();
 	}
 
@@ -150,8 +151,7 @@ public class SiteService extends GenericServiceOld<Site> {
 			}
 
 			if (cols != 8)
-				throw new SiteExcelFileException(
-						"number of columns should be 2 with this order (Name[TEXT],Phone[TEXT],FAX[TEXT],ADDRESS1[TEXT],ADDRESS2[TEXT],ADDRESS3[TEXT],LATITUDE[NUMBER],LONGITUDE[Number])");
+				throw new SiteExcelFileException("number of columns should be 2 with this order (Name[TEXT],Phone[TEXT],FAX[TEXT],ADDRESS1[TEXT],ADDRESS2[TEXT],ADDRESS3[TEXT],LATITUDE[NUMBER],LONGITUDE[Number])");
 
 			for (int r = 1; r < rows; r++) {
 				row = sheet.getRow(r);
@@ -167,8 +167,7 @@ public class SiteService extends GenericServiceOld<Site> {
 					HSSFCell address3Cell = row.getCell(5);
 					HSSFCell latitudeCell = row.getCell(6);
 					HSSFCell longitudeCell = row.getCell(7);
-					if (nameCell == null || latitudeCell == null || longitudeCell == null || nameCell.getCellType() == HSSFCell.CELL_TYPE_BLANK
-							|| latitudeCell.getCellType() == HSSFCell.CELL_TYPE_BLANK || longitudeCell.getCellType() == HSSFCell.CELL_TYPE_BLANK)
+					if (nameCell == null || latitudeCell == null || longitudeCell == null || nameCell.getCellType() == HSSFCell.CELL_TYPE_BLANK || latitudeCell.getCellType() == HSSFCell.CELL_TYPE_BLANK || longitudeCell.getCellType() == HSSFCell.CELL_TYPE_BLANK)
 						continue;
 
 					name = getStringValue(nameCell, r);
@@ -180,8 +179,7 @@ public class SiteService extends GenericServiceOld<Site> {
 					latitude = getNumericValue(latitudeCell, r);
 					longitude = getNumericValue(longitudeCell, r);
 
-					result.add(new Site(name, latitude, longitude, address1, address2, address3, phone, fax, template.getType(), template.getOwnerType(), template.getCustomer(),
-							template.getSupplier(), template.getOwner(), template.getUser()));
+					result.add(new Site(name, latitude, longitude, address1, address2, address3, phone, fax, template.getType(), template.getOwnerType(), template.getCustomer(), template.getSupplier(), template.getOwner(), template.getUser()));
 
 				}
 			}
@@ -222,14 +220,15 @@ public class SiteService extends GenericServiceOld<Site> {
 
 	}
 
-	//EDIT SITE Coordinates
+	// EDIT SITE Coordinates
 	public void editSiteCoordinates(Integer siteId, Double latitude, Double longitude) {
 		siteRepos.updateLatitude(siteId, latitude);
 		siteRepos.updateLongitude(siteId, longitude);
-		//		siteRepos.updateGoogleAddress(siteId, UtilsFunctions.getGoogleAddress(latitude, longitude));
+		// siteRepos.updateGoogleAddress(siteId,
+		// UtilsFunctions.getGoogleAddress(latitude, longitude));
 		googleGeocodeService.updateGoogleGeocodeDataAsync(findOne(siteId));
 
-		//update Associated TR 
+		// update Associated TR
 		List<TransportationRequest> transportationRequestList = transportationRequestRepos.findAssociatedWithSite(siteId);
 		List<Integer> transportationRequestIdList = new ArrayList<>();
 		for (TransportationRequest transportationRequest : transportationRequestList) {
@@ -238,7 +237,7 @@ public class SiteService extends GenericServiceOld<Site> {
 			transportationRequestIdList.add(transportationRequest.getId());
 		}
 
-		//update Associated TR jobs
+		// update Associated TR jobs
 		if (transportationRequestIdList.isEmpty())
 			return;
 		List<TransportationJob> transportationJobList = transportationJobRepos.findByTransportationRequestList(transportationRequestIdList);
@@ -253,13 +252,12 @@ public class SiteService extends GenericServiceOld<Site> {
 			googleGeocodeService.updateGoogleGeocodeData(site);
 	}
 
-	
 	public void updateName(Integer siteId, String name) {
 		siteRepos.updateName(siteId, name);
 	}
-	
+
 	public void updateType(Integer siteId, SiteType type) {
 		siteRepos.updateType(siteId, type);
 	}
-	
+
 }

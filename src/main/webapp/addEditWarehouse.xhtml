@@ -21,7 +21,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{warehouseView.selectedId == null?'Add New':'Edit'} Warehouse" />
+				<h:outputText value="#{warehouseView.id == null?'Add New':'Edit'} Warehouse" />
 			</li>
 		</ul>
 	</ui:define>
@@ -29,8 +29,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{warehouseView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{warehouseView.selectedId == null?'Add New':'Edit'} Warehouse" />
+					<i class="ace-icon fa #{warehouseView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{warehouseView.id == null?'Add New':'Edit'} Warehouse" />
 				</h1>
 			</div>
 			<div class="row">

@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
-public class ProjectAssignment extends GenericBean implements Serializable {
+public class ProjectAssignment extends GenericModel<Integer> implements Serializable {
 
 	private ProjectAssignmentType type;
 	private Date startDate;
@@ -40,16 +40,6 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 	public ProjectAssignment(Team team) {
 		super();
 		this.team = team;
-	}
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	// c1
@@ -271,4 +261,13 @@ public class ProjectAssignment extends GenericBean implements Serializable {
 		this.user = user;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

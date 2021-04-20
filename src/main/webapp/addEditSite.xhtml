@@ -26,7 +26,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{siteView.selectedId == null?'Add New':'Edit'} Site" />
+				<h:outputText value="#{siteView.id == null?'Add New':'Edit'} Site" />
 			</li>
 		</ul>
 	</ui:define>
@@ -36,8 +36,8 @@
 			<div class="widget-box">
 				<div class="widget-header widget-header-blue widget-header-flat">
 					<h4 class="widget-title lighter">
-						<i class="ace-icon fa #{siteView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-						<h:outputText value=" #{siteView.selectedId == null?'Add New':'Edit'} Site" />
+						<i class="ace-icon fa #{siteView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+						<h:outputText value=" #{siteView.id == null?'Add New':'Edit'} Site" />
 					</h4>
 				</div>
 				<div class="widget-body">

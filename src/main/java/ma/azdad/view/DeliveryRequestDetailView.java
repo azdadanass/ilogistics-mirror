@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.repos.DeliveryRequestDetailRepos;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.UtilsFunctions;
 
@@ -20,7 +21,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestDetailView extends GenericViewOld<DeliveryRequestDetail> {
+public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequestDetail, DeliveryRequestDetailRepos, DeliveryRequestDetailService> {
 
 	@Autowired
 	private DeliveryRequestDetailService deliveryRequestDetailService;
@@ -32,22 +33,25 @@ public class DeliveryRequestDetailView extends GenericViewOld<DeliveryRequestDet
 
 	private Integer companyId;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			deliveryRequestDetail = deliveryRequestDetailService.findOne(selectedId);
+			deliveryRequestDetail = deliveryRequestDetailService.findOne(id);
 		else if (isViewPage)
-			deliveryRequestDetail = deliveryRequestDetailService.findOne(selectedId);
+			deliveryRequestDetail = deliveryRequestDetailService.findOne(id);
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 		companyId = UtilsFunctions.getIntegerParameter("companyId");
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = deliveryRequestDetailService.findAll();
@@ -68,6 +72,7 @@ public class DeliveryRequestDetailView extends GenericViewOld<DeliveryRequestDet
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewDeliveryRequestDetail())
 			cacheView.accessDenied();
@@ -107,15 +112,20 @@ public class DeliveryRequestDetailView extends GenericViewOld<DeliveryRequestDet
 
 	public String deleteDeliveryRequestDetail() {
 		if (canDeleteDeliveryRequestDetail())
-			deliveryRequestDetailService.delete(deliveryRequestDetail);
+			try {
+				deliveryRequestDetailService.delete(deliveryRequestDetail);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	//GENERIC
+	// GENERIC
 	public void refreshCostHistory(Integer partNumberId) {
 		if ("/partNumberReporting.xhtml".equals(currentPath))
-			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, companyId,
-					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
+			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
 	}
 
 	public Double getMaxCost() {

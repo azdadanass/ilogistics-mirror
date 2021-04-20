@@ -1,5 +1,7 @@
 package ma.azdad.model;
 
+import java.util.stream.Stream;
+
 public enum DeliveryRequestStatus {
 	EDITED("Edited", "orange", "#e8b110"),
 	REQUESTED("Requested", "pink", "#c6699f"),
@@ -33,8 +35,20 @@ public enum DeliveryRequestStatus {
 		return colorCode;
 	}
 
+	public String getBadge() {
+		return "badge badge-" + color;
+	}
+
 	@Override
 	public String toString() {
 		return this.value;
+	}
+
+	public static DeliveryRequestStatus getByValue(String value) {
+		try {
+			return Stream.of(values()).filter(i -> value.equals(i.getValue())).findFirst().get();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

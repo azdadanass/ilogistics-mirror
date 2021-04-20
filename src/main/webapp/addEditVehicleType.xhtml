@@ -24,7 +24,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{vehicleTypeView.selectedId == null?'Add New':'Edit'} VehicleType" />
+				<h:outputText value="#{vehicleTypeView.id == null?'Add New':'Edit'} VehicleType" />
 			</li>
 		</ul>
 	</ui:define>
@@ -33,8 +33,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{vehicleTypeView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{vehicleTypeView.selectedId == null?'Add New':'Edit'} VehicleType" />
+					<i class="ace-icon fa #{vehicleTypeView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{vehicleTypeView.id == null?'Add New':'Edit'} VehicleType" />
 				</h1>
 			</div>
 			<div class="row">

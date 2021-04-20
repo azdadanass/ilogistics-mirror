@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberType;
+import ma.azdad.repos.PartNumberTypeRepos;
 import ma.azdad.service.PartNumberTypeService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberTypeView extends GenericViewOld<PartNumberType> {
+public class PartNumberTypeView extends GenericView<Integer, PartNumberType, PartNumberTypeRepos, PartNumberTypeService> {
 
 	@Autowired
 	private PartNumberTypeService partNumberTypeService;
@@ -39,6 +40,7 @@ public class PartNumberTypeView extends GenericViewOld<PartNumberType> {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/partNumberConfiguration.xhtml".equals(currentPath))
 			list2 = list1 = partNumberTypeService.findAll();
@@ -56,6 +58,7 @@ public class PartNumberTypeView extends GenericViewOld<PartNumberType> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPartNumberType())
 			cacheView.accessDenied();
@@ -98,8 +101,13 @@ public class PartNumberTypeView extends GenericViewOld<PartNumberType> {
 	public void deletePartNumberType() {
 		if (!canDeletePartNumberType())
 			return;
-		partNumberTypeService.delete(partNumberType);
-		refreshList();
+		try {
+			partNumberTypeService.delete(partNumberType);
+			refreshList();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// GENERIC

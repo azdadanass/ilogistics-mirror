@@ -16,7 +16,7 @@ import ma.azdad.repos.PartNumberRepos;
 
 @Component
 @Transactional
-public class PackingService extends GenericServiceOld<Packing> {
+public class PackingService extends GenericService<Integer, Packing, PackingRepos> {
 
 	@Autowired
 	PackingRepos packingRepos;

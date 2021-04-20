@@ -7,7 +7,7 @@ import javax.persistence.Transient;
 import org.primefaces.model.map.LatLng;
 
 @MappedSuperclass
-public class GenericPlace extends GenericBean {
+public class GenericPlace extends GenericModel<Integer> {
 
 	protected String name;
 	protected Double latitude = 33.966171;

@@ -17,23 +17,23 @@ import org.apache.commons.io.FilenameUtils;
 import ma.azdad.service.UtilsFunctions;
 
 @MappedSuperclass
-public abstract class GenericFile<A extends GenericBean> extends GenericBean implements Serializable {
+@SuppressWarnings("rawtypes")
+public abstract class GenericFile<M extends GenericModel> extends GenericModel<Integer> implements Serializable {
 
-	protected Date date;
+	protected Date date = new Date();
 	protected String link = "noimage.jpg";
 	protected String extension;
 	protected String type;
 	protected String size;
 	protected String name;
 	protected User user;
-	protected A parent;
+	protected M parent;
 
 	public GenericFile() {
 	}
 
 	public GenericFile(String folder, File file, String type, String name, User user) {
-		this.date = new Date();
-		this.link = folder + "/" + file.getName();
+		this.link = "files/" + folder + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link).toLowerCase();
 		this.size = UtilsFunctions.getFormattedSize(file.length());
 		this.type = type;
@@ -41,7 +41,7 @@ public abstract class GenericFile<A extends GenericBean> extends GenericBean imp
 		this.user = user;
 	}
 
-	public GenericFile(String folder, File file, String type, String name, User user, A parent) {
+	public GenericFile(String folder, File file, String type, String name, User user, M parent) {
 		this(folder, file, type, name, user);
 		this.parent = parent;
 	}
@@ -153,11 +153,11 @@ public abstract class GenericFile<A extends GenericBean> extends GenericBean imp
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "parent_id")
-	public A getParent() {
+	public M getParent() {
 		return parent;
 	}
 
-	public void setParent(A parent) {
+	public void setParent(M parent) {
 		this.parent = parent;
 	}
 

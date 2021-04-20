@@ -1,6 +1,5 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,14 +12,28 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public class GenericComment<A extends GenericBean> extends GenericBean implements Serializable {
+@SuppressWarnings("rawtypes")
+public class GenericComment<M extends GenericModel> extends GenericModel<Integer> {
 
-	protected Date date;
+	protected Date date = new Date();
 	protected String title;
 	protected String content;
 
-	protected A parent;
+	protected M parent;
 	protected User user;
+
+	public GenericComment() {
+	}
+
+	public GenericComment(String title, User user) {
+		this.title = title;
+		this.user = user;
+	}
+
+	public GenericComment(String title, User user, M parent) {
+		this(title, user);
+		this.parent = parent;
+	}
 
 	@Transient
 	public String getUserFullName() {
@@ -92,11 +105,11 @@ public class GenericComment<A extends GenericBean> extends GenericBean implement
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "parent_id")
-	public A getParent() {
+	public M getParent() {
 		return parent;
 	}
 
-	public void setParent(A parent) {
+	public void setParent(M parent) {
 		this.parent = parent;
 	}
 

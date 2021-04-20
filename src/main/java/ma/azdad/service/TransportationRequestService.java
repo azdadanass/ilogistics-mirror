@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +23,7 @@ import ma.azdad.repos.TransportationRequestRepos;
 
 @Component
 @Transactional
-public class TransportationRequestService extends GenericServiceOld<TransportationRequest> {
+public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
 
 	@Autowired
 	TransportationRequestRepos transportationRequestRepos;
@@ -108,8 +107,7 @@ public class TransportationRequestService extends GenericServiceOld<Transportati
 		if (paymentStatus == null)
 			return isTm ? transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED) : transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
 		else
-			return isTm ? transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus)
-					: transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
+			return isTm ? transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus) : transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
 
 	}
 
@@ -124,8 +122,7 @@ public class TransportationRequestService extends GenericServiceOld<Transportati
 			if (isTM)
 				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED));
 			else
-				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED),
-						assignedProjectList);
+				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED), assignedProjectList);
 		else if (TransportationRequestState.HANDLED.equals(state))
 			if (isTM)
 				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
@@ -261,11 +258,13 @@ public class TransportationRequestService extends GenericServiceOld<Transportati
 		params.put("timeLineImage", getTimeLineImage(transportationRequest));
 		params.put("dearFullName", dearFullName);
 
-		//		TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()) ? transportationRequest.getDeliveryRequest().getProject().getManager().getFullname()
-		//				: transportationRequest.getDeliveryRequest().getRequester().getFullName()
+		// TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus())
+		// ?
+		// transportationRequest.getDeliveryRequest().getProject().getManager().getFullname()
+		// : transportationRequest.getDeliveryRequest().getRequester().getFullName()
 
 		String mailBody = fileReaderService.readFile("classpath:mail/tr.html", params);
-		//		System.out.println(mailBody);
+		// System.out.println(mailBody);
 		return mailBody;
 	}
 

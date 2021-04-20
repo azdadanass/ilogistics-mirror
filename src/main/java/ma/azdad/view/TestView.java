@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.Base;
-import ma.azdad.service.BaseService;
 import ma.azdad.service.FileReaderService;
 
 @ManagedBean
@@ -21,22 +19,14 @@ public class TestView {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	public BaseService bs;
-
-	@Autowired
 	FileReaderService fs;
 
 	@PostConstruct
 	public void init() {
 	}
 
-	//	@Transactional
+	// @Transactional
 	public void test() {
-		Base base = bs.findOne(1);
-		System.out.println(base.getField1());
-		base.setField1("test6 !!!!");
-		bs.save(base);
-
 	}
 
 }

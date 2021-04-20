@@ -12,13 +12,11 @@ import ma.azdad.repos.TransporterRepos;
 
 @Component
 @Transactional
-public class TransporterService extends GenericServiceOld<Transporter> {
-	
-	
+public class TransporterService extends GenericService<Integer, Transporter, TransporterRepos> {
+
 	@Autowired
 	TransporterRepos transporterRepos;
-	
-	
+
 	@Override
 	public Transporter findOne(Integer id) {
 		Transporter transporter = super.findOne(id);
@@ -29,11 +27,9 @@ public class TransporterService extends GenericServiceOld<Transporter> {
 		Hibernate.initialize(transporter.getDriverList());
 		return transporter;
 	}
-	
-	
-	public List<Transporter> findLight(){
+
+	public List<Transporter> findLight() {
 		return transporterRepos.findLight();
 	}
 
 }
-

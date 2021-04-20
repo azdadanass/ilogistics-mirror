@@ -58,7 +58,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip" title="Edit" value="addEditPatient.xhtml" rendered="#{patientView.canSavePatient()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{patientView.selectedId}" />
+							<f:param name="id" value="#{patientView.id}" />
 						</h:outputLink>
 
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" onclick="PF('deleteDlg').show()" rendered="#{patientView.canDeletePatient()}">
@@ -74,7 +74,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Add Visit" value="addEditVisit.xhtml">
 							<i class="ace-icon fa fa-plus bigger-230"></i>
 							<h:outputText value="Add" />
-							<f:param name="patientId" value="#{patientView.selectedId}" />
+							<f:param name="patientId" value="#{patientView.id}" />
 						</h:outputLink>
 
 					</div>

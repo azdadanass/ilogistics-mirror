@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
 
-public class Location extends GenericBean implements Serializable {
+public class Location extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private Double surface;
@@ -25,6 +28,7 @@ public class Location extends GenericBean implements Serializable {
 		this.warehouse = warehouse;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && name != null)
@@ -65,4 +69,13 @@ public class Location extends GenericBean implements Serializable {
 		this.warehouse = warehouse;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

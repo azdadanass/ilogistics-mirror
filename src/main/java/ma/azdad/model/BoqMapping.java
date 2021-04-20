@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
 
-public class BoqMapping extends GenericBean implements Serializable {
+public class BoqMapping extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity = 0.0;
 
@@ -58,6 +61,7 @@ public class BoqMapping extends GenericBean implements Serializable {
 		}
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		return result;
@@ -131,4 +135,13 @@ public class BoqMapping extends GenericBean implements Serializable {
 		return "BoqMapping [quantity=" + quantity + ", boq=" + boq + ", partNumberEquivalence=" + partNumberEquivalence + "]\n";
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

@@ -7,13 +7,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
 
-public class Packing extends GenericBean implements Serializable {
+public class Packing extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private Integer quantity = 1;
@@ -26,6 +29,7 @@ public class Packing extends GenericBean implements Serializable {
 
 	private List<PackingDetail> detailList = new ArrayList<PackingDetail>();
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && name != null)
@@ -128,4 +132,13 @@ public class Packing extends GenericBean implements Serializable {
 		this.volume = volume;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

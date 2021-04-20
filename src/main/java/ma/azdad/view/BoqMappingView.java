@@ -28,6 +28,8 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.PartNumberEquivalence;
 import ma.azdad.model.PartNumberEquivalenceDetail;
+import ma.azdad.repos.BoqMappingRepos;
+import ma.azdad.service.BoqMappingService;
 import ma.azdad.service.BoqService;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestService;
@@ -38,7 +40,7 @@ import ma.azdad.service.PartNumberService;
 @Component
 @Transactional
 @Scope("view")
-public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serializable {
+public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingRepos, BoqMappingService> implements Serializable {
 	private static final long serialVersionUID = 2888107105740674611L;
 
 	@Autowired
@@ -69,11 +71,12 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 
 	private Map<PartNumber, Double> partNumberQuantityMap;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
-			deliveryRequest = deliveryRequestService.findOne(selectedId);
+			deliveryRequest = deliveryRequestService.findOne(id);
 			if (deliveryRequest.getPo() == null)
 				return;
 
@@ -82,6 +85,7 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 	}
@@ -90,10 +94,9 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 		if (Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus()))
 			return;
 
-		partNumberQuantityMap = deliveryRequest.getDetailList().stream()
-				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+		partNumberQuantityMap = deliveryRequest.getDetailList().stream().collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
 
-		//remove returned quantities
+		// remove returned quantities
 		Map<PartNumber, Double> returnedQuantityMap = deliveryRequestDetailService.findReturnedQuantityMap(deliveryRequest.getId());
 		if (deliveryRequest.getIsOutbound()) {
 			partNumberQuantityMap.forEach((k, v) -> partNumberQuantityMap.put(k, v - returnedQuantityMap.getOrDefault(k, 0.0)));
@@ -109,11 +112,9 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 					bmiList.add(new BoqMappingInverse(bm.getBoq().getPartNumber(), bm.getQuantity(), bm.getBoq(), null, null));
 				else {
 					if (bm.getDirectEquivalence())
-						bm.getPartNumberEquivalence().getDetailList().forEach(
-								i -> bmiList.add(new BoqMappingInverse(i.getPartNumber(), bm.getQuantity() * i.getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence())));
+						bm.getPartNumberEquivalence().getDetailList().forEach(i -> bmiList.add(new BoqMappingInverse(i.getPartNumber(), bm.getQuantity() * i.getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence())));
 					else
-						bmiList.add(new BoqMappingInverse(bm.getPartNumberEquivalence().getPartNumber(), bm.getQuantity() / bm.getPartNumberEquivalence().getDetailList().get(0).getQuantity(),
-								bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence()));
+						bmiList.add(new BoqMappingInverse(bm.getPartNumberEquivalence().getPartNumber(), bm.getQuantity() / bm.getPartNumberEquivalence().getDetailList().get(0).getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence()));
 				}
 			}
 
@@ -178,7 +179,9 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 		List<Boq> nonDirectList = findNonDirectBoqList(bmi.getPartNumber().getId());
 		boqList.addAll(directList);
 		boqList.addAll(nonDirectList.stream().filter(i -> !directList.contains(i)).collect(Collectors.toList()));
-		//		boqList.forEach(i -> i.setUsedQuantity(boqService.getUsedQuantity(i.getId()))); // replaced by prsisted totalUsedQuantity
+		// boqList.forEach(i ->
+		// i.setUsedQuantity(boqService.getUsedQuantity(i.getId()))); // replaced by
+		// prsisted totalUsedQuantity
 	}
 
 	private List<Boq> findDirectBoqList(Integer partNumberId) {
@@ -187,8 +190,7 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 
 	private List<Boq> findNonDirectBoqList(Integer partNumberId) {
 		PartNumber partNumber = partNumberService.findOne(partNumberId);
-		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getIdpo(),
-				partNumber.getEquivalenceList().stream().filter(i -> i.getDetailList().size() == 1).map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
+		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getIdpo(), partNumber.getEquivalenceList().stream().filter(i -> i.getDetailList().size() == 1).map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
 
 		result.forEach(i -> i.setDirectEquivalence(false));
 		return result;
@@ -212,8 +214,7 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	}
 
 	public Boolean canSave() {
-		return (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
-				&& deliveryRequest.getBoqMappingList().isEmpty() && !Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus());
+		return (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester())) && deliveryRequest.getBoqMappingList().isEmpty() && !Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus());
 	}
 
 	public Boolean validate() {
@@ -239,8 +240,7 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 			Double boqQuantity = bmi.getBoqQuantity();
 
 			for (PartNumberEquivalenceDetail pned : bmi.getPartNumberEquivalence().getDetailList())
-				if (bmiList.stream().filter(i -> i.getBoq().equals(bmi.getBoq()) && i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().equals(bmi.getPartNumberEquivalence())
-						&& i.getPartNumber().equals(pned.getPartNumber()) && i.getBoqQuantity().equals(boqQuantity)).count() != 1)
+				if (bmiList.stream().filter(i -> i.getBoq().equals(bmi.getBoq()) && i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().equals(bmi.getPartNumberEquivalence()) && i.getPartNumber().equals(pned.getPartNumber()) && i.getBoqQuantity().equals(boqQuantity)).count() != 1)
 					return FacesContextMessages.ErrorMessages("Formula not respected : " + bmi.getPartNumberEquivalence().getFormula());
 		}
 
@@ -327,10 +327,12 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	//
 	// private Boolean validateMap() {
 	// if (boqMapping.getQuantity() <= 0.0)
-	// return FacesContextMessages.ErrorMessages("Quantity should be greather than 0");
+	// return FacesContextMessages.ErrorMessages("Quantity should be greather than
+	// 0");
 	//
 	// if (boqMapping.getRemainingQuantity() < boqMapping.getQuantity())
-	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be greather than Remaining
+	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be
+	// greather than Remaining
 	// Quantity");
 	//
 	// if (!boqMapping.getEquivalence()) {
@@ -338,19 +340,25 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	// getRemainingDnQuantity(boqMapping.getBoq().getPartNumber().getId());
 	// if (remainingQuantityInDn == 0.0)
 	// return FacesContextMessages.ErrorMessages("Boq PN " +
-	// boqMapping.getBoq().getPartNumber().getName() + " dosen't exist in DN or all DN quantity is
+	// boqMapping.getBoq().getPartNumber().getName() + " dosen't exist in DN or all
+	// DN quantity is
 	// used");
 	// if (remainingQuantityInDn < boqMapping.getQuantity())
-	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be greather than Remaining DN
+	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be
+	// greather than Remaining DN
 	// Quantity");
 	// } else {
-	// for (PartNumberEquivalenceDetail pned : partNumberEquivalence.getDetailList()) {
-	// Double remainingQuantityInDn = getRemainingDnQuantity(pned.getPartNumber().getId());
+	// for (PartNumberEquivalenceDetail pned :
+	// partNumberEquivalence.getDetailList()) {
+	// Double remainingQuantityInDn =
+	// getRemainingDnQuantity(pned.getPartNumber().getId());
 	// if (remainingQuantityInDn == 0.0)
-	// return FacesContextMessages.ErrorMessages("Boq PN " + pned.getPartNumber().getName() + " dosen't
+	// return FacesContextMessages.ErrorMessages("Boq PN " +
+	// pned.getPartNumber().getName() + " dosen't
 	// exist in DN or all DN quantity is used");
 	// if (remainingQuantityInDn < boqMapping.getQuantity())
-	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be greather than Remaining DN
+	// return FacesContextMessages.ErrorMessages("BoQ Quantity should not be
+	// greather than Remaining DN
 	// Quantity");
 	// }
 	// }
@@ -359,17 +367,21 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	//
 	// private Double getRemainingDnQuantity(Integer partNumberId) {
 	// Double totalDnQty = deliveryRequest.getDetailList().stream().filter(i ->
-	// i.getPartNumber().getId().equals(partNumberId)).mapToDouble(i -> i.getQuantity()).sum();
+	// i.getPartNumber().getId().equals(partNumberId)).mapToDouble(i ->
+	// i.getQuantity()).sum();
 	//
 	// // case same PN
-	// Double usedQuantity1 = list4.stream().filter(i -> i.getPartNumberEquivalence() == null &&
-	// i.getBoq().getPartNumber().getId().equals(partNumberId)).mapToDouble(i -> i.getQuantity()).sum();
+	// Double usedQuantity1 = list4.stream().filter(i ->
+	// i.getPartNumberEquivalence() == null &&
+	// i.getBoq().getPartNumber().getId().equals(partNumberId)).mapToDouble(i ->
+	// i.getQuantity()).sum();
 	//
 	// // case equivalence
 	// Double usedQuantity2 = 0.0;
 	// for (BoqMapping bm : list4) {
 	// if (bm.getPartNumberEquivalence() != null)
-	// for (PartNumberEquivalenceDetail pned : bm.getPartNumberEquivalence().getDetailList())
+	// for (PartNumberEquivalenceDetail pned :
+	// bm.getPartNumberEquivalence().getDetailList())
 	// if (pned.getPartNumber().getId().equals(partNumberId))
 	// usedQuantity2 += bm.getQuantity() * pned.getQuantity();
 	// }
@@ -393,8 +405,10 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	// partNumberEquivalenceList = new ArrayList<>();
 	// Set<Integer> dnPnIdSet = deliveryRequest.getDetailList().stream().map(i ->
 	// i.getPartNumber().getId()).collect(Collectors.toSet());
-	// for (PartNumberEquivalence pne : boqMapping.getBoq().getPartNumber().getEquivalenceList())
-	// if (pne.getDetailList().stream().map(i -> i.getPartNumber().getId()).filter(i ->
+	// for (PartNumberEquivalence pne :
+	// boqMapping.getBoq().getPartNumber().getEquivalenceList())
+	// if (pne.getDetailList().stream().map(i -> i.getPartNumber().getId()).filter(i
+	// ->
 	// !dnPnIdSet.contains(i)).count() == 0)
 	// partNumberEquivalenceList.add(pne);
 	// }
@@ -402,7 +416,8 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	// // SAVE MAPPING
 	//
 	// public Boolean canSave() { // same in deliveryRequestView
-	// return deliveryRequest.getDate4() != null && deliveryRequest.getPo() != null &&
+	// return deliveryRequest.getDate4() != null && deliveryRequest.getPo() != null
+	// &&
 	// deliveryRequest.getBoqMappingList().isEmpty();
 	// }
 	//
@@ -416,7 +431,8 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	// deliveryRequest.getBoqMappingList().add(boqMapping);
 	// }
 	// deliveryRequestService.save(deliveryRequest);
-	// return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" +
+	// return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true",
+	// "id=" +
 	// deliveryRequest.getId());
 	// }
 	//
@@ -424,16 +440,21 @@ public class BoqMappingView extends GenericViewOld<BoqMapping> implements Serial
 	// if (list4.isEmpty())
 	// return FacesContextMessages.ErrorMessages("List should not be empty");
 	//
-	// if (list4.stream().filter(i -> i.getQuantity() == null || i.getQuantity() <= 0).count() > 0)
-	// return FacesContextMessages.ErrorMessages("Quantity should not be null and greather than 0");
+	// if (list4.stream().filter(i -> i.getQuantity() == null || i.getQuantity() <=
+	// 0).count() > 0)
+	// return FacesContextMessages.ErrorMessages("Quantity should not be null and
+	// greather than 0");
 	//
-	//// if (list4.stream().filter(i -> i.getPartNumber() == null && i.getPartNumberEquivalence() ==
+	//// if (list4.stream().filter(i -> i.getPartNumber() == null &&
+	// i.getPartNumberEquivalence() ==
 	// null).count() > 0)
 	//// return FacesContextMessages.ErrorMessages("DN PN should not be null");
 	//
 	// if (deliveryRequest.getDetailList().stream().map(i ->
-	// i.getPartNumber().getId()).distinct().filter(i -> getRemainingDnQuantity(i) > 0).count() > 0)
-	// return FacesContextMessages.ErrorMessages("All DN Part number should be mapped");
+	// i.getPartNumber().getId()).distinct().filter(i -> getRemainingDnQuantity(i) >
+	// 0).count() > 0)
+	// return FacesContextMessages.ErrorMessages("All DN Part number should be
+	// mapped");
 	//
 	// return true;
 	// }

@@ -11,6 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -23,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Entity
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class JobRequest extends GenericBean implements Serializable {
+public class JobRequest extends GenericModel<Integer> implements Serializable {
 
 	private Boolean important = false;
 	private Priority priority;
@@ -304,7 +307,7 @@ public class JobRequest extends GenericBean implements Serializable {
 	@Transient
 	@JsonIgnore
 	public String getReference() {
-		return "JR" + getNumero();
+		return "JR" + getIdStr();
 	}
 
 	@Enumerated(EnumType.ORDINAL)
@@ -791,4 +794,13 @@ public class JobRequest extends GenericBean implements Serializable {
 		this.tmpTotalRaisedAndBlockingIssues = tmpTotalRaisedAndBlockingIssues;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

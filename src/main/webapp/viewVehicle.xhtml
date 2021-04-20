@@ -52,7 +52,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditVehicle.xhtml" rendered="#{vehicleView.canSaveVehicle()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{vehicleView.selectedId}" />
+							<f:param name="id" value="#{vehicleView.id}" />
 						</h:outputLink>
 
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">

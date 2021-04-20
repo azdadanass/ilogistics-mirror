@@ -47,7 +47,7 @@ public class ProjectView {
 	private CacheView cacheView;
 
 	private String currentPath;
-	private Integer selectedId;
+	private Integer id;
 	protected List<Project> list1 = new ArrayList<>();
 	protected List<Project> list2 = new ArrayList<>();
 	protected List<Project> list3;
@@ -59,10 +59,10 @@ public class ProjectView {
 	@PostConstruct
 	public void init() {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-		selectedId = UtilsFunctions.getIntegerParameter("id");
+		id = UtilsFunctions.getIntegerParameter("id");
 		refreshList();
 		if ("/partNumberThresholdList.xhtml".equals(currentPath))
-			project = projectService.findOne(selectedId);
+			project = projectService.findOne(id);
 	}
 
 	public void redirect() {
@@ -73,7 +73,7 @@ public class ProjectView {
 	public void refreshList() {
 		if ("/viewUser.xhtml".equals(currentPath)) {
 			List<Project> list = projectService.findLightByResource(sessionView.getUsername());
-			Integer customerId = userService.findCustomerId(selectedId);
+			Integer customerId = userService.findCustomerId(id);
 			if (customerId == null)
 				list2 = list1 = list;
 			else
@@ -202,12 +202,12 @@ public class ProjectView {
 		this.currentPath = currentPath;
 	}
 
-	public Integer getSelectedId() {
-		return selectedId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setSelectedId(Integer selectedId) {
-		this.selectedId = selectedId;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public List<Project> getList1() {

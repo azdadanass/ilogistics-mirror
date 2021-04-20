@@ -20,7 +20,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{partNumberEquivalenceView.selectedId == null?'Add New':'Edit'} PartNumberEquivalence" />
+				<h:outputText value="#{partNumberEquivalenceView.id == null?'Add New':'Edit'} PartNumberEquivalence" />
 			</li>
 		</ul>
 	</ui:define>
@@ -28,8 +28,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{partNumberEquivalenceView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{partNumberEquivalenceView.selectedId == null?'Add New':'Edit'} PartNumberEquivalence" />
+					<i class="ace-icon fa #{partNumberEquivalenceView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{partNumberEquivalenceView.id == null?'Add New':'Edit'} PartNumberEquivalence" />
 				</h1>
 			</div>
 			<div class="row">

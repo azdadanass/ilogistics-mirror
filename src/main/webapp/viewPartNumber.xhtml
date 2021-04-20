@@ -57,7 +57,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditPartNumber.xhtml" rendered="#{partNumberView.canSavePartNumber()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{partNumberView.selectedId}" />
+							<f:param name="id" value="#{partNumberView.id}" />
 						</h:outputLink>
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{partNumberView.canDeletePartNumber()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>

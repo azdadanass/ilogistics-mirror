@@ -24,7 +24,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{transporterView.selectedId == null?'Add New':'Edit'} Transporter" />
+				<h:outputText value="#{transporterView.id == null?'Add New':'Edit'} Transporter" />
 			</li>
 		</ul>
 	</ui:define>
@@ -34,8 +34,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{transporterView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{transporterView.selectedId == null?'Add New':'Edit'} Transporter" />
+					<i class="ace-icon fa #{transporterView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{transporterView.id == null?'Add New':'Edit'} Transporter" />
 				</h1>
 			</div>
 			<div class="row">

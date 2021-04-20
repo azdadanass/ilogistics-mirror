@@ -14,7 +14,7 @@ import ma.azdad.repos.TeamRepos;
 
 @Component
 
-public class TeamService extends GenericServiceOld<Team> {
+public class TeamService extends GenericService<Integer, Team, TeamRepos> {
 
 	@Autowired
 	TeamRepos teamRepos;

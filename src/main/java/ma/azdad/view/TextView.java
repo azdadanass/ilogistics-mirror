@@ -11,29 +11,31 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Text;
+import ma.azdad.repos.TextRepos;
 import ma.azdad.service.TextService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class TextView extends GenericViewOld<Text> {
+public class TextView extends GenericView<Integer, Text, TextRepos, TextService> {
 
 	@Autowired
 	private TextService textService;
 
 	@Autowired
 	private SessionView sessionView;
-	
 
 	private Text text;
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		refreshList();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/partNumberConfiguration.xhtml".equals(currentPath))
 			list2 = list1 = textService.findByBeanNameAndType("partNumber", "unitType");
@@ -46,7 +48,7 @@ public class TextView extends GenericViewOld<Text> {
 	public List<String> findValueByBeanNameAndType(String beanName, String type) {
 		return textService.findValueByBeanNameAndType(beanName, type);
 	}
-	
+
 	public void initText(String beanName, String type) {
 		text = new Text(beanName, type);
 	}
@@ -67,12 +69,16 @@ public class TextView extends GenericViewOld<Text> {
 	}
 
 	public void deleteText() {
-		textService.delete(text);
-		refreshList();
+		try {
+			textService.delete(text);
+			refreshList();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
-	
-	//GETTERS & SETTERS
+	// GETTERS & SETTERS
 	public Text getText() {
 		return text;
 	}

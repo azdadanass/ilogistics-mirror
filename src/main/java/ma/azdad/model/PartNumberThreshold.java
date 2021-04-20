@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberThreshold extends GenericBean implements Serializable {
+public class PartNumberThreshold extends GenericModel<Integer> implements Serializable {
 
 	private Integer stockMin = 0;
 	private Integer stockMax = 10;
@@ -27,16 +30,17 @@ public class PartNumberThreshold extends GenericBean implements Serializable {
 		this.project = project;
 	}
 
-	public PartNumberThreshold(Integer id, Integer stockMin, Integer stockMax,Integer dormancy,Integer partNumberId, String partNumberName, String partNumberDescription) {
+	public PartNumberThreshold(Integer id, Integer stockMin, Integer stockMax, Integer dormancy, Integer partNumberId, String partNumberName, String partNumberDescription) {
 		super(id);
 		this.stockMin = stockMin;
 		this.stockMax = stockMax;
-		this.dormancy=dormancy;
+		this.dormancy = dormancy;
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && partNumber != null)
@@ -77,7 +81,7 @@ public class PartNumberThreshold extends GenericBean implements Serializable {
 	public void setProject(Project project) {
 		this.project = project;
 	}
-	
+
 	@Transient
 	public Integer getPartNumberId() {
 		if (partNumber == null)
@@ -128,4 +132,13 @@ public class PartNumberThreshold extends GenericBean implements Serializable {
 		this.dormancy = dormancy;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

@@ -18,7 +18,6 @@ import javax.faces.event.PhaseId;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -34,16 +33,13 @@ import org.springframework.stereotype.Component;
 public class FileView {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-	@Value("${filesPath}")
-	private String filesPath;
-
-	@Value("${photosPath}")
-	private String photosPath;
+	@Value("${appPath}")
+	private String appPath;
 
 	public StreamedContent getFile(String fileName) throws FileNotFoundException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
-		File file = new File(filesPath + fileName);
+		File file = new File(appPath + fileName);
 		String contentType = ec.getMimeType(fileName);
 		int contentLength = (int) file.length();
 		log.info("fileName : " + fileName);
@@ -60,8 +56,6 @@ public class FileView {
 	}
 
 	public StreamedContent getStream(String path) throws IOException {
-		if (StringUtils.isBlank(path))
-			return null;
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		if (fc.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
@@ -72,8 +66,6 @@ public class FileView {
 			// So, browser is requesting the media. Return a real StreamedContent with the
 			// media bytes.
 			String fileName = fc.getExternalContext().getRequestParameterMap().get("fileName");
-			if (StringUtils.isBlank(fileName))
-				return null;
 			String contentType = ec.getMimeType(fileName);
 			File file = new File(path + fileName);
 			InputStream stream = new FileInputStream(file);
@@ -81,30 +73,19 @@ public class FileView {
 		}
 	}
 
-	public StreamedContent getStream() throws IOException {
-		return getStream(filesPath);
+	private void createFolderIfNotExist(String path) {
+		new File(path).mkdir();
 	}
 
-	public StreamedContent getPhotoStream() throws IOException {
-		return getStream(photosPath);
+	public StreamedContent getStream() throws IOException {
+		return getStream(appPath);
 	}
 
 	public File handleFileUpload(FileUploadEvent event, String beanName) throws IOException {
 		log.info("handleFileUpload");
-//		String beanName = (String) event.getComponent().getAttributes().get("beanName");
-		createFolderIfNotExist(filesPath + beanName);
-		File file = File.createTempFile(beanName + "-", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(filesPath + beanName));
-		writeFile(file, event);
-		return file;
-	}
-
-	public File handlePhotoUpload(FileUploadEvent event, String beanName, String numero) throws IOException {
-		log.info("handlePhotoUpload");
-//		String beanName = (String) event.getComponent().getAttributes().get("beanName");
-//		String id = (String) event.getComponent().getAttributes().get("id");
-//		File file = File.createTempFile(beanName + numero + "_", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(photosPath + beanName));
-		createFolderIfNotExist(photosPath + beanName);
-		File file = new File(photosPath + beanName + "/" + numero + "." + FilenameUtils.getExtension(event.getFile().getFileName()));
+		String folder = appPath + "files/" + beanName;
+		createFolderIfNotExist(folder);
+		File file = File.createTempFile(beanName + "-", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(folder));
 		writeFile(file, event);
 		return file;
 	}
@@ -118,10 +99,6 @@ public class FileView {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error uploading", null));
 			log.error(e.getMessage());
 		}
-	}
-
-	private void createFolderIfNotExist(String path) {
-		new File(path).mkdir();
 	}
 
 	// old uploading

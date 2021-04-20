@@ -24,6 +24,7 @@ import ma.azdad.model.Location;
 import ma.azdad.model.Warehouse;
 import ma.azdad.model.WarehouseFile;
 import ma.azdad.model.WarehouseManager;
+import ma.azdad.repos.WarehouseRepos;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.LocationService;
 import ma.azdad.service.SupplierService;
@@ -36,7 +37,7 @@ import ma.azdad.service.WarehouseService;
 @Component
 @Transactional
 @Scope("view")
-public class WarehouseView extends GenericViewOld<Warehouse> {
+public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepos, WarehouseService> {
 
 	@Autowired
 	protected WarehouseService warehouseService;
@@ -75,14 +76,15 @@ public class WarehouseView extends GenericViewOld<Warehouse> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage) {
-			warehouse = warehouseService.findOne(selectedId);
+			warehouse = warehouseService.findOne(id);
 			warehouse.init();
 		} else if (isViewPage)
-			warehouse = warehouseService.findOne(selectedId);
+			warehouse = warehouseService.findOne(id);
 		if (isAddPage || isEditPage || isViewPage)
 			refreshMapModel();
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = warehouseService.findAll();
@@ -135,8 +137,13 @@ public class WarehouseView extends GenericViewOld<Warehouse> {
 	public void deleteLocation() {
 		if (!canDeleteLocation())
 			return;
-		locationService.delete(location);
-		refreshWarehouse();
+		try {
+			locationService.delete(location);
+			refreshWarehouse();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// SAVE WAREHOUSE
@@ -182,7 +189,13 @@ public class WarehouseView extends GenericViewOld<Warehouse> {
 
 	public String deleteWarehouse() {
 		if (canDeleteWarehouse())
-			warehouseService.delete(warehouse);
+			try {
+				warehouseService.delete(warehouse);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return listPage;
 	}
 
@@ -192,7 +205,7 @@ public class WarehouseView extends GenericViewOld<Warehouse> {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		WarehouseFile warehouseFile = new WarehouseFile(getClassName2(), file, warehouseFileType, event.getFile().getFileName(), warehouse, sessionView.getUser());
+		WarehouseFile warehouseFile = new WarehouseFile(getClassName2(), file, warehouseFileType, event.getFile().getFileName(), sessionView.getUser(), warehouse);
 		warehouseFileService.save(warehouseFile);
 		synchronized (WarehouseView.class) {
 			refreshWarehouse();
@@ -200,8 +213,13 @@ public class WarehouseView extends GenericViewOld<Warehouse> {
 	}
 
 	public void deleteWarehouseFile() {
-		warehouseFileService.delete(warehouseFileId);
-		refreshWarehouse();
+		try {
+			warehouseFileService.delete(warehouseFileId);
+			refreshWarehouse();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// manager

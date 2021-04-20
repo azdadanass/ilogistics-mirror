@@ -19,6 +19,7 @@ import ma.azdad.model.TransporterFile;
 import ma.azdad.model.TransporterType;
 import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
+import ma.azdad.repos.TransporterRepos;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.ToolService;
@@ -31,7 +32,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class TransporterView extends GenericViewOld<Transporter> {
+public class TransporterView extends GenericView<Integer, Transporter, TransporterRepos, TransporterService> {
 
 	@Autowired
 	protected TransporterService transporterService;
@@ -73,12 +74,13 @@ public class TransporterView extends GenericViewOld<Transporter> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			transporter = transporterService.findOne(selectedId);
+			transporter = transporterService.findOne(id);
 		else if (isViewPage)
-			transporter = transporterService.findOne(selectedId);
+			transporter = transporterService.findOne(id);
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = transporterService.findLight();
@@ -92,6 +94,7 @@ public class TransporterView extends GenericViewOld<Transporter> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		Boolean test = false;
 		if (test)
@@ -124,8 +127,12 @@ public class TransporterView extends GenericViewOld<Transporter> {
 	public void deleteVehicle() {
 		if (!canDeleteVehicle())
 			return;
-		vehicleService.delete(vehicle);
-		refreshTransporter();
+		try {
+			vehicleService.delete(vehicle);
+			refreshTransporter();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	// Driver MANAGEMENT
@@ -177,7 +184,12 @@ public class TransporterView extends GenericViewOld<Transporter> {
 
 	public String deleteTransporter() {
 		if (canDeleteTransporter())
-			transporterService.delete(transporter);
+			try {
+				transporterService.delete(transporter);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
@@ -187,7 +199,7 @@ public class TransporterView extends GenericViewOld<Transporter> {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransporterFile transporterFile = new TransporterFile(getClassName2(), file, transporterFileType, event.getFile().getFileName(), transporter, sessionView.getUser());
+		TransporterFile transporterFile = new TransporterFile(getClassName2(), file, transporterFileType, event.getFile().getFileName(), sessionView.getUser(), transporter);
 		transporterFileService.save(transporterFile);
 		synchronized (TransporterView.class) {
 			refreshTransporter();
@@ -195,8 +207,12 @@ public class TransporterView extends GenericViewOld<Transporter> {
 	}
 
 	public void deleteTransporterFile() {
-		transporterFileService.delete(transporterFileId);
-		refreshTransporter();
+		try {
+			transporterFileService.delete(transporterFileId);
+			refreshTransporter();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	// GENERIC

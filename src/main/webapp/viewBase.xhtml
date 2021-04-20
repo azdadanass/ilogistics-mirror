@@ -61,7 +61,7 @@
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditBase.xhtml" rendered="#{baseView.canSaveBase()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{baseView.selectedId}" />
+							<f:param name="id" value="#{baseView.id}" />
 						</h:outputLink>
 
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{baseView.canDeleteBase()}">

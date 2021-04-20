@@ -1,21 +1,20 @@
 package ma.azdad.service;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.User;
 import ma.azdad.model.VehicleType;
 import ma.azdad.model.VehicleTypeHistory;
+import ma.azdad.repos.VehicleTypeHistoryRepos;
 
 @Component
 @Transactional
-public class VehicleTypeHistoryService extends GenericServiceOld<VehicleTypeHistory> {
+public class VehicleTypeHistoryService extends GenericService<Integer, VehicleTypeHistory, VehicleTypeHistoryRepos> {
 
 	public void created(VehicleType vehicleType, User user) {
 		try {
-			VehicleTypeHistory vehicleTypeHistory = new VehicleTypeHistory(new Date(), "Created", vehicleType, user);
+			VehicleTypeHistory vehicleTypeHistory = new VehicleTypeHistory("Created", user, null, vehicleType);
 			save(vehicleTypeHistory);
 		} catch (Exception e) {
 			log.error("error creating vehicleTypeHistory History (created) : " + e.getMessage());
@@ -26,7 +25,7 @@ public class VehicleTypeHistoryService extends GenericServiceOld<VehicleTypeHist
 	public void edited(VehicleType vehicleType, User user) {
 		try {
 			// TODO fill Description
-			VehicleTypeHistory vehicleTypeHistory = new VehicleTypeHistory(new Date(), "Edited", vehicleType, user);
+			VehicleTypeHistory vehicleTypeHistory = new VehicleTypeHistory("Edited", user, null, vehicleType);
 			save(vehicleTypeHistory);
 		} catch (Exception e) {
 			log.error("error creating vehicleTypeHistory History (edited) : " + e.getMessage());

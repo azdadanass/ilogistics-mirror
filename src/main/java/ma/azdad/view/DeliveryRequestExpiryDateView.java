@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.StockRow;
+import ma.azdad.repos.DeliveryRequestExpiryDateRepos;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.UtilsFunctions;
@@ -24,7 +25,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryRequestExpiryDate> {
+public class DeliveryRequestExpiryDateView extends GenericView<Integer, DeliveryRequestExpiryDate, DeliveryRequestExpiryDateRepos, DeliveryRequestExpiryDateService> {
 
 	@Autowired
 	private DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
@@ -48,9 +49,9 @@ public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryReques
 		super.init();
 		refreshList();
 		if (isEditPage)
-			deliveryRequestExpiryDate = deliveryRequestExpiryDateService.findOne(selectedId);
+			deliveryRequestExpiryDate = deliveryRequestExpiryDateService.findOne(id);
 		else if (isViewPage)
-			deliveryRequestExpiryDate = deliveryRequestExpiryDateService.findOne(selectedId);
+			deliveryRequestExpiryDate = deliveryRequestExpiryDateService.findOne(id);
 	}
 
 	@Override
@@ -58,9 +59,10 @@ public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryReques
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
-			list1 = deliveryRequestExpiryDateService.findByDeliveryRequest(selectedId);
+			list1 = deliveryRequestExpiryDateService.findByDeliveryRequest(id);
 			deliveryRequest = deliveryRequestView.getDeliveryRequest();
 			if (deliveryRequest.getIsOutbound()) {
 				addRemainingToOutbound();
@@ -168,6 +170,7 @@ public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryReques
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewDeliveryRequestExpiryDate())
 			cacheView.accessDenied();
@@ -207,7 +210,13 @@ public class DeliveryRequestExpiryDateView extends GenericViewOld<DeliveryReques
 
 	public String deleteDeliveryRequestExpiryDate() {
 		if (canDeleteDeliveryRequestExpiryDate())
-			deliveryRequestExpiryDateService.delete(deliveryRequestExpiryDate);
+			try {
+				deliveryRequestExpiryDateService.delete(deliveryRequestExpiryDate);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

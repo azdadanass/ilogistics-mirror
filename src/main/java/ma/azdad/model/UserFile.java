@@ -19,7 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
-public class UserFile extends GenericBean {
+public class UserFile extends GenericModel<Integer> {
 
 	protected Date date;
 	protected String link = "noimage.jpg";
@@ -42,18 +42,6 @@ public class UserFile extends GenericBean {
 		this.name = name;
 		this.user = user;
 		this.parent = parent;
-	}
-
-	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	@Transient
@@ -134,6 +122,16 @@ public class UserFile extends GenericBean {
 
 	public void setSize(String size) {
 		this.size = size;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

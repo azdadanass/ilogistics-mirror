@@ -7,6 +7,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -15,7 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "il_brand")
 
-public class Brand extends GenericBean implements Serializable {
+public class Brand extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private String description;
@@ -25,6 +28,7 @@ public class Brand extends GenericBean implements Serializable {
 
 	private List<Supplier> supplierList = new ArrayList<Supplier>();
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && name != null)
@@ -37,22 +41,22 @@ public class Brand extends GenericBean implements Serializable {
 			result = website.toLowerCase().contains(query);
 		return result;
 	}
-	
+
 	public void addSupplier(Supplier supplier) {
-        supplierList.add(supplier);
-        supplier.getBrandList().add(this);
-    }
- 
-    public void removeSupplier(Supplier supplier) {
-        supplierList.remove(supplier);
-        supplier.getBrandList().remove(this);
-    }
- 
-    public void remove() {
-        for(Supplier supplier : new ArrayList<>(supplierList)) {
-            removeSupplier(supplier);
-        }
-    }
+		supplierList.add(supplier);
+		supplier.getBrandList().add(this);
+	}
+
+	public void removeSupplier(Supplier supplier) {
+		supplierList.remove(supplier);
+		supplier.getBrandList().remove(this);
+	}
+
+	public void remove() {
+		for (Supplier supplier : new ArrayList<>(supplierList)) {
+			removeSupplier(supplier);
+		}
+	}
 
 	public String getName() {
 		return name;
@@ -96,8 +100,7 @@ public class Brand extends GenericBean implements Serializable {
 	}
 
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(name = "brand_supplier", joinColumns = { @JoinColumn(name = "brand_id", referencedColumnName = "id") }, inverseJoinColumns = {
-			@JoinColumn(name = "supplier_id", referencedColumnName = "idsupplier") })
+	@JoinTable(name = "brand_supplier", joinColumns = { @JoinColumn(name = "brand_id", referencedColumnName = "id") }, inverseJoinColumns = { @JoinColumn(name = "supplier_id", referencedColumnName = "idsupplier") })
 	public List<Supplier> getSupplierList() {
 		return supplierList;
 	}
@@ -106,4 +109,13 @@ public class Brand extends GenericBean implements Serializable {
 		this.supplierList = supplierList;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

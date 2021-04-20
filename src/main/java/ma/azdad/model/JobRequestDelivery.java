@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class JobRequestDelivery extends GenericBean implements Serializable {
+public class JobRequestDelivery extends GenericModel<Integer> implements Serializable {
 
 	private DeliveryRequest deliveryRequest;
 	private List<JobRequestDeliveryDetail> detailList = new ArrayList<>();
@@ -67,4 +70,13 @@ public class JobRequestDelivery extends GenericBean implements Serializable {
 		return "JobRequestDelivery [deliveryRequest=" + deliveryRequest.getId() + ", detailList=" + detailList.size() + "]";
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

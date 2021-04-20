@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberIndustry;
+import ma.azdad.repos.PartNumberIndustryRepos;
 import ma.azdad.service.PartNumberIndustryService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberIndustryView extends GenericViewOld<PartNumberIndustry> {
+public class PartNumberIndustryView extends GenericView<Integer, PartNumberIndustry, PartNumberIndustryRepos, PartNumberIndustryService> {
 
 	@Autowired
 	private PartNumberIndustryService partNumberIndustryService;
@@ -39,6 +40,7 @@ public class PartNumberIndustryView extends GenericViewOld<PartNumberIndustry> {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if ("/partNumberConfiguration.xhtml".equals(currentPath))
 			list2 = list1 = partNumberIndustryService.findAll();
@@ -56,6 +58,7 @@ public class PartNumberIndustryView extends GenericViewOld<PartNumberIndustry> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPartNumberIndustry())
 			cacheView.accessDenied();
@@ -99,8 +102,13 @@ public class PartNumberIndustryView extends GenericViewOld<PartNumberIndustry> {
 	public void deletePartNumberIndustry() {
 		if (!canDeletePartNumberIndustry())
 			return;
-		partNumberIndustryService.delete(partNumberIndustry);
-		refreshList();
+		try {
+			partNumberIndustryService.delete(partNumberIndustry);
+			refreshList();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// GENERIC

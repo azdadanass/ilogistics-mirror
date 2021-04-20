@@ -8,11 +8,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
 
-public class VehicleType extends GenericBean implements Serializable {
+public class VehicleType extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private Double price;
@@ -20,6 +23,7 @@ public class VehicleType extends GenericBean implements Serializable {
 
 	private List<VehicleTypeHistory> historyList = new ArrayList<>();
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && name != null)
@@ -59,6 +63,16 @@ public class VehicleType extends GenericBean implements Serializable {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

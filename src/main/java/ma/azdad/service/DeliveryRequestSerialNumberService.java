@@ -17,11 +17,9 @@ import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 
 @Component
 @Transactional
-public class DeliveryRequestSerialNumberService extends GenericServiceOld<DeliveryRequestSerialNumber> {
+public class DeliveryRequestSerialNumberService extends GenericService<Integer, DeliveryRequestSerialNumber, DeliveryRequestSerialNumberRepos> {
 
-	public static Comparator<DeliveryRequestSerialNumber> COMPARATOR = Comparator.comparingInt(DeliveryRequestSerialNumber::getNotNullInboundStockRowId)
-			.thenComparingInt(DeliveryRequestSerialNumber::getTmpPartNumberId).thenComparingInt(DeliveryRequestSerialNumber::getPackingNumero)
-			.thenComparingInt(DeliveryRequestSerialNumber::getNotNullId);
+	public static Comparator<DeliveryRequestSerialNumber> COMPARATOR = Comparator.comparingInt(DeliveryRequestSerialNumber::getNotNullInboundStockRowId).thenComparingInt(DeliveryRequestSerialNumber::getTmpPartNumberId).thenComparingInt(DeliveryRequestSerialNumber::getPackingNumero).thenComparingInt(DeliveryRequestSerialNumber::getNotNullId);
 
 	@Autowired
 	DeliveryRequestSerialNumberRepos deliveryRequestSerialNumberRepos;
@@ -49,7 +47,7 @@ public class DeliveryRequestSerialNumberService extends GenericServiceOld<Delive
 	}
 
 	public void save(PackingDetail packingDetail, StockRow inboundStockRow) {
-		int n = (int) (double) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
+		int n = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < packingDetail.getQuantity(); j++)
 				save(new DeliveryRequestSerialNumber(i + 1, packingDetail, inboundStockRow));
@@ -59,16 +57,13 @@ public class DeliveryRequestSerialNumberService extends GenericServiceOld<Delive
 		return deliveryRequestSerialNumberRepos.findInboundSerialNumberByOutboundDeliveryRequest(outboundDeliveryRequestId);
 	}
 
-	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(Integer partNumberId, Integer inboundDeliveryRequestId,
-			StockRowStatus status, Integer locationId, Integer packingDetailId, List<Integer> exculdeList) {
+	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(Integer partNumberId, Integer inboundDeliveryRequestId, StockRowStatus status, Integer locationId, Integer packingDetailId, List<Integer> exculdeList) {
 
-		return deliveryRequestSerialNumberRepos.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(partNumberId, inboundDeliveryRequestId, status, locationId,
-				packingDetailId, !exculdeList.isEmpty() ? exculdeList : Arrays.asList(-1));
+		return deliveryRequestSerialNumberRepos.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(partNumberId, inboundDeliveryRequestId, status, locationId, packingDetailId, !exculdeList.isEmpty() ? exculdeList : Arrays.asList(-1));
 	}
 
 	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(DeliveryRequestSerialNumber current, List<Integer> exculdeList) {
-		return findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(current.getTmpPartNumber().getId(), current.getTmpInboundDeliveryRequest().getId(),
-				current.getTmpStockRowStatus(), current.getTmpLocation().getId(), current.getPackingDetail().getId(), exculdeList);
+		return findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(current.getTmpPartNumber().getId(), current.getTmpInboundDeliveryRequest().getId(), current.getTmpStockRowStatus(), current.getTmpLocation().getId(), current.getPackingDetail().getId(), exculdeList);
 	}
 
 	public Integer findPackingNumeroByPartNumberAndInboundDeliveryRequestAndSerialNumber(Integer partNumberId, Integer inboundDeliveryRequestId, String serialNumber) {
@@ -84,7 +79,7 @@ public class DeliveryRequestSerialNumberService extends GenericServiceOld<Delive
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId) {
 		return deliveryRequestSerialNumberRepos.countByInboundDeliveryRequestAndEmpty(deliveryRequestId);
 	}
-	
+
 	public Long countByPartNumberAndInboundDeliveryRequest(Integer partNumberId, Integer inboundDeliveryRequestId) {
 		return deliveryRequestSerialNumberRepos.countByPartNumberAndInboundDeliveryRequest(partNumberId, inboundDeliveryRequestId);
 	}

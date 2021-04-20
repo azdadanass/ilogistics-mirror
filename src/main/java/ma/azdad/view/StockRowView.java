@@ -22,6 +22,7 @@ import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
 import ma.azdad.model.User;
+import ma.azdad.repos.StockRowRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.StockRowService;
@@ -32,7 +33,7 @@ import ma.azdad.utils.ChartContainer;
 @Component
 @Transactional
 @Scope("view")
-public class StockRowView extends GenericViewOld<StockRow> {
+public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, StockRowService> {
 
 	@Autowired
 	protected StockRowService stockRowService;
@@ -89,9 +90,9 @@ public class StockRowView extends GenericViewOld<StockRow> {
 		initParameters();
 		refreshList();
 		if (isEditPage)
-			stockRow = stockRowService.findOne(selectedId);
+			stockRow = stockRowService.findOne(id);
 		else if (isViewPage)
-			stockRow = stockRowService.findOne(selectedId);
+			stockRow = stockRowService.findOne(id);
 
 	}
 
@@ -104,6 +105,7 @@ public class StockRowView extends GenericViewOld<StockRow> {
 		maxThreshold = UtilsFunctions.getBooleanParameter("maxThreshold");
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			switch (pageIndex) {
@@ -379,14 +381,14 @@ public class StockRowView extends GenericViewOld<StockRow> {
 	public void getPartNumberReportingLists(Boolean currentStock) {
 		if (currentStock) {
 			if (companyId != null)
-				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), selectedId);
+				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
 			else if (customerId != null)
-				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), selectedId);
+				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
 		} else {
 			if (companyId != null)
-				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), selectedId);
+				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
 			else if (customerId != null)
-				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), selectedId);
+				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
 		}
 	}
 
@@ -441,7 +443,13 @@ public class StockRowView extends GenericViewOld<StockRow> {
 
 	public String deleteStockRow() {
 		if (canDeleteStockRow())
-			stockRowService.delete(stockRow);
+			try {
+				stockRowService.delete(stockRow);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

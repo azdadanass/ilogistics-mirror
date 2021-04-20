@@ -11,7 +11,7 @@ import ma.azdad.repos.AppLinkRepos;
 
 @Component
 @Transactional
-public class AppLinkService extends GenericServiceOld<AppLink> {
+public class AppLinkService extends GenericService<Integer, AppLink, AppLinkRepos> {
 
 	@Autowired
 	AppLinkRepos appLinkRepos;
@@ -37,7 +37,6 @@ public class AppLinkService extends GenericServiceOld<AppLink> {
 		return appLinkRepos.findByWarehouse(warehouseId);
 	}
 
-	
 	public void deleteByDeliveryRequest(Integer deliveryRequestId) {
 		appLinkRepos.deleteByDeliveryRequest(deliveryRequestId);
 	}

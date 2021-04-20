@@ -26,7 +26,7 @@ import ma.azdad.view.FacesContextMessages;
 
 @Component
 @Transactional
-public class PartNumberService extends GenericServiceOld<PartNumber> {
+public class PartNumberService extends GenericService<Integer, PartNumber, PartNumberRepos> {
 
 	@Autowired
 	private PartNumberRepos partNumberRepos;

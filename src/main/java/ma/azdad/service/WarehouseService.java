@@ -15,7 +15,7 @@ import ma.azdad.repos.WarehouseRepos;
 
 @Component
 @Transactional
-public class WarehouseService extends GenericServiceOld<Warehouse> {
+public class WarehouseService extends GenericService<Integer, Warehouse, WarehouseRepos> {
 
 	@Autowired
 	WarehouseRepos warehouseRepos;

@@ -4,10 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class ExternalResourceRole extends GenericBean {
+public class ExternalResourceRole extends GenericModel<Integer> {
 
 	private Role role;
 	private ExternalResource externalResource;
@@ -68,4 +71,13 @@ public class ExternalResourceRole extends GenericBean {
 		return true;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

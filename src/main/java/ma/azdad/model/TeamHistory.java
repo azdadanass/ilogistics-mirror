@@ -1,31 +1,38 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-
-public class TeamHistory extends GenericHistory<Team> implements Serializable {
+public class TeamHistory extends GenericHistory<Team> {
 
 	public TeamHistory() {
-
 	}
 
-	public TeamHistory(Date date, String status, Team parent, User user) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
+	public TeamHistory(String status, User user) {
+		super(status, user);
 	}
 
-	public TeamHistory(Date date, String status, Team parent, User user, String description) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
-		this.description = description;
+	public TeamHistory(String status, User user, String description) {
+		super(status, user, description);
+	}
+
+	public TeamHistory(String status, User user, String description, Team parent) {
+		super(status, user, description, parent);
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

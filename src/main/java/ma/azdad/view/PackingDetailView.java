@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PackingDetail;
+import ma.azdad.repos.PackingDetailRepos;
 import ma.azdad.service.PackingDetailService;
 
 @ManagedBean
 @Component
 @Transactional
 @Scope("view")
-public class PackingDetailView extends GenericViewOld<PackingDetail> {
+public class PackingDetailView extends GenericView<Integer, PackingDetail, PackingDetailRepos, PackingDetailService> {
 
 	@Autowired
 	private PackingDetailService packingDetailService;
@@ -27,21 +28,24 @@ public class PackingDetailView extends GenericViewOld<PackingDetail> {
 
 	private PackingDetail packingDetail = new PackingDetail();
 
+	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			packingDetail = packingDetailService.findOne(selectedId);
+			packingDetail = packingDetailService.findOne(id);
 		else if (isViewPage)
-			packingDetail = packingDetailService.findOne(selectedId);
+			packingDetail = packingDetailService.findOne(id);
 	}
 
+	@Override
 	protected void initParameters() {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = packingDetailService.findAll();
@@ -59,6 +63,7 @@ public class PackingDetailView extends GenericViewOld<PackingDetail> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPackingDetail())
 			cacheView.accessDenied();
@@ -98,15 +103,19 @@ public class PackingDetailView extends GenericViewOld<PackingDetail> {
 
 	public String deletePackingDetail() {
 		if (canDeletePackingDetail())
-			packingDetailService.delete(packingDetail);
+			try {
+				packingDetailService.delete(packingDetail);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
-	
-	//GENERIC
-	public List<PackingDetail> findByPartNumber(Integer partNumberId){
+
+	// GENERIC
+	public List<PackingDetail> findByPartNumber(Integer partNumberId) {
 		return packingDetailService.findByPartNumber(partNumberId);
 	}
-	
 
 	// GETTERS & SETTERS
 	public PackingDetail getPackingDetail() {
@@ -118,4 +127,3 @@ public class PackingDetailView extends GenericViewOld<PackingDetail> {
 	}
 
 }
-

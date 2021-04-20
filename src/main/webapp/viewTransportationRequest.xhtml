@@ -65,7 +65,7 @@
 							rendered="#{transportationRequestView.canSaveTransportationRequest()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{transportationRequestView.selectedId}" />
+							<f:param name="id" value="#{transportationRequestView.id}" />
 						</h:outputLink>
 
 						<p:commandLink title="Request" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" onclick="PF('requestDlg').show()"

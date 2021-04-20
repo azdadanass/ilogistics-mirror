@@ -3,10 +3,13 @@ package ma.azdad.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 
-public class DocType extends GenericBean implements Serializable {
+public class DocType extends GenericModel<Integer> implements Serializable {
 
 	private String app;
 	private String type;
@@ -45,4 +48,13 @@ public class DocType extends GenericBean implements Serializable {
 		this.filter = filter;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

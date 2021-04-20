@@ -5,12 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 @Entity
 
-public class JobRequestDeliveryDetail extends GenericBean implements Serializable {
+public class JobRequestDeliveryDetail extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity = 0.0;
 	private Double receivedQuantity = 0.0;
@@ -21,7 +24,7 @@ public class JobRequestDeliveryDetail extends GenericBean implements Serializabl
 	private JobRequest jobRequest;
 	private DeliveryRequestDetail deliveryRequestDetail;
 
-	//TMP
+	// TMP
 	private Integer tmpDeliveryRequestDetailId;
 	private String tmpPartNumberName;
 	private String tmpPartNumberDescription;
@@ -36,8 +39,7 @@ public class JobRequestDeliveryDetail extends GenericBean implements Serializabl
 		super();
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference,
-			Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName) {
+	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference, Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.tmpSerialNumber = tmpSerialNumber;
@@ -50,8 +52,7 @@ public class JobRequestDeliveryDetail extends GenericBean implements Serializabl
 		this.tmpTeamName = tmpTeamName;
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, String tmpPartNumberName, String tmpPartNumberDescription,
-			Integer referenceNumber, DeliveryRequestType deliveryRequestType, Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName) {
+	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, String tmpPartNumberName, String tmpPartNumberDescription, Integer referenceNumber, DeliveryRequestType deliveryRequestType, Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
@@ -75,6 +76,7 @@ public class JobRequestDeliveryDetail extends GenericBean implements Serializabl
 		this.installedQuantity = quantity;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		if (!result && jobRequest != null)
@@ -235,4 +237,13 @@ public class JobRequestDeliveryDetail extends GenericBean implements Serializabl
 		return tmpJobRequestId;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

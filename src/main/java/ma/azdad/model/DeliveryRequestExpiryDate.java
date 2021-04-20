@@ -5,6 +5,9 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -12,7 +15,7 @@ import javax.persistence.Transient;
 
 @Entity
 
-public class DeliveryRequestExpiryDate extends GenericBean implements Serializable {
+public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity;
 	private Date expiryDate;
@@ -48,10 +51,11 @@ public class DeliveryRequestExpiryDate extends GenericBean implements Serializab
 		this.initial = initial;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
-		//		if (!result && name != null)
-		//			result = name.toLowerCase().contains(query);
+		// if (!result && name != null)
+		// result = name.toLowerCase().contains(query);
 		return result;
 	}
 
@@ -107,5 +111,15 @@ public class DeliveryRequestExpiryDate extends GenericBean implements Serializab
 	@Transient
 	public void setInitial(Boolean initial) {
 		this.initial = initial;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }

@@ -17,7 +17,7 @@ import ma.azdad.utils.Color;
 
 @Entity
 
-public class UserHistory extends GenericBean {
+public class UserHistory extends GenericModel<Integer> {
 
 	private Date date;
 	private String status;
@@ -87,18 +87,6 @@ public class UserHistory extends GenericBean {
 		return null;
 	}
 
-	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	@Override
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getDate() {
 		return date;
@@ -141,6 +129,16 @@ public class UserHistory extends GenericBean {
 
 	public void setParent(User parent) {
 		this.parent = parent;
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

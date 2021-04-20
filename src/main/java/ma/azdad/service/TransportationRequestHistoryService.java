@@ -1,22 +1,20 @@
 package ma.azdad.service;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.User;
+import ma.azdad.repos.TransportationRequestHistoryRepos;
 
 @Component
 @Transactional
-public class TransportationRequestHistoryService extends GenericServiceOld<TransportationRequestHistory> {
+public class TransportationRequestHistoryService extends GenericService<Integer, TransportationRequestHistory, TransportationRequestHistoryRepos> {
 
 	public void created(TransportationRequest transportationRequest) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Created", transportationRequest,
-					transportationRequest.getDeliveryRequest().getRequester());
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Created", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (created) : " + e.getMessage());
@@ -27,8 +25,7 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	public void edited(TransportationRequest transportationRequest) {
 		try {
 			// TODO fill Description
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Edited", transportationRequest,
-					transportationRequest.getDeliveryRequest().getRequester());
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Edited", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (edited) : " + e.getMessage());
@@ -37,13 +34,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void requestedNew(TransportationRequest transportationRequest) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Requested", transportationRequest, transportationRequest.getDeliveryRequest().getRequester()));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Requested", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest));
 	}
 
 	public void requested(TransportationRequest transportationRequest) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Requested", transportationRequest,
-					transportationRequest.getDeliveryRequest().getRequester());
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Requested", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (requested) : " + e.getMessage());
@@ -52,12 +48,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void approvedNew(TransportationRequest transportationRequest, User user) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Approved", transportationRequest, user));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Approved", user, null, transportationRequest));
 	}
 
 	public void approved(TransportationRequest transportationRequest, User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Approved", transportationRequest, user);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Approved", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (approved) : " + e.getMessage());
@@ -66,12 +62,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void rejectedNew(TransportationRequest transportationRequest, User user, String reason) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Rejected", transportationRequest, user, reason));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Rejected", user, reason, transportationRequest));
 	}
 
 	public void rejected(TransportationRequest transportationRequest, User user, String reason) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Rejected", transportationRequest, user, reason);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Rejected", user, reason, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (rejected) : " + e.getMessage());
@@ -80,12 +76,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void delivredNew(TransportationRequest transportationRequest, User user) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Delivred", transportationRequest, user));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Delivred", user, null, transportationRequest));
 	}
 
 	public void delivred(TransportationRequest transportationRequest, User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Delivred", transportationRequest, user);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Delivred", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (delivred) : " + e.getMessage());
@@ -94,12 +90,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void assignedNew(TransportationRequest transportationRequest, User user) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Assigned", transportationRequest, user));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Assigned", user, null, transportationRequest));
 	}
 
 	public void assigned(TransportationRequest transportationRequest, User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Assigned", transportationRequest, user);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Assigned", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (assigned) : " + e.getMessage());
@@ -108,12 +104,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void pickedupNew(TransportationRequest transportationRequest, User user) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Picked up", transportationRequest, user));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Picked up", user, null, transportationRequest));
 	}
 
 	public void pickedup(TransportationRequest transportationRequest, User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Picked up", transportationRequest, user);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Picked up", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (pickedup) : " + e.getMessage());
@@ -122,13 +118,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void acknowledgedNew(TransportationRequest transportationRequest) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Acknowledged", transportationRequest, transportationRequest.getDeliveryRequest().getRequester()));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Acknowledged", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest));
 	}
 
 	public void acknowledged(TransportationRequest transportationRequest) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Acknowledged", transportationRequest,
-					transportationRequest.getDeliveryRequest().getRequester());
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Acknowledged", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (acknowledged) : " + e.getMessage());
@@ -137,12 +132,12 @@ public class TransportationRequestHistoryService extends GenericServiceOld<Trans
 	}
 
 	public void canceledNew(TransportationRequest transportationRequest, User user, String reason) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory(new Date(), "Canceled", transportationRequest, user, reason));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Canceled", user, reason, transportationRequest));
 	}
 
 	public void canceled(TransportationRequest transportationRequest, User user, String reason) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory(new Date(), "Canceled", transportationRequest, user, reason);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Canceled", user, reason, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (canceled) : " + e.getMessage());

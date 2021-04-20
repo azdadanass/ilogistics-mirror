@@ -25,7 +25,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{packingView.selectedId == null?'Add New':'Edit'} Packing" />
+				<h:outputText value="#{packingView.id == null?'Add New':'Edit'} Packing" />
 			</li>
 		</ul>
 	</ui:define>
@@ -34,8 +34,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{packingView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{packingView.selectedId == null?'Add New':'Edit'} Packing" />
+					<i class="ace-icon fa #{packingView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{packingView.id == null?'Add New':'Edit'} Packing" />
 				</h1>
 			</div>
 			<div class="row">

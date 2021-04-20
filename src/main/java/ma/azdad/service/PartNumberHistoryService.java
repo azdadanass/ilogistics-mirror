@@ -1,20 +1,19 @@
 package ma.azdad.service;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.PartNumberHistory;
+import ma.azdad.repos.PartNumberHistoryRepos;
 
 @Component
 @Transactional
-public class PartNumberHistoryService extends GenericServiceOld<PartNumberHistory> {
+public class PartNumberHistoryService extends GenericService<Integer, PartNumberHistory, PartNumberHistoryRepos> {
 
 	public void created(PartNumber partNumber) {
 		try {
-			PartNumberHistory partNumberHistory = new PartNumberHistory(new Date(), "Created", partNumber, partNumber.getUser());
+			PartNumberHistory partNumberHistory = new PartNumberHistory("Created", partNumber.getUser(), null, partNumber);
 			save(partNumberHistory);
 		} catch (Exception e) {
 			log.error("error creating partNumberHistory History (created) : " + e.getMessage());
@@ -25,7 +24,7 @@ public class PartNumberHistoryService extends GenericServiceOld<PartNumberHistor
 	public void edited(PartNumber partNumber, String changes) {
 		try {
 			// TODO fill Description
-			PartNumberHistory partNumberHistory = new PartNumberHistory(new Date(), "Edited", changes, partNumber, partNumber.getUser());
+			PartNumberHistory partNumberHistory = new PartNumberHistory("Edited", partNumber.getUser(), changes, partNumber);
 			save(partNumberHistory);
 		} catch (Exception e) {
 			log.error("error creating partNumberHistory History (edited) : " + e.getMessage());

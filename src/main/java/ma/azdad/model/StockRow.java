@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -15,7 +18,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 
-public class StockRow extends GenericBean implements Serializable {
+public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity;
 	private Double unitCost;
@@ -593,4 +596,13 @@ public class StockRow extends GenericBean implements Serializable {
 		this.packing = packing;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

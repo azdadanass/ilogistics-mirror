@@ -1,42 +1,38 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-
-public class PartNumberHistory extends GenericHistory<PartNumber> implements Serializable {
+public class PartNumberHistory extends GenericHistory<PartNumber> {
 
 	public PartNumberHistory() {
-
 	}
 
-	public PartNumberHistory(Date date, String status, PartNumber parent, User user) {
-		this.date = date;
-		this.status = status;
-		this.parent = parent;
-		this.user = user;
+	public PartNumberHistory(String status, User user) {
+		super(status, user);
 	}
 
-	public PartNumberHistory(Date date, String status, String description, PartNumber parent, User user) {
-		this.date = date;
-		this.status = status;
-		this.description = description;
-		this.parent = parent;
-		this.user = user;
+	public PartNumberHistory(String status, User user, String description) {
+		super(status, user, description);
 	}
 
-	@Override
-	@Transient
-	public String getStatusStyleClass() {
-		if ("Created".equals(status))
-			return "badge-primary";
-		else if ("Edited".equals(status))
-			return "badge-warning";
-		return "badge-inverse";
+	public PartNumberHistory(String status, User user, String description, PartNumber parent) {
+		super(status, user, description, parent);
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

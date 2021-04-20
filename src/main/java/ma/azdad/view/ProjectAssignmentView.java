@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.ProjectAssignment;
 import ma.azdad.model.ProjectAssignmentType;
+import ma.azdad.repos.ProjectAssignmentRepos;
 import ma.azdad.service.ProjectAssignmentService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.TeamService;
@@ -19,7 +20,7 @@ import ma.azdad.service.UtilsFunctions;
 @ManagedBean
 @Component
 @Scope("view")
-public class ProjectAssignmentView extends GenericView<ProjectAssignment, ProjectAssignmentService> {
+public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignment, ProjectAssignmentRepos, ProjectAssignmentService> {
 
 	@Autowired
 	CacheView cacheView;

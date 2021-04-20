@@ -56,7 +56,7 @@
 							rendered="#{siteView.canEditSiteCoordinates()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
-							<f:param name="id" value="#{siteView.selectedId}" />
+							<f:param name="id" value="#{siteView.id}" />
 						</h:outputLink>
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{siteView.canDeleteSite()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>

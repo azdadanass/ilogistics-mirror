@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Vehicle;
 import ma.azdad.model.VehicleFile;
+import ma.azdad.repos.VehicleRepos;
 import ma.azdad.service.VehicleFileService;
 import ma.azdad.service.VehicleService;
 
@@ -22,7 +23,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class VehicleView extends GenericViewOld<Vehicle> {
+public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, VehicleService> {
 
 	@Autowired
 	protected VehicleService vehicleService;
@@ -46,12 +47,13 @@ public class VehicleView extends GenericViewOld<Vehicle> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			vehicle = vehicleService.findOne(selectedId);
+			vehicle = vehicleService.findOne(id);
 		else if (isViewPage)
-			vehicle = vehicleService.findOne(selectedId);
+			vehicle = vehicleService.findOne(id);
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = vehicleService.findAll();
@@ -65,6 +67,7 @@ public class VehicleView extends GenericViewOld<Vehicle> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (false)
 			cacheView.accessDenied();
@@ -99,7 +102,12 @@ public class VehicleView extends GenericViewOld<Vehicle> {
 
 	public String deleteVehicle() {
 		if (canDeleteVehicle())
-			vehicleService.delete(vehicle);
+			try {
+				vehicleService.delete(vehicle);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
@@ -109,7 +117,7 @@ public class VehicleView extends GenericViewOld<Vehicle> {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		VehicleFile vehicleFile = new VehicleFile(getClassName2(), file, vehicleFileType, event.getFile().getFileName(), vehicle, sessionView.getUser());
+		VehicleFile vehicleFile = new VehicleFile(getClassName2(), file, vehicleFileType, event.getFile().getFileName(), sessionView.getUser(), vehicle);
 		vehicleFileService.save(vehicleFile);
 		synchronized (VehicleView.class) {
 			refreshVehicle();
@@ -117,8 +125,13 @@ public class VehicleView extends GenericViewOld<Vehicle> {
 	}
 
 	public void deleteVehicleFile() {
-		vehicleFileService.delete(vehicleFileId);
-		refreshVehicle();
+		try {
+			vehicleFileService.delete(vehicleFileId);
+			refreshVehicle();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// GENERIC

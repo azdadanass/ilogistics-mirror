@@ -19,6 +19,7 @@ import ma.azdad.model.PartNumberCategory;
 import ma.azdad.model.PartNumberDetail;
 import ma.azdad.model.PartNumberFile;
 import ma.azdad.model.PartNumberIndustry;
+import ma.azdad.repos.PartNumberRepos;
 import ma.azdad.service.JsService;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberDetailService;
@@ -34,7 +35,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberView extends GenericViewOld<PartNumber> {
+public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberRepos, PartNumberService> {
 
 	@Autowired
 	protected PartNumberService partNumberService;
@@ -88,14 +89,14 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage) {
-			partNumber = partNumberService.findOne(selectedId);
+			partNumber = partNumberService.findOne(id);
 			partNumber.init();
 			old = partNumber.copy();
 			partNumber.initDetailList();
 		} else if (isViewPage || "/partNumberReporting.xhtml".equals(currentPath))
-			partNumber = partNumberService.findOne(selectedId);
+			partNumber = partNumberService.findOne(id);
 //		else if ("/relatedPartNumber.xhtml".equals(currentPath)) {
-//			partNumber = partNumberService.findOne(selectedId);
+//			partNumber = partNumberService.findOne(id);
 //			source = partNumberService.findLight();
 //			target = partNumber.getRelatedPartNumberList();
 //			source.removeAll(target);
@@ -104,6 +105,7 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = partNumberService.find(listAll, sessionView.getUsername());
@@ -129,23 +131,28 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 		if (canSavePartNumber()) {
 			if (!validate(partNumber))
 				return null;
-			partNumber.setUser(sessionView.getUser());
-			if (!partNumber.getUnit()) {
-				for (Integer detailId : toDeleteDetailList)
-					partNumberDetailService.delete(detailId);
-				for (PartNumberDetail detail : partNumber.getDetailList())
-					detail.setPartNumber(partNumberService.findOne(detail.getPartNumberId()));
+			try {
+				partNumber.setUser(sessionView.getUser());
+				if (!partNumber.getUnit()) {
+					for (Integer detailId : toDeleteDetailList)
+						partNumberDetailService.delete(detailId);
+					for (PartNumberDetail detail : partNumber.getDetailList())
+						detail.setPartNumber(partNumberService.findOne(detail.getPartNumberId()));
+				}
+
+				if (!partNumber.getExpirable())
+					partNumber.setExpiryDuration(null);
+
+				partNumber.calculateState();
+				partNumber = partNumberService.save(partNumber);
+				if (isAddPage || isAddFromExcelPage)
+					partNumberHistoryService.created(partNumber);
+				else
+					partNumberHistoryService.edited(partNumber, partNumber.getChanges(old));
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
 			}
-
-			if (!partNumber.getExpirable())
-				partNumber.setExpiryDuration(null);
-
-			partNumber.calculateState();
-			partNumber = partNumberService.save(partNumber);
-			if (isAddPage || isAddFromExcelPage)
-				partNumberHistoryService.created(partNumber);
-			else
-				partNumberHistoryService.edited(partNumber, partNumber.getChanges(old));
 
 			return addParameters(viewPage, "faces-redirect=true", "id=" + partNumber.getId());
 		}
@@ -224,7 +231,13 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 
 	public String deletePartNumber() {
 		if (canDeletePartNumber())
-			partNumberService.delete(partNumber);
+			try {
+				partNumberService.delete(partNumber);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return listPage;
 	}
 
@@ -240,7 +253,7 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 		if (!canAddFile())
 			return;
 		File file = fileView.handleFileUpload(event, getClassName2());
-		PartNumberFile partNumberFile = new PartNumberFile(getClassName2(), file, partNumberFileType, event.getFile().getFileName(), partNumber, sessionView.getUser());
+		PartNumberFile partNumberFile = new PartNumberFile(getClassName2(), file, partNumberFileType, event.getFile().getFileName(), sessionView.getUser(), partNumber);
 		partNumberFileService.save(partNumberFile);
 		synchronized (PartNumberView.class) {
 			refreshPartNumber();
@@ -255,8 +268,13 @@ public class PartNumberView extends GenericViewOld<PartNumber> {
 	public void deletePartNumberFile() {
 		if (!canDeletePartNumberFile())
 			return;
-		partNumberFileService.delete(partNumberFileId);
-		refreshPartNumber();
+		try {
+			partNumberFileService.delete(partNumberFileId);
+			refreshPartNumber();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+
 	}
 
 	// Details Management

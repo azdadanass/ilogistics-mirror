@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 @Entity
 
-public class PartNumberEquivalence extends GenericBean implements Serializable {
+public class PartNumberEquivalence extends GenericModel<Integer> implements Serializable {
 
 	private String formula;
 	private String htmlFormula;
@@ -27,6 +30,7 @@ public class PartNumberEquivalence extends GenericBean implements Serializable {
 
 	private List<PartNumberEquivalenceDetail> detailList = new ArrayList<>();
 
+	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
 		// if (!result && name != null)
@@ -122,4 +126,13 @@ public class PartNumberEquivalence extends GenericBean implements Serializable {
 		this.inverseFormulaHtml = inverseFormulaHtml;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

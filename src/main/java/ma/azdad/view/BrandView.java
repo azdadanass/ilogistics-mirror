@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Brand;
 import ma.azdad.model.Supplier;
+import ma.azdad.repos.BrandRepos;
 import ma.azdad.service.BrandService;
 import ma.azdad.service.SupplierService;
 
@@ -24,7 +25,7 @@ import ma.azdad.service.SupplierService;
 @Component
 @Transactional
 @Scope("view")
-public class BrandView extends GenericViewOld<Brand> {
+public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandService> {
 
 	@Autowired
 	private BrandService brandService;
@@ -55,13 +56,13 @@ public class BrandView extends GenericViewOld<Brand> {
 			target = new ArrayList<Supplier>();
 			supplierDualList = new DualListModel<>(source, target);
 		} else if (isEditPage) {
-			brand = brandService.findOne(selectedId);
+			brand = brandService.findOne(id);
 			source = supplierService.findLight();
 			target = new ArrayList<Supplier>(brand.getSupplierList());
 			source.removeAll(target);
 			supplierDualList = new DualListModel<>(source, target);
 		} else if (isViewPage)
-			brand = brandService.findOne(selectedId);
+			brand = brandService.findOne(id);
 	}
 
 	@Override
@@ -69,6 +70,7 @@ public class BrandView extends GenericViewOld<Brand> {
 		super.initParameters();
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = brandService.findAll();
@@ -86,6 +88,7 @@ public class BrandView extends GenericViewOld<Brand> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewBrand())
 			cacheView.accessDenied();
@@ -133,7 +136,13 @@ public class BrandView extends GenericViewOld<Brand> {
 
 	public String deleteBrand() {
 		if (canDeleteBrand())
-			brandService.delete(brand);
+			try {
+				brandService.delete(brand);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
+
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

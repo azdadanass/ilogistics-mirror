@@ -24,7 +24,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{partNumberThresholdView.selectedId == null?'Add New':'Edit'} PartNumberThreshold" />
+				<h:outputText value="#{partNumberThresholdView.id == null?'Add New':'Edit'} PartNumberThreshold" />
 			</li>
 		</ul>
 	</ui:define>
@@ -33,8 +33,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{partNumberThresholdView.selectedId == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{partNumberThresholdView.selectedId == null?'Add New':'Edit'} PartNumberThreshold" />
+					<i class="ace-icon fa #{partNumberThresholdView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{partNumberThresholdView.id == null?'Add New':'Edit'} PartNumberThreshold" />
 				</h1>
 			</div>
 			<div class="row">

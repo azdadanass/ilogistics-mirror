@@ -26,6 +26,7 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
@@ -46,7 +47,7 @@ import ma.azdad.service.VehicleService;
 @Component
 @Transactional
 @Scope("view")
-public class TransportationJobView extends GenericViewOld<TransportationJob> {
+public class TransportationJobView extends GenericView<Integer, TransportationJob, TransportationJobRepos, TransportationJobService> {
 
 	@Autowired
 	protected TransportationJobService transportationJobService;
@@ -120,11 +121,11 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 		if (isListPage)
 			refreshList();
 		else if (isEditPage || isAssignPage) {
-			transportationJob = transportationJobService.findOne(selectedId);
+			transportationJob = transportationJobService.findOne(id);
 			transportationJob.init();
 			refreshTransportationRequestList();
 		} else if (isViewPage) {
-			transportationJob = transportationJobService.findOne(selectedId);
+			transportationJob = transportationJobService.findOne(id);
 			transportationJob.init();
 			refreshMapMpdel();
 		}
@@ -135,6 +136,7 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 		mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			if (pageIndex == null)
@@ -166,6 +168,7 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		// if (false)
 		// cacheView.accessDenied();
@@ -225,27 +228,31 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 	}
 
 	public void updateCalculableFieldsOldddddd() {
-		refreshTransportationJob();
-		transportationJob.calculateStartDate();
-		transportationJob.calculateEndDate();
-		transportationJob.calculateStatus();
-		transportationJobService.save(transportationJob);
-		// clear path List
-		for (Path path : transportationJob.getPathList())
-			pathService.delete(path);
-		transportationJob.getPathList().clear();
-		// clear stop List
-		for (Stop stop : transportationJob.getStopList())
-			stopService.delete(stop);
-		transportationJob.getStopList().clear();
-		refreshTransportationJob();
-		transportationJob.generateStopList();
-		transportationJobService.save(transportationJob);
-		refreshTransportationJob();
-		transportationJob.generatePathList();
-		transportationJob = transportationJobService.save(transportationJob);
-		refreshTransportationJob();
-		transportationJobService.calculateTransportationRequestListCosts(transportationJob, true);
+		try {
+			refreshTransportationJob();
+			transportationJob.calculateStartDate();
+			transportationJob.calculateEndDate();
+			transportationJob.calculateStatus();
+			transportationJobService.save(transportationJob);
+			// clear path List
+			for (Path path : transportationJob.getPathList())
+				pathService.delete(path);
+			transportationJob.getPathList().clear();
+			// clear stop List
+			for (Stop stop : transportationJob.getStopList())
+				stopService.delete(stop);
+			transportationJob.getStopList().clear();
+			refreshTransportationJob();
+			transportationJob.generateStopList();
+			transportationJobService.save(transportationJob);
+			refreshTransportationJob();
+			transportationJob.generatePathList();
+			transportationJob = transportationJobService.save(transportationJob);
+			refreshTransportationJob();
+			transportationJobService.calculateTransportationRequestListCosts(transportationJob, true);
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	public void updatePathList() {
@@ -605,7 +612,12 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 
 	public String deleteTransportationJob() {
 		if (canDeleteTransportationJob())
-			transportationJobService.delete(transportationJob);
+			try {
+				transportationJobService.delete(transportationJob);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
@@ -615,7 +627,7 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(getClassName2(), file, transportationJobFileType, event.getFile().getFileName(), transportationJob, sessionView.getUser());
+		TransportationJobFile transportationJobFile = new TransportationJobFile(getClassName2(), file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();
@@ -623,8 +635,12 @@ public class TransportationJobView extends GenericViewOld<TransportationJob> {
 	}
 
 	public void deleteTransportationJobFile() {
-		transportationJobFileService.delete(transportationJobFileId);
-		refreshTransportationJob();
+		try {
+			transportationJobFileService.delete(transportationJobFileId);
+			refreshTransportationJob();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
 	}
 
 	// Edit TR List Costs

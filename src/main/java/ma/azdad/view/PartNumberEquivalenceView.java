@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberEquivalence;
 import ma.azdad.model.PartNumberEquivalenceDetail;
+import ma.azdad.repos.PartNumberEquivalenceRepos;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
@@ -21,7 +22,7 @@ import ma.azdad.service.UtilsFunctions;
 @Component
 @Transactional
 @Scope("view")
-public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivalence> {
+public class PartNumberEquivalenceView extends GenericView<Integer, PartNumberEquivalence, PartNumberEquivalenceRepos, PartNumberEquivalenceService> {
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;
@@ -47,9 +48,9 @@ public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivale
 		else if (isAddPage)
 			partNumberEquivalence.setPartNumber(partNumberService.findOne(partNumberId));
 		else if (isEditPage)
-			partNumberEquivalence = partNumberEquivalenceService.findOne(selectedId);
+			partNumberEquivalence = partNumberEquivalenceService.findOne(id);
 		else if (isViewPage)
-			partNumberEquivalence = partNumberEquivalenceService.findOne(selectedId);
+			partNumberEquivalence = partNumberEquivalenceService.findOne(id);
 	}
 
 	@Override
@@ -58,6 +59,7 @@ public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivale
 		partNumberId = UtilsFunctions.getIntegerParameter("partNumberId");
 	}
 
+	@Override
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = partNumberEquivalenceService.findAll();
@@ -75,6 +77,7 @@ public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivale
 	/*
 	 * Redirection
 	 */
+	@Override
 	public void redirect() {
 		if (!canViewPartNumberEquivalence())
 			cacheView.accessDenied();
@@ -142,7 +145,12 @@ public class PartNumberEquivalenceView extends GenericViewOld<PartNumberEquivale
 
 	public String deletePartNumberEquivalence() {
 		if (canDeletePartNumberEquivalence())
-			partNumberEquivalenceService.delete(partNumberEquivalence);
+			try {
+				partNumberEquivalenceService.delete(partNumberEquivalence);
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return null;
+			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
 

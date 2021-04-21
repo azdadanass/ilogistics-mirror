@@ -27,7 +27,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -62,7 +61,6 @@ import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 
 @Component
-@Transactional
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
 
 	@Autowired

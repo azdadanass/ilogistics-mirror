@@ -8,7 +8,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.VehicleType;
 import ma.azdad.repos.VehicleTypeRepos;
@@ -17,7 +16,6 @@ import ma.azdad.service.VehicleTypeService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTypeRepos, VehicleTypeService> {
 

@@ -6,7 +6,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Packing;
 import ma.azdad.model.PackingDetail;
@@ -18,7 +17,6 @@ import ma.azdad.service.UtilsFunctions;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class PackingView extends GenericView<Integer, Packing, PackingRepos, PackingService> {
 

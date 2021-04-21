@@ -7,14 +7,12 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.User;
 import ma.azdad.model.Warehouse;
 import ma.azdad.repos.WarehouseRepos;
 
 @Component
-@Transactional
 public class WarehouseService extends GenericService<Integer, Warehouse, WarehouseRepos> {
 
 	@Autowired

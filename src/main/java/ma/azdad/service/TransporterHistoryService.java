@@ -1,14 +1,12 @@
 package ma.azdad.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Transporter;
 import ma.azdad.model.TransporterHistory;
 import ma.azdad.repos.TransporterHistoryRepos;
 
 @Component
-@Transactional
 public class TransporterHistoryService extends GenericService<Integer, TransporterHistory, TransporterHistoryRepos> {
 
 	public void created(Transporter transporter) {

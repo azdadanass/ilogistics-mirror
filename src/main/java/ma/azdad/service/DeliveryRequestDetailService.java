@@ -17,7 +17,6 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
@@ -35,7 +34,6 @@ import ma.azdad.utils.DeliveryRequestExcelFileException;
 import ma.azdad.utils.LabelValue;
 
 @Component
-@Transactional
 public class DeliveryRequestDetailService extends GenericService<Integer, DeliveryRequestDetail, DeliveryRequestDetailRepos> {
 
 	@Autowired

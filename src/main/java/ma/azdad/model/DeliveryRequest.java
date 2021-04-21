@@ -758,7 +758,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		this.detailList = detailList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
 	public List<DeliveryRequestComment> getCommentList() {
 		return commentList;
 	}

@@ -8,7 +8,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Text;
 import ma.azdad.repos.TextRepos;
@@ -16,7 +15,6 @@ import ma.azdad.service.TextService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class TextView extends GenericView<Integer, Text, TextRepos, TextService> {
 

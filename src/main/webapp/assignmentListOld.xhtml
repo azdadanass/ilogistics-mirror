@@ -104,7 +104,7 @@
 							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
 							<p:column headerText="Photo" width="5%" styleClass="hidden-xs">
-								<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+								<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
 									<f:param name="fileName" value="#{cacheView.getPhoto(item.user.username)}" />
 								</p:graphicImage>
 							</p:column>

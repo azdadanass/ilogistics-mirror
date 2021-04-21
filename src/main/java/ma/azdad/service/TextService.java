@@ -5,13 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Text;
 import ma.azdad.repos.TextRepos;
 
 @Component
-@Transactional
 public class TextService extends GenericService<Integer, Text, TextRepos> {
 
 	@Autowired

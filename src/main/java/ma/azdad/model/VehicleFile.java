@@ -15,11 +15,11 @@ public class VehicleFile extends GenericFile<Vehicle> {
 	}
 
 	public VehicleFile(String folder, File file, String type, String name, User user) {
-		super(folder, file, type, name, user);
+		super(file, type, name, user);
 	}
 
 	public VehicleFile(String folder, File file, String type, String name, User user, Vehicle parent) {
-		super(folder, file, type, name, user, parent);
+		super(file, type, name, user, parent);
 	}
 
 	@Id

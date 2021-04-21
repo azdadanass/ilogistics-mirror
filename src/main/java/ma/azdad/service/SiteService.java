@@ -16,7 +16,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteType;
@@ -28,7 +27,6 @@ import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.utils.SiteExcelFileException;
 
 @Component
-@Transactional
 public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 
 	@Autowired

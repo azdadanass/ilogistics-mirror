@@ -5,13 +5,11 @@ import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Transporter;
 import ma.azdad.repos.TransporterRepos;
 
 @Component
-@Transactional
 public class TransporterService extends GenericService<Integer, Transporter, TransporterRepos> {
 
 	@Autowired

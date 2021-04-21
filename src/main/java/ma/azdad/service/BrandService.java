@@ -6,13 +6,11 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Brand;
 import ma.azdad.repos.BrandRepos;
 
 @Component
-@Transactional
 public class BrandService extends GenericService<Integer, Brand, BrandRepos> {
 
 	@Autowired

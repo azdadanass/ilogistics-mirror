@@ -5,13 +5,11 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.BoqMapping;
 import ma.azdad.repos.BoqMappingRepos;
 
 @Component
-@Transactional
 public class BoqMappingService extends GenericService<Integer, BoqMapping, BoqMappingRepos> {
 
 	@Autowired

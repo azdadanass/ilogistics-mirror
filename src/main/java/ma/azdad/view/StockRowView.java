@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Company;
 import ma.azdad.model.Customer;
@@ -31,7 +30,6 @@ import ma.azdad.utils.ChartContainer;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, StockRowService> {
 

@@ -9,7 +9,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberEquivalence;
 import ma.azdad.model.PartNumberEquivalenceDetail;
@@ -20,7 +19,6 @@ import ma.azdad.service.UtilsFunctions;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class PartNumberEquivalenceView extends GenericView<Integer, PartNumberEquivalence, PartNumberEquivalenceRepos, PartNumberEquivalenceService> {
 

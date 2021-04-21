@@ -5,13 +5,11 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberType;
 import ma.azdad.repos.PartNumberTypeRepos;
 
 @Component
-@Transactional
 public class PartNumberTypeService extends GenericService<Integer, PartNumberType, PartNumberTypeRepos> {
 
 	@Autowired

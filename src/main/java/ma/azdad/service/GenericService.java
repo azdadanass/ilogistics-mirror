@@ -70,8 +70,9 @@ public class GenericService<ID, M extends GenericModel<ID>, R extends JpaReposit
 	}
 
 	public void cacheEvict() {
-		System.out.println(getClass().getSimpleName());
-		cacheService.evictCachePrefix(modelClassName2 + "Service");
+		String prefix = modelClassName2 + "Service";
+		cacheService.evictCache(prefix);
+		cacheService.evictCacheOthers(prefix);
 	}
 
 	public void initialize(Object object) {

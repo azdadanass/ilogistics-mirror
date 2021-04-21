@@ -11,7 +11,6 @@ import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Vehicle;
 import ma.azdad.model.VehicleFile;
@@ -21,7 +20,6 @@ import ma.azdad.service.VehicleService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, VehicleService> {
 

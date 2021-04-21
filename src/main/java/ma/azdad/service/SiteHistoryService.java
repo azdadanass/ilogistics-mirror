@@ -1,7 +1,6 @@
 package ma.azdad.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteHistory;
@@ -9,7 +8,6 @@ import ma.azdad.model.User;
 import ma.azdad.repos.SiteHistoryRepos;
 
 @Component
-@Transactional
 public class SiteHistoryService extends GenericService<Integer, SiteHistory, SiteHistoryRepos> {
 
 	public void created(Site site, User user) {

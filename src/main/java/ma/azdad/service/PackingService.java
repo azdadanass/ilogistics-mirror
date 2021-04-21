@@ -6,7 +6,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Packing;
 import ma.azdad.model.PackingDetail;
@@ -15,7 +14,6 @@ import ma.azdad.repos.PackingRepos;
 import ma.azdad.repos.PartNumberRepos;
 
 @Component
-@Transactional
 public class PackingService extends GenericService<Integer, Packing, PackingRepos> {
 
 	@Autowired

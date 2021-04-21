@@ -6,13 +6,11 @@ import java.util.Optional;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ToNotify;
 import ma.azdad.repos.ToNotifyRepos;
 
 @Component
-@Transactional
 public class ToNotifyService extends GenericService<Integer, ToNotify, ToNotifyRepos> {
 
 	@Autowired

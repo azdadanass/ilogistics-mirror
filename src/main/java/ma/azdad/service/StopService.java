@@ -2,13 +2,11 @@ package ma.azdad.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Stop;
 import ma.azdad.repos.StopRepos;
 
 @Component
-@Transactional
 public class StopService extends GenericService<Integer, Stop, StopRepos> {
 
 	@Autowired

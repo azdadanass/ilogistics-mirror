@@ -27,7 +27,7 @@ public class RestService {
 	@Autowired
 	TransportationRequestService transportationRequestService;
 
-	@Value("${filesPath}")
+	@Value("${appPath}")
 	private String path;
 
 	@RequestMapping("/rest/test")

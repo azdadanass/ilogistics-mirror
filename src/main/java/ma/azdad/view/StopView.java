@@ -6,7 +6,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Stop;
 import ma.azdad.repos.StopRepos;
@@ -14,7 +13,6 @@ import ma.azdad.service.StopService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class StopView extends GenericView<Integer, Stop, StopRepos, StopService> {
 

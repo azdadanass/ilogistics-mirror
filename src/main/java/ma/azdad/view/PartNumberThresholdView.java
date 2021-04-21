@@ -6,7 +6,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberThreshold;
 import ma.azdad.model.Project;
@@ -17,7 +16,6 @@ import ma.azdad.service.ProjectService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class PartNumberThresholdView extends GenericView<Integer, PartNumberThreshold, PartNumberThresholdRepos, PartNumberThresholdService> {
 

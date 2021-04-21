@@ -5,13 +5,11 @@ import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.VehicleRepos;
 
 @Component
-@Transactional
 public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepos> {
 
 	@Autowired

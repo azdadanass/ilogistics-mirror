@@ -2,7 +2,6 @@ package ma.azdad.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ExternalResource;
 import ma.azdad.repos.AffectationRepos;
@@ -11,7 +10,6 @@ import ma.azdad.repos.UserDataRepos;
 import ma.azdad.repos.UserRepos;
 
 @Component
-@Transactional
 public class ExternalResourceService extends GenericService<Integer, ExternalResource, ExternalResourceRepos> {
 
 	@Autowired

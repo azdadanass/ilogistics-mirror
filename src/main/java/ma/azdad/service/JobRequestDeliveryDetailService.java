@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.JobRequestDeliveryDetail;
 import ma.azdad.model.SerialNumber;
@@ -13,7 +12,6 @@ import ma.azdad.repos.JobRequestDeliveryDetailRepos;
 import ma.azdad.repos.SerialNumberRepos;
 
 @Component
-@Transactional
 public class JobRequestDeliveryDetailService extends GenericService<Integer, JobRequestDeliveryDetail, JobRequestDeliveryDetailRepos> {
 
 	@Autowired

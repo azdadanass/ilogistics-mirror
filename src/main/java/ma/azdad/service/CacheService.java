@@ -7,16 +7,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.App;
+import ma.azdad.utils.App;
 
 @Component
 public class CacheService {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	@Autowired
-	CacheManager cacheManager;
 
 	@Autowired
 	RestTemplateService restTemplateService;
@@ -24,24 +22,20 @@ public class CacheService {
 	@Value("${applicationCode}")
 	private String applicationCode;
 
+	@Autowired
+	CacheManager cacheManager;
+
 	public void evictAllCaches() {
 		cacheManager.getCacheNames().stream().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
 	}
 
-	public void evictCachePrefixLocal(String prefix) {
-		log.info("evictCachePrefix : " + prefix);
+	public void evictCache(String prefix) {
 		cacheManager.getCacheNames().stream().filter(i -> i.startsWith(prefix)).forEach(cacheName -> cacheManager.getCache(cacheName).clear());
 	}
 
-	public void evictCachePrefix(String prefix) {
-		// evict local
-		evictCachePrefixLocal(prefix);
-		// evict on other apps
-		Arrays.stream(App.values()).filter(i -> !applicationCode.equals(i.getValue())).forEach(i -> restTemplateService.consumRest(i.getLink() + "/rest/cacheEvict/" + prefix, String.class));
-	}
-
-	public void evictCache(String... names) {
-		Arrays.stream(names).forEach(cacheName -> cacheManager.getCache(cacheName).clear());
+	@Async
+	public void evictCacheOthers(String prefix) {
+		Arrays.stream(App.values()).filter(i -> i.getCacheable() && !applicationCode.equals(i.getValue())).forEach(i -> restTemplateService.consumRest(i.getHttpLink() + "/rest/cacheEvict/" + prefix, String.class));
 	}
 
 }

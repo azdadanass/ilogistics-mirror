@@ -20,7 +20,6 @@ import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteCategory;
@@ -37,7 +36,6 @@ import ma.azdad.utils.SiteExcelFileException;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService> {
 

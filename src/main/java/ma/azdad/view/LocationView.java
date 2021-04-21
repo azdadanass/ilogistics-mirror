@@ -6,7 +6,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Location;
 import ma.azdad.repos.LocationRepos;
@@ -14,7 +13,6 @@ import ma.azdad.service.LocationService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class LocationView extends GenericView<Integer, Location, LocationRepos, LocationService> {
 

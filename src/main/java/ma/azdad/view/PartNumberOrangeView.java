@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberOrange;
 import ma.azdad.repos.PartNumberOrangeRepos;
@@ -18,7 +17,6 @@ import ma.azdad.service.PartNumberOrangeService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class PartNumberOrangeView extends GenericView<Integer, PartNumberOrange, PartNumberOrangeRepos, PartNumberOrangeService> {
 

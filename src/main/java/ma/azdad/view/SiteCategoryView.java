@@ -9,7 +9,6 @@ import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.SiteCategory;
 import ma.azdad.repos.SiteCategoryRepos;
@@ -18,7 +17,6 @@ import ma.azdad.service.SiteTypeService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCategoryRepos, SiteCategoryService> {
 

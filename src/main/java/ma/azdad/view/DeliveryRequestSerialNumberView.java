@@ -13,7 +13,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestSerialNumber;
@@ -26,7 +25,6 @@ import ma.azdad.service.StockRowService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class DeliveryRequestSerialNumberView extends GenericView<Integer, DeliveryRequestSerialNumber, DeliveryRequestSerialNumberRepos, DeliveryRequestSerialNumberService> {
 

@@ -15,11 +15,11 @@ public class TransportationRequestFile extends GenericFile<TransportationRequest
 	}
 
 	public TransportationRequestFile(String folder, File file, String type, String name, User user) {
-		super(folder, file, type, name, user);
+		super(file, type, name, user);
 	}
 
 	public TransportationRequestFile(String folder, File file, String type, String name, User user, TransportationRequest parent) {
-		super(folder, file, type, name, user, parent);
+		super(file, type, name, user, parent);
 	}
 
 	@Id

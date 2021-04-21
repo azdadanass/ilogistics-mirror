@@ -8,7 +8,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberType;
 import ma.azdad.repos.PartNumberTypeRepos;
@@ -16,7 +15,6 @@ import ma.azdad.service.PartNumberTypeService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class PartNumberTypeView extends GenericView<Integer, PartNumberType, PartNumberTypeRepos, PartNumberTypeService> {
 

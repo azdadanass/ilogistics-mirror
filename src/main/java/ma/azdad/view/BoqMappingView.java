@@ -17,7 +17,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Boq;
 import ma.azdad.model.BoqMapping;
@@ -38,7 +37,6 @@ import ma.azdad.service.PartNumberService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingRepos, BoqMappingService> implements Serializable {
 	private static final long serialVersionUID = 2888107105740674611L;

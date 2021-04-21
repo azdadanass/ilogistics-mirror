@@ -14,7 +14,6 @@ import org.primefaces.model.map.MapModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ContactType;
 import ma.azdad.model.DeliveryRequest;
@@ -39,7 +38,6 @@ import ma.azdad.service.VehicleService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class TransportationRequestView extends GenericView<Integer, TransportationRequest, TransportationRequestRepos, TransportationRequestService> {
 

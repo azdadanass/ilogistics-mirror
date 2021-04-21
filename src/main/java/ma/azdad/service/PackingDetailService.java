@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PackingDetail;
 import ma.azdad.repos.PackingDetailRepos;
 
 @Component
-@Transactional
 public class PackingDetailService extends GenericService<Integer, PackingDetail, PackingDetailRepos> {
 
 	@Autowired

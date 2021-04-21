@@ -8,7 +8,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ToNotify;
 import ma.azdad.repos.ToNotifyRepos;
@@ -18,7 +17,6 @@ import ma.azdad.service.UserService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class ToNotifyView extends GenericView<Integer, ToNotify, ToNotifyRepos, ToNotifyService> {
 

@@ -238,7 +238,7 @@
 									<p:dataTable value="#{warehouseView.warehouse.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
-											<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+											<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.user.photo}" />
 											</p:graphicImage>
 										</p:column>

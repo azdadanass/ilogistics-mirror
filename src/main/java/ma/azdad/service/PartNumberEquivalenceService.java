@@ -7,13 +7,11 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumberEquivalence;
 import ma.azdad.repos.PartNumberEquivalenceRepos;
 
 @Component
-@Transactional
 public class PartNumberEquivalenceService extends GenericService<Integer, PartNumberEquivalence, PartNumberEquivalenceRepos> {
 
 	@Autowired

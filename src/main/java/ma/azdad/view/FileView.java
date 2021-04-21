@@ -74,7 +74,7 @@ public class FileView {
 	}
 
 	private void createFolderIfNotExist(String path) {
-		new File(path).mkdir();
+		new File(path).mkdirs();
 	}
 
 	public StreamedContent getStream() throws IOException {
@@ -85,6 +85,7 @@ public class FileView {
 		log.info("handleFileUpload");
 		String folder = appPath + "files/" + beanName;
 		createFolderIfNotExist(folder);
+		System.out.println("try create folder " + folder);
 		File file = File.createTempFile(beanName + "-", "." + FilenameUtils.getExtension(event.getFile().getFileName()), new File(folder));
 		writeFile(file, event);
 		return file;

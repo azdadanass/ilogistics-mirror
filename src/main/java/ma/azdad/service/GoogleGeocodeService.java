@@ -5,14 +5,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.GenericPlace;
 import ma.azdad.model.Site;
 import ma.azdad.repos.SiteRepos;
 
 @Component
-@Transactional
 public class GoogleGeocodeService extends GenericService<Integer, Site, SiteRepos> {
 
 	// KEYS MUST HAVE SERVICE --> Google Maps Geocoding API

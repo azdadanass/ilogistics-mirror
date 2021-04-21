@@ -11,7 +11,6 @@ import ma.azdad.model.Supplier;
 import ma.azdad.repos.ProjectAssignmentRepos;
 
 @Component
-@Transactional
 public class ProjectAssignmentService extends GenericService<Integer, ProjectAssignment, ProjectAssignmentRepos> {
 
 	@Override

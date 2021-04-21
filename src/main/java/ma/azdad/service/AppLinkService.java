@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.AppLink;
 import ma.azdad.repos.AppLinkRepos;
 
 @Component
-@Transactional
 public class AppLinkService extends GenericService<Integer, AppLink, AppLinkRepos> {
 
 	@Autowired

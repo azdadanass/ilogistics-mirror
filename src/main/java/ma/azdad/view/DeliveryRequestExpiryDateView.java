@@ -11,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestExpiryDate;
@@ -23,7 +22,6 @@ import ma.azdad.service.UtilsFunctions;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class DeliveryRequestExpiryDateView extends GenericView<Integer, DeliveryRequestExpiryDate, DeliveryRequestExpiryDateRepos, DeliveryRequestExpiryDateService> {
 

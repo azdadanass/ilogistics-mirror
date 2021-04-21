@@ -13,7 +13,6 @@ import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Brand;
 import ma.azdad.model.Supplier;
@@ -23,7 +22,6 @@ import ma.azdad.service.SupplierService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandService> {
 

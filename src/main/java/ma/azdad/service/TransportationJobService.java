@@ -21,7 +21,6 @@ import ma.azdad.repos.UserRepos;
 import ma.azdad.view.FacesContextMessages;
 
 @Component
-@Transactional
 public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {
 
 	@Autowired

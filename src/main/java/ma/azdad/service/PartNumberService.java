@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PartNumberRepos;
@@ -25,7 +24,6 @@ import ma.azdad.utils.PartNumberExcelFileException;
 import ma.azdad.view.FacesContextMessages;
 
 @Component
-@Transactional
 public class PartNumberService extends GenericService<Integer, PartNumber, PartNumberRepos> {
 
 	@Autowired

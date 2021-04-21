@@ -1,7 +1,6 @@
 package ma.azdad.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ExternalResource;
 import ma.azdad.model.ExternalResourceHistory;
@@ -9,7 +8,6 @@ import ma.azdad.model.User;
 import ma.azdad.repos.ExternalResourceHistoryRepos;
 
 @Component
-@Transactional
 public class ExternalResourceHistoryService extends GenericService<Integer, ExternalResourceHistory, ExternalResourceHistoryRepos> {
 
 	public void created(ExternalResource externalResource, User user) {

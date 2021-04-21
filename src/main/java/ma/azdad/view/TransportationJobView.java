@@ -15,7 +15,6 @@ import org.primefaces.model.map.MapModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
@@ -45,7 +44,6 @@ import ma.azdad.service.VehicleService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class TransportationJobView extends GenericView<Integer, TransportationJob, TransportationJobRepos, TransportationJobService> {
 

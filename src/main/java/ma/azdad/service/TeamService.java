@@ -13,7 +13,6 @@ import ma.azdad.model.TeamDetail;
 import ma.azdad.repos.TeamRepos;
 
 @Component
-
 public class TeamService extends GenericService<Integer, Team, TeamRepos> {
 
 	@Autowired

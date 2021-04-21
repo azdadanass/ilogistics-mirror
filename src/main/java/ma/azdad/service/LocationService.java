@@ -2,13 +2,11 @@ package ma.azdad.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Location;
 import ma.azdad.repos.LocationRepos;
 
 @Component
-@Transactional
 public class LocationService extends GenericService<Integer, Location, LocationRepos> {
 
 	@Autowired

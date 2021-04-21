@@ -162,7 +162,7 @@
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column"
 								rendered="#{deliveryRequestView.pageIndex == 2 or deliveryRequestView.pageIndex == 3 or deliveryRequestView.pageIndex == 7}" />
 							<p:column headerText="Photo" width="100" exportable="false">
-								<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+								<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
 									<f:param name="fileName" value="#{cacheView.getPhoto(item.requester.username)}" />
 								</p:graphicImage>
 							</p:column>

@@ -15,11 +15,11 @@ public class SiteFile extends GenericFile<Site> {
 	}
 
 	public SiteFile(String folder, File file, String type, String name, User user) {
-		super(folder, file, type, name, user);
+		super(file, type, name, user);
 	}
 
 	public SiteFile(String folder, File file, String type, String name, User user, Site parent) {
-		super(folder, file, type, name, user, parent);
+		super(file, type, name, user, parent);
 	}
 
 	@Id

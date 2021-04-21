@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.PackingDetail;
@@ -16,7 +15,6 @@ import ma.azdad.model.StockRowStatus;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 
 @Component
-@Transactional
 public class DeliveryRequestSerialNumberService extends GenericService<Integer, DeliveryRequestSerialNumber, DeliveryRequestSerialNumberRepos> {
 
 	public static Comparator<DeliveryRequestSerialNumber> COMPARATOR = Comparator.comparingInt(DeliveryRequestSerialNumber::getNotNullInboundStockRowId).thenComparingInt(DeliveryRequestSerialNumber::getTmpPartNumberId).thenComparingInt(DeliveryRequestSerialNumber::getPackingNumero).thenComparingInt(DeliveryRequestSerialNumber::getNotNullId);

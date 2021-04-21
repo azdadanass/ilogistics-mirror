@@ -1,14 +1,12 @@
 package ma.azdad.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.PartNumberHistory;
 import ma.azdad.repos.PartNumberHistoryRepos;
 
 @Component
-@Transactional
 public class PartNumberHistoryService extends GenericService<Integer, PartNumberHistory, PartNumberHistoryRepos> {
 
 	public void created(PartNumber partNumber) {

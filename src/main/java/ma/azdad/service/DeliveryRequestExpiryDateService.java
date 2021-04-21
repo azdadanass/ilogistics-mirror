@@ -6,7 +6,6 @@ import java.util.List;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.DeliveryRequestType;
@@ -17,7 +16,6 @@ import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.StockRowRepos;
 
 @Component
-@Transactional
 public class DeliveryRequestExpiryDateService extends GenericService<Integer, DeliveryRequestExpiryDate, DeliveryRequestExpiryDateRepos> {
 
 	@Autowired

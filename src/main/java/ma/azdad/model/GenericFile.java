@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -20,6 +21,10 @@ import ma.azdad.service.UtilsFunctions;
 @SuppressWarnings("rawtypes")
 public abstract class GenericFile<M extends GenericModel> extends GenericModel<Integer> implements Serializable {
 
+	@SuppressWarnings("unchecked")
+	private String modelClassName1 = ((Class<M>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
+	private String modelClassName2 = modelClassName1.substring(0, 1).toLowerCase() + modelClassName1.substring(1);
+
 	protected Date date = new Date();
 	protected String link = "noimage.jpg";
 	protected String extension;
@@ -32,8 +37,8 @@ public abstract class GenericFile<M extends GenericModel> extends GenericModel<I
 	public GenericFile() {
 	}
 
-	public GenericFile(String folder, File file, String type, String name, User user) {
-		this.link = "files/" + folder + "/" + file.getName();
+	public GenericFile(File file, String type, String name, User user) {
+		this.link = "files/" + modelClassName2 + "/" + file.getName();
 		this.extension = FilenameUtils.getExtension(this.link).toLowerCase();
 		this.size = UtilsFunctions.getFormattedSize(file.length());
 		this.type = type;
@@ -41,8 +46,8 @@ public abstract class GenericFile<M extends GenericModel> extends GenericModel<I
 		this.user = user;
 	}
 
-	public GenericFile(String folder, File file, String type, String name, User user, M parent) {
-		this(folder, file, type, name, user);
+	public GenericFile(File file, String type, String name, User user, M parent) {
+		this(file, type, name, user);
 		this.parent = parent;
 	}
 

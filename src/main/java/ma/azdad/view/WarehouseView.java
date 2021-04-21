@@ -17,7 +17,6 @@ import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Location;
@@ -35,7 +34,6 @@ import ma.azdad.service.WarehouseService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
 public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepos, WarehouseService> {
 

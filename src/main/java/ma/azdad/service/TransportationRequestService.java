@@ -9,7 +9,6 @@ import java.util.Map;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
@@ -22,7 +21,6 @@ import ma.azdad.model.User;
 import ma.azdad.repos.TransportationRequestRepos;
 
 @Component
-@Transactional
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
 
 	@Autowired

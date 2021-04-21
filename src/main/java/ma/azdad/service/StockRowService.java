@@ -15,7 +15,6 @@ import java.util.Set;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Customer;
@@ -38,7 +37,6 @@ import ma.azdad.utils.ChartContainer;
 import ma.azdad.utils.Series;
 
 @Component
-@Transactional
 public class StockRowService extends GenericService<Integer, StockRow, StockRowRepos> {
 
 	@Autowired

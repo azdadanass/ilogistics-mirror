@@ -1,7 +1,6 @@
 package ma.azdad.service;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.User;
 import ma.azdad.model.VehicleType;
@@ -9,7 +8,6 @@ import ma.azdad.model.VehicleTypeHistory;
 import ma.azdad.repos.VehicleTypeHistoryRepos;
 
 @Component
-@Transactional
 public class VehicleTypeHistoryService extends GenericService<Integer, VehicleTypeHistory, VehicleTypeHistoryRepos> {
 
 	public void created(VehicleType vehicleType, User user) {

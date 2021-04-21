@@ -147,7 +147,7 @@
 									var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
-										<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+										<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
 											<f:param name="fileName" value="#{item.userPhoto}" />
 										</p:graphicImage>
 									</p:column>
@@ -237,7 +237,7 @@
 									widgetVar="assignmentList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Photo" width="60" styleClass="hidden-xs" exportable="false">
-										<p:graphicImage value="#{fileView.photoStream}" styleClass="img-circle aa-datatable-photo">
+										<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
 											<f:param name="fileName" value="#{item.userPhoto}" />
 										</p:graphicImage>
 									</p:column>

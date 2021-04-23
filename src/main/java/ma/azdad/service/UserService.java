@@ -215,7 +215,7 @@ public class UserService {
 	}
 
 	public void delete(String username) {
-		cacheEvict();
+		evictCache();
 		try {
 			repos.deleteById(username);
 		} catch (DataIntegrityViolationException dataIntegrityViolationException) {
@@ -226,12 +226,13 @@ public class UserService {
 	}
 
 	public void delete(User a) {
-		cacheEvict();
+		evictCache();
 		delete(a.getUsername());
 	}
 
-	public void cacheEvict() {
-		cacheService.evictCachePrefix("userService");
+	public void evictCache() {
+		cacheService.evictCache("userService");
+		cacheService.evictCacheOthers("userService");
 	}
 
 	@Cacheable("userService.find")

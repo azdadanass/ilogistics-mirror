@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -13,16 +12,14 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.utils.App;
 
 @Component
 public class SmsService {
 
-	@Value("${utilsIpAddress}")
-	private String utilsIpAddress;
-
 	@Async
 	public void sendSms(String numero, String message) {
-		String url = "http://" + utilsIpAddress + "/sendSms";
+		String url = App.UTILS.getHttpLink() + "/sendSms";
 		HashMap<String, String> params = new HashMap<>();
 		params.put("numero", numero);
 		params.put("message", message);

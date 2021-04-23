@@ -136,7 +136,7 @@ public class GenericView<K, M extends GenericModel<K>, R extends JpaRepository<M
 
 	protected void editPage() {
 		model = service.findOne(id);
-		cacheEvict();
+		evictCache();
 		old = service.findOne(id);
 	}
 
@@ -218,8 +218,8 @@ public class GenericView<K, M extends GenericModel<K>, R extends JpaRepository<M
 		execJavascript("PF('" + dlgName + "').show()");
 	}
 
-	public String cacheEvict() {
-		service.cacheEvict();
+	public String evictCache() {
+		service.evictCache();
 		return addParameters(currentPath, "faces-redirect=true", "id=" + id, "pageIndex=" + pageIndex);
 	}
 

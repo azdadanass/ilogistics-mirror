@@ -29,7 +29,7 @@ public class PartNumberOrangeView extends GenericView<Integer, PartNumberOrange,
 	@Override
 	@PostConstruct
 	public void init() {
-		cacheService.evictCachePrefix("partNumberOrangeView");
+		cacheService.evictCache("partNumberOrangeView");
 	}
 
 	@Cacheable("partNumberOrangeView.findAll")

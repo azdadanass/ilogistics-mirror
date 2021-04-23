@@ -1028,7 +1028,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateSdm(Integer id, Boolean sdm) {
 		deliveryRequestRepos.updateSdm(id, sdm);
-		cacheEvict();
+		evictCache();
 	}
 
 }

@@ -42,7 +42,7 @@ public class GenericService<ID, M extends GenericModel<ID>, R extends JpaReposit
 	}
 
 	public M save(M model) {
-		cacheEvict();
+		evictCache();
 		return repos.save(model);
 	}
 
@@ -52,12 +52,12 @@ public class GenericService<ID, M extends GenericModel<ID>, R extends JpaReposit
 	}
 
 	public void delete(ID id) throws DataIntegrityViolationException, Exception {
-		cacheEvict();
+		evictCache();
 		repos.deleteById(id);
 	}
 
 	public void delete(M model) throws DataIntegrityViolationException, Exception {
-		cacheEvict();
+		evictCache();
 		repos.delete(model);
 	}
 
@@ -69,10 +69,13 @@ public class GenericService<ID, M extends GenericModel<ID>, R extends JpaReposit
 		return repos.existsById(id);
 	}
 
-	public void cacheEvict() {
-		String prefix = modelClassName2 + "Service";
+	public void evictCache(String prefix) {
 		cacheService.evictCache(prefix);
 		cacheService.evictCacheOthers(prefix);
+	}
+
+	public void evictCache() {
+		evictCache(modelClassName2 + "Service");
 	}
 
 	public void initialize(Object object) {

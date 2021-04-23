@@ -16,13 +16,13 @@ public class CacheController {
 	@Autowired
 	CacheService cacheService;
 
-	@GetMapping("/rest/cacheEvict")
-	public void cacheEvict() {
+	@GetMapping("/rest/evictCache")
+	public void evictCache() {
 		cacheService.evictAllCaches();
 	}
 
-	@GetMapping("/rest/cacheEvict/{cacheName}")
-	public void cacheEvict(@PathVariable String cacheName) {
+	@GetMapping("/rest/evictCache/{cacheName}")
+	public void evictCache(@PathVariable String cacheName) {
 		cacheService.evictCache(cacheName);
 	}
 

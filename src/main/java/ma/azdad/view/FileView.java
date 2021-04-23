@@ -9,12 +9,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.io.FilenameUtils;
@@ -55,7 +61,7 @@ public class FileView {
 		return new DefaultStreamedContent(inputStream, ec.getMimeType(destFileName), destFileName);
 	}
 
-	public StreamedContent getStream(String path) throws IOException {
+	public StreamedContent getStream() throws IOException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		if (fc.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
@@ -67,7 +73,7 @@ public class FileView {
 			// media bytes.
 			String fileName = fc.getExternalContext().getRequestParameterMap().get("fileName");
 			String contentType = ec.getMimeType(fileName);
-			File file = new File(path + fileName);
+			File file = new File(appPath + fileName);
 			InputStream stream = new FileInputStream(file);
 			return new DefaultStreamedContent(stream, contentType, fileName);
 		}
@@ -75,10 +81,6 @@ public class FileView {
 
 	private void createFolderIfNotExist(String path) {
 		new File(path).mkdirs();
-	}
-
-	public StreamedContent getStream() throws IOException {
-		return getStream(appPath);
 	}
 
 	public File handleFileUpload(FileUploadEvent event, String beanName) throws IOException {
@@ -100,6 +102,37 @@ public class FileView {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error uploading", null));
 			log.error(e.getMessage());
 		}
+	}
+
+	// photo upload with compression
+	public File handlePhotoUpload(FileUploadEvent event, String beanName, long thresholdBeforeCompression) throws IOException {
+		String ext = FilenameUtils.getExtension(event.getFile().getFileName());
+		System.out.println("event.getFile().getSize() --> " + event.getFile().getSize());
+		return createAndCompressPhoto(event.getFile().getInputstream(), beanName, ext, event.getFile().getSize() > thresholdBeforeCompression); //
+	}
+
+	public File createAndCompressPhoto(InputStream inputStream, String beanName, String ext, Boolean enableJpegCompression) throws IOException {
+		String folder = appPath + "files/" + beanName;
+		File file = File.createTempFile(beanName + "-", "." + ext, new File(folder));
+		try (InputStream input = inputStream) {
+			if (enableJpegCompression && Arrays.asList("jpg", "jpeg").contains(ext)) {
+				// ByteArrayOutputStream os = new ByteArrayOutputStream();
+				ImageWriter writer = ImageIO.getImageWritersByFormatName("jpeg").next();
+				ImageWriteParam param = writer.getDefaultWriteParam();
+				param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				param.setCompressionQuality(0.2f); // Change this, float between 0.0 and 1.0
+				ImageOutputStream ios = ImageIO.createImageOutputStream(file);
+				writer.setOutput(ios);
+				writer.write(null, new IIOImage(ImageIO.read(inputStream), null, null), param);
+				writer.dispose();
+			} else
+				Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Succesful uploading !", null));
+		} catch (IOException e) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error uploading !", null));
+			log.error(e.getMessage());
+		}
+		return file;
 	}
 
 	// old uploading

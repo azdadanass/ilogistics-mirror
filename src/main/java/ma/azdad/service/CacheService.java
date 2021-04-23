@@ -33,9 +33,13 @@ public class CacheService {
 		cacheManager.getCacheNames().stream().filter(i -> i.startsWith(prefix)).forEach(cacheName -> cacheManager.getCache(cacheName).clear());
 	}
 
+	public void evictCache(String... prefixTab) {
+		Arrays.stream(prefixTab).forEach(this::evictCache);
+	}
+
 	@Async
 	public void evictCacheOthers(String prefix) {
-		Arrays.stream(App.values()).filter(i -> i.getCacheable() && !applicationCode.equals(i.getValue())).forEach(i -> restTemplateService.consumRest(i.getHttpLink() + "/rest/cacheEvict/" + prefix, String.class));
+		Arrays.stream(App.values()).filter(i -> i.getCacheable() && !applicationCode.equals(i.getValue())).forEach(i -> restTemplateService.consumRest(i.getHttpLink() + "/rest/evictCache/" + prefix, String.class));
 	}
 
 }

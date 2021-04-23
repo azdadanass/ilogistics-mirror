@@ -46,7 +46,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Override
 	public TransportationRequest save(TransportationRequest a) {
-		cacheService.evictCachePrefix("deliveryRequestService");
+		evictCache("deliveryRequestService");
 		return super.save(a);
 	}
 

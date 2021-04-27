@@ -14,11 +14,11 @@ public class ExternalResourceFile extends GenericFile<ExternalResource> {
 	public ExternalResourceFile() {
 	}
 
-	public ExternalResourceFile(String folder, File file, String type, String name, User user) {
+	public ExternalResourceFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public ExternalResourceFile(String folder, File file, String type, String name, User user, ExternalResource parent) {
+	public ExternalResourceFile(File file, String type, String name, User user, ExternalResource parent) {
 		super(file, type, name, user, parent);
 	}
 

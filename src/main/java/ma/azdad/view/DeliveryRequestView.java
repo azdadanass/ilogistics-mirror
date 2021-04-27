@@ -1749,7 +1749,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(getClassName2(), file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
+		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequestFileService.save(deliveryRequestFile);
 		synchronized (DeliveryRequestView.class) {
 			refreshDeliveryRequest();
@@ -1758,7 +1758,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void handleFileUpload2(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(getClassName2(), file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
+		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequest.getFileList().add(deliveryRequestFile);
 	}
 

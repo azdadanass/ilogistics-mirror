@@ -14,11 +14,11 @@ public class TeamFile extends GenericFile<Team> {
 	public TeamFile() {
 	}
 
-	public TeamFile(String folder, File file, String type, String name, User user) {
+	public TeamFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public TeamFile(String folder, File file, String type, String name, User user, Team parent) {
+	public TeamFile(File file, String type, String name, User user, Team parent) {
 		super(file, type, name, user, parent);
 	}
 

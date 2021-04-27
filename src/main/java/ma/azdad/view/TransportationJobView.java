@@ -625,7 +625,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(getClassName2(), file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();

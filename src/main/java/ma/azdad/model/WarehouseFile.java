@@ -16,11 +16,11 @@ public class WarehouseFile extends GenericFile<Warehouse> {
 	public WarehouseFile() {
 	}
 
-	public WarehouseFile(String folder, File file, String type, String name, User user) {
+	public WarehouseFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public WarehouseFile(String folder, File file, String type, String name, User user, Warehouse parent) {
+	public WarehouseFile(File file, String type, String name, User user, Warehouse parent) {
 		super(file, type, name, user, parent);
 	}
 

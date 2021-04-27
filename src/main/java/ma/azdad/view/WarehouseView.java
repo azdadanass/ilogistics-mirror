@@ -203,7 +203,7 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		WarehouseFile warehouseFile = new WarehouseFile(getClassName2(), file, warehouseFileType, event.getFile().getFileName(), sessionView.getUser(), warehouse);
+		WarehouseFile warehouseFile = new WarehouseFile(file, warehouseFileType, event.getFile().getFileName(), sessionView.getUser(), warehouse);
 		warehouseFileService.save(warehouseFile);
 		synchronized (WarehouseView.class) {
 			refreshWarehouse();

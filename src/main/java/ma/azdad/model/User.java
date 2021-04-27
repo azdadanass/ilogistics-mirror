@@ -1,6 +1,5 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
+public class User extends GenericModel<String> {
 
 	private Boolean internal = false;
 	private String username;
@@ -145,6 +144,7 @@ public class User implements Serializable {
 		return true;
 	}
 
+	@Override
 	public boolean filter(String query) {
 		return contains(fullName, query) || contains(job, query) || contains(cin, query);
 	}
@@ -356,6 +356,15 @@ public class User implements Serializable {
 	@Transient
 	public Boolean getIsLobManager() {
 		return hasRole(Role.ROLE_ILOGISTICS_LOB_MANAGER);
+	}
+
+	@Column(name = "username", insertable = false, updatable = false)
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Id

@@ -14,11 +14,11 @@ public class PartNumberFile extends GenericFile<PartNumber> {
 	public PartNumberFile() {
 	}
 
-	public PartNumberFile(String folder, File file, String type, String name, User user) {
+	public PartNumberFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public PartNumberFile(String folder, File file, String type, String name, User user, PartNumber parent) {
+	public PartNumberFile(File file, String type, String name, User user, PartNumber parent) {
 		super(file, type, name, user, parent);
 	}
 

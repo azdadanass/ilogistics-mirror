@@ -14,11 +14,11 @@ public class VehicleFile extends GenericFile<Vehicle> {
 	public VehicleFile() {
 	}
 
-	public VehicleFile(String folder, File file, String type, String name, User user) {
+	public VehicleFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public VehicleFile(String folder, File file, String type, String name, User user, Vehicle parent) {
+	public VehicleFile(File file, String type, String name, User user, Vehicle parent) {
 		super(file, type, name, user, parent);
 	}
 

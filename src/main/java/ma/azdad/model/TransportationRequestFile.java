@@ -14,11 +14,11 @@ public class TransportationRequestFile extends GenericFile<TransportationRequest
 	public TransportationRequestFile() {
 	}
 
-	public TransportationRequestFile(String folder, File file, String type, String name, User user) {
+	public TransportationRequestFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public TransportationRequestFile(String folder, File file, String type, String name, User user, TransportationRequest parent) {
+	public TransportationRequestFile(File file, String type, String name, User user, TransportationRequest parent) {
 		super(file, type, name, user, parent);
 	}
 

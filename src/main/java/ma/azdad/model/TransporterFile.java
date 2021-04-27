@@ -14,11 +14,11 @@ public class TransporterFile extends GenericFile<Transporter> {
 	public TransporterFile() {
 	}
 
-	public TransporterFile(String folder, File file, String type, String name, User user) {
+	public TransporterFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public TransporterFile(String folder, File file, String type, String name, User user, Transporter parent) {
+	public TransporterFile(File file, String type, String name, User user, Transporter parent) {
 		super(file, type, name, user, parent);
 	}
 

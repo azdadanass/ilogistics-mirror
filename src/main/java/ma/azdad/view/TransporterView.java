@@ -197,7 +197,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransporterFile transporterFile = new TransporterFile(getClassName2(), file, transporterFileType, event.getFile().getFileName(), sessionView.getUser(), transporter);
+		TransporterFile transporterFile = new TransporterFile(file, transporterFileType, event.getFile().getFileName(), sessionView.getUser(), transporter);
 		transporterFileService.save(transporterFile);
 		synchronized (TransporterView.class) {
 			refreshTransporter();

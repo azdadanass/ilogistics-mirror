@@ -248,7 +248,7 @@ public class UserView {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, "user");
-		UserFile userFile = new UserFile("user", file, userFileType, event.getFile().getFileName(), user, sessionView.getUser());
+		UserFile userFile = new UserFile(file, userFileType, event.getFile().getFileName(), user, sessionView.getUser());
 		user.addFile(userFile);
 		userService.save(user);
 		synchronized (UserView.class) {

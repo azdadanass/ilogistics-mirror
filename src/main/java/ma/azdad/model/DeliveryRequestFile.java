@@ -14,11 +14,11 @@ public class DeliveryRequestFile extends GenericFile<DeliveryRequest> {
 	public DeliveryRequestFile() {
 	}
 
-	public DeliveryRequestFile(String folder, File file, String type, String name, User user) {
+	public DeliveryRequestFile(File file, String type, String name, User user) {
 		super(file, type, name, user);
 	}
 
-	public DeliveryRequestFile(String folder, File file, String type, String name, User user, DeliveryRequest parent) {
+	public DeliveryRequestFile(File file, String type, String name, User user, DeliveryRequest parent) {
 		super(file, type, name, user, parent);
 	}
 

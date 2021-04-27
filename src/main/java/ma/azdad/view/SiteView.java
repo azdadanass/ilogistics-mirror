@@ -420,7 +420,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		SiteFile siteFile = new SiteFile(getClassName2(), file, siteFileType, event.getFile().getFileName(), sessionView.getUser(), site);
+		SiteFile siteFile = new SiteFile(file, siteFileType, event.getFile().getFileName(), sessionView.getUser(), site);
 		siteFileService.save(siteFile);
 		synchronized (SiteView.class) {
 			refreshSite();

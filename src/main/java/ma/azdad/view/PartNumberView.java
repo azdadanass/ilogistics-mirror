@@ -251,7 +251,7 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 		if (!canAddFile())
 			return;
 		File file = fileView.handleFileUpload(event, getClassName2());
-		PartNumberFile partNumberFile = new PartNumberFile(getClassName2(), file, partNumberFileType, event.getFile().getFileName(), sessionView.getUser(), partNumber);
+		PartNumberFile partNumberFile = new PartNumberFile(file, partNumberFileType, event.getFile().getFileName(), sessionView.getUser(), partNumber);
 		partNumberFileService.save(partNumberFile);
 		synchronized (PartNumberView.class) {
 			refreshPartNumber();

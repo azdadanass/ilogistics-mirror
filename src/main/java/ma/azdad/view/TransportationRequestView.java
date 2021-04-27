@@ -509,7 +509,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(getClassName2(), file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(), transportationRequest);
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(), transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();

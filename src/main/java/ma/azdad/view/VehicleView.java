@@ -115,7 +115,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileView.handleFileUpload(event, getClassName2());
-		VehicleFile vehicleFile = new VehicleFile(getClassName2(), file, vehicleFileType, event.getFile().getFileName(), sessionView.getUser(), vehicle);
+		VehicleFile vehicleFile = new VehicleFile(file, vehicleFileType, event.getFile().getFileName(), sessionView.getUser(), vehicle);
 		vehicleFileService.save(vehicleFile);
 		synchronized (VehicleView.class) {
 			refreshVehicle();

@@ -113,6 +113,7 @@ public class FileView {
 
 	public File createAndCompressPhoto(InputStream inputStream, String beanName, String ext, Boolean enableJpegCompression) throws IOException {
 		String folder = appPath + "files/" + beanName;
+		createFolderIfNotExist(folder);
 		File file = File.createTempFile(beanName + "-", "." + ext, new File(folder));
 		try (InputStream input = inputStream) {
 			if (enableJpegCompression && Arrays.asList("jpg", "jpeg").contains(ext)) {

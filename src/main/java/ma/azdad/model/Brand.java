@@ -22,7 +22,7 @@ public class Brand extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private String description;
-	private String image = "photos/il_brand/nopict.jpg";
+	private String image = "files/no-image.png";
 	private String company;
 	private String website;
 

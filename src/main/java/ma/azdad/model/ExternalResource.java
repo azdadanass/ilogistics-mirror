@@ -32,7 +32,7 @@ public class ExternalResource extends GenericModel<Integer> {
 	private String password;
 	private String description;
 	private Boolean active = true;
-	private String photo = "photos/nopict.jpg";
+	private String photo = "files/no-image.png";
 	private Date birthday;
 	private Boolean gender;
 	private String passportId;
@@ -377,7 +377,7 @@ public class ExternalResource extends GenericModel<Integer> {
 		this.active = active;
 	}
 
-	@Column(columnDefinition = "VARCHAR(255) default 'photos/nopict.jpg'")
+	@Column(columnDefinition = "VARCHAR(255) default 'files/no-image.png'")
 	public String getPhoto() {
 		return photo;
 	}

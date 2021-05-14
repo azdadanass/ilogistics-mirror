@@ -60,7 +60,7 @@ public class Tooltype implements Serializable {
 		this.maxDeadline = maxDeadline;
 	}
 
-	@Column(name = "image", length = 500, columnDefinition = "VARCHAR(500) default 'resources/images/nopict.jpg'")
+	@Column(name = "image", length = 500, columnDefinition = "VARCHAR(500) default 'files/no-image.png'")
 	public String getImage() {
 		return image;
 	}

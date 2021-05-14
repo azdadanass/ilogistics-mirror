@@ -48,7 +48,7 @@ public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
 	public void updateImage(Integer id);
 
 	@Modifying
-	@Query("update PartNumber a set a.image = 'noimage.jpg' where a.image is null")
+	@Query("update PartNumber a set a.image = 'files/no-image.png' where a.image is null")
 	public void updateNullImage();
 
 	@Query("from PartNumber where id not in (select distinct b.partNumber.id from Packing b)")

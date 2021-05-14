@@ -26,7 +26,7 @@ public abstract class GenericFile<M extends GenericModel> extends GenericModel<I
 	private String modelClassName2 = modelClassName1.substring(0, 1).toLowerCase() + modelClassName1.substring(1);
 
 	protected Date date = new Date();
-	protected String link = "noimage.jpg";
+	protected String link = "files/no-image.png";
 	protected String extension;
 	protected String type;
 	protected String size;

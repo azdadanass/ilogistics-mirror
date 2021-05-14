@@ -61,7 +61,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private PartNumberType partNumberType;
 	private PartNumberOrange partNumberOrange;
 
-	private String image = "resources/img/noimage.jpg";
+	private String image = "files/no-image.png";
 
 	private List<PartNumberDetail> detailList = new ArrayList<>();
 	private List<PartNumberFile> fileList = new ArrayList<>();

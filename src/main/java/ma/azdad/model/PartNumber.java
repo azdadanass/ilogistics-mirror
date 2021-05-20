@@ -135,12 +135,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(name, query) //
-				|| contains(description, query) //
-				|| contains(getIndustryName(), query) //
-				|| contains(getCategoryName(), query) //
-				|| contains(getTypeName(), query)//
-				|| contains(getPartNumberOrangeName(), query);
+		return contains(query, name, description, getIndustryName(), getCategoryName(), getTypeName(), getPartNumberOrangeName());
 	}
 
 	public void addPacking(Packing packing) {

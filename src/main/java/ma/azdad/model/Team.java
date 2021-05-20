@@ -72,7 +72,7 @@ public class Team extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(name, query) || contains(getTeamLeaderFullName(), query);
+		return contains(query, name, getTeamLeaderFullName());
 	}
 
 	public void calculateMembersKey() {

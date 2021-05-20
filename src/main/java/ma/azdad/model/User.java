@@ -146,7 +146,7 @@ public class User extends GenericModel<String> {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(fullName, query) || contains(job, query) || contains(cin, query);
+		return contains(query, fullName, job, cin);
 	}
 
 	protected Boolean contains(String string, String query) {

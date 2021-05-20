@@ -186,7 +186,7 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 
 	@Override
 	public boolean filter(String query) {
-		return contains(getProjectName(), query) || contains(getUserUsername(), query) || contains(getTeamName(), query) || contains(getSupplierName(), query);
+		return contains(query, getProjectName(), getUserUsername(), getTeamName(), getSupplierName());
 	}
 
 	@Temporal(TemporalType.DATE)

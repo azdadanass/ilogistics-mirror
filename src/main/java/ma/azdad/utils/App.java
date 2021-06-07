@@ -1,13 +1,14 @@
 package ma.azdad.utils;
 
 public enum App {
-	APPS("apps", "apps.orange.gcom", "192.168.100.111", true),
-	IADMIN("iadmin", "iadmin.orange.gcom", "192.168.100.112", true),
-	ILOGISTICS("ilogistics", "ilogistics.orange.gcom", "192.168.100.113", true),
-	QR("qr", "qr.orange.gcom", "192.168.100.114", true),
-	SDM("sdm", "sdm.orange.gcom", "192.168.100.115", true),
-	MYREPORTS("myreports", "myreports.orange.gcom", "192.168.100.116", true),
-	UTILS("utils", "utils.gcom", "192.168.100.177", false);
+	APPS("apps", "apps.orange.telodigital.com", "192.168.100.111", true),
+	IADMIN("iadmin", "iadmin.orange.telodigital.com", "192.168.100.112", true),
+	ILOGISTICS("ilogistics", "ilogistics.orange.telodigital.com", "192.168.100.113", true),
+	QR("qr", "qr.orange.telodigital.com", "192.168.100.114", true),
+	SDM("sdm", "sdm.orange.telodigital.com", "192.168.100.115", true),
+	MYREPORTS("myreports", "myreports.orange.telodigital.com", "192.168.100.116", true),
+	UTILS("utils", "utils.gcom", "192.168.100.177", false),
+	PUBLIC("public", "sdm.orange.telodigital.com", "192.168.100.117", false);
 
 	private String value;
 	private String link;

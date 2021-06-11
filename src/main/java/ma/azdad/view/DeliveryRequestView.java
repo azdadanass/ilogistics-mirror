@@ -1226,8 +1226,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 6:
 			System.err.println("step7");
-			if (!deliveryRequestComment.getContent().isEmpty())
+			if (!deliveryRequestComment.getContent().isEmpty()) {
+				deliveryRequestComment.setParent(deliveryRequest);
 				deliveryRequest.getCommentList().add(deliveryRequestComment);
+			}
+
 			step++;
 			preSaveDeliveryRequest();
 			break;

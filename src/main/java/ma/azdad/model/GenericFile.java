@@ -1,9 +1,7 @@
 package ma.azdad.model;
 
 import java.io.File;
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,7 +17,7 @@ import ma.azdad.service.UtilsFunctions;
 
 @MappedSuperclass
 @SuppressWarnings("rawtypes")
-public abstract class GenericFile<M extends GenericModel> extends GenericModel<Integer> implements Serializable {
+public abstract class GenericFile<M extends GenericModel> extends AbstractFile {
 
 	@SuppressWarnings("unchecked")
 	private String modelClassName1 = ((Class<M>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0]).getSimpleName();
@@ -51,24 +49,24 @@ public abstract class GenericFile<M extends GenericModel> extends GenericModel<I
 		this.parent = parent;
 	}
 
+	@Override
 	@Transient
-	public Boolean getIsImage() {
-		return Arrays.asList("png", "jpg", "jpeg", "gif", "bmp").contains(extension.toLowerCase());
+	public String getFileName() {
+		return name;
 	}
 
+	@Override
 	@Transient
-	public Boolean getIsOfficeDocument() {
-		return Arrays.asList("doc", "docx", "xls", "xlsx").contains(extension.toLowerCase());
+	public String getFileLink() {
+		return link;
 	}
 
+	@Override
 	@Transient
-	public Boolean getIsTextFile() {
-		return Arrays.asList("txt", "conf", "kml", "kmz").contains(extension.toLowerCase());
-	}
-
-	@Transient
-	public Boolean getIsPdf() {
-		return "pdf".equals(extension.toLowerCase());
+	public String getFileExtension() {
+		if (extension == null)
+			return null;
+		return extension.toLowerCase();
 	}
 
 	@Transient

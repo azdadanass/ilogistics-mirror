@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.AbstractFile;
+
 @ManagedBean
 @Component
 @Scope("session")
@@ -42,7 +44,13 @@ public class FileView {
 	@Value("${appPath}")
 	private String appPath;
 
+	private AbstractFile file;
+
 	public StreamedContent getFile(String fileName) throws FileNotFoundException {
+		return getFile(fileName, fileName);
+	}
+
+	public StreamedContent getFile(String fileName, String destFileName) throws FileNotFoundException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		File file = new File(appPath + fileName);
@@ -52,7 +60,7 @@ public class FileView {
 		log.info("contentType : " + contentType);
 		log.info("contentLength : " + contentLength);
 		InputStream stream = new FileInputStream(file);
-		return new DefaultStreamedContent(stream, contentType, fileName);
+		return new DefaultStreamedContent(stream, contentType, destFileName);
 	}
 
 	public StreamedContent getFile(InputStream inputStream, String destFileName) throws FileNotFoundException {
@@ -183,6 +191,14 @@ public class FileView {
 	public String pathOld() {
 		ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
 		return ctx.getRealPath("/");
+	}
+
+	public AbstractFile getFile() {
+		return file;
+	}
+
+	public void setFile(AbstractFile file) {
+		this.file = file;
 	}
 
 }

@@ -951,7 +951,7 @@
 											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
 												rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isXbound}">
-												<p:column headerText="Part Number">
+												<p:column headerText="Part Number" width="150">
 													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
 														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<p:column>
@@ -979,7 +979,7 @@
 														<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
 													</p:overlayPanel>
 												</p:column>
-												<p:column headerText="Description">
+												<p:column headerText="Description" width="150">
 													<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 												</p:column>
 												<p:column headerText="Unit / Kit" width="70">
@@ -994,12 +994,12 @@
 												<p:column headerText="Type" width="90">
 													<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
 												</p:column>
-												<p:column headerText="Quantity" width="150">
-													<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 100%">
+												<p:column headerText="Quantity" width="100">
+													<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 90%">
 														<p:ajax event="blur" />
 													</p:inputNumber>
 												</p:column>
-												<p:column headerText="Actions" styleClass="center" width="150">
+												<p:column headerText="Actions" styleClass="center" width="70">
 													<div class="action-buttons center">
 														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeDetail(rowIndexVar)}" update="inbound_tab" partialSubmit="true" process="inbound_tab">
 															<i class="ace-icon fa fa-remove bigger-130 red" />
@@ -1029,7 +1029,7 @@
 													<p:ajax event="rowUnselectCheckbox" process="@this" update="inbound_r_tab" />
 													<p:ajax event="toggleSelect" process="@this" update="inbound_r_tab" />
 													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
-													<p:column headerText="Part Number">
+													<p:column headerText="Part Number" width="150">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
 													<p:column headerText="Orange Part Number" width="150">
@@ -1084,7 +1084,7 @@
 													<p:ajax event="rowUnselectCheckbox" process="@this" update="outbound_tab" />
 													<p:ajax event="toggleSelect" process="@this" update="outbound_tab" />
 													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
-													<p:column headerText="Part Number">
+													<p:column headerText="Part Number" width="150">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
 													<p:column headerText="Orange Part Number" width="150">
@@ -1161,7 +1161,7 @@
 												<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
 													rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
-													<p:column headerText="Part Number">
+													<p:column headerText="Part Number" width="150">
 														<p:inputText value="#{item.partNumber.name}" readonly="true" />
 													</p:column>
 													<p:column headerText="Orange Part Number" width="150">

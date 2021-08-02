@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.Text;
 import ma.azdad.repos.TextRepos;
 import ma.azdad.service.TextService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component

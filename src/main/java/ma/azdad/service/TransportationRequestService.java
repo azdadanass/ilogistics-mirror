@@ -160,7 +160,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public void calculateEstimatedDistanceAndDuration(TransportationRequest transportationRequest) {
-		Path path = UtilsFunctions.getNewPath(transportationRequest.getOriginPlace(), transportationRequest.getDestinationPlace());
+		Path path = PathService.getNewPath(transportationRequest.getOriginPlace(), transportationRequest.getDestinationPlace());
 		transportationRequest.setEstimatedDuration(path.getEstimatedDuration());
 		transportationRequest.setEstimatedDurationText(path.getEstimatedDurationText());
 		transportationRequest.setEstimatedDistance(path.getEstimatedDistance());

@@ -16,11 +16,15 @@ import ma.azdad.service.SupplierService;
 import ma.azdad.service.TeamService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignment, ProjectAssignmentRepos, ProjectAssignmentService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	CacheView cacheView;

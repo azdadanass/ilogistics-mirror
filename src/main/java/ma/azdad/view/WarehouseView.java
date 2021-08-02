@@ -31,11 +31,15 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.WarehouseFileService;
 import ma.azdad.service.WarehouseHistoryService;
 import ma.azdad.service.WarehouseService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepos, WarehouseService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected WarehouseService warehouseService;
@@ -260,15 +264,9 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public WarehouseService getWarehouseService() {
 		return warehouseService;

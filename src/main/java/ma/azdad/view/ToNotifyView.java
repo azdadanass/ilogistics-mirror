@@ -14,11 +14,15 @@ import ma.azdad.repos.ToNotifyRepos;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.ToNotifyService;
 import ma.azdad.service.UserService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class ToNotifyView extends GenericView<Integer, ToNotify, ToNotifyRepos, ToNotifyService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected ToNotifyService toNotifyService;
@@ -120,15 +124,9 @@ public class ToNotifyView extends GenericView<Integer, ToNotify, ToNotifyRepos, 
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public ToNotifyService getToNotifyService() {
 		return toNotifyService;

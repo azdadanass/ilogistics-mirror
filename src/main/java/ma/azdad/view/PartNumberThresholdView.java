@@ -13,11 +13,15 @@ import ma.azdad.repos.PartNumberThresholdRepos;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PartNumberThresholdService;
 import ma.azdad.service.ProjectService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class PartNumberThresholdView extends GenericView<Integer, PartNumberThreshold, PartNumberThresholdRepos, PartNumberThresholdService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private PartNumberThresholdService partNumberThresholdService;

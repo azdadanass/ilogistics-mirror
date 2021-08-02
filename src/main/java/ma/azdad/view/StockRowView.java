@@ -27,11 +27,15 @@ import ma.azdad.service.CustomerService;
 import ma.azdad.service.StockRowService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.ChartContainer;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, StockRowService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected StockRowService stockRowService;
@@ -485,15 +489,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public StockRowService getStockRowService() {
 		return stockRowService;

@@ -32,12 +32,16 @@ import ma.azdad.service.SiteService;
 import ma.azdad.service.SiteTypeService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.SiteExcelFileException;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected SiteService siteService;
@@ -446,15 +450,9 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public SiteService getSiteService() {
 		return siteService;

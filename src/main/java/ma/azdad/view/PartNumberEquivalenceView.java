@@ -16,11 +16,15 @@ import ma.azdad.repos.PartNumberEquivalenceRepos;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class PartNumberEquivalenceView extends GenericView<Integer, PartNumberEquivalence, PartNumberEquivalenceRepos, PartNumberEquivalenceService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;

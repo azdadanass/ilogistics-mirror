@@ -77,6 +77,7 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.WarehouseService;
 import ma.azdad.utils.DeliveryRequestExcelFileException;
+import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.LabelValue;
 
 @ManagedBean
@@ -84,6 +85,9 @@ import ma.azdad.utils.LabelValue;
 @Scope("view")
 public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, DeliveryRequestRepos, DeliveryRequestService> implements Serializable {
 	private static final long serialVersionUID = -2791229372979711793L;
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected DeliveryRequestService service;
@@ -2034,16 +2038,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
-
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
-
 	public DeliveryRequestService getDeliveryRequestService() {
 		return service;
 	}

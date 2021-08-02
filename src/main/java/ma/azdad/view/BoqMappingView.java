@@ -34,12 +34,16 @@ import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingRepos, BoqMappingService> implements Serializable {
 	private static final long serialVersionUID = 2888107105740674611L;
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private DeliveryRequestService deliveryRequestService;

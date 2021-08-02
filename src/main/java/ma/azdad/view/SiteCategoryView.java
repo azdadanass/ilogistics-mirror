@@ -14,6 +14,7 @@ import ma.azdad.model.SiteCategory;
 import ma.azdad.repos.SiteCategoryRepos;
 import ma.azdad.service.SiteCategoryService;
 import ma.azdad.service.SiteTypeService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
@@ -126,15 +127,9 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public SiteCategoryService getSiteCategoryService() {
 		return siteCategoryService;

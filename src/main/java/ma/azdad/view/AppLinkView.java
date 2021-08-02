@@ -61,15 +61,9 @@ public class AppLinkView extends GenericView<Integer, AppLink, AppLinkRepos, App
 	// GENERIC
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public AppLinkService getAppLinkService() {
 		return appLinkService;

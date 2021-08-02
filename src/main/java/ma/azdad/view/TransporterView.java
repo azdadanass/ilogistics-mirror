@@ -26,11 +26,15 @@ import ma.azdad.service.TransporterFileService;
 import ma.azdad.service.TransporterHistoryService;
 import ma.azdad.service.TransporterService;
 import ma.azdad.service.VehicleService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class TransporterView extends GenericView<Integer, Transporter, TransporterRepos, TransporterService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected TransporterService transporterService;
@@ -219,15 +223,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public TransporterService getTransporterService() {
 		return transporterService;

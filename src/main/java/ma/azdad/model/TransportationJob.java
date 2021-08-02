@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import ma.azdad.service.PathService;
 import ma.azdad.service.UtilsFunctions;
 
 @Entity
@@ -187,7 +188,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			Stop to = stopList.get(i + 1);
 			if (from.getPlaceValue().equals(to.getPlaceValue()))
 				continue;
-			Path path = UtilsFunctions.getNewPath(from.getPlace(), to.getPlace());
+			Path path = PathService.getNewPath(from.getPlace(), to.getPlace());
 			path.setFrom(from);
 			path.setTo(to);
 			path.setTransportationJob(this);

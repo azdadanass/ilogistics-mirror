@@ -19,11 +19,15 @@ import ma.azdad.model.Supplier;
 import ma.azdad.repos.BrandRepos;
 import ma.azdad.service.BrandService;
 import ma.azdad.service.SupplierService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private BrandService brandService;

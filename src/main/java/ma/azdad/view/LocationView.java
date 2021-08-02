@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.Location;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.LocationService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
@@ -76,15 +77,9 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public LocationService getLocationService() {
 		return locationService;

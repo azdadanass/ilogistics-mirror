@@ -17,11 +17,15 @@ import ma.azdad.model.VehicleFile;
 import ma.azdad.repos.VehicleRepos;
 import ma.azdad.service.VehicleFileService;
 import ma.azdad.service.VehicleService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, VehicleService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected VehicleService vehicleService;
@@ -138,15 +142,9 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public VehicleService getVehicleService() {
 		return vehicleService;

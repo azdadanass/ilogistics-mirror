@@ -29,11 +29,15 @@ import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PartNumberTypeService;
 import ma.azdad.service.TextService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberRepos, PartNumberService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected PartNumberService partNumberService;
@@ -450,15 +454,9 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 //	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public PartNumberService getPartNumberService() {
 		return partNumberService;

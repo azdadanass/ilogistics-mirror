@@ -18,7 +18,7 @@ import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.repos.UserRepos;
-import ma.azdad.view.FacesContextMessages;
+import ma.azdad.utils.FacesContextMessages;
 
 @Component
 public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {

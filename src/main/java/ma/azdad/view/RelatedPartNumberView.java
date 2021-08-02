@@ -15,11 +15,15 @@ import ma.azdad.model.RelatedPartNumber;
 import ma.azdad.repos.RelatedPartNumberRepos;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.RelatedPartNumberService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class RelatedPartNumberView extends GenericView<Integer, RelatedPartNumber, RelatedPartNumberRepos, RelatedPartNumberService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private RelatedPartNumberService relatedPartNumberService;

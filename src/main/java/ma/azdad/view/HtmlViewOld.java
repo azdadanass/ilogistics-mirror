@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,7 +28,8 @@ public class HtmlViewOld implements Serializable {
 	}
 
 	public String generateOverlayPanelContent(String identifer1, String identifer2, Date date) {
-		return generateOverlayPanelContent(StringUtils.firstNonBlank(identifer1, identifer2), date);
+		String username = UtilsFunctions.firstNotNullAndNotEmpty(identifer1, identifer2);
+		return generateOverlayPanelContent(username, date);
 	}
 
 	public String generateOverlayPanelContent(String username, Date date) {

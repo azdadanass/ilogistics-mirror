@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.repos.PackingDetailRepos;
 import ma.azdad.service.PackingDetailService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component

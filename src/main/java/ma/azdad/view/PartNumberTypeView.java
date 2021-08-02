@@ -12,11 +12,15 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.PartNumberType;
 import ma.azdad.repos.PartNumberTypeRepos;
 import ma.azdad.service.PartNumberTypeService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class PartNumberTypeView extends GenericView<Integer, PartNumberType, PartNumberTypeRepos, PartNumberTypeService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private PartNumberTypeService partNumberTypeService;

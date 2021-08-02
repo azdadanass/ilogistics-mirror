@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.Stop;
 import ma.azdad.repos.StopRepos;
 import ma.azdad.service.StopService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
@@ -97,15 +98,9 @@ public class StopView extends GenericView<Integer, Stop, StopRepos, StopService>
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public StopService getStopService() {
 		return stopService;

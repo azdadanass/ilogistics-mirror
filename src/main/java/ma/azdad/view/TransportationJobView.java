@@ -41,11 +41,15 @@ import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class TransportationJobView extends GenericView<Integer, TransportationJob, TransportationJobRepos, TransportationJobService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	protected TransportationJobService transportationJobService;
@@ -673,15 +677,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// GETTERS & SETTERS
-	@Override
-	public SessionView getSessionView() {
-		return sessionView;
-	}
 
-	@Override
-	public void setSessionView(SessionView sessionView) {
-		this.sessionView = sessionView;
-	}
+
+
 
 	public TransportationJobService getTransportationJobService() {
 		return transportationJobService;

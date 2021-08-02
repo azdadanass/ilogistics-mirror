@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.JobRequestDeliveryDetail;
 import ma.azdad.repos.JobRequestDeliveryDetailRepos;
 import ma.azdad.service.JobRequestDeliveryDetailService;
+import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component

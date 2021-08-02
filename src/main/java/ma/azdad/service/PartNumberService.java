@@ -20,8 +20,8 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PartNumberRepos;
+import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.PartNumberExcelFileException;
-import ma.azdad.view.FacesContextMessages;
 
 @Component
 public class PartNumberService extends GenericService<Integer, PartNumber, PartNumberRepos> {

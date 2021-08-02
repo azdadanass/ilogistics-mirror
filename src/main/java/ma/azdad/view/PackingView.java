@@ -14,11 +14,15 @@ import ma.azdad.repos.PackingRepos;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
 public class PackingView extends GenericView<Integer, Packing, PackingRepos, PackingService> {
+
+	@Autowired
+	private SessionView sessionView;
 
 	@Autowired
 	private PackingService packingService;

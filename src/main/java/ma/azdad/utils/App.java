@@ -7,8 +7,8 @@ public enum App {
 	QR("qr", "qr.orange.telodigital.com", "192.168.100.114", true),
 	SDM("sdm", "sdm.orange.telodigital.com", "192.168.100.115", true),
 	MYREPORTS("myreports", "myreports.orange.telodigital.com", "192.168.100.116", true),
-	UTILS("utils", "utils.gcom", "192.168.100.177", false),
-	PUBLIC("public", "sdm.orange.telodigital.com", "192.168.100.117", false);
+	UTILS("utils", "utils.3gcominside.com", "192.168.100.177", false),
+	PUBLIC("public", "public.orange.telodigital.com", "192.168.100.117", false);
 
 	private String value;
 	private String link;

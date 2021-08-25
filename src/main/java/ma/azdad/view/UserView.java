@@ -37,7 +37,7 @@ public class UserView {
 	protected UserService userService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected CustomerService customerService;
@@ -212,7 +212,7 @@ public class UserView {
 		if (!canUploadPhoto())
 			return;
 		String fileName = user.getUsername();
-		String link = fileView.uploadFileOld(event, fileName, "photos");
+		String link = fileUploadView.uploadFileOld(event, fileName, "photos");
 		user.setPhoto(link);
 		userService.save(user);
 		refreshUser();
@@ -248,7 +248,7 @@ public class UserView {
 	private Integer userFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, "user");
+		File file = fileUploadView.handleFileUpload(event, "user");
 		UserFile userFile = new UserFile(file, userFileType, event.getFile().getFileName(), user, sessionView.getUser());
 		user.addFile(userFile);
 		userService.save(user);
@@ -431,12 +431,12 @@ public class UserView {
 		this.userService = userService;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public CustomerService getCustomerService() {

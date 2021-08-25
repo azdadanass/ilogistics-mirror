@@ -31,7 +31,7 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 	protected CacheView cacheView;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	private SiteCategory siteCategory = new SiteCategory();
 
@@ -147,12 +147,12 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 		this.siteCategory = siteCategory;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public Integer getTypeId() {

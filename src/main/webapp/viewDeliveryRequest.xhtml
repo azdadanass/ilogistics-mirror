@@ -511,7 +511,7 @@
 									<p:dataTable value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
-											<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.photo}" />
 											</p:graphicImage>
 										</p:column>
@@ -562,7 +562,7 @@
 												</h:outputLink>
 												<p:overlayPanel for="pn" style="text-align: left;width:600px" showEvent="mouseover" hideEvent="mouseout">
 													<div class="col-xs-4 center">
-														<p:graphicImage value="#{fileView.stream}" styleClass="grid_images">
+														<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
 															<f:param name="fileName" value="#{item.partNumber.image}" />
 														</p:graphicImage>
 														<br />
@@ -851,7 +851,7 @@
 												<ui:repeat var="comment" value="#{commentGroup.commentList}">
 													<div class="timeline-item clearfix">
 														<div class="timeline-info">
-															<p:graphicImage value="#{fileView.stream}">
+															<p:graphicImage value="#{fileUploadView.stream}">
 																<f:param name="fileName" value="#{comment.userPhoto}" />
 															</p:graphicImage>
 															<i class="timeline-indicator btn btn-info no-hover"></i> <br />
@@ -926,7 +926,7 @@
 											<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
 										<p:column headerText="Added By" styleClass="center">
-											<p:graphicImage id="photo" value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
+											<p:graphicImage id="photo" value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.user.photo}" />
 											</p:graphicImage>
 											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
@@ -940,7 +940,7 @@
 													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFileId}" value="#{item.id}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">

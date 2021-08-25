@@ -62,7 +62,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	protected SiteTypeService siteTypeService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected DeliveryRequestView deliveryRequestView;
@@ -423,7 +423,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	private Integer siteFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		SiteFile siteFile = new SiteFile(file, siteFileType, event.getFile().getFileName(), sessionView.getUser(), site);
 		siteFileService.save(siteFile);
 		synchronized (SiteView.class) {
@@ -470,12 +470,12 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		this.site = site;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public SiteFileService getSiteFileService() {

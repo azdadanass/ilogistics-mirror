@@ -338,7 +338,7 @@
 													<f:setPropertyActionListener target="#{siteView.siteFileId}" value="#{item.id}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">

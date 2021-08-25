@@ -48,7 +48,7 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	protected WarehouseFileService warehouseFileService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected UserService userService;
@@ -206,7 +206,7 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	private Integer warehouseFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		WarehouseFile warehouseFile = new WarehouseFile(file, warehouseFileType, event.getFile().getFileName(), sessionView.getUser(), warehouse);
 		warehouseFileService.save(warehouseFile);
 		synchronized (WarehouseView.class) {
@@ -284,12 +284,12 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 		this.warehouse = warehouse;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public WarehouseFileService getWarehouseFileService() {

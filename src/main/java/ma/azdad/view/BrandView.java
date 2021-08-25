@@ -36,7 +36,7 @@ public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandServ
 	private CacheView cacheView;
 
 	@Autowired
-	private FileView fileView;
+	private FileUploadView fileUploadView;
 
 	@Autowired
 	private SupplierService supplierService;
@@ -157,7 +157,7 @@ public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandServ
 		if (!canUploadImage())
 			return;
 		String fileName = "il_brand_" + brand.getId();
-		String link = fileView.uploadFileOld(event, fileName, "photos/il_brand");
+		String link = fileUploadView.uploadFileOld(event, fileName, "photos/il_brand");
 		brand.setImage(link);
 		brandService.save(brand);
 		refreshBrand();

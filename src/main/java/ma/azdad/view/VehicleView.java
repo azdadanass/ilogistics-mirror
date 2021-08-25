@@ -37,7 +37,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	protected VehicleFileService vehicleFileService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	private Vehicle vehicle = new Vehicle();
 	private VehicleFile vehicleFile;
@@ -118,7 +118,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	private Integer vehicleFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		VehicleFile vehicleFile = new VehicleFile(file, vehicleFileType, event.getFile().getFileName(), sessionView.getUser(), vehicle);
 		vehicleFileService.save(vehicleFile);
 		synchronized (VehicleView.class) {
@@ -162,12 +162,12 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 		this.vehicle = vehicle;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public VehicleFileService getVehicleFileService() {

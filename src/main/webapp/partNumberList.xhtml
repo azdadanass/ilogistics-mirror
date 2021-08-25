@@ -130,7 +130,7 @@
 							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
 							<!-- <p:column selectionMode="multiple" styleClass="ace aa-checkbox-column"  /> -->
 							<p:column headerText="Photo" width="100">
-								<p:graphicImage value="#{fileView.stream}" styleClass="img-circle aa-datatable-photo">
+								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 									<f:param name="fileName" value="#{item.image}" />
 								</p:graphicImage>
 							</p:column>

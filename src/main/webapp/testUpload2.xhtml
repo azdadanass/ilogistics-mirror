@@ -31,7 +31,7 @@
 
 	<ui:define name="body">
 		<h:form>
-			<p:fileUpload fileUploadListener="#{fileView.handleFileUpload}" mode="advanced" dragDropSupport="false" update="messages" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" >
+			<p:fileUpload fileUploadListener="#{fileUploadView.handleFileUpload}" mode="advanced" dragDropSupport="false" update="messages" sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" >
 				<f:attribute name="beanName" value="HAHAHA" />
 			</p:fileUpload>
 

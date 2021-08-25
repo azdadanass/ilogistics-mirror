@@ -105,10 +105,10 @@
 				</h4>
 			</div>
 			<div class="modal-body center" style="width: 100%">
-				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{vehicleView.vehicleFile.isPdf}">
+				<p:media player="pdf" value="#{fileUploadView.stream}" width="950" height="400" style="margin:auto" rendered="#{vehicleView.vehicleFile.isPdf}">
 					<f:param name="fileName" value="#{vehicleView.vehicleFile.link}" />
 				</p:media>
-				<p:graphicImage value="#{fileView.stream}" rendered="#{vehicleView.vehicleFile.isImage}">
+				<p:graphicImage value="#{fileUploadView.stream}" rendered="#{vehicleView.vehicleFile.isImage}">
 					<f:param name="fileName" value="#{vehicleView.vehicleFile.link}" />
 				</p:graphicImage>
 				<h:outputText value="No preview for this file" rendered="#{!vehicleView.vehicleFile.isPdf and !vehicleView.vehicleFile.isImage}" />

@@ -27,7 +27,7 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 	protected CacheView cacheView;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	private SiteType siteType = new SiteType();
 
@@ -135,12 +135,12 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 		this.siteType = siteType;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 }

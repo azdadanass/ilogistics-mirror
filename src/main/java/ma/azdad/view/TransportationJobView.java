@@ -67,7 +67,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private TransportationJobHistoryService transportationJobHistoryService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected TransportationRequestService transportationRequestService;
@@ -628,7 +628,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private Integer transportationJobFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
@@ -697,12 +697,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		this.transportationJob = transportationJob;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public TransportationJobFileService getTransportationJobFileService() {

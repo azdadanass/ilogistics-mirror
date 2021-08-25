@@ -92,7 +92,7 @@
 			<div class="user-profile row">
 				<div class="col-xs-12 col-sm-3 center">
 					<div class="profile-picture">
-						<p:graphicImage id="photo" value="#{fileView.stream}" styleClass="editable img-responsive editable-click editable-empty aa-avatar">
+						<p:graphicImage id="photo" value="#{fileUploadView.stream}" styleClass="editable img-responsive editable-click editable-empty aa-avatar">
 							<f:param name="fileName" value="#{partNumberView.partNumber.selectedPhoto.link}" />
 						</p:graphicImage>
 					</div>
@@ -130,7 +130,7 @@
 								<ui:repeat var="item" value="#{partNumberView.partNumber.photoList}">
 									<li>
 										<p:commandLink update=":main_form:photo">
-											<p:graphicImage value="#{fileView.stream}" width="150" height="150">
+											<p:graphicImage value="#{fileUploadView.stream}" width="150" height="150">
 												<f:param name="fileName" value="#{item.link}" />
 											</p:graphicImage>
 											<div class="text">
@@ -142,7 +142,7 @@
 										</p:commandLink>
 										<div class="tools tools-bottom">
 											<p:commandLink ajax="false">
-												<p:fileDownload value="#{fileView.getFile(item.link)}" />
+												<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
 												<i class="ace-icon fa fa-save  white" />
 											</p:commandLink>
 										</div>

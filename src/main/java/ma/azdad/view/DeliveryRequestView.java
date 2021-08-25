@@ -129,7 +129,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	protected CacheView cacheView;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected StockRowService stockRowService;
@@ -1755,7 +1755,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	private Integer deliveryRequestFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequestFileService.save(deliveryRequestFile);
 		synchronized (DeliveryRequestView.class) {
@@ -1764,7 +1764,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void handleFileUpload2(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequest.getFileList().add(deliveryRequestFile);
 	}
@@ -2054,12 +2054,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		this.deliveryRequest = deliveryRequest;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public DeliveryRequestFileService getDeliveryRequestFileService() {

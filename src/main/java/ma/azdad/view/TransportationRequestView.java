@@ -76,7 +76,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	protected VehicleService vehicleService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected OldEmailService emailService;
@@ -509,7 +509,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	private Integer transportationRequestFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(), transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
@@ -586,12 +586,12 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		this.transportationRequest = transportationRequest;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public TransportationRequestFileService getTransportationRequestFileService() {

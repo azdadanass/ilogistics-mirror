@@ -130,10 +130,10 @@
 				</h4>
 			</div>
 			<div class="modal-body center" style="width: 100%">
-				<p:media player="pdf" value="#{fileView.stream}" width="950" height="400" style="margin:auto" rendered="#{siteView.siteFile.isPdf}">
+				<p:media player="pdf" value="#{fileUploadView.stream}" width="950" height="400" style="margin:auto" rendered="#{siteView.siteFile.isPdf}">
 					<f:param name="fileName" value="#{siteView.siteFile.link}" />
 				</p:media>
-				<p:graphicImage value="#{fileView.stream}" rendered="#{siteView.siteFile.isImage}">
+				<p:graphicImage value="#{fileUploadView.stream}" rendered="#{siteView.siteFile.isImage}">
 					<f:param name="fileName" value="#{siteView.siteFile.link}" />
 				</p:graphicImage>
 				<h:outputText value="No preview for this file" rendered="#{!siteView.siteFile.isPdf and !siteView.siteFile.isImage}" />

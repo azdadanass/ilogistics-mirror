@@ -58,7 +58,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	protected TransporterHistoryService transporterHistoryService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected ExternalResourceService externalResourceService;
@@ -200,7 +200,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	private Integer transporterFileId;
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		TransporterFile transporterFile = new TransporterFile(file, transporterFileType, event.getFile().getFileName(), sessionView.getUser(), transporter);
 		transporterFileService.save(transporterFile);
 		synchronized (TransporterView.class) {
@@ -243,12 +243,12 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		this.transporter = transporter;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public TransporterFileService getTransporterFileService() {

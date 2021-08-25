@@ -52,7 +52,7 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 	protected JsService jsService;
 
 	@Autowired
-	protected FileView fileView;
+	protected FileUploadView fileUploadView;
 
 	@Autowired
 	protected PartNumberDetailService partNumberDetailService;
@@ -254,7 +254,7 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		if (!canAddFile())
 			return;
-		File file = fileView.handleFileUpload(event, getClassName2());
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		PartNumberFile partNumberFile = new PartNumberFile(file, partNumberFileType, event.getFile().getFileName(), sessionView.getUser(), partNumber);
 		partNumberFileService.save(partNumberFile);
 		synchronized (PartNumberView.class) {
@@ -474,12 +474,12 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 		this.partNumber = partNumber;
 	}
 
-	public FileView getFileView() {
-		return fileView;
+	public FileUploadView getFileUploadView() {
+		return fileUploadView;
 	}
 
-	public void setFileView(FileView fileView) {
-		this.fileView = fileView;
+	public void setFileUploadView(FileUploadView fileUploadView) {
+		this.fileUploadView = fileUploadView;
 	}
 
 	public PartNumberFileService getPartNumberFileService() {

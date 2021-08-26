@@ -2,19 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -43,33 +38,27 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip" title="Edit" value="addEditVisit.xhtml" rendered="#{visitView.canSaveVisit()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{visitView.id}" />
 						</h:outputLink>
-
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" onclick="PF('deleteDlg').show()" rendered="#{visitView.canDeleteVisit()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-
 						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('uploadVisitFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-
 					</div>
 				</div>
 			</div>
@@ -87,12 +76,10 @@
 						</h:panelGroup>
 					</div>
 					<div class="space-4" />
-
 					<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
 						<div class="inline position-relative">
 							<a href="#" class="visit-title-label dropdown-toggle" data-toggle="dropdown">
-								<i class="ace-icon fa fa-circle light-green"></i>
-								&nbsp;
+								<i class="ace-icon fa fa-circle light-green"></i> &nbsp;
 								<span class="white">
 									<h:outputText value="#{visitView.visit.patient.name}" />
 								</span>
@@ -126,7 +113,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Patient" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.patient.name}" styleClass="bolder orange" />
 											&nbsp;
@@ -136,7 +122,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Height" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.height}" />
 											&nbsp;
@@ -146,7 +131,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Visit Price" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.visitPrice}" styleClass="blue bolder">
 												<f:convertNumber type="number" maxFractionDigits="2" />
@@ -163,7 +147,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Date" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.date}">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -175,7 +158,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Weight" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.weight}" styleClass="blue bolder" />
 											&nbsp;
@@ -185,7 +167,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Act Price" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{visitView.visit.actPrice}" styleClass="purple bolder">
 												<f:convertNumber type="number" maxFractionDigits="2" />
@@ -248,38 +229,34 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="files_table" value="#{visitView.visit.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+										<p:column headerText="Phase" width="150" styleClass="center">
+											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
+										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
 										</p:column>
-
 										<p:column headerText="Type">
-											<h:outputText value="#{item.type}" />
+											<h:outputText value="#{item.type}" styleClass="bolder green" />
 										</p:column>
-
-										<p:column headerText="Added Date">
+										<p:column headerText="Added Date" width="90">
 											<h:outputText value="#{item.date}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
-
-										<p:column headerText="File Size">
+										<p:column headerText="File Size" width="80">
 											<h:outputText value="#{item.size}" />
 										</p:column>
-
 										<p:column headerText="File Type" width="100" styleClass="center">
 											<img src="resources/img/docTypes/#{item.extenstion}.png" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
-
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
 												<p:commandLink title="Delete File" oncomplete="PF('deleteVisitFileDlg').show()" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener target="#{visitView.visitFileId}" value="#{item.id}" />
 												</p:commandLink>
-
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
 											</div>
@@ -293,6 +270,5 @@
 			</div>
 		</h:form>
 		<ui:include src="visitFooter.xhtml" />
-
 	</ui:define>
 </ui:composition>

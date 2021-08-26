@@ -43,9 +43,9 @@
 				<div class="col-sm-12">
 					<div class=" col-sm-offset-1 col-sm-4">
 						<h:outputLink value="index.xhtml" styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Home page">
-								<i class="ace-icon fa fa-home bigger-230"></i>
-								<h:outputText value="Home" />
-							</h:outputLink>
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
@@ -854,7 +854,8 @@
 															<p:graphicImage value="#{fileUploadView.stream}">
 																<f:param name="fileName" value="#{comment.userPhoto}" />
 															</p:graphicImage>
-															<i class="timeline-indicator btn btn-info no-hover"></i> <br />
+															<i class="timeline-indicator btn btn-info no-hover"></i>
+															<br />
 															<span class="orange">
 																<i class="ace-icon fa fa-clock-o bigger-120"></i>
 																<h:outputText value="#{comment.date}">
@@ -876,14 +877,14 @@
 															</div>
 															<div class="widget-body">
 																<div class="widget-main">
-																	<h:outputText value=" #{comment.content}" escape="false"/>
+																	<h:outputText value=" #{comment.content}" escape="false" />
 																</div>
 															</div>
 															<div class="pull-left action-buttons">
 																<i class="ace-icon fa fa-reply-all blue bigger-125" />
-																<p:commandLink title="Delete Comment" onclick="PF('deleteCommentDlg').show()" rendered="#{deliveryRequestView.canDeleteComment(comment)}" >
+																<p:commandLink title="Delete Comment" onclick="PF('deleteCommentDlg').show()" rendered="#{deliveryRequestView.canDeleteComment(comment)}">
 																	<i class="ace-icon fa fa-trash-o red bigger-130" />
-																	<f:setPropertyActionListener value="#{comment}" target="#{deliveryRequestView.comment}"/>
+																	<f:setPropertyActionListener value="#{comment}" target="#{deliveryRequestView.comment}" />
 																</p:commandLink>
 															</div>
 														</div>
@@ -908,27 +909,28 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Phase" width="150" styleClass="center">
+											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
+										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
 										</p:column>
 										<p:column headerText="Type">
-											<h:outputText value="#{item.type}" />
+											<h:outputText value="#{item.type}" styleClass="bolder green" />
 										</p:column>
-										<p:column headerText="Added Date">
+										<p:column headerText="Added Date" width="90">
 											<h:outputText value="#{item.date}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="File Size">
+										<p:column headerText="File Size" width="80">
 											<h:outputText value="#{item.size}" />
 										</p:column>
 										<p:column headerText="File Type" width="100" styleClass="center">
-											<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
+											<img src="#{item.fileExtensionImage}" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
 										<p:column headerText="Added By" styleClass="center">
-											<p:graphicImage id="photo" value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-												<f:param name="fileName" value="#{item.user.photo}" />
-											</p:graphicImage>
+											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
 											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
@@ -940,11 +942,12 @@
 													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFileId}" value="#{item.id}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
 													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFile}" value="#{item}" />
 												</p:commandLink>
 											</div>
@@ -1527,5 +1530,6 @@
 		<ui:include src="acceptanceFooter.xhtml" />
 		<ui:include src="expensepaymentFooter.xhtml" />
 		<ui:include src="boqMappingFooter.xhtml" />
+		<ui:include src="fileFooter.xhtml" />
 	</ui:define>
 </ui:composition>

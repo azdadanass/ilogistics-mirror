@@ -2,19 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.Severities" var="Severities" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
@@ -44,39 +39,32 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip" title="Edit" value="addEditPatient.xhtml" rendered="#{patientView.canSavePatient()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{patientView.id}" />
 						</h:outputLink>
-
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" onclick="PF('deleteDlg').show()" rendered="#{patientView.canDeletePatient()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-
 						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('uploadPatientFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Add Visit" value="addEditVisit.xhtml">
 							<i class="ace-icon fa fa-plus bigger-230"></i>
 							<h:outputText value="Add" />
 							<f:param name="patientId" value="#{patientView.id}" />
 						</h:outputLink>
-
 					</div>
 				</div>
 			</div>
@@ -94,12 +82,10 @@
 						</h:panelGroup>
 					</div>
 					<div class="space-4" />
-
 					<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
 						<div class="inline position-relative">
 							<a href="#" class="patient-title-label dropdown-toggle" data-toggle="dropdown">
-								<i class="ace-icon fa fa-circle light-green"></i>
-								&nbsp;
+								<i class="ace-icon fa fa-circle light-green"></i> &nbsp;
 								<span class="white">
 									<h:outputText value="#{patientView.patient.name}" />
 								</span>
@@ -135,7 +121,6 @@
 							<h:outputText value=" Attachements" />
 						</a>
 					</li>
-
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -146,7 +131,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.name}" styleClass="bolder orange" />
 											&nbsp;
@@ -156,7 +140,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Birthday" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.birthday}">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
@@ -168,7 +151,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Phone" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.phone}" />
 											&nbsp;
@@ -178,7 +160,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="CIN" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.cin}" styleClass="bolder green" />
 											&nbsp;
@@ -192,7 +173,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Title" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.title.value}" />
 											&nbsp;
@@ -202,7 +182,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Email" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.email}" styleClass="blue" />
 											&nbsp;
@@ -212,7 +191,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Job Title" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.job}" />
 											&nbsp;
@@ -222,7 +200,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="CNSS" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.cnss}" />
 											&nbsp;
@@ -253,58 +230,47 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable value="#{patientView.patient.visitList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
 										<p:column headerText="Date" sortBy="#{item.date}" styleClass="center">
 											<h:outputText value="#{item.date}" styleClass="bolder blue">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="Height / Weight" styleClass="center">
 											<h:outputText value="#{item.height} / #{item.weight}" />
 										</p:column>
-
 										<p:column headerText="Symptom">
 											<h:outputText value="#{item.symptom}" styleClass="red" />
 										</p:column>
-
 										<p:column headerText="Diagnostic">
 											<h:outputText value="#{item.diagnostic}" />
 										</p:column>
-
 										<p:column headerText="Prescription">
 											<h:outputText value="#{item.prescription}" styleClass="green" />
 										</p:column>
-
 										<p:column headerText="Visit Price" styleClass="center">
 											<h:outputText value="#{item.visitPrice}" styleClass="blue">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" DH" styleClass="blue" />
 										</p:column>
-
 										<p:column headerText="Act Price" styleClass="center">
 											<h:outputText value="#{item.actPrice}" styleClass="purple">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" DH" styleClass="purple" />
 										</p:column>
-
 										<p:column headerText="Total Price" styleClass="center">
 											<h:outputText value="#{item.amount}" styleClass="green bolder">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" DH" styleClass="green bolder" />
 										</p:column>
-
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-
 												<h:outputLink value="#{visitView.addEditPage}" title="Edit" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-edit bigger-130 orange" />
 													<f:param name="id" value="#{item.id}" />
 												</h:outputLink>
-
 												<h:outputLink value="#{visitView.viewPage}" title="Show details" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:param name="id" value="#{item.id}" />
@@ -328,28 +294,23 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable value="#{patientView.patient.taskList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
 										<p:column headerText="Date" sortBy="#{item.startDate}" styleClass="center">
 											<h:outputText value="#{item.startDate}" styleClass="bolder blue">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
 											</h:outputText>
 										</p:column>
-										
 										<p:column headerText="Time" styleClass="center">
 											<h:outputText value="#{item.startDate}" styleClass="bolder green">
 												<f:convertDateTime pattern="HH:mm" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="Description">
 											<h:outputText value="#{item.description}" />
 										</p:column>
-
 										<p:column headerText="Severity">
 											<h:outputText value="#{item.severity.value}"
 												styleClass="bolder #{Severities.MINOR==item.severity?'green':(Severities.MEDIUM==item.severity?'blue':Severities.HIGH==item.severity?'orange':'red')}" />
 										</p:column>
-
 									</p:dataTable>
 								</div>
 							</div>
@@ -367,38 +328,34 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="files_table" value="#{patientView.patient.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+										<p:column headerText="Phase" width="150" styleClass="center">
+											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
+										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
 										</p:column>
-
 										<p:column headerText="Type">
-											<h:outputText value="#{item.type}" />
+											<h:outputText value="#{item.type}" styleClass="bolder green" />
 										</p:column>
-
-										<p:column headerText="Added Date">
+										<p:column headerText="Added Date" width="90">
 											<h:outputText value="#{item.date}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
-
-										<p:column headerText="File Size">
+										<p:column headerText="File Size" width="80">
 											<h:outputText value="#{item.size}" />
 										</p:column>
-
 										<p:column headerText="File Type" width="100" styleClass="center">
 											<img src="resources/img/docTypes/#{item.extenstion}.png" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
-
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
 												<p:commandLink title="Delete File" oncomplete="PF('deletePatientFileDlg').show()" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener target="#{patientView.patientFileId}" value="#{item.id}" />
 												</p:commandLink>
-
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
 											</div>
@@ -412,6 +369,5 @@
 			</div>
 		</h:form>
 		<ui:include src="patientFooter.xhtml" />
-
 	</ui:define>
 </ui:composition>

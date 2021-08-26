@@ -2,19 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.Role" var="Role" allSuffix="ALL_ENUM_VALUES" />
@@ -50,53 +45,42 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditUser.xhtml"
-							rendered="#{userView.canSaveUser()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditUser.xhtml" rendered="#{userView.canSaveUser()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{userView.username}" />
 						</h:outputLink>
-
 						<p:commandLink title="Change Password" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-purple" onclick="PF('changePasswordUserDlg').show()"
 							rendered="#{userView.canChangePassword()}">
 							<i class="ace-icon fa fa-key bigger-230"></i>
 							<h:outputText value="Password" />
 						</p:commandLink>
-
-						<p:commandLink title="#{userView.user.active?'Disable Account':'Enable Account'}"
-							styleClass="btn btn-app btn-sm #{userView.user.active?'btn-danger':'btn-success'} hover aa-tooltip" update=":toggleStatusForm" oncomplete="PF('toggleStatusDlg').show()">
+						<p:commandLink title="#{userView.user.active?'Disable Account':'Enable Account'}" styleClass="btn btn-app btn-sm #{userView.user.active?'btn-danger':'btn-success'} hover aa-tooltip"
+							update=":toggleStatusForm" oncomplete="PF('toggleStatusDlg').show()">
 							<i class="ace-icon fa fa-power-off bigger-230"></i>
 							<h:outputText value="#{userView.user.active?'Disable':'Enable'}" />
 						</p:commandLink>
-
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
-							rendered="#{userView.canDeleteUser()}">
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{userView.canDeleteUser()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-
 						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadUserFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-
 						<p:commandLink title="Assign Project" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" action="#{userView.initAssignment()}" update="assignProjectForm"
 							oncomplete="PF('assignProjectDlg').show()" rendered="#{userView.canAssignProject()}">
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
-
 					</div>
 				</div>
 			</div>
@@ -166,7 +150,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="First Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.firstName}" />
 											&nbsp;
@@ -176,7 +159,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="CIN" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.cin}" styleClass="bolder green" />
 											&nbsp;
@@ -186,7 +168,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Email" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.email}" styleClass="bolder light-blue" />
 											&nbsp;
@@ -196,7 +177,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Birthday" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.birthday}">
 												<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -208,7 +188,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Passport ID" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.passportId}" />
 											&nbsp;
@@ -218,7 +197,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Drive Licence ID" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.driveLicenceId}" />
 											&nbsp;
@@ -228,7 +206,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="DL Issued Date" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.driveLicenceIssuedDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -240,7 +217,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Job/Function" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.job}" styleClass="bolder green" />
 											&nbsp;
@@ -250,10 +226,8 @@
 										<div class="profile-info-name">
 											<h:outputText value="Company" />
 										</div>
-
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.companyType.value} / #{userView.user.companyName}"
-												styleClass="bolder #{userView.user.companyType.color.name}" />
+											<h:outputText value="#{userView.user.companyType.value} / #{userView.user.companyName}" styleClass="bolder #{userView.user.companyType.color.name}" />
 											&nbsp;
 										</div>
 									</div>
@@ -265,7 +239,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Last Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.lastName}" />
 											&nbsp;
@@ -275,7 +248,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Status" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.active?'Active':'Inactive'}" styleClass="#{userView.user.active?'green':'red'}" />
 											&nbsp;
@@ -285,7 +257,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Secondary E-mail" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.email2}" />
 											&nbsp;
@@ -295,7 +266,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Gender" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.gender?'Male':'Female'}" />
 											&nbsp;
@@ -305,7 +275,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Passport Expire Date" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.passportExpireDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -317,7 +286,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Drive Licence Type" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.driveLicenceType}" />
 											&nbsp;
@@ -327,7 +295,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="DL Expire Date" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.driveLicenceExpireDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -339,7 +306,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Sponsor Manager" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{cacheView.getLineManager(userView.user.username)}" />
 											&nbsp;
@@ -360,31 +326,25 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable value="#{userView.user.assignmentList}" id="projectList" widgetVar="projectList" var="item" rows="50" styleClass="table table-striped table-hover center"
 										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
 										<p:column headerText="Name">
 											<h:outputText value="#{item.project.name}" styleClass="blue" />
 										</p:column>
-
 										<p:column headerText="Type" width="100">
 											<h:outputText value="#{item.project.type}" />
 										</p:column>
-
 										<p:column headerText="Start Date" width="100">
 											<h:outputText value="#{item.startDate}">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="End Date" width="100">
 											<h:outputText value="#{item.endDate}">
 												<f:convertDateTime pattern="dd-MM-yyyy" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="Manager">
 											<h:outputText value="#{cacheView.getFullName(item.project.manager.username)}" styleClass="bloder green" />
 										</p:column>
-
 									</p:dataTable>
 								</div>
 							</div>
@@ -407,7 +367,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Primary Mobile N°" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.phone}" styleClass="blue" />
 											&nbsp;
@@ -417,7 +376,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Business phone" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.businessPhone}" />
 											&nbsp;
@@ -427,7 +385,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Home Address" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.homeAddress}" />
 											&nbsp;
@@ -437,7 +394,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Primary emergency contact name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.emergencyName1}" styleClass="orange bolder" />
 											&nbsp;
@@ -447,7 +403,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Secondary emergency contact name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.emergencyName2}" />
 											&nbsp;
@@ -457,7 +412,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Skype ID	" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.skypeId}" />
 											&nbsp;
@@ -471,7 +425,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Secondary Mobile N°" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.phone2}" styleClass="green" />
 											&nbsp;
@@ -481,7 +434,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Business fax number" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.businessFax}" />
 											&nbsp;
@@ -491,7 +443,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Home phone number" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.homePhone}" />
 											&nbsp;
@@ -501,7 +452,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Primary emergency contact number" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.emergencyPhone1}" />
 											&nbsp;
@@ -511,7 +461,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Secondary contact number" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.emergencyPhone2}" />
 											&nbsp;
@@ -521,7 +470,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="IM ID" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.userData.imId}" />
 											&nbsp;
@@ -538,7 +486,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="Ilogistics Access" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleIlogistics" update="hasRoleIlogistics" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -551,7 +498,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="PM Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRolePm" update="hasRolePm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_PM)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -564,7 +510,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="WM Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleWm" update="hasRoleWm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_WM)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -577,7 +522,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="SE Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleSe" update="hasRoleSe" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_SE)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -590,10 +534,9 @@
 									<div class="profile-info-name">
 										<h:outputText value="DN Notification" />
 									</div>
-
 									<div class="profile-info-value">
-										<p:commandLink id="hasRoleDnNotification" update="hasRoleDnNotification" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_DN_NOTIFICATION)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
+										<p:commandLink id="hasRoleDnNotification" update="hasRoleDnNotification" partialSubmit="true" process="@this"
+											actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_DN_NOTIFICATION)}" action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
 											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_DN_NOTIFICATION)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 										</p:commandLink>
 										&nbsp;
@@ -601,9 +544,8 @@
 								</div>
 								<div class="profile-info-row">
 									<div class="profile-info-name">
-										<h:outputText value="Collect Goods" title="Collect Goods from warehouse (CIN Required to toggle)" styleClass="aa-tooltip"/>
+										<h:outputText value="Collect Goods" title="Collect Goods from warehouse (CIN Required to toggle)" styleClass="aa-tooltip" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleCollectGoods" update="hasRoleCollectGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_COLLECT_GOODS)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace() or userView.user.cin==null or userView.user.cin==''}">
@@ -620,7 +562,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="User Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleUser" update="hasRoleUser" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_USER)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -633,7 +574,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="Admin Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleAdmin" update="hasRoleAdmin" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_ADMIN)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -646,7 +586,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="TM Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleTm" update="hasRoleTm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_TM)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -659,7 +598,6 @@
 									<div class="profile-info-name">
 										<h:outputText value="HM Role" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleHm" update="hasRoleHm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_HM)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -670,9 +608,8 @@
 								</div>
 								<div class="profile-info-row">
 									<div class="profile-info-name">
-										<h:outputText value="Receive Goods" title="Receive Goods on site" styleClass="aa-tooltip"/>
+										<h:outputText value="Receive Goods" title="Receive Goods on site" styleClass="aa-tooltip" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleReceiveGoods" update="hasRoleReceiveGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_RECEIVE_GOODS)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -681,12 +618,10 @@
 										&nbsp;
 									</div>
 								</div>
-
 								<div class="profile-info-row">
 									<div class="profile-info-name">
-										<h:outputText value="Deliver Goods" title="Deliver Goods to warehouse" styleClass="aa-tooltip"/>
+										<h:outputText value="Deliver Goods" title="Deliver Goods to warehouse" styleClass="aa-tooltip" />
 									</div>
-
 									<div class="profile-info-value">
 										<p:commandLink id="hasRoleDeliverGoods" update="hasRoleDeliverGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_DELIVER_GOODS)}"
 											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
@@ -708,52 +643,47 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+									<p:dataTable id="files_table" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Phase" width="150" styleClass="center">
+											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
+										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
 										</p:column>
-
 										<p:column headerText="Type">
-											<h:outputText value="#{item.type}" />
+											<h:outputText value="#{item.type}" styleClass="bolder green" />
 										</p:column>
-
-										<p:column headerText="Added Date">
+										<p:column headerText="Added Date" width="90">
 											<h:outputText value="#{item.date}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
-
-										<p:column headerText="File Size">
+										<p:column headerText="File Size" width="80">
 											<h:outputText value="#{item.size}" />
 										</p:column>
-
 										<p:column headerText="File Type" width="100" styleClass="center">
-											<img src="resources/img/docTypes/#{item.extension}.png" style="border: none; border-radius: 0" width="20" height="20" />
+											<img src="#{item.fileExtensionImage}" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
-										
 										<p:column headerText="Added By" styleClass="center">
 											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
 											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>
-
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
 												<p:commandLink title="Delete File" oncomplete="PF('deleteUserFileDlg').show()" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener target="#{userView.userFileId}" value="#{item.id}" />
 												</p:commandLink>
-
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileUploadView.getFile(item.link)}" />
+													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
-
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
 													<f:setPropertyActionListener target="#{userView.userFile}" value="#{item}" />
 												</p:commandLink>
 											</div>
@@ -774,15 +704,13 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="userhistoryList" value="#{userView.user.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+									<p:dataTable id="userhistoryList" value="#{userView.user.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />
 											</span>
 										</p:column>
-
 										<p:column headerText="Date" width="90" styleClass="center">
 											<f:subview rendered="#{item.date==null}">
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
@@ -791,14 +719,12 @@
 												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="User" width="120">
 											<h:outputText id="user" value="#{item.user.fullName}" styleClass="purple bolder" />
 											<p:overlayPanel for="user" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>
-
 										<p:column headerText="Description" width="400">
 											<h:outputText value="#{item.description}" escape="false" styleClass="aa-cut-text" />
 										</p:column>
@@ -811,5 +737,6 @@
 			</div>
 		</h:form>
 		<ui:include src="userFooter.xhtml" />
+		<ui:include src="fileFooter.xhtml" />
 	</ui:define>
 </ui:composition>

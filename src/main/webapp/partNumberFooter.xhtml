@@ -241,7 +241,7 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:fileUpload fileUploadListener="#{partNumberView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
-							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{partNumberView.partNumberFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/" styleClass="#{partNumberView.partNumberFileType==null?'hide':''}" style="margin: auto;width: 80%">
 							<f:attribute name="beanName" value="#{partNumberView.className2}" />
 						</p:fileUpload>
 						<p:growl id="messages" showDetail="true" />
@@ -258,31 +258,7 @@
 	</h:form>
 
 
-	<h:form id="fileForm">
-		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
-			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
-				<h:outputText value="x" />
-			</button>
-			<div class="modal-header" style="margin-bottom: 20px">
-				<h4 class="modal-title">
-					<i class="ace-icon fa fa-list-alt blue" />
-					<h:outputText value=" Preview" />
-				</h4>
-			</div>
-			<div class="modal-body center" style="width: 100%">
-				<p:media player="pdf" value="#{fileUploadView.stream}" width="950" height="400" style="margin:auto" rendered="#{partNumberView.partNumberFile.isPdf}">
-					<f:param name="fileName" value="#{partNumberView.partNumberFile.link}" />
-				</p:media>
-				<p:graphicImage value="#{fileUploadView.stream}" rendered="#{partNumberView.partNumberFile.isImage}">
-					<f:param name="fileName" value="#{partNumberView.partNumberFile.link}" />
-				</p:graphicImage>
-				<h:outputText value="No preview for this file" rendered="#{!partNumberView.partNumberFile.isPdf and !partNumberView.partNumberFile.isImage}" />
-			</div>
-			<div class="modal-footer">
-				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-			</div>
-		</p:dialog>
-	</h:form>
+	
 
 
 </ui:composition>

@@ -77,7 +77,7 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:fileUpload fileUploadListener="#{visitView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
-							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{visitView.visitFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/" styleClass="#{visitView.visitFileType==null?'hide':''}" style="margin: auto;width: 80%">
 							<f:attribute name="beanName" value="#{visitView.className2}" />
 						</p:fileUpload>
 						<p:growl id="messages" showDetail="true" />

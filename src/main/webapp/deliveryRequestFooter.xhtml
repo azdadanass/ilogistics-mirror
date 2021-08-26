@@ -635,7 +635,7 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
-							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/" styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}"
 							style="margin: auto;width: 80%">
 							<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
 						</p:fileUpload>
@@ -650,31 +650,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="fileForm" rendered="#{deliveryRequestView.isViewPage}">
-		<p:dialog widgetVar="fileDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
-			<button type="button" class="bootbox-close-button close" onclick="PF('fileDlg').hide()">
-				<h:outputText value="x" />
-			</button>
-			<div class="modal-header" style="margin-bottom: 20px">
-				<h4 class="modal-title">
-					<i class="ace-icon fa fa-list-alt blue" />
-					<h:outputText value=" Preview" />
-				</h4>
-			</div>
-			<div class="modal-body center" style="width: 100%">
-				<p:media player="pdf" value="#{fileUploadView.stream}" width="950" height="400" style="margin:auto" rendered="#{deliveryRequestView.deliveryRequestFile.isPdf}">
-					<f:param name="fileName" value="#{deliveryRequestView.deliveryRequestFile.link}" />
-				</p:media>
-				<p:graphicImage value="#{fileUploadView.stream}" rendered="#{deliveryRequestView.deliveryRequestFile.isImage}">
-					<f:param name="fileName" value="#{deliveryRequestView.deliveryRequestFile.link}" />
-				</p:graphicImage>
-				<h:outputText value="No preview for this file" rendered="#{!deliveryRequestView.deliveryRequestFile.isPdf and !deliveryRequestView.deliveryRequestFile.isImage}" />
-			</div>
-			<div class="modal-footer">
-				<p:commandButton onclick="PF('fileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-			</div>
-		</p:dialog>
-	</h:form>
+	
 	<h:form id="poForm" rendered="#{deliveryRequestView.isViewPage}">
 		<p:dialog widgetVar="poDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('poDlg').hide()">

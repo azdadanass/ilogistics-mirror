@@ -625,8 +625,8 @@
 											<img src="#{item.fileExtensionImage}" style="border: none; border-radius: 0" width="20" height="20" />
 										</p:column>
 										<p:column headerText="Added By" styleClass="center">
-											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
-											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<p:graphicImage id="userPhoto" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
+											<p:overlayPanel for="userPhoto" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>

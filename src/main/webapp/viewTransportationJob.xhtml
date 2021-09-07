@@ -211,7 +211,7 @@
 										<div class="profile-info-value light-blue">
 											<h:outputText value="Expected to start on " rendered="#{transportationJobView.transportationJob.expectedToStart}" />
 											<h:outputText value="#{transportationJobView.transportationJob.startDate}" styleClass="bolder">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -263,7 +263,7 @@
 										<div class="profile-info-value light-green">
 											<h:outputText value="Expected to end on " rendered="#{transportationJobView.transportationJob.expectedToEnd}" />
 											<h:outputText value="#{transportationJobView.transportationJob.endDate}" styleClass="bolder">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -326,7 +326,7 @@
 												<p:ajax event="cancel" />
 											</p:inplace>
 											<h:outputText value="#{item.pickupDate}" styleClass="purple bolder">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Destination">
@@ -343,7 +343,7 @@
 												<p:ajax event="cancel" />
 											</p:inplace>
 											<h:outputText value="#{item.deliveryDate}" styleClass="pink bolder">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Status">
@@ -502,7 +502,7 @@
 												<p:column headerText="Date">
 													<h:outputText value="Expected on " rendered="#{item.expected}" styleClass="red" />
 													<h:outputText value="#{item.date}" styleClass="#{item.expected?'red':'green'}">
-														<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 													</h:outputText>
 												</p:column>
 											</p:dataTable>
@@ -737,7 +737,7 @@
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
 											</f:subview>
 											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="User" width="120">

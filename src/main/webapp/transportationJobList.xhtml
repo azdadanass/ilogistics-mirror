@@ -110,13 +110,13 @@
 
 							<p:column headerText="Start Date" sortBy="#{item.startDate}" >
 								<h:outputText value="#{item.startDate}" styleClass="blue">
-									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
 
 							<p:column headerText="End Date" sortBy="#{item.endDate}">
 								<h:outputText value="#{item.endDate}" styleClass="green">
-									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
 

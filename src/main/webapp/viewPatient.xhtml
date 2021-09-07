@@ -142,7 +142,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{patientView.patient.birthday}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -232,7 +232,7 @@
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Date" sortBy="#{item.date}" styleClass="center">
 											<h:outputText value="#{item.date}" styleClass="bolder blue">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Height / Weight" styleClass="center">
@@ -296,7 +296,7 @@
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Date" sortBy="#{item.startDate}" styleClass="center">
 											<h:outputText value="#{item.startDate}" styleClass="bolder blue">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Time" styleClass="center">

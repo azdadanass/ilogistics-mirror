@@ -761,7 +761,7 @@
 											</p:column>
 											<p:column headerText="Delivery Date" width="80">
 												<h:outputText value="#{item.inboundDeliveryRequest.date4}">
-													<f:convertDateTime pattern="dd-MM-yyyy" />
+													<f:convertDateTime pattern="yyyy-MM-dd" />
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Quantity">
@@ -813,7 +813,7 @@
 											</p:column>
 											<p:column headerText="Delivery Date" width="80">
 												<h:outputText value="#{item.inboundDeliveryRequest.date4}">
-													<f:convertDateTime pattern="dd-MM-yyyy" />
+													<f:convertDateTime pattern="yyyy-MM-dd" />
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Quantity">
@@ -842,7 +842,7 @@
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
 													<b> <h:outputText value="#{commentGroup.date}">
-															<f:convertDateTime pattern="dd-MM-yyyy" />
+															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
 													</b>
 												</span>
@@ -980,7 +980,7 @@
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
 											</f:subview>
 											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="User" width="120">
@@ -1041,7 +1041,7 @@
 										</p:column>
 										<p:column headerText="Invoice Date">
 											<h:outputText value="#{item.invoiceDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Invoice Status">
@@ -1112,7 +1112,7 @@
 										</p:column>
 										<p:column headerText="Invoice Date">
 											<h:outputText value="#{item.invoiceDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Invoice Status">
@@ -1215,7 +1215,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{deliveryRequestView.projectCross.date}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -1226,7 +1226,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{deliveryRequestView.projectCross.cashDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -1455,7 +1455,7 @@
 											<h:outputText value="#{item.expiryDate}"
 												rendered="#{!deliveryRequestExpiryDateView.editMode or (deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isOutbound and item.id!=null) }"
 												styleClass="bolder #{item.expiryDate lt deliveryRequestView.deliveryRequest.date4?'red':'light-blue'} ">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 											<p:calendar value="#{item.expiryDate}" navigator="true" rendered="#{deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
 											<h:selectOneMenu value="#{item.expiryDate}" rendered="#{deliveryRequestExpiryDateView.editMode and deliveryRequestView.deliveryRequest.isOutbound and item.id==null}"

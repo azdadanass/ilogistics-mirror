@@ -334,12 +334,12 @@
 										</p:column>
 										<p:column headerText="Start Date" width="100">
 											<h:outputText value="#{item.startDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="End Date" width="100">
 											<h:outputText value="#{item.endDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Manager">
@@ -716,7 +716,7 @@
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
 											</f:subview>
 											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="User" width="120">

@@ -325,7 +325,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.neededPickupDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -374,7 +374,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.neededDeliveryDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -516,7 +516,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -527,7 +527,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -574,7 +574,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.pickupDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -585,7 +585,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
 										</div>
@@ -823,7 +823,7 @@
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
 											</f:subview>
 											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
-												<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="User" width="120">
@@ -861,12 +861,12 @@
 										</p:column>
 										<p:column headerText="Start Date" width="80">
 											<h:outputText value="#{item.startDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="End Date" width="80">
 											<h:outputText value="#{item.endDate}">
-												<f:convertDateTime pattern="dd-MM-yyyy" />
+												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Amount" width="100">

@@ -255,11 +255,11 @@
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.requestDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateRequestDate()}">
-								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
 							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateRequestDate()}">
-								<p:calendar value="#{deliveryRequestView.deliveryRequest.requestDate}" navigator="true" pattern="dd-MM-yyyy HH:mm">
-									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.requestDate}" navigator="true" pattern="yyyy-MM-dd HH:mm">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
 								<p:ajax event="save" listener="#{deliveryRequestView.updateRequestDate()}" update=":main_form" />
 								<p:ajax event="cancel" />
@@ -387,11 +387,11 @@
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateNeededDeliveryDate()}">
-								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
 							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
-								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="dd-MM-yyyy HH:mm">
-									<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
 								<p:ajax event="save" listener="#{deliveryRequestView.updateNeededDeliveryDate()}" update=":main_form" />
 								<p:ajax event="cancel" />
@@ -405,7 +405,7 @@
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.date4}" styleClass="bolder green">
-								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
 							&nbsp;
 						</div>
@@ -482,7 +482,7 @@
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder">
-								<f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
 							&nbsp;
 						</div>
@@ -620,7 +620,7 @@
 					</p:column>
 					<p:column headerText="Inbound Date" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.inboundDeliveryRequest.date4}" styleClass="bolder green">
-							<f:convertDateTime pattern="dd-MM-yyyy" />
+							<f:convertDateTime pattern="yyyy-MM-dd" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="Origin DN Number" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100"

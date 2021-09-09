@@ -432,14 +432,16 @@
 						</h:panelGroup>
 						<hr />
 						<div class="wizard-actions">
-							<!-- <p:commandLink action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-prev">
-								<i class="ace-icon fa fa-arrow-left"></i>
-								<h:outputText value="Prev" />
-							</p:commandLink> -->
-							<p:commandLink action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-success btn-next">
-								<h:outputText value="Next" />
-								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
-							</p:commandLink>
+							<p:commandButton widgetVar="nextButton" value="Next" action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-success btn-next"
+								icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
+							<p:ajaxStatus>
+								<f:facet name="start">
+									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />
+								</f:facet>
+								<f:facet name="complete">
+									<h:outputText value="" />
+								</f:facet>
+							</p:ajaxStatus>
 						</div>
 						<div class="space-16" />
 					</div>

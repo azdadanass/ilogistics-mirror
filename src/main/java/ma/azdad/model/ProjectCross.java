@@ -29,6 +29,7 @@ public class ProjectCross implements Serializable {
 	private Double amount;
 	private Double cashAmount;
 	private Date cashDate;
+	private Integer countFiles = 0;
 
 	private Boolean manual = true;
 	private String erp;
@@ -171,6 +172,14 @@ public class ProjectCross implements Serializable {
 
 	public void setCategory(ProjectCrossCategory category) {
 		this.category = category;
+	}
+
+	public Integer getCountFiles() {
+		return countFiles;
+	}
+
+	public void setCountFiles(Integer countFiles) {
+		this.countFiles = countFiles;
 	}
 
 }

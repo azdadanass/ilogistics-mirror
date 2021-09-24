@@ -5,7 +5,8 @@ import ma.azdad.utils.Color;
 public enum CompanyType {
 	COMPANY("Company", Color.ORANGE),
 	CUSTOMER("Customer", Color.GREEN),
-	SUPPLIER("Supplier", Color.BLUE);
+	SUPPLIER("Supplier", Color.BLUE),
+	OTHER("Other", Color.GREY),;
 
 	private final String value;
 	private final Color color;

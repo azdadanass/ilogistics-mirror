@@ -687,7 +687,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public DeliveryRequestStatus getStatus() {
 		return status;
 	}

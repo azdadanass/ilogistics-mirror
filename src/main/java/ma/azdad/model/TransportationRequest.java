@@ -515,7 +515,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public TransportationRequestStatus getStatus() {
 		return status;
 	}

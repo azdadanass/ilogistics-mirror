@@ -32,6 +32,8 @@
 	<!-- My Css -->
 	<link rel="stylesheet" href="resources/css/icons.css" />
 	<link rel="stylesheet" href="resources/css/custom.css" />
+	<link rel="stylesheet" href="resources/css/colors.css" />
+	<link rel="stylesheet" href="resources/css/erp-#{erpView.erp}.css" />
 </h:head>
 <h:body styleClass="no-skin">
 	<div class="navbar navbar-default" id="navbar">
@@ -79,12 +81,11 @@
 										<h:outputText value="#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}" styleClass="bolder red" />
 										<div class="space"></div>
 										<div class="clearfix">
-											<button type="submit" class="width-35 pull-right btn btn-sm btn-primary" onclick="login();;">
-												<span class="ui-button-text">
-													<i class="ace-icon fa fa-key"></i>
-													<h:outputText value=" Login" />
-												</span>
-											</button>
+											<p:commandButton value="Login" type="submit" class="width-35 pull-right btn btn-sm btn-primary"  onclick="login();;" icon="ace-icon fa fa-key" 
+											 rendered="#{erpView.gcom}"/>
+											 
+											 <p:commandButton value="Login" type="submit" class="width-35 pull-right btn btn-sm btn-warning"  onclick="login();;" icon="ace-icon fa fa-key" 
+											 rendered="#{erpView.orange}"/>
 										</div>
 										<div class="space-4"></div>
 									</fieldset>

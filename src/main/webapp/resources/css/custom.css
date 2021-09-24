@@ -1,17 +1,26 @@
-.ui-autocomplete-input{
+li.aa-clickable {
+	cursor: pointer;
+}
+
+li.aa-clickable:hover {
+	background-color: #F8F8F8;
+}
+
+.pointer {
+	cursor: pointer
+}
+
+.ui-autocomplete-input {
 	width: 100%;
 }
 
-
 .timeline-item:nth-child(even) .widget-box.transparent .widget-header {
-    background-color: #FFF !important;
+	background-color: #FFF !important;
 }
-
 
 img.desaturate {
 	filter: grayscale(100%);
 }
-
 
 .aa-logo {
 	width: 100px;
@@ -75,7 +84,7 @@ img.desaturate {
 }
 
 .aa-table-loc-details-2>tbody>tr:first-child {
-	background: #F4661B;
+	background: #438eb9;
 	color: white;
 }
 
@@ -504,12 +513,12 @@ img.desaturate {
 
 /* Inplace Css */
 .ui-inplace-save {
-	background-image : none !important;
+	background-image: none !important;
 	background-color: rgb(111, 179, 224) !important;
 }
 
 .ui-inplace-cancel {
-	background-image : none !important;
+	background-image: none !important;
 	background-color: rgb(255, 183, 82) !important;
 	border-color: rgb(255, 183, 82) !important;
 }
@@ -598,8 +607,6 @@ img.desaturate {
 	writing-mode: lr-tb;
 	zoom: 1;
 }
-
-
 
 .ui-inplace-save .ui-icon-check, .ui-inplace-cancel .ui-icon-close {
 	background-image: url("../img/primefaces-icon-white.png");
@@ -692,7 +699,7 @@ label {
 /* Mobile View Changes*/
 @media only screen and (max-width: 479px) {
 	.navbar:not (.navbar-collapse ) .ace-nav {
-		background-color: #F4661B;
+		background-color: #438eb9;
 		border: none;
 	}
 }
@@ -876,10 +883,6 @@ label {
 }
 
 .ui-selectonemenu-panel {
-	z-index: 2070 !important;
-}
-
-.ui-autocomplete-panel{
 	z-index: 2070 !important;
 }
 
@@ -1192,75 +1195,86 @@ label {
 	background-color: #eeeeec;
 }
 
-.aa-background-0{
+.aa-background-0 {
 	background-color: #000000;
 }
 
-.aa-background-1{
+.aa-background-1 {
 	background-color: #FF0000;
 }
 
-.aa-background-2{
+.aa-background-2 {
 	background-color: #DC143C;
 }
 
-.aa-background-3{
+.aa-background-3 {
 	background-color: #0000FF;
 }
 
-.aa-background-4{
+.aa-background-4 {
 	background-color: #8A2BE2;
 }
 
-.aa-background-5{
+.aa-background-5 {
 	background-color: #A52A2A;
 }
 
-.aa-background-6{
+.aa-background-6 {
 	background-color: #00FF00;
 }
 
-
-.aa-background-7{
+.aa-background-7 {
 	background-color: #DEB887;
 }
 
-.aa-background-8{
+.aa-background-8 {
 	background-color: #5F9EA0;
 }
 
-.aa-background-9{
+.aa-background-9 {
 	background-color: #7FFF00;
 }
 
-.aa-background-10{
+.aa-background-10 {
 	background-color: #D2691E;
 }
 
-.aa-background-11{
+.aa-background-11 {
 	background-color: #FF7F50;
 }
 
-.aa-background-12{
+.aa-background-12 {
 	background-color: #6495ED;
 }
 
-.aa-background-13{
+.aa-background-13 {
 	background-color: #00008B;
 }
 
-.aa-background-14{
+.aa-background-14 {
 	background-color: #9932CC;
 }
 
-.aa-background-15{
+.aa-background-15 {
 	background-color: #FF1493;
 }
 
-.aa-background-16{
+.aa-background-16 {
 	background-color: #B22222;
 }
 
-.datatable-hidden-overflow .ui-datatable-tablewrapper{
-	 overflow: hidden;
+.hide-column {
+	display: none !important;
+	width: 0;
+	height: 0;
+}
+
+.background-green-font-white {
+	color: #fff;
+	background-color: #87b87f !important;
+}
+
+.background-red-font-white {
+	color: #fff;
+	background-color: #d15b47 !important;
 }

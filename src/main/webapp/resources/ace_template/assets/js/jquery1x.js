@@ -5025,7 +5025,7 @@ jQuery.each({
 	};
 });
 
-// IE submit assignment
+// IE submit delegation
 if ( !support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
@@ -5072,7 +5072,7 @@ if ( !support.submitBubbles ) {
 	};
 }
 
-// IE change assignment and checkbox/radio fix
+// IE change delegation and checkbox/radio fix
 if ( !support.changeBubbles ) {
 
 	jQuery.event.special.change = {

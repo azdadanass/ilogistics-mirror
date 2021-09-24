@@ -8,7 +8,7 @@
 .nav-wizard > li > a .badge {
   margin-left: 3px;
   color: #eeeeee;
-  background-color: #ff851d;
+  background-color: #428bca;
 }
 .nav-wizard > li:not(:first-child) > a {
   padding-left: 34px;
@@ -72,13 +72,13 @@
 .nav-wizard > li.active > a:hover,
 .nav-wizard > li.active > a:focus {
   color: #ffffff;
-  background-color: #ff851d;
+  background-color: #428bca;
 }
 .nav-wizard > li.active > a:after {
-  border-left-color: #ff851d;
+  border-left-color: #428bca;
 }
 .nav-wizard > li.active > a .badge {
-  color: #ff851d;
+  color: #428bca;
   background-color: #ffffff;
 }
 .nav-wizard > li.disabled > a {

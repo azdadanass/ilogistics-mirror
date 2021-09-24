@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.ProjectManagerType;
+import ma.azdad.model.User;
 import ma.azdad.service.AffectationService;
 import ma.azdad.service.DelegationService;
 import ma.azdad.service.ProjectService;
@@ -122,15 +123,15 @@ public class CacheView implements Serializable {
 	}
 
 	public String getPhoto(String username) {
-		return userService.findAsMap().get(username).getPhoto();
+		return userService.findAsMap().getOrDefault(username, new User()).getPhoto();
 	}
 
 	public String getPublicPhoto(String username) {
-		return userService.findAsMap().get(username).getPublicPhoto();
+		return userService.findAsMap().getOrDefault(username, new User()).getPublicPhoto();
 	}
 
 	public String getFullName(String username) {
-		return userService.findAsMap().get(username).getFullName();
+		return userService.findAsMap().getOrDefault(username, new User()).getFullName();
 	}
 
 	public String getFullname(String username) {
@@ -138,15 +139,15 @@ public class CacheView implements Serializable {
 	}
 
 	public String getJob(String username) {
-		return userService.findAsMap().get(username).getJob();
+		return userService.findAsMap().getOrDefault(username, new User()).getJob();
 	}
 
 	public String getPhone(String username) {
-		return userService.findAsMap().get(username).getPhone();
+		return userService.findAsMap().getOrDefault(username, new User()).getPhone();
 	}
 
 	public String getEmail(String username) {
-		return userService.findAsMap().get(username).getEmail();
+		return userService.findAsMap().getOrDefault(username, new User()).getEmail();
 	}
 
 	public String getLineManager(String username) {
@@ -154,7 +155,7 @@ public class CacheView implements Serializable {
 	}
 
 	public String getCin(String username) {
-		return userService.findAsMap().get(username).getCin();
+		return userService.findAsMap().getOrDefault(username, new User()).getCin();
 	}
 
 	public Integer getSelectedMenu() {

@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -381,8 +382,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.driver = driver;
 	}
 
-	@Enumerated
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	public TransportationJobStatus getStatus() {
 		return status;
 	}

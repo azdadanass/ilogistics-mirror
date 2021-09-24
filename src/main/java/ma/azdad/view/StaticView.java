@@ -19,6 +19,9 @@ public class StaticView {
 	@Value("${applicationName}")
 	private String applicationName;
 
+	@Value("${spring.profiles.active}")
+	private String erp;
+
 	private List<String> countryList = new ArrayList<>();
 
 	@PostConstruct
@@ -39,6 +42,10 @@ public class StaticView {
 
 	public List<String> getCountryList() {
 		return countryList;
+	}
+
+	public String getErp() {
+		return erp.replace("-dev", "");
 	}
 
 }

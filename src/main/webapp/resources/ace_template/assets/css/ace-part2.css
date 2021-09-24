@@ -1103,7 +1103,7 @@
   box-shadow: none !important;
 }
 .editable-container .popover-title {
-  color: #F4661B;
+  color: #438EB9;
 }
 .editable-click {
   border-bottom: 1px dashed #BBB;
@@ -1319,7 +1319,7 @@ img.editable-click:hover {
   text-shadow: none !important;
 }
 .bootstrap-datetimepicker-widget [class=btn]:hover {
-  color: #e67514 !important;
+  color: #1B6AAA !important;
 }
 .bootstrap-datetimepicker-widget .btn.btn-primary {
   border-width: 3px !important;
@@ -2645,7 +2645,7 @@ th[aria-selected=true] .ui-jqgrid-sortable {
 }
 .dd-handle:hover,
 .dd2-content:hover {
-  color: #F4661B;
+  color: #438EB9;
   background: #F4F6F7;
   border-color: #DCE2E8;
 }
@@ -2670,7 +2670,7 @@ th[aria-selected=true] .ui-jqgrid-sortable {
 }
 .dd-item > button:hover ~ .dd-handle,
 .dd-item > button:hover ~ .dd2-content {
-  color: #F4661B;
+  color: #438EB9;
   background: #F4F6F7;
   border-color: #DCE2E8;
 }
@@ -2680,7 +2680,7 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   color: #FFF;
 }
 .dd2-handle:hover ~ .dd2-content {
-  color: #F4661B;
+  color: #438EB9;
   background: #F4F6F7;
   border-color: #DCE2E8;
 }

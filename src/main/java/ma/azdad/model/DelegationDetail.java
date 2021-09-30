@@ -10,11 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "delegationdetail")
-public class Delegationdetail implements Serializable {
+public class DelegationDetail implements Serializable {
 
 	private Integer iddelegationDetail;
 	private String type;
@@ -23,12 +21,11 @@ public class Delegationdetail implements Serializable {
 	private Project project;
 	private User resource;
 
-	public Delegationdetail() {
+	public DelegationDetail() {
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "iddelegationdetail", unique = true, nullable = false)
 	public Integer getIddelegationDetail() {
 		return iddelegationDetail;
 	}

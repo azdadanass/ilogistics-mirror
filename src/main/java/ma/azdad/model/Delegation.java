@@ -29,7 +29,7 @@ public class Delegation implements Serializable {
 	private User delegator;
 	private User delegate;
 
-	private List<Delegationdetail> delegationDetailList;
+	private List<DelegationDetail> delegationDetailList;
 
 	public Delegation() {
 	}
@@ -114,11 +114,11 @@ public class Delegation implements Serializable {
 	}
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, fetch = FetchType.LAZY, mappedBy = "delegation")
-	public List<Delegationdetail> getDelegationDetailList() {
+	public List<DelegationDetail> getDelegationDetailList() {
 		return delegationDetailList;
 	}
 
-	public void setDelegationDetailList(List<Delegationdetail> delegationDetailList) {
+	public void setDelegationDetailList(List<DelegationDetail> delegationDetailList) {
 		this.delegationDetailList = delegationDetailList;
 	}
 

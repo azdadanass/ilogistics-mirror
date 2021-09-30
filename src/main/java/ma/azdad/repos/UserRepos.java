@@ -141,7 +141,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and a.user.internal = ?2")
 	List<User> findByProjectAssignment(Integer projectId, Boolean internal);
 
-	@Query("select distinct a.delegation.delegate from Delegationdetail a where a.project.id =?1 and current_date between a.delegation.startDate and a.delegation.endDate and a.delegation.delegate.internal = ?2")
+	@Query("select distinct a.delegation.delegate from DelegationDetail a where a.project.id =?1 and current_date between a.delegation.startDate and a.delegation.endDate and a.delegation.delegate.internal = ?2")
 	List<User> findByProjectDelegation(Integer projectId, Boolean internal);
 
 	@Query("select a.project.costcenter.lob.manager from DeliveryRequest a where a.id=  ?1")

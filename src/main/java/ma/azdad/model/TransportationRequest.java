@@ -818,7 +818,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.cost = cost;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public ContactType getContactType1() {
 		return contactType1;
 	}
@@ -827,7 +827,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.contactType1 = contactType1;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public ContactType getContactType2() {
 		return contactType2;
 	}
@@ -856,7 +856,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.contact2Username = contact2Username;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public TransportationRequestPaymentStatus getPaymentStatus() {
 		return paymentStatus;
 	}

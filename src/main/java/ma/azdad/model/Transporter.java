@@ -120,7 +120,7 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public TransporterType getType() {
 		return type;
 	}

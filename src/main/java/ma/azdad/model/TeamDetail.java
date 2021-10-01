@@ -80,7 +80,7 @@ public class TeamDetail extends GenericModel<Integer> implements Serializable {
 		return user.getEmail();
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public TeamDetailType getType() {
 		return type;
 	}

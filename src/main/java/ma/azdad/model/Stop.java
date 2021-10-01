@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -74,7 +75,7 @@ public class Stop extends GenericModel<Integer> implements Serializable, Compara
 		this.date = date;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public StopType getType() {
 		return type;
 	}

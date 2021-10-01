@@ -1,7 +1,8 @@
 package ma.azdad.model;
 
 public enum WarehouseStatus {
-	ACTIVE("Active"), NOTACTIVE("Not Active");
+	ACTIVE("Active"),
+	NOTACTIVE("Not Active");
 
 	private final String value;
 

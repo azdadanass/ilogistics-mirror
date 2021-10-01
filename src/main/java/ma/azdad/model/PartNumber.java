@@ -413,7 +413,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public PartNumberStatus getStatus() {
 		return status;
 	}
@@ -423,7 +423,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public PartNumberState getState() {
 		return state;
 	}

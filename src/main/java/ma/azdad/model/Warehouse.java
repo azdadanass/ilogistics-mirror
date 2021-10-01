@@ -209,7 +209,7 @@ public class Warehouse extends GenericPlace implements Serializable {
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public WarehouseStatus getStatus() {
 		return status;
 	}

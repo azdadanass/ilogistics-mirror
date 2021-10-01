@@ -677,7 +677,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public DeliveryRequestType getType() {
 		return type;
 	}
@@ -731,7 +731,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public Priority getPriority() {
 		return priority;
 	}
@@ -1251,7 +1251,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		this.rejectionReason = rejectionReason;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public DeliverToType getDeliverToType() {
 		return deliverToType;
 	}
@@ -1501,7 +1501,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		this.outboundDeliveryRequestTransfer = outboundDeliveryRequestTransfer;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public InboundType getInboundType() {
 		return inboundType;
 	}

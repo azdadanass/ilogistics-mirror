@@ -1,7 +1,8 @@
 package ma.azdad.model;
 
 public enum TransporterType {
-	SUPPLIER("Supplier", "blue"), PRIVATE("Private", "red");
+	SUPPLIER("Supplier", "blue"),
+	PRIVATE("Private", "red");
 
 	private final String value;
 	private final String color;

@@ -310,7 +310,7 @@ public class JobRequest extends GenericModel<Integer> implements Serializable {
 		return "JR" + getIdStr();
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public JobRequestStatus getStatus() {
 		return status;
@@ -328,7 +328,7 @@ public class JobRequest extends GenericModel<Integer> implements Serializable {
 		this.important = important;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public Priority getPriority() {
 		return priority;
 	}

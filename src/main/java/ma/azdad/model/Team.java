@@ -132,7 +132,7 @@ public class Team extends GenericModel<Integer> implements Serializable {
 		this.comment = comment;
 	}
 
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public TeamCategory getCategory() {
 		return category;
 	}

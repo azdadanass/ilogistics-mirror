@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -147,7 +148,7 @@ public class Po implements Serializable {
 		this.status = status;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public PoDeliveryStatus getDeliveryStatus() {
 		return deliveryStatus;
 	}

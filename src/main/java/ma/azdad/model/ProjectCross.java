@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -165,7 +166,7 @@ public class ProjectCross implements Serializable {
 		this.deliveryRequest = deliveryRequest;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public ProjectCrossCategory getCategory() {
 		return category;
 	}

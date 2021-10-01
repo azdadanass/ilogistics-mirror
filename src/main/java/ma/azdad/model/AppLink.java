@@ -132,7 +132,7 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Column(name = "cost_type", nullable = true)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public CostType getCostType() {
 		return costType;
 	}
@@ -181,7 +181,7 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 		return expensepaymentId;
 	}
 
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	public RevenueType getRevenueType() {
 		return revenueType;
 	}

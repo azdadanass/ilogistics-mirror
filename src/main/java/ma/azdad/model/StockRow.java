@@ -394,7 +394,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Column(nullable = true)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public StockRowStatus getStatus() {
 		return status;
 	}

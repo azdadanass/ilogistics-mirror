@@ -1,8 +1,9 @@
 package ma.azdad.model;
 
 public enum PartNumberStatus {
-	ACTIVE("Active"), OBSOLETE("Obsolete");
-	
+	ACTIVE("Active"),
+	OBSOLETE("Obsolete");
+
 	private final String value;
 
 	private PartNumberStatus(String value) {

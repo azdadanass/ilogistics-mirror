@@ -125,7 +125,7 @@ public class Podetails implements Serializable {
 	}
 
 	@Column(name = "revenue_type", nullable = true)
-	@Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.STRING)
 	public RevenueType getRevenueType() {
 		return revenueType;
 	}

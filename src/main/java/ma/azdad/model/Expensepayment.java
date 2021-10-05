@@ -27,8 +27,7 @@ public class Expensepayment implements Serializable {
 	private Double quantity;
 	private Double totalCost;
 	private String status;
-	private User internalBeneficiary;
-	private MyhrExternalResource externalBeneficiary;
+	private User user;
 	private Budgetdetail budgetdetail;
 
 	public Expensepayment() {
@@ -36,7 +35,7 @@ public class Expensepayment implements Serializable {
 
 	@Transient
 	public String getBeneficiaryFullName() {
-		return internalBeneficiary != null ? internalBeneficiary.getFullName() : externalBeneficiary != null ? externalBeneficiary.getFullName() : null;
+		return user!=null?user.getFullName():null;
 	}
 
 	@Transient
@@ -66,23 +65,13 @@ public class Expensepayment implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "internal_beneficiary_username", nullable = true)
-	public User getInternalBeneficiary() {
-		return internalBeneficiary;
+	@JoinColumn(name = "user_username", nullable = true)
+	public User getUser() {
+		return user;
 	}
 
-	public void setInternalBeneficiary(User internalBeneficiary) {
-		this.internalBeneficiary = internalBeneficiary;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "external_beneficiary_id", nullable = true)
-	public MyhrExternalResource getExternalBeneficiary() {
-		return externalBeneficiary;
-	}
-
-	public void setExternalBeneficiary(MyhrExternalResource externalBeneficiary) {
-		this.externalBeneficiary = externalBeneficiary;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@Temporal(TemporalType.DATE)

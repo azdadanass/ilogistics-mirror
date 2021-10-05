@@ -18,8 +18,7 @@ public class ExpensepaymentService {
 
 	public Expensepayment findOne(Integer id) {
 		Expensepayment expensepayment = expensepaymentRepos.findById(id).get();
-		Hibernate.initialize(expensepayment.getInternalBeneficiary());
-		Hibernate.initialize(expensepayment.getExternalBeneficiary());
+		Hibernate.initialize(expensepayment.getUser());
 		Hibernate.initialize(expensepayment.getBudgetdetail());
 		if (expensepayment.getBudgetdetail() != null)
 			Hibernate.initialize(expensepayment.getBudgetdetail().getBudget());

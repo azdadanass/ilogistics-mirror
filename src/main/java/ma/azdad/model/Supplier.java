@@ -22,7 +22,7 @@ public class Supplier implements Serializable {
 	private String email;
 	private String phone;
 
-	private List<Brand> brandList = new ArrayList<Brand>();
+	private List<PartNumberBrand> brandList = new ArrayList<PartNumberBrand>();
 
 	public Supplier() {
 	}
@@ -92,11 +92,11 @@ public class Supplier implements Serializable {
 	}
 
 	@ManyToMany(mappedBy = "supplierList", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	public List<Brand> getBrandList() {
+	public List<PartNumberBrand> getBrandList() {
 		return brandList;
 	}
 
-	public void setBrandList(List<Brand> brandList) {
+	public void setBrandList(List<PartNumberBrand> brandList) {
 		this.brandList = brandList;
 	}
 

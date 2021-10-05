@@ -7,18 +7,18 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.Brand;
+import ma.azdad.model.PartNumberBrand;
 import ma.azdad.repos.BrandRepos;
 
 @Component
-public class BrandService extends GenericService<Integer, Brand, BrandRepos> {
+public class BrandService extends GenericService<Integer, PartNumberBrand, BrandRepos> {
 
 	@Autowired
 	BrandRepos brandRepos;
 
 	@Override
-	public Brand findOne(Integer id) {
-		Brand brand = super.findOne(id);
+	public PartNumberBrand findOne(Integer id) {
+		PartNumberBrand brand = super.findOne(id);
 		Hibernate.initialize(brand.getSupplierList());
 		return brand;
 	}
@@ -31,7 +31,7 @@ public class BrandService extends GenericService<Integer, Brand, BrandRepos> {
 		return brandRepos.findNameList();
 	}
 
-	public Brand findByName(String name) {
+	public PartNumberBrand findByName(String name) {
 		return brandRepos.findByName(name);
 	}
 }

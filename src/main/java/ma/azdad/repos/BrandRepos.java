@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import ma.azdad.model.Brand;
+import ma.azdad.model.PartNumberBrand;
 
 @Repository
-public interface BrandRepos extends JpaRepository<Brand, Integer> {
+public interface BrandRepos extends JpaRepository<PartNumberBrand, Integer> {
 
 	public Long countByName(String name);
 
@@ -19,5 +19,5 @@ public interface BrandRepos extends JpaRepository<Brand, Integer> {
 	@Query("select distinct name from Brand")
 	List<String> findNameList();
 
-	Brand findByName(String name);
+	PartNumberBrand findByName(String name);
 }

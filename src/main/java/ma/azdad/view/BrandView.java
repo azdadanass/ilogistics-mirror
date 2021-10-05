@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.Brand;
+import ma.azdad.model.PartNumberBrand;
 import ma.azdad.model.Supplier;
 import ma.azdad.repos.BrandRepos;
 import ma.azdad.service.BrandService;
@@ -24,7 +24,7 @@ import ma.azdad.utils.FacesContextMessages;
 @ManagedBean
 @Component
 @Scope("view")
-public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandService> {
+public class BrandView extends GenericView<Integer, PartNumberBrand, BrandRepos, BrandService> {
 
 	@Autowired
 	private SessionView sessionView;
@@ -41,7 +41,7 @@ public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandServ
 	@Autowired
 	private SupplierService supplierService;
 
-	private Brand brand = new Brand();
+	private PartNumberBrand brand = new PartNumberBrand();
 
 	List<Supplier> source;
 	List<Supplier> target;
@@ -164,16 +164,16 @@ public class BrandView extends GenericView<Integer, Brand, BrandRepos, BrandServ
 	}
 
 	// GENERIC
-	public List<Brand> findAll() {
+	public List<PartNumberBrand> findAll() {
 		return brandService.findAll();
 	}
 
 	// GETTERS & SETTERS
-	public Brand getBrand() {
+	public PartNumberBrand getBrand() {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
+	public void setBrand(PartNumberBrand brand) {
 		this.brand = brand;
 	}
 

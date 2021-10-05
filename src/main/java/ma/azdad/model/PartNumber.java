@@ -57,7 +57,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private Boolean hasPacking = false;
 
 	private User user;
-	private Brand brand;
+	private PartNumberBrand brand;
 	private PartNumberType partNumberType;
 	private PartNumberOrange partNumberOrange;
 
@@ -539,11 +539,11 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	public Brand getBrand() {
+	public PartNumberBrand getBrand() {
 		return brand;
 	}
 
-	public void setBrand(Brand brand) {
+	public void setBrand(PartNumberBrand brand) {
 		this.brand = brand;
 	}
 

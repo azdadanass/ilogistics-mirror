@@ -16,9 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "il_brand")
-
-public class Brand extends GenericModel<Integer> implements Serializable {
+public class PartNumberBrand extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private String description;

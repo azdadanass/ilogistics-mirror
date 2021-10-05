@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberBrand;
-import ma.azdad.repos.BrandRepos;
+import ma.azdad.repos.PartNumberBrandRepos;
 
 @Component
-public class BrandService extends GenericService<Integer, PartNumberBrand, BrandRepos> {
+public class PartNumberBrandService extends GenericService<Integer, PartNumberBrand, PartNumberBrandRepos> {
 
 	@Autowired
-	BrandRepos brandRepos;
+	PartNumberBrandRepos brandRepos;
 
 	@Override
 	public PartNumberBrand findOne(Integer id) {

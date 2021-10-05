@@ -25,7 +25,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{brandView.id == null?'Add New':'Edit'} Brand" />
+				<h:outputText value="#{partNumberBrandView.id == null?'Add New':'Edit'} Brand" />
 			</li>
 		</ul>
 	</ui:define>
@@ -34,8 +34,8 @@
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
-					<i class="ace-icon fa #{brandView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{brandView.id == null?'Add New':'Edit'} Brand" />
+					<i class="ace-icon fa #{partNumberBrandView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+					<h:outputText value=" #{partNumberBrandView.id == null?'Add New':'Edit'} Brand" />
 				</h1>
 			</div>
 			<div class="row">
@@ -56,7 +56,7 @@
 							<h:outputText value="Back" />
 						</h:outputLink>
 
-						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{brandView.saveBrand()}" update="messages" title="Save">
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{partNumberBrandView.saveBrand()}" update="messages" title="Save">
 							<i class="ace-icon fa fa-save bigger-230"></i>
 							<h:outputText value="Save" />
 						</p:commandLink>
@@ -80,7 +80,7 @@
 											<h:outputText value="Name" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputText value="#{brandView.brand.name}" required="true" requiredMessage="Name should not be null" />
+											<p:inputText value="#{partNumberBrandView.brand.name}" required="true" requiredMessage="Name should not be null" />
 										</div>
 									</div>
 								</div>
@@ -93,7 +93,7 @@
 											<h:outputText value="Company Name" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputText value="#{brandView.brand.company}" required="true" requiredMessage="Company should not be null" />
+											<p:inputText value="#{partNumberBrandView.brand.company}" required="true" requiredMessage="Company should not be null" />
 										</div>
 									</div>
 								</div>
@@ -103,7 +103,7 @@
 											<h:outputText value="Website" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputText value="#{brandView.brand.website}" required="true" requiredMessage="Website should not be null" />
+											<p:inputText value="#{partNumberBrandView.brand.website}" required="true" requiredMessage="Website should not be null" />
 										</div>
 									</div>
 								</div>
@@ -112,7 +112,7 @@
 							<h4 class="header blue bolder smaller">
 								<h:outputText value="Suppliers" />
 							</h4>
-							<p:pickList value="#{brandView.supplierDualList}" var="item" itemValue="#{item}" responsive="true" itemLabel="#{item.name}" showCheckbox="true" showSourceFilter="true" showTargetFilter="true"
+							<p:pickList value="#{partNumberBrandView.supplierDualList}" var="item" itemValue="#{item}" responsive="true" itemLabel="#{item.name}" showCheckbox="true" showSourceFilter="true" showTargetFilter="true"
 								filterMatchMode="contains" converter="#{genericSecuredConverter}" style="margin-left:10%">
 								<f:facet name="sourceCaption">
 									<h:outputText value="Source" />
@@ -129,7 +129,7 @@
 								<h:outputText value="Description" />
 							</h4>
 							<div class="row center">
-								<p:inputTextarea value="#{brandView.brand.description}" style="width: 90%" />
+								<p:inputTextarea value="#{partNumberBrandView.brand.description}" style="width: 90%" />
 							</div>
 							<div class="space-16" />
 						</div>

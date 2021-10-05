@@ -16,21 +16,21 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberBrand;
 import ma.azdad.model.Supplier;
-import ma.azdad.repos.BrandRepos;
-import ma.azdad.service.BrandService;
+import ma.azdad.repos.PartNumberBrandRepos;
+import ma.azdad.service.PartNumberBrandService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
 @Scope("view")
-public class BrandView extends GenericView<Integer, PartNumberBrand, BrandRepos, BrandService> {
+public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, PartNumberBrandRepos, PartNumberBrandService> {
 
 	@Autowired
 	private SessionView sessionView;
 
 	@Autowired
-	private BrandService brandService;
+	private PartNumberBrandService brandService;
 
 	@Autowired
 	private CacheView cacheView;

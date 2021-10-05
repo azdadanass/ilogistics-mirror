@@ -39,7 +39,7 @@
 								<i class="ace-icon fa fa-home bigger-230"></i>
 								<h:outputText value="Home" />
 							</h:outputLink>
-							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Brand" value="#{brandView.addEditPage}" rendered="#{brandView.canSaveBrand()}">
+							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Brand" value="#{partNumberBrandView.addEditPage}" rendered="#{partNumberBrandView.canSaveBrand()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
@@ -51,7 +51,7 @@
 						<div class="col-sm-5  hidden-xs infobox-container">
 							<span class="btn btn-app btn-sm btn-warning no-hover">
 								<span class="line-height-1 bigger-170">
-									<h:outputText value="#{brandView.rowsNumber}" />
+									<h:outputText value="#{partNumberBrandView.rowsNumber}" />
 								</span>
 								<br />
 								<span class="line-height-1 smaller-90">
@@ -82,7 +82,7 @@
 						<div class="col-sm-2 col-xs-4">
 							<div class="nav-search minimized">
 								<span class="input-icon">
-									<p:inputText value="#{brandView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+									<p:inputText value="#{partNumberBrandView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 										<p:ajax event="keyup" update="main_tab,widgetPanel" />
 									</p:inputText>
 									<i class="ace-icon fa fa-search nav-search-icon" />
@@ -91,7 +91,7 @@
 						</div>
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
-						<p:dataTable value="#{brandView.list2}" filteredValue="#{brandView.list3}" rowKey="#{item.id}" selection="#{brandView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
+						<p:dataTable value="#{partNumberBrandView.list2}" filteredValue="#{partNumberBrandView.list3}" rowKey="#{item.id}" selection="#{partNumberBrandView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="20"
 							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
@@ -108,7 +108,7 @@
 							</p:column>
 							<p:column headerText="Actions" width="150" exportable="false">
 								<div class="action-buttons center">
-									<h:outputLink value="#{brandView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+									<h:outputLink value="#{partNumberBrandView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 										<f:param name="id" value="#{item.id}" />
 									</h:outputLink>

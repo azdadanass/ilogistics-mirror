@@ -18,7 +18,7 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{brandView.deleteBrand()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+				<p:commandButton action="#{partNumberBrandView.deleteBrand()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
 			</div>
 		</p:dialog>
 	</h:form>
@@ -38,7 +38,7 @@
 			<div class="modal-body">
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
-						<p:fileUpload fileUploadListener="#{brandView.uploadImage}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="false" update="messages,:main_form:image" sizeLimit="20000000"
+						<p:fileUpload fileUploadListener="#{partNumberBrandView.uploadImage}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="false" update="messages,:main_form:image" sizeLimit="20000000"
 							fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="margin: auto;width: 80%">
 						</p:fileUpload>
 						<p:growl id="messages" showDetail="true" />

@@ -45,7 +45,7 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	protected PartNumberCategoryService partNumberCategoryService;
 
 	@Autowired
-	BrandService brandService;
+	PartNumberBrandService brandService;
 
 	public List<PartNumber> find(Boolean all, String username) {
 		if (all)

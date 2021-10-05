@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ma.azdad</groupId>
-	<artifactId>ilogisticsorange</artifactId>
+	<artifactId>ilogistics</artifactId>
 	<version>1.0</version>
-	<name>ilogisticsorange</name>
+	<name>ilogistics</name>
 	<dependencies>
 		<dependency>
 			<groupId>ma.azdad</groupId>

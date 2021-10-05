@@ -3,7 +3,7 @@
     
     
     
-    <wb-module deploy-name="ilogisticsorange-1.0">
+    <wb-module deploy-name="ilogistics-1.0">
                                         
         
         
@@ -32,11 +32,7 @@
         
         
         <property name="java-output-path" value="/SpringBootBase/src/main/webapp/WEB-INF/classes"/>
-                                        
-        
-        
-        
-        <property name="context-root" value="ilogisticsorange"/>
+        <property name="context-root" value="ilogistics"/>
                                     
     
     

@@ -41,7 +41,7 @@
 			<div class="navbar-header pull-left">
 				<a href="#" class="navbar-brand">
 					<small>
-						<i> <h:graphicImage value="/resources/img/ilogistics.png" width="200" height="200" style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
+						<i> <h:graphicImage value="/resources/img/logo-#{erpView.erp}.png" width="200" height="200" style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
 						</i>
 					</small>
 				</a>
@@ -81,11 +81,22 @@
 										<h:outputText value="#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}" styleClass="bolder red" />
 										<div class="space"></div>
 										<div class="clearfix">
-											<p:commandButton value="Login" type="submit" class="width-35 pull-right btn btn-sm btn-primary"  onclick="login();;" icon="ace-icon fa fa-key" 
-											 rendered="#{erpView.gcom}"/>
-											 
-											 <p:commandButton value="Login" type="submit" class="width-35 pull-right btn btn-sm btn-warning"  onclick="login();;" icon="ace-icon fa fa-key" 
-											 rendered="#{erpView.orange}"/>
+											<f:subview rendered="#{erpView.gcom}">
+												<button type="submit" class="width-35 pull-right btn btn-sm btn-primary" onclick="login();;">
+													<span class="ui-button-text">
+														<i class="ace-icon fa fa-key"></i>
+														<h:outputText value=" Login" />
+													</span>
+												</button>
+											</f:subview>
+											<f:subview rendered="#{erpView.orange}">
+												<button type="submit" class="width-35 pull-right btn btn-sm btn-warning" onclick="login();;">
+													<span class="ui-button-text">
+														<i class="ace-icon fa fa-key"></i>
+														<h:outputText value=" Login" />
+													</span>
+												</button>
+											</f:subview>
 										</div>
 										<div class="space-4"></div>
 									</fieldset>

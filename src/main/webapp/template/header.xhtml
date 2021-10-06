@@ -19,7 +19,7 @@
 					<a href="index.xhtml" class="navbar-brand">
 						<small>
 							<i>
-								<h:graphicImage value="/resources/img/ilogistics.png" width="200" height="200" style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
+								<h:graphicImage value="/resources/img/logo-#{erpView.erp}.png" width="200" height="200" style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
 							</i>
 						</small>
 					</a>
@@ -332,7 +332,7 @@
 								</f:subview>
 							</ul>
 						</li>
-						<li class="light-blue">
+						<li class="#{erpView.erp('light-blue','light-orange','light-green')}">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 								<p:graphicImage value="#{fileUploadView.stream}" styleClass="nav-user-photo">
 									<f:param name="fileName" value="#{sessionView.user.photo}" />
@@ -341,25 +341,30 @@
 									<small>
 										<h:outputText value="Welcome," />
 									</small>
-									<h:outputText value="#{sessionView.fullName}" />
+									<h:outputText value="#{sessionView.user.fullName}" />
 								</span>
-
 								<i class="ace-icon fa fa-caret-down"></i>
 							</a>
-
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 								<li>
-									<a href="https://apps.orange.telodigital.com/index.xhtml">
+									<h:outputLink value="http://apps.3gcominside.com" rendered="#{erpView.gcom}">
 										<i class="ace-icon fa fa-home blue"></i>
 										<h:outputText value="Home" />
-									</a>
+									</h:outputLink>
+									<h:outputLink value="https://apps.orange.telodigital.com" rendered="#{erpView.orange}">
+										<i class="ace-icon fa fa-home blue"></i>
+										<h:outputText value="Home" />
+									</h:outputLink>
 								</li>
-
 								<li>
-									<a href="mailto:system.orange@telodigital.com">
+									<h:outputLink value="mailto:system@3gcom-int.com" rendered="#{erpView.gcom}">
 										<i class="ace-icon fa fa-envelope orange"></i>
 										<h:outputText value="Send Mail To Support" />
-									</a>
+									</h:outputLink>
+									<h:outputLink value="mailto:system.orange@telodigital.com" rendered="#{erpView.orange}">
+										<i class="ace-icon fa fa-envelope orange"></i>
+										<h:outputText value="Send Mail To Support" />
+									</h:outputLink>
 								</li>
 								<li>
 									<p:commandLink onclick="PF('changePasswordDlg').show()">

@@ -59,6 +59,7 @@ import ma.azdad.repos.AppLinkRepos;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
 import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
+import ma.azdad.utils.App;
 
 @Component
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
@@ -281,8 +282,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 
 		Div qrDiv = (Div) new Div().setStyle("text-align:center;margin:20px 0px 10px 0px");
-		A qrA = (A) new A("https://qr.orange.telodigital.com//dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("text-align:right;margin:20px 0px 10px 0px;");
-		Img qrImg = (Img) new Img("https://qr.orange.telodigital.com//img/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("width:100px;height:100px");
+		A qrA = (A) new A(App.QR.getLink() + "//dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("text-align:right;margin:20px 0px 10px 0px;");
+		Img qrImg = (Img) new Img(App.QR.getLink() + "//img/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey()).setStyle("width:100px;height:100px");
 		qrImg.setWidth("100");
 		qrImg.setHeight("100");
 		qrA.addElement(qrImg);
@@ -602,7 +603,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			document.add(paragraph);
 
 			// qrcode Cell
-			BarcodeQRCode barcodeQrcode = new BarcodeQRCode("https://qr.orange.telodigital.com/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
+			BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
 			Image qrcodeImage = barcodeQrcode.getImage();
 			qrcodeImage.scaleToFit(95, 95);
 			// qrcodeImage.scalePercent(100);

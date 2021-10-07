@@ -347,21 +347,14 @@
 							</a>
 							<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 								<li>
-									<h:outputLink value="http://apps.3gcominside.com" rendered="#{erpView.gcom}">
-										<i class="ace-icon fa fa-home blue"></i>
-										<h:outputText value="Home" />
-									</h:outputLink>
-									<h:outputLink value="https://apps.orange.telodigital.com" rendered="#{erpView.orange}">
+									<p:importEnum type="ma.azdad.utils.App" var="App" />
+									<h:outputLink value="#{App.APPS.link}">
 										<i class="ace-icon fa fa-home blue"></i>
 										<h:outputText value="Home" />
 									</h:outputLink>
 								</li>
 								<li>
-									<h:outputLink value="mailto:system@3gcom-int.com" rendered="#{erpView.gcom}">
-										<i class="ace-icon fa fa-envelope orange"></i>
-										<h:outputText value="Send Mail To Support" />
-									</h:outputLink>
-									<h:outputLink value="mailto:system.orange@telodigital.com" rendered="#{erpView.orange}">
+									<h:outputLink value="mailto:#{App.SYSTEM_MAIL.link}">
 										<i class="ace-icon fa fa-envelope orange"></i>
 										<h:outputText value="Send Mail To Support" />
 									</h:outputLink>

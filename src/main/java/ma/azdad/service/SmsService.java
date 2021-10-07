@@ -19,7 +19,7 @@ public class SmsService {
 
 	@Async
 	public void sendSms(String numero, String message) {
-		String url = App.UTILS.getHttpLink() + "/sendSms";
+		String url = App.UTILS.getLink() + "/sendSms";
 		HashMap<String, String> params = new HashMap<>();
 		params.put("numero", numero);
 		params.put("message", message);

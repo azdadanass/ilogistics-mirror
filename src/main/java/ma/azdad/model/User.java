@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 
 @Entity
 @Table(name = "users")
@@ -163,7 +164,7 @@ public class User extends GenericModel<String> {
 
 	@Transient
 	public String getPublicPhoto() {
-		return "https://iadmin.orange.telodigital.com/photos/" + photo;
+		return App.IADMIN.getLink() + "/photos/" + photo;
 	}
 
 	@Transient

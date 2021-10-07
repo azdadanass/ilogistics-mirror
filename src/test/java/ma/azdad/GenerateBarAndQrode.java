@@ -31,6 +31,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 
 public class GenerateBarAndQrode {
 
@@ -54,7 +55,7 @@ public class GenerateBarAndQrode {
 		document.open();
 
 		// qrcode Cell
-		BarcodeQRCode barcodeQrcode = new BarcodeQRCode("https://qr.orange.telodigital.com/45496/dfcae9a98d1db2ca389ed075a70494d5", 300, 300, null);
+		BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/45496/dfcae9a98d1db2ca389ed075a70494d5", 300, 300, null);
 		Image qrcodeImage = barcodeQrcode.getImage();
 		qrcodeImage.scaleToFit(100, 100);
 		cell1 = new PdfPCell();

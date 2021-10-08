@@ -171,10 +171,11 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 	}
 
 	public void handlePhotoUpload(FileUploadEvent event) throws IOException {
+		System.out.println("canUploadPhoto");
 		File file = fileUploadView.handlePhotoUpload(event, getClassName2(), 400 * 1024);
 		brand.setImage("files/" + getClassName2() + "/" + file.getName());
-		synchronized (UserView.class) {
-			brand = service.saveAndRefresh(model);
+		synchronized (PartNumberBrandView.class) {
+			brand = service.saveAndRefresh(brand);
 		}
 	}
 

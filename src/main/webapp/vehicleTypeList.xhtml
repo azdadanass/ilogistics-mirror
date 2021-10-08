@@ -107,8 +107,8 @@
 							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
 
 
-							<p:column headerText="Numero" sortBy="#{item.numero}">
-								<h:outputText value="#{item.numero}" styleClass="bolder purple" />
+							<p:column headerText="Numero" sortBy="#{item.idStr}">
+								<h:outputText value="#{item.idStr}" styleClass="bolder purple" />
 							</p:column>
 
 							<p:column headerText="Name">

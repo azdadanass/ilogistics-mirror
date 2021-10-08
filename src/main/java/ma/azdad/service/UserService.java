@@ -305,4 +305,9 @@ public class UserService {
 		return false;
 	}
 
+	// external
+	public List<User> findExternalActive() {
+		return repos.findExternalActive();
+	}
+
 }

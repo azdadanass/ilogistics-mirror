@@ -316,6 +316,10 @@ public class UserView {
 		return userService.findLightByCompany(companyId, active);
 	}
 
+	public List<User> findExternalActive() {
+		return userService.findExternalActive();
+	}
+
 	// getters & setters
 
 	public String getToNotifyUserUsername() {

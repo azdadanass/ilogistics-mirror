@@ -152,4 +152,8 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Modifying
 	void updateFailedAttempts(int failAttempts, String login);
 
+	// external
+	@Query("select new User(a.username,a.fullName) from User a where a.internal is false and a.ilogistics is true and a.active is true")
+	public List<User> findExternalActive();
+
 }

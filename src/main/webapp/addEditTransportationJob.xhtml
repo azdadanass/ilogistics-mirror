@@ -112,10 +112,10 @@
 											<h:outputText value="Driver " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="driver" value="#{transportationJobView.transportationJob.driverId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Driver should not be null"
+											<p:selectOneMenu id="driver" value="#{transportationJobView.transportationJob.driverUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Driver should not be null"
 												styleClass="col-xs-12 col-sm-6">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{userView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.id}" />
+												<f:selectItems value="#{userView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 											</p:selectOneMenu>
 										</div>
 									</div>

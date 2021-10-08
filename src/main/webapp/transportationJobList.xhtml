@@ -99,8 +99,8 @@
 							widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 
-							<p:column headerText="Numero" sortBy="#{item.numero}">
-								<h:outputText value="#{item.numero}" styleClass="bolder purple" />
+							<p:column headerText="Numero" sortBy="#{item.idStr}">
+								<h:outputText value="#{item.idStr}" styleClass="bolder purple" />
 							</p:column>
 
 							<p:column headerText="Transporter">

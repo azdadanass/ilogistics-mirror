@@ -146,7 +146,7 @@
 											<p:selectOneMenu value="#{partNumberView.partNumber.brand}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}" required="true"
 												requiredMessage="Brand should not be null">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{brandView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												<f:selectItems value="#{partNumberBrandView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</p:selectOneMenu>
 										</div>
 									</div>

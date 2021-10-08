@@ -48,6 +48,13 @@ public class User extends GenericModel<String> {
 	private Integer failedAttempt;
 	private Date lockTime;
 
+	// external systems
+	private Boolean myhr = false;
+	private Boolean mytools = false;
+	private Boolean iexpense = false;
+	private Boolean ilogistics = false;
+	private Boolean sdm = false;
+
 	private UserData userData = new UserData();
 	private CompanyType companyType;
 	private Company company;
@@ -671,6 +678,46 @@ public class User extends GenericModel<String> {
 	@Transient
 	public Boolean isAccountNonLocked() {
 		return this.accountNonLocked;
+	}
+
+	public Boolean getMyhr() {
+		return myhr;
+	}
+
+	public void setMyhr(Boolean myhr) {
+		this.myhr = myhr;
+	}
+
+	public Boolean getMytools() {
+		return mytools;
+	}
+
+	public void setMytools(Boolean mytools) {
+		this.mytools = mytools;
+	}
+
+	public Boolean getIexpense() {
+		return iexpense;
+	}
+
+	public void setIexpense(Boolean iexpense) {
+		this.iexpense = iexpense;
+	}
+
+	public Boolean getIlogistics() {
+		return ilogistics;
+	}
+
+	public void setIlogistics(Boolean ilogistics) {
+		this.ilogistics = ilogistics;
+	}
+
+	public Boolean getSdm() {
+		return sdm;
+	}
+
+	public void setSdm(Boolean sdm) {
+		this.sdm = sdm;
 	}
 
 }

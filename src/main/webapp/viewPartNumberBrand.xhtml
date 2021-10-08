@@ -69,8 +69,8 @@
 					<h:panelGroup id="image">
 						<div class="profile-picture">
 							<p:graphicImage value="#{partNumberBrandView.brand.image}" styleClass="editable img-responsive editable-click editable-empty aa-avatar" onclick="PF('uploadImageDlg').show()"
-								rendered="#{partNumberBrandView.canUploadImage()}" />
-							<p:graphicImage value="#{partNumberBrandView.brand.image}" styleClass="img-responsive aa-avatar" rendered="#{!partNumberBrandView.canUploadImage()}" />
+								rendered="#{partNumberBrandView.canUploadPhoto()}" />
+							<p:graphicImage value="#{partNumberBrandView.brand.image}" styleClass="img-responsive aa-avatar" rendered="#{!partNumberBrandView.canUploadPhoto()}" />
 						</div>
 					</h:panelGroup>
 					<div class="space-4" />

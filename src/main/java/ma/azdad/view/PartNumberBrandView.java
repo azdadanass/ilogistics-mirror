@@ -1,5 +1,7 @@
 package ma.azdad.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -161,6 +163,19 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 		brand.setImage(link);
 		brandService.save(brand);
 		refreshBrand();
+	}
+
+	// photos
+	public Boolean canUploadPhoto() {
+		return sessionView.isAdmin();
+	}
+
+	public void handlePhotoUpload(FileUploadEvent event) throws IOException {
+		File file = fileUploadView.handlePhotoUpload(event, getClassName2(), 400 * 1024);
+		brand.setImage("files/" + getClassName2() + "/" + file.getName());
+		synchronized (UserView.class) {
+			model = service.saveAndRefresh(model);
+		}
 	}
 
 	// GENERIC

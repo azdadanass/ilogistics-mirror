@@ -538,10 +538,10 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputLink value="viewTransportationJob.xhtml" target="blank" rendered="#{sessionView.isTM}">
-												<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.numero}" styleClass="blue" />
+												<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.idStr}" styleClass="blue" />
 												<f:param name="id" value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
 											</h:outputLink>
-											<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.numero}" styleClass="blue" rendered="#{!sessionView.isTM}" />
+											<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.idStr}" styleClass="blue" rendered="#{!sessionView.isTM}" />
 											&nbsp;
 										</div>
 									</div>

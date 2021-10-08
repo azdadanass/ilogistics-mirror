@@ -174,7 +174,7 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 		File file = fileUploadView.handlePhotoUpload(event, getClassName2(), 400 * 1024);
 		brand.setImage("files/" + getClassName2() + "/" + file.getName());
 		synchronized (UserView.class) {
-			model = service.saveAndRefresh(model);
+			brand = service.saveAndRefresh(model);
 		}
 	}
 

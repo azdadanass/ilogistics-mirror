@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.User;
+import ma.azdad.utils.App;
 import ma.azdad.utils.Mail;
 import ma.azdad.utils.TemplateType;
 
@@ -29,6 +30,9 @@ import ma.azdad.utils.TemplateType;
 @Transactional
 public class EmailService {
 	protected final Logger log = LoggerFactory.getLogger(EmailService.class);
+
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
 
 	@Autowired
 	private JavaMailSender mailSender;
@@ -122,7 +126,7 @@ public class EmailService {
 				log.info("\tSubject : " + mail.getSubject());
 				log.info("------------------------------------------------------");
 				MimeMessageHelper message = new MimeMessageHelper(mimeMessage, mail.getMultipart(), "UTF-8");
-				message.setFrom("system.orange@telodigital.com", applicationName + " Orange");
+				message.setFrom(App.SYSTEM_MAIL.getLink(), applicationName + " " + getErpName());
 				message.setTo(mail.getTo());
 				message.setSubject(mail.getSubject());
 				message.setText(mail.getMessage(), true);
@@ -157,6 +161,19 @@ public class EmailService {
 				}
 			}
 		});
+	}
+
+	private String getErpName() {
+		switch (erp) {
+		case "gcom":
+			return "3Gcom";
+		case "orange":
+			return "Orange";
+		case "mise":
+			return "Mise";
+		default:
+			return "";
+		}
 	}
 
 }

@@ -14,11 +14,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Site;
-import ma.azdad.model.SiteType;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.repos.SiteRepos;
@@ -58,7 +58,12 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return site;
 	}
 
+	public Site findOneLazy(Integer id) {
+		return super.findOne(id);
+	}
+
 	@Override
+	@CacheEvict(value = { "siteService.cache1", "siteService.cache2", "siteService.cache3", "siteService.cache4" }, allEntries = true)
 	public Site save(Site a) {
 		Site site = super.save(a);
 		googleGeocodeService.updateGoogleGeocodeDataAsync(site);
@@ -69,16 +74,12 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return siteRepos.findLight();
 	}
 
-	public List<Site> findLightAndHavingWarehouse() {
-		return siteRepos.findLightAndHavingWarehouse();
-	}
-
-	@Cacheable(value = "siteService.findLight")
+	@Cacheable(value = "siteService.cache2")
 	public List<Site> findLight(Integer typeId) {
 		return siteRepos.findLight(typeId);
 	}
 
-	@Cacheable(value = "siteService.findLightMap")
+	@Cacheable(value = "siteService.cache3")
 	public Map<String, List<Site>> findLightMap(Integer typeId) {
 		Map<String, List<Site>> result = new HashMap<String, List<Site>>();
 		for (Site site : siteRepos.findAllCoordinates(typeId)) {
@@ -90,7 +91,7 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return result;
 	}
 
-	@Cacheable(value = "siteService.getNearbySites")
+	@Cacheable(value = "siteService.cache4")
 	public List<String> getNearbySites(Site site) {
 		List<String> result = new ArrayList<>();
 		Map<String, List<Site>> map = findLightMap(site.getType().getId());
@@ -109,6 +110,10 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return siteRepos.findLight(typeId, username);
 	}
 
+	public List<Site> findAllCoordinates(Integer typeId) {
+		return repos.findAllCoordinates(typeId);
+	}
+
 	public List<Site> findLight(String username) {
 		return siteRepos.findLight(username);
 	}
@@ -122,7 +127,11 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return countByName(site.getName(), site.getId()) > 0;
 	}
 
-	@Cacheable(value = "siteService.findAllCoordinates")
+	public Boolean isCodeExists(Site site) {
+		return siteRepos.countByCode(site.getCode(), site.getId()) > 0;
+	}
+
+	@Cacheable(value = "siteService.cache1")
 	public List<Site> findAllCoordinates() {
 		return siteRepos.findAllCoordinates();
 	}
@@ -222,8 +231,6 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 	public void editSiteCoordinates(Integer siteId, Double latitude, Double longitude) {
 		siteRepos.updateLatitude(siteId, latitude);
 		siteRepos.updateLongitude(siteId, longitude);
-		// siteRepos.updateGoogleAddress(siteId,
-		// UtilsFunctions.getGoogleAddress(latitude, longitude));
 		googleGeocodeService.updateGoogleGeocodeDataAsync(findOne(siteId));
 
 		// update Associated TR
@@ -249,13 +256,4 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		for (Site site : list)
 			googleGeocodeService.updateGoogleGeocodeData(site);
 	}
-
-	public void updateName(Integer siteId, String name) {
-		siteRepos.updateName(siteId, name);
-	}
-
-	public void updateType(Integer siteId, SiteType type) {
-		siteRepos.updateType(siteId, type);
-	}
-
 }

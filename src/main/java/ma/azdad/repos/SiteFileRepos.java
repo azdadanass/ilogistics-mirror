@@ -9,4 +9,3 @@ import ma.azdad.model.SiteFile;
 public interface SiteFileRepos extends JpaRepository<SiteFile, Integer> {
 
 }
-

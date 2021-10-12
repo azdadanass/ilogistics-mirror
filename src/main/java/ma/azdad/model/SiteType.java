@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 
@@ -17,6 +18,28 @@ public class SiteType extends GenericModel<Integer> implements Serializable {
 	private String image;
 
 	private SiteCategory category;
+
+	@Override
+	public boolean filter(String query) {
+		boolean result = super.filter(query);
+		if (!result && name != null)
+			result = name.toLowerCase().contains(query);
+		if (!result && category != null)
+			result = category.filter(query);
+		return result;
+	}
+
+	@Transient
+	public String getCategoryName() {
+		return category != null ? category.getName() : null;
+	}
+
+	@Transient
+	public void setCategoryName(String categoryName) {
+		if (category == null)
+			category = new SiteCategory();
+		category.setName(categoryName);
+	}
 
 	public String getName() {
 		return name;

@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,11 +16,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-@Entity
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Site extends GenericPlace implements Serializable {
 
 	private SiteType type;
+	private SiteModel model;
+	private String geographicFile;
+	private String code;
 
 	// Owner
 	private Integer ownerType;
@@ -27,8 +34,8 @@ public class Site extends GenericPlace implements Serializable {
 	private String owner;
 
 	private User user;
-	private Warehouse warehouse;
 	private User contact;
+	private Warehouse warehouse;
 
 	private List<SiteFile> fileList = new ArrayList<>();
 	private List<SiteHistory> historyList = new ArrayList<>();
@@ -36,6 +43,7 @@ public class Site extends GenericPlace implements Serializable {
 	// TMP
 	private Integer customerId;
 	private Integer supplierId;
+	private String contactUsername;
 
 	// PERFORMANCE
 	private String customerName;
@@ -55,6 +63,8 @@ public class Site extends GenericPlace implements Serializable {
 		if (owner != null)
 			ownerType = 2;
 
+		if (contact != null)
+			contactUsername = contact.getUsername();
 	}
 
 	public Site(String name, Double latitude, Double longitude, String address1, String address2, String address3, String phone, String fax, SiteType type, Integer ownerType, Customer customer, Supplier supplier, String owner, User user) {
@@ -75,9 +85,11 @@ public class Site extends GenericPlace implements Serializable {
 		super(id, name, latitude, longitude);
 	}
 
-	public Site(Integer id, String name, Double latitude, Double longitude, SiteType type, User user, String customerName, String supplierName, String owner) {
+	public Site(Integer id, String name, SiteModel model, Double latitude, Double longitude, SiteType type, User user, String googleAddress, String customerName, String supplierName, String owner) {
 		super(id, name, latitude, longitude);
+		this.model = model;
 		this.type = type;
+		this.googleAddress = googleAddress;
 		this.user = user;
 		this.customerName = customerName;
 		this.supplierName = supplierName;
@@ -86,6 +98,7 @@ public class Site extends GenericPlace implements Serializable {
 
 	public Site(Integer id, String name, Double latitude, Double longitude, Integer customerId, Integer supplierId, String owner) {
 		super(id, name, latitude, longitude);
+
 		this.customerId = customerId;
 		this.supplierId = supplierId;
 		this.owner = owner;
@@ -93,6 +106,50 @@ public class Site extends GenericPlace implements Serializable {
 
 	public Site() {
 		super();
+	}
+
+	@Transient
+	public String getCategoryName() {
+		return type != null ? type.getCategoryName() : null;
+	}
+
+	@Transient
+	public void setCategoryName(String categoryName) {
+		if (type == null)
+			type = new SiteType();
+		type.setCategoryName(categoryName);
+	}
+
+	@Transient
+	public String getTypeName() {
+		return type != null ? type.getName() : null;
+	}
+
+	@Transient
+	public void setTypeName(String typeName) {
+		if (type == null)
+			type = new SiteType();
+		type.setName(typeName);
+	}
+
+	@Transient
+	public Boolean getIsPoint() {
+		return SiteModel.POINT.equals(model);
+	}
+
+	@Transient
+	public Boolean getIsZone() {
+		return SiteModel.ZONE.equals(model);
+	}
+
+	@Transient
+	public String getPublicGeographicFileUrl() {
+		return "https://sdm.orange.telodigital.com/rest/file?link=" + geographicFile;
+	}
+
+	@Transient
+	public String getPublicGeographicFilePreviewUrl() {
+		return "https://sdm.orange.telodigital.com/rest/file/txt?link=" + geographicFile;
 	}
 
 	@Transient
@@ -113,6 +170,15 @@ public class Site extends GenericPlace implements Serializable {
 	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
+		if (!result && name != null)
+			result = name.toLowerCase().contains(query);
+		if (!result && name != null)
+			result = user.getFullName().toLowerCase().contains(query);
+		if (!result && getOwnerName() != null)
+			result = getOwnerName().toLowerCase().contains(query);
+		if (!result && type != null)
+			result = type.filter(query);
+
 		return result;
 	}
 
@@ -178,7 +244,16 @@ public class Site extends GenericPlace implements Serializable {
 		this.user = user;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public User getContact() {
+		return contact;
+	}
+
+	public void setContact(User contact) {
+		this.contact = contact;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Warehouse getWarehouse() {
 		return warehouse;
 	}
@@ -219,14 +294,12 @@ public class Site extends GenericPlace implements Serializable {
 
 	@Transient
 	public String getContactUsername() {
-		return contact == null ? null : contact.getUsername();
+		return contactUsername;
 	}
 
 	@Transient
 	public void setContactUsername(String contactUsername) {
-		if (contact == null || !contactUsername.equals(contact.getUsername()))
-			contact = new User();
-		contact.setUsername(contactUsername);
+		this.contactUsername = contactUsername;
 	}
 
 	@Transient
@@ -239,18 +312,34 @@ public class Site extends GenericPlace implements Serializable {
 		return supplierName;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	public User getContact() {
-		return contact;
-	}
-
-	public void setContact(User contact) {
-		this.contact = contact;
-	}
-
 	@Override
 	public String toString() {
 		return "Site [name=" + name + "]";
+	}
+
+	@Enumerated(EnumType.STRING)
+	public SiteModel getModel() {
+		return model;
+	}
+
+	public void setModel(SiteModel model) {
+		this.model = model;
+	}
+
+	public String getGeographicFile() {
+		return geographicFile;
+	}
+
+	public void setGeographicFile(String geographicFile) {
+		this.geographicFile = geographicFile;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	@Id
@@ -262,5 +351,4 @@ public class Site extends GenericPlace implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 }

@@ -30,9 +30,6 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 	@Autowired
 	protected CacheView cacheView;
 
-	@Autowired
-	protected FileUploadView fileUploadView;
-
 	private SiteCategory siteCategory = new SiteCategory();
 
 	private Integer typeId = null;
@@ -57,8 +54,7 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 	}
 
 	@Override
-	public void initParameters() {
-		super.initParameters();
+	protected void initParameters() {
 		try {
 			typeId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("typeId"));
 		} catch (Exception e) {
@@ -122,14 +118,10 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return null;
 			}
-
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public SiteCategoryService getSiteCategoryService() {
 		return siteCategoryService;
@@ -145,14 +137,6 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 
 	public void setSiteCategory(SiteCategory siteCategory) {
 		this.siteCategory = siteCategory;
-	}
-
-	public FileUploadView getFileUploadView() {
-		return fileUploadView;
-	}
-
-	public void setFileUploadView(FileUploadView fileUploadView) {
-		this.fileUploadView = fileUploadView;
 	}
 
 	public Integer getTypeId() {

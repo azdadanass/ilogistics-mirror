@@ -1,19 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -27,7 +23,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -43,16 +38,14 @@
 							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add New Site" value="#{siteView.addEditPage}" rendered="#{siteView.canSaveSite()}">
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
-								<f:param name="typeId" value="#{siteView.typeId}"/>
+								<f:param name="typeId" value="#{siteView.typeId}" />
 							</h:outputLink>
-							
 							<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add From Excel File" value="#{siteView.addEditPage}" rendered="#{siteView.canSaveSite()}">
 								<i class="ace-icon fa fa-file-excel-o bigger-230"></i>
 								<h:outputText value="Add" />
-								<f:param name="typeId" value="#{siteView.typeId}"/>
-								<f:param name="fromExcel" value="true"/>
+								<f:param name="typeId" value="#{siteView.typeId}" />
+								<f:param name="fromExcel" value="true" />
 							</h:outputLink>
-
 							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
@@ -81,7 +74,6 @@
 							<i class="fa fa-list" />
 							<h:outputText value=" Site List" />
 						</div>
-
 						<div class="col-sm-5">
 							<table style="margin-top: 5px">
 								<tr>
@@ -124,34 +116,28 @@
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
 						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
-						<p:dataTable value="#{siteView.list2}" filteredValue="#{siteView.list3}" rowKey="#{item.id}" selection="#{siteView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="60" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-							paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-
+						<p:dataTable value="#{siteView.list2}" filteredValue="#{siteView.list3}" rowKey="#{item.id}" selection="#{siteView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="60"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
-
-
 							<p:column headerText="Name">
 								<h:outputText value="#{item.name}" styleClass="bolder green" />
 							</p:column>
-
-							<p:column headerText="Type">
+							<p:column headerText="Cateogry">
 								<h:outputText value="#{item.type.category.name}" styleClass="light-blue" />
 							</p:column>
-
 							<p:column headerText="Type">
 								<h:outputText value="#{item.type.name}" styleClass="purple" />
 							</p:column>
-
+							<p:column headerText="Model">
+								<h:outputText value="#{item.model.value}" styleClass="#{item.model.color.name}" />
+							</p:column>
 							<p:column headerText="Owner">
 								<h:outputText value="#{item.ownerName}" styleClass="purple" />
 							</p:column>
-
 							<p:column headerText="Created By">
 								<h:outputText value="#{item.user.fullName}" />
 							</p:column>
-
-
-
 							<p:column headerText="Actions" style="width:150px">
 								<div class="action-buttons center">
 									<h:outputLink value="#{siteView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
@@ -160,10 +146,8 @@
 									</h:outputLink>
 								</div>
 							</p:column>
-
 						</p:dataTable>
 					</div>
-
 				</div>
 			</div>
 		</h:form>

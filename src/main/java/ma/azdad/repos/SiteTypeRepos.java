@@ -13,6 +13,4 @@ public interface SiteTypeRepos extends JpaRepository<SiteType, Integer> {
 
 	@Query("from SiteType where category.id = ?1")
 	public List<SiteType> findByCategory(Integer categoryId);
-	
-	
 }

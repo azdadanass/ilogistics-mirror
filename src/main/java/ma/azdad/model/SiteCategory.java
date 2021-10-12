@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
+
 public class SiteCategory extends GenericModel<Integer> implements Serializable {
 
 	private String name;
@@ -28,6 +29,14 @@ public class SiteCategory extends GenericModel<Integer> implements Serializable 
 		super();
 		this.name = name;
 		this.image = image;
+	}
+
+	@Override
+	public boolean filter(String query) {
+		boolean result = super.filter(query);
+		if (!result && name != null)
+			result = name.toLowerCase().contains(query);
+		return result;
 	}
 
 	public String getName() {

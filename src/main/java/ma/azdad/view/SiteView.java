@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.PointSelectEvent;
@@ -20,10 +21,12 @@ import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteCategory;
 import ma.azdad.model.SiteFile;
+import ma.azdad.model.SiteModel;
 import ma.azdad.repos.SiteRepos;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.SiteFileService;
@@ -33,10 +36,12 @@ import ma.azdad.service.SiteTypeService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.GeographicFileParser;
 import ma.azdad.utils.SiteExcelFileException;
 
 @ManagedBean
 @Component
+@Transactional
 @Scope("view")
 public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService> {
 
@@ -64,9 +69,6 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	@Autowired
 	protected FileUploadView fileUploadView;
 
-	@Autowired
-	protected DeliveryRequestView deliveryRequestView;
-
 	private Site site = new Site();
 	private SiteFile siteFile;
 
@@ -89,7 +91,6 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	@PostConstruct
 	public void init() {
 		super.init();
-		initParameters();
 
 		Boolean isEditSiteCoordinatesPage = ("/" + editSiteCoordinatesPage).equals(currentPath);
 
@@ -112,36 +113,29 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	}
 
 	@Override
-	public void initParameters() {
+	protected void initParameters() {
 		super.initParameters();
 		try {
 			typeId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("typeId"));
 		} catch (Exception e) {
 			typeId = null;
 		}
-
 		try {
 			fromExcel = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("fromExcel").equals("true");
 		} catch (Exception e) {
 			fromExcel = false;
 		}
-
 	}
 
 	@Override
 	public void refreshList() {
-		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
-			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
-				list2 = list1 = siteService.findLight();
-			else
-				list2 = list1 = siteService.findLightAndHavingWarehouse();
-		}
-
-		else if (isListPage)
+		if (isListPage) {
 			if (typeId != null)
 				list2 = list1 = filterByUser ? siteService.findLight(typeId, sessionView.getUsername()) : siteService.findLight(typeId);
 			else
 				list2 = list1 = filterByUser ? siteService.findLight(sessionView.getUsername()) : siteService.findLight();
+		} else if ("/addEditPlan.xhtml".equals(currentPath) || "/addEditJobRequest.xhtml".equals(currentPath))
+			list2 = list1 = siteService.findLight();
 
 	}
 
@@ -154,12 +148,17 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	public void refreshMapModel() {
 		mapModel = new DefaultMapModel();
 
-		for (Site site : siteService.findAllCoordinates()) {
+		List<Site> siteList = site.getType() != null ? siteService.findAllCoordinates(site.getType().getId()) : siteService.findAllCoordinates();
+		for (Site site : siteList) {
+			if (site.getLatitude().equals(this.site.getLatitude()) && site.getLongitude().equals(this.site.getLongitude()))
+				continue;
 			Marker marker = new Marker(new LatLng(site.getLatitude(), site.getLongitude()), site.getName());
-			marker.setIcon("https://maps.google.com/mapfiles/ms/micons/blue-dot.png");
+			marker.setIcon("http://maps.google.com/mapfiles/ms/micons/blue-dot.png");
 			mapModel.addOverlay(marker);
 		}
-		mapModel.addOverlay(new Marker(new LatLng(site.getLatitude(), site.getLongitude()), "Marker"));
+
+		if (site.getIsPoint())
+			mapModel.addOverlay(new Marker(new LatLng(site.getLatitude(), site.getLongitude()), site.getName()));
 
 	}
 
@@ -189,17 +188,18 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		case 2:
 			System.err.println("step 2");
 			System.out.println("fromExcel !!!!!!!!!!!!!!! : " + fromExcel);
-			if (!fromExcel) {
-				if (!validateStep2())
-					return null;
-				step++;
-				break;
-			}
-			return addParameters(listPage, "faces-redirect=true", "typeId=" + site.getType().getId());
+			if (fromExcel)
+				return addParameters(listPage, "faces-redirect=true", "typeId=" + site.getType().getId());
+			if (!validateStep2())
+				return null;
+			step++;
+			break;
 		case 3:
 			System.err.println("step 3");
-			// TODO validateStep3 (calculate distance category, type and site
-			// Owner)
+			if (site.getIsZone() && site.getGeographicFile() == null) {
+				FacesContextMessages.ErrorMessages("Please Upload a valid geographic file");
+				return null;
+			}
 			List<String> nearbySites = siteService.getNearbySites(site);
 			if (!ignore && !nearbySites.isEmpty()) {
 				FacesContextMessages.InfoMessages("there are already sites in database with same category,type,owner and almost the same coordinates : ");
@@ -229,6 +229,10 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 			FacesContextMessages.ErrorMessages("Name already exists in database : " + site.getName());
 			return false;
 		}
+
+		site.setCode(UtilsFunctions.cleanString(site.getCode()));
+		if (!StringUtils.isBlank(site.getCode()) && siteService.isCodeExists(site))
+			return FacesContextMessages.ErrorMessages("Code already exists in database : " + site.getCode());
 		return true;
 	}
 
@@ -249,10 +253,10 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	// SAVE SITE
 
 	public Boolean canSaveSite() {
-		if (isListPage || isAddPage || "/addEditDeliveryRequest.xhtml".equals(currentPath))
-			return true;
+		if (isListPage || isAddPage)
+			return sessionView.getIsUser() || sessionView.getIsPM();
 		else if (isViewPage || isEditPage)
-			return false;
+			return sessionView.isTheConnectedUser(site.getUser());
 		return false;
 	}
 
@@ -291,40 +295,9 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		site.setUser(sessionView.getUser());
 	}
 
-	// INPLACE
-	public Boolean canEditInplace() {
-		return sessionView.isTheConnectedUser(site.getUser());
-	}
-
-	public void editInplace() {
-		if (!canEditInplace())
-			return;
-		siteService.save(site);
-	}
-
-	public Boolean canEditSiteName() {
-		return sessionView.isTheConnectedUser(site.getUser());
-	}
-
-	public void editSiteName() {
-		if (!canEditSiteName())
-			return;
-		siteService.updateName(site.getId(), site.getName());
-	}
-
-	public Boolean canEditSiteType() {
-		return sessionView.isTheConnectedUser(site.getUser());
-	}
-
-	public void editSiteType() {
-		if (!canEditSiteType())
-			return;
-		siteService.updateType(site.getId(), site.getType());
-	}
-
 	// EDIT SITE COORDINATES
 	public Boolean canEditSiteCoordinates() {
-		return sessionView.isTheConnectedUser(site.getUser());
+		return sessionView.isTheConnectedUser(site.getUser()) && SiteModel.POINT.equals(site.getModel());
 	}
 
 	public String editSiteCoordinates() {
@@ -344,6 +317,17 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		if (site.getLatitude() > 40.0 || site.getLatitude() < 20.0)
 			return FacesContextMessages.ErrorMessages("Invalid Latitude : " + site.getName());
 		return true;
+	}
+
+	// INPLACE
+	public Boolean canEditInplace() {
+		return sessionView.isTheConnectedUser(site.getUser());
+	}
+
+	public void editInplace() {
+		if (!canEditInplace())
+			return;
+		siteService.save(site);
 	}
 
 	// Upload from Excel File
@@ -383,7 +367,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	// DELETE SITE
 	public Boolean canDeleteSite() {
-		return true;
+		return sessionView.isTheConnectedUser(site.getUser());
 	}
 
 	public String deleteSite() {
@@ -394,7 +378,6 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return null;
 			}
-
 		return listPage;
 	}
 
@@ -405,6 +388,11 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 			FacesContextMessages.ErrorMessages("Name already exists in database : " + site.getName());
 			return false;
 		}
+
+		site.setCode(UtilsFunctions.cleanString(site.getCode()));
+		if (!StringUtils.isBlank(site.getCode()) && siteService.isCodeExists(site))
+			return FacesContextMessages.ErrorMessages("Code already exists in database : " + site.getCode());
+
 		if (site.getLongitude() > 0.0 || site.getLongitude() < -17.0) {
 			FacesContextMessages.ErrorMessages("Invalid Longitude");
 			return false;
@@ -444,15 +432,40 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		site = siteService.findOne(siteId);
 	}
 
+	// upload Geographic File
+
+	public void uploadGeographicFile(FileUploadEvent event) throws IOException {
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
+		try {
+			GeographicFileParser gfp = new GeographicFileParser(file);
+			gfp.parse();
+			ma.azdad.utils.LatLng latLng = gfp.getFirstLatLng();
+			site.setGeographicFile("files/" + getClassName2() + "/" + file.getName());
+			site.setLatitude(latLng.getLat());
+			site.setLongitude(latLng.getLng());
+			printSiteCoordinate();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+			site.setGeographicFile(null);
+			site.setLatitude(null);
+			site.setLongitude(null);
+			e.printStackTrace();
+		}
+
+	}
+
+	public void printSiteCoordinate() {
+		System.out.println(site.getLatitude());
+		System.out.println(site.getLongitude());
+		System.out.println("site.getGeographicFile() : " + site.getGeographicFile());
+	}
+
 	// GENERIC
 	public List<Site> findLight() {
 		return siteService.findLight();
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public SiteService getSiteService() {
 		return siteService;
@@ -468,14 +481,6 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	public void setSite(Site site) {
 		this.site = site;
-	}
-
-	public FileUploadView getFileUploadView() {
-		return fileUploadView;
-	}
-
-	public void setFileUploadView(FileUploadView fileUploadView) {
-		this.fileUploadView = fileUploadView;
 	}
 
 	public SiteFileService getSiteFileService() {

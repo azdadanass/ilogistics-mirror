@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.SiteType;
 import ma.azdad.repos.SiteTypeRepos;
@@ -17,6 +18,7 @@ import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
+@Transactional
 @Scope("view")
 public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, SiteTypeService> {
 
@@ -25,9 +27,6 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 
 	@Autowired
 	protected CacheView cacheView;
-
-	@Autowired
-	protected FileUploadView fileUploadView;
 
 	private SiteType siteType = new SiteType();
 
@@ -49,8 +48,7 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 	}
 
 	@Override
-	public void initParameters() {
-		super.initParameters();
+	protected void initParameters() {
 		try {
 			categoryId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("categoryId"));
 		} catch (Exception e) {
@@ -105,7 +103,6 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return null;
 			}
-
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
@@ -115,9 +112,6 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public SiteTypeService getSiteTypeService() {
 		return siteTypeService;
@@ -133,14 +127,6 @@ public class SiteTypeView extends GenericView<Integer, SiteType, SiteTypeRepos, 
 
 	public void setSiteType(SiteType siteType) {
 		this.siteType = siteType;
-	}
-
-	public FileUploadView getFileUploadView() {
-		return fileUploadView;
-	}
-
-	public void setFileUploadView(FileUploadView fileUploadView) {
-		this.fileUploadView = fileUploadView;
 	}
 
 }

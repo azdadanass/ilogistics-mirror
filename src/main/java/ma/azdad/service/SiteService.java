@@ -256,4 +256,8 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		for (Site site : list)
 			googleGeocodeService.updateGoogleGeocodeData(site);
 	}
+
+	public List<Site> findLightAndHavingWarehouse() {
+		return siteRepos.findLightAndHavingWarehouse();
+	}
 }

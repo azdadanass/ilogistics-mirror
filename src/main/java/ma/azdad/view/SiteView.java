@@ -69,6 +69,9 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	@Autowired
 	protected FileUploadView fileUploadView;
 
+	@Autowired
+	protected DeliveryRequestView deliveryRequestView;
+
 	private Site site = new Site();
 	private SiteFile siteFile;
 
@@ -129,13 +132,18 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	@Override
 	public void refreshList() {
-		if (isListPage) {
+		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
+			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
+				list2 = list1 = siteService.findLight();
+			else
+				list2 = list1 = siteService.findLightAndHavingWarehouse();
+		}
+
+		else if (isListPage)
 			if (typeId != null)
 				list2 = list1 = filterByUser ? siteService.findLight(typeId, sessionView.getUsername()) : siteService.findLight(typeId);
 			else
 				list2 = list1 = filterByUser ? siteService.findLight(sessionView.getUsername()) : siteService.findLight();
-		} else if ("/addEditPlan.xhtml".equals(currentPath) || "/addEditJobRequest.xhtml".equals(currentPath))
-			list2 = list1 = siteService.findLight();
 
 	}
 

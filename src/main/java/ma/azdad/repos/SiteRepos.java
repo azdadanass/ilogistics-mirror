@@ -17,6 +17,9 @@ public interface SiteRepos extends JpaRepository<Site, Integer> {
 	@Query(select1 + "from Site a")
 	public List<Site> findLight();
 
+	@Query(select1 + "from Site a where a.warehouse is not null")
+	public List<Site> findLightAndHavingWarehouse();
+
 	@Query("select new Site(id,name,latitude,longitude) from Site where id in (?1)")
 	public List<Site> findLight(List<Integer> idList);
 

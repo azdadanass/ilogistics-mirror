@@ -55,6 +55,8 @@
 			<p:inputText value="#{scriptView.inboundDeliveryRequestId}" placeholder="inboundDeliveryRequestId" />
 			<p:commandButton action="#{scriptView.generateForOutboundAssociatedWithInbound()}" value="generateForOutboundAssociatedWithInbound" />
 			<br />
+			<p:commandButton action="#{scriptView.sendSimpleMail()}" value="sendSimpleMail" />
+			<br />
 		</h:form>
 	</ui:define>
 </ui:composition>

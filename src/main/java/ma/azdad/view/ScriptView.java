@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.EmailService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
@@ -53,6 +54,9 @@ public class ScriptView {
 	@Autowired
 	DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
 
+	@Autowired
+	EmailService emailService;
+
 	public Boolean canExecute;
 
 	private Integer inboundDeliveryRequestId;
@@ -60,6 +64,10 @@ public class ScriptView {
 	@PostConstruct
 	public void init() {
 		canExecute = "a.azdad".equals(sessionView.getUsername());
+	}
+
+	public void sendSimpleMail() {
+		emailService.sendSimpleMail("a.azdad@3gcom-int.com", "test", "test test");
 	}
 
 	public void fillDestinationProject() {
@@ -122,7 +130,7 @@ public class ScriptView {
 			return;
 		deliveryRequestService.generateQrKeyScript();
 	}
-	
+
 	public void updateIsFullyReturnedForExistingOutbound() {
 		if (!canExecute)
 			return;
@@ -133,7 +141,7 @@ public class ScriptView {
 		deliveryRequestExpiryDateService.generateForOutboundAssociatedWithInbound(inboundDeliveryRequestId);
 	}
 
-	//GETTERS & SETTERS
+	// GETTERS & SETTERS
 	public Integer getInboundDeliveryRequestId() {
 		return inboundDeliveryRequestId;
 	}

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.utils.App;
 import ma.azdad.utils.OldMail;
 import ma.azdad.utils.To;
 
@@ -47,13 +48,16 @@ public class OldEmailService {
 	@Value("${applicationName}")
 	private String applicationName;
 
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
+
 	private OldMail erectMail(String to, Set<String> emailsInCc, String subject, String message) {
 		InternetAddress[] cc = generateInternetAddress(emailsInCc);
 		OldMail mail = new OldMail();
 		mail.setSubject(subject);
 
 		try {
-			mail.setFrom(new InternetAddress("system.orange@telodigital.com", applicationName + " Orange"));
+			mail.setFrom(new InternetAddress(App.SYSTEM_MAIL.getLink(), applicationName + " " + getErpName()));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
@@ -271,5 +275,18 @@ public class OldEmailService {
 	// e.printStackTrace();
 	// }
 	// }
+
+	private String getErpName() {
+		switch (erp) {
+		case "gcom":
+			return "3Gcom";
+		case "orange":
+			return "Orange";
+		case "mise":
+			return "Mise";
+		default:
+			return "";
+		}
+	}
 
 }

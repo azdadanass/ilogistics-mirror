@@ -65,8 +65,6 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		Hibernate.initialize(transportationRequest.getDeliveryRequest().getDetailList());
 		transportationRequest.getDeliveryRequest().getDetailList().forEach(i -> Hibernate.initialize(i.getPacking()));
 		transportationRequest.getDeliveryRequest().getDetailList().forEach(i -> i.getPacking().getDetailList().forEach(j -> Hibernate.initialize(j)));
-		Hibernate.initialize(transportationRequest.getEr1());
-		Hibernate.initialize(transportationRequest.getEr2());
 		Hibernate.initialize(transportationRequest.getContact1());
 		Hibernate.initialize(transportationRequest.getContact2());
 		Hibernate.initialize(transportationRequest.getTransportationJob());

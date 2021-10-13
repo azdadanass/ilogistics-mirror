@@ -221,17 +221,11 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequest.setStatus(TransportationRequestStatus.EDITED);
 		transportationRequest.setDate1(new Date());
 
-		if (ContactType.INTERNAL.equals(transportationRequest.getContactType1())) {
-			transportationRequest.setEr1(null);
-			if (transportationRequest.getContact1Username() != null)
-				transportationRequest.setContact1(userService.findOne(transportationRequest.getContact1Username()));
-		}
+		if (transportationRequest.getContact1Username() != null)
+			transportationRequest.setContact1(userService.findOne(transportationRequest.getContact1Username()));
 
-		if (ContactType.INTERNAL.equals(transportationRequest.getContactType2())) {
-			transportationRequest.setEr2(null);
-			if (transportationRequest.getContact2Username() != null)
-				transportationRequest.setContact2(userService.findOne(transportationRequest.getContact2Username()));
-		}
+		if (transportationRequest.getContact2Username() != null)
+			transportationRequest.setContact2(userService.findOne(transportationRequest.getContact2Username()));
 
 		if (ContactType.EXTERNAL.equals(transportationRequest.getContactType1()))
 			transportationRequest.setContact1(null);
@@ -566,9 +560,6 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public TransportationRequestService getTransportationRequestService() {
 		return transportationRequestService;

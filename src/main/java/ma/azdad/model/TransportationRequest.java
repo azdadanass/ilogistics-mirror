@@ -40,8 +40,6 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private ContactType contactType2;
 	private User contact1;
 	private User contact2;
-	private User er1; // origin external resource
-	private User er2; // destination external resource
 
 	private Double estimatedDuration = 0.0;
 	private String estimatedDurationText;
@@ -84,6 +82,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private String driverUsername;
 	private Integer deliveryRequestId;
 	private String deliveryRequestReference;
+	private DeliveryRequestType deliveryRequestType;
 	private String deliveryRequestSmsRef;
 	private String originName;
 	private String destinationName;
@@ -143,12 +142,20 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.transporterName = transporterName1 != null ? transporterName1 : transporterName2 != null ? transporterName2 : transporterName3 != null ? transporterName3 : transporterName4;
 	}
 
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, DeliveryRequest deliveryRequest, Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String transporterName1, String transporterName2, String transporterName3, String transporterName4, String approverFullName, Double cost,
-			Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus) {
+	// select1
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
+			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String transporterName1, String transporterName2, String transporterName3, String transporterName4, //
+			String approverFullName, Double cost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
-		this.deliveryRequest = deliveryRequest;
+
+		this.deliveryRequestReference = deliveryRequestReference;
+		this.deliveryRequestType = deliveryRequestType;
+		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
+		this.requesterUsername = requesterUsername;
+		this.requesterFullName = requesterFullName;
+
 		this.neededPickupDate = neededPickupDate;
 		this.neededDeliveryDate = neededDeliveryDate;
 		this.deliveryDate = deliveryDate;
@@ -159,13 +166,22 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.totalAppLinkCost = totalAppLinkCost;
 		this.paymentStatus = paymentStatus;
 		this.approverFullName = approverFullName;
+		this.setDestinationProjectName(destinationProjectName);
 	}
 
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, DeliveryRequest deliveryRequest, Date neededPickupDate, Date neededDeliveryDate, String originName, String destinationName, String transporterName1, String transporterName2, String transporterName3, String transporterName4, Integer originId, Integer destinationId, Integer warehouseId) {
+	// select3
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName //
+			, Date neededPickupDate, Date neededDeliveryDate, String originName, String destinationName, String transporterName1, String transporterName2, String transporterName3, String transporterName4, Integer originId, Integer destinationId, Integer warehouseId) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
-		this.deliveryRequest = deliveryRequest;
+
+		this.deliveryRequestReference = deliveryRequestReference;
+		this.deliveryRequestType = deliveryRequestType;
+		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
+		this.requesterUsername = requesterUsername;
+		this.requesterFullName = requesterFullName;
+
 		this.neededPickupDate = neededPickupDate;
 		this.neededDeliveryDate = neededDeliveryDate;
 		this.originName = originName;
@@ -174,6 +190,21 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.originId = originId;
 		this.destinationId = destinationId;
 		this.warehouseId = warehouseId;
+	}
+
+	@Transient
+	public String getNumero() {
+		return getIdStr();
+	}
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	@Transient
@@ -201,6 +232,18 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	@Transient
+	public String getDestinationProjectName() {
+		return deliveryRequest != null ? deliveryRequest.getDestinationProjectName() : null;
+	}
+
+	@Transient
+	public void setDestinationProjectName(String destinationProjectName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDestinationProjectName(destinationProjectName);
 	}
 
 	@Transient
@@ -334,23 +377,29 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Boolean getIsInbound() {
-		if (deliveryRequest == null)
-			return null;
-		return deliveryRequest.getIsInbound();
+		if (deliveryRequestType != null)
+			return DeliveryRequestType.INBOUND.equals(deliveryRequestType);
+		if (deliveryRequest != null)
+			return deliveryRequest.getIsInbound();
+		return null;
 	}
 
 	@Transient
 	public Boolean getIsOutbound() {
-		if (deliveryRequest == null)
-			return null;
-		return deliveryRequest.getIsOutbound();
+		if (deliveryRequestType != null)
+			return DeliveryRequestType.OUTBOUND.equals(deliveryRequestType);
+		if (deliveryRequest != null)
+			return deliveryRequest.getIsOutbound();
+		return null;
 	}
 
 	@Transient
 	public Boolean getIsXbound() {
-		if (deliveryRequest == null)
-			return null;
-		return deliveryRequest.getIsXbound();
+		if (deliveryRequestType != null)
+			return DeliveryRequestType.XBOUND.equals(deliveryRequestType);
+		if (deliveryRequest != null)
+			return deliveryRequest.getIsXbound();
+		return null;
 	}
 
 	@Transient
@@ -421,15 +470,6 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public User getEr1() {
-		return er1;
-	}
-
-	public void setEr1(User er1) {
-		this.er1 = er1;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	public Vehicle getVehicle() {
 		return vehicle;
 	}
@@ -463,15 +503,6 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setDriver(User driver) {
 		this.driver = driver;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public User getEr2() {
-		return er2;
-	}
-
-	public void setEr2(User er2) {
-		this.er2 = er2;
 	}
 
 	public Date getExpectedPickupDate() {
@@ -890,6 +921,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public DeliveryRequestType getDeliveryRequestType() {
+		if (deliveryRequestType != null)
+			return deliveryRequestType;
 		if (deliveryRequest != null)
 			return deliveryRequest.getType();
 		return null;
@@ -1029,13 +1062,4 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.requesterFullName = requesterFullName;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 }

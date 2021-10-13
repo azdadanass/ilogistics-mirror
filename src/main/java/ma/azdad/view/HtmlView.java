@@ -40,7 +40,7 @@ public class HtmlView implements Serializable {
 
 	public String generateOverlayPanelContent(Date date, String... usernameTab) {
 		String username = UtilsFunctions.firstNotNullAndNotEmpty(usernameTab);
-		return generateOverlayPanelContentBasic(date, cacheView.getPublicPhoto(username), cacheView.getFullName(username), cacheView.getJob(username), cacheView.getPhone(username), cacheView.getEmail(username));
+		return generateOverlayPanelContentBasic(date, cacheView.getPhoto(username), cacheView.getFullName(username), cacheView.getJob(username), cacheView.getPhone(username), cacheView.getEmail(username));
 	}
 
 	public String generateOverlayPanelContent(String username) {

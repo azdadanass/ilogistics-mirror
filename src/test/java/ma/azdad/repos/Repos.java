@@ -6,18 +6,20 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.service.EmailService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	UserRepos ur;
+	EmailService es;
 
 	@Test
 	@Transactional
 	public void testExample() throws Exception {
 
-		System.out.println(ur.findCompanyName("m.bougri"));
+		es.sendSimpleMail("a.azdad@3gcom-int.com", "test", "test test");
+
 	}
 
 }

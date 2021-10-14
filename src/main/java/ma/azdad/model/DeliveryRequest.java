@@ -668,11 +668,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		if (ownerName != null)
 			return ownerName;
 		if (customer != null)
-			return customer.getName();
+			return "Customer / " + customer.getName();
 		if (supplier != null)
-			return supplier.getName();
+			return "Supplier / " + supplier.getName();
 		if (company != null)
-			return company.getName();
+			return "Company / " + company.getName();
 		return null;
 	}
 

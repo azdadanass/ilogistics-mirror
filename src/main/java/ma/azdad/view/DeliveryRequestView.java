@@ -1273,7 +1273,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.getToNotifyList().clear();
 		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
 		if (deliveryRequest.getIsOutbound()) {
-			deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
+			deliveryRequest.setDestinationProject(projectService.findOne2(deliveryRequest.getDestinationProjectId()));
 			deliveryRequest.setOriginNumber("");
 		}
 		Set<User> toNotifyUserSet = new HashSet<User>();

@@ -129,7 +129,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			Hibernate.initialize(deliveryRequest.getOutboundDeliveryRequestTransfer());
 		Hibernate.initialize(deliveryRequest.getExternalRequester());
 		Hibernate.initialize(deliveryRequest.getBoqMappingList());
-		Hibernate.initialize(deliveryRequest.getWarehouse().getManagerList());
+		if (deliveryRequest.getWarehouse() != null)
+			Hibernate.initialize(deliveryRequest.getWarehouse().getManagerList());
 		return deliveryRequest;
 	}
 

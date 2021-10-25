@@ -135,7 +135,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, name, description, getIndustryName(), getCategoryName(), getTypeName(), getPartNumberOrangeName());
+		return contains(query, name, description, getIndustryName(), getCategoryName(), getTypeName(), getPartNumberOrangeName(), getBrandName());
 	}
 
 	public void addPacking(Packing packing) {
@@ -201,6 +201,18 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		if (partNumberType == null)
 			partNumberType = new PartNumberType();
 		partNumberType.setName(typeName);
+	}
+
+	@Transient
+	public String getBrandName() {
+		return brand == null ? null : brand.getName();
+	}
+
+	@Transient
+	public void setBrandName(String brandName) {
+		if (brand == null)
+			brand = new PartNumberBrand();
+		brand.setName(brandName);
 	}
 
 	@Transient

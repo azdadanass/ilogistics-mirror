@@ -3,7 +3,13 @@ package ma.azdad.model;
 import java.io.Serializable;
 
 public enum ProjectTypes implements Serializable {
-	SALES("Sales"), SUPPORT("Support"), LOB("Lob"), DELIVERY("Delivery"), TPSR("TPSR"), CROSSCHARGE("Cross Charge"), STOCK("Stock"),;
+	SALES("Sales"),
+	SUPPORT("Support"),
+	LOB("Lob"),
+	DELIVERY("Delivery"),
+	TPSR("TPSR"),
+	CROSSCHARGE("Cross Charge"),
+	STOCK("Stock"),;
 
 	private String value;
 

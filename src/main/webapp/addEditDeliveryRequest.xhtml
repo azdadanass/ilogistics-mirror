@@ -104,7 +104,7 @@
 												rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.templateId==null and deliveryRequestView.outboundDeliveryRequestId==null}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{DeliveryRequestType.ALL_ENUM_VALUES}" />
-												<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po" />
+												<p:ajax listener="#{deliveryRequestView.changeTypeListener()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po" />
 											</h:selectOneMenu>
 											<br />
 										</div>
@@ -261,9 +261,9 @@
 												disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType or InboundType.TRANSFER==deliveryRequestView.deliveryRequest.inboundType}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{projectView.findLightByResource(deliveryRequestView.deliveryRequest.type)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
-												<p:ajax listener="#{deliveryRequestView.updateDestinationProject()}" update=":main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
-												<p:ajax listener="#{deliveryRequestView.changeOwner()}" />
+												<p:ajax listener="#{deliveryRequestView.changeOwnerTypeListener()}" update=":main_form:step1:warehouse,:main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
+												<!-- <p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
+												<p:ajax listener="#{deliveryRequestView.updateDestinationProject()}" update=":main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" /> -->
 											</p:selectOneMenu>
 											<br />
 										</div>
@@ -547,16 +547,40 @@
 									<div class="row">
 										<div class="col-xs-12 col-sm-3">
 											<label class="control-label pull-right">
+												<h:outputText value="Owner Type " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+													<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+													<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+													<p:ajax listener="#{deliveryRequestView.changeOwnerTypeListener()}" update="owner" />
+												</h:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
 												<h:outputText value="Owner" />
 											</label>
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-													required="true" requiredMessage="Owner should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												</p:selectOneMenu>
+												<h:panelGroup id="owner">
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
+														required="true" requiredMessage="Owner should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}"/>
+												</h:panelGroup>
 												<br />
 											</div>
 										</div>
@@ -736,8 +760,7 @@
 														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
 															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
-															<f:selectItems
-																value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
+															<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
 																var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
 																<h:outputText value="#{r.fullName}" />
@@ -804,7 +827,7 @@
 												<div class="clearfix">
 													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.transportationNeeded}" styleClass="col-xs-12 col-sm-6" required="true"
 														requiredMessage="Transportation Needed field should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
-														<f:selectItem itemLabel="Yes" itemValue="true" /> 
+														<f:selectItem itemLabel="Yes" itemValue="true" />
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<p:ajax update="transporter" />
 													</h:selectOneMenu>

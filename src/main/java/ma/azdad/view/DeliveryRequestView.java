@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.CompanyType;
 import ma.azdad.model.DeliverToType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestComment;
@@ -1812,10 +1813,34 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return;
 		deliveryRequestDetailService.updateUnitPrice(detail.getId(), detail.getUnitPrice());
 	}
+	
+	public void changeTypeListener() {
+		findRemainingDetailListByProjectAndWarehouse();
+	}
+	
+	public void changeProjectListener() {
+		findRemainingDetailListByProjectAndWarehouse();
+		updateDestinationProject();
+		if(deliveryRequest.getIsInbound() && deliveryRequest.getOwnerType()==null) {
+			deliveryRequest.setOwnerType(CompanyType.COMPANY);
+			changeOwnerTypeListener();
+		}
+	}
 
-	public void changeOwner() {
-		if ((deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) && ProjectTypes.DELIVERY.getValue().equals(projectService.getType(deliveryRequest.getProjectId())))
-			deliveryRequest.setOwner(new LabelValue("", projectService.getCustomerId(deliveryRequest.getProjectId()), "customer"));
+	public void changeOwnerTypeListener() {
+		if(deliveryRequest.getOwnerType()!=null)
+		switch (deliveryRequest.getOwnerType()) {
+		case COMPANY:
+			deliveryRequest.setCompanyId(projectService.findCompanyId(deliveryRequest.getProjectId()));
+			break;
+		case CUSTOMER:
+			deliveryRequest.setCustomer(customerService.findOne(projectService.findCustomerId(deliveryRequest.getProjectId())));
+			break;
+
+		default:
+			break;
+		}
+		
 	}
 
 	public Integer getApproximativeStoragePeriodMaxValue() {

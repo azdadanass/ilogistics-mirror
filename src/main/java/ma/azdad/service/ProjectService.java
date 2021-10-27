@@ -173,4 +173,11 @@ public class ProjectService {
 	public Boolean isHardwareManager(String username, Integer projectId) {
 		return countByManagerAndProjectAndManagerType(username, projectId, ProjectManagerType.HARDWARE_MANAGER) > 0;
 	}
+	
+	public Integer findCustomerId(Integer id) {
+		return repos.findCustomerId(id);
+	}
+	public Integer findCompanyId(Integer id) {
+		return repos.findCompanyId(id);
+	}
 }

@@ -65,9 +65,13 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	private Project destinationProject;
 
 	private Warehouse warehouse;
+	
+	private CompanyType ownerType;
 	private Company company;// Owner
 	private Customer customer; // Owner
 	private Supplier supplier; // Owner
+	
+	
 	private Transporter transporter;
 
 	private Customer endCustomer;
@@ -837,6 +841,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public CompanyType getOwnerType() {
+		return ownerType;
+	}
+
+	public void setOwnerType(CompanyType ownerType) {
+		this.ownerType = ownerType;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

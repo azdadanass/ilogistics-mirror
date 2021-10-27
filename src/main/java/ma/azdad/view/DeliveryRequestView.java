@@ -1821,7 +1821,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void changeProjectListener() {
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
-		if(deliveryRequest.getIsInbound() && deliveryRequest.getOwnerType()==null) {
+		if((deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) && deliveryRequest.getOwnerType()==null) {
 			deliveryRequest.setOwnerType(CompanyType.COMPANY);
 			changeOwnerTypeListener();
 		}

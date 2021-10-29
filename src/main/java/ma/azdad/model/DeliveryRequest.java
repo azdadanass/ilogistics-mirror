@@ -65,13 +65,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	private Project destinationProject;
 
 	private Warehouse warehouse;
-	
+
 	private CompanyType ownerType;
 	private Company company;// Owner
 	private Customer customer; // Owner
 	private Supplier supplier; // Owner
-	
-	
+
 	private Transporter transporter;
 
 	private Customer endCustomer;
@@ -473,6 +472,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Transient
+	public Integer getSupplierId() {
+		return supplier == null ? null : supplier.getId();
+	}
+
+	@Transient
+	public void setSupplierId(Integer supplierId) {
+		if (supplier == null || !supplier.getId().equals(supplierId))
+			supplier = new Supplier();
+		supplier.setId(supplierId);
+	}
+
+	@Transient
 	public String getSubTypeColor() {
 		if (getIsInbound())
 			return inboundType.getColor();
@@ -842,7 +853,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	public CompanyType getOwnerType() {
 		return ownerType;

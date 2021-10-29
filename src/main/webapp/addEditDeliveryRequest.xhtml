@@ -261,7 +261,8 @@
 												disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType or InboundType.TRANSFER==deliveryRequestView.deliveryRequest.inboundType}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{projectView.findLightByResource(deliveryRequestView.deliveryRequest.type)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												<p:ajax listener="#{deliveryRequestView.changeOwnerTypeListener()}" update=":main_form:step1:warehouse,:main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
+												<p:ajax listener="#{deliveryRequestView.changeProjectListener()}"
+													update=":main_form:step1:warehouse,:main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
 												<!-- <p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
 												<p:ajax listener="#{deliveryRequestView.updateDestinationProject()}" update=":main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" /> -->
 											</p:selectOneMenu>
@@ -579,7 +580,12 @@
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}"/>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}" />
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.supplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
+														required="true" requiredMessage="Owner should not be null" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.SUPPLIER}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
 												</h:panelGroup>
 												<br />
 											</div>

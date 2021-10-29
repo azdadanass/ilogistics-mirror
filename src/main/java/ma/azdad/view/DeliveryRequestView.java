@@ -1347,8 +1347,26 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			else
 				deliveryRequest.setTransportationNeeded(false);
 
-			if (deliveryRequest.getCompanyId() != null)
-				deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
+			if (deliveryRequest.getOwnerType() != null)
+				switch (deliveryRequest.getOwnerType()) {
+				case COMPANY:
+					deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
+					deliveryRequest.setCustomer(null);
+					deliveryRequest.setSupplier(null);
+					break;
+				case SUPPLIER:
+					deliveryRequest.setCompany(null);
+					deliveryRequest.setCustomer(null);
+					deliveryRequest.setSupplier(supplierService.findOne(deliveryRequest.getSupplierId()));
+					break;
+
+				default:
+					break;
+				}
+
+//			if (deliveryRequest.getCompanyId() != null)
+//				deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
+
 //			if (deliveryRequest.getOwner() != null)
 //				if ("company".equals(deliveryRequest.getOwner().getBeanName()))
 //					deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getOwner().getIntegerValue()));
@@ -1813,34 +1831,35 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return;
 		deliveryRequestDetailService.updateUnitPrice(detail.getId(), detail.getUnitPrice());
 	}
-	
+
 	public void changeTypeListener() {
 		findRemainingDetailListByProjectAndWarehouse();
 	}
-	
+
 	public void changeProjectListener() {
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
-		if((deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) && deliveryRequest.getOwnerType()==null) {
+
+		if ((deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) && deliveryRequest.getOwnerType() == null) {
 			deliveryRequest.setOwnerType(CompanyType.COMPANY);
 			changeOwnerTypeListener();
 		}
 	}
 
 	public void changeOwnerTypeListener() {
-		if(deliveryRequest.getOwnerType()!=null)
-		switch (deliveryRequest.getOwnerType()) {
-		case COMPANY:
-			deliveryRequest.setCompanyId(projectService.findCompanyId(deliveryRequest.getProjectId()));
-			break;
-		case CUSTOMER:
-			deliveryRequest.setCustomer(customerService.findOne(projectService.findCustomerId(deliveryRequest.getProjectId())));
-			break;
+		if (deliveryRequest.getOwnerType() != null)
+			switch (deliveryRequest.getOwnerType()) {
+			case COMPANY:
+				deliveryRequest.setCompanyId(projectService.findCompanyId(deliveryRequest.getProjectId()));
+				break;
+			case CUSTOMER:
+				deliveryRequest.setCustomer(customerService.findOne(projectService.findCustomerId(deliveryRequest.getProjectId())));
+				break;
 
-		default:
-			break;
-		}
-		
+			default:
+				break;
+			}
+
 	}
 
 	public Integer getApproximativeStoragePeriodMaxValue() {

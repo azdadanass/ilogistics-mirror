@@ -19,6 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.google.common.collect.ImmutableList;
 
 import ma.azdad.model.Role;
+import ma.azdad.security.AccessDeniedHandler;
+import ma.azdad.security.LoginFailureHandler;
+import ma.azdad.security.LoginSuccessHandler;
 
 @SuppressWarnings("deprecation")
 @EnableWebSecurity
@@ -28,10 +31,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	DataSource dataSource;
 
 	@Autowired
-	private CustomLoginFailureHandler loginFailureHandler;
+	private LoginFailureHandler loginFailureHandler;
 
 	@Autowired
-	private CustomLoginSuccessHandler loginSuccessHandler;
+	private LoginSuccessHandler loginSuccessHandler;
+
+	@Autowired
+	private AccessDeniedHandler accessDeniedHandler;
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -45,18 +51,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().cacheControl().disable();
 		http.headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/javax.faces.resource/**", "/resources/**", "/login.xhtml", "/blank", "/rest/**", "/passwordReset.xhtml", "/.well-known/**").permitAll()
-				//
-				.antMatchers(getPages("Warehouse", "Brand")).hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole())
-				//
-				.antMatchers("/partNumberConfiguration.xhtml").hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole())
-				//
-				.antMatchers(getPages("PartNumber")).hasAnyRole(Role.ROLE_ILOGISTICS_SE.getRole(), Role.ROLE_ILOGISTICS_WM.getRole(), Role.ROLE_ILOGISTICS_PM.getRole())
-				//
-				.antMatchers("/**").hasRole(applicationCode)
-				//
+		http.authorizeRequests().antMatchers("/javax.faces.resource/**", "/resources/**", "/login.xhtml", "/blank", "/rest/**", "/passwordReset.xhtml", "/.well-known/**").permitAll() //
+				.antMatchers(getPages("Warehouse", "Brand")).hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole()) //
+				.antMatchers("/partNumberConfiguration.xhtml").hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole()) //
+				.antMatchers(getPages("PartNumber")).hasAnyRole(Role.ROLE_ILOGISTICS_SE.getRole(), Role.ROLE_ILOGISTICS_WM.getRole(), Role.ROLE_ILOGISTICS_PM.getRole()) //
+				.antMatchers("/**").hasRole(applicationCode) //
 				.and().formLogin().loginPage("/login.xhtml").failureHandler(loginFailureHandler).successHandler(loginSuccessHandler) //
-				.and().exceptionHandling().accessDeniedPage("/ad.xhtml").and().logout().permitAll();
+				.and().exceptionHandling().accessDeniedHandler(accessDeniedHandler)//
+				.and().logout().permitAll();
 
 	}
 

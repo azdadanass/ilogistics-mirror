@@ -10,6 +10,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -24,9 +25,6 @@ import ma.azdad.repos.UserRepos;
 @Transactional
 public class UserService {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	public static final int MAX_FAILED_ATTEMPTS = 3;
-	private static final long LOCK_TIME_DURATION = 5 * 60 * 1000; // 5 minutes
 
 	@Autowired
 	private UserRepos repos;
@@ -288,6 +286,20 @@ public class UserService {
 		user.setLockTime(new Date());
 
 		repos.save(user);
+	}
+
+	public static int MAX_FAILED_ATTEMPTS;
+
+	public static long LOCK_TIME_DURATION;
+
+	@Value("${MAX_FAILED_ATTEMPTS}")
+	public void setMaxFailedAttempts(int maxFailedAttempts) {
+		MAX_FAILED_ATTEMPTS = maxFailedAttempts;
+	}
+
+	@Value("${LOCK_TIME_DURATION}")
+	public void setLockTimeDuration(long lockTimeDuration) {
+		LOCK_TIME_DURATION = lockTimeDuration;
 	}
 
 	public boolean unlockWhenTimeExpired(User user) {

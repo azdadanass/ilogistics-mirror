@@ -104,7 +104,7 @@
 												rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.templateId==null and deliveryRequestView.outboundDeliveryRequestId==null}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{DeliveryRequestType.ALL_ENUM_VALUES}" />
-												<p:ajax listener="#{deliveryRequestView.changeTypeListener()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po" />
+												<p:ajax listener="#{deliveryRequestView.changeTypeListener()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po,sdm" />
 											</h:selectOneMenu>
 											<br />
 										</div>
@@ -294,25 +294,27 @@
 										</div>
 									</f:subview>
 								</h:panelGroup>
-								<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
-									<div class="space-8" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="SDM " />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
-													<f:selectItem itemLabel="No" itemValue="false" />
-													<f:selectItem itemLabel="Yes" itemValue="true" />
-												</h:selectOneMenu>
-												<br />
+								<h:panelGroup id="sdm">
+									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-xs-12 col-sm-3">
+												<label class="control-label pull-right">
+													<h:outputText value="SDM " />
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9">
+												<div class="clearfix">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
+														<f:selectItem itemLabel="No" itemValue="false" />
+														<f:selectItem itemLabel="Yes" itemValue="true" />
+													</h:selectOneMenu>
+													<br />
+												</div>
 											</div>
 										</div>
-									</div>
-								</f:subview>
+									</f:subview>
+								</h:panelGroup>
 								<h:panelGroup id="po">
 									<f:subview rendered="#{deliveryRequestView.isPoNeeded}">
 										<div class="space-8" />

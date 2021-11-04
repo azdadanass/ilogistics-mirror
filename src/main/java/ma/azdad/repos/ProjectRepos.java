@@ -62,7 +62,10 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	public List<Project> find();
 
 	@Query("select a.customer.id from Project a where a.id = ?1")
-	public Integer getCustomerId(Integer customerId);
+	public Integer getCustomerId(Integer id);
+
+	@Query("select a.sdm from Project a where a.id = ?1")
+	public Boolean getSdm(Integer id);
 
 	@Query("select count(*) from ProjectManager a where a.project.id = ?1 and a.user.username = ?2 and a.type = ?3")
 	Long countByManagerType(Integer projectId, String userUsername, ProjectManagerType type);
@@ -72,10 +75,10 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select count(*) from ProjectManager a where a.user.username = ?1 and a.project.id = ?2 and a.type = ?3")
 	Long countByManagerAndProjectAndManagerType(String username, Integer projectId, ProjectManagerType type);
-	
+
 	@Query("select customer.id from Project where id = ?1")
 	Integer findCustomerId(Integer id);
-	
+
 	@Query("select costcenter.lob.bu.company.id from Project where id = ?1")
 	Integer findCompanyId(Integer id);
 

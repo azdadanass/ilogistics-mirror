@@ -286,7 +286,7 @@
 														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{projectView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po" />
+														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -305,7 +305,9 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
+													#{deliveryRequestView.deliveryRequest.destinationProject.sdm}
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6"
+														disabled="#{!deliveryRequestView.deliveryRequest.destinationProject.sdm}">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 													</h:selectOneMenu>

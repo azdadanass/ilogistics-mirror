@@ -130,8 +130,12 @@ public class ProjectService {
 		return repos.find().stream().collect(Collectors.toMap(i -> i.getId(), i -> i));
 	}
 
-	public Integer getCustomerId(Integer customerId) {
-		return repos.getCustomerId(customerId);
+	public Integer getCustomerId(Integer id) {
+		return repos.getCustomerId(id);
+	}
+
+	public Boolean getSdm(Integer id) {
+		return repos.getSdm(id);
 	}
 
 	public Boolean isStockProject(Integer projectId) {
@@ -173,10 +177,11 @@ public class ProjectService {
 	public Boolean isHardwareManager(String username, Integer projectId) {
 		return countByManagerAndProjectAndManagerType(username, projectId, ProjectManagerType.HARDWARE_MANAGER) > 0;
 	}
-	
+
 	public Integer findCustomerId(Integer id) {
 		return repos.findCustomerId(id);
 	}
+
 	public Integer findCompanyId(Integer id) {
 		return repos.findCompanyId(id);
 	}

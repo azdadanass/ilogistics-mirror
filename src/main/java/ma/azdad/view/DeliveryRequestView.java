@@ -1744,8 +1744,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void changeDestinationProjectListener() {
 		System.out.println("changeDestinationProjectListener");
-		Integer destinationCustomerId = projectService.getCustomerId(deliveryRequest.getDestinationProjectId());
-		deliveryRequest.setEndCustomerId(destinationCustomerId);
+		deliveryRequest.setDestinationProject(projectService.findOne2(deliveryRequest.getDestinationProjectId()));
+//		Integer destinationCustomerId = projectService.getCustomerId(deliveryRequest.getDestinationProjectId());
+		Integer destinationCustomerId = deliveryRequest.getDestinationProject().getCustomer().getId();
 
 		Boolean isProjectStock = ProjectTypes.STOCK.getValue().equals(projectService.getType(deliveryRequest.getProjectId()));
 		if (!isProjectStock && deliveryRequest.getProjectId() != null && !deliveryRequest.getProjectId().equals(deliveryRequest.getDestinationProjectId())) {
@@ -1753,6 +1754,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			String str = customerId.equals(destinationCustomerId) ? "the same" : "different";
 			FacesContextMessages.WarningMessages("You are trying to deliver Goods to different project under " + str + " customer, are you sure?");
 		}
+
+		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
+		if (Boolean.FALSE.equals(sdm))
+			deliveryRequest.setSdm(false);
 
 	}
 

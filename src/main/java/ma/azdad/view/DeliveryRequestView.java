@@ -1756,8 +1756,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		}
 
 		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
-		if (Boolean.FALSE.equals(sdm))
-			deliveryRequest.setSdm(false);
+		deliveryRequest.setSdm(Boolean.TRUE.equals(sdm));
 
 	}
 
@@ -1849,6 +1848,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setOwnerType(CompanyType.COMPANY);
 			changeOwnerTypeListener();
 		}
+
 	}
 
 	public void changeOwnerTypeListener() {

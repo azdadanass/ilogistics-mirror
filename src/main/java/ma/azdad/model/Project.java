@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,6 +36,7 @@ public class Project implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private String duration;
+	private ProjectCustomerType customerType;
 
 	private Boolean customerWarehousing = false;
 	private Boolean customerStockManagement = false;
@@ -285,6 +288,15 @@ public class Project implements Serializable {
 
 	public void setSdm(Boolean sdm) {
 		this.sdm = sdm;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public ProjectCustomerType getCustomerType() {
+		return customerType;
+	}
+
+	public void setCustomerType(ProjectCustomerType customerType) {
+		this.customerType = customerType;
 	}
 
 }

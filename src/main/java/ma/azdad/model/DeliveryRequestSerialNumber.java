@@ -61,9 +61,16 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && serialNumber != null)
-			result = serialNumber.toLowerCase().contains(query);
+		return contains(query, serialNumber, box);
+	}
+
+	@Transient
+	public String getReference(Boolean isOutboundDeliveryRequest) {
+		String result = "";
+		if (isOutboundDeliveryRequest)
+			result += tmpInboundDeliveryRequest.getReference() + " / ";
+		result += tmpPartNumber + " / ";
+		result += packingNumero;
 		return result;
 	}
 

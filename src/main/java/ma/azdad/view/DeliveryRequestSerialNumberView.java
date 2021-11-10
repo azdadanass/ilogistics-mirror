@@ -1,15 +1,24 @@
 package ma.azdad.view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -40,6 +49,9 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	@Autowired
 	private DeliveryRequestService deliveryRequestService;
+
+	@Autowired
+	private DeliveryRequestView deliveryRequestView;
 
 	private DeliveryRequestSerialNumber deliveryRequestSerialNumber = new DeliveryRequestSerialNumber();
 
@@ -224,6 +236,88 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		exculdeList = list1.stream().filter(i -> i.getId() != null).map(i -> i.getId()).collect(Collectors.toList());
 
 		// list1.sort(DeliveryRequestSerialNumberService.COMPARATOR);
+
+	}
+
+	public void uploadExcelFile(FileUploadEvent event) throws IOException {
+		HSSFWorkbook wb = new HSSFWorkbook(event.getFile().getInputstream());
+		Sheet sheet = wb.getSheetAt(0);
+		if (sheet.getRow(0).getLastCellNum() != 3) {
+			FacesContextMessages.ErrorMessages("File should have 3 columns : Reference - Serial Number - Box Id");
+			return;
+		}
+		Map<String, String> mapSerialNumber = new HashMap<String, String>();
+		Map<String, String> mapBox = new HashMap<String, String>();
+		Iterator<Row> rowIterator = sheet.iterator();
+		// ignore first row
+		rowIterator.next();
+		while (rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+
+			try {
+				String reference = getCellValue(row.getCell(0));
+				String serialNumber = getCellValue(row.getCell(1));
+				String box = getCellValue(row.getCell(2));
+
+				if (mapSerialNumber.containsKey(reference) || mapBox.containsKey(reference)) {
+					FacesContextMessages.ErrorMessages("Duplicate Reference");
+					return;
+				}
+
+				if (!StringUtils.isBlank(serialNumber)) {
+					if (mapSerialNumber.containsValue(serialNumber)) {
+						FacesContextMessages.ErrorMessages("Duplicate SN !");
+						return;
+					}
+					mapSerialNumber.put(reference, serialNumber);
+				}
+
+				if (!StringUtils.isBlank(box)) {
+					if (mapBox.containsValue(box)) {
+						FacesContextMessages.ErrorMessages("Duplicate BOX ID !");
+						return;
+					}
+					mapBox.put(reference, box);
+				}
+
+			} catch (Exception e) {
+				FacesContextMessages.ErrorMessages(e.getMessage());
+				return;
+			}
+		}
+
+		System.out.println("mapSerialNumber : " + mapSerialNumber);
+		System.out.println("mapBox : " + mapBox);
+
+		for (String reference : mapSerialNumber.keySet()) {
+			String value = mapSerialNumber.get(reference);
+
+			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getReference(deliveryRequestView.getDeliveryRequest().getIsOutbound()).contentEquals(reference)).findFirst();
+
+			if (optional.isPresent() && StringUtils.isBlank(optional.get().getSerialNumber()))
+				optional.get().setSerialNumber(value);
+		}
+
+		for (String reference : mapBox.keySet()) {
+			String value = mapBox.get(reference);
+			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getReference(deliveryRequestView.getDeliveryRequest().getIsOutbound()).contentEquals(reference)).findFirst();
+			if (optional.isPresent() && StringUtils.isBlank(optional.get().getBox()))
+				optional.get().setBox(value);
+		}
+
+	}
+
+	private String getCellValue(Cell cell) {
+		if (cell == null)
+			return null;
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_STRING:
+			return cell.getStringCellValue();
+		case Cell.CELL_TYPE_NUMERIC:
+			return String.valueOf(cell.getNumericCellValue());
+		default:
+			return null;
+		}
 
 	}
 

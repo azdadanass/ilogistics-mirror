@@ -1364,17 +1364,19 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="serialNumberList" value="#{deliveryRequestSerialNumberView.list2}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-										<p:column headerText="#{deliveryRequestView.deliveryRequest.isOutbound?'Inbound DN / ':''} Part Number / Packing Numero" groupRow="true" width="300"  exportable="false">
+										<p:column headerText="#{deliveryRequestView.deliveryRequest.isOutbound?'Inbound DN / ':''} Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
 											<h:outputText value="#{item.tmpInboundDeliveryRequest.reference} / " styleClass="green bolder" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
 											<h:outputText value="#{item.tmpPartNumber.name} / " styleClass="blue bolder" />
 											<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
 											<h:outputText value="*" rendered="#{deliveryRequestSerialNumberView.editMode and item.inboundStockRow == null and deliveryRequestView.deliveryRequest.isOutbound}" />
 										</p:column>
-										
-										<p:column headerText="Reference" styleClass="hide">
-											<h:outputText value="#{item.getReference(deliveryRequestView.deliveryRequest.isOutbound)}"  />
+										<p:column headerText="KEY" styleClass="hide">
+											<h:outputText value="#{item.key}" />
 										</p:column>
-										<p:column headerText="Packing Detail" exportable="false">
+										<p:column headerText="Reference" styleClass="hide">
+											<h:outputText value="#{item.getReference(deliveryRequestView.deliveryRequest.isOutbound)}" />
+										</p:column>
+										<p:column headerText="Packing Detail">
 											<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
 										</p:column>
 										<p:column headerText="Status" exportable="false">
@@ -1412,14 +1414,10 @@
 													rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest)}" update="serialNumberList,:main_form:messages">
 													<i class="fa fa-save green" />
 												</p:commandLink>
-												
-												
-												<p:commandLink styleClass="aa-tooltip tooltip-success" title="upload excel" onclick="PF('addSerialNumberFromExcelDlg').show();" rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest)}">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="upload excel" onclick="PF('addSerialNumberFromExcelDlg').show();"
+													rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest) and deliveryRequestView.deliveryRequest.isInbound}">
 													<i class="fa fa-file-excel-o green" />
 												</p:commandLink>
-												
-												
-												
 											</div>
 										</f:facet>
 									</p:dataTable>

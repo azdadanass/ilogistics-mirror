@@ -213,6 +213,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	}
 
 	private Boolean validate(DeliveryRequest deliveryRequest) {
+		list1.stream().filter(drsn -> drsn.getSerialNumber() != null).forEach(drsn -> drsn.setSerialNumber(drsn.getSerialNumber().replace("\\s", "")));
+
 		if (deliveryRequest.getIsInbound()) {
 			if (list1.stream().filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).count() > list1.stream().filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).map(i -> i.getSerialNumber()).distinct().count())
 				return FacesContextMessages.ErrorMessages("Duplicate SN !");
@@ -242,8 +244,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public void uploadExcelFile(FileUploadEvent event) throws IOException {
 		HSSFWorkbook wb = new HSSFWorkbook(event.getFile().getInputstream());
 		Sheet sheet = wb.getSheetAt(0);
-		if (sheet.getRow(0).getLastCellNum() != 3) {
-			FacesContextMessages.ErrorMessages("File should have 3 columns : Reference - Serial Number - Box Id");
+		if (sheet.getRow(0).getLastCellNum() != 5) {
+			FacesContextMessages.ErrorMessages("File should have 5 columns : KEY - Reference - Packing Detail - Serial Number - Box Id");
 			return;
 		}
 		Map<String, String> mapSerialNumber = new HashMap<String, String>();
@@ -255,30 +257,25 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			Row row = rowIterator.next();
 
 			try {
-				String reference = getCellValue(row.getCell(0));
-				String serialNumber = getCellValue(row.getCell(1));
-				String box = getCellValue(row.getCell(2));
+				String key = getCellValue(row.getCell(0));
+				String serialNumber = getCellValue(row.getCell(3));
+				String box = getCellValue(row.getCell(4));
 
-				if (mapSerialNumber.containsKey(reference) || mapBox.containsKey(reference)) {
-					FacesContextMessages.ErrorMessages("Duplicate Reference");
+				if (mapSerialNumber.containsKey(key) || mapBox.containsKey(key)) {
+					FacesContextMessages.ErrorMessages("Duplicate Key");
 					return;
 				}
 
 				if (!StringUtils.isBlank(serialNumber)) {
 					if (mapSerialNumber.containsValue(serialNumber)) {
-						FacesContextMessages.ErrorMessages("Duplicate SN !");
+						FacesContextMessages.ErrorMessages("Duplicate SN in excel file : " + serialNumber);
 						return;
 					}
-					mapSerialNumber.put(reference, serialNumber);
+					mapSerialNumber.put(key, serialNumber);
 				}
 
-				if (!StringUtils.isBlank(box)) {
-					if (mapBox.containsValue(box)) {
-						FacesContextMessages.ErrorMessages("Duplicate BOX ID !");
-						return;
-					}
-					mapBox.put(reference, box);
-				}
+				if (!StringUtils.isBlank(box))
+					mapBox.put(key, box);
 
 			} catch (Exception e) {
 				FacesContextMessages.ErrorMessages(e.getMessage());
@@ -286,21 +283,16 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			}
 		}
 
-		System.out.println("mapSerialNumber : " + mapSerialNumber);
-		System.out.println("mapBox : " + mapBox);
-
-		for (String reference : mapSerialNumber.keySet()) {
-			String value = mapSerialNumber.get(reference);
-
-			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getReference(deliveryRequestView.getDeliveryRequest().getIsOutbound()).contentEquals(reference)).findFirst();
-
+		for (String key : mapSerialNumber.keySet()) {
+			String value = mapSerialNumber.get(key);
+			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
 			if (optional.isPresent() && StringUtils.isBlank(optional.get().getSerialNumber()))
 				optional.get().setSerialNumber(value);
 		}
 
-		for (String reference : mapBox.keySet()) {
-			String value = mapBox.get(reference);
-			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getReference(deliveryRequestView.getDeliveryRequest().getIsOutbound()).contentEquals(reference)).findFirst();
+		for (String key : mapBox.keySet()) {
+			String value = mapBox.get(key);
+			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
 			if (optional.isPresent() && StringUtils.isBlank(optional.get().getBox()))
 				optional.get().setBox(value);
 		}
@@ -312,8 +304,11 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			return null;
 		switch (cell.getCellType()) {
 		case Cell.CELL_TYPE_STRING:
-			return cell.getStringCellValue();
+			return cell.getStringCellValue().replace("\\s", "");
 		case Cell.CELL_TYPE_NUMERIC:
+			Double value = cell.getNumericCellValue();
+			if (value == Math.floor(value))
+				return String.valueOf((int) cell.getNumericCellValue());
 			return String.valueOf(cell.getNumericCellValue());
 		default:
 			return null;

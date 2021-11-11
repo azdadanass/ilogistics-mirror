@@ -31,10 +31,6 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 
 	public List<DeliveryRequestSerialNumber> findByDeliveryRequest(Integer deliveryRequestId) {
 		List<DeliveryRequestSerialNumber> result = deliveryRequestSerialNumberRepos.findByDeliveryRequest(deliveryRequestId);
-
-		UtilsFunctions.separatorTop();
-		System.out.println(result);
-		UtilsFunctions.separatorBottom();
 		result.forEach(i -> {
 			i.init();
 			Hibernate.initialize(i.getPackingDetail());

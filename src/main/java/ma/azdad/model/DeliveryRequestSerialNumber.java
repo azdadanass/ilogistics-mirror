@@ -75,6 +75,15 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	}
 
 	@Transient
+	public String getKey() {
+		String key = "";
+		key += inboundStockRow.getId() + ";";
+		key += packingNumero + ";";
+		key += packingDetail.getId();
+		return key;
+	}
+
+	@Transient
 	public Integer getTmpPartNumberId() {
 		if (tmpPartNumber == null)
 			return null;

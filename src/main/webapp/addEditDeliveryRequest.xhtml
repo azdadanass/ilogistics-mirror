@@ -262,7 +262,7 @@
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{projectView.findLightByResource(deliveryRequestView.deliveryRequest.type)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 												<p:ajax listener="#{deliveryRequestView.changeProjectListener()}"
-													update=":main_form:step1:warehouse,:main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" />
+													update=":main_form:step1:warehouse,:main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData,:main_form:step1:sdm" />
 												<!-- <p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
 												<p:ajax listener="#{deliveryRequestView.updateDestinationProject()}" update=":main_form:step1:destinationProject,:main_form:step1:po,:main_form:step1:customerRequesterData" /> -->
 											</p:selectOneMenu>

@@ -52,12 +52,6 @@ public class ProjectCrossService {
 	}
 
 	public void addCrossCharge(DeliveryRequest deliveryRequest) {
-		System.out.println("deliveryRequest.getIsOutbound() " + deliveryRequest.getIsOutbound());
-		System.out.println("deliveryRequest.getDestinationProject() " + deliveryRequest.getDestinationProject());
-		System.out.println("deliveryRequest.getProject().getId() " + deliveryRequest.getProject().getId());
-		System.out.println("deliveryRequest.getDestinationProject().getId() " + deliveryRequest.getDestinationProject().getId());
-		System.out.println("deliveryRequest.getTotalCost() " + deliveryRequest.getTotalCost());
-		System.out.println("projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) " + projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()));
 
 		Boolean canAddCrossCharge = deliveryRequest.getIsOutbound() && deliveryRequest.getDestinationProject() != null && !deliveryRequest.getProject().getId().equals(deliveryRequest.getDestinationProject().getId()) && UtilsFunctions.compareDoubles(deliveryRequest.getTotalCost(), 0.0) > 0 && projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0;
 

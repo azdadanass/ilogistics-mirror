@@ -137,19 +137,11 @@ public class User extends GenericModel<String> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		try {
+			return username.equals(((User) obj).getUsername());
+		} catch (Exception e) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		return true;
+		}
 	}
 
 	@Override

@@ -1737,9 +1737,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			changeDestinationProjectListener();
 		}
 
-		if (projectCrossService.countByDeliveryRequest(deliveryRequest.getId()) > 0)
-			projectCrossService.delete(projectCrossService.findByDeliveryRequest(deliveryRequest.getId()).getIdprojectcross());
-		projectCrossService.addCrossCharge(deliveryRequest);
+		if (deliveryRequest.getId() != null) {
+			if (projectCrossService.countByDeliveryRequest(deliveryRequest.getId()) > 0)
+				projectCrossService.delete(projectCrossService.findByDeliveryRequest(deliveryRequest.getId()).getIdprojectcross());
+			projectCrossService.addCrossCharge(deliveryRequest);
+		}
 	}
 
 	public void changeDestinationProjectListener() {

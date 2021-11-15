@@ -1370,7 +1370,7 @@
 											<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
 											<h:outputText value="*" rendered="#{deliveryRequestSerialNumberView.editMode and item.inboundStockRow == null and deliveryRequestView.deliveryRequest.isOutbound}" />
 										</p:column>
-										<p:column headerText="KEY" styleClass="hide">
+										<p:column headerText="KEY" styleClass="hide" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 											<h:outputText value="#{item.key}" />
 										</p:column>
 										<p:column headerText="Reference" styleClass="hide">

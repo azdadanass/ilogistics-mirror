@@ -1706,6 +1706,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	public String getDestinationProjectName() {
 		return destinationProject != null ? destinationProject.getName() : null;
 	}
+	
+	@Transient
+	public Boolean getDestinationProjectSdm() {
+		return destinationProject != null ? destinationProject.getSdm() : null;
+	}
 
 	@Transient
 	public void setDestinationProjectName(String destinationProjectName) {

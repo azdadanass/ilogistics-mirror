@@ -17,6 +17,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	String select1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.unitCost) ";
 	String select4 = "select new DeliveryRequestDetail(sum(a.quantity),a.partNumber,a.unitCost) ";
+	
+	
 
 	@Query(select1 + " from DeliveryRequestDetail a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and  a.deliveryRequest.type = ?3 and a.deliveryRequest.status in (?4) group by a.status, a.originNumber, a.partNumber.id, a.inboundDeliveryRequest.id")
 	public List<DeliveryRequestDetail> findByProjectAndWarehouseAndTypeAndStatus(Integer projectId, Integer warehouseId, DeliveryRequestType outbound, List<DeliveryRequestStatus> status);
@@ -94,6 +96,12 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query(select5 + " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.company.id = ?3 and a.deliveryRequest.status in (?4)")
 	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
+	
+	
+	
+	
+	@Query("select new DeliveryRequestDetail(0.0,sum(a.totalQuantity-a.totalUsedQuantity),a.partNumber) from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber")
+	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId);
 
 	// EFFECTIVE STOCK
 	String from1 = " from DeliveryRequestDetail a left join a.deliveryRequest.warehouse as warehouse left join a.deliveryRequest.company as company1 left join a.inboundDeliveryRequest.company as company2 ";
@@ -113,5 +121,9 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select sum(a.quantity) " + from2 + " where  a.deliveryRequest.project.id = ?6 and " + usernameCondition + " and " + customerCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
 	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	
+	
+	
+	
 
 }

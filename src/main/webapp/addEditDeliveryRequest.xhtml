@@ -328,10 +328,17 @@
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
 													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
-													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" rendered="#{deliveryRequestView.isAddPage}">
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroInvoice}" itemValue="#{item.idpo}" />
 														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" update=":main_form:step1:warehouse" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isInbound}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroIbuy}" itemValue="#{item.idpo}" />
+														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByPo()}" update=":main_form:step1:warehouse" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -982,7 +989,7 @@
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
-												rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isXbound}">
+												rendered="#{(deliveryRequestView.deliveryRequest.isInboundNew and deliveryRequestView.deliveryRequest.poId==null) or deliveryRequestView.deliveryRequest.isXbound}">
 												<p:column headerText="Part Number" width="150">
 													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
 														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
@@ -1051,6 +1058,46 @@
 													</div>
 												</f:facet>
 											</p:dataTable>
+											<f:subview id="inbound_po_subview" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.isPoNeeded and deliveryRequestView.deliveryRequest.poId !=null}">
+												<p:dataTable id="inbound_po_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.partNumberId}"
+													selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox">
+													<p:ajax event="rowSelect" process="@this" update="inbound_po_tab" />
+													<p:ajax event="rowUnselect" process="@this" update="inbound_po_tab" />
+													<p:ajax event="rowSelectCheckbox" process="@this" update="inbound_po_tab" />
+													<p:ajax event="rowUnselectCheckbox" process="@this" update="inbound_po_tab" />
+													<p:ajax event="toggleSelect" process="@this" update="inbound_po_tab" />
+													<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
+													<p:column headerText="Part Number" width="150">
+														<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
+													</p:column>
+													<p:column headerText="Description">
+														<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
+													</p:column>
+													<p:column headerText="Remaining Quantity">
+														<h:outputText value="#{item.remainingQuantity}" styleClass="blue bolder">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</p:column>
+													<p:column headerText="Quantity">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" />
+														</p:inputNumber>
+													</p:column>
+													<f:facet name="footer">
+														<div class="action-buttons center">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_po_tab" partialSubmit="true"
+																process="inbound_po_tab">
+																<i class="fa fa-sort-desc red" />
+															</p:commandLink>
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
+																update="inbound_po_tab" partialSubmit="true" process="inbound_po_tab">
+																<i class="fa fa-sort-asc green" />
+															</p:commandLink>
+														</div>
+													</f:facet>
+												</p:dataTable>
+											</f:subview>
 											<f:subview id="inbound_r_subview" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer}">
 												<p:dataTable id="inbound_r_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}" selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}"
 													var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"

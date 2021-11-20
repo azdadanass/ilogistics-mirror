@@ -37,7 +37,7 @@ import ma.azdad.utils.LabelValue;
 public class DeliveryRequestDetailService extends GenericService<Integer, DeliveryRequestDetail, DeliveryRequestDetailRepos> {
 
 	@Autowired
-	DeliveryRequestDetailRepos deliveryRequestDetailRepos;
+	DeliveryRequestDetailRepos repos;
 
 	@Autowired
 	PartNumberRepos partNumberRepos;
@@ -50,7 +50,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 
 	// reporting
 	public List<DeliveryRequestDetail> teamInventory(Integer projectId) {
-		return deliveryRequestDetailRepos.findByDestinationProjectAndTypeAndStatus(projectId, Arrays.asList(DeliveryRequestType.OUTBOUND, DeliveryRequestType.XBOUND), Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), Arrays.asList(JobRequestStatus.REJECTED, JobRequestStatus.CANCELED));
+		return repos.findByDestinationProjectAndTypeAndStatus(projectId, Arrays.asList(DeliveryRequestType.OUTBOUND, DeliveryRequestType.XBOUND), Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), Arrays.asList(JobRequestStatus.REJECTED, JobRequestStatus.CANCELED));
 	}
 
 	@Override
@@ -61,8 +61,12 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	}
 
 	public List<DeliveryRequestDetail> findByOutboundAndWaiting(Integer projectId, Integer warehouseId, Integer id) {
-		return id == null ? deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
-				: deliveryRequestDetailRepos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), id);
+		return id == null ? repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
+				: repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), id);
+	}
+	
+	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId){
+		return repos.findRemainingByPo(poId);
 	}
 
 	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId, DeliveryRequest deliveryRequest) {
@@ -114,7 +118,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
 		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
-		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? deliveryRequestDetailRepos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : deliveryRequestDetailRepos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
+		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? repos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : repos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
 		for (DeliveryRequestDetail deliveryRequestDetail : stockRowList) {
@@ -155,7 +159,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
 		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
-		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? deliveryRequestDetailRepos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : deliveryRequestDetailRepos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
+		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null ? repos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus) : repos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
 		for (DeliveryRequestDetail deliveryRequestDetail : stockRowList) {
@@ -425,7 +429,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		if (!deliveryRequestDetail.getDeliveryRequest().getIsInbound() && !deliveryRequestDetail.getDeliveryRequest().getIsXbound())
 			return;
 		// update inbound detail
-		deliveryRequestDetailRepos.updateUnitCost(deliveryRequestDetail.getId(), unitCost);
+		repos.updateUnitCost(deliveryRequestDetail.getId(), unitCost);
 		List<Integer> idList;
 		if (deliveryRequestDetail.getDeliveryRequest().getIsInbound()) {
 			// update related StockRow
@@ -434,12 +438,12 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				stockRowRepos.updateUnitCost(idList, unitCost);
 
 			// update related outbound details
-			idList = deliveryRequestDetailRepos.findIdList(DeliveryRequestType.OUTBOUND, deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
+			idList = repos.findIdList(DeliveryRequestType.OUTBOUND, deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
 			if (idList != null && !idList.isEmpty()) {
-				deliveryRequestDetailRepos.updateUnitCost(idList, unitCost);
+				repos.updateUnitCost(idList, unitCost);
 				// update related return from outbound
 				for (Integer outboundDeliveryRequestDetailId : idList) {
-					List<Integer> idList2 = deliveryRequestDetailRepos.findIdListByPartNumberAndOutboundDeliveryRequestReturn(deliveryRequestDetail.getPartNumber().getId(), outboundDeliveryRequestDetailId);
+					List<Integer> idList2 = repos.findIdListByPartNumberAndOutboundDeliveryRequestReturn(deliveryRequestDetail.getPartNumber().getId(), outboundDeliveryRequestDetailId);
 					for (Integer integer : idList2)
 						updateUnitCost(integer, unitCost);
 				}
@@ -460,7 +464,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		if (!deliveryRequestDetail.getDeliveryRequest().getIsOutbound()) // maybe xbound too
 			return;
 
-		deliveryRequestDetailRepos.updateUnitPrice(deliveryRequestDetail.getId(), unitPrice);
+		repos.updateUnitPrice(deliveryRequestDetail.getId(), unitPrice);
 
 		List<Integer> idList;
 		if (deliveryRequestDetail.getDeliveryRequest().getIsOutbound()) {
@@ -473,9 +477,9 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	}
 
 	public List<LabelValue> findOwnerList(Integer outboundDeliveryRequestId) {
-		List<Integer> customerList = deliveryRequestDetailRepos.findOwnerCustomerList(outboundDeliveryRequestId);
-		List<Integer> supplierList = deliveryRequestDetailRepos.findOwnerSupplierList(outboundDeliveryRequestId);
-		List<Integer> companyList = deliveryRequestDetailRepos.findOwnerCompanyList(outboundDeliveryRequestId);
+		List<Integer> customerList = repos.findOwnerCustomerList(outboundDeliveryRequestId);
+		List<Integer> supplierList = repos.findOwnerSupplierList(outboundDeliveryRequestId);
+		List<Integer> companyList = repos.findOwnerCompanyList(outboundDeliveryRequestId);
 
 		List<LabelValue> result = new ArrayList<>();
 
@@ -487,26 +491,26 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	}
 
 	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return deliveryRequestDetailRepos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus);
+		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus);
 	}
 
 	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCustomerOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, Integer projectId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
 	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, Integer projectId) {
-		Double d = deliveryRequestDetailRepos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
@@ -515,7 +519,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	}
 
 //	public List<DeliveryRequestDetail> findReturnedDetailList(Integer outboundDeliveryRequestId) {
-//		List<DeliveryRequestDetail> result = deliveryRequestDetailRepos.findReturnedDetailList(outboundDeliveryRequestId,
+//		List<DeliveryRequestDetail> result = repos.findReturnedDetailList(outboundDeliveryRequestId,
 //				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 //		result.forEach(i -> {
 //			Hibernate.initialize(i.getDeliveryRequest());
@@ -525,11 +529,11 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 //	}
 
 //	public Long countReturnedDetailList(Integer outboundDeliveryRequestId) {
-//		return deliveryRequestDetailRepos.countReturnedDetailList(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+//		return repos.countReturnedDetailList(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 //	}
 
 	public List<DeliveryRequestDetail> findReturnedDetailListGroupByPartNumber(Integer outboundDeliveryRequestId) {
-		return deliveryRequestDetailRepos.findReturnedDetailListGroupByPartNumber(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return repos.findReturnedDetailListGroupByPartNumber(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {

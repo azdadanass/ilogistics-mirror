@@ -669,9 +669,15 @@
 								<h:outputText value="Po" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.po}" required="true" requiredMessage="Po should not be null" converter="#{genericSecuredConverter}">
+								<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.po}" required="true" requiredMessage="Po should not be null" converter="#{genericSecuredConverter}"
+									rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 									<f:selectItem noSelectionOption="true" itemLabel="---" />
 									<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroInvoice}" itemValue="#{item}" />
+								</p:selectOneMenu>
+								<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.po}" required="true" requiredMessage="Po should not be null" converter="#{genericSecuredConverter}"
+									rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroIbuy}" itemValue="#{item}" />
 								</p:selectOneMenu>
 							</div>
 						</div>
@@ -699,8 +705,8 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:messages id="messages" closable="true" />
-						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,main_form:serialNumberList" sizeLimit="20000000"
-							allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
+						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
+							update="messages,main_form:serialNumberList" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
 					</h:panelGroup>
 				</div>
 			</div>

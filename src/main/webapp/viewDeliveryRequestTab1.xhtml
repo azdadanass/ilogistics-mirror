@@ -240,7 +240,8 @@
 							<h:outputText value="Po" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isOutbound}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isInbound}" />
 							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">
 								<h:outputText value="None" styleClass="grey bolder" />
 							</p:commandLink>

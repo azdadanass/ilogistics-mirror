@@ -94,7 +94,7 @@ public class Po implements Serializable {
 		this.currency = currency;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "supplier_idsupplier", nullable = true)
 	public Supplier getSupplier() {
 		return supplier;

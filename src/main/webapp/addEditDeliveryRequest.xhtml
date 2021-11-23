@@ -337,7 +337,7 @@
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
 														rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isInbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroIbuy}" itemValue="#{item.idpo}" />
+														<f:selectItems value="#{deliveryRequestView.poList}" var="item" itemLabel="#{item.numeroIbuy}-#{item.supplier.name}" itemValue="#{item.idpo}" />
 														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByPo()}" update=":main_form:step1:warehouse" />
 													</p:selectOneMenu>
 													<br />

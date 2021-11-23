@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.CostType;
+import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoDeliveryStatus;
 import ma.azdad.model.Podetails;
@@ -44,10 +46,21 @@ public class PoService {
 			deliveryStatus = PoDeliveryStatus.PENDING;
 		else {
 			List<Podetails> podetailsList = podetailsRepos.findByPo(poId);
-			if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
-				deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
-			else
-				deliveryStatus = PoDeliveryStatus.DELIVERED;
+			Boolean ibuy = poRepos.getIbuy(poId);
+			if (!ibuy)
+				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType())
+						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
+				else
+					deliveryStatus = PoDeliveryStatus.DELIVERED;
+			else {
+				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType())
+						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
+				else
+					deliveryStatus = PoDeliveryStatus.DELIVERED;
+			}
+
 		}
 		poRepos.updateDeliveryStatus(poId, deliveryStatus);
 	}

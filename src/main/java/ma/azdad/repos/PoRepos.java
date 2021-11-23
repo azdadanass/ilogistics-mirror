@@ -20,6 +20,9 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 
 	@Query("select new Po(idpo,numeroInvoice) from Po where idpo in (?1)")
 	public List<Po> findLight(List<Integer> idList);
+	
+	@Query("select ibuy from Po where id = ?1")
+	public Boolean getIbuy(Integer id);
 
 	@Modifying
 	@Query("update Po set deliveryStatus = ?2 where idpo = ?1 ")

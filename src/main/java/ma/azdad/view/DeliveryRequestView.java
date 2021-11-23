@@ -577,6 +577,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			service.save(deliveryRequest);
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
+			
+			if (deliveryRequest.getPo() != null)
+				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
 
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();

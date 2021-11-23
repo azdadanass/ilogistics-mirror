@@ -20,6 +20,7 @@ import javax.persistence.Table;
 public class Po implements Serializable {
 
 	private Integer idpo;
+	private Boolean ibuy;
 	private Double madConversionRate;
 	private String numeroIbuy;
 	private String numeroInvoice;
@@ -155,6 +156,14 @@ public class Po implements Serializable {
 
 	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
+	}
+
+	public Boolean getIbuy() {
+		return ibuy;
+	}
+
+	public void setIbuy(Boolean ibuy) {
+		this.ibuy = ibuy;
 	}
 
 }

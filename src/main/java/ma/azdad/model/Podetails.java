@@ -30,6 +30,7 @@ public class Podetails implements Serializable {
 	private Integer reference;
 	private String unite;
 	private RevenueType revenueType;
+	private CostType costType;
 	private Double totalBoqPrice = 0.0;
 
 	private Po po;
@@ -132,6 +133,15 @@ public class Podetails implements Serializable {
 
 	public void setRevenueType(RevenueType revenueType) {
 		this.revenueType = revenueType;
+	}
+	
+	@Enumerated(EnumType.STRING)
+	public CostType getCostType() {
+		return costType;
+	}
+
+	public void setCostType(CostType costType) {
+		this.costType = costType;
 	}
 
 	@Column(name = "total_boq_price")

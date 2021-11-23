@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import ma.azdad.model.CostType;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoDeliveryStatus;
 import ma.azdad.model.RevenueType;
@@ -28,6 +29,9 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	@Query("update Po set deliveryStatus = ?2 where idpo = ?1 ")
 	public void updateDeliveryStatus(Integer poId, PoDeliveryStatus deliveryStatus);
 
-	@Query("select a.po.idpo  from Podetails a where a.revenueType  =?1 group by a.po.idpo")
+	@Query("select distinct a.po.idpo  from Podetails a where a.revenueType  =?1 ")
 	public Set<Integer> findPoIdListContainingGoodsSupply(RevenueType revenueTypeGoodsSupply);
+	
+	@Query("select distinct a.po.idpo  from Podetails a where a.costType  =?1 ")
+	public Set<Integer> findPoIdListContainingProjectGoodsPurchase(CostType projectGoodsPurchase);
 }

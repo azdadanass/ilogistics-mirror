@@ -1,5 +1,7 @@
 package ma.azdad.service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +68,9 @@ public class PoService {
 	}
 
 	public void updateAllDeliveryStatusScript() {
-		Set<Integer> sourceList = poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY);
+		Set<Integer> sourceList =new HashSet<>(); 
+		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
+		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 
 		for (Integer poId : sourceList)
 			updateDeliveryStatus(poId);

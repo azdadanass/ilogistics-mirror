@@ -2,19 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -48,35 +43,30 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<!-- <h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditPartNumberEquivalence.xhtml" rendered="#{partNumberEquivalenceView.canSavePartNumberEquivalence()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{partNumberEquivalenceView.id}" />
 						</h:outputLink> -->
-
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
 							rendered="#{partNumberEquivalenceView.canDeletePartNumberEquivalence()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-						
 						<p:commandLink title="#{partNumberEquivalenceView.partNumberEquivalence.active?'Disable':'Enable'}"
-							styleClass="btn btn-app btn-sm #{partNumberEquivalenceView.partNumberEquivalence.active?'btn-danger':'btn-success'} hover aa-tooltip" update=":toggleStatusForm" oncomplete="PF('toggleStatusDlg').show()">
+							styleClass="btn btn-app btn-sm #{partNumberEquivalenceView.partNumberEquivalence.active?'btn-danger':'btn-success'} hover aa-tooltip" update=":toggleStatusForm"
+							oncomplete="PF('toggleStatusDlg').show()">
 							<i class="ace-icon fa fa-power-off bigger-230"></i>
 							<h:outputText value="#{partNumberEquivalenceView.partNumberEquivalence.active?'Disable':'Enable'}" />
 						</p:commandLink>
-
 					</div>
 				</div>
 			</div>
@@ -101,9 +91,8 @@
 										<div class="profile-info-name">
 											<h:outputText value="Numero" />
 										</div>
-
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberEquivalenceView.partNumberEquivalence.numero}" styleClass="bolder orange" />
+											<h:outputText value="#{partNumberEquivalenceView.partNumberEquivalence.idStr}" styleClass="bolder orange" />
 											&nbsp;
 										</div>
 									</div>
@@ -115,7 +104,6 @@
 										<div class="profile-info-name">
 											<h:outputText value="Formula" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberEquivalenceView.partNumberEquivalence.formula}" escape="false" />
 											&nbsp;
@@ -136,30 +124,32 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable value="#{partNumberEquivalenceView.partNumberEquivalence.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
 										<p:column headerText="Part Number">
 											<h:outputText value="#{item.partNumber.name}" />
 										</p:column>
-
 										<p:column headerText="Description">
-											<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+											<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 										</p:column>
-
+										<p:column headerText="Industry" width="80">
+											<h:outputText value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Category" width="120">
+											<h:outputText value="#{item.partNumber.partNumberType.category.name}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Type" width="120">
+											<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="Brand" width="120">
+											<h:outputText value="#{item.partNumber.brandName}" />
+										</p:column>
 										<p:column headerText="Unit / Kit" width="70">
-											<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
+											<h:outputText value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit?'green':'blue'}" />
 										</p:column>
-
-
-										<p:column headerText="Technology" width="70">
-											<h:outputText id="technology" value="#{item.partNumber.technology}" />
-										</p:column>
-
 										<p:column headerText="Quantity">
 											<h:outputText value="#{item.quantity}">
 												<f:convertNumber type="number" maxFractionDigits="0" />
 											</h:outputText>
 										</p:column>
-
 									</p:dataTable>
 								</div>
 							</div>

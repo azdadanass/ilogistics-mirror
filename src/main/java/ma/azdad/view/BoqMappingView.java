@@ -297,7 +297,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		if (boq.getDirectEquivalence())
 			return partNumberEquivalenceService.findByPartNumberAndContainingPartNumber(boq.getPartNumber().getId(), bmi.getPartNumber().getId());
 		else
-			return partNumberService.findOne(bmi.getPartNumber().getId()).getEquivalenceList();
+			return partNumberService.findOne(bmi.getPartNumber().getId()).getEquivalenceList().stream().filter(pne->pne.getActive()).collect(Collectors.toList());
 	}
 
 	public List<PartNumberEquivalence> getPartNumberEquivalenceList() {

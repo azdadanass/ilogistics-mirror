@@ -21,7 +21,7 @@ public interface PartNumberEquivalenceRepos extends JpaRepository<PartNumberEqui
 	@Query("from PartNumberEquivalence a where a.inverseFormula is null and (select count(*) from PartNumberEquivalenceDetail b where b.parent.id = a.id) = 1")
 	public List<PartNumberEquivalence> findByHavingNullInverseFormula();
 
-	@Query("from PartNumberEquivalence a where a.partNumber.id = ?1 and (select count(*) from PartNumberEquivalenceDetail b where b.parent.id = a.id and b.partNumber.id = ?2 ) > 0")
+	@Query("from PartNumberEquivalence a where a.active is true and a.partNumber.id = ?1 and (select count(*) from PartNumberEquivalenceDetail b where b.parent.id = a.id and b.partNumber.id = ?2 ) > 0")
 	public List<PartNumberEquivalence> findByPartNumberAndContainingPartNumber(Integer partNumberId1, Integer partNumberId2);
 
 }

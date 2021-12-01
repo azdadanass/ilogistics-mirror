@@ -1298,7 +1298,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			toNotifyUserSet.addAll(userService.findByProjectDelegation(deliveryRequest.getDestinationProject().getId(), true));
 			toNotifyUserSet.addAll(userService.findByCustomerOrSupplierAndHavingAssignement(deliveryRequest.getDeliverToCustomerId(), deliveryRequest.getDeliverToSupplierId(), deliveryRequest.getDestinationProjectId()));
 		}
-		toNotifyUserSet.forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
+		toNotifyUserSet.stream().filter(user->Boolean.TRUE.equals(user.getActive())).forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 
 	public void addToNotifyItem() {

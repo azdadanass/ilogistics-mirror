@@ -120,7 +120,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("from User a where a.supplier.id = ?1")
 	List<User> findBySupplier(Integer supplierId);
 
-	@Query("from User a where (a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2) and (select count(*) from  ProjectAssignment b where b.user.username = a.username and b.project.id = ?3 and current_date between b.startDate and b.endDate) > 0")
+	@Query("from User a where ((a.customer is not null and a.customer.id = ?1) or (a.supplier is not null and a.supplier.id = ?2)) and (select count(*) from  ProjectAssignment b where b.user.username = a.username and b.project.id = ?3 and current_date between b.startDate and b.endDate) > 0")
 	List<User> findByCustomerOrSupplierAndHavingAssignement(Integer customerId, Integer supplierId, Integer projectId);
 
 	List<User> findByCompany(String company);

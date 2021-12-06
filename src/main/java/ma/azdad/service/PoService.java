@@ -1,6 +1,6 @@
 package ma.azdad.service;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CostType;
-import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
 import ma.azdad.model.RevenueType;
 import ma.azdad.repos.PoRepos;
@@ -39,7 +39,7 @@ public class PoService {
 	}
 
 	public List<Po> findByTypeAndProjectAndNotDelivered(String type, Integer projectId) {
-		return poRepos.findByTypeAndProjectAndNotDeliveryStatus(type, projectId, PoDeliveryStatus.DELIVERED);
+		return poRepos.findByTypeAndProjectAndNotDeliveryStatus(type, projectId, PoDeliveryStatus.DELIVERED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
 	public void updateDeliveryStatus(Integer poId) {
@@ -50,14 +50,12 @@ public class PoService {
 			List<Podetails> podetailsList = podetailsRepos.findByPo(poId);
 			Boolean ibuy = poRepos.getIbuy(poId);
 			if (!ibuy)
-				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType())
-						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
 				else
 					deliveryStatus = PoDeliveryStatus.DELIVERED;
 			else {
-				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType())
-						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
 				else
 					deliveryStatus = PoDeliveryStatus.DELIVERED;
@@ -68,7 +66,7 @@ public class PoService {
 	}
 
 	public void updateAllDeliveryStatusScript() {
-		Set<Integer> sourceList =new HashSet<>(); 
+		Set<Integer> sourceList = new HashSet<>();
 		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
 		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 

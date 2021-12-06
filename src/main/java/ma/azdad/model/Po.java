@@ -142,6 +142,7 @@ public class Po implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status_new")
 	public PoStatus getStatus() {
 		return status;
 	}

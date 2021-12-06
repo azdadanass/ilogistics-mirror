@@ -25,7 +25,7 @@ public class Po implements Serializable {
 	private String numeroIbuy;
 	private String numeroInvoice;
 	private String type;
-	private String status;
+	private PoStatus status;
 	private Currency currency;
 	private Supplier supplier;
 	private Project project;
@@ -141,11 +141,12 @@ public class Po implements Serializable {
 		this.type = type;
 	}
 
-	public String getStatus() {
+	@Enumerated(EnumType.STRING)
+	public PoStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(PoStatus status) {
 		this.status = status;
 	}
 

@@ -339,6 +339,16 @@ public class User extends GenericModel<String> {
 	}
 
 	@Transient
+	public Boolean getIsInternalPM() {
+		return internal && hasRole(Role.ROLE_ILOGISTICS_PM);
+	}
+
+	@Transient
+	public Boolean getIsExternalPM() {
+		return !internal && hasRole(Role.ROLE_ILOGISTICS_PM);
+	}
+
+	@Transient
 	public Boolean getIsWM() {
 		return hasRole(Role.ROLE_ILOGISTICS_WM);
 	}
@@ -710,6 +720,16 @@ public class User extends GenericModel<String> {
 
 	public void setSdm(Boolean sdm) {
 		this.sdm = sdm;
+	}
+
+	@Transient
+	public Boolean getIsCustomerUser() {
+		return CompanyType.CUSTOMER.equals(companyType);
+	}
+
+	@Transient
+	public Boolean getIsSupplierUser() {
+		return CompanyType.SUPPLIER.equals(companyType);
 	}
 
 }

@@ -96,6 +96,14 @@ public class SessionView implements Serializable {
 		return isPM();
 	}
 
+	public Boolean getIsInternalPM() {
+		return user.getIsInternalPM();
+	}
+
+	public Boolean getIsExternalPM() {
+		return user.getIsExternalPM();
+	}
+
 	public Boolean getIsLobManager() {
 		return user.getIsLobManager();
 	}

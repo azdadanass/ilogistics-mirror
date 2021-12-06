@@ -141,28 +141,40 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				return deliveryRequestRepos.findLight(username, warehouseList, projectList, type);
 			else
 				return deliveryRequestRepos.findLight(username, warehouseList, projectList);
-		if (DeliveryRequestState.WAITING.equals(state))
-			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, projectList);
-			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), warehouseList, projectList);
-		else if (DeliveryRequestState.PARTIALLY_DELIVRED.equals(state))
-			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
-			else
-				return deliveryRequestRepos.findLight(username, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
-		else if (DeliveryRequestState.DELIVRED.equals(state))
-			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, projectList);
-			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), warehouseList, projectList);
-		else if (DeliveryRequestState.REJECTED.equals(state))
-			if (type != null)
-				return deliveryRequestRepos.findLight(username, type, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, projectList);
-			else
-				return deliveryRequestRepos.findLight(username, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED), warehouseList, projectList);
-		return null;
+		else if (type != null)
+			return deliveryRequestRepos.findLight(username, type, state.getStatusList(), warehouseList, projectList);
+		else
+			return deliveryRequestRepos.findLight(username, state.getStatusList(), warehouseList, projectList);
 
+//		if (DeliveryRequestState.WAITING.equals(state))
+//			if (type != null)
+//				return deliveryRequestRepos.findLight(username, type, state.getStatusList(), warehouseList, projectList);
+//			else
+//				return deliveryRequestRepos.findLight(username, state.getStatusList(), warehouseList, projectList);
+//		else if (DeliveryRequestState.PARTIALLY_DELIVRED.equals(state))
+//			if (type != null)
+//				return deliveryRequestRepos.findLight(username, type, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
+//			else
+//				return deliveryRequestRepos.findLight(username, DeliveryRequestStatus.PARTIALLY_DELIVRED, warehouseList, projectList);
+//		else if (DeliveryRequestState.DELIVRED.equals(state))
+//			if (type != null)
+//				return deliveryRequestRepos.findLight(username, type, state.getStatusList(), warehouseList, projectList);
+//			else
+//				return deliveryRequestRepos.findLight(username, state.getStatusList(), warehouseList, projectList);
+//		else if (DeliveryRequestState.REJECTED.equals(state))
+//			if (type != null)
+//				return deliveryRequestRepos.findLight(username, type, state.getStatusList(), warehouseList, projectList);
+//			else
+//				return deliveryRequestRepos.findLight(username, state.getStatusList(), warehouseList, projectList);
+//		return null;
+
+	}
+
+	public List<DeliveryRequest> findLightByDeliverToSupplierAndDestinationProject(DeliveryRequestType type, DeliveryRequestState state, Integer deliverToSupplierId, List<Integer> destinationProjectList) {
+		if (state == null)
+			return repos.findLightByDeliverToSupplierAndDestinationProject(deliverToSupplierId, destinationProjectList, type);
+		else
+			return repos.findLightByDeliverToSupplierAndDestinationProject(deliverToSupplierId, destinationProjectList, type, state.getStatusList());
 	}
 
 	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {

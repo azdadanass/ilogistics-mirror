@@ -30,7 +30,8 @@
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="grid center">
-				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/se.jpg" width="400" height="270" /> <p:commandLink action="#{cacheView.getWelcomePage(1)}">
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/se.jpg" width="400" height="270" styleClass="#{indexView.canAccessMenu(1)?'':'desaturate'}" /> <p:commandLink
+					action="#{indexView.getWelcomePage(1)}">
 					<figcaption>
 					<h2>
 						<span>
@@ -42,8 +43,8 @@
 					</p>
 					</figcaption>
 				</p:commandLink> </figure>
-				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/wm.jpg" width="400" height="270"
-					styleClass="#{sessionView.isPM or sessionView.isWM or sessionView.isUser or sessionView.isLobManager?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(2)}">
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/wm.jpg" width="400" height="270" styleClass="#{indexView.canAccessMenu(2)?'':'desaturate'}" /> <p:commandLink
+					action="#{indexView.getWelcomePage(2)}">
 					<figcaption>
 					<h2>
 						<span>
@@ -56,8 +57,8 @@
 					</p>
 					</figcaption>
 				</p:commandLink> </figure>
-				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/tm.jpg" width="400" height="270"
-					styleClass="#{sessionView.isPM or sessionView.isTM or sessionView.isUser?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(3)}">
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/tm.jpg" width="400" height="270" styleClass="#{indexView.canAccessMenu(3)?'':'desaturate'}" /> <p:commandLink
+					action="#{indexView.getWelcomePage(3)}">
 					<figcaption>
 					<h2>
 						<span>
@@ -70,8 +71,8 @@
 					</p>
 					</figcaption>
 				</p:commandLink> </figure>
-				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/reporting.jpg" width="400" height="270"
-					styleClass="#{sessionView.isUser or sessionView.isPM or sessionView.isWM or sessionView.isAdmin  or sessionView.isLobManager?'':'desaturate'}" /> <p:commandLink action="#{cacheView.getWelcomePage(4)}">
+				<figure class="effect-marley"> <p:graphicImage value="resources/img/index/reporting.jpg" width="400" height="270" styleClass="#{indexView.canAccessMenu(4)?'':'desaturate'}" /> <p:commandLink
+					action="#{indexView.getWelcomePage(4)}">
 					<figcaption>
 					<h2>
 						<span>

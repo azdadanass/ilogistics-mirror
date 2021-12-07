@@ -54,8 +54,6 @@ public class CacheView implements Serializable {
 	@Autowired
 	UserService userService;
 
-	private Integer selectedMenu = 2;
-
 	private Map<String, String> lm = new HashMap<String, String>();
 
 	private List<Integer> assignedProjectList;
@@ -79,25 +77,6 @@ public class CacheView implements Serializable {
 
 	public Boolean hasDelegation(Integer projectId) {
 		return delegatedProjectList.contains(projectId);
-	}
-
-	public String getWelcomePage(Integer selectedMenu) {
-		this.selectedMenu = selectedMenu;
-		switch (selectedMenu) {
-		case 1:
-			return addParameters(sessionView.getIsAdmin() ? "warehouseList.xhtml" : sessionView.getIsPM() ? "projectList.xhtml" : "partNumberList.xhtml", "faces-redirect=true");
-		case 2:
-			if (sessionView.isPM() || sessionView.isWM() || sessionView.isUser() || sessionView.getIsLobManager())
-				return addParameters("deliveryRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
-		case 3:
-			if (sessionView.isAdmin() || sessionView.isPM() || sessionView.isTM() || sessionView.isUser())
-				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
-		case 4:
-			if (sessionView.isAdmin() || sessionView.isPM() || sessionView.isWM() || sessionView.isUser() || sessionView.getIsLobManager())
-				return addParameters("reporting.xhtml", "faces-redirect=true");
-		default:
-			return null;
-		}
 	}
 
 	public void accessDenied() {
@@ -156,14 +135,6 @@ public class CacheView implements Serializable {
 
 	public String getCin(String username) {
 		return userService.findAsMap().getOrDefault(username, new User()).getCin();
-	}
-
-	public Integer getSelectedMenu() {
-		return selectedMenu;
-	}
-
-	public void setSelectedMenu(Integer selectedMenu) {
-		this.selectedMenu = selectedMenu;
 	}
 
 	public static String addParameters(String path, String... tab) {

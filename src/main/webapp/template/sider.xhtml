@@ -6,7 +6,7 @@
 		<h:form id="sider_form">
 			<h:panelGroup id="sider-panel">
 				<ul class="nav nav-list">
-					<f:subview rendered="#{cacheView.selectedMenu == 1}">
+					<f:subview rendered="#{indexView.selectedMenu == 1}">
 						<li class="open">
 							<a href="#" class="dropdown-toggle">
 								<i class="menu-icon fa fa-gears"></i>
@@ -110,7 +110,7 @@
 							</ul>
 						</li>
 					</f:subview>
-					<f:subview rendered="#{cacheView.selectedMenu == 2}">
+					<f:subview rendered="#{indexView.selectedMenu == 2}">
 						<f:subview rendered="#{sessionView.isUser or sessionView.isPM or sessionView.isLobManager or sessionView.isWM}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
@@ -175,7 +175,7 @@
 							</li>
 						</f:subview>
 					</f:subview>
-					<f:subview rendered="#{cacheView.selectedMenu == 3}">
+					<f:subview rendered="#{indexView.selectedMenu == 3}">
 						<f:subview rendered="#{sessionView.isPM or sessionView.isTM  or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
@@ -319,7 +319,7 @@
 							</li>
 						</f:subview>
 					</f:subview>
-					<f:subview rendered="#{cacheView.selectedMenu == 4}">
+					<f:subview rendered="#{indexView.selectedMenu == 4}">
 						<f:subview rendered="#{sessionView.isPM or sessionView.isWM or sessionView.isAdmin or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">

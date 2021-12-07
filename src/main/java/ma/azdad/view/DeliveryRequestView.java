@@ -174,6 +174,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	@Autowired
 	JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
 
+	@Autowired
+	IndexView indexView;
+
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
 	private DeliveryRequestComment deliveryRequestComment = new DeliveryRequestComment();
@@ -327,7 +330,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				if (sessionView.getInternal() || sessionView.getUser().getIsCustomerUser())
 					list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), Stream.concat(cacheView.getAssignedProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
 				else if (sessionView.getUser().getIsSupplierUser())
-					list2 = list1 = service.findLightByDeliverToSupplierAndDestinationProject(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
+					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList());
 
 				break;
 			case 2:
@@ -439,7 +442,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public String addTransport() {
-		cacheView.setSelectedMenu(3);
+		indexView.setSelectedMenu(3);
 		return addParameters("addEditTransportationRequest.xhtml", "faces-redirect=true", "deliveryRequestId=" + deliveryRequest.getId());
 	}
 

@@ -170,11 +170,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	}
 
-	public List<DeliveryRequest> findLightByDeliverToSupplierAndDestinationProject(DeliveryRequestType type, DeliveryRequestState state, Integer deliverToSupplierId, List<Integer> destinationProjectList) {
+	public List<DeliveryRequest> findLightBySupplierUser(DeliveryRequestType type, DeliveryRequestState state, Integer deliverToSupplierId, List<Integer> destinationProjectList, List<Integer> warehouseList) {
 		if (state == null)
-			return repos.findLightByDeliverToSupplierAndDestinationProject(deliverToSupplierId, destinationProjectList, type);
+			return repos.findLightBySupplierUser(deliverToSupplierId, destinationProjectList, type, warehouseList);
 		else
-			return repos.findLightByDeliverToSupplierAndDestinationProject(deliverToSupplierId, destinationProjectList, type, state.getStatusList());
+			return repos.findLightBySupplierUser(deliverToSupplierId, destinationProjectList, type, warehouseList, state.getStatusList());
 	}
 
 	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {

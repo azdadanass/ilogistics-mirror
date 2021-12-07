@@ -9,7 +9,7 @@ public enum PoStatus implements Serializable {
 	APPROVED3("Approval in Progress (LoB MGR)"),
 	APPROVED4("Approved"),
 	SUBMITTED("Submitted"),
-	INPROGRESS("In Progress"),
+	IN_PROGRESS("In Progress"),
 	RECEIVING("Receiving"),
 	RECEIVED("Received"),
 	OPEN("Open"),

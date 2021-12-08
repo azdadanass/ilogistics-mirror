@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.Issue;
 import ma.azdad.model.User;
 import ma.azdad.utils.App;
 import ma.azdad.utils.Mail;
@@ -89,6 +90,17 @@ public class EmailService {
 		mail.addInline("orange", resourceLoader.getResource("classpath:img/orange.png").getFile());
 		mail.addInline("telo", resourceLoader.getResource("classpath:img/telo.png").getFile());
 		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
+
+	@Async
+	public void sendIssueNotification(Issue issue, User user) {
+		String to = user.getEmail();
+		String subject = "Issue Assigned";
+
+		Mail mail = new Mail(to, subject, "issue.html", TemplateType.HTML);
+		mail.addParameter("issue", issue);
+		mail.addParameter("user", user);
 		send(mail);
 	}
 

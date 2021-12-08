@@ -19,6 +19,7 @@ import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.User;
+import ma.azdad.repos.IssueRepos;
 import ma.azdad.repos.ProjectRepos;
 
 @Component
@@ -27,6 +28,9 @@ public class ProjectService {
 
 	@Autowired
 	ProjectRepos repos;
+
+	@Autowired
+	IssueRepos issueRepos;
 
 	public Project findOne(Integer id) {
 		Project p = repos.findById(id).get();
@@ -184,5 +188,31 @@ public class ProjectService {
 
 	public Integer findCompanyId(Integer id) {
 		return repos.findCompanyId(id);
+	}
+
+	public Boolean isQualityManager(String username, Integer projectId) {
+		return countByManagerAndProjectAndManagerType(username, projectId, ProjectManagerType.QUALITY_MANAGER) > 0;
+	}
+
+	@Cacheable("projectService.findIdListByManagerAndManagerType")
+	public List<Integer> findIdListByManagerAndManagerType(String username, ProjectManagerType type) {
+		return repos.findIdListByManagerAndManagerType(username, type);
+	}
+
+	@Cacheable("projectService.findIdListByQualityManager")
+	public List<Integer> findIdListByQualityManager(String username) {
+		return findIdListByManagerAndManagerType(username, ProjectManagerType.QUALITY_MANAGER);
+	}
+
+	@Cacheable("projectService.findIdListByDelegation")
+	public List<Integer> findIdListByDelegation(String username) {
+		return repos.findIdListByDelegation(username);
+	}
+
+	public List<Project> findProjectListHavingIssues(Collection<Integer> userProjectIdList) {
+		List<Integer> idList = issueRepos.findProjectIdList(userProjectIdList);
+		if (!idList.isEmpty())
+			return repos.findLight(idList);
+		return new ArrayList<Project>();
 	}
 }

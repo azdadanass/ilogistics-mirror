@@ -50,6 +50,7 @@ import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestState;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.IssueStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
@@ -1043,6 +1044,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void updateSdm(Integer id, Boolean sdm) {
 		deliveryRequestRepos.updateSdm(id, sdm);
 		evictCache();
+	}
+
+	public void updateCountIssues(Integer id) {
+		repos.updateCountIssues1(id, Arrays.asList(IssueStatus.RAISED, IssueStatus.CONFIRMED, IssueStatus.ASSIGNED, IssueStatus.NOT_RESOLVED));
+		repos.updateCountIssues2(id, Arrays.asList(IssueStatus.RAISED, IssueStatus.CONFIRMED, IssueStatus.ASSIGNED, IssueStatus.NOT_RESOLVED));
+		repos.updateCountIssues3(id, Arrays.asList(IssueStatus.RESOLVED, IssueStatus.ACKNOWLEDGED));
+		evictCache();
+	}
+
+	public void updateCountIssuesScript() {
+		repos.findIdList().forEach(id -> updateCountIssues(id));
 	}
 
 }

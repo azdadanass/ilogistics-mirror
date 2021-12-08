@@ -46,4 +46,8 @@ public class CompanyView {
 		return companyService.findIdByProject(projectId);
 	}
 
+	public List<Company> findLight() {
+		return companyService.findLight();
+	}
+
 }

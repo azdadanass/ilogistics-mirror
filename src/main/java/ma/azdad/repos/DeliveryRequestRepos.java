@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.IssueStatus;
 import ma.azdad.model.Po;
 import ma.azdad.model.User;
 
@@ -28,6 +29,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String select1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.status,a.originNumber,a.date4," + originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef ) ";
 	String select2 = "select count(*) ";
+
+	@Query("select id from DeliveryRequest")
+	List<Integer> findIdList();
 
 	@Query(select1 + " from DeliveryRequest a" + " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))" + " order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> projectList);
@@ -286,5 +290,18 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest set sdm = ?2 where id = ?1")
 	public void updateSdm(Integer id, Boolean sdm);
+
+	// update countIssues
+	@Modifying
+	@Query("update DeliveryRequest a set a.countIssues1 = (select count(*) from Issue b where b.deliveryRequest.id = a.id and b.status in (?2) and b.blocking is true) where id = ?1")
+	void updateCountIssues1(Integer id, List<IssueStatus> issueStatusList);
+
+	@Modifying
+	@Query("update DeliveryRequest a set a.countIssues2 = (select count(*) from Issue b where b.deliveryRequest.id = a.id and b.status in (?2) and b.blocking is false) where id = ?1")
+	void updateCountIssues2(Integer id, List<IssueStatus> issueStatusList);
+
+	@Modifying
+	@Query("update DeliveryRequest a set a.countIssues3 = (select count(*) from Issue b where b.deliveryRequest.id = a.id and b.status in (?2)) where id = ?1")
+	void updateCountIssues3(Integer id, List<IssueStatus> issueStatusList);
 
 }

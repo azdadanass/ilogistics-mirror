@@ -156,4 +156,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select new User(a.username,a.fullName) from User a where a.internal is false and a.ilogistics is true and a.active is true")
 	public List<User> findExternalActive();
 
+	@Query("select new User(a.username,a.fullName) from User a where a.active is true and a.companyType = ?1 and (a.company.id = ?2 or a.customer.id = ?3 or a.supplier.id = ?4)")
+	List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId);
+
 }

@@ -28,6 +28,9 @@ public class JobService {
 	@Autowired
 	PoService poService;
 
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
+
 	@Async
 	@Scheduled(cron = "0 34 19 * * *")
 	public void test() {
@@ -70,6 +73,11 @@ public class JobService {
 	@Scheduled(cron = "0 45 04 * * *")
 	public void updateAllPoDeliveryStatusScript() {
 		poService.updateAllDeliveryStatusScript();
+	}
+
+	@Scheduled(cron = "00 40 00 * * *")
+	public void updateCountIssuesScript() {
+		deliveryRequestService.updateCountIssuesScript();
 	}
 
 }

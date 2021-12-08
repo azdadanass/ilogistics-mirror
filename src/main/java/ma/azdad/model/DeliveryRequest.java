@@ -28,6 +28,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.LabelValue;
 
@@ -126,6 +128,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	private User user6;
 	private User user7;
 	private User user8;
+
+	// count issues
+
+	private Long countIssues1 = 0l; // (Raised, confirmed, assigned, Not resolved) & blocking = true
+	private Long countIssues2 = 0l; // (Raised, confirmed, assigned, Not resolved) & blocking = false
+	private Long countIssues3 = 0l; // (resolved)
 
 	// TMP
 	private LabelValue owner;
@@ -973,6 +981,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Transient
+	@JsonIgnore
+	public String getProjectName() {
+		if (project != null)
+			return project.getName();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setProjectName(String name) {
+		if (project == null)
+			project = new Project();
+		project.setName(name);
+	}
+
+	@Transient
 	public Integer getOriginId() {
 		return originId;
 	}
@@ -1718,4 +1742,29 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 			destinationProject = new Project();
 		destinationProject.setName(destinationProjectName);
 	}
+
+	public Long getCountIssues1() {
+		return countIssues1;
+	}
+
+	public void setCountIssues1(Long countIssues1) {
+		this.countIssues1 = countIssues1;
+	}
+
+	public Long getCountIssues2() {
+		return countIssues2;
+	}
+
+	public void setCountIssues2(Long countIssues2) {
+		this.countIssues2 = countIssues2;
+	}
+
+	public Long getCountIssues3() {
+		return countIssues3;
+	}
+
+	public void setCountIssues3(Long countIssues3) {
+		this.countIssues3 = countIssues3;
+	}
+
 }

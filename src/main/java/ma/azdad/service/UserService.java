@@ -322,4 +322,9 @@ public class UserService {
 		return repos.findExternalActive();
 	}
 
+	@Cacheable("userService.findActiveByCompanyType")
+	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
+		return repos.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
+	}
+
 }

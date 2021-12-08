@@ -21,4 +21,7 @@ public abstract interface CompanyRepos extends JpaRepository<Company, Integer> {
 	@Query("select a.costcenter.lob.bu.company.id from Project a where a.id = ?1")
 	Integer findIdByProject(Integer projectId);
 
+	@Query("select new Company(id,name) from Company")
+	List<Company> findLight();
+
 }

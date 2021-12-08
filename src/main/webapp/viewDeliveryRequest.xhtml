@@ -147,6 +147,11 @@
 							<f:param name="outboundDeliveryRequestId" value="#{deliveryRequestView.deliveryRequest.id}" />
 							<f:param name="inboundType" value="2" />
 						</h:outputLink>
+						<h:outputLink value="addEditIssue.xhtml" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" title="Add Issue">
+							<i class="ace-icon fa fa-plus bigger-230"></i>
+							<h:outputText value="Add" styleClass="smaller-80" />
+							<f:param name="deliveryRequestId" value="#{deliveryRequestView.deliveryRequest.id}" />
+						</h:outputLink>
 					</div>
 					<div class="col-sm-7  hidden-xs infobox-container">
 						<div class="row">

@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	<h:form id="confirmForm">
+		<p:dialog widgetVar="confirmDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('confirmDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-spinner light-blue" />
+					<h:outputText value=" Confirm" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-5 col-sm-5 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Blocking" />
+							</label>
+							<div class="col-xs-7 col-sm-7">
+								<h:selectOneMenu value="#{issueView.model.blocking}" required="true" requiredMessage="Blocking filed should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-5 col-sm-5 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Temporary/Permanent" />
+							</label>
+							<div class="col-xs-7 col-sm-7">
+								<h:selectOneMenu value="#{issueView.model.permanent}" required="true" requiredMessage="Temporary/Permanent filed should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="Permanent" itemValue="true" />
+									<f:selectItem itemLabel="Temporary" itemValue="false" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="center">
+					<p:inputTextarea value="#{issueView.model.tmpComment}" placeholder="Comment" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('confirmDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.confirm()}" value="Confirm" styleClass="btn btn-info" oncomplete="PF('confirmDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="rejectForm">
+		<p:dialog widgetVar="rejectDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('rejectDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove grey" />
+					<h:outputText value=" Reject" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to reject this item ?" style="margin-left: 20px" />
+				<br />
+				<div class="center">
+					<p:inputTextarea value="#{issueView.model.tmpComment}" placeholder="Comment" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('rejectDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.reject()}" value="Reject" styleClass="btn btn-danger" oncomplete="PF('rejectDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="assignForm">
+		<p:dialog widgetVar="assignDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('assignDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-link light-blue" />
+					<h:outputText value=" Assign" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Ownership type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{issueView.model.ownershipType}" required="true" requiredMessage="Ownership type should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{CompanyType.ALL_ENUM_VALUES}" />
+									<p:ajax update="ownership,ownershipUser" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<h:panelGroup id="ownership">
+					<div class="row">
+						<f:subview rendered="#{CompanyType.COMPANY==issueView.model.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Company" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.model.companyId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Company should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{companyView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax update=":assignForm:ownershipUser" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{CompanyType.CUSTOMER==issueView.model.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Customer" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.model.customerId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Customer should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax update=":assignForm:ownershipUser" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{CompanyType.SUPPLIER==issueView.model.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Supplier" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.model.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax update=":assignForm:ownershipUser" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<div class="col-xs-12 col-sm-6">
+							<div class="form-group">
+								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+									<h:outputText value="Ownership Resource" />
+								</label>
+								<div class="col-xs-9 col-sm-9">
+									<p:selectOneMenu id="ownershipUser" value="#{issueView.model.ownershipUserUsername}" filter="true" filterMatchMode="contains" required="true"
+										requiredMessage="Ownership Resource should not be null">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItems value="#{userView.findActiveByCompanyType(issueView.model.ownershipType,issueView.model.companyId,issueView.model.customerId,issueView.model.supplierId)}" var="item"
+											itemLabel="#{item.name}" itemValue="#{item.username}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('assignDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.assign()}" value="Assign" styleClass="btn btn-info" oncomplete="PF('assignDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="unassignForm">
+		<p:dialog widgetVar="unassignDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('unassignDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-chain-broken red" />
+					<h:outputText value=" Unassign Issues" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to unassign this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('unassignDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.unassign()}" value="Unassign" styleClass="btn btn-danger" oncomplete="PF('unassignDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="resolveForm">
+		<p:dialog widgetVar="resolveDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('resolveDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check green" />
+					<h:outputText value=" Resolve" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to resolve this item ?" style="margin-left: 20px" />
+				<br />
+				<div class="center">
+					<p:inputTextarea value="#{issueView.model.tmpComment}" placeholder="Comment" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('resolveDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.resolve()}" value="Resolve" styleClass="btn btn-success" oncomplete="PF('resolveDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="notNotResolveForm">
+		<p:dialog widgetVar="notResolveDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('notResolveDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove red" />
+					<h:outputText value=" Not Resolve" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to Not Resolve this item ?" style="margin-left: 20px" />
+				<br />
+				<div class="center">
+					<p:inputTextarea value="#{issueView.model.tmpComment}" placeholder="Comment" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('notResolveDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.notResolve()}" value="Not Resolve" styleClass="btn btn-danger" oncomplete="PF('notResolveDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="acknowledgeForm">
+		<p:dialog widgetVar="acknowledgeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('acknowledgeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check green" />
+					<h:outputText value=" Acknowledge" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to acknowledge this item ?" style="margin-left: 20px" />
+				<br />
+				<div class="center">
+					<p:inputTextarea value="#{issueView.model.tmpComment}" placeholder="Comment" style="width:90%;margin:auto" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('acknowledgeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.acknowledge()}" value="Acknowledge" styleClass="btn btn-purple" oncomplete="PF('acknowledgeDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="deleteForm">
+		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete Issue" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.delete()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="deleteFileForm">
+		<p:dialog widgetVar="deleteFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.deleteFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteFileDlg').hide()" update=":main_form:fileList" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addFileForm">
+		<p:dialog widgetVar="uploadFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadFileDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add New File" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Doc Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{issueView.fileType}" style="width:178px">
+									<f:selectItem noSelectionOption="true" itemLabel="---" />
+									<f:selectItems value="#{docTypeView.findByType(issueView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax update="fileUploadPanel" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{issueView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:fileList"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{issueView.fileType==null?'hide':''}" style="margin: auto;width: 80%" />
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addCommentForm">
+		<p:dialog widgetVar="addCommentDlg" modal="true" closable="false" resizable="false" showHeader="false" position="top" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus light-blue" />
+					<h:outputText value=" Add Comment" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<div class="center">
+					<p:inputText value="#{issueView.comment.title}" placeholder="Title" required="true" requiredMessage="Title should not be null" style="width:90%;margin:auto" />
+				</div>
+				<br />
+				<div class="center">
+					<p:textEditor widgetVar="editor1" value="#{issueView.comment.content}" height="300" style="margin-bottom:10px" required="true" requiredMessage="Comment should not be null" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.addComment()}" value="Add" styleClass="btn btn-info" oncomplete="PF('addCommentDlg').hide()" update=":main_form:commentPanel" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="deleteCommentForm">
+		<p:dialog widgetVar="deleteCommentDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete Comment" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.deleteComment()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteCommentDlg').hide()" update=":main_form:commentPanel" />
+			</div>
+		</p:dialog>
+	</h:form>
+</ui:composition>

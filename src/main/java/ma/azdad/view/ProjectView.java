@@ -169,6 +169,10 @@ public class ProjectView {
 		return findFirstManagerByType(projectId, ProjectManagerType.HARDWARE_MANAGER);
 	}
 
+	public List<Project> findProjectListHavingIssues() {
+		return projectService.findProjectListHavingIssues(cacheView.getAllProjectList());
+	}
+
 	// GETTERS & SETTERS
 	public Project getProject() {
 		return project;

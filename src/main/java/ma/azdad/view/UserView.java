@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.CompanyType;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
 import ma.azdad.service.CustomerService;
@@ -266,6 +267,10 @@ public class UserView {
 	// GENERIC
 	public List<User> findLight() {
 		return userService.findLight();
+	}
+
+	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
+		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
 
 	public List<User> findLightByStatus(Boolean active) {

@@ -82,4 +82,10 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select costcenter.lob.bu.company.id from Project where id = ?1")
 	Integer findCompanyId(Integer id);
 
+	@Query("select distinct a.project.id from ProjectManager a where a.user.username = ?1 and a.type = ?2")
+	List<Integer> findIdListByManagerAndManagerType(String username, ProjectManagerType type);
+
+	@Query("select distinct a.project.id  from DelegationDetail a where a.delegation.delegate.username = ?1 and a.delegation.status = 'Active' and a.type = 'PM'")
+	List<Integer> findIdListByDelegation(String username);
+
 }

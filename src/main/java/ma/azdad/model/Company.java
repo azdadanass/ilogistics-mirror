@@ -20,6 +20,12 @@ public class Company implements Serializable {
 		super();
 	}
 
+	public Company(Integer id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		try {

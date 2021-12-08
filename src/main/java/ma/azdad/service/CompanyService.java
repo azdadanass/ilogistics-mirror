@@ -3,6 +3,7 @@ package ma.azdad.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,27 +16,32 @@ import ma.azdad.utils.LabelValue;
 public class CompanyService {
 
 	@Autowired
-	private CompanyRepos companyRepos;
+	private CompanyRepos repos;
 
 	public List<LabelValue> findLabelValueList() {
-		return companyRepos.findLabelValueList();
+		return repos.findLabelValueList();
 	}
 
 	public Company findOne(Integer id) {
-		return companyRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public List<Company> find(List<Integer> idList) {
 		if (idList == null || idList.isEmpty())
 			return null;
-		return companyRepos.find(idList);
+		return repos.find(idList);
 	}
 
 	public List<Company> findAll() {
-		return companyRepos.findAll();
+		return repos.findAll();
 	}
 
 	public Integer findIdByProject(Integer projectId) {
-		return companyRepos.findIdByProject(projectId);
+		return repos.findIdByProject(projectId);
+	}
+
+	@Cacheable("companyService.findLight")
+	public List<Company> findLight() {
+		return repos.findLight();
 	}
 }

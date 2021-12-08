@@ -498,6 +498,12 @@
 							</a>
 						</li>
 					</f:subview>
+					<li>
+						<a data-toggle="tab" href="#tab13">
+							<i class="red ace-icon fa fa-exclamation-triangle bigger-120"></i>
+							<h:outputText value=" Issue List" />
+						</a>
+					</li>
 				</ul>
 				<p:messages id="messages" closable="true" />
 				<div class="tab-content no-border padding-24">
@@ -1539,6 +1545,52 @@
 										</p:column>
 										<p:column headerText="Quantity">
 											<h:outputText value="#{item.quantity}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab13" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Issue List" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{deliveryRequestView.deliveryRequest.issueList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Severity" width="80">
+											<h:outputText value="#{item.severity.value}" styleClass="#{item.severity.color}" />
+										</p:column>
+										<p:column headerText="Cateogry" width="120">
+											<h:outputText value="#{item.category.value}" styleClass="#{item.category.color.name} bolder" />
+										</p:column>
+										<p:column headerText="Type">
+											<h:outputText value="#{item.type.value}" styleClass="red" />
+										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{item.description}" styleClass="aa-cut-text" />
+										</p:column>
+										<p:column headerText="Bolcking">
+											<h:outputText value="#{item.blocking?'Yes':'No'}" styleClass="bolder #{item.blocking?'red':'orange'}" />
+										</p:column>
+										<p:column headerText="Temporary / Permanent">
+											<h:outputText value="#{item.permanent?'Permanent':'Temporary'}" />
+										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.badge}" />
+										</p:column>
+										<p:column headerText="Actions" style="width:150px">
+											<div class="action-buttons center">
+												<h:outputLink value="#{issueView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</div>
 										</p:column>
 									</p:dataTable>
 								</div>

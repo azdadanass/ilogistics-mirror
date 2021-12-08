@@ -96,6 +96,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequest.getDetailList().forEach(i -> i.getPacking().getDetailList().forEach(j -> Hibernate.initialize(j)));
 		Hibernate.initialize(deliveryRequest.getFileList());
 		Hibernate.initialize(deliveryRequest.getHistoryList());
+		Hibernate.initialize(deliveryRequest.getIssueList());
 		Hibernate.initialize(deliveryRequest.getOrigin());
 		Hibernate.initialize(deliveryRequest.getDestination());
 		Hibernate.initialize(deliveryRequest.getCompany());

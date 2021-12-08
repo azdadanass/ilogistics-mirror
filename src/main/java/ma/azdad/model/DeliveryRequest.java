@@ -111,6 +111,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	private List<DeliveryRequestHistory> historyList = new ArrayList<>();
 	private List<ToNotify> toNotifyList = new ArrayList<>();
 	private List<BoqMapping> boqMappingList = new ArrayList<>();
+	private List<Issue> issueList = new ArrayList<>();
 
 	// TIMELINE
 	private Date date1; // Edited
@@ -1767,4 +1768,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		this.countIssues3 = countIssues3;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
+	public List<Issue> getIssueList() {
+		return issueList;
+	}
+
+	public void setIssueList(List<Issue> issueList) {
+		this.issueList = issueList;
+	}
 }

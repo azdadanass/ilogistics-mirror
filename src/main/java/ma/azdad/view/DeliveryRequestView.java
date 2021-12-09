@@ -1824,7 +1824,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Boolean canDeleteFile(User user) {
-		return sessionView.isTheConnectedUser(user);
+		return sessionView.getInternal() && sessionView.isTheConnectedUser(user);
 	}
 
 	public void deleteDeliveryRequestFile() {

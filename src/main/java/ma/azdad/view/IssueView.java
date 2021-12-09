@@ -351,6 +351,23 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		model = service.saveAndRefresh(model);
 	}
 
+	// generic
+	public Long countToConfirm() {
+		return service.countToConfirm(sessionView.getUsername());
+	}
+
+	public Long countToAssign() {
+		return service.countToAssign(sessionView.getUsername());
+	}
+
+	public Long countToResolve() {
+		return service.countToResolve(sessionView.getUsername());
+	}
+
+	public Long countToAcknowledge() {
+		return service.countToAcknowledge(sessionView.getUsername());
+	}
+
 	// getters & setters
 	public Issue getModel() {
 		return model;

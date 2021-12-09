@@ -1,6 +1,5 @@
 package ma.azdad.service;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +23,7 @@ import ma.azdad.repos.TransportationRequestRepos;
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
 
 	@Autowired
-	TransportationRequestRepos transportationRequestRepos;
+	TransportationRequestRepos repos;
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
@@ -80,81 +79,92 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public List<TransportationRequest> findByNotHavingTransportationJob(TransportationRequestStatus status, List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return transportationRequestRepos.findByNotHavingTransportationJob(status, deliveryRequestStatus);
+		return repos.findByNotHavingTransportationJob(status, deliveryRequestStatus);
 	}
 
 	public List<TransportationRequest> findByNotHavingTransportationJob(List<TransportationRequestStatus> status) {
-		return transportationRequestRepos.findByNotHavingTransportationJob(status);
+		return repos.findByNotHavingTransportationJob(status);
 	}
 
 	public List<TransportationRequest> findLight(TransportationRequestStatus status, Boolean isTM) {
 		if (!isTM)
 			return null;
-		return transportationRequestRepos.findLight(status);
+		return repos.findLight(status);
 	}
 
 	public Long count(TransportationRequestStatus status, Boolean isTM) {
 		if (!isTM)
 			return 0l;
-		return transportationRequestRepos.count(status);
+		return repos.count(status);
 	}
 
 	public List<TransportationRequest> findByPaymentStatus(TransportationRequestPaymentStatus paymentStatus, Boolean isTm, String username) {
 		if (paymentStatus == null)
-			return isTm ? transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED) : transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
 		else
-			return isTm ? transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus) : transportationRequestRepos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
 
 	}
 
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
 		if (state == null)
 			if (isTM)
-				return transportationRequestRepos.findLight();
+				return repos.findLight();
 			else
-				return transportationRequestRepos.findLight(assignedProjectList, username);
+				return repos.findLight(assignedProjectList, username);
+		if (isTM)
+			return repos.findLight(state.getStatusList());
+		else
+			return repos.findLight(username, state.getStatusList(), assignedProjectList);
 
-		if (TransportationRequestState.WAITING.equals(state))
-			if (isTM)
-				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED));
-			else
-				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED), assignedProjectList);
-		else if (TransportationRequestState.HANDLED.equals(state))
-			if (isTM)
-				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
-			else
-				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP), assignedProjectList);
-		else if (TransportationRequestState.DELIVRED.equals(state))
-			if (isTM)
-				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
-			else
-				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED), assignedProjectList);
-		else if (TransportationRequestState.REJECTED.equals(state))
-			if (isTM)
-				return transportationRequestRepos.findLight(Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED));
-			else
-				return transportationRequestRepos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
-		return null;
+//		if (TransportationRequestState.WAITING.equals(state))
+//			if (isTM)
+//				return repos.findLight(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED));
+//			else
+//				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED), assignedProjectList);
+//		else if (TransportationRequestState.HANDLED.equals(state))
+//			if (isTM)
+//				return repos.findLight(Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
+//			else
+//				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP), assignedProjectList);
+//		else if (TransportationRequestState.DELIVRED.equals(state))
+//			if (isTM)
+//				return repos.findLight(Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+//			else
+//				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED), assignedProjectList);
+//		else if (TransportationRequestState.REJECTED.equals(state))
+//			if (isTM)
+//				return repos.findLight(Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED));
+//			else
+//				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
+//		return null;
+	}
+
+	public List<TransportationRequest> findLightBySupplierUser(TransportationRequestState state, Integer supplierId, List<Integer> assignedProjectList) {
+		if (state == null)
+			return repos.findLightBySupplierUser(supplierId, assignedProjectList);
+		else
+			return repos.findLightBySupplierUser(supplierId, assignedProjectList, state.getStatusList());
 	}
 
 	public List<TransportationRequest> findLightByRequester(String username, TransportationRequestStatus status) {
-		return transportationRequestRepos.findLightByRequester(username, status);
+		return repos.findLightByRequester(username, status);
 	}
 
 	public Long countByRequester(String username, TransportationRequestStatus status) {
-		return transportationRequestRepos.countByRequester(username, status);
+		return repos.countByRequester(username, status);
 	}
 
 	public List<TransportationRequest> findLightByProjectManager(String username, TransportationRequestStatus status) {
-		return transportationRequestRepos.findLightByProjectManager(username, status);
+		return repos.findLightByProjectManager(username, status);
 	}
 
 	public Long countByProjectManager(String username, TransportationRequestStatus status) {
-		return transportationRequestRepos.countByProjectManager(username, status);
+		return repos.countByProjectManager(username, status);
 	}
 
 	public TransportationRequest findByDeliveryRequest(Integer deliveryRequestId) {
-		return transportationRequestRepos.findByDeliveryRequest(deliveryRequestId);
+		return repos.findByDeliveryRequest(deliveryRequestId);
 	}
 
 	public void calculateEstimatedDistanceAndDuration(TransportationRequest transportationRequest) {
@@ -166,21 +176,21 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public void updatePaymentStatus() {
-		List<Integer> idList = transportationRequestRepos.findIdList(TransportationJobStatus.CLOSED);
+		List<Integer> idList = repos.findIdList(TransportationJobStatus.CLOSED);
 		for (Integer id : idList)
 			updatePaymentStatus(id);
 	}
 
 	public void updatePaymentStatus(Integer transportationRequestId) {
-		Double totalAppLinkCost = transportationRequestRepos.getTotalAppLinkCost(transportationRequestId);
-		if (TransportationRequestPaymentStatus.PAYMENT_CONFIRMED.equals(transportationRequestRepos.getPaymentStatus(transportationRequestId)))
+		Double totalAppLinkCost = repos.getTotalAppLinkCost(transportationRequestId);
+		if (TransportationRequestPaymentStatus.PAYMENT_CONFIRMED.equals(repos.getPaymentStatus(transportationRequestId)))
 			return;
 		TransportationRequestPaymentStatus paymentStatus = null;
-		if (TransportationJobStatus.CLOSED.equals(transportationRequestRepos.getTransportationJobStatus(transportationRequestId))) {
+		if (TransportationJobStatus.CLOSED.equals(repos.getTransportationJobStatus(transportationRequestId))) {
 			if (UtilsFunctions.compareDoubles(totalAppLinkCost, 0.0) == 0)
 				paymentStatus = TransportationRequestPaymentStatus.PENDING;
 			else {
-				Double cost = transportationRequestRepos.getCost(transportationRequestId);
+				Double cost = repos.getCost(transportationRequestId);
 				if (UtilsFunctions.compareDoubles(totalAppLinkCost, 0.0) > 0 && UtilsFunctions.compareDoubles(totalAppLinkCost, cost) < 0)
 					paymentStatus = TransportationRequestPaymentStatus.PAYMENT_IN_PROGRESS;
 				else if (UtilsFunctions.compareDoubles(totalAppLinkCost, cost) == 0) {
@@ -195,7 +205,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		}
 
 		System.out.println("update\t" + transportationRequestId + "\tto\t" + paymentStatus);
-		transportationRequestRepos.updatePaymentStatus(transportationRequestId, paymentStatus);
+		repos.updatePaymentStatus(transportationRequestId, paymentStatus);
 	}
 
 	public TransportationRequest rejectTransportationRequest(TransportationRequest transportationRequest, User connectedUser, String reason) {

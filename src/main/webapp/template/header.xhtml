@@ -71,6 +71,84 @@
 								</ul>
 							</li>
 						</f:subview>
+						<li class="grey">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="ace-icon fa fa-tasks"></i>
+								<span class="badge badge-grey">
+									<h:outputText value="#{issueView.countToConfirm()+issueView.countToAssign()+issueView.countToResolve()+issueView.countToAcknowledge()}" />
+								</span>
+							</a>
+							<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close" style="width: 200px">
+								<li class="dropdown-header">
+									<i class="ace-icon fa fa-check"></i>
+									<h:outputText value="Issue Management" />
+								</li>
+								<li class="dropdown-content">
+									<ul class="dropdown-menu dropdown-navbar">
+										<li>
+											<h:outputLink value="issueList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Confirm " />
+													</span>
+													<span class="pull-right badge badge-info">
+														<h:outputText value="#{issueView.countToConfirm()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="1" />
+											</h:outputLink>
+										</li>
+										<li>
+											<h:outputLink value="issueList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-link pink " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Assign " />
+													</span>
+													<span class="pull-right badge badge-pink">
+														<h:outputText value="#{issueView.countToAssign()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="2" />
+											</h:outputLink>
+										</li>
+										<li>
+											<h:outputLink value="issueList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-link green " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Resolve " />
+													</span>
+													<span class="pull-right badge badge-success">
+														<h:outputText value="#{issueView.countToResolve()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="3" />
+											</h:outputLink>
+										</li>
+										<li>
+											<h:outputLink value="issueList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-link purple " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Acknowledge " />
+													</span>
+													<span class="pull-right badge badge-purple">
+														<h:outputText value="#{issueView.countToAcknowledge()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="4" />
+											</h:outputLink>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
 						<li class="green">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-tasks"></i>

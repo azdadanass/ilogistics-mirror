@@ -133,7 +133,7 @@ public class SessionView implements Serializable {
 	}
 
 	public String getUsername() {
-		return user.getUserUsername();
+		return user.getUsername();
 	}
 
 	public UserService getUserService() {

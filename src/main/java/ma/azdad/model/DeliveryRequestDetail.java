@@ -16,10 +16,11 @@ import javax.persistence.Transient;
 public class DeliveryRequestDetail extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity = 0.0;
+	private Double purchaseCost = 0.0;
 	private Double unitCost = 0.0;
 	private Double unitPrice = 0.0;
 	
-	private Double purchaseCost = 0.0;
+	
 	
 
 	private PartNumber partNumber;

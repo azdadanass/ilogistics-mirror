@@ -172,7 +172,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	}
 
-	public List<DeliveryRequest> findLightBySupplierUser(DeliveryRequestType type, DeliveryRequestState state, Integer deliverToSupplierId, List<Integer> destinationProjectList, List<Integer> warehouseList) {
+	public List<DeliveryRequest> findLightBySupplierUser(DeliveryRequestType type, DeliveryRequestState state, Integer deliverToSupplierId, List<Integer> destinationProjectList,
+			List<Integer> warehouseList) {
 		if (state == null)
 			return repos.findLightBySupplierUser(deliverToSupplierId, destinationProjectList, type, warehouseList);
 		else
@@ -180,7 +181,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		List<DeliveryRequest> result = deliveryRequestRepos.findByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+		List<DeliveryRequest> result = deliveryRequestRepos.findByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
 
 		result.forEach(i -> {
 			i.setTotalCost(deliveryRequestRepos.getTotalCost(i.getId()));
@@ -192,15 +194,18 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.countByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+		return deliveryRequestRepos.countByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
 	}
 
 	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.findByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+		return deliveryRequestRepos.findByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
 	}
 
 	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.countByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+		return deliveryRequestRepos.countByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightByRequester")
@@ -220,15 +225,18 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public List<DeliveryRequest> findLightByIsForTransferAndDestinationProjectAndNotTransferred(String username, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType.OUTBOUND, username, assignedProjectList, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		return deliveryRequestRepos.findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType.OUTBOUND, username, assignedProjectList,
+				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 	}
 
 	public Long countByIsForTransferAndDestinationProjectAndNotTransferred(String username, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.countByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType.OUTBOUND, username, assignedProjectList, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		return deliveryRequestRepos.countByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType.OUTBOUND, username, assignedProjectList,
+				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 	}
 
 	public List<DeliveryRequest> findLightByIsForReturnAndNotFullyReturned(String username) {
-		return deliveryRequestRepos.findLightByIsForReturnAndNotFullyReturned(DeliveryRequestType.OUTBOUND, username, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		return deliveryRequestRepos.findLightByIsForReturnAndNotFullyReturned(DeliveryRequestType.OUTBOUND, username,
+				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 	}
 
 	public Long countByIsForReturnAndNotFullyReturned(String username) {
@@ -286,9 +294,13 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Body body = new Body();
 		body.setStyle("padding-top: 40px; background-color: #fff; font-family: 'Arial';font-size: 12px;");
 
-		String kindly = (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus()) ? "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval"
+		String kindly = (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus())
+				? "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval"
 				: "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>" + deliveryRequest.getStatus().getValue())
-				+ (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()) ? deliveryRequest.getIsInbound() ? " to warehouse" : deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site" : "") + "</b> <br/><br/>";
+				+ (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus())
+						? deliveryRequest.getIsInbound() ? " to warehouse" : deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"
+						: "")
+				+ "</b> <br/><br/>";
 
 		Div div = (Div) new Div("Dear " + dearFullName + ",<br/> " + kindly).setStyle("width: 90%; margin: auto;font-family: 'Arial';  font-size: 12px;clear: right;");
 		if (showMessage) {
@@ -374,10 +386,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		TR row = new TR();
 		row.addElement(new TD("Reference").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getFullType()).setWidth(tdWidth2).setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
+		row.addElement(new TD(deliveryRequest.getFullType()).setWidth(tdWidth2)
+				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("Type").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getType().getValue()).setWidth(tdWidth2).setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
+		row.addElement(new TD(deliveryRequest.getType().getValue()).setWidth(tdWidth2)
+				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
 		table.addElement(row);
 
 		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound()) {
@@ -404,7 +418,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + ("color: #c6699f")));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Destination Project Manager").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getManager().getFullName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + ("color: #69aa46")));
+			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getManager().getFullName() : "").setWidth(tdWidth2)
+					.setStyle(tdStyle2 + ("color: #69aa46")));
 			table.addElement(row);
 		}
 
@@ -442,7 +457,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		row = new TR();
 		row.addElement(new TD("Transportation Request").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getReference() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#478fca"));
+		row.addElement(
+				new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getReference() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#478fca"));
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("TR Status").setWidth(tdWidth1).setStyle(tdStyle1));
 		row.addElement(new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getStatus().getValue() : "").setWidth(tdWidth2).setStyle(tdStyle2));
@@ -461,7 +477,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			row.addElement(new TD(deliveryRequest.getOrigin() != null ? deliveryRequest.getOwnerName() : "").setWidth(tdWidth2).setStyle(tdStyle2));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Needed Delivery Date").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#a069c3"));
+			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2)
+					.setStyle(tdStyle2 + "color:#a069c3"));
 			table.addElement(row);
 
 			row = new TR();
@@ -496,7 +513,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			row.addElement(new TD(deliveryRequest.getEndCustomer() != null ? deliveryRequest.getEndCustomer().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#ff851d"));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Needed Delivery Date").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#a069c3"));
+			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2)
+					.setStyle(tdStyle2 + "color:#a069c3"));
 
 			table.addElement(row);
 
@@ -514,7 +532,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				row.addElement(new TD("(Internal) 3gcom").setWidth(tdWidth2).setStyle(tdStyle2));
 				row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 				row.addElement(new TD("Deliver to").setWidth(tdWidth1).setStyle(tdStyle1));
-				row.addElement(new TD(deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone() : "").setWidth(tdWidth2).setStyle(tdStyle2));
+				row.addElement(new TD(
+						deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone()
+								: "").setWidth(tdWidth2).setStyle(tdStyle2));
 				table.addElement(row);
 			} else if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType())) {
 				row = new TR();
@@ -522,7 +542,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				row.addElement(new TD(deliveryRequest.getDeliverToEntityName()).setWidth(tdWidth2).setStyle(tdStyle2));
 				row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 				row.addElement(new TD("Deliver to").setWidth(tdWidth1).setStyle(tdStyle1));
-				row.addElement(new TD(deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone() : "").setWidth(tdWidth2).setStyle(tdStyle2));
+				row.addElement(new TD(
+						deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone()
+								: "").setWidth(tdWidth2).setStyle(tdStyle2));
 				table.addElement(row);
 			}
 
@@ -612,7 +634,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			document.open();
 
-			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " + (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""), titleFont);
+			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " + (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""),
+					titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -885,15 +908,18 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
-		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded() && connectedUser.equals(deliveryRequest.getRequester().getUsername()) && deliveryRequest.getTransportationRequest() == null && !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
+		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded() && connectedUser.equals(deliveryRequest.getRequester().getUsername())
+				&& deliveryRequest.getTransportationRequest() == null && !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
 	}
 
 	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findOutboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return deliveryRequestRepos.findOutboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND,
+				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
 	// fillDestinationProject script
@@ -929,13 +955,20 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Map<PartNumber, Double> boqPriceMap = new HashMap<>();
 
 		// Same PN
-		deliveryRequest.getBoqMappingList().stream().filter(i -> i.getPartNumberEquivalence() == null).forEach(i -> boqPriceMap.put(i.getBoq().getPartNumber(), i.getBoq().getUnitPrice()));
+		deliveryRequest.getBoqMappingList().stream() //
+				.filter(i -> i.getPartNumberEquivalence() == null) //
+				.forEach(i -> boqPriceMap.put(i.getBoq().getPartNumber(), i.getBoq().getUnitPrice()));
 
 		// Formula Equivalence list size = 1 & directEquivalence = true
-		deliveryRequest.getBoqMappingList().stream().filter(i -> i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().getDetailList().size() == 1 && i.getDirectEquivalence()).forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getDetailList().get(0).getPartNumber(), i.getBoq().getUnitPrice() / i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
+		deliveryRequest.getBoqMappingList().stream()//
+				.filter(i -> i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().getDetailList().size() == 1 && i.getDirectEquivalence())//
+				.forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getDetailList().get(0).getPartNumber(),
+						i.getBoq().getUnitPrice() / i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
 
 		// Formula & directEquivalence = false
-		deliveryRequest.getBoqMappingList().stream().filter(i -> i.getPartNumberEquivalence() != null && !i.getDirectEquivalence()).forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getPartNumber(), i.getBoq().getUnitPrice() * i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
+		deliveryRequest.getBoqMappingList().stream()//
+				.filter(i -> i.getPartNumberEquivalence() != null && !i.getDirectEquivalence()) //
+				.forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getPartNumber(), i.getBoq().getUnitPrice() * i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
 
 		for (DeliveryRequestDetail drd : deliveryRequest.getDetailList()) {
 			Double unitPrice = boqPriceMap.get(drd.getPartNumber());

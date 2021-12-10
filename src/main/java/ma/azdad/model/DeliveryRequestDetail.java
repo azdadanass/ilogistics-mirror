@@ -18,9 +18,18 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private Double quantity = 0.0;
 	private Double unitCost = 0.0;
 	private Double unitPrice = 0.0;
+	
+	private Double purchaseCost = 0.0;
+	
 
 	private PartNumber partNumber;
 	private DeliveryRequest deliveryRequest;
+	
+	
+	private Currency pruchaseCurrency;
+	private Currency costCurrency;
+	private Currency priceCurrency;
+	
 
 	// outbound case
 	private StockRowStatus status;
@@ -464,4 +473,43 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public Double getPurchaseCost() {
+		return purchaseCost;
+	}
+
+	public void setPurchaseCost(Double purchaseCost) {
+		this.purchaseCost = purchaseCost;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	public Currency getPruchaseCurrency() {
+		return pruchaseCurrency;
+	}
+
+	public void setPruchaseCurrency(Currency pruchaseCurrency) {
+		this.pruchaseCurrency = pruchaseCurrency;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	public Currency getCostCurrency() {
+		return costCurrency;
+	}
+
+	public void setCostCurrency(Currency costCurrency) {
+		this.costCurrency = costCurrency;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	public Currency getPriceCurrency() {
+		return priceCurrency;
+	}
+
+	public void setPriceCurrency(Currency priceCurrency) {
+		this.priceCurrency = priceCurrency;
+	}
+	
+	
+	
+	
 }

@@ -865,7 +865,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
-		emailService.deliveryRequestNotification(deliveryRequest);
+		// emailService.deliveryRequestNotification(deliveryRequest);
 		// smsService.sendSms(deliveryRequest);
 		// refreshDeliveryRequest();
 	}
@@ -956,7 +956,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
-		emailService.deliveryRequestNotification(deliveryRequest);
+		//emailService.deliveryRequestNotification(deliveryRequest);
 	}
 
 //	public void approveHm() {

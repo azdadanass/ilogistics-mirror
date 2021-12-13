@@ -280,7 +280,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
 
-		emailService.transportationRequestNotification(transportationRequest);
+		// emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 	}
 
@@ -303,7 +303,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
 
-		emailService.transportationRequestNotification(transportationRequest);
+		// emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 	}
 

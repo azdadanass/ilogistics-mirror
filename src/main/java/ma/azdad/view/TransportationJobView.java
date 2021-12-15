@@ -285,7 +285,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
 			transportationRequestService.save(tr);
 			tr = transportationRequestService.findOne(tr.getId());
-			emailService.transportationRequestNotification(tr);
+			// emailService.transportationRequestNotification(tr);
 			// smsService.sendSms(tr);
 		}
 
@@ -677,9 +677,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public TransportationJobService getTransportationJobService() {
 		return transportationJobService;

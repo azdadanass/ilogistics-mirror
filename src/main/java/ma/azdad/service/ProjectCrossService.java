@@ -128,6 +128,9 @@ public class ProjectCrossService {
 	}
 
 	public void deleteAndReCreateCrossCharge(DeliveryRequest deliveryRequest) {
+		if (projectCrossRepos.countByDeliveryRequest(deliveryRequest.getId()) == 0)
+			return;
+
 		projectCrossRepos.deleteByDeliveryRequest(deliveryRequest.getId());
 		addCrossCharge(deliveryRequest);
 

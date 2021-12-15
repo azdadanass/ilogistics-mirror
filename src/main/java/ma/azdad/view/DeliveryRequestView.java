@@ -956,7 +956,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
-		//emailService.deliveryRequestNotification(deliveryRequest);
+		// emailService.deliveryRequestNotification(deliveryRequest);
 	}
 
 //	public void approveHm() {
@@ -1767,9 +1767,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		}
 
 		if (deliveryRequest.getId() != null) {
-			if (projectCrossService.countByDeliveryRequest(deliveryRequest.getId()) > 0)
+			if (projectCrossService.countByDeliveryRequest(deliveryRequest.getId()) > 0) {
 				projectCrossService.delete(projectCrossService.findByDeliveryRequest(deliveryRequest.getId()).getIdprojectcross());
-			projectCrossService.addCrossCharge(deliveryRequest);
+				projectCrossService.addCrossCharge(deliveryRequest);
+			}
 		}
 	}
 

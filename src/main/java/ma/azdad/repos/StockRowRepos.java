@@ -217,10 +217,16 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select a.deliveryRequest.externalRequester.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.externalRequester is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.externalRequester.id ")
 	public List<Integer> findExternalRequesterIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer customerId, Integer projectId);
 
-	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+//	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+//	public List<Integer> findPoIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+//
+//	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+//	public List<Integer> findPoIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+
+	@Query("select distinct a.deliveryRequest.po.idpo " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.po is not null and a.deliveryRequest.destinationProject.id = ?5  ")
 	public List<Integer> findPoIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 
-	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.idpo ")
+	@Query("select distinct a.deliveryRequest.po.idpo " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.po is not null and a.deliveryRequest.destinationProject.id = ?5  ")
 	public List<Integer> findPoIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
 
 	@Query("select a.deliveryRequest.destinationProject.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.destinationProject is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destinationProject.id ")

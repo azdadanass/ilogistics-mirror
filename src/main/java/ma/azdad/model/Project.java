@@ -194,7 +194,7 @@ public class Project implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_idcustomer", nullable = false)
+	@JoinColumn(name = "customer_idcustomer")
 	public Customer getCustomer() {
 		return this.customer;
 	}

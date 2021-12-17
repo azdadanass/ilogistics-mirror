@@ -18,6 +18,9 @@ public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
 	@Query("select new PartNumber(id,name) from PartNumber where unit = ?1")
 	public List<PartNumber> findLight(Boolean unit);
 
+	@Query("select new PartNumber(id,name) from PartNumber where id in (?1)")
+	public List<PartNumber> findLight(List<Integer> idList);
+
 	@Query("select new PartNumber(id, name,description) from PartNumber")
 	public List<PartNumber> findLight();
 

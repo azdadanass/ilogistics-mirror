@@ -21,6 +21,7 @@ import ma.azdad.model.Customer;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
+import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
 import ma.azdad.model.ProjectTypes;
@@ -344,14 +345,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	}
 
 	public List<Po> findLightPoCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
-		List<Integer> idList = stockRowRepos.findPoIdListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, projectId);
+		List<Integer> idList = stockRowRepos.findPoIdListByCompanyOwner(username, warehouseList, assignedProjectList, companyId, projectId,DeliveryRequestType.OUTBOUND);
 		if (idList.isEmpty() || idList == null)
 			return null;
 		return poRepos.findLight(idList);
 	}
 
 	public List<Po> findLightPoCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId) {
-		List<Integer> idList = stockRowRepos.findPoIdListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId);
+		List<Integer> idList = stockRowRepos.findPoIdListByCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId,DeliveryRequestType.OUTBOUND);
 		if (idList.isEmpty() || idList == null)
 			return null;
 		return poRepos.findLight(idList);

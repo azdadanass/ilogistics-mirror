@@ -73,7 +73,7 @@
 											<p:selectOneMenu value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
 												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												<p:ajax listener="#{stockRowView.refreshReportNameList()}" update="nameList" />
+												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="nameList" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -86,6 +86,7 @@
 										<div class="col-xs-9 col-sm-9">
 											<h:selectOneMenu value="#{stockRowView.reportType}">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
+												<f:selectItem itemValue="7" itemLabel="Part Number" />
 												<f:selectItem itemValue="0" itemLabel="3rd Party / Subcontractor" />
 												<f:selectItem itemValue="1" itemLabel="Customer Requester" />
 												<f:selectItem itemValue="2" itemLabel="Destination Site" />
@@ -93,7 +94,7 @@
 												<f:selectItem itemValue="4" itemLabel="Destination Project" />
 												<f:selectItem itemValue="5" itemLabel="Yearly" />
 												<f:selectItem itemValue="6" itemLabel="Monthly" />
-												<p:ajax listener="#{stockRowView.refreshReportNameList()}" update="nameList" />
+												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="nameList,:main_form:tab1,:main_form:tab2,:main_form:tab3" />
 											</h:selectOneMenu>
 										</div>
 									</div>

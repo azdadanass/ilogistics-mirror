@@ -332,6 +332,16 @@
 								<b class="arrow"></b>
 								<ul class="submenu">
 									<li>
+										<h:outputLink value="deliveryReporting.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="Delivery Reports" />
+											<f:param name="companyId" value="#{stockRowView.companyId}" />
+											<f:param name="customerId" value="#{stockRowView.customerId}" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
 										<h:outputLink value="stockRowList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130 green" style="margin-right: 10px" />
@@ -347,16 +357,6 @@
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130 blue" style="margin-right: 10px" />
 											<h:outputText value="#{stockRowView.companyId!=null?'Cost Center':'Project'} Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="deliveryReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-											<h:outputText value="Delivery Reports" />
 											<f:param name="companyId" value="#{stockRowView.companyId}" />
 											<f:param name="customerId" value="#{stockRowView.customerId}" />
 										</h:outputLink>

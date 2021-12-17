@@ -148,6 +148,13 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(select8 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.id,a.status")
 	public List<StockRow> findStockHistoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
 
+	
+	@Query(select9 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.id = ?5 and a.quantity < 0  group by a.partNumber.id,a.status")
+	public List<StockRow> findStockHistoryByCompanyOwnerGroupByPartNumberAndStatus(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
+
+	@Query(select9 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.project.id = ?5 and a.quantity < 0  group by a.partNumber.id,a.status")
+	public List<StockRow> findStockHistoryByCustomerOwnerGroupByPartNumberAndStatus(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
+	
 	@Query(select9 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + "  group by a.deliveryRequest.id,a.status,a.partNumber.id")
 	public List<StockRow> findStockHistoryByProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 

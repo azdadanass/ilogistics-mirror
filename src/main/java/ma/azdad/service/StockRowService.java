@@ -97,7 +97,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			for (StockRow stockRow : stockRowList) {
 				Double newStockRowQuantity = UtilsFunctions.compareDoubles(quantity, stockRow.getQuantity(), 4) >= 0 ? stockRow.getQuantity() : quantity;
 				quantity -= newStockRowQuantity;
-				result.add(new StockRow(-newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(), stockRow.getInboundDeliveryRequest(), stockRow.getUnitCost(), detail.getUnitPrice(), stockRow.getLocation(), currentDate, stockRow.getPacking()));
+				result.add(new StockRow(-newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(), stockRow.getInboundDeliveryRequest(),
+						stockRow.getUnitCost(), detail.getUnitPrice(), stockRow.getLocation(), currentDate, stockRow.getPacking()));
 				if (UtilsFunctions.compareDoubles(quantity, 0.0, 4) == 0)
 					break;
 			}
@@ -107,7 +108,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	// must be sorted by quantity !!!!!
 	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
-		return stockRowRepos.findRemainingToPrepare(deliveryRequestDetail.getDeliveryRequest().getProject().getId(), deliveryRequestDetail.getInboundDeliveryRequest().getWarehouse().getId(), deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getStatus(), deliveryRequestDetail.getOriginNumber(), deliveryRequestDetail.getInboundDeliveryRequest().getId());
+		return stockRowRepos.findRemainingToPrepare(deliveryRequestDetail.getDeliveryRequest().getProject().getId(), deliveryRequestDetail.getInboundDeliveryRequest().getWarehouse().getId(),
+				deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getStatus(), deliveryRequestDetail.getOriginNumber(), deliveryRequestDetail.getInboundDeliveryRequest().getId());
 	}
 
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
@@ -141,7 +143,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		System.out.println("groupStockRow.getLocation().getId() " + groupStockRow.getLocation().getId());
 		System.out.println("groupStockRow.getStatus() " + groupStockRow.getStatus());
 		if (groupStockRow.getNewLocation() != null)
-			stockRowRepos.updateLocation(groupStockRow.getNewLocation(), groupStockRow.getInboundDeliveryRequest().getId(), groupStockRow.getPartNumber().getId(), groupStockRow.getLocation().getId(), groupStockRow.getStatus());
+			stockRowRepos.updateLocation(groupStockRow.getNewLocation(), groupStockRow.getInboundDeliveryRequest().getId(), groupStockRow.getPartNumber().getId(), groupStockRow.getLocation().getId(),
+					groupStockRow.getStatus());
 	}
 
 	// REPORTING
@@ -162,7 +165,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = stockRowRepos.findByCompanyOwnerAndGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, stockRow.getPartNumber().getId()));
+			stockRow.setPendingQuantity(
+					deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAnPartNumber(username, warehouseList, assignedProjectList, companyId, stockRow.getPartNumber().getId()));
 		return result;
 	}
 
@@ -171,7 +175,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = stockRowRepos.findByCustomerOwnerAndGroupByPartNumber(username, warehouseList, assignedProjectList, customerId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, stockRow.getPartNumber().getId()));
+			stockRow.setPendingQuantity(
+					deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, stockRow.getPartNumber().getId()));
 		return result;
 	}
 
@@ -180,7 +185,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = stockRowRepos.findByCompanyOwnerAndProjectAndGroupByPartNumber(username, warehouseList, assignedProjectList, companyId, projectId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, stockRow.getPartNumber().getId(), projectId));
+			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId,
+					stockRow.getPartNumber().getId(), projectId));
 		return result;
 	}
 
@@ -189,7 +195,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = stockRowRepos.findByCustomerOwnerAndProjectAndGroupByPartNumber(username, warehouseList, assignedProjectList, customerId, projectId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, stockRow.getPartNumber().getId(), projectId));
+			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId,
+					stockRow.getPartNumber().getId(), projectId));
 		return result;
 	}
 
@@ -213,15 +220,27 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.findStockHistoryByProjectAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, projectId);
 	}
 
+	public List<StockRow> findStockHistoryByCompanyOwnerGroupByPartNumberAndStatus(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer projectId) {
+		return stockRowRepos.findStockHistoryByCompanyOwnerGroupByPartNumberAndStatus(username, warehouseList, assignedProjectList, companyId, projectId);
+	}
+
+	public List<StockRow> findStockHistoryByCustomerOwnerGroupByPartNumberAndStatus(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer projectId) {
+		return stockRowRepos.findStockHistoryByCustomerOwnerGroupByPartNumberAndStatus(username, warehouseList, assignedProjectList, customerId, projectId);
+	}
+
 	public List<StockRow> findStockHistoryByProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId) {
 		return stockRowRepos.findStockHistoryByProjectAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByDestinationAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer destinationId, Integer projectId) {
+	public List<StockRow> findStockHistoryByDestinationAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer destinationId,
+			Integer projectId) {
 		return stockRowRepos.findStockHistoryByDestinationAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, destinationId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByExternalRequesterAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer companyId, Integer externalRequesterId, Integer projectId) {
+	public List<StockRow> findStockHistoryByExternalRequesterAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer companyId,
+			Integer externalRequesterId, Integer projectId) {
 		return stockRowRepos.findStockHistoryByExternalRequesterAndCompanyOwner(username, warehouseList, delegatedExternalRequesterList, companyId, externalRequesterId, projectId);
 	}
 
@@ -229,11 +248,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.findStockHistoryByPoAndCompanyOwner(username, warehouseList, delegatedPoList, companyId, poId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByDestinationAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer destinationId, Integer projectId) {
+	public List<StockRow> findStockHistoryByDestinationAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer destinationId,
+			Integer projectId) {
 		return stockRowRepos.findStockHistoryByDestinationAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, destinationId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByExternalRequesterAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer customerId, Integer externalRequesterId, Integer projectId) {
+	public List<StockRow> findStockHistoryByExternalRequesterAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer customerId,
+			Integer externalRequesterId, Integer projectId) {
 		return stockRowRepos.findStockHistoryByExternalRequesterAndCustomerOwner(username, warehouseList, delegatedExternalRequesterList, customerId, externalRequesterId, projectId);
 	}
 
@@ -241,11 +262,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.findStockHistoryByPoAndCustomerOwner(username, warehouseList, delegatedPoList, customerId, poId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByDestinationProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedDestinationProjectList, Integer companyId, Integer destinationProjectId, Integer projectId) {
+	public List<StockRow> findStockHistoryByDestinationProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedDestinationProjectList, Integer companyId,
+			Integer destinationProjectId, Integer projectId) {
 		return stockRowRepos.findStockHistoryByDestinationProjectAndCompanyOwner(username, warehouseList, delegatedDestinationProjectList, companyId, destinationProjectId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByDestinationProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedDestinationProjectList, Integer customerId, Integer destinationProjectId, Integer projectId) {
+	public List<StockRow> findStockHistoryByDestinationProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedDestinationProjectList, Integer customerId,
+			Integer destinationProjectId, Integer projectId) {
 		return stockRowRepos.findStockHistoryByDestinationProjectAndCustomerOwner(username, warehouseList, delegatedDestinationProjectList, customerId, destinationProjectId, projectId);
 	}
 
@@ -257,11 +280,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.findStockHistoryByYearAndCustomerOwner(username, warehouseList, delegatedYearList, customerId, year, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByYearAndMonthAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedYearAndMonthList, Integer companyId, String yearAndMonth, Integer projectId) {
+	public List<StockRow> findStockHistoryByYearAndMonthAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> delegatedYearAndMonthList, Integer companyId, String yearAndMonth,
+			Integer projectId) {
 		return stockRowRepos.findStockHistoryByYearAndMonthAndCompanyOwner(username, warehouseList, delegatedYearAndMonthList, companyId, yearAndMonth, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByYearAndMonthAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedYearAndMonthList, Integer customerId, String yearAndMonth, Integer projectId) {
+	public List<StockRow> findStockHistoryByYearAndMonthAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedYearAndMonthList, Integer customerId, String yearAndMonth,
+			Integer projectId) {
 		return stockRowRepos.findStockHistoryByYearAndMonthAndCustomerOwner(username, warehouseList, delegatedYearAndMonthList, customerId, yearAndMonth, projectId);
 	}
 
@@ -382,7 +407,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToName, Integer projectId) {
+	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId,
+			String deliverToName, Integer projectId) {
 		return stockRowRepos.findStockHistoryByDeliverToEntityAndCompanyOwner(username, warehouseList, assignedProjectList, companyOwnerId, deliverToName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
@@ -405,7 +431,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return result;
 	}
 
-	public List<StockRow> findStockHistoryByDeliverToOtherAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId, String deliverToName, Integer projectId) {
+	public List<StockRow> findStockHistoryByDeliverToOtherAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerOwnerId,
+			String deliverToName, Integer projectId) {
 		return stockRowRepos.findStockHistoryByDeliverToEntityAndCustomerOwner(username, warehouseList, assignedProjectList, customerOwnerId, deliverToName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
@@ -456,7 +483,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 					c.add(Calendar.MONTH, 1);
 			}
 			Series[] series = { new Series("Cost Trend", "blue", data) };
-			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR), highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend", "" + c.get(Calendar.YEAR), "MAD", series)));
+			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR),
+					highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend", "" + c.get(Calendar.YEAR), "MAD", series)));
 			c.add(Calendar.YEAR, -1);
 		}
 		return result;

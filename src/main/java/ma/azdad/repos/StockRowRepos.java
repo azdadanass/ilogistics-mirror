@@ -283,8 +283,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(select15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + deliverToEntityCondition + " and a.quantity < 0 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.destinationProject.type != ?7  group by a.deliveryRequest.id,a.status,a.partNumber.id")
 	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId, String deliverToName, Integer projectId, String projectTypeStock);
 
-	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
-	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
+//	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
+//	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
+
+	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) and a.partNumber.id in (?2) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
+	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList, List<Integer> partNumberList);
 
 	//
 

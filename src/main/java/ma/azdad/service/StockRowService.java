@@ -422,8 +422,12 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.findStockHistoryByDeliverToEntityAndCompanyOwner(username, warehouseList, assignedProjectList, companyOwnerId, deliverToName, projectId, ProjectTypes.STOCK.getValue());
 	}
 
-	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList) {
-		return stockRowRepos.findStockHistoryByOutboundDeliveryRequestReturn(outboundSrouceList);
+//	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList) {
+//		return stockRowRepos.findStockHistoryByOutboundDeliveryRequestReturn(outboundSrouceList);
+//	}
+
+	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList, List<Integer> partNumberIdList) {
+		return stockRowRepos.findStockHistoryByOutboundDeliveryRequestReturn(outboundSrouceList, partNumberIdList);
 	}
 
 	public List<String> findDeliverToOtherNameListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId) {

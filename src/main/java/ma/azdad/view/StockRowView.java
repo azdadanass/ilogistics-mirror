@@ -261,7 +261,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 
 		// add related return from outbound
-		list1.addAll(stockRowService.findStockHistoryByOutboundDeliveryRequestReturn(list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList())));
+		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
+		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
+
+		list1.addAll(stockRowService.findStockHistoryByOutboundDeliveryRequestReturn(dnIdList, partNumberIdList));
 
 		if (tab == 2 || tab == 3) {
 			List<StockRow> result = new ArrayList<>();

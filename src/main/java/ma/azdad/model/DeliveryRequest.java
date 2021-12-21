@@ -1776,4 +1776,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	public void setIssueList(List<Issue> issueList) {
 		this.issueList = issueList;
 	}
+
+	@Override
+	public String toString() {
+		return this.reference;
+	}
 }

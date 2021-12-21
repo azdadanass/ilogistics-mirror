@@ -1,6 +1,7 @@
 package ma.azdad.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Company;
 import ma.azdad.model.Customer;
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
@@ -86,6 +88,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<ChartContainer> chartList;
 
 	private Integer reportType;
+
+	private List<StockRow> currentList = null;
+	private List<StockRow> historyList = null;
 
 	@Override
 	@PostConstruct
@@ -406,17 +411,58 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	public void getPartNumberReportingLists(Boolean currentStock) {
-		if (currentStock) {
-			if (companyId != null)
-				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-			else if (customerId != null)
-				list2 = list1 = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-		} else {
-			if (companyId != null)
-				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-			else if (customerId != null)
-				list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		if (currentStock)
+			initCurrentList();
+		else
+			initHistorylist();
+
+		list2 = list1 = currentStock ? currentList : historyList;
+	}
+
+	private void initCurrentList() {
+		if (currentList == null)
+			findCurrentStockByPartNumber();
+	}
+
+	public List<StockRow> findCurrentStockByPartNumber() {
+		if (companyId != null)
+			currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		else if (customerId != null)
+			currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+
+		return currentList;
+	}
+
+	private void initHistorylist() {
+		if (historyList == null)
+			findStockHistoryByPartNumber();
+	}
+
+	public List<StockRow> findStockHistoryByPartNumber() {
+		if (companyId != null)
+			historyList = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		else if (customerId != null)
+			historyList = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		return historyList;
+	}
+
+	public void test() {
+		// <inboundDnId,Map<dnId,Qty>>
+		Map<DeliveryRequest, Map<DeliveryRequest, Double>> source = new HashMap<>();
+		initHistorylist();
+		for (StockRow stockRow : historyList) {
+			DeliveryRequest inboundDeliveryRequest = stockRow.getInboundDeliveryRequest();
+			DeliveryRequest deliveryRequest = stockRow.getDeliveryRequest();
+			source.putIfAbsent(inboundDeliveryRequest, new HashMap<DeliveryRequest, Double>());
+			source.get(inboundDeliveryRequest).putIfAbsent(deliveryRequest, 0.0);
+			source.get(inboundDeliveryRequest).put(deliveryRequest, source.get(inboundDeliveryRequest).get(deliveryRequest) + stockRow.getQuantity());
 		}
+
+		// remove fully delivered
+		source.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
+
+		System.out.println(source);
+
 	}
 
 	private List<StockRow> filterByStockSituation(List<StockRow> list) {

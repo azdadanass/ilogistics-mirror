@@ -124,6 +124,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.deliveryRequest = deliveryRequest;
 	}
 
+	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inbouDeliveryRequest) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.deliveryRequest = deliveryRequest;
+		this.inboundDeliveryRequest = inbouDeliveryRequest;
+	}
+
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber) {
 		super();
 		this.quantity = quantity;

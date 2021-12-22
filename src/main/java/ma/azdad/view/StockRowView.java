@@ -90,7 +90,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private Integer reportType;
 
 	private List<StockRow> currentList = null;
-	private List<StockRow> historyList = null;
+	private List<StockRow> historyList1 = null;
+	private List<StockRow> historyList2 = null;
+	private Boolean removeFullyDelivered = false;
 
 	@Override
 	@PostConstruct
@@ -410,59 +412,57 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 	}
 
-	public void getPartNumberReportingLists(Boolean currentStock) {
-		if (currentStock)
-			initCurrentList();
+	public void initCurrentList() {
+		if (currentList == null) {
+			if (companyId != null)
+				currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+			else if (customerId != null)
+				currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		}
+		list2 = list1 = currentList;
+	}
+
+	public void initHistorylist() {
+		if (removeFullyDelivered)
+			initHistoryList2();
 		else
-			initHistorylist();
-
-		list2 = list1 = currentStock ? currentList : historyList;
+			initHistorylist1();
 	}
 
-	private void initCurrentList() {
-		if (currentList == null)
-			findCurrentStockByPartNumber();
+	private void initHistorylist1() {
+		if (historyList1 == null) {
+			if (companyId != null)
+				historyList1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+			else if (customerId != null)
+				historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+		}
+		list2 = list1 = historyList1;
 	}
 
-	public List<StockRow> findCurrentStockByPartNumber() {
-		if (companyId != null)
-			currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-		else if (customerId != null)
-			currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+	private void initHistoryList2() {
+		if (historyList2 == null) {
+			if (historyList1 == null)
+				initHistorylist1();
+			Map<DeliveryRequest, Map<DeliveryRequest, Double>> map = getMapInboundDeliveryRequestMapDeliveryRequestQuantity(historyList1);
+			historyList2 = historyList1.stream().filter(sr -> map.containsKey(sr.getInboundDeliveryRequest())).collect(Collectors.toList());
 
-		return currentList;
+		}
+		list2 = list1 = historyList2;
 	}
 
-	private void initHistorylist() {
-		if (historyList == null)
-			findStockHistoryByPartNumber();
-	}
-
-	public List<StockRow> findStockHistoryByPartNumber() {
-		if (companyId != null)
-			historyList = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-		else if (customerId != null)
-			historyList = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
-		return historyList;
-	}
-
-	public void test() {
+	private Map<DeliveryRequest, Map<DeliveryRequest, Double>> getMapInboundDeliveryRequestMapDeliveryRequestQuantity(List<StockRow> stockRowList) {
 		// <inboundDnId,Map<dnId,Qty>>
-		Map<DeliveryRequest, Map<DeliveryRequest, Double>> source = new HashMap<>();
-		initHistorylist();
-		for (StockRow stockRow : historyList) {
+		Map<DeliveryRequest, Map<DeliveryRequest, Double>> result = new HashMap<>();
+		for (StockRow stockRow : stockRowList) {
 			DeliveryRequest inboundDeliveryRequest = stockRow.getInboundDeliveryRequest();
 			DeliveryRequest deliveryRequest = stockRow.getDeliveryRequest();
-			source.putIfAbsent(inboundDeliveryRequest, new HashMap<DeliveryRequest, Double>());
-			source.get(inboundDeliveryRequest).putIfAbsent(deliveryRequest, 0.0);
-			source.get(inboundDeliveryRequest).put(deliveryRequest, source.get(inboundDeliveryRequest).get(deliveryRequest) + stockRow.getQuantity());
+			result.putIfAbsent(inboundDeliveryRequest, new HashMap<DeliveryRequest, Double>());
+			result.get(inboundDeliveryRequest).putIfAbsent(deliveryRequest, 0.0);
+			result.get(inboundDeliveryRequest).put(deliveryRequest, result.get(inboundDeliveryRequest).get(deliveryRequest) + stockRow.getQuantity());
 		}
-
 		// remove fully delivered
-		source.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
-
-		System.out.println(source);
-
+		result.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
+		return result;
 	}
 
 	private List<StockRow> filterByStockSituation(List<StockRow> list) {
@@ -819,6 +819,22 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setPartNumberList(List<PartNumber> partNumberList) {
 		this.partNumberList = partNumberList;
+	}
+
+	public List<StockRow> getCurrentList() {
+		return currentList;
+	}
+
+	public void setCurrentList(List<StockRow> currentList) {
+		this.currentList = currentList;
+	}
+
+	public Boolean getRemoveFullyDelivered() {
+		return removeFullyDelivered;
+	}
+
+	public void setRemoveFullyDelivered(Boolean removeFullyDelivered) {
+		this.removeFullyDelivered = removeFullyDelivered;
 	}
 
 }

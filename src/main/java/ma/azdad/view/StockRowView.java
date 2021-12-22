@@ -488,7 +488,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
 
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
-			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound.getId());
+			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
 			Boolean test = true;
 			for (Integer dnId : map.keySet()) {
 				Double dnQty = map.get(dnId);

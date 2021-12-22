@@ -51,6 +51,13 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 		this.initial = initial;
 	}
 
+	public DeliveryRequestExpiryDate(Double quantity, Date expiryDate, Integer deliveryRequestId, Integer inboundDeliveryRequestId) {
+		this.quantity = quantity;
+		this.expiryDate = expiryDate;
+		this.setDeliveryRequestId(deliveryRequestId);
+		this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+	}
+
 	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
@@ -65,6 +72,30 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 			return null;
 		else
 			return stockRow.getId();
+	}
+
+	@Transient
+	public Integer getDeliveryRequestId() {
+		return stockRow != null ? stockRow.getDeliveryRequestId() : null;
+	}
+
+	@Transient
+	public void setDeliveryRequestId(Integer deliveryRequestId) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setDeliveryRequestId(deliveryRequestId);
+	}
+
+	@Transient
+	public Integer getInboundDeliveryRequestId() {
+		return stockRow != null ? stockRow.getInboundDeliveryRequestId() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestId(Integer inboundDeliveryRequestId) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setInboundDeliveryRequestId(inboundDeliveryRequestId);
 	}
 
 	public Double getQuantity() {
@@ -122,4 +153,10 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Override
+	public String toString() {
+		return "DeliveryRequestExpiryDate [quantity=" + quantity + ", expiryDate=" + expiryDate + ", dnId=" + getDeliveryRequestId() + "]";
+	}
+
 }

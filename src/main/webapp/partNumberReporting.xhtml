@@ -54,8 +54,7 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<p:commandButton value="test" update=":main_form">
-							<f:setPropertyActionListener value="#{!stockRowView.removeFullyDelivered}" target="#{stockRowView.removeFullyDelivered}" />
+						<p:commandButton value="initExpiryList" update=":main_form" action="#{stockRowView.initExpiryList()}">initExpiryList
 						</p:commandButton>
 					</div>
 					<div class=" col-sm-2 infobox-container">
@@ -156,15 +155,21 @@
 						</a>
 					</li>
 					<li>
-						<a data-toggle="tab" href="#tab2" onclick="currentStock()">
+						<a data-toggle="tab" href="#tab2" onclick="initCurrentList()">
 							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Current Stock" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
-						<a data-toggle="tab" href="#tab3" onclick="stockHistory()">
+						<a data-toggle="tab" href="#tab3" onclick="initHistorylist()">
 							<i class="purple ace-icon fa fa-list bigger-120"></i>
 							<h:outputText value=" Stock History" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab5" onclick="initExpiryList()">
+							<i class="purple ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Expiry Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<f:subview rendered="#{partNumberView.partNumber.stockItem and deliveryRequestDetailView.companyId != null}">
@@ -318,7 +323,7 @@
 						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="currentStock" action="#{stockRowView.initCurrentList()}" update="currentStock" />
+						<p:remoteCommand name="initCurrentList" action="#{stockRowView.initCurrentList()}" update="currentStock" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -386,7 +391,7 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="stockHistory" action="#{stockRowView.initHistorylist()}" update="stockHistory" />
+						<p:remoteCommand name="initHistorylist" action="#{stockRowView.initHistorylist()}" update="stockHistory" />
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -480,6 +485,45 @@
 										</p:column>
 										<p:column headerText="Stock Quantity" styleClass="hide">
 											<h:outputText value="#{item.quantity}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab5" class="tab-pane">
+						<p:remoteCommand name="initExpiryList" action="#{stockRowView.initExpiryList()}" update="expiryList" />
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Expiry Informations" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="expiryList" value="#{stockRowView.expiryList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Part Number" exportable="false">
+											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+												<h:outputText value="#{partNumberView.partNumber.name}" />
+												<f:param name="id" value="#{partNumberView.partNumber.id}" />
+											</h:outputLink>
+										</p:column>
+										<p:column headerText="Part Number" styleClass="hide">
+											<h:outputText value="#{partNumberView.partNumber.name}" />
+										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
+										</p:column>
+										<p:column headerText="Inbound DN">
+											<h:outputText value="#{item.inboundDeliveryRequestId}" />
+										</p:column>
+										<p:column headerText="Quantity">
+											<h:outputText value="#{item.quantity}" />
+										</p:column>
+										<p:column headerText="Expiry Date">
+											<h:outputText value="#{item.expiryDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
 										</p:column>
 									</p:dataTable>
 								</div>

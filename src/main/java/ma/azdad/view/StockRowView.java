@@ -1,9 +1,11 @@
 package ma.azdad.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Company;
 import ma.azdad.model.Customer;
-import ma.azdad.model.DeliveryRequest;
+import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
@@ -26,6 +28,7 @@ import ma.azdad.model.User;
 import ma.azdad.repos.StockRowRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
+import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.StockRowService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.ChartContainer;
@@ -47,6 +50,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	@Autowired
 	public CustomerService customerService;
+
+	@Autowired
+	public DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
 
 	@Autowired
 	protected CacheView cacheView;
@@ -92,6 +98,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<StockRow> currentList = null;
 	private List<StockRow> historyList1 = null;
 	private List<StockRow> historyList2 = null;
+	private List<DeliveryRequestExpiryDate> expiryList = null;
 	private Boolean removeFullyDelivered = false;
 
 	@Override
@@ -441,28 +448,70 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	private void initHistoryList2() {
 		if (historyList2 == null) {
-			if (historyList1 == null)
-				initHistorylist1();
-			Map<DeliveryRequest, Map<DeliveryRequest, Double>> map = getMapInboundDeliveryRequestMapDeliveryRequestQuantity(historyList1);
-			historyList2 = historyList1.stream().filter(sr -> map.containsKey(sr.getInboundDeliveryRequest())).collect(Collectors.toList());
-
+			initMapInboundDeliveryRequestMapDeliveryRequestQuantity();
+			historyList2 = historyList1.stream().filter(sr -> mapInboundDnMapDnQuantity.containsKey(sr.getInboundDeliveryRequestId())).collect(Collectors.toList());
 		}
 		list2 = list1 = historyList2;
 	}
 
-	private Map<DeliveryRequest, Map<DeliveryRequest, Double>> getMapInboundDeliveryRequestMapDeliveryRequestQuantity(List<StockRow> stockRowList) {
+	private Map<Integer, Map<Integer, Double>> mapInboundDnMapDnQuantity = null;
+
+	private void initMapInboundDeliveryRequestMapDeliveryRequestQuantity() {
+		if (mapInboundDnMapDnQuantity != null)
+			return;
+
+		initHistorylist1();
 		// <inboundDnId,Map<dnId,Qty>>
-		Map<DeliveryRequest, Map<DeliveryRequest, Double>> result = new HashMap<>();
-		for (StockRow stockRow : stockRowList) {
-			DeliveryRequest inboundDeliveryRequest = stockRow.getInboundDeliveryRequest();
-			DeliveryRequest deliveryRequest = stockRow.getDeliveryRequest();
-			result.putIfAbsent(inboundDeliveryRequest, new HashMap<DeliveryRequest, Double>());
-			result.get(inboundDeliveryRequest).putIfAbsent(deliveryRequest, 0.0);
-			result.get(inboundDeliveryRequest).put(deliveryRequest, result.get(inboundDeliveryRequest).get(deliveryRequest) + stockRow.getQuantity());
+		Map<Integer, Map<Integer, Double>> result = new HashMap<>();
+		for (StockRow stockRow : historyList1) {
+			Integer inboundDeliveryRequestId = stockRow.getInboundDeliveryRequest().getId();
+			Integer deliveryRequestId = stockRow.getDeliveryRequest().getId();
+			result.putIfAbsent(inboundDeliveryRequestId, new HashMap<Integer, Double>());
+			result.get(inboundDeliveryRequestId).putIfAbsent(deliveryRequestId, 0.0);
+			result.get(inboundDeliveryRequestId).put(deliveryRequestId, result.get(inboundDeliveryRequestId).get(deliveryRequestId) + stockRow.getQuantity());
 		}
 		// remove fully delivered
 		result.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
-		return result;
+		mapInboundDnMapDnQuantity = result;
+	}
+
+	public void initExpiryList() {
+		if (expiryList != null)
+			return;
+
+		expiryList = new ArrayList<DeliveryRequestExpiryDate>();
+
+		initMapInboundDeliveryRequestMapDeliveryRequestQuantity();
+		List<Integer> deliveryRequestIdList = mapInboundDnMapDnQuantity.values().stream().map(v -> v.keySet()).collect(ArrayList::new, List::addAll, List::addAll);
+		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(id, deliveryRequestIdList);
+		Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+
+		for (Integer inboundId : mapInboundDnMapDnQuantity.keySet()) {
+			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inboundId);
+			Boolean test = true;
+			for (Integer dnId : map.keySet()) {
+				Double dnQty = map.get(dnId);
+				Double expiryQty = mapDnExpiryDate.getOrDefault(dnId, 0.0);
+				if (Math.abs(dnQty) != Math.abs(expiryQty)) {
+					test = false;
+					break;
+				}
+			}
+			if (test) {
+				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inboundId)).map(i -> i.getExpiryDate()).distinct().collect(Collectors.toSet());
+				for (Date date : dateSet) {
+					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inboundId.equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate())).mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
+					DeliveryRequestExpiryDate deliveryRequestExpiryDate = new DeliveryRequestExpiryDate();
+					deliveryRequestExpiryDate.setQuantity(quantity);
+					deliveryRequestExpiryDate.setInboundDeliveryRequestId(inboundId);
+					deliveryRequestExpiryDate.setExpiryDate(date);
+					expiryList.add(deliveryRequestExpiryDate);
+				}
+			}
+		}
+
+		System.out.println("expiryList " + expiryList);
+
 	}
 
 	private List<StockRow> filterByStockSituation(List<StockRow> list) {
@@ -835,6 +884,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setRemoveFullyDelivered(Boolean removeFullyDelivered) {
 		this.removeFullyDelivered = removeFullyDelivered;
+	}
+
+	public List<DeliveryRequestExpiryDate> getExpiryList() {
+		return expiryList;
+	}
+
+	public void setExpiryList(List<DeliveryRequestExpiryDate> expiryList) {
+		this.expiryList = expiryList;
 	}
 
 }

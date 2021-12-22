@@ -19,7 +19,7 @@ import ma.azdad.repos.StockRowRepos;
 public class DeliveryRequestExpiryDateService extends GenericService<Integer, DeliveryRequestExpiryDate, DeliveryRequestExpiryDateRepos> {
 
 	@Autowired
-	DeliveryRequestExpiryDateRepos deliveryRequestExpiryDateRepos;
+	DeliveryRequestExpiryDateRepos repos;
 
 	@Autowired
 	StockRowRepos stockRowRepos;
@@ -35,7 +35,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 	}
 
 	public List<DeliveryRequestExpiryDate> findByDeliveryRequest(Integer deliveryRequestId) {
-		List<DeliveryRequestExpiryDate> result = deliveryRequestExpiryDateRepos.findByDeliveryRequest(deliveryRequestId);
+		List<DeliveryRequestExpiryDate> result = repos.findByDeliveryRequest(deliveryRequestId);
 		result.forEach(i -> {
 			Hibernate.initialize(i.getStockRow().getPartNumber());
 			Hibernate.initialize(i.getStockRow().getLocation());
@@ -45,7 +45,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 	}
 
 	public List<Date> findRemainingExpiryDateList(Integer partNumberId, Integer inboundDeliveryRequestId, StockRowStatus stockRowStatus, Integer locationId) {
-		return deliveryRequestExpiryDateRepos.findRemainingExpiryDateList(partNumberId, inboundDeliveryRequestId, DeliveryRequestType.OUTBOUND, stockRowStatus, locationId);
+		return repos.findRemainingExpiryDateList(partNumberId, inboundDeliveryRequestId, DeliveryRequestType.OUTBOUND, stockRowStatus, locationId);
 	}
 
 	public List<Date> findRemainingExpiryDateList(StockRow outboundStockRow) {
@@ -53,7 +53,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 	}
 
 	public Double findRemainingQuantity(DeliveryRequestExpiryDate dred) {
-		return deliveryRequestExpiryDateRepos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND, dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
+		return repos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND, dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
 	}
 
 	public void generateForOutboundAssociatedWithInbound(Integer inboundDeliveryRequestId) {
@@ -76,7 +76,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			if (!outboundExpiryList.isEmpty())
 				continue;
 			for (StockRow stockRow : deliveryRequestRepos.findById(outboundDeliveryRequestId).get().getStockRowList()) {
-				List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(), stockRow.getStatus(), stockRow.getLocation().getId());
+				List<DeliveryRequestExpiryDate> list = repos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(), stockRow.getStatus(), stockRow.getLocation().getId());
 				if (list.size() != 1)
 					continue;
 				DeliveryRequestExpiryDate dred = new DeliveryRequestExpiryDate();
@@ -89,10 +89,14 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 	}
 
 	public Date findOneExpiryDate(StockRow outboundStockRow) {
-		List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateRepos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getPartNumber().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
+		List<DeliveryRequestExpiryDate> list = repos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getPartNumber().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
 		if (list.size() == 1)
 			return list.get(0).getExpiryDate();
 		else
 			return null;
+	}
+
+	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList) {
+		return repos.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(partNumberId, deliveryRequestList);
 	}
 }

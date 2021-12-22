@@ -515,7 +515,10 @@
 											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
 										</p:column>
 										<p:column headerText="Inbound DN">
-											<h:outputText value="#{item.inboundDeliveryRequestId}" />
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{item.inboundDeliveryRequestReference}" />
+												<f:param name="id" value="#{item.inboundDeliveryRequestId}" />
+											</h:outputLink>
 										</p:column>
 										<p:column headerText="Quantity">
 											<h:outputText value="#{item.quantity}" />

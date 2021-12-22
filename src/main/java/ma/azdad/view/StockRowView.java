@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Company;
 import ma.azdad.model.Customer;
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
@@ -454,21 +455,21 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		list2 = list1 = historyList2;
 	}
 
-	private Map<Integer, Map<Integer, Double>> mapInboundDnMapDnQuantity = null;
+	private Map<DeliveryRequest, Map<Integer, Double>> mapInboundDnMapDnQuantity = null;
 
 	private void initMapInboundDeliveryRequestMapDeliveryRequestQuantity() {
 		if (mapInboundDnMapDnQuantity != null)
 			return;
 
 		initHistorylist1();
-		// <inboundDnId,Map<dnId,Qty>>
-		Map<Integer, Map<Integer, Double>> result = new HashMap<>();
+		// <inboundDn,Map<dnId,Qty>>
+		Map<DeliveryRequest, Map<Integer, Double>> result = new HashMap<>();
 		for (StockRow stockRow : historyList1) {
-			Integer inboundDeliveryRequestId = stockRow.getInboundDeliveryRequest().getId();
+			DeliveryRequest inboundDeliveryRequest = stockRow.getInboundDeliveryRequest();
 			Integer deliveryRequestId = stockRow.getDeliveryRequest().getId();
-			result.putIfAbsent(inboundDeliveryRequestId, new HashMap<Integer, Double>());
-			result.get(inboundDeliveryRequestId).putIfAbsent(deliveryRequestId, 0.0);
-			result.get(inboundDeliveryRequestId).put(deliveryRequestId, result.get(inboundDeliveryRequestId).get(deliveryRequestId) + stockRow.getQuantity());
+			result.putIfAbsent(inboundDeliveryRequest, new HashMap<Integer, Double>());
+			result.get(inboundDeliveryRequest).putIfAbsent(deliveryRequestId, 0.0);
+			result.get(inboundDeliveryRequest).put(deliveryRequestId, result.get(inboundDeliveryRequest).get(deliveryRequestId) + stockRow.getQuantity());
 		}
 		// remove fully delivered
 		result.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
@@ -486,8 +487,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(id, deliveryRequestIdList);
 		Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
 
-		for (Integer inboundId : mapInboundDnMapDnQuantity.keySet()) {
-			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inboundId);
+		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
+			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound.getId());
 			Boolean test = true;
 			for (Integer dnId : map.keySet()) {
 				Double dnQty = map.get(dnId);
@@ -498,12 +499,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				}
 			}
 			if (test) {
-				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inboundId)).map(i -> i.getExpiryDate()).distinct().collect(Collectors.toSet());
+				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId())).map(i -> i.getExpiryDate()).distinct().collect(Collectors.toSet());
 				for (Date date : dateSet) {
-					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inboundId.equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate())).mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
+					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inbound.getId().equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate())).mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
 					DeliveryRequestExpiryDate deliveryRequestExpiryDate = new DeliveryRequestExpiryDate();
 					deliveryRequestExpiryDate.setQuantity(quantity);
-					deliveryRequestExpiryDate.setInboundDeliveryRequestId(inboundId);
+					deliveryRequestExpiryDate.setInboundDeliveryRequestId(inbound.getId());
+					deliveryRequestExpiryDate.setInboundDeliveryRequestReference(inbound.getReference());
 					deliveryRequestExpiryDate.setExpiryDate(date);
 					expiryList.add(deliveryRequestExpiryDate);
 				}

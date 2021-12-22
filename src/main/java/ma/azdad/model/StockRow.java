@@ -592,6 +592,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
+	public String getInboundDeliveryRequestReference() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getReference() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestReference(String inboundDeliveryRequestReference) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setReference(inboundDeliveryRequestReference);
+	}
+
+	@Transient
 	public DeliveryRequestType getDeliveryRequestType() {
 		if (deliveryRequest == null)
 			return null;

@@ -98,6 +98,18 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 		stockRow.setInboundDeliveryRequestId(inboundDeliveryRequestId);
 	}
 
+	@Transient
+	public String getInboundDeliveryRequestReference() {
+		return stockRow != null ? stockRow.getInboundDeliveryRequestReference() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestReference(String inboundDeliveryRequestReference) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+	}
+
 	public Double getQuantity() {
 		return quantity;
 	}

@@ -522,7 +522,7 @@
 											<h:outputText value="#{item.quantity}" />
 										</p:column>
 										<p:column headerText="Expiry Date">
-											<h:outputText value="#{item.expiryDate}">
+											<h:outputText value="#{item.expiryDate}" styleClass="#{utilsView.currentDate.compareTo(item.expiryDate) lt 0 ?'green':'red bolder'}">
 												<f:convertDateTime pattern="yyyy-MM-dd" />
 											</h:outputText>
 										</p:column>

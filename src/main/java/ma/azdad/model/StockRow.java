@@ -185,26 +185,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && originNumber != null)
-			result = originNumber.toLowerCase().contains(query);
-		if (!result && partNumber != null)
-			result = partNumber.getName().toLowerCase().contains(query);
-		if (!result && partNumber != null)
-			result = partNumber.getDescription().toLowerCase().contains(query);
-		if (!result && partNumber != null && partNumber.getIndustryName() != null)
-			result = partNumber.getIndustryName().toLowerCase().contains(query);
-		if (!result && partNumber != null && partNumber.getCategoryName() != null)
-			result = partNumber.getCategoryName().toLowerCase().contains(query);
-		if (!result && partNumber != null && partNumber.getTypeName() != null)
-			result = partNumber.getTypeName().toLowerCase().contains(query);
-		if (!result && deliveryRequest != null)
-			result = deliveryRequest.getReference().toLowerCase().contains(query);
-		if (!result && deliveryRequest != null && deliveryRequest.getWarehouse() != null)
-			result = deliveryRequest.getWarehouse().getName().toLowerCase().contains(query);
-		if (!result && deliveryRequest != null && deliveryRequest.getProject() != null)
-			result = deliveryRequest.getProject().getName().toLowerCase().contains(query);
-		return result;
+		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
+				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName());
 	}
 
 	public StockRow() {
@@ -554,6 +536,48 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
+	public String getPartNumberIndustryName() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getIndustryName();
+	}
+
+	@Transient
+	public String getPartNumberCategoryName() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getCategoryName();
+	}
+
+	@Transient
+	public String getPartNumberTypeName() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getTypeName();
+	}
+
+	@Transient
+	public String getPartNumberBrandName() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getBrandName();
+	}
+
+	@Transient
+	public String getWarehouseName() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getWarehouseName();
+	}
+
+	@Transient
+	public String getProjectName() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getProjectName();
+	}
+
+	@Transient
 	public String getPartNumberName() {
 		if (partNumber == null)
 			return null;
@@ -565,6 +589,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setName(name);
+	}
+
+	@Transient
+	public String getPartNumberDescription() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getDescription();
+	}
+
+	@Transient
+	public void setPartNumberDescription(String description) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setDescription(description);
 	}
 
 	@Transient

@@ -998,6 +998,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	}
 
 	@Transient
+	@JsonIgnore
+	public String getWarehouseName() {
+		if (warehouse != null)
+			return warehouse.getName();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setWarehouseName(String name) {
+		if (warehouse == null)
+			warehouse = new Warehouse();
+		warehouse.setName(name);
+	}
+
+	@Transient
 	public Integer getOriginId() {
 		return originId;
 	}

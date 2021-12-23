@@ -472,7 +472,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			result.get(inboundDeliveryRequest).put(deliveryRequestId, result.get(inboundDeliveryRequest).get(deliveryRequestId) + stockRow.getQuantity());
 		}
 		// remove fully delivered
-		result.values().removeIf(v -> v.values().parallelStream().mapToDouble(qty -> qty).sum() == 0.0);
+		result.values().removeIf(v -> v.values().stream().mapToDouble(qty -> qty).sum() == 0.0);
 		mapInboundDnMapDnQuantity = result;
 	}
 
@@ -486,6 +486,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		List<Integer> deliveryRequestIdList = mapInboundDnMapDnQuantity.values().stream().map(v -> v.keySet()).collect(ArrayList::new, List::addAll, List::addAll);
 		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(id, deliveryRequestIdList);
 		Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+
+		System.out.println("mapInboundDnMapDnQuantity : " + mapInboundDnMapDnQuantity);
 
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
 			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
@@ -502,6 +504,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId())).map(i -> i.getExpiryDate()).distinct().collect(Collectors.toSet());
 				for (Date date : dateSet) {
 					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inbound.getId().equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate())).mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
+					if (quantity == 0.0)
+						continue;
 					DeliveryRequestExpiryDate deliveryRequestExpiryDate = new DeliveryRequestExpiryDate();
 					deliveryRequestExpiryDate.setQuantity(quantity);
 					deliveryRequestExpiryDate.setInboundDeliveryRequestId(inbound.getId());

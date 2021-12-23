@@ -144,13 +144,13 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(select7 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.project.id,a.deliveryRequest.warehouse.id,a.status,a.location.id having sum(a.quantity) != 0")
 	public List<StockRow> findCurrentStockByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
 
-	@Query(select17 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.partNumber.id = ?5 group by a.deliveryRequest.id,a.status")
+	@Query(select17 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.partNumber.id = ?5 group by a.deliveryRequest.id,a.inboundDeliveryRequest.id,a.status")
 	public List<StockRow> findStockHistoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId);
 
 	@Query(select9 + from2 + " where " + usernameCondition + " and " + companyCondition + " and a.partNumber.id = ?5 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.type = ?7  group by a.deliveryRequest.id,a.status")
 	public List<StockRow> findStockHistoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, Integer pojectId, DeliveryRequestType outbound);
 
-	@Query(select17 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.id,a.status")
+	@Query(select17 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5  group by a.deliveryRequest.id,a.inboundDeliveryRequest.id,a.status")
 	public List<StockRow> findStockHistoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
 
 	@Query(select9 + from3 + " where " + usernameCondition + " and " + customerCondition + " and a.partNumber.id = ?5 and a.deliveryRequest.project.id = ?6 and a.deliveryRequest.type = ?7  group by a.deliveryRequest.id,a.status")

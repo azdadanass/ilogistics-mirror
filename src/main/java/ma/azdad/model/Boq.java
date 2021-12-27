@@ -59,7 +59,7 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 		this.unitPrice = unitPrice;
 	}
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "podetails_idpodetails")
 	public Podetails getPodetails() {
 		return podetails;

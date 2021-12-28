@@ -28,6 +28,6 @@ public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRe
 	@Query("from DeliveryRequestExpiryDate a where a.stockRow.deliveryRequest.id = ?1 and a.stockRow.partNumber.id = ?2 and a.stockRow.status = ?3 and a.stockRow.location.id = ?4")
 	public List<DeliveryRequestExpiryDate> findByDeliveryRequestAndPartNumberAndStatusAndLocation(Integer delliveryRequestId, Integer partNumberId, StockRowStatus status, Integer locationId);
 
-	@Query("select new DeliveryRequestExpiryDate(sum(a.quantity),a.expiryDate,a.stockRow.deliveryRequest.id,a.stockRow.inboundDeliveryRequest.id) from DeliveryRequestExpiryDate a where a.stockRow.partNumber.id = ?1 and a.stockRow.deliveryRequest.id in (?2) group by a.expiryDate,a.stockRow.deliveryRequest.id")
-	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList);
+	@Query("select new DeliveryRequestExpiryDate(sum(a.quantity),a.expiryDate,a.stockRow.deliveryRequest.id,a.stockRow.inboundDeliveryRequest.id) from DeliveryRequestExpiryDate a where a.stockRow.partNumber.id = ?1 and a.stockRow.deliveryRequest.id in (?2) group by a.expiryDate,a.stockRow.deliveryRequest.id,a.stockRow.inboundDeliveryRequest.id")
+	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList);
 }

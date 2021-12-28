@@ -484,13 +484,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		initMapInboundDeliveryRequestMapDeliveryRequestQuantity();
 		List<Integer> deliveryRequestIdList = mapInboundDnMapDnQuantity.values().stream().map(v -> v.keySet()).collect(ArrayList::new, List::addAll, List::addAll);
-		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(id, deliveryRequestIdList);
-		Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(id, deliveryRequestIdList);
+		
 
 		System.out.println("mapInboundDnMapDnQuantity : " + mapInboundDnMapDnQuantity);
 
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
 			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
+			Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().filter(i->i.getInboundDeliveryRequestId().equals(inbound.getId())).collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
 			Boolean test = true;
 			for (Integer dnId : map.keySet()) {
 				Double dnQty = map.get(dnId);

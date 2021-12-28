@@ -96,7 +96,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			return null;
 	}
 
-	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList) {
-		return repos.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequest(partNumberId, deliveryRequestList);
+	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList) {
+		return repos.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(partNumberId, deliveryRequestList);
 	}
 }

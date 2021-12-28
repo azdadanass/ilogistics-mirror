@@ -393,11 +393,11 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-6 hidden-xs">
+									<div class="col-sm-5 hidden-xs">
 										<i class="fa fa-list" />
 										<h:outputText value=" Stock History" />
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-3">
 										<h:outputText value="Remove Fully Delivered" />
 										<p:commandLink id="removeFullyDelivered" action="#{stockRowView.initHistorylist()}" update="removeFullyDelivered,stockHistory" partialSubmit="true" process="@this">
 											<i class="ace-icon fa #{stockRowView.removeFullyDelivered?'fa-toggle-on white':'fa-toggle-off white'} " />

@@ -450,7 +450,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private void initHistoryList2() {
 		if (historyList2 == null) {
 			initMapInboundDeliveryRequestMapDeliveryRequestQuantity();
-			historyList2 = historyList1.stream().filter(sr -> mapInboundDnMapDnQuantity.containsKey(sr.getInboundDeliveryRequestId())).collect(Collectors.toList());
+			historyList2 = historyList1.stream().filter(sr -> mapInboundDnMapDnQuantity.containsKey(sr.getInboundDeliveryRequest())).collect(Collectors.toList());
 		}
 		list2 = list1 = historyList2;
 	}

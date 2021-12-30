@@ -12,12 +12,11 @@ import ma.azdad.model.Boq;
 
 @Repository
 public interface BoqRepos extends JpaRepository<Boq, Integer> {
-	
 
 	@Query("select a.partNumber.id from Boq a where a.podetails.po.idpo = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);
 
-	@Query("from Boq a where a.podetails.po.idpo = ?1 and (a.partNumber.id = ?2 or (select count(*) from PartNumberEquivalenceDetail b where b.partNumber.id = ?2 and b.parent.partNumber.id = a.partNumber.id) > 0) ")
+	@Query("from Boq a where a.podetails.po.idpo = ?1 and (a.partNumber.id = ?2 or (select count(*) from PartNumberEquivalenceDetail b where b.partNumber.id = ?2 and b.parent.partNumber.id = a.partNumber.id and b.parent.active is true) > 0) ")
 	public List<Boq> findByPoAndPartNumber(Integer poId, Integer partNumberId);
 
 	@Query("from Boq a where a.podetails.po.idpo = ?1 and a.partNumber.id in (?2) ")

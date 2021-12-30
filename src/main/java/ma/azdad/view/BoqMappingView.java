@@ -181,6 +181,10 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		List<Boq> nonDirectList = findNonDirectBoqList(bmi.getPartNumber().getId());
 		boqList.addAll(directList);
 		boqList.addAll(nonDirectList.stream().filter(i -> !directList.contains(i)).collect(Collectors.toList()));
+
+		System.out.println("directList : " + directList);
+		System.out.println("nonDirectList : " + nonDirectList);
+
 		// boqList.forEach(i ->
 		// i.setUsedQuantity(boqService.getUsedQuantity(i.getId()))); // replaced by
 		// prsisted totalUsedQuantity
@@ -297,7 +301,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		if (boq.getDirectEquivalence())
 			return partNumberEquivalenceService.findByPartNumberAndContainingPartNumber(boq.getPartNumber().getId(), bmi.getPartNumber().getId());
 		else
-			return partNumberService.findOne(bmi.getPartNumber().getId()).getEquivalenceList().stream().filter(pne->pne.getActive()).collect(Collectors.toList());
+			return partNumberService.findOne(bmi.getPartNumber().getId()).getEquivalenceList().stream().filter(pne -> pne.getActive()).collect(Collectors.toList());
 	}
 
 	public List<PartNumberEquivalence> getPartNumberEquivalenceList() {

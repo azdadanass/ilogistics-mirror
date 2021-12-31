@@ -1,6 +1,5 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,7 +34,7 @@ import ma.azdad.utils.LabelValue;
 
 @Entity
 
-public class DeliveryRequest extends GenericModel<Integer> implements Serializable {
+public class DeliveryRequest extends GenericModel<Integer> implements Comparable<DeliveryRequest> {
 
 	private String reference;
 	private String description;
@@ -1797,5 +1796,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 	@Override
 	public String toString() {
 		return this.reference;
+	}
+
+	@Override
+	public int compareTo(DeliveryRequest o) {
+		try {
+			return neededDeliveryDate.compareTo(o.neededDeliveryDate);
+		} catch (Exception e) {
+		}
+		return 0;
 	}
 }

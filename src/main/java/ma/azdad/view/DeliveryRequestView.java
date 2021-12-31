@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -331,6 +332,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(), Stream.concat(cacheView.getAssignedProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
 				else if (sessionView.getUser().getIsSupplierUser())
 					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList());
+
+				if (DeliveryRequestState.WAITING.equals(state))
+					Collections.sort(list1);
 
 				break;
 			case 2:

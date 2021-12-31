@@ -318,6 +318,15 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Class" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberView.partNumber.partNumberClass.value}" styleClass="#{partNumberView.partNumber.partNumberClass.color.name}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Status" />
 										</div>
 										<div class="profile-info-value">

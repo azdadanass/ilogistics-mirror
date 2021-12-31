@@ -210,8 +210,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, String originName, String customerName, String supplierName, String companyName,
-			Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef) {
+	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate, String originName, String customerName, String supplierName,
+			String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -226,6 +226,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Serializab
 		this.reference = reference;
 		this.originNumber = originNumber;
 		this.date4 = date4;
+		this.neededDeliveryDate = neededDeliveryDate;
 		this.originName = originName;
 		this.ownerName = customerName != null ? customerName : supplierName != null ? supplierName : companyName;
 		this.warehouse = warehouse;

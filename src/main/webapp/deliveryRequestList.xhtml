@@ -229,8 +229,8 @@
 							<p:column headerText="Status" width="125">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />
 							</p:column>
-							<p:column headerText="Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}">
-								<h:outputText value="#{item.date4}" styleClass="red bolder">
+							<p:column headerText="Exp Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}">
+								<h:outputText value="#{item.neededDeliveryDate}" styleClass="#{item.neededDeliveryDate lt utilsView.currentDate?'red':' blue'} bolder">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>
 							</p:column>

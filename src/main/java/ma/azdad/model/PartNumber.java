@@ -33,6 +33,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private PartNumberStatus status = PartNumberStatus.ACTIVE;
 	private PartNumberState state = PartNumberState.DRAFT;
 	private String description;
+	private PartNumberClass partNumberClass;
 
 	private Double grossWeight = 0.0;
 	private Double netWeight = 0.0;
@@ -770,4 +771,16 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(length=10,nullable=false)
+	public PartNumberClass getPartNumberClass() {
+		return partNumberClass;
+	}
+
+	public void setPartNumberClass(PartNumberClass partNumberClass) {
+		this.partNumberClass = partNumberClass;
+	}
+	
+	
 }

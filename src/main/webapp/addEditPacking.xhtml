@@ -112,7 +112,7 @@
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 
 											<p:column headerText="Type" width="100">
-												<h:selectOneMenu value="#{item.type}" style="width:90px">
+												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isHardware}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="Pallet" itemValue="Pallet" />
 													<f:selectItem itemLabel="Box" itemValue="Box" />
@@ -121,6 +121,16 @@
 													<f:selectItem itemLabel="Plastic Bag" itemValue="Plastic Bag" />
 													<f:selectItem itemLabel="Plastic Barrel" itemValue="Plastic Barrel" />
 													<f:selectItem itemLabel="Container" itemValue="Container" />
+												</h:selectOneMenu>
+												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isSoftware}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItem itemLabel="USB" itemValue="USB" />
+													<f:selectItem itemLabel="CD" itemValue="CD" />
+													<f:selectItem itemLabel="DWLD" itemValue="DWLD" />
+												</h:selectOneMenu>
+												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isService}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItem itemLabel="SRV" itemValue="SRV" />
 												</h:selectOneMenu>
 											</p:column>
 

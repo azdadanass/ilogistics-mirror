@@ -167,6 +167,21 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		for (PartNumberDetail detail : detailList)
 			detail.init();
 	}
+	
+	@Transient
+	public Boolean getIsHardware() {
+		return PartNumberClass.HW.equals(partNumberClass);
+	}
+	
+	@Transient
+	public Boolean getIsSoftware() {
+		return PartNumberClass.SW.equals(partNumberClass);
+	}
+	
+	@Transient
+	public Boolean getIsService() {
+		return PartNumberClass.SRV.equals(partNumberClass);
+	}
 
 	@Transient
 	public String getIndustryName() {

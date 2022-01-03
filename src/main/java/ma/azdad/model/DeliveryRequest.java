@@ -456,6 +456,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return "Today + 1";
 		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 2), neededDeliveryDate) == 0)
 			return "Today + 2";
+		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
+			return "Overdue";
 		return UtilsFunctions.formatDate(neededDeliveryDate);
 	}
 

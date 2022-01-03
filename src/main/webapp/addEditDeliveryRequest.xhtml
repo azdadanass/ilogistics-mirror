@@ -494,7 +494,7 @@
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
 												<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
-													requiredMessage="Needed Delivery Date should not be null" autocomplete="off" />
+													requiredMessage="Needed Delivery Date should not be null" autocomplete="off" mindate="#{utilsView.currentDate}"/>
 												<br />
 											</div>
 										</div>

@@ -391,7 +391,7 @@
 								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
 							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
-								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm">
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" mindate="#{utilsView.currentDate}">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
 								<p:ajax event="save" listener="#{deliveryRequestView.updateNeededDeliveryDate()}" update=":main_form" />

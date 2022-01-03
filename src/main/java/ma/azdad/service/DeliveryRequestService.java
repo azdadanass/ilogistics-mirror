@@ -944,10 +944,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updatePo(Integer id, Po po) {
 		deliveryRequestRepos.updatePo(id, po);
+		evictCache();
 	}
 
 	public void updatePo(Integer id, Integer poId) {
 		updatePo(poId, poService.findOne(poId));
+		evictCache();
 	}
 
 	public void updateDetailListUnitPriceFromBoqMapping(Integer deliveryRequestId) {
@@ -980,6 +982,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		}
 
+		evictCache();
 	}
 
 	public Long countByOutboundDeliveryRequestTransfer(Integer outboundDeliveryRequestId) {
@@ -992,10 +995,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateIsFullyReturned(Integer id, Boolean isFullyReturned) {
 		deliveryRequestRepos.updateIsFullyReturned(id, isFullyReturned);
+		evictCache();
 	}
 
 	public void updateIsFullyReturnedForExistingOutbound() {
 		deliveryRequestRepos.findOutboundDeliveryRequestReturnIdList().forEach(i -> updateIsFullyReturned(i, deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(findOne(i))));
+		evictCache();
 	}
 
 	public String getTransferStatus(Integer outboundDeliveryRequestId) {
@@ -1005,14 +1010,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateNeededDeliveryDate(Integer id, Date neededDeliveryDate) {
 		deliveryRequestRepos.updateNeededDeliveryDate(id, neededDeliveryDate);
+		evictCache();
 	}
 
 	public void updateSmsRef(Integer id, String smsRef) {
 		deliveryRequestRepos.updateSmsRef(id, smsRef);
+		evictCache();
 	}
 
 	public void updateTransportationNeeded(Integer id, Boolean transportationNeeded) {
 		deliveryRequestRepos.updateTransportationNeeded(id, transportationNeeded);
+		evictCache();
 	}
 
 	// public void updateMissingSerialNumber(DeliveryRequest deliveryRequest) {
@@ -1037,10 +1045,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateMissingSerialNumber(Integer id, Boolean missingSerialNumber) {
 		deliveryRequestRepos.updateMissingSerialNumber(id, missingSerialNumber);
+		evictCache();
 	}
 
 	public void updateMissingExpiry(Integer id, Boolean missingExpiry) {
 		deliveryRequestRepos.updateMissingExpiry(id, missingExpiry);
+		evictCache();
 	}
 
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList) {
@@ -1061,18 +1071,22 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateIsForTransfer(Integer id, Boolean isForTransfer) {
 		deliveryRequestRepos.updateIsForTransfer(id, isForTransfer);
+		evictCache();
 	}
 
 	public void updateRequestDate(Integer id, Date requestDate) {
 		deliveryRequestRepos.updateRequestDate(id, requestDate);
+		evictCache();
 	}
 
 	public void updateRequestFrom(Integer id, String requestFrom) {
 		deliveryRequestRepos.updateRequestFrom(id, requestFrom);
+		evictCache();
 	}
 
 	public void updateExternalRequester(Integer id, User user) {
 		deliveryRequestRepos.updateExternalRequester(id, user);
+		evictCache();
 	}
 
 	public void updateSdm(Integer id, Boolean sdm) {

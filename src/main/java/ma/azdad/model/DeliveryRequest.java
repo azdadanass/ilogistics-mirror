@@ -30,6 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.Color;
 import ma.azdad.utils.LabelValue;
 
 @Entity
@@ -456,6 +457,17 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 2), neededDeliveryDate) == 0)
 			return "Today + 2";
 		return UtilsFunctions.formatDate(neededDeliveryDate);
+	}
+
+	@Transient
+	public Color getNeededDeliveryDateColor() {
+		if (neededDeliveryDate == null)
+			return null;
+		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) < 0)
+			return Color.RED;
+		else if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
+			return Color.BLUE;
+		return Color.GREEN;
 	}
 
 	@Transient

@@ -230,9 +230,7 @@
 								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />
 							</p:column>
 							<p:column headerText="Exp Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}">
-								<h:outputText value="#{item.neededDeliveryDate}" styleClass="#{item.neededDeliveryDate lt utilsView.currentDate?'red':' blue'} bolder">
-									<f:convertDateTime pattern="yyyy-MM-dd" />
-								</h:outputText>
+								<h:outputText value="#{item.neededDeliveryDateStr}" styleClass="#{item.neededDeliveryDate lt utilsView.currentDate?'red':' blue'} bolder" />
 							</p:column>
 							<p:column headerText="Transportation Request" styleClass="hide" rendered="#{deliveryRequestView.list2.size()>0}">
 								<h:outputText value="#{item.hasTransportationRequest?'Yes':'No'}" />

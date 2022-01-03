@@ -295,7 +295,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		user6 = null;
 		user7 = null;
 	}
-	
 
 	public void addHistory(DeliveryRequestHistory history) {
 		history.setParent(this);
@@ -444,6 +443,19 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		});
 
 		return result;
+	}
+
+	@Transient
+	public String getNeededDeliveryDateStr() {
+		if (neededDeliveryDate == null)
+			return null;
+		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) == 0)
+			return "Today";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 1), neededDeliveryDate) == 0)
+			return "Today + 1";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 2), neededDeliveryDate) == 0)
+			return "Today + 2";
+		return UtilsFunctions.formatDate(neededDeliveryDate);
 	}
 
 	@Transient

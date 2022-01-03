@@ -464,9 +464,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (neededDeliveryDate == null)
 			return null;
 		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) < 0)
-			return Color.RED;
-		else if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
 			return Color.BLUE;
+		else if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
+			return Color.RED;
 		return Color.GREEN;
 	}
 

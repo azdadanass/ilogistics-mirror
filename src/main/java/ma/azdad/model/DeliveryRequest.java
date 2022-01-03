@@ -295,6 +295,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		user6 = null;
 		user7 = null;
 	}
+	
 
 	public void addHistory(DeliveryRequestHistory history) {
 		history.setParent(this);

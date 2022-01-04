@@ -482,9 +482,16 @@
 							<h:outputText value="Needed Delivery Date" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateNeededDeliveryDate()}">
 								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
+								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" mindate="#{utilsView.currentDate}">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+								</p:calendar>
+								<p:ajax event="save" listener="#{deliveryRequestView.updateNeededDeliveryDate()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
 							&nbsp;
 						</div>
 					</div>

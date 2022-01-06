@@ -450,14 +450,20 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getNeededDeliveryDateStr() {
 		if (neededDeliveryDate == null)
 			return null;
-		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) == 0)
+		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
+			return "Overdue";
+		else if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) == 0)
 			return "Today";
 		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 1), neededDeliveryDate) == 0)
 			return "Tomorrow";
 		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 2), neededDeliveryDate) == 0)
-			return "Today + 2";
-		if (UtilsFunctions.compareDates(new Date(), neededDeliveryDate) > 0)
-			return "Overdue";
+			return "In 2 Days";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 3), neededDeliveryDate) == 0)
+			return "In 3 Days";
+		else if (UtilsFunctions.isDateInCurrentWeek(neededDeliveryDate))
+			return "This week";
+		else if (UtilsFunctions.isDateInNextWeek(neededDeliveryDate))
+			return "Next week";
 		return UtilsFunctions.formatDate(neededDeliveryDate);
 	}
 

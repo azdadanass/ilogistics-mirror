@@ -159,4 +159,6 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select new User(a.username,a.fullName) from User a where a.active is true and a.companyType = ?1 and (a.company.id = ?2 or a.customer.id = ?3 or a.supplier.id = ?4)")
 	List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId);
 
+	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and (select count(*) from UserRole b where b.user.username = a.user.username and  b.role = ?2) > 0 and a.user.supplier.id = ?3 and a.user.active is true")
+	List<User> findActiveByProjectAssignmentAndUserRoleAndSupplier(Integer projectId, Role userRole, Integer supplierId);
 }

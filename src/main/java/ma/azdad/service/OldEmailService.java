@@ -23,8 +23,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequest;
+import ma.azdad.model.Role;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.utils.App;
 import ma.azdad.utils.OldMail;
 import ma.azdad.utils.To;
@@ -44,6 +46,9 @@ public class OldEmailService {
 
 	@Autowired
 	private WarehouseService warehouseService;
+
+	@Autowired
+	private UserService userService;
 
 	@Value("${applicationName}")
 	private String applicationName;
@@ -156,6 +161,21 @@ public class OldEmailService {
 			cc.add(deliveryRequest.getProject().getManager().getEmail());
 			if (deliveryRequest.getWarehouse() != null)
 				cc.addAll(warehouseService.findManagerList(deliveryRequest.getWarehouse().getId()).stream().map(i -> i.getEmail()).collect(Collectors.toSet()));
+			if (deliveryRequest.getToUser() != null)
+				cc.add(deliveryRequest.getToUser().getEmail());
+
+			try {
+				// add external deliver to supplier pms
+				if (deliveryRequest.getDeliverToSupplierId() != null && deliveryRequest.getDestinationProjectId() != null) {
+					List<User> userList = userService.findActiveByProjectAssignmentAndUserRoleAndSupplier(deliveryRequest.getDestinationProjectId(), Role.ROLE_ILOGISTICS_PM, deliveryRequest.getDeliverToSupplierId());
+					cc.addAll(userList.stream().map(u -> u.getEmail()).collect(Collectors.toList()));
+				}
+
+			} catch (Exception e) {
+				System.err.println("error add external deliver to supplier pms");
+				e.printStackTrace();
+			}
+
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
 			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
 		default:

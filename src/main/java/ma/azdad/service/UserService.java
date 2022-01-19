@@ -327,4 +327,9 @@ public class UserService {
 		return repos.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
 
+	@Cacheable("userService.findActiveByProjectAssignmentAndUserRoleAndSupplier")
+	public List<User> findActiveByProjectAssignmentAndUserRoleAndSupplier(Integer projectId, Role userRole, Integer supplierId) {
+		return repos.findActiveByProjectAssignmentAndUserRoleAndSupplier(projectId, userRole, supplierId);
+	}
+
 }

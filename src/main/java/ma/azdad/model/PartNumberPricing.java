@@ -43,7 +43,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, date);
+		return contains(query, getPartNumberName(), date);
 	}
 
 	@Transient

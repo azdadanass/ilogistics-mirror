@@ -71,10 +71,16 @@
 											<h:outputText value="Part Number" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{partNumberPricingView.model.partNumberId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Part Number should not be null">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{partNumberView.findLightByStockItem(true)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											</p:selectOneMenu>
+											<p:autoComplete value="#{partNumberPricingView.model.partNumberId}" size="30" maxResults="10"  completeMethod="#{partNumberView.completePartNumber2}" var="pn"
+												itemLabel="#{pn.name}" itemValue="#{pn.id}" converter="#{genericSecuredConverter}" forceSelection="true">
+												<p:column>
+													<h:outputText value="#{pn.name}" />
+												</p:column>
+												<p:column>
+													<h:outputText value="#{pn.description}" />
+												</p:column>
+												<p:ajax event="itemSelect" />
+											</p:autoComplete>
 										</div>
 									</div>
 								</div>

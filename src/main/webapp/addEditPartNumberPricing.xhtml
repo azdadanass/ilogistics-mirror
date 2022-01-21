@@ -71,8 +71,8 @@
 											<h:outputText value="Part Number" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:autoComplete value="#{partNumberPricingView.model.partNumberId}" size="30" maxResults="10" completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}"
-												itemValue="#{pn.id}" converter="#{genericSecuredConverter}" forceSelection="true">
+											<p:autoComplete value="#{partNumberPricingView.model.partNumber}" size="30" maxResults="10" completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}"
+												itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true">
 												<p:column>
 													<h:outputText value="#{pn.name}" />
 												</p:column>

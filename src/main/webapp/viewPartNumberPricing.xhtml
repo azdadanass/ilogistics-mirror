@@ -85,7 +85,10 @@
 											<h:outputText value="Part Number" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.partNumberName}" styleClass="bolder orange" />
+											<h:outputLink value="viewPartNumber.xhtml" target="blank">
+												<h:outputText value="#{partNumberPricingView.model.partNumberName}" styleClass="bolder orange" />
+												<f:param name="id" value="#{partNumberPricingView.model.partNumber.id}"/>
+											</h:outputLink>
 											&nbsp;
 										</div>
 									</div>
@@ -95,6 +98,18 @@
 										</div>
 										<div class="profile-info-value green">
 											<h:outputText value="#{partNumberPricingView.model.baseLineCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{partNumberPricingView.model.currencyName}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Base Line Price" />
+										</div>
+										<div class="profile-info-value blue">
+											<h:outputText value="#{partNumberPricingView.model.baseLinePrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" #{partNumberPricingView.model.currencyName}" />
@@ -141,6 +156,44 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Description" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.partNumber.description}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Class" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.partNumber.partNumberClass.value}" styleClass="#{partNumberPricingView.model.partNumber.partNumberClass.color.name}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Category" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.partNumber.partNumberType.category.name}" styleClass="bolder purple" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberPricingView.model.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.partNumber.partNumberType.name}" styleClass="bolder pink" />
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberPricingView.model.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Date" />
 										</div>
 										<div class="profile-info-value">
@@ -152,13 +205,10 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Base Line Price" />
+											<h:outputText value="Unit Type" />
 										</div>
-										<div class="profile-info-value blue">
-											<h:outputText value="#{partNumberPricingView.model.baseLinePrice}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" #{partNumberPricingView.model.currencyName}" />
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.partNumber.unitType}" styleClass="bolder light-blue" />
 											&nbsp;
 										</div>
 									</div>

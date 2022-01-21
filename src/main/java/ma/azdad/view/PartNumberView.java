@@ -322,6 +322,10 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 		return partNumberService.findLikeNameOrDescription(query, true);
 	}
 
+	public List<PartNumber> findLightByStockItem(Boolean stockItem) {
+		return partNumberService.findLightByStockItem(stockItem);
+	}
+
 	// not used anymore
 //	public String generateOverlayPanelContent(PartNumber partnumber) {
 //		StringBuilder sb = new StringBuilder();
@@ -454,9 +458,6 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 //	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public PartNumberService getPartNumberService() {
 		return partNumberService;

@@ -1,0 +1,38 @@
+package ma.azdad.service;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
+
+import ma.azdad.model.PartNumberPricing;
+import ma.azdad.repos.PartNumberPricingRepos;
+
+@Component
+public class PartNumberPricingService extends GenericService<Integer, PartNumberPricing, PartNumberPricingRepos> {
+
+	@Override
+	@Cacheable("partNumberPricingService.findAll")
+	public List<PartNumberPricing> findAll() {
+		return repos.findAll();
+	}
+
+	@Override
+	@Cacheable("partNumberPricingService.findOne")
+	public PartNumberPricing findOne(Integer id) {
+		PartNumberPricing partNumberPricing = super.findOne(id);
+		initialize(partNumberPricing.getPartNumber());
+		return partNumberPricing;
+	}
+
+	@Cacheable("partNumberPricingService.findLight")
+	public List<PartNumberPricing> findLight() {
+		return repos.findLight();
+	}
+
+	public Long countByPartNumberAndDate(Integer partNumberId, Date date, Integer id) {
+		return repos.countByPartNumberAndDate(partNumberId, date, id);
+	}
+
+}

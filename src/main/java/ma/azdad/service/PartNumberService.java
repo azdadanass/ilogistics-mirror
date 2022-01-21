@@ -197,4 +197,8 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 		return partNumberRepos.getHasPacking(id);
 	}
 
+	public List<PartNumber> findLightByStockItem(Boolean stockItem) {
+		return partNumberRepos.findLightByStockItem(stockItem);
+	}
+
 }

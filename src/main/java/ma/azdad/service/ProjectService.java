@@ -215,4 +215,15 @@ public class ProjectService {
 			return repos.findLight(idList);
 		return new ArrayList<Project>();
 	}
+
+	public List<Project> findLightByIdListAndCustomer(Collection<Integer> idList, Integer customerId) {
+		return repos.findLightByIdListAndCustomer(idList, customerId);
+	}
+
+	public List<Integer> findAllProjectIdListByResource(String username) {
+		List<Integer> result = new ArrayList<>();
+		result.add(-1);
+		result.addAll(repos.findAllProjectIdListByResource(username));
+		return result;
+	}
 }

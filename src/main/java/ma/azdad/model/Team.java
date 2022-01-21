@@ -75,6 +75,30 @@ public class Team extends GenericModel<Integer> implements Serializable {
 		return contains(query, name, getTeamLeaderFullName());
 	}
 
+	@Transient
+	public Boolean getTeamLeaderActive() {
+		return teamLeader == null ? null : teamLeader.getActive();
+	}
+
+	@Transient
+	public void setTeamLeaderActive(Boolean teamLeaderActive) {
+		if (teamLeader == null)
+			teamLeader = new User();
+		teamLeader.setActive(teamLeaderActive);
+	}
+
+	@Transient
+	public String getTeamLeaderUsername() {
+		return teamLeader == null ? null : teamLeader.getUsername();
+	}
+
+	@Transient
+	public void setTeamLeaderUsername(String teamLeaderUsername) {
+		if (teamLeader == null)
+			teamLeader = new User();
+		teamLeader.setUsername(teamLeaderUsername);
+	}
+
 	public void calculateMembersKey() {
 		membersKey = detailList.stream().map(i -> i.getUserUsername() + "," + i.getType().ordinal()).sorted().collect(Collectors.joining(";"));
 	}

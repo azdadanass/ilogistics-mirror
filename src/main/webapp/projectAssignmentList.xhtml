@@ -93,6 +93,13 @@
 							<f:setPropertyActionListener value="#{ProjectAssignmentType.SUPPLIER}" target="#{projectAssignmentView.type}" />
 						</p:commandLink>
 					</li>
+					<li id="tab5">
+						<p:commandLink onclick="openTab(5)" action="#{projectAssignmentView.refreshList()}" update=":main_form:projectAssignmentList,:main_form:widgetPanel">
+							<i class="yellow ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Customers Assignements" styleClass="hidden-xs" />
+							<f:setPropertyActionListener value="#{ProjectAssignmentType.CUSTOMER}" target="#{projectAssignmentView.type}" />
+						</p:commandLink>
+					</li>
 				</ul>
 			</div>
 			<div class="space-16" />
@@ -127,20 +134,42 @@
 						<p:dataTable value="#{projectAssignmentView.list2}" filteredValue="#{projectAssignmentView.list3}" rowKey="#{item.id}" selection="#{projectAssignmentView.list4}" id="projectAssignmentList"
 							widgetVar="projectAssignmentList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+							<p:column headerText="Photo" rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.type}">
+								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo" rendered="#{item.supplierPhoto!=null}">
+									<f:param name="fileName" value="#{item.supplierPhoto}" />
+								</p:graphicImage>
+							</p:column>
+							<p:column headerText="Photo" rendered="#{ProjectAssignmentType.CUSTOMER==projectAssignmentView.type}">
+								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo" rendered="#{item.customerPhoto!=null}">
+									<f:param name="fileName" value="#{item.customerPhoto}" />
+								</p:graphicImage>
+							</p:column>
 							<p:column headerText="Project">
 								<h:outputText value="#{item.projectName}" styleClass="bolder orange" />
 							</p:column>
 							<p:column headerText="User" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
 								<h:outputText value="#{item.userFullName}" styleClass="#{item.type.color.name} bolder" />
 							</p:column>
+							<p:column headerText="Role SDM" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
+								<i class="ace-icon fa #{userView.hasRoleSdm(item.userUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							</p:column>
+							<p:column headerText="Role Ilogistics" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
+								<i class="ace-icon fa #{userView.hasRoleIlogistics(item.userUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							</p:column>
 							<p:column headerText="Team" rendered="#{ProjectAssignmentType.INTERNAL_TEAM==projectAssignmentView.type}">
 								<h:outputText value="#{item.teamName}" styleClass="#{item.type.color.name} bolder" />
+							</p:column>
+							<p:column headerText="Role Team" rendered="#{ProjectAssignmentType.INTERNAL_TEAM==projectAssignmentView.type}">
+								<i class="ace-icon fa #{userView.hasRoleTeamLeader(item.teamLeaderUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>
 							<p:column headerText="Type" rendered="#{ProjectAssignmentType.INTERNAL_TEAM==projectAssignmentView.type}">
 								<h:outputText value="#{item.teamType}" styleClass="purple" />
 							</p:column>
 							<p:column headerText="Supplier" rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.type}">
 								<h:outputText value="#{item.supplierName}" styleClass="#{item.type.color.name} bolder" />
+							</p:column>
+							<p:column headerText="Customer" rendered="#{ProjectAssignmentType.CUSTOMER==projectAssignmentView.type}">
+								<h:outputText value="#{item.customerName}" styleClass="#{item.type.color.name} bolder" />
 							</p:column>
 							<p:column headerText="Start Date">
 								<h:outputText value="#{item.startDate}">

@@ -75,21 +75,23 @@
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<f:subview rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.model.type}">
-					<li>
-						<a data-toggle="tab" href="#tab2" onclick="tab2()">
-							<i class="purple ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Team Assignemts" styleClass="hidden-xs" />
-						</a>
-						<p:remoteCommand name="tab2" actionListener="#{projectAssignmentView.setType(ProjectAssignmentType.EXTERNAL_TEAM)}" action="#{projectAssignmentView.refreshList()}" update=":main_form:projectAssignmentList" />
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab2" onclick="tab3()">
-							<i class="red ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" External PM Assignemts" styleClass="hidden-xs" />
-						</a>
-						<p:remoteCommand name="tab3" actionListener="#{projectAssignmentView.setType(ProjectAssignmentType.EXTERNAL_PM)}" action="#{projectAssignmentView.refreshList()}" update=":main_form:projectAssignmentList" />
-					</li>
+					<f:subview rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.model.type or ProjectAssignmentType.CUSTOMER==projectAssignmentView.model.type}">
+						<li>
+							<a data-toggle="tab" href="#tab2" onclick="tab2()">
+								<i class="purple ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" Team Assignemts" styleClass="hidden-xs" />
+							</a>
+							<p:remoteCommand name="tab2" actionListener="#{projectAssignmentView.setType(ProjectAssignmentType.EXTERNAL_TEAM)}" action="#{projectAssignmentView.refreshList()}"
+								update=":main_form:projectAssignmentList" />
+						</li>
+						<li>
+							<a data-toggle="tab" href="#tab2" onclick="tab3()">
+								<i class="red ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" External PM Assignemts" styleClass="hidden-xs" />
+							</a>
+							<p:remoteCommand name="tab3" actionListener="#{projectAssignmentView.setType(ProjectAssignmentType.EXTERNAL_PM)}" action="#{projectAssignmentView.refreshList()}"
+								update=":main_form:projectAssignmentList" />
+						</li>
 					</f:subview>
 				</ul>
 				<div class="tab-content no-border padding-24">
@@ -193,11 +195,23 @@
 										<p:column headerText="User" rendered="#{ProjectAssignmentType.EXTERNAL_PM==projectAssignmentView.type}">
 											<h:outputText value="#{item.userFullName}" styleClass="#{item.type.color.name} bolder" />
 										</p:column>
+										<p:column headerText="User" rendered="#{ProjectAssignmentType.EXTERNAL_PM==projectAssignmentView.type}">
+											<h:outputText value="#{item.userActive?'Active':'Inactive'}" styleClass="#{item.userActive?'green':'red'}" />
+										</p:column>
+										<p:column headerText="Role PM" rendered="#{ProjectAssignmentType.EXTERNAL_PM==projectAssignmentView.type}">
+											<i class="ace-icon fa #{userView.hasRolePm(item.userUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
 										<p:column headerText="Team" rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.type}">
 											<h:outputText value="#{item.teamName}" styleClass="#{item.type.color.name} bolder" />
 										</p:column>
+										<p:column headerText="Team Status" rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.type}">
+											<h:outputText value="#{item.teamActive?'Active':'Inactive'}" styleClass="#{item.teamActive?'green':'red'}" />
+										</p:column>
 										<p:column headerText="Type" rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.type}">
 											<h:outputText value="#{item.teamType}" styleClass="purple" />
+										</p:column>
+										<p:column headerText="Role Team" rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.type}">
+											<i class="ace-icon fa #{userView.hasRoleTeamLeader(item.teamLeaderUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 										</p:column>
 										<p:column headerText="Start Date">
 											<h:outputText value="#{item.startDate}">
@@ -222,7 +236,7 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<h:outputLink value="addEditProjectAssignment.xhtml">
+												<h:outputLink value="addEditProjectAssignment.xhtml" rendered="#{sessionView.internal or ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.type}">
 													<i class="fa fa-plus green" />
 													<f:param name="parentId" value="#{projectAssignmentView.model.id}" />
 												</h:outputLink>

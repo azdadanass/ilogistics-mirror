@@ -69,38 +69,136 @@
 								<div class="col-xs-12 col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Project" />
-										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{projectAssignmentView.model.projectId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Project should not be null">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{projectView.findLight(cacheView.allProjectList)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											</p:selectOneMenu>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
 											<h:outputText value="Type" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null" rendered="#{projectAssignmentView.parentId==null}">
+											<p:inputText value="#{projectAssignmentView.model.type}" rendered="#{projectAssignmentView.isEditPage}" />
+											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null"
+												rendered="#{projectAssignmentView.parentId==null and projectAssignmentView.isAddPage}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItem itemLabel="#{ProjectAssignmentType.INTERNAL.value}" itemValue="#{ProjectAssignmentType.INTERNAL}"/>
-												<f:selectItem itemLabel="#{ProjectAssignmentType.SUPPLIER.value}" itemValue="#{ProjectAssignmentType.SUPPLIER}"/>
-												<f:selectItem itemLabel="#{ProjectAssignmentType.INTERNAL_TEAM.value}" itemValue="#{ProjectAssignmentType.INTERNAL_TEAM}"/>
-												<p:ajax update="panel1"/>
+												<f:selectItem itemLabel="#{ProjectAssignmentType.INTERNAL.value}" itemValue="#{ProjectAssignmentType.INTERNAL}" />
+												<f:selectItem itemLabel="#{ProjectAssignmentType.SUPPLIER.value}" itemValue="#{ProjectAssignmentType.SUPPLIER}" />
+												<f:selectItem itemLabel="#{ProjectAssignmentType.CUSTOMER.value}" itemValue="#{ProjectAssignmentType.CUSTOMER}" />
+												<f:selectItem itemLabel="#{ProjectAssignmentType.INTERNAL_TEAM.value}" itemValue="#{ProjectAssignmentType.INTERNAL_TEAM}" />
+												<p:ajax update="panel1,project" />
 											</h:selectOneMenu>
-											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null" rendered="#{projectAssignmentView.parentId!=null}">
+											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null"
+												rendered="#{projectAssignmentView.parentId!=null and sessionView.internal and projectAssignmentView.isAddPage}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItem itemLabel="#{ProjectAssignmentType.EXTERNAL_TEAM.value}" itemValue="#{ProjectAssignmentType.EXTERNAL_TEAM}"/>
-												<f:selectItem itemLabel="#{ProjectAssignmentType.EXTERNAL_PM.value}" itemValue="#{ProjectAssignmentType.EXTERNAL_PM}"/>
-												<p:ajax update="panel1"/>
+												<f:selectItem itemLabel="#{ProjectAssignmentType.EXTERNAL_TEAM.value}" itemValue="#{ProjectAssignmentType.EXTERNAL_TEAM}" />
+												<f:selectItem itemLabel="#{ProjectAssignmentType.EXTERNAL_PM.value}" itemValue="#{ProjectAssignmentType.EXTERNAL_PM}" />
+												<p:ajax update="panel1,project" />
+											</h:selectOneMenu>
+											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null"
+												rendered="#{projectAssignmentView.parentId!=null and !sessionView.internal and projectAssignmentView.isAddPage}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="#{ProjectAssignmentType.EXTERNAL_TEAM.value}" itemValue="#{ProjectAssignmentType.EXTERNAL_TEAM}" />
+												<p:ajax update="panel1,project" />
 											</h:selectOneMenu>
 										</div>
 									</div>
 								</div>
+								<h:panelGroup id="panel1">
+									<f:subview rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="User" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.userUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="User should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.name}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{ProjectAssignmentType.EXTERNAL_PM==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="External PM" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.userUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="User should not be null" rendered="#{projectAssignmentView.model.parent.supplierId!=null}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightBySupplierAndHasRolePm(projectAssignmentView.model.parent.supplierId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{projectAssignmentView.model.userUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="User should not be null" rendered="#{projectAssignmentView.model.parent.customerId!=null}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findLightByCustomerAndHasRolePm(projectAssignmentView.model.parent.customerId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{ProjectAssignmentType.INTERNAL_TEAM==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Team" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.teamId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Team should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{teamView.findActive(true)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Team" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.teamId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Team should not be null" rendered="#{projectAssignmentView.model.parent.supplierId!=null}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{teamView.findActiveBySupplier(projectAssignmentView.model.parent.supplierId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{projectAssignmentView.model.teamId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Team should not be null" rendered="#{projectAssignmentView.model.parent.customerId!=null}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{teamView.findActiveByCustomer(projectAssignmentView.model.parent.customerId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Supplier" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{ProjectAssignmentType.CUSTOMER==projectAssignmentView.model.type}">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Customer" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{projectAssignmentView.model.customerId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Customer should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+														<p:ajax update=":main_form:project"/>
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
 							</div>
 							<div class="space-4" />
 							<div class="row">
@@ -129,83 +227,20 @@
 							</div>
 							<hr />
 							<div class="row">
-								<h:panelGroup id="panel1">
-									<f:subview rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.model.type}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="User" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{projectAssignmentView.model.userUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="User should not be null">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.name}" itemValue="#{item.username}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Project" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu id="project" value="#{projectAssignmentView.model.projectId}" disabled="#{projectAssignmentView.isEditPage or projectAssignmentView.parentId!=null}" filter="true"
+												filterMatchMode="contains" required="true" requiredMessage="Project should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{projectAssignmentView.projectList}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											</p:selectOneMenu>
 										</div>
-									</f:subview>
-									<f:subview rendered="#{ProjectAssignmentType.EXTERNAL_PM==projectAssignmentView.model.type}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="External PM" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{projectAssignmentView.model.userUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="User should not be null">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightBySupplierAndHasRolePm(projectAssignmentView.model.parent.supplierId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.username}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-									<f:subview rendered="#{ProjectAssignmentType.INTERNAL_TEAM==projectAssignmentView.model.type}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Team" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{projectAssignmentView.model.teamId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Team should not be null">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{teamView.findActive(true)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-									<f:subview rendered="#{ProjectAssignmentType.EXTERNAL_TEAM==projectAssignmentView.model.type}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Team" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{projectAssignmentView.model.teamId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Team should not be null">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{teamView.findActiveBySupplier(projectAssignmentView.model.parent.supplierId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-									<f:subview rendered="#{ProjectAssignmentType.SUPPLIER==projectAssignmentView.model.type}">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Supplier" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{projectAssignmentView.model.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-													</p:selectOneMenu>
-												</div>
-											</div>
-										</div>
-									</f:subview>
-								</h:panelGroup>
+									</div>
+								</div>
 							</div>
 							<div class="space-16" />
 						</div>

@@ -332,4 +332,12 @@ public class UserService {
 		return repos.findActiveByProjectAssignmentAndUserRoleAndSupplier(projectId, userRole, supplierId);
 	}
 
+	public List<User> findLightBySupplierAndHasRole(Integer supplierId, Role role) {
+		return repos.findLightBySupplierAndHasRole(supplierId, role);
+	}
+
+	public List<User> findLightByCustomerAndHasRole(Integer customerId, Role role) {
+		return repos.findLightByCustomerAndHasRole(customerId, role);
+	}
+
 }

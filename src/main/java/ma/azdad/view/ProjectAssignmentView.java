@@ -1,5 +1,7 @@
 package ma.azdad.view;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -8,10 +10,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.Project;
 import ma.azdad.model.ProjectAssignment;
 import ma.azdad.model.ProjectAssignmentType;
 import ma.azdad.repos.ProjectAssignmentRepos;
+import ma.azdad.service.CustomerService;
 import ma.azdad.service.ProjectAssignmentService;
+import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.TeamService;
 import ma.azdad.service.UserService;
@@ -38,6 +43,12 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 	@Autowired
 	SupplierService supplierService;
 
+	@Autowired
+	CustomerService customerService;
+
+	@Autowired
+	ProjectService projectService;
+
 	private ProjectAssignmentType type;
 
 	private Integer parentId;
@@ -58,8 +69,11 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 	@Override
 	protected void addPage() {
 		super.addPage();
-		if (parentId != null)
+		if (parentId != null) {
 			model.setParent(service.findOne(parentId));
+			model.setProject(model.getParent().getProject());
+		}
+
 	}
 
 	@Override
@@ -77,13 +91,19 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 				switch (type) {
 				case SUPPLIER:
 					if (sessionView.getInternal())
-						initLists(service.find(cacheView.getAssignedProjectList(), cacheView.getDelegatedProjectList(), type));
+						initLists(service.find(cacheView.getUserProjectList(), cacheView.getDelegatedProjectList(), type));
 					else
-						initLists(service.findBySupplierAndProjectList(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList()));
+						initLists(service.findBySupplierAndProjectList(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
+					break;
+				case CUSTOMER:
+					if (sessionView.getInternal())
+						initLists(service.find(cacheView.getUserProjectList(), cacheView.getDelegatedProjectList(), type));
+					else
+						initLists(service.findByCustomerAndProjectList(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
 					break;
 				case INTERNAL:
 				case INTERNAL_TEAM:
-					initLists(service.find(cacheView.getAssignedProjectList(), cacheView.getDelegatedProjectList(), type));
+					initLists(service.find(cacheView.getUserProjectList(), cacheView.getDelegatedProjectList(), type));
 					break;
 //				case INTERNAL_TEAM:
 //					initLists(service.findInternalTeamsAssignement(cacheView.getUserProjectList(), cacheView.getDelegatedProjectList()));
@@ -96,12 +116,27 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 			initLists(service.findByParentAndType(id, type));
 	}
 
+	public List<Project> getProjectList() {
+		if (model.getType() == null)
+			return null;
+
+		if (ProjectAssignmentType.CUSTOMER.equals(model.getType()))
+			return model.getCustomerId() != null ? projectService.findLightByIdListAndCustomer(cacheView.getAllProjectList(), model.getCustomerId()) : null;
+		else
+			return projectService.findLight(cacheView.getAllProjectList());
+
+	}
+
 	// save
 	public Boolean canSave() {
-		if (getIsAddPage() || getIsListPage())
-			return sessionView.getIsUser() || sessionView.getIsPM();
+		if (getIsAddPage())
+			return (sessionView.getInternal() && (sessionView.getIsUser() || sessionView.getIsPm())) //
+					|| (sessionView.getIsExternalPm() && model.getParent().getSupplierId().equals(sessionView.getUser().getSupplierId())) //
+					|| (sessionView.getIsExternalPm() && model.getParent().getCustomerId().equals(sessionView.getUser().getCustomerId()));
+		if (getIsListPage())
+			return (sessionView.getIsUser() || sessionView.getIsPm()) && sessionView.getInternal();
 		if (getIsEditPage() || getIsViewPage())
-			return true;
+			return sessionView.isTheConnectedUser(model.getProject().getManager()) || cacheView.getDelegatedProjectList().contains(model.getProjectId());
 		return false;
 	}
 
@@ -123,6 +158,9 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 		case SUPPLIER:
 			model.setSupplier(supplierService.findOne(model.getSupplierId()));
 			break;
+		case CUSTOMER:
+			model.setCustomer(customerService.findOne(model.getCustomerId()));
+			break;
 		default:
 			break;
 		}
@@ -134,15 +172,22 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 	public Boolean validate() {
 		if (model.getStartDate().compareTo(model.getEndDate()) > 0)
 			return FacesContextMessages.ErrorMessages("Start Date should be lower than End Date");
+
+		System.out.println("service --->" + service);
+
 		if (service.isOverlap(model))
 			return FacesContextMessages.ErrorMessages("Overlap Problem");
+
+		if (model.getParent() != null)
+			if (model.getStartDate().compareTo(model.getParent().getStartDate()) < 0 || model.getEndDate().compareTo(model.getParent().getEndDate()) > 0)
+				return FacesContextMessages.ErrorMessages("Start/end dates should be between supplier assignement start/end dates");
 
 		return true;
 	}
 
 	// delete
 	public Boolean canDelete() {
-		return true;
+		return false;
 	}
 
 	public String delete() {

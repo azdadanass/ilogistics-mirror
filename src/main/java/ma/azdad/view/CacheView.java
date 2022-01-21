@@ -61,6 +61,7 @@ public class CacheView implements Serializable {
 	private List<Integer> delegatedProjectList;
 	private Set<Integer> allProjectList = new HashSet<Integer>();
 	private List<Integer> warehouseList = new ArrayList<Integer>(Arrays.asList(-1));
+	private List<Integer> userProjectList; // PM AND SDM DELEGATION
 
 	@PostConstruct
 	public void init() {
@@ -68,6 +69,9 @@ public class CacheView implements Serializable {
 		lm = affectationService.getDatas(DataTypes.LM.getValue());
 		assignedProjectList = projectService.findAssignedProjectIdListByResource(sessionView.getUsername());
 		delegatedProjectList = delegationService.findDelegatedProjects(sessionView.getUsername());
+
+		userProjectList = projectService.findAllProjectIdListByResource(sessionView.getUsername());
+
 		allProjectList.addAll(assignedProjectList);
 		allProjectList.addAll(delegatedProjectList);
 
@@ -183,6 +187,14 @@ public class CacheView implements Serializable {
 
 	public void setAllProjectList(Set<Integer> allProjectList) {
 		this.allProjectList = allProjectList;
+	}
+
+	public List<Integer> getUserProjectList() {
+		return userProjectList;
+	}
+
+	public void setUserProjectList(List<Integer> userProjectList) {
+		this.userProjectList = userProjectList;
 	}
 
 }

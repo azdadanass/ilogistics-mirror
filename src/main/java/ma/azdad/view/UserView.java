@@ -16,11 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CompanyType;
+import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
+import ma.azdad.service.UserRoleService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.FacesContextMessages;
@@ -48,6 +50,9 @@ public class UserView {
 
 	@Autowired
 	protected ProjectService projectService;
+
+	@Autowired
+	protected UserRoleService userRoleService;
 
 	private String toNotifyUserUsername;
 	private Integer toNotifyExternalResourceId;
@@ -323,6 +328,34 @@ public class UserView {
 
 	public List<User> findExternalActive() {
 		return userService.findExternalActive();
+	}
+
+	public List<User> findLightBySupplierAndHasRolePm(Integer supplierId) {
+		return userService.findLightBySupplierAndHasRole(supplierId, Role.ROLE_ILOGISTICS_PM);
+	}
+
+	public List<User> findLightByCustomerAndHasRolePm(Integer customerId) {
+		return userService.findLightByCustomerAndHasRole(customerId, Role.ROLE_ILOGISTICS_PM);
+	}
+
+	public Boolean hasRole(String username, Role role) {
+		return userRoleService.isHavingRole(username, role);
+	}
+
+	public Boolean hasRoleSdm(String username) {
+		return hasRole(username, Role.ROLE_SDM_USER);
+	}
+
+	public Boolean hasRoleIlogistics(String username) {
+		return hasRole(username, Role.ROLE_ILOGISTICS_USER);
+	}
+
+	public Boolean hasRoleTeamLeader(String username) {
+		return hasRole(username, Role.ROLE_SDM_TEAM_LEADER);
+	}
+
+	public Boolean hasRolePm(String username) {
+		return hasRole(username, Role.ROLE_SDM_PM);
 	}
 
 	// getters & setters

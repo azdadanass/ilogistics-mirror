@@ -165,9 +165,10 @@ public class OldEmailService {
 				cc.add(deliveryRequest.getToUser().getEmail());
 
 			try {
+
 				// add external deliver to supplier pms
-				if (deliveryRequest.getDeliverToSupplierId() != null && deliveryRequest.getDestinationProjectId() != null) {
-					List<User> userList = userService.findActiveByProjectAssignmentAndUserRoleAndSupplier(deliveryRequest.getDestinationProjectId(), Role.ROLE_ILOGISTICS_PM, deliveryRequest.getDeliverToSupplierId());
+				if (deliveryRequest.getDeliverToSupplierId() != null && deliveryRequest.getDestinationProject() != null && deliveryRequest.getDestinationProject().getId() != null) {
+					List<User> userList = userService.findActiveByProjectAssignmentAndUserRoleAndSupplier(deliveryRequest.getDestinationProject().getId(), Role.ROLE_ILOGISTICS_PM, deliveryRequest.getDeliverToSupplierId());
 					cc.addAll(userList.stream().map(u -> u.getEmail()).collect(Collectors.toList()));
 				}
 

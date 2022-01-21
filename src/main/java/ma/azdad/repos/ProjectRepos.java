@@ -29,6 +29,9 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query(select1 + "from Project where status = ?1")
 	public List<Project> findLight(String status);
 
+	@Query("select new Project(id,name) from Project where id in (?1) and customer.id = ?2 and sdm is true")
+	public List<Project> findLightByIdListAndCustomer(Collection<Integer> idList, Integer customerId);
+
 	@Query(select2 + "from Project where manager.username = ?1 order by customerWarehousing desc")
 	public List<Project> findLightByManager(String managerUsername);
 
@@ -87,5 +90,8 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select distinct a.project.id  from DelegationDetail a where a.delegation.delegate.username = ?1 and a.delegation.status = 'Active' and a.type = 'PM'")
 	List<Integer> findIdListByDelegation(String username);
+
+	@Query("select id from Project where sdm is true and status = 'Open' and (manager.username = ?1 or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
+	public List<Integer> findAllProjectIdListByResource(String username);
 
 }

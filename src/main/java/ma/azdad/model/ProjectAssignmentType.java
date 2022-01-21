@@ -5,6 +5,7 @@ import ma.azdad.utils.Color;
 public enum ProjectAssignmentType {
 	INTERNAL("Internal", Color.BLUE),
 	SUPPLIER("Supplier", Color.PURPLE),
+	CUSTOMER("Customer", Color.YELLOW),
 	INTERNAL_TEAM("Internal Team", Color.GREEN),
 	EXTERNAL_TEAM("External Team", Color.PINK),
 	EXTERNAL_PM("External PM", Color.ORANGE),;

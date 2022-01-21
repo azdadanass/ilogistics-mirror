@@ -28,6 +28,7 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 	private Project project;
 	private Team team;
 	private Supplier supplier;
+	private Customer customer;
 	private ProjectAssignment parent;
 
 	public void init() {
@@ -42,17 +43,37 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 		this.team = team;
 	}
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	// c1
-	public ProjectAssignment(Integer id, ProjectAssignmentType type, Date startDate, Date endDate, String projectName, String userFullName, String teamName, String teamType, String supplierName) {
+	public ProjectAssignment(Integer id, ProjectAssignmentType type, Date startDate, Date endDate, //
+			String projectName, String userUsername, String userFullName, Boolean userActive, //
+			String teamName, String teamType, Boolean teamActive, String supplierName, String supplierPhoto, //
+			String customerName, String customerPhoto, String teamLeaderUsername) {
 		super(id);
 		this.type = type;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.setProjectName(projectName);
+		this.setUserUsername(userUsername);
 		this.setUserFullName(userFullName);
+		this.setUserActive(userActive);
 		this.setTeamName(teamName);
 		this.setTeamType(teamType);
+		this.setTeamActive(teamActive);
 		this.setSupplierName(supplierName);
+		this.setSupplierPhoto(supplierPhoto);
+		this.setCustomerName(customerName);
+		this.setCustomerPhoto(customerPhoto);
+		this.setTeamLeaderUsername(teamLeaderUsername);
 	}
 
 	@Transient
@@ -113,6 +134,30 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 	}
 
 	@Transient
+	public Boolean getTeamActive() {
+		return team == null ? null : team.getActive();
+	}
+
+	@Transient
+	public void setTeamActive(Boolean teamActive) {
+		if (team == null)
+			team = new Team();
+		team.setActive(teamActive);
+	}
+
+	@Transient
+	public String getTeamLeaderUsername() {
+		return team == null ? null : team.getTeamLeaderUsername();
+	}
+
+	@Transient
+	public void setTeamLeaderUsername(String teamLeaderUsername) {
+		if (team == null)
+			team = new Team();
+		team.setTeamLeaderUsername(teamLeaderUsername);
+	}
+
+	@Transient
 	public String getTeamType() {
 		return team == null ? null : team.getType();
 	}
@@ -137,6 +182,18 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 	}
 
 	@Transient
+	public Boolean getUserActive() {
+		return user == null ? null : user.getActive();
+	}
+
+	@Transient
+	public void setUserActive(Boolean userActive) {
+		if (user == null)
+			user = new User();
+		user.setActive(userActive);
+	}
+
+	@Transient
 	public String getSupplierName() {
 		return supplier == null ? null : supplier.getName();
 	}
@@ -146,6 +203,42 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 		if (supplier == null)
 			supplier = new Supplier();
 		supplier.setName(supplierName);
+	}
+
+	@Transient
+	public String getSupplierPhoto() {
+		return supplier == null ? null : supplier.getPhoto();
+	}
+
+	@Transient
+	public void setSupplierPhoto(String supplierPhoto) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setPhoto(supplierPhoto);
+	}
+
+	@Transient
+	public String getCustomerName() {
+		return customer == null ? null : customer.getName();
+	}
+
+	@Transient
+	public void setCustomerName(String customerName) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setName(customerName);
+	}
+
+	@Transient
+	public String getCustomerPhoto() {
+		return customer == null ? null : customer.getPhoto();
+	}
+
+	@Transient
+	public void setCustomerPhoto(String customerPhoto) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setPhoto(customerPhoto);
 	}
 
 	@Transient
@@ -184,9 +277,21 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 		supplier.setId(supplierId);
 	}
 
+	@Transient
+	public Integer getCustomerId() {
+		return customer == null ? null : customer.getId();
+	}
+
+	@Transient
+	public void setCustomerId(Integer customerId) {
+		if (customer == null || !customerId.equals(customer.getId()))
+			customer = new Customer();
+		customer.setId(customerId);
+	}
+
 	@Override
 	public boolean filter(String query) {
-		return contains(query, getProjectName(), getUserUsername(), getTeamName(), getSupplierName());
+		return contains(query, getProjectName(), getUserUsername(), getUserFullName(), getTeamName(), getSupplierName());
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -234,6 +339,15 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 		this.supplier = supplier;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public ProjectAssignmentType getType() {
 		return type;
@@ -261,13 +375,4 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 		this.user = user;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 }

@@ -335,7 +335,17 @@ public class User extends GenericModel<String> {
 
 	@Transient
 	public Boolean getIsPM() {
-		return hasRole(Role.ROLE_ILOGISTICS_PM);
+		return getIsPm();
+	}
+
+	@Transient
+	public Boolean getIsPm() {
+		return internal && hasRole(Role.ROLE_ILOGISTICS_PM);
+	}
+
+	@Transient
+	public Boolean getIsExternalPm() {
+		return !internal && hasRole(Role.ROLE_ILOGISTICS_PM);
 	}
 
 	@Transient

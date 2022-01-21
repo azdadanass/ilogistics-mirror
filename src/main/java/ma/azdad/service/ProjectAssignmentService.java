@@ -11,6 +11,7 @@ import ma.azdad.model.Supplier;
 import ma.azdad.repos.ProjectAssignmentRepos;
 
 @Component
+@Transactional
 public class ProjectAssignmentService extends GenericService<Integer, ProjectAssignment, ProjectAssignmentRepos> {
 
 	@Override
@@ -18,8 +19,10 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 		ProjectAssignment model = super.findOne(id);
 		initialize(model.getProject());
 		initialize(model.getSupplier());
+		initialize(model.getCustomer());
 		initialize(model.getTeam());
 		initialize(model.getUser());
+		initialize(model.getParent());
 		return model;
 	}
 
@@ -29,6 +32,10 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 
 	public List<ProjectAssignment> findBySupplierAndProjectList(Integer supplierId, List<Integer> projectAssignmentList) {
 		return repos.findBySupplierAndProjectList(supplierId, projectAssignmentList);
+	}
+
+	public List<ProjectAssignment> findByCustomerAndProjectList(Integer customerId, List<Integer> projectAssignmentList) {
+		return repos.findByCustomerAndProjectList(customerId, projectAssignmentList);
 	}
 
 	public List<ProjectAssignment> findByUser(String userUsername) {
@@ -53,6 +60,8 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 			return repos.countByTeamAndOverlapsWidthDates(projectAssignment.getTeamId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
 		case SUPPLIER:
 			return repos.countBySupplierAndOverlapsWidthDates(projectAssignment.getSupplierId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
+		case CUSTOMER:
+			return repos.countByCustomerAndOverlapsWidthDates(projectAssignment.getCustomerId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
 		default:
 			return null;
 		}

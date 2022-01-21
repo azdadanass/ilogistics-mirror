@@ -20,8 +20,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	private Double baseLinePrice;
 	private Double maxAllowedDiscount = 0.0;
 
-	private Currency costCurrency;
-	private Currency priceCurrency;
+	private Currency currency;
 	private PartNumber partNumber;
 
 	public PartNumberPricing() {
@@ -29,14 +28,13 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	// c1
-	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String costCurrencyName, String priceCurrencyName, Integer partNumberId, String partNumberName) {
+	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String currencyName, Integer partNumberId, String partNumberName) {
 		super(id);
 		this.date = date;
 		this.baseLineCost = baseLineCost;
 		this.baseLinePrice = baseLinePrice;
 		this.maxAllowedDiscount = maxAllowedDiscount;
-		this.setCostCurrencyName(costCurrencyName);
-		this.setPriceCurrencyName(priceCurrencyName);
+		this.setCurrencyName(currencyName);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
 	}
@@ -44,6 +42,20 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	@Override
 	public boolean filter(String query) {
 		return contains(query, getPartNumberName(), date);
+	}
+
+	@Transient
+	public Double getMaxMarginPercentage() {
+		if (baseLinePrice > 0)
+			return (baseLinePrice - baseLineCost) / baseLinePrice;
+		return null;
+	}
+
+	@Transient
+	public Double getMinMarginPercentage() {
+		if (baseLinePrice > 0)
+			return ((baseLinePrice * (1 - maxAllowedDiscount / 100.0)) - baseLineCost) / (baseLinePrice * (1 - maxAllowedDiscount / 100.0));
+		return null;
 	}
 
 	@Transient
@@ -77,51 +89,27 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	@Transient
-	public String getCostCurrencyName() {
-		return costCurrency == null ? null : costCurrency.getCurrency();
+	public String getCurrencyName() {
+		return currency == null ? null : currency.getCurrency();
 	}
 
 	@Transient
-	public void setCostCurrencyName(String costCurrencyName) {
-		if (costCurrency == null)
-			costCurrency = new Currency();
-		costCurrency.setCurrency(costCurrencyName);
+	public void setCurrencyName(String currencyName) {
+		if (currency == null)
+			currency = new Currency();
+		currency.setCurrency(currencyName);
 	}
 
 	@Transient
-	public Integer getCostCurrencyId() {
-		return costCurrency == null ? null : costCurrency.getIdcurrency();
+	public Integer getCurrencyId() {
+		return currency == null ? null : currency.getIdcurrency();
 	}
 
 	@Transient
-	public void setCostCurrencyId(Integer costCurrencyId) {
-		if (costCurrency == null || !costCurrencyId.equals(costCurrency.getIdcurrency()))
-			costCurrency = new Currency();
-		costCurrency.setIdcurrency(costCurrencyId);
-	}
-
-	@Transient
-	public String getPriceCurrencyName() {
-		return priceCurrency == null ? null : priceCurrency.getCurrency();
-	}
-
-	@Transient
-	public void setPriceCurrencyName(String priceCurrencyName) {
-		if (priceCurrency == null)
-			priceCurrency = new Currency();
-		priceCurrency.setCurrency(priceCurrencyName);
-	}
-
-	@Transient
-	public Integer getPriceCurrencyId() {
-		return priceCurrency == null ? null : priceCurrency.getIdcurrency();
-	}
-
-	@Transient
-	public void setPriceCurrencyId(Integer priceCurrencyId) {
-		if (priceCurrency == null || !priceCurrencyId.equals(priceCurrency.getIdcurrency()))
-			priceCurrency = new Currency();
-		priceCurrency.setIdcurrency(priceCurrencyId);
+	public void setCurrencyId(Integer currencyId) {
+		if (currency == null || !currencyId.equals(currency.getIdcurrency()))
+			currency = new Currency();
+		currency.setIdcurrency(currencyId);
 	}
 
 	// getters & setters
@@ -170,21 +158,12 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	public Currency getCostCurrency() {
-		return costCurrency;
+	public Currency getCurrency() {
+		return currency;
 	}
 
-	public void setCostCurrency(Currency costCurrency) {
-		this.costCurrency = costCurrency;
-	}
-
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	public Currency getPriceCurrency() {
-		return priceCurrency;
-	}
-
-	public void setPriceCurrency(Currency priceCurrency) {
-		this.priceCurrency = priceCurrency;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -97,7 +97,7 @@
 											<h:outputText value="#{partNumberPricingView.model.baseLineCost}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-											<h:outputText value=" #{partNumberPricingView.model.costCurrency.currency}" />
+											<h:outputText value=" #{partNumberPricingView.model.currencyName}" />
 											&nbsp;
 										</div>
 									</div>
@@ -110,6 +110,28 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value="%" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Max Margin %" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.maxMarginPercentage}">
+												<f:convertNumber type="percent" maxFractionDigits="2" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Min Margin %" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.minMarginPercentage}">
+												<f:convertNumber type="percent" maxFractionDigits="2" />
+											</h:outputText>
 											&nbsp;
 										</div>
 									</div>
@@ -136,7 +158,7 @@
 											<h:outputText value="#{partNumberPricingView.model.baseLinePrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-											<h:outputText value=" #{partNumberPricingView.model.priceCurrency.currency}" />
+											<h:outputText value=" #{partNumberPricingView.model.currencyName}" />
 											&nbsp;
 										</div>
 									</div>

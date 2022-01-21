@@ -59,8 +59,7 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 			return null;
 
 		model.setPartNumber(partNumberService.findOne(model.getPartNumberId()));
-		model.setCostCurrency(currencyService.findOne(model.getCostCurrencyId()));
-		model.setPriceCurrency(currencyService.findOne(model.getPriceCurrencyId()));
+		model.setCurrency(currencyService.findOne(model.getCurrencyId()));
 
 		model = service.save(model);
 		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());

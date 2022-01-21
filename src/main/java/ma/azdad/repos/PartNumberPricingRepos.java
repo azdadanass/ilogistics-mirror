@@ -11,7 +11,7 @@ import ma.azdad.model.PartNumberPricing;
 
 @Repository
 public interface PartNumberPricingRepos extends JpaRepository<PartNumberPricing, Integer> {
-	String c1 = "select new PartNumberPricing(a.id,a.date,a.baseLineCost,a.baseLinePrice,a.maxAllowedDiscount,a.costCurrency.currency,a.priceCurrency.currency,a.partNumber.id,a.partNumber.name) ";
+	String c1 = "select new PartNumberPricing(a.id,a.date,a.baseLineCost,a.baseLinePrice,a.maxAllowedDiscount,a.currency.currency,a.partNumber.id,a.partNumber.name) ";
 
 	@Query(c1 + "from PartNumberPricing a")
 	List<PartNumberPricing> findLight();

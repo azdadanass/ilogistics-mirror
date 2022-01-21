@@ -104,13 +104,13 @@
 								<h:outputText value="#{item.baseLineCost}" styleClass="green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
-								<h:outputText value=" #{item.costCurrencyName}" styleClass="green" />
+								<h:outputText value=" #{item.currencyName}" styleClass="green" />
 							</p:column>
 							<p:column headerText="Base Line Price ">
 								<h:outputText value="#{item.baseLinePrice}" styleClass="blue">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
-								<h:outputText value=" #{item.priceCurrencyName}" styleClass="blue" />
+								<h:outputText value=" #{item.currencyName}" styleClass="blue" />
 							</p:column>
 							<p:column headerText="Max Allowed Discount">
 								<h:outputText value="#{item.maxAllowedDiscount}">

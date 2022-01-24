@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberPricing;
 import ma.azdad.repos.PartNumberPricingRepos;
+import ma.azdad.service.CompanyService;
 import ma.azdad.service.CurrencyService;
 import ma.azdad.service.PartNumberPricingService;
 import ma.azdad.service.PartNumberService;
@@ -28,6 +29,9 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 
 	@Autowired
 	private CurrencyService currencyService;
+
+	@Autowired
+	private CompanyService companyService;
 
 	@Override
 	@PostConstruct
@@ -60,6 +64,7 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 
 		model.setPartNumber(partNumberService.findOne(model.getPartNumberId()));
 		model.setCurrency(currencyService.findOne(model.getCurrencyId()));
+		model.setCompany(companyService.findOne(model.getCompanyId()));
 
 		model = service.save(model);
 		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());

@@ -95,6 +95,9 @@
 							<p:column headerText="Part Number">
 								<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
 							</p:column>
+							<p:column headerText="Company">
+								<h:outputText value="#{item.companyName}" styleClass="bolder blue" />
+							</p:column>
 							<p:column headerText="Date ">
 								<h:outputText value="#{item.date}" styleClass="bolder purple">
 									<f:convertDateTime pattern="yyyy-MM-dd" />

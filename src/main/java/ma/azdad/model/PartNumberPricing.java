@@ -22,13 +22,14 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	private Currency currency;
 	private PartNumber partNumber;
+	private Company company;
 
 	public PartNumberPricing() {
 		super();
 	}
 
 	// c1
-	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String currencyName, Integer partNumberId, String partNumberName) {
+	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String currencyName, Integer partNumberId, String partNumberName,String companyName) {
 		super(id);
 		this.date = date;
 		this.baseLineCost = baseLineCost;
@@ -37,6 +38,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		this.setCurrencyName(currencyName);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
+		this.setCompanyName(companyName);
 	}
 
 	@Override
@@ -62,6 +64,30 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	@Override
 	public String getIdentifierName() {
 		return this.getIdStr();
+	}
+
+	@Transient
+	public String getCompanyName() {
+		return company == null ? null : company.getName();
+	}
+
+	@Transient
+	public void setCompanyName(String companyName) {
+		if (company == null)
+			company = new Company();
+		company.setName(companyName);
+	}
+
+	@Transient
+	public Integer getCompanyId() {
+		return company == null ? null : company.getId();
+	}
+
+	@Transient
+	public void setCompanyId(Integer companyId) {
+		if (company == null || !companyId.equals(company.getId()))
+			company = new Company();
+		company.setId(companyId);
 	}
 
 	@Transient
@@ -173,6 +199,15 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	public void setPartNumber(PartNumber partNumber) {
 		this.partNumber = partNumber;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }

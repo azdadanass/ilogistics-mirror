@@ -96,7 +96,19 @@
 								<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
 							</p:column>
 							<p:column headerText="Company">
-								<h:outputText value="#{item.companyName}" styleClass="bolder blue" />
+								<h:outputText value="#{item.companyName}" styleClass="bolder green" />
+							</p:column>
+							<p:column headerText="Description" width="400">
+								<h:outputText value="#{item.partNumberDescription}" styleClass="aa-cut-text blue" />
+							</p:column>
+							<p:column headerText="Category">
+								<h:outputText value="#{item.partNumberCategoryName}" styleClass="purple" />
+							</p:column>
+							<p:column headerText="Type">
+								<h:outputText value="#{item.partNumberTypeName}" styleClass="pink" />
+							</p:column>
+								<p:column headerText="Brand">
+								<h:outputText value="#{item.partNumberBrandName}" styleClass="orange" />
 							</p:column>
 							<p:column headerText="Date ">
 								<h:outputText value="#{item.date}" styleClass="bolder purple">
@@ -121,7 +133,7 @@
 								</h:outputText>
 								<h:outputText value="%" />
 							</p:column>
-							<p:column headerText="Actions" width="150" exportable="false">
+							<p:column headerText="Actions" width="80" exportable="false">
 								<div class="action-buttons center">
 									<h:outputLink value="#{partNumberPricingView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />

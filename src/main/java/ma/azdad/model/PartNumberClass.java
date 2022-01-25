@@ -3,9 +3,9 @@ package ma.azdad.model;
 import ma.azdad.utils.Color;
 
 public enum PartNumberClass {
-	HW("Hardware", Color.BLUE),
-	SW("Software", Color.GREEN),
-	SRV("Service", Color.ORANGE),;
+	HW("HW", Color.BLUE),
+	SW("SW", Color.GREEN),
+	SRV("SRV", Color.ORANGE),;
 
 	private final String value;
 	private final Color color;

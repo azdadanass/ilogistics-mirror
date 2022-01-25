@@ -38,7 +38,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-7">
+					<div class=" col-sm-offset-1 col-sm-6">
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
@@ -60,6 +60,9 @@
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
+					</div>
+					<div class=" col-sm-2">
+						<img src="#{partNumberPricingView.model.partNumber.brand.image}" width="80px" height="80px" />
 					</div>
 				</div>
 			</div>

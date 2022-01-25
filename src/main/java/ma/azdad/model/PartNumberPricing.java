@@ -29,7 +29,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	// c1
-	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String currencyName, Integer partNumberId, String partNumberName,String companyName) {
+	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, String currencyName, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, String companyName) {
 		super(id);
 		this.date = date;
 		this.baseLineCost = baseLineCost;
@@ -38,6 +38,10 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		this.setCurrencyName(currencyName);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
 		this.setCompanyName(companyName);
 	}
 
@@ -100,6 +104,54 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setName(partNumberName);
+	}
+
+	@Transient
+	public String getPartNumberDescription() {
+		return partNumber == null ? null : partNumber.getDescription();
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setDescription(partNumberDescription);
+	}
+
+	@Transient
+	public String getPartNumberBrandName() {
+		return partNumber == null ? null : partNumber.getBrandName();
+	}
+
+	@Transient
+	public void setPartNumberBrandName(String partNumberBrandName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setBrandName(partNumberBrandName);
+	}
+
+	@Transient
+	public String getPartNumberCategoryName() {
+		return partNumber == null ? null : partNumber.getCategoryName();
+	}
+
+	@Transient
+	public void setPartNumberCategoryName(String partNumberCategoryName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setCategoryName(partNumberCategoryName);
+	}
+
+	@Transient
+	public String getPartNumberTypeName() {
+		return partNumber == null ? null : partNumber.getTypeName();
+	}
+
+	@Transient
+	public void setPartNumberTypeName(String partNumberTypeName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setTypeName(partNumberTypeName);
 	}
 
 	@Transient

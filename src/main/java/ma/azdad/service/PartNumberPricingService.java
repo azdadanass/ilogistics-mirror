@@ -24,6 +24,9 @@ public class PartNumberPricingService extends GenericService<Integer, PartNumber
 		PartNumberPricing partNumberPricing = super.findOne(id);
 		initialize(partNumberPricing.getPartNumber());
 		initialize(partNumberPricing.getCompany());
+		initialize(partNumberPricing.getFileList());
+		initialize(partNumberPricing.getHistoryList());
+		initialize(partNumberPricing.getCommentList());
 		return partNumberPricing;
 	}
 

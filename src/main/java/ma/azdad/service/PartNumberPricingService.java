@@ -1,16 +1,21 @@
 package ma.azdad.service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.PartNumberPricing;
 import ma.azdad.repos.PartNumberPricingRepos;
 
 @Component
 public class PartNumberPricingService extends GenericService<Integer, PartNumberPricing, PartNumberPricingRepos> {
+	@Autowired
+	CompanyService companyService;
 
 	@Override
 	@Cacheable("partNumberPricingService.findAll")
@@ -37,6 +42,25 @@ public class PartNumberPricingService extends GenericService<Integer, PartNumber
 
 	public Long countByPartNumberAndDate(Integer partNumberId, Date date, Integer id) {
 		return repos.countByPartNumberAndDate(partNumberId, date, id);
+	}
+
+	public void updatePhysicalQuantity(Integer companyId) {
+		repos.updatePhysicalQuantity(companyId);
+		evictCache();
+	}
+
+	public void updatePendingQuantity(Integer companyId) {
+		repos.updatePendingQuantity(companyId, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		evictCache();
+	}
+
+	public void updateQuantities(Integer companyId) {
+		updatePhysicalQuantity(companyId);
+		updatePendingQuantity(companyId);
+	}
+
+	public void updateQuantities() {
+		companyService.findIdList().forEach(id->updateQuantities(id));
 	}
 
 }

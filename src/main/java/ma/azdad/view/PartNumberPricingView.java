@@ -171,6 +171,12 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 		model = service.saveAndRefresh(model);
 	}
 
+	// generic
+	public String updateQuantities() {
+		service.updateQuantities();
+		return addParameters(currentPath, "faces-redirect=true");
+	}
+
 	// getters & setters
 	public PartNumberPricing getModel() {
 		return model;

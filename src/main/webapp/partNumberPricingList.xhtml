@@ -44,6 +44,10 @@
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
 							</p:commandLink>
+							<p:commandLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-info" title="Refresh Quantities" action="#{partNumberPricingView.updateQuantities()}">
+								<i class="ace-icon fa fa-cloud bigger-230"></i>
+								<h:outputText value="Refresh" />
+							</p:commandLink>
 						</div>
 						<div class="col-sm-5  hidden-xs infobox-container">
 							<span class="btn btn-app btn-sm btn-warning no-hover">
@@ -132,6 +136,16 @@
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value="%" />
+							</p:column>
+							<p:column headerText="Physical Quantity">
+								<h:outputText value="#{item.physicalQuantity}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Available Quantity">
+								<h:outputText value="#{item.availableQuantity}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
 							</p:column>
 							<p:column headerText="Actions" width="80" exportable="false">
 								<div class="action-buttons center">

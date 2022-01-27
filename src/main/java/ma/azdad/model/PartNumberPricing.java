@@ -28,7 +28,8 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	private Double baseLineCost;
 	private Double baseLinePrice;
 	private Double maxAllowedDiscount = 0.0;
-	private Double availableQuantity = 0.0;
+	private Double physicalQuantity = 0.0;
+	private Double pendingQuantity = 0.0; // pending outbound qty
 	private Integer countFiles = 0;
 
 	private Currency currency;
@@ -46,12 +47,16 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	// c1
-	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, Integer countFiles, String currencyName, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, String companyName) {
+	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, Double physicalQuantity, Double pendingQuantity, Integer countFiles,
+			String currencyName, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName,
+			String companyName) {
 		super(id);
 		this.date = date;
 		this.baseLineCost = baseLineCost;
 		this.baseLinePrice = baseLinePrice;
 		this.maxAllowedDiscount = maxAllowedDiscount;
+		this.physicalQuantity = physicalQuantity;
+		this.pendingQuantity = pendingQuantity;
 		this.countFiles = countFiles;
 		this.setCurrencyName(currencyName);
 		this.setPartNumberId(partNumberId);
@@ -75,6 +80,11 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	@Transient
 	public Boolean getHasFiles() {
 		return countFiles > 0;
+	}
+	
+	@Transient
+	public Double getAvailableQuantity() {
+		return physicalQuantity-pendingQuantity;
 	}
 
 	public void addFile(PartNumberPricingFile file) {
@@ -346,12 +356,12 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		this.company = company;
 	}
 
-	public Double getAvailableQuantity() {
-		return availableQuantity;
+	public Double getPhysicalQuantity() {
+		return physicalQuantity;
 	}
 
-	public void setAvailableQuantity(Double availableQuantity) {
-		this.availableQuantity = availableQuantity;
+	public void setPhysicalQuantity(Double physicalQuantity) {
+		this.physicalQuantity = physicalQuantity;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -387,6 +397,14 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	public void setCommentList(List<PartNumberPricingComment> commentList) {
 		this.commentList = commentList;
+	}
+
+	public Double getPendingQuantity() {
+		return pendingQuantity;
+	}
+
+	public void setPendingQuantity(Double pendingQuantity) {
+		this.pendingQuantity = pendingQuantity;
 	}
 
 }

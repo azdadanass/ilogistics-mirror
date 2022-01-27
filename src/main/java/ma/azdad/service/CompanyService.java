@@ -44,4 +44,8 @@ public class CompanyService {
 	public List<Company> findLight() {
 		return repos.findLight();
 	}
+	
+	public List<Integer> findIdList(){
+		return repos.findIdList();
+	}
 }

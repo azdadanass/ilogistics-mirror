@@ -24,6 +24,9 @@ public class JobService {
 
 	@Autowired
 	PartNumberEquivalenceService partNumberEquivalenceService;
+	
+	@Autowired
+	PartNumberPricingService partNumberPricingService;
 
 	@Autowired
 	PoService poService;
@@ -78,6 +81,11 @@ public class JobService {
 	@Scheduled(cron = "00 40 00 * * *")
 	public void updateCountIssuesScript() {
 		deliveryRequestService.updateCountIssuesScript();
+	}
+	
+	@Scheduled(cron = "00 00 05 * * *")
+	public void updatePartNumberPricingQuantities() {
+		partNumberPricingService.updateQuantities();
 	}
 
 }

@@ -13,7 +13,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ import ma.azdad.utils.PartNumberExcelFileException;
 public class PartNumberService extends GenericService<Integer, PartNumber, PartNumberRepos> {
 
 	@Autowired
-	private PartNumberRepos partNumberRepos;
+	private PartNumberRepos repos;
 
 	@Autowired
 	private TextService textService;
@@ -51,7 +50,7 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 		if (all)
 			return findAll();
 		else
-			return partNumberRepos.find(username);
+			return repos.find(username);
 	}
 
 	@Override
@@ -68,28 +67,31 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	}
 
 	@Override
-	@CacheEvict(value = { "pns.cache1", "pns.cache2", "pns.cache3" }, allEntries = true)
 	public PartNumber save(PartNumber a) {
+		a.setTypeName(a.getPartNumberType().getName());
+		a.setCategoryName(a.getPartNumberType().getCategoryName());
+		a.setIndustryName(a.getPartNumberType().getIndustryName());
+		a.setBrandName(a.getBrand().getName());
 		return super.save(a);
 	}
 
 	public String getAllNames() {
-		List<String> names = partNumberRepos.getAllNames();
+		List<String> names = repos.getAllNames();
 		return Arrays.toString(names.toArray());
 	}
 
-	@Cacheable(value = "pns.cache1")
+	@Cacheable(value = "partNumberService.findLight")
 	public List<PartNumber> findLight() {
-		return partNumberRepos.findLight();
+		return repos.findLight();
 	}
 
-	@Cacheable(value = "pns.cache2")
+	@Cacheable(value = "partNumberService.findLight")
 	public List<PartNumber> findLight(Boolean unit) {
-		return partNumberRepos.findLight(unit);
+		return repos.findLight(unit);
 	}
 
 	public Long countByName(String name, Integer id) {
-		Long l = id == null ? partNumberRepos.countByName(name) : partNumberRepos.countByName(name, id);
+		Long l = id == null ? repos.countByName(name) : repos.countByName(name, id);
 		return l != null ? l : 0;
 	}
 
@@ -97,13 +99,13 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 		return countByName(partNumber.getName(), partNumber.getId()) > 0;
 	}
 
-	@Cacheable(value = "pns.cache3")
+	@Cacheable(value = "partNumberService.findLikeNameOrDescription")
 	public List<PartNumber> findLikeNameOrDescription(String query) {
-		return partNumberRepos.findLikeNameOrDescription(query);
+		return repos.findLikeNameOrDescription(query);
 	}
 
 	public List<PartNumber> findLikeNameOrDescription(String query, Boolean stockItem) {
-		return partNumberRepos.findLikeNameOrDescription(query, stockItem);
+		return repos.findLikeNameOrDescription(query, stockItem);
 	}
 
 	public List<PartNumber> readFile(InputStream inputStream) {
@@ -176,17 +178,20 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 
 	@Async
 	public void updateImage() {
-		partNumberRepos.updateImage();
-		partNumberRepos.updateNullImage();
+		repos.updateImage();
+		repos.updateNullImage();
+		evictCache();
 	}
 
 	@Async
 	public void updateImage(Integer id) {
-		partNumberRepos.updateImage(id);
+		repos.updateImage(id);
+		evictCache();
 	}
 
 	public void updateHasPacking(Integer id) {
-		partNumberRepos.updateHasPacking(id, packingService.countByPartNumber(id) > 0);
+		repos.updateHasPacking(id, packingService.countByPartNumber(id) > 0);
+		evictCache();
 	}
 
 	public void updateHasPacking() {
@@ -194,11 +199,31 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	}
 
 	public Boolean getHasPacking(Integer id) {
-		return partNumberRepos.getHasPacking(id);
+		return repos.getHasPacking(id);
 	}
 
 	public List<PartNumber> findLightByStockItem(Boolean stockItem) {
-		return partNumberRepos.findLightByStockItem(stockItem);
+		return repos.findLightByStockItem(stockItem);
+	}
+
+	public void updateBrandName(Integer brandId, String brandName) {
+		repos.updateBrandName(brandId, brandName);
+		evictCache();
+	}
+
+	public void updateTypeName(Integer typeId, String typeName) {
+		repos.updateTypeName(typeId, typeName);
+		evictCache();
+	}
+
+	public void updateCategoryName(Integer cateogryId, String categoryName) {
+		repos.updateCategoryName(cateogryId, categoryName);
+		evictCache();
+	}
+
+	public void updateIndustryName(Integer industryId, String industryName) {
+		repos.updateIndustryName(industryId, industryName);
+		evictCache();
 	}
 
 }

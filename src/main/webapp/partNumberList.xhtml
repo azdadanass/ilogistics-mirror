@@ -147,13 +147,13 @@
 								<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
 							</p:column>
 							<p:column headerText="Industry" width="80">
-								<h:outputText value="#{item.partNumberType.category.industry.name}" styleClass="bolder blue" />
+								<h:outputText value="#{item.industryName}" styleClass="bolder blue" />
 							</p:column>
 							<p:column headerText="Category" width="120">
-								<h:outputText value="#{item.partNumberType.category.name}" styleClass="bolder green" />
+								<h:outputText value="#{item.categoryName}" styleClass="bolder green" />
 							</p:column>
 							<p:column headerText="Type" width="120">
-								<h:outputText value="#{item.partNumberType.name}" styleClass="bolder orange" />
+								<h:outputText value="#{item.typeName}" styleClass="bolder orange" />
 							</p:column>
 							<p:column headerText="Brand" width="120">
 								<h:outputText value="#{item.brandName}"  />

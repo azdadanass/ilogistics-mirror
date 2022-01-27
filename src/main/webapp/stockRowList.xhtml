@@ -133,16 +133,16 @@
 								<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 							</p:column>
 							<p:column headerText="Industry" width="80">
-								<h:outputText value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="bolder blue" />
+								<h:outputText value="#{item.partNumber.industryName}" styleClass="bolder blue" />
 							</p:column>
 							<p:column headerText="Category" width="120">
-								<h:outputText value="#{item.partNumber.partNumberType.category.name}" styleClass="bolder green" />
+								<h:outputText value="#{item.partNumber.categoryName}" styleClass="bolder green" />
 							</p:column>
 							<p:column headerText="Type" width="120">
-								<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="bolder orange" />
+								<h:outputText value="#{item.partNumber.typeName}" styleClass="bolder orange" />
 							</p:column>
 							<p:column headerText="Brand" width="120">
-								<h:outputText value="#{item.partNumber.brand.name}" styleClass="bolder pink" />
+								<h:outputText value="#{item.partNumber.brandName}" styleClass="bolder pink" />
 							</p:column>
 							<p:column headerText="Physical Stock" width="70" rendered="#{stockRowView.pageIndex==1 or stockRowView.pageIndex==2}">
 								<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">

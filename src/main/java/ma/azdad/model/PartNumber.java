@@ -56,13 +56,18 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private String unitType;
 	private Boolean spare = false;
 	private Boolean hasPacking = false;
+	private String image = "files/no-image.png";
+
+	// performance
+	private String industryName;
+	private String categoryName;
+	private String typeName;
+	private String brandName;
 
 	private User user;
 	private PartNumberBrand brand;
 	private PartNumberType partNumberType;
 	private PartNumberOrange partNumberOrange;
-
-	private String image = "files/no-image.png";
 
 	private List<PartNumberDetail> detailList = new ArrayList<>();
 	private List<PartNumberFile> fileList = new ArrayList<>();
@@ -167,69 +172,69 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		for (PartNumberDetail detail : detailList)
 			detail.init();
 	}
-	
+
 	@Transient
 	public Boolean getIsHardware() {
 		return PartNumberClass.HW.equals(partNumberClass);
 	}
-	
+
 	@Transient
 	public Boolean getIsSoftware() {
 		return PartNumberClass.SW.equals(partNumberClass);
 	}
-	
+
 	@Transient
 	public Boolean getIsService() {
 		return PartNumberClass.SRV.equals(partNumberClass);
 	}
 
-	@Transient
-	public String getIndustryName() {
-		return partNumberType == null ? null : partNumberType.getIndustryName();
-	}
+//	@Transient
+//	public String getIndustryName() {
+//		return partNumberType == null ? null : partNumberType.getIndustryName();
+//	}
+//
+//	@Transient
+//	public void setIndustryName(String industryName) {
+//		if (partNumberType == null)
+//			partNumberType = new PartNumberType();
+//		partNumberType.setIndustryName(industryName);
+//	}
 
-	@Transient
-	public void setIndustryName(String industryName) {
-		if (partNumberType == null)
-			partNumberType = new PartNumberType();
-		partNumberType.setIndustryName(industryName);
-	}
+//	@Transient
+//	public String getCategoryName() {
+//		return partNumberType == null ? null : partNumberType.getCategoryName();
+//	}
+//
+//	@Transient
+//	public void setCategoryName(String categoryName) {
+//		if (partNumberType == null)
+//			partNumberType = new PartNumberType();
+//		partNumberType.setCategoryName(categoryName);
+//	}
 
-	@Transient
-	public String getCategoryName() {
-		return partNumberType == null ? null : partNumberType.getCategoryName();
-	}
+//	@Transient
+//	public String getTypeName() {
+//		return partNumberType == null ? null : partNumberType.getName();
+//	}
+//
+//	@Transient
+//	public void setTypeName(String typeName) {
+//		if (partNumberType == null)
+//			partNumberType = new PartNumberType();
+//		partNumberType.setName(typeName);
+//	}
 
-	@Transient
-	public void setCategoryName(String categoryName) {
-		if (partNumberType == null)
-			partNumberType = new PartNumberType();
-		partNumberType.setCategoryName(categoryName);
-	}
-
-	@Transient
-	public String getTypeName() {
-		return partNumberType == null ? null : partNumberType.getName();
-	}
-
-	@Transient
-	public void setTypeName(String typeName) {
-		if (partNumberType == null)
-			partNumberType = new PartNumberType();
-		partNumberType.setName(typeName);
-	}
-
-	@Transient
-	public String getBrandName() {
-		return brand == null ? null : brand.getName();
-	}
-
-	@Transient
-	public void setBrandName(String brandName) {
-		if (brand == null)
-			brand = new PartNumberBrand();
-		brand.setName(brandName);
-	}
+//	@Transient
+//	public String getBrandName() {
+//		return brand == null ? null : brand.getName();
+//	}
+//
+//	@Transient
+//	public void setBrandName(String brandName) {
+//		if (brand == null)
+//			brand = new PartNumberBrand();
+//		brand.setName(brandName);
+//	}
 
 	@Transient
 	public String getPartNumberOrangeName() {
@@ -788,7 +793,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(length=10,nullable=false)
+	@Column(length = 10, nullable = false)
 	public PartNumberClass getPartNumberClass() {
 		return partNumberClass;
 	}
@@ -796,6 +801,37 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	public void setPartNumberClass(PartNumberClass partNumberClass) {
 		this.partNumberClass = partNumberClass;
 	}
-	
-	
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
 }

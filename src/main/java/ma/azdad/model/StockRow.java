@@ -52,63 +52,113 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	private String deliverToEntityName;
 
-	public StockRow(Double quantity, StockRowStatus status, String partNumberName, DeliveryRequestType deliveryRequestType, Integer deliveryRequestReferenceNumber, String originNumber) {
-		super();
-		this.quantity = quantity;
-		this.status = status;
-		this.setPartNumberName(partNumberName);
-		this.setDeliveryRequestType(deliveryRequestType);
-		this.setDeliveryRequestReferenceNumber(deliveryRequestReferenceNumber);
-		this.originNumber = originNumber;
-
-	}
-
-	public StockRow(PartNumber partNumber, String tmpProjectName, Double inboundQuantity, Double outboundQuantity) {
-		super();
-		this.partNumber = partNumber;
-		this.tmpProjectName = tmpProjectName;
-		this.inboundQuantity = inboundQuantity;
-		this.outboundQuantity = outboundQuantity;
-	}
-
+	// c0
 	public StockRow(Double quantity, PartNumber partNumber) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
 	}
 
-	public StockRow(Double quantity, PartNumber partNumber, StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
-		super();
-		this.quantity = quantity;
-		this.partNumber = partNumber;
-		this.status = status;
-		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
-		this.qTotalCost = qTotalCost;
-	}
-
-	// public StockRow(Double quantity, StockRowStatus status, DeliveryRequest
-	// deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber
-	// partNumber,Double qTotalCost) {
-	// super();
-	// this.quantity = quantity;
-	// this.status = status;
-	// this.deliveryRequest = deliveryRequest;
-	// this.partNumber = partNumber;
-	// this.inboundDeliveryRequest = inboundDeliveryRequest;
-	// this.qTotalCost = qTotalCost;
-	// }
-
-	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber, Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
-		super();
+	// c1
+	public StockRow(Integer id, Double quantity, StockRowStatus status, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Location location) {
+		super(id);
 		this.quantity = quantity;
 		this.status = status;
-		this.deliveryRequest = deliveryRequest;
 		this.partNumber = partNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
-		this.qTotalCost = qTotalCost;
-		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
+		this.location = location;
 	}
 
+	// c2
+	public StockRow(Double quantity, StockRowStatus status, String originNumber, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.originNumber = originNumber;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.location = location;
+		this.unitCost = unitCost;
+		this.packing = packing;
+	}
+
+	// c3
+	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.originNumber = originNumber;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.location = location;
+		this.deliveryRequest = deliveryRequest;
+		this.unitCost = unitCost;
+	}
+
+	// c4
+	public StockRow(Double quantity, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Double inboundQuantity, Double outboundQuantity) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundQuantity = inboundQuantity;
+		this.outboundQuantity = outboundQuantity;
+	}
+
+	// c5 & c13
+	public StockRow(Double quantity, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			DeliveryRequest deliveryRequest) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.deliveryRequest = deliveryRequest;
+	}
+
+	// c6
+	public StockRow(Double quantity, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+	}
+
+	// c7
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, Location location) {
 		super();
 		this.quantity = quantity;
@@ -117,6 +167,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.location = location;
 	}
 
+	// c8
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest) {
 		super();
 		this.quantity = quantity;
@@ -124,6 +175,77 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.deliveryRequest = deliveryRequest;
 	}
 
+	// c9
+	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.deliveryRequest = deliveryRequest;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundDeliveryRequest = inboundDeliveryRequest;
+	}
+
+	// c10
+	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundDeliveryRequest = inboundDeliveryRequest;
+	}
+
+	// c12
+	public StockRow(Double quantity, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.status = status;
+		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
+		this.qTotalCost = qTotalCost;
+	}
+
+	// c15
+	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.deliveryRequest = deliveryRequest;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.qTotalCost = qTotalCost;
+		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
+	}
+
+	// c16
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inbouDeliveryRequest) {
 		super();
 		this.quantity = quantity;
@@ -132,37 +254,16 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.inboundDeliveryRequest = inbouDeliveryRequest;
 	}
 
-	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber) {
+	// c17
+	public StockRow(PartNumber partNumber, String tmpProjectName, Double inboundQuantity, Double outboundQuantity) {
 		super();
-		this.quantity = quantity;
-		this.status = status;
-		this.deliveryRequest = deliveryRequest;
 		this.partNumber = partNumber;
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
-	}
-
-	public StockRow(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest) {
-		super();
-		this.quantity = quantity;
-		this.partNumber = partNumber;
-		this.deliveryRequest = deliveryRequest;
-	}
-
-	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber) {
-		super();
-		this.quantity = quantity;
-		this.partNumber = partNumber;
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
-	}
-
-	public StockRow(Double quantity, PartNumber partNumber, Double inboundQuantity, Double outboundQuantity) {
-		super();
-		this.quantity = quantity;
-		this.partNumber = partNumber;
+		this.tmpProjectName = tmpProjectName;
 		this.inboundQuantity = inboundQuantity;
 		this.outboundQuantity = outboundQuantity;
 	}
 
+	// c18
 	public StockRow(Double quantity, Date creationDate, String originNumber, PartNumber partNumber, DeliveryRequest deliveryRequest, Double unitCost, Packing packing) {
 		super();
 		this.quantity = quantity;
@@ -174,38 +275,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.packing = packing;
 	}
 
-	public StockRow(Integer id, Double quantity, StockRowStatus status, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Location location) {
-		super(id);
-		this.quantity = quantity;
-		this.status = status;
-		this.partNumber = partNumber;
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
-		this.location = location;
-	}
-
-	@Override
-	public boolean filter(String query) {
-		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
-				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName());
-	}
-
-	public StockRow() {
-		super();
-		this.creationDate = new Date();
-	}
-
-	public StockRow(Double quantity, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
-		super();
-		this.quantity = quantity;
-		this.status = status;
-		this.originNumber = originNumber;
-		this.partNumber = partNumber;
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
-		this.location = location;
-		this.unitCost = unitCost;
-		this.packing = packing;
-	}
-
+	// c19
 	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Double unitPrice, Location location, Date creationDate, Packing packing) {
 		super();
 		this.quantity = quantity;
@@ -221,18 +291,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.packing = packing;
 	}
 
-	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
-		super();
-		this.quantity = quantity;
-		this.status = status;
-		this.originNumber = originNumber;
-		this.partNumber = partNumber;
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
-		this.location = location;
-		this.deliveryRequest = deliveryRequest;
-		this.unitCost = unitCost;
-	}
-
+	// c20
 	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
 		super();
 		this.quantity = quantity;
@@ -247,6 +306,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.packing = packing;
 	}
 
+	// c21
 	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, Boolean initial, String originNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Date creationDate, Packing packing) {
 		super();
 		this.quantity = quantity;
@@ -260,6 +320,108 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = creationDate;
 		this.packing = packing;
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//	public StockRow(Double quantity, StockRowStatus status, String partNumberName, DeliveryRequestType deliveryRequestType, Integer deliveryRequestReferenceNumber, String originNumber) {
+//		super();
+//		this.quantity = quantity;
+//		this.status = status;
+//		this.setPartNumberName(partNumberName);
+//		this.setDeliveryRequestType(deliveryRequestType);
+//		this.setDeliveryRequestReferenceNumber(deliveryRequestReferenceNumber);
+//		this.originNumber = originNumber;
+//
+//	}
+
+//	public StockRow(Double quantity, PartNumber partNumber, StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
+//		super();
+//		this.quantity = quantity;
+//		this.partNumber = partNumber;
+//		this.status = status;
+//		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
+//		this.qTotalCost = qTotalCost;
+//	}
+
+	// public StockRow(Double quantity, StockRowStatus status, DeliveryRequest
+	// deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber
+	// partNumber,Double qTotalCost) {
+	// super();
+	// this.quantity = quantity;
+	// this.status = status;
+	// this.deliveryRequest = deliveryRequest;
+	// this.partNumber = partNumber;
+	// this.inboundDeliveryRequest = inboundDeliveryRequest;
+	// this.qTotalCost = qTotalCost;
+	// }
+
+//	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber, Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
+//		super();
+//		this.quantity = quantity;
+//		this.status = status;
+//		this.deliveryRequest = deliveryRequest;
+//		this.partNumber = partNumber;
+//		this.inboundDeliveryRequest = inboundDeliveryRequest;
+//		this.qTotalCost = qTotalCost;
+//		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
+//	}
+
+//	public StockRow(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest) {
+//		super();
+//		this.quantity = quantity;
+//		this.partNumber = partNumber;
+//		this.deliveryRequest = deliveryRequest;
+//	}
+
+//	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber) {
+//		super();
+//		this.quantity = quantity;
+//		this.partNumber = partNumber;
+//		this.inboundDeliveryRequest = inboundDeliveryRequest;
+//	}
+
+//	public StockRow(Double quantity, PartNumber partNumber, Double inboundQuantity, Double outboundQuantity) {
+//		super();
+//		this.quantity = quantity;
+//		this.partNumber = partNumber;
+//		this.inboundQuantity = inboundQuantity;
+//		this.outboundQuantity = outboundQuantity;
+//	}
+
+	@Override
+	public boolean filter(String query) {
+		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
+				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName());
+	}
+
+	public StockRow() {
+		super();
+		this.creationDate = new Date();
+	}
+
+//	public StockRow(Double quantity, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
+//		super();
+//		this.quantity = quantity;
+//		this.status = status;
+//		this.originNumber = originNumber;
+//		this.partNumber = partNumber;
+//		this.inboundDeliveryRequest = inboundDeliveryRequest;
+//		this.location = location;
+//		this.unitCost = unitCost;
+//		this.packing = packing;
+//	}
+
+//	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
+//		super();
+//		this.quantity = quantity;
+//		this.status = status;
+//		this.originNumber = originNumber;
+//		this.partNumber = partNumber;
+//		this.inboundDeliveryRequest = inboundDeliveryRequest;
+//		this.location = location;
+//		this.deliveryRequest = deliveryRequest;
+//		this.unitCost = unitCost;
+//	}
 
 	@Transient
 	public String getKey() {
@@ -536,34 +698,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
-	public String getPartNumberIndustryName() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getIndustryName();
-	}
-
-	@Transient
-	public String getPartNumberCategoryName() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getCategoryName();
-	}
-
-	@Transient
-	public String getPartNumberTypeName() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getTypeName();
-	}
-
-	@Transient
-	public String getPartNumberBrandName() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getBrandName();
-	}
-
-	@Transient
 	public String getWarehouseName() {
 		if (deliveryRequest == null)
 			return null;
@@ -575,34 +709,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			return null;
 		return deliveryRequest.getProjectName();
-	}
-
-	@Transient
-	public String getPartNumberName() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getName();
-	}
-
-	@Transient
-	public void setPartNumberName(String name) {
-		if (partNumber == null)
-			partNumber = new PartNumber();
-		partNumber.setName(name);
-	}
-
-	@Transient
-	public String getPartNumberDescription() {
-		if (partNumber == null)
-			return null;
-		return partNumber.getDescription();
-	}
-
-	@Transient
-	public void setPartNumberDescription(String description) {
-		if (partNumber == null)
-			partNumber = new PartNumber();
-		partNumber.setDescription(description);
 	}
 
 	@Transient
@@ -686,5 +792,89 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Transient
+	public Integer getPartNumberId() {
+		return partNumber == null ? null : partNumber.getId();
+	}
+
+	@Transient
+	public void setPartNumberId(Integer partNumberId) {
+		if (partNumber == null || !partNumberId.equals(partNumber.getId()))
+			partNumber = new PartNumber();
+		partNumber.setId(partNumberId);
+	}
+
+	@Transient
+	public String getPartNumberName() {
+		return partNumber == null ? null : partNumber.getName();
+	}
+
+	@Transient
+	public void setPartNumberName(String partNumberName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setName(partNumberName);
+	}
+
+	@Transient
+	public String getPartNumberIndustryName() {
+		return partNumber == null ? null : partNumber.getIndustryName();
+	}
+
+	@Transient
+	public void setPartNumberIndustryName(String partNumberIndustryName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setIndustryName(partNumberIndustryName);
+	}
+
+	@Transient
+	public String getPartNumberCategoryName() {
+		return partNumber == null ? null : partNumber.getCategoryName();
+	}
+
+	@Transient
+	public void setPartNumberCategoryName(String partNumberCategoryName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setCategoryName(partNumberCategoryName);
+	}
+
+	@Transient
+	public String getPartNumberTypeName() {
+		return partNumber == null ? null : partNumber.getTypeName();
+	}
+
+	@Transient
+	public void setPartNumberTypeName(String partNumberTypeName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setTypeName(partNumberTypeName);
+	}
+
+	@Transient
+	public String getPartNumberBrandName() {
+		return partNumber == null ? null : partNumber.getBrandName();
+	}
+
+	@Transient
+	public void setPartNumberBrandName(String partNumberBrandName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setBrandName(partNumberBrandName);
+	}
+
+	@Transient
+	public String getPartNumberDescription() {
+		return partNumber == null ? null : partNumber.getDescription();
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setDescription(partNumberDescription);
 	}
 }

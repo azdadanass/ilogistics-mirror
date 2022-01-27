@@ -94,13 +94,13 @@
 												<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
 											</p:column>
 											<p:column headerText="Industry" width="80">
-												<h:outputText id="industry" value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="bolder blue" />
+												<h:outputText id="industry" value="#{item.partNumber.industryName}" styleClass="bolder blue" />
 											</p:column>
 											<p:column headerText="Category" width="120">
-												<h:outputText id="category" value="#{item.partNumber.partNumberType.category.name}" styleClass="bolder green" />
+												<h:outputText id="category" value="#{item.partNumber.categoryName}" styleClass="bolder green" />
 											</p:column>
 											<p:column headerText="Type" width="120">
-												<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="bolder orange" />
+												<h:outputText id="type" value="#{item.partNumber.typeName}" styleClass="bolder orange" />
 											</p:column>
 											<p:column headerText="Quantity" width="150">
 												<p:inputNumber value="#{item.quantity}" minValue="1" decimalPlaces="0" thousandSeparator="" style="width: 100%" />

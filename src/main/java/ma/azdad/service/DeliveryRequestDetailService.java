@@ -64,8 +64,8 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return id == null ? repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
 				: repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), id);
 	}
-	
-	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId){
+
+	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId) {
 		return repos.findRemainingByPo(poId);
 	}
 

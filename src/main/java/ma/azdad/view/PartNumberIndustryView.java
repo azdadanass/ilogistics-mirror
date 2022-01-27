@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.PartNumberIndustry;
 import ma.azdad.repos.PartNumberIndustryRepos;
 import ma.azdad.service.PartNumberIndustryService;
+import ma.azdad.service.PartNumberService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -24,6 +25,9 @@ public class PartNumberIndustryView extends GenericView<Integer, PartNumberIndus
 
 	@Autowired
 	private PartNumberIndustryService partNumberIndustryService;
+
+	@Autowired
+	private PartNumberService partNumberService;
 
 	@Autowired
 	private CacheView cacheView;
@@ -85,6 +89,9 @@ public class PartNumberIndustryView extends GenericView<Integer, PartNumberIndus
 		if (!validatePartNumberIndustry())
 			return;
 		partNumberIndustry = partNumberIndustryService.save(partNumberIndustry);
+
+//		if (isEditPage)
+//			partNumberService.updateIndustryName(partNumberIndustry.getId(), partNumberIndustry.getName());
 
 		refreshList();
 	}

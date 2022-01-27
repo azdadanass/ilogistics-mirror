@@ -66,4 +66,20 @@ public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
 
 	@Query("select hasPacking from PartNumber where id = ?1")
 	public Boolean getHasPacking(Integer id);
+
+	@Modifying
+	@Query("update PartNumber a set a.brandName = ?2 where a.brand.id = ?1")
+	void updateBrandName(Integer brandId, String brandName);
+
+	@Modifying
+	@Query("update PartNumber a set a.typeName = ?2 where a.partNumberType.id = ?1")
+	void updateTypeName(Integer typeId, String typeName);
+
+	@Modifying
+	@Query("update PartNumber a set a.categoryName = ?2 where a.partNumberType.category.id = ?1")
+	void updateCategoryName(Integer cateogryId, String categoryName);
+
+	@Modifying
+	@Query("update PartNumber a set a.industryName = ?2 where a.partNumberType.category.industry.id = ?1")
+	void updateIndustryName(Integer industryId, String industryName);
 }

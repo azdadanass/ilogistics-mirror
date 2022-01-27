@@ -1025,13 +1025,13 @@
 													<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
 												</p:column>
 												<p:column headerText="Industry" width="90">
-													<h:outputText id="industry" value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+													<h:outputText id="industry" value="#{item.partNumber.industryName}" styleClass="blue" />
 												</p:column>
 												<p:column headerText="Category" width="90">
-													<h:outputText id="category" value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+													<h:outputText id="category" value="#{item.partNumber.categoryName}" styleClass="green" />
 												</p:column>
 												<p:column headerText="Type" width="90">
-													<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+													<h:outputText id="type" value="#{item.partNumber.typeName}" styleClass="orange" />
 												</p:column>
 												<p:column headerText="Quantity" width="100">
 													<p:inputNumber value="#{item.quantity}" minValue="0" thousandSeparator="" style="width: 90%">
@@ -1256,13 +1256,13 @@
 														<h:outputText id="unit" value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit==null?'hide':item.partNumber.unit?'green':'blue'}" />
 													</p:column>
 													<p:column headerText="Industry" width="90">
-														<h:outputText id="industry" value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+														<h:outputText id="industry" value="#{item.partNumber.industryName}" styleClass="blue" />
 													</p:column>
 													<p:column headerText="Category" width="90">
-														<h:outputText id="category" value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+														<h:outputText id="category" value="#{item.partNumber.categoryName}" styleClass="green" />
 													</p:column>
 													<p:column headerText="Type" width="90">
-														<h:outputText id="type" value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+														<h:outputText id="type" value="#{item.partNumber.typeName}" styleClass="orange" />
 													</p:column>
 													<p:column headerText="Quantity" width="150">
 														<h:outputText value="#{item.quantity}">

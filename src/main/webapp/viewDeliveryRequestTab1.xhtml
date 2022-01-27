@@ -577,22 +577,22 @@
 							<div class="col-xs-8">
 								<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
 								<span class="bolder blue">
-									<h:outputText value="Industry : #{item.partNumber.partNumberType.category.industry.name}" />
+									<h:outputText value="Industry : #{item.partNumber.industryName}" />
 								</span>
 								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
 								<span class="pink">
-									<h:outputText value="Category : #{item.partNumber.partNumberType.category.name}" />
+									<h:outputText value="Category : #{item.partNumber.categoryName}" />
 								</span>
 								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
 								<span class="green">
-									<h:outputText value="Type : #{item.partNumber.partNumberType.name}" />
+									<h:outputText value="Type : #{item.partNumber.typeName}" />
 								</span>
 								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
 								<span class="orange">
-									<h:outputText value="Brand : #{item.partNumber.brand.name}" />
+									<h:outputText value="Brand : #{item.partNumber.brandName}" />
 								</span>
 								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
@@ -646,16 +646,16 @@
 						<h:outputText value=" #{item.partNumber.unitType}" styleClass="bolder pink" />
 					</p:column>
 					<p:column headerText="Brand" width="75" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.partNumber.brand.name}" styleClass="purple" />
+						<h:outputText value="#{item.partNumber.brandName}" styleClass="purple" />
 					</p:column>
 					<p:column headerText="Industry" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.partNumber.partNumberType.category.industry.name}" styleClass="blue" />
+						<h:outputText value="#{item.partNumber.industryName}" styleClass="blue" />
 					</p:column>
 					<p:column headerText="Category" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.partNumber.partNumberType.category.name}" styleClass="green" />
+						<h:outputText value="#{item.partNumber.categoryName}" styleClass="green" />
 					</p:column>
 					<p:column headerText="Type" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.partNumber.partNumberType.name}" styleClass="orange" />
+						<h:outputText value="#{item.partNumber.typeName}" styleClass="orange" />
 					</p:column>
 					<p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"

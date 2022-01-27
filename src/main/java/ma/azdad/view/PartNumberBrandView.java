@@ -20,6 +20,7 @@ import ma.azdad.model.PartNumberBrand;
 import ma.azdad.model.Supplier;
 import ma.azdad.repos.PartNumberBrandRepos;
 import ma.azdad.service.PartNumberBrandService;
+import ma.azdad.service.PartNumberService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -42,6 +43,9 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 
 	@Autowired
 	private SupplierService supplierService;
+
+	@Autowired
+	private PartNumberService partNumberService;
 
 	private PartNumberBrand brand = new PartNumberBrand();
 
@@ -122,6 +126,9 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 		supplierDualList.getTarget().stream().filter(i -> !existingSupplierIdSet.contains(i.getId())).forEach(i -> brand.getSupplierList().add(supplierService.findOne(i.getId())));
 
 		brand = brandService.save(brand);
+
+		if (isEditPage)
+			partNumberService.updateBrandName(brand.getId(), brand.getName());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + brand.getId());
 	}

@@ -216,7 +216,7 @@
 											<h:outputText value="Category" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.partNumber.partNumberType.category.name}" styleClass="bolder purple" />
+											<h:outputText value="#{partNumberPricingView.model.partNumber.categoryName}" styleClass="bolder purple" />
 											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberPricingView.model.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
 											&nbsp;
 										</div>
@@ -226,7 +226,7 @@
 											<h:outputText value="Type" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.partNumber.partNumberType.name}" styleClass="bolder pink" />
+											<h:outputText value="#{partNumberPricingView.model.partNumber.typeName}" styleClass="bolder pink" />
 											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberPricingView.model.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
 											&nbsp;
 										</div>

@@ -179,8 +179,10 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		if (assignedProjectList == null || assignedProjectList.isEmpty())
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = stockRowRepos.findByCustomerOwnerAndGroupByPartNumber(username, warehouseList, assignedProjectList, customerId);
+		// set pending quantity = pending outbounds qty 
+		Map<Integer, Double> map =  deliveryRequestDetailService.findPendingQuantityByCustomerOwnerGroupByPartNumber(username, warehouseList, assignedProjectList, customerId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumber(username, warehouseList, assignedProjectList, customerId, stockRow.getPartNumber().getId()));
+			stockRow.setPendingQuantity(map.getOrDefault(stockRow.getPartNumberId(), 0.0));
 		return result;
 	}
 

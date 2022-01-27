@@ -400,5 +400,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select count(*) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and a.deliveryRequest.status not in (?2)")
 	public Long countTransferredStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
+	
+	
+	@Query(c16 + "from StockRow a where a.partNumber.id = ?1 and a.deliveryRequest.project.type = 'Stock' and a.deliveryRequest.project.costcenter.lob.bu.company.id = ?2 group by a.deliveryRequest.id,a.inboundDeliveryRequest.id,a.status")
+	public List<StockRow> findStockHistoryByPartNumberAndProjectStock(Integer partNumberId,Integer companyId);
 
 }

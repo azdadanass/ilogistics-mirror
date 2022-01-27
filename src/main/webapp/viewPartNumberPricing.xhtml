@@ -104,6 +104,12 @@
 							<h:outputText value=" Comments" />
 						</a>
 					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6" onclick="costHistory()">
+							<i class="purple ace-icon fa fa-dollar bigger-120"></i>
+							<h:outputText value=" Cost History" styleClass="hidden-xs" />
+						</a>
+					</li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -362,7 +368,8 @@
 										<ui:repeat var="commentGroup" value="#{partNumberPricingView.model.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
-													<b> <h:outputText value="#{commentGroup.date}">
+													<b>
+														<h:outputText value="#{commentGroup.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
 													</b>
@@ -413,6 +420,119 @@
 												</ui:repeat>
 											</div>
 										</ui:repeat>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab6" class="tab-pane">
+						<p:remoteCommand name="costHistory" action="#{deliveryRequestDetailView.refreshCostHistory(partNumberPricingView.model.partNumber.id,partNumberPricingView.model.company.id)}" update="tab6" />
+						<h:panelGroup id="tab6">
+							<div class="row">
+								<div class="col-sm-10 col-sm-offset-1">
+									<div class="widget-box transparent">
+										<div class="widget-body">
+											<div class="widget-main padding-24">
+												<div class="row">
+													<table class="table table-bordered" style="width: 80%; margin: auto">
+														<tr>
+															<th colspan="2" style="background: #ffb44b; color: white">
+																<h:outputText value="Resource Data" />
+															</th>
+														</tr>
+														<tr>
+															<td width="60%">
+																<h:outputText value="Higher Cost" />
+															</td>
+															<td style="text-align: right" class="bolder red">
+																<h:outputText value="#{deliveryRequestDetailView.maxCost}">
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD" />
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<h:outputText value="Lower Cost" />
+															</td>
+															<td style="text-align: right" class="bolder green">
+																<h:outputText value="#{deliveryRequestDetailView.minCost}">
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD" />
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<h:outputText value="Average Cost" />
+															</td>
+															<td style="text-align: right" class="bolder blue">
+																<h:outputText value="#{deliveryRequestDetailView.averageCost}">
+																	<f:convertNumber type="number" maxFractionDigits="2" />
+																</h:outputText>
+																<h:outputText value=" MAD" />
+															</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Cost History" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="costHistory" fileName="costHistory" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="costHistory" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="costHistory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="DN Delivery Date">
+												<h:outputText value="#{item.tmpDeliveryRequestDeliveryDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Unit Cost">
+												<h:outputText value="#{item.unitCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.tmpDeliveryRequestReference}" exportable="false">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color} bolder" />
+													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN" styleClass="hide">
+												<h:outputText value="#{item.tmpDeliveryRequestReference}" />
+											</p:column>
+											<p:column headerText="Project">
+												<h:outputText value="#{item.tmpProjectName}" styleClass="purple" />
+											</p:column>
+										</p:dataTable>
 									</div>
 								</div>
 							</div>

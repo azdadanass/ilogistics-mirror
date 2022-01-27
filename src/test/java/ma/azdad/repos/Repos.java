@@ -28,8 +28,8 @@ public class Repos extends GenericTest {
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		pnps.updatePhysicalQuantity(1);
-		pnps.updatePendingQuantity(1);
+		
+		System.out.println(stockRowRepos.findStockHistoryByPartNumberAndProjectStock(2605, 1));
 	}
 
 }

@@ -124,9 +124,16 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 
 	// GENERIC
 	public void refreshCostHistory(Integer partNumberId) {
+		refreshCostHistory(partNumberId, companyId);
+	}
+	
+	public void refreshCostHistory(Integer partNumberId,Integer companyId) {
 		if ("/partNumberReporting.xhtml".equals(currentPath))
 			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
+		else if("/viewPartNumberPricing.xhtml".equals(currentPath))
+			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
 	}
+	
 
 	public Double getMaxCost() {
 		try {

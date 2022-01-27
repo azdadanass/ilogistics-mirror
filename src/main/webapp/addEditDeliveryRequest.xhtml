@@ -563,7 +563,8 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6">
+												<p:inputText value="#{deliveryRequestView.deliveryRequest.ownerType.value}" readonly="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}"/>
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
 													<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
@@ -584,9 +585,10 @@
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
 												<h:panelGroup id="owner">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.company.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}"/>
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
 														required="true" requiredMessage="Owner should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}"
-														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY}">
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>

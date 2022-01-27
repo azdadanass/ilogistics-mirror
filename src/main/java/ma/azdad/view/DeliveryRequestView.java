@@ -1931,6 +1931,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			switch (deliveryRequest.getOwnerType()) {
 			case COMPANY:
 				deliveryRequest.setCompanyId(projectService.findCompanyId(deliveryRequest.getProjectId()));
+				deliveryRequest.setCompany(companyService.findOne(deliveryRequest.getCompanyId()));
 				break;
 			case CUSTOMER:
 				deliveryRequest.setCustomer(customerService.findOne(projectService.findCustomerId(deliveryRequest.getProjectId())));

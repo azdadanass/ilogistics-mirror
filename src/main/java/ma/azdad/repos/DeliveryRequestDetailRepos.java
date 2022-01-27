@@ -113,8 +113,11 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	String companyCondition = " (company1.id = ?4 or company2.id = ?4 ) ";
 	String customerCondition = " (customer1.id = ?4 or customer2.id = ?4 ) ";
 
-	@Query("select sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
-	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+//	@Query("select sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
+//	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	
+	@Query("select a.partNumber.id,sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) group by a.partNumber.id")
+	public List<Object[]> findPendingQuantityByCompanyOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,  DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from2 + " where  " + usernameCondition + " and " + customerCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
 	public Double findPendingQuantityByCustomerOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);

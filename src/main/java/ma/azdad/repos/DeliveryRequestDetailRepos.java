@@ -115,13 +115,13 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 //	@Query("select sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
 //	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
-	
+
 //	@Query("select sum(a.quantity) " + from2 + " where  " + usernameCondition + " and " + customerCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
 //	public Double findPendingQuantityByCustomerOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
-	
+
 	@Query("select a.partNumber.id,sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) group by a.partNumber.id")
-	public List<Object[]> findPendingQuantityByCompanyOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,  DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
-	
+	public List<Object[]> findPendingQuantityByCompanyOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+
 	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + " where  " + usernameCondition + " and " + customerCondition + " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) group by a.partNumber.id")
 	public List<Object[]> findPendingQuantityByCustomerOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
@@ -130,9 +130,11 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select sum(a.quantity) " + from2 + " where  a.deliveryRequest.project.id = ?6 and " + usernameCondition + " and " + customerCondition + "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
 	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
-	
-	
+
 	@Query(c4 + " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.project.type = 'Stock' and a.deliveryRequest.project.costcenter.lob.bu.company.id = ?3 and a.deliveryRequest.status in (?4)")
 	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
+
+	@Query("from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.partNumber.id = ?2")
+	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId);
 
 }

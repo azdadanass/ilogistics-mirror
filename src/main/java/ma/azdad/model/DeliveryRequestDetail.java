@@ -20,7 +20,6 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private Double unitCost = 0.0;
 	private Double unitPrice = 0.0;
 
-	private PartNumber partNumber;
 	private DeliveryRequest deliveryRequest;
 
 	private Currency pruchaseCurrency;
@@ -30,8 +29,12 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	// outbound case
 	private StockRowStatus status;
 	private String originNumber;
-	private DeliveryRequest inboundDeliveryRequest;
+
 	private Packing packing;
+
+	private PartNumber partNumber;
+	private DeliveryRequest inboundDeliveryRequest;
+	private DeliveryRequestDetail inboundDeliveryRequestDetail; // case outbound delivery detail
 
 	private Double remainingQuantity;
 
@@ -202,7 +205,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c4
-	public DeliveryRequestDetail(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
+	public DeliveryRequestDetail(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -210,6 +213,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.status = status;
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.unitCost = unitCost;
 		this.packing = packing;
 	}
@@ -660,6 +664,15 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	public void setPriceCurrency(Currency priceCurrency) {
 		this.priceCurrency = priceCurrency;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public DeliveryRequestDetail getInboundDeliveryRequestDetail() {
+		return inboundDeliveryRequestDetail;
+	}
+
+	public void setInboundDeliveryRequestDetail(DeliveryRequestDetail inboundDeliveryRequestDetail) {
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 	}
 
 }

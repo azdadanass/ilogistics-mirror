@@ -28,11 +28,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private StockRowStatus status = StockRowStatus.NORMAL;
 	private String originNumber;
 
-	private PartNumber partNumber;
 	private DeliveryRequest deliveryRequest;
-	private DeliveryRequest inboundDeliveryRequest;
+
 	private Location location;
 	private Packing packing;
+
+	private PartNumber partNumber;
+	private DeliveryRequest inboundDeliveryRequest;
+	private DeliveryRequestDetail inboundDeliveryRequestDetail; // case inbound/outbound stock row
 
 	// TMP
 	private Double tmpQuantity;
@@ -276,13 +279,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c19
-	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Double unitPrice, Location location, Date creationDate, Packing packing) {
+	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Double unitPrice, Location location, Date creationDate, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
 		this.originNumber = originNumber;
 		this.partNumber = partNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
 		this.unitCost = unitCost;
@@ -292,7 +296,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c20
-	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
+	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -302,12 +306,13 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = new Date();
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.unitCost = unitCost;
 		this.packing = packing;
 	}
 
 	// c21
-	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, Boolean initial, String originNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Date creationDate, Packing packing) {
+	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, Boolean initial, String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Date creationDate, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -316,6 +321,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.initial = initial;
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.unitCost = unitCost;
 		this.creationDate = creationDate;
 		this.packing = packing;
@@ -876,5 +882,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setDescription(partNumberDescription);
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public DeliveryRequestDetail getInboundDeliveryRequestDetail() {
+		return inboundDeliveryRequestDetail;
+	}
+
+	public void setInboundDeliveryRequestDetail(DeliveryRequestDetail inboundDeliveryRequestDetail) {
+		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 	}
 }

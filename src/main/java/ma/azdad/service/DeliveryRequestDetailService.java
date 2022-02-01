@@ -555,7 +555,6 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	}
 
 	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus) {
-		System.out.println(repos.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus));
 		return repos.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus);
 	}
 

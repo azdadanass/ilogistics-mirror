@@ -28,9 +28,10 @@ public class PartNumberPricingRestService {
 	DeliveryRequestDetailService deliveryRequestDetailService;
 
 	@RequestMapping("/rest/partNumberPricing/updateQuantities")
-	public void updateQuantities() {
+	public String updateQuantities() {
 		log.info("updateQuantities");
 		partNumberPricingService.updateQuantities();
+		return "SUCCESS";
 	}
 
 	@RequestMapping("/rest/partNumberPricing/costHistory/{partNumberId}/{companyId}")

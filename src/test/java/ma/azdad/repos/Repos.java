@@ -50,6 +50,7 @@ public class Repos extends GenericTest {
 			ResponseEntity<DeliveryRequestCostHistory[]> response = restTemplate.getForEntity(App.ILOGISTICS.getIp() + "/rest/partNumberPricing/costHistory/" + partNumberId + "/" + companyId, DeliveryRequestCostHistory[].class);
 			return Arrays.asList(response.getBody());
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ArrayList<DeliveryRequestCostHistory>();
 		}
 	}

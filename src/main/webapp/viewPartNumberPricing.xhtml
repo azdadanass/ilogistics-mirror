@@ -195,6 +195,15 @@
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Delivery Lead Time" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.deliveryLeadTime} Days" />
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -254,6 +263,15 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberPricingView.model.partNumber.unitType}" styleClass="bolder light-blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Business Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.businessType.value}" styleClass="#{partNumberPricingView.model.businessType.color.name}" />
 											&nbsp;
 										</div>
 									</div>

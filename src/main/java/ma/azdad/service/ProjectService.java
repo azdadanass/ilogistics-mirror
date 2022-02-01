@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectCustomerType;
 import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
@@ -148,6 +149,10 @@ public class ProjectService {
 
 	public Boolean isDeliveryProject(Integer projectId) {
 		return ProjectTypes.DELIVERY.getValue().equals(getType(projectId));
+	}
+
+	public Boolean isCustomerProject(Integer projectId) {
+		return ProjectCustomerType.CUSTOMER.equals(repos.getCustomerType(projectId));
 	}
 
 	public Boolean isDstrProject(Integer projectId) {

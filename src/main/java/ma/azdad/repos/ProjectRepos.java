@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectCustomerType;
 import ma.azdad.model.ProjectManagerType;
 
 @Repository
@@ -57,6 +58,9 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select type from Project where id = ?1")
 	public String getType(Integer projectId);
+
+	@Query("select customerType from Project where id = ?1")
+	public ProjectCustomerType getCustomerType(Integer projectId);
 
 	@Query("select subType from Project where id = ?1")
 	public String getSubType(Integer projectId);

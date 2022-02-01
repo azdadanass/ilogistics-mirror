@@ -587,12 +587,12 @@
 												<h:panelGroup id="owner">
 													<p:inputText value="#{deliveryRequestView.deliveryRequest.company.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}"/>
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-														required="true" requiredMessage="Owner should not be null" disabled="#{deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null}"
-														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+														required="true" requiredMessage="Owner should not be null" disabled="#{(deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null) or (deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId))}"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}" />
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}" disabled="deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId)"/>
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.supplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
 														required="true" requiredMessage="Owner should not be null" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.SUPPLIER}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />

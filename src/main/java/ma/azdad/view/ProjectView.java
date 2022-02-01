@@ -142,6 +142,10 @@ public class ProjectView {
 		return ProjectTypes.STOCK.getValue().equals(projectService.getType(projectId));
 	}
 
+	public Boolean isCustomerProject(Integer projectId) {
+		return projectService.isCustomerProject(projectId);
+	}
+
 	public List<Project> findLightByResource(String username, DeliveryRequestType deliveryRequestType) {
 		if (deliveryRequestType == null)
 			return null;

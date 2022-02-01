@@ -845,7 +845,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	// inplace
 	public Boolean canEditSdm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && deliveryRequest.getDestinationProjectSdm() != null && !deliveryRequest.getDestinationProjectSdm();
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && deliveryRequest.getDestinationProjectSdm() != null && deliveryRequest.getDestinationProjectSdm();
 	}
 
 	public void editSdm() {

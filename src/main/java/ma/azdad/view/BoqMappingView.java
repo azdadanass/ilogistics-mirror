@@ -34,6 +34,7 @@ import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
+import ma.azdad.service.PoService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -56,6 +57,9 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 
 	@Autowired
 	private BoqService boqService;
+
+	@Autowired
+	private PoService poService;
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;
@@ -294,6 +298,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		deliveryRequestService.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId()));
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());
+		poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 		return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

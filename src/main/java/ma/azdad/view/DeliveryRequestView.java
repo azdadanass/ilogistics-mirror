@@ -494,8 +494,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (deliveryRequest.getCustomer() != null)
 				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
-			if (deliveryRequest.getPo() != null)
-				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
+//			if (deliveryRequest.getPo() != null)
+//				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 
 			// update field missing sn
 			deliveryRequest = service.findOne(deliveryRequest.getId());
@@ -591,8 +591,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
-			if (deliveryRequest.getPo() != null)
-				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
+//			if (deliveryRequest.getPo() != null)
+//				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();

@@ -73,10 +73,10 @@ public class JobService {
 		partNumberEquivalenceService.updateInverseFormula();
 	}
 
-//	@Scheduled(cron = "0 45 04 * * *")
-//	public void updateAllPoBoqStatusScript() {
-//		poService.updateAllBoqStatusScript();
-//	}
+	@Scheduled(cron = "0 45 04 * * *")
+	public void updateAllPoBoqStatusScript() {
+		poService.updateAllBoqStatusScript();
+	}
 
 	@Scheduled(cron = "00 40 00 * * *")
 	public void updateCountIssuesScript() {

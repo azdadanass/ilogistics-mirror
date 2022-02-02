@@ -34,4 +34,7 @@ public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
 	@Query("select count(*) from Boq a where a.podetails.id = ?1 and  totalQuantity > totalUsedQuantity ")
 	public Long countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(Integer podetailsId);
+
+	@Query("select count(*) from Boq a where a.podetails.po.idpo = ?1")
+	Long countByPo(Integer poId);
 }

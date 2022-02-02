@@ -1,7 +1,9 @@
 package ma.azdad.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,7 @@ import ma.azdad.repos.PodetailsRepos;
 public class PoService {
 
 	@Autowired
-	private PoRepos poRepos;
+	private PoRepos repos;
 
 	@Autowired
 	private PodetailsRepos podetailsRepos;
@@ -32,21 +34,24 @@ public class PoService {
 	@Autowired
 	private BoqService boqService;
 
+	@Autowired
+	private CacheService cacheService;
+
 	public Po findOne(Integer id) {
-		return poRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {
-		return poRepos.findByTypeAndProjectAndNotBoqStatus(type, projectId, PoBoqStatus.MAPPED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
+		return repos.findByTypeAndProjectAndNotBoqStatus(type, projectId, PoBoqStatus.MAPPED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
 	public void updateBoqStatus(Integer poId) {
 		PoBoqStatus boqStatus = null;
-		if (boqMappingService.countByPo(poId) == 0)
+		if (boqMappingService.countByPo(poId) == 0 && boqService.countByPo(poId) > 0)
 			boqStatus = PoBoqStatus.PENDING;
 		else {
-			List<Podetails> podetailsList = podetailsRepos.findByPo(poId);
-			Boolean ibuy = poRepos.getIbuy(poId);
+			List<Podetails> podetailsList = podetailsRepos.findByPoAndHavingBoq(poId);
+			Boolean ibuy = repos.getIbuy(poId);
 			if (!ibuy)
 				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 					boqStatus = PoBoqStatus.IN_PROGRESS;
@@ -60,17 +65,18 @@ public class PoService {
 			}
 
 		}
-		poRepos.updateBoqStatus(poId, boqStatus);
+		repos.updateBoqStatus(poId, boqStatus);
+		cacheService.evictCache("poService");
 	}
 
-//	public void updateAllBoqStatusScript() {
-//		Set<Integer> sourceList = new HashSet<>();
-//		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
-//		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
-//
-//		for (Integer poId : sourceList)
-//			updateBoqStatus(poId);
-//
-//	}
+	public void updateAllBoqStatusScript() {
+		Set<Integer> sourceList = new HashSet<>();
+		sourceList.addAll(repos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
+		sourceList.addAll(repos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
+
+		for (Integer poId : sourceList)
+			updateBoqStatus(poId);
+
+	}
 
 }

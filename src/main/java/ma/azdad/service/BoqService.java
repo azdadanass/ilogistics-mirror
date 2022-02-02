@@ -17,39 +17,43 @@ import ma.azdad.repos.BoqRepos;
 public class BoqService {
 
 	@Autowired
-	private BoqRepos boqRepos;
+	private BoqRepos repos;
 
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId) {
-		return boqRepos.findPartNumberIdListByPoAndHavingRemainingQuantity(poId);
+		return repos.findPartNumberIdListByPoAndHavingRemainingQuantity(poId);
 	}
 
 	public List<Boq> findByPoAndPartNumber(Integer poId, Integer partNumberId) {
-		return boqRepos.findByPoAndPartNumber(poId, partNumberId);
+		return repos.findByPoAndPartNumber(poId, partNumberId);
 	}
 
 	public Double getUsedQuantity(Integer boqId) {
-		return boqRepos.getUsedQuantity(boqId);
+		return repos.getUsedQuantity(boqId);
 	}
 
 	public List<Boq> findByPoAndPartNumber(Integer poId, List<Integer> partNumberListId) {
 		if (partNumberListId == null || partNumberListId.isEmpty())
 			return new ArrayList<>();
-		return boqRepos.findByPoAndPartNumber(poId, partNumberListId);
+		return repos.findByPoAndPartNumber(poId, partNumberListId);
 	}
 
 	public void updateTotalUsedQuantity(Set<Integer> idList) {
 		System.out.println("updateTotalUsedQuantity " + idList);
 		if (idList == null || idList.isEmpty())
 			return;
-		boqRepos.updateTotalUsedQuantity(idList);
+		repos.updateTotalUsedQuantity(idList);
 	}
 
 	public Set<Integer> getAssociatedBoqIdListWithDeliveryRequest(Integer deliveryRequestId) {
-		return boqRepos.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequestId);
+		return repos.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequestId);
 	}
 
 	public Long countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(Integer podetailsId) {
-		return ObjectUtils.firstNonNull(boqRepos.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(podetailsId), 0l);
+		return ObjectUtils.firstNonNull(repos.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(podetailsId), 0l);
+	}
+
+	public Long countByPo(Integer poId) {
+		return ObjectUtils.firstNonNull(repos.countByPo(poId), 0l);
 	}
 
 }

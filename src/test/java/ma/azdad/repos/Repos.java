@@ -6,18 +6,20 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.service.PoService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	BoqMappingRepos bmr;
+	PoService poService;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 
-		bmr.deleteByPo(22287);
+		poService.updateAllBoqStatusScript();
+
 	}
 
 }

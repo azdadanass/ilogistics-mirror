@@ -13,5 +13,8 @@ public abstract interface PodetailsRepos extends JpaRepository<Podetails, Intege
 
 	@Query("from Podetails where po.idpo = ?1")
 	public List<Podetails> findByPo(Integer poId);
-	
+
+	@Query("select distinct a.podetails from Boq a where a.podetails.po.idpo = ?1")
+	public List<Podetails> findByPoAndHavingBoq(Integer poId);
+
 }

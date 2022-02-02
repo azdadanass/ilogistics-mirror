@@ -46,6 +46,7 @@ public class PoService {
 	}
 
 	public void updateBoqStatus(Integer poId) {
+		System.out.println("updateBoqStatus poId: " + poId);
 		PoBoqStatus boqStatus = null;
 		if (boqMappingService.countByPo(poId) == 0 && boqService.countByPo(poId) > 0)
 			boqStatus = PoBoqStatus.PENDING;

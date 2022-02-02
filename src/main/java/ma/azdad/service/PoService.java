@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CostType;
 import ma.azdad.model.Po;
-import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoBoqStatus;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
 import ma.azdad.model.RevenueType;
@@ -38,40 +38,40 @@ public class PoService {
 		return poRepos.findById(id).get();
 	}
 
-	public List<Po> findByTypeAndProjectAndNotDelivered(String type, Integer projectId) {
-		return poRepos.findByTypeAndProjectAndNotDeliveryStatus(type, projectId, PoDeliveryStatus.DELIVERED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
+	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {
+		return poRepos.findByTypeAndProjectAndNotBoqStatus(type, projectId, PoBoqStatus.MAPPED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
-	public void updateDeliveryStatus(Integer poId) {
-		PoDeliveryStatus deliveryStatus = null;
+	public void updateBoqStatus(Integer poId) {
+		PoBoqStatus boqStatus = null;
 		if (boqMappingService.countByPo(poId) == 0)
-			deliveryStatus = PoDeliveryStatus.PENDING;
+			boqStatus = PoBoqStatus.PENDING;
 		else {
 			List<Podetails> podetailsList = podetailsRepos.findByPo(poId);
 			Boolean ibuy = poRepos.getIbuy(poId);
 			if (!ibuy)
 				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
-					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
+					boqStatus = PoBoqStatus.IN_PROGRESS;
 				else
-					deliveryStatus = PoDeliveryStatus.DELIVERED;
+					boqStatus = PoBoqStatus.MAPPED;
 			else {
 				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
-					deliveryStatus = PoDeliveryStatus.IN_PROGRESS;
+					boqStatus = PoBoqStatus.IN_PROGRESS;
 				else
-					deliveryStatus = PoDeliveryStatus.DELIVERED;
+					boqStatus = PoBoqStatus.MAPPED;
 			}
 
 		}
-		poRepos.updateDeliveryStatus(poId, deliveryStatus);
+		poRepos.updateBoqStatus(poId, boqStatus);
 	}
 
-	public void updateAllDeliveryStatusScript() {
+	public void updateAllBoqStatusScript() {
 		Set<Integer> sourceList = new HashSet<>();
 		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
 		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 
 		for (Integer poId : sourceList)
-			updateDeliveryStatus(poId);
+			updateBoqStatus(poId);
 
 	}
 

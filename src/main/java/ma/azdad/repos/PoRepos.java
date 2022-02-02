@@ -10,15 +10,15 @@ import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.CostType;
 import ma.azdad.model.Po;
-import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoBoqStatus;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.RevenueType;
 
 @Repository
 public interface PoRepos extends JpaRepository<Po, Integer> {
 
-	@Query("from Po a where a.type = ?1 and a.project.id = ?2 and a.deliveryStatus is not null and a.deliveryStatus  != ?3  and a.status not in (?4)")
-	public List<Po> findByTypeAndProjectAndNotDeliveryStatus(String type, Integer projectId, PoDeliveryStatus deliveryStatus, List<PoStatus> notInStatus);
+	@Query("from Po a where a.type = ?1 and a.project.id = ?2 and a.boqStatus is not null and a.boqStatus  != ?3  and a.status not in (?4)")
+	public List<Po> findByTypeAndProjectAndNotBoqStatus(String type, Integer projectId, PoBoqStatus boqStatus, List<PoStatus> notInStatus);
 
 	@Query("select new Po(idpo,numeroInvoice) from Po where idpo in (?1)")
 	public List<Po> findLight(List<Integer> idList);
@@ -27,8 +27,8 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	public Boolean getIbuy(Integer id);
 
 	@Modifying
-	@Query("update Po set deliveryStatus = ?2 where idpo = ?1 ")
-	public void updateDeliveryStatus(Integer poId, PoDeliveryStatus deliveryStatus);
+	@Query("update Po set boqStatus = ?2 where idpo = ?1 ")
+	public void updateBoqStatus(Integer poId, PoBoqStatus boqStatus);
 
 	@Query("select distinct a.po.idpo  from Podetails a where a.revenueType  =?1 ")
 	public Set<Integer> findPoIdListContainingGoodsSupply(RevenueType revenueTypeGoodsSupply);

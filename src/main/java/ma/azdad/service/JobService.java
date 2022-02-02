@@ -24,7 +24,7 @@ public class JobService {
 
 	@Autowired
 	PartNumberEquivalenceService partNumberEquivalenceService;
-	
+
 	@Autowired
 	PartNumberPricingService partNumberPricingService;
 
@@ -73,16 +73,16 @@ public class JobService {
 		partNumberEquivalenceService.updateInverseFormula();
 	}
 
-	@Scheduled(cron = "0 45 04 * * *")
-	public void updateAllPoBoqStatusScript() {
-		poService.updateAllBoqStatusScript();
-	}
+//	@Scheduled(cron = "0 45 04 * * *")
+//	public void updateAllPoBoqStatusScript() {
+//		poService.updateAllBoqStatusScript();
+//	}
 
 	@Scheduled(cron = "00 40 00 * * *")
 	public void updateCountIssuesScript() {
 		deliveryRequestService.updateCountIssuesScript();
 	}
-	
+
 	@Scheduled(cron = "00 00 05 * * *")
 	public void updatePartNumberPricingQuantities() {
 		partNumberPricingService.updateQuantities();

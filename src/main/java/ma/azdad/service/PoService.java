@@ -1,9 +1,7 @@
 package ma.azdad.service;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,14 +63,14 @@ public class PoService {
 		poRepos.updateBoqStatus(poId, boqStatus);
 	}
 
-	public void updateAllBoqStatusScript() {
-		Set<Integer> sourceList = new HashSet<>();
-		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
-		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
-
-		for (Integer poId : sourceList)
-			updateBoqStatus(poId);
-
-	}
+//	public void updateAllBoqStatusScript() {
+//		Set<Integer> sourceList = new HashSet<>();
+//		sourceList.addAll(poRepos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
+//		sourceList.addAll(poRepos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
+//
+//		for (Integer poId : sourceList)
+//			updateBoqStatus(poId);
+//
+//	}
 
 }

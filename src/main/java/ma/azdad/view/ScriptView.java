@@ -104,7 +104,7 @@ public class ScriptView {
 	public void updateAllBoqStatusScript() {
 		if (!canExecute)
 			return;
-		poService.updateAllBoqStatusScript();
+//		poService.updateAllBoqStatusScript();
 	}
 
 	public void updateIsStockEmptyScript() {

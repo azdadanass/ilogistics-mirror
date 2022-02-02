@@ -57,6 +57,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private String returnReason;
 	private Boolean isFullyReturned = false;
 	private Boolean sdm = true;
+	private Boolean containsBoqMapping = null;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
@@ -211,7 +212,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate, String originName, String customerName, String supplierName,
-			String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef) {
+			String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -234,6 +235,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.transportationNeeded = transportationNeeded;
 		this.hasTransportationRequest = transportationRequestNumber != null && transportationRequestNumber > 0;
 		this.smsRef = smsRef;
+		this.containsBoqMapping = containsBoqMapping;
 	}
 
 	public DeliveryRequest(DeliveryRequestType type, User requester) {
@@ -399,8 +401,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	public void clearBoqMappingList() {
+		if (boqMappingList.size() > 1)
+			containsBoqMapping = false;
 		boqMappingList.forEach(i -> i.setDeliveryRequest(null));
 		boqMappingList.clear();
+
 	}
 
 	public void addComment(DeliveryRequestComment comment) {
@@ -1839,4 +1844,13 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		}
 		return 0;
 	}
+
+	public Boolean getContainsBoqMapping() {
+		return containsBoqMapping;
+	}
+
+	public void setContainsBoqMapping(Boolean containsBoqMapping) {
+		this.containsBoqMapping = containsBoqMapping;
+	}
+
 }

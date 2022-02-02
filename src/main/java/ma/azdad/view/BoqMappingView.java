@@ -295,6 +295,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 				continue;
 			deliveryRequest.getBoqMappingList().add(new BoqMapping(bmi.getBoqQuantity(), deliveryRequest, bmi.getBoq(), bmi.getPartNumberEquivalence(), bmi.getDirectEquivalence()));
 		}
+		deliveryRequest.setContainsBoqMapping(true);
 		deliveryRequestService.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId()));
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());

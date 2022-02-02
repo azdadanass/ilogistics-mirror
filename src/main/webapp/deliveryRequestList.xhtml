@@ -246,6 +246,9 @@
 									<p:commandLink title="#{item.hasTransportationRequest?'Has TR':'No TR'}" rendered="#{item.transportationNeeded}">
 										<i class="ace-icon fa fa-truck bigger-130 #{item.hasTransportationRequest?'green':'grey'}" />
 									</p:commandLink>
+									<p:commandLink title="#{item.containsBoqMapping?'Has Boq Mapping':'No BoQ Mapping'}" rendered="#{item.containsBoqMapping != null}">
+										<i class="ace-icon fa fa-link bigger-130 #{item.containsBoqMapping?'green':'red'}" />
+									</p:commandLink>
 									<h:outputLink value="#{deliveryRequestView.storagePage}" title="Handle" styleClass="aa-tooltip tooltip-success"
 										rendered="#{deliveryRequestView.pageIndex==4 and DeliveryRequestType.INBOUND==item.type}">
 										<i class="ace-icon fa fa-sign-in bigger-130 green" />

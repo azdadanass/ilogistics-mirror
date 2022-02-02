@@ -1362,8 +1362,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setDate1(new Date());
 //			deliveryRequest.setProject(projectService.findOne(deliveryRequest.getProjectId()));
 
-			if (getIsPoNeeded() && deliveryRequest.getPoId() != null)
+			if (getIsPoNeeded() && deliveryRequest.getPoId() != null) {
 				deliveryRequest.setPo(poService.findOne(deliveryRequest.getPoId()));
+				if (deliveryRequest.getContainsBoqMapping() == null)
+					deliveryRequest.setContainsBoqMapping(false);
+			}
 
 			if (getIsCustomerRequesterDataNeeded())
 				if (!StringUtils.isBlank(deliveryRequest.getTmpExternalRequesterUsername()))
@@ -2024,6 +2027,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (!canEditPo())
 			return;
 		deliveryRequest.setPo(poService.findOne(deliveryRequest.getPo().getIdpo()));
+		if (deliveryRequest.getContainsBoqMapping() == null)
+			deliveryRequest.setContainsBoqMapping(false);
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		deliveryRequest.init();

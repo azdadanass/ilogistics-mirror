@@ -241,7 +241,7 @@
 							<p:column headerText="Transporter" styleClass="hide" rendered="#{deliveryRequestView.list2.size()>0}">
 								<h:outputText value="#{item.transporterName}" />
 							</p:column>
-							<p:column headerText="Actions" width="80" exportable="false">
+							<p:column headerText="Actions" width="100" exportable="false">
 								<div class="action-buttons center">
 									<p:commandLink title="#{item.hasTransportationRequest?'Has TR':'No TR'}" rendered="#{item.transportationNeeded}">
 										<i class="ace-icon fa fa-truck bigger-130 #{item.hasTransportationRequest?'green':'grey'}" />

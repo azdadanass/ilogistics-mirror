@@ -997,6 +997,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 
 		deliveryRequest.clearBoqMappingList();
+		deliveryRequest.setPo(null);
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 
@@ -1066,6 +1067,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		deliveryRequest.clearBoqMappingList();
+		deliveryRequest.setPo(null);
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		if (deliveryRequest.getTransportationRequest() != null)

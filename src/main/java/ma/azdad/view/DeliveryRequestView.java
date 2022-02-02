@@ -495,7 +495,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
 			if (deliveryRequest.getPo() != null)
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 
 			// update field missing sn
 			deliveryRequest = service.findOne(deliveryRequest.getId());
@@ -592,7 +592,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
 			if (deliveryRequest.getPo() != null)
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+				poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();
@@ -1980,9 +1980,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public List<Po> getPoList() {
 		if (deliveryRequest.getIsInbound())
-			return poService.findByTypeAndProjectAndNotDelivered(PoTypes.SUPPLIER.getValue(), deliveryRequest.getProjectId());
+			return poService.findByTypeAndProjectAndNotMapped(PoTypes.SUPPLIER.getValue(), deliveryRequest.getProjectId());
 		else
-			return poService.findByTypeAndProjectAndNotDelivered(PoTypes.Customer.getValue(), deliveryRequest.getDestinationProjectId());
+			return poService.findByTypeAndProjectAndNotMapped(PoTypes.Customer.getValue(), deliveryRequest.getDestinationProjectId());
 	}
 
 	// CUSTOMER REQUSTER DATA

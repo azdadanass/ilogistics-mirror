@@ -29,7 +29,7 @@ public class Po implements Serializable {
 	private Currency currency;
 	private Supplier supplier;
 	private Project project;
-	private PoDeliveryStatus deliveryStatus;
+	private PoBoqStatus boqStatus;
 
 	public Po() {
 	}
@@ -152,12 +152,12 @@ public class Po implements Serializable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	public PoDeliveryStatus getDeliveryStatus() {
-		return deliveryStatus;
+	public PoBoqStatus getBoqStatus() {
+		return boqStatus;
 	}
 
-	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
-		this.deliveryStatus = deliveryStatus;
+	public void setBoqStatus(PoBoqStatus boqStatus) {
+		this.boqStatus = boqStatus;
 	}
 
 	public Boolean getIbuy() {

@@ -997,7 +997,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 
 		deliveryRequest.clearBoqMappingList();
-		deliveryRequest.setPo(null);
+
+		Integer poId = null;
+		if (deliveryRequest.getPo() != null) {
+			poId = deliveryRequest.getPo().getIdpo();
+			deliveryRequest.setPo(null);
+		}
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 
@@ -1014,6 +1019,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
+		if (poId != null)
+			poService.updateBoqStatus(poId);
+
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 
@@ -1067,9 +1075,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		deliveryRequest.clearBoqMappingList();
-		deliveryRequest.setPo(null);
+		Integer poId = null;
+		if (deliveryRequest.getPo() != null) {
+			poId = deliveryRequest.getPo().getIdpo();
+			deliveryRequest.setPo(null);
+		}
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
+
 		if (deliveryRequest.getTransportationRequest() != null)
 			transportationRequestService.cancelTransportationRequest(deliveryRequest.getTransportationRequest(), sessionView.getUser(), "DN Canceled");
 
@@ -1080,6 +1093,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
+		if (poId != null)
+			poService.updateBoqStatus(poId);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
@@ -1641,8 +1656,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		try {
 			Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
+			Integer poId = deliveryRequest.getPo() != null ? deliveryRequest.getPo().getIdpo() : null;
 			service.delete(deliveryRequest);
 			boqService.updateTotalUsedQuantity(boqListToUpdate);
+			if (poId != null)
+				poService.updateBoqStatus(poId);
 		} catch (Exception e) {
 			FacesContextMessages.ErrorMessages(e.getMessage());
 			return null;

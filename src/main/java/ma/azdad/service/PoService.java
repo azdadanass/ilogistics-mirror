@@ -10,11 +10,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CostType;
+import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoBoqStatus;
+import ma.azdad.model.PoDeliveryStatus;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
 import ma.azdad.model.RevenueType;
+import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.PoRepos;
 import ma.azdad.repos.PodetailsRepos;
 
@@ -36,6 +39,9 @@ public class PoService {
 
 	@Autowired
 	private CacheService cacheService;
+
+	@Autowired
+	private DeliveryRequestRepos deliveryRequestRepos;
 
 	public Po findOne(Integer id) {
 		return repos.findById(id).get();
@@ -70,14 +76,34 @@ public class PoService {
 		cacheService.evictCache("poService");
 	}
 
-	public void updateAllBoqStatusScript() {
+	public void updateAllBoqStatusAndDeliveryStatusScript() {
 		Set<Integer> sourceList = new HashSet<>();
 		sourceList.addAll(repos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
 		sourceList.addAll(repos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 
-		for (Integer poId : sourceList)
+		for (Integer poId : sourceList) {
 			updateBoqStatus(poId);
+			updateDeliveryStatus(poId);
+		}
 
+	}
+
+	public void updateDeliveryStatus(Integer poId) {
+		PoDeliveryStatus deliveryStatus = null;
+		PoBoqStatus boqStatus = repos.getBoqStatus(poId);
+		if (PoBoqStatus.MAPPED.equals(boqStatus)) {
+			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, // means all dn are DELIVRED or reject/cancled
+					Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED, DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED)) == 0)
+				deliveryStatus = PoDeliveryStatus.DELIVRED;
+			else if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
+					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
+				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
+		} else if (PoBoqStatus.IN_PROGRESS.equals(boqStatus))
+			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
+					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
+				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
+		repos.updateDeliveryStatus(poId, deliveryStatus);
+		cacheService.evictCache("poService");
 	}
 
 }

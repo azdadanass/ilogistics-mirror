@@ -30,6 +30,7 @@ public class Po implements Serializable {
 	private Supplier supplier;
 	private Project project;
 	private PoBoqStatus boqStatus;
+	private PoDeliveryStatus deliveryStatus;
 
 	public Po() {
 	}
@@ -166,6 +167,15 @@ public class Po implements Serializable {
 
 	public void setIbuy(Boolean ibuy) {
 		this.ibuy = ibuy;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public PoDeliveryStatus getDeliveryStatus() {
+		return deliveryStatus;
+	}
+
+	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
 	}
 
 }

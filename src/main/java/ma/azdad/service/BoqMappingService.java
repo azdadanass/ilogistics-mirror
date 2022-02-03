@@ -3,17 +3,14 @@ package ma.azdad.service;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.BoqMapping;
+import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.repos.BoqMappingRepos;
 
 @Component
 public class BoqMappingService extends GenericService<Integer, BoqMapping, BoqMappingRepos> {
-
-	@Autowired
-	BoqMappingRepos boqMappingRepos;
 
 	@Override
 	public BoqMapping findOne(Integer id) {
@@ -23,10 +20,18 @@ public class BoqMappingService extends GenericService<Integer, BoqMapping, BoqMa
 	}
 
 	public List<BoqMapping> findRemaining(Integer poId) {
-		return boqMappingRepos.findRemaining(poId);
+		return repos.findRemaining(poId);
 	}
 
 	public Long countByPo(Integer poId) {
-		return ObjectUtils.firstNonNull(boqMappingRepos.countByPo(poId), 0l);
+		return ObjectUtils.firstNonNull(repos.countByPo(poId), 0l);
+	}
+
+	public Long countDeliveryRequestsByRelatedToPoAndNotInStatus(Integer poId, List<DeliveryRequestStatus> notInStatus) {
+		return ObjectUtils.firstNonNull(repos.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, notInStatus), 0l);
+	}
+
+	public Long countDeliveryRequestsByRelatedToPoAndInStatus(Integer poId, List<DeliveryRequestStatus> inStatus) {
+		return ObjectUtils.firstNonNull(repos.countDeliveryRequestsByRelatedToPoAndInStatus(poId, inStatus), 0l);
 	}
 }

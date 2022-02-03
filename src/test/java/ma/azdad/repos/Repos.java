@@ -18,7 +18,7 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 
-		poService.updateAllBoqStatusScript();
+		poService.updateAllBoqStatusAndDeliveryStatusScript();
 
 	}
 

@@ -92,8 +92,8 @@ public class PoService {
 		PoDeliveryStatus deliveryStatus = null;
 		PoBoqStatus boqStatus = repos.getBoqStatus(poId);
 		if (PoBoqStatus.MAPPED.equals(boqStatus)) {
-			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, // means all dn are DELIVRED or reject/cancled
-					Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED, DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED)) == 0)
+			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, // means all dn are DELIVRED
+					Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) == 0)
 				deliveryStatus = PoDeliveryStatus.DELIVRED;
 			else if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
@@ -102,7 +102,8 @@ public class PoService {
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
 				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
-		repos.updateDeliveryStatus(poId, deliveryStatus);
+		if (deliveryStatus != null)
+			repos.updateDeliveryStatus(poId, deliveryStatus);
 		cacheService.evictCache("poService");
 	}
 

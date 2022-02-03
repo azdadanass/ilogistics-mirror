@@ -27,7 +27,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String select1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + "," + transporterName1 + "," + transporterName2 + ","
-			+ transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping) ";
+			+ transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo) ";
 	String select2 = "select count(*) ";
 
 	@Query("select id from DeliveryRequest")

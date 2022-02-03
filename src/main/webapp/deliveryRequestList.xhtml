@@ -249,6 +249,9 @@
 									<p:commandLink title="#{item.containsBoqMapping?'Has Boq Mapping':'No BoQ Mapping'}" rendered="#{item.containsBoqMapping != null}">
 										<i class="ace-icon fa fa-link bigger-130 #{item.containsBoqMapping?'green':'red'}" />
 									</p:commandLink>
+									<p:commandLink title="Missing PO" rendered="#{item.missingPo}">
+										<i class="ace-icon fa fa-exclamation bigger-130 orange" />
+									</p:commandLink>
 									<h:outputLink value="#{deliveryRequestView.storagePage}" title="Handle" styleClass="aa-tooltip tooltip-success"
 										rendered="#{deliveryRequestView.pageIndex==4 and DeliveryRequestType.INBOUND==item.type}">
 										<i class="ace-icon fa fa-sign-in bigger-130 green" />

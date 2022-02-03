@@ -100,8 +100,7 @@ public class PoService {
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
 				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
-		if (deliveryStatus != null)
-			repos.updateDeliveryStatus(poId, deliveryStatus);
+		repos.updateDeliveryStatus(poId, deliveryStatus);
 		cacheService.evictCache("poService");
 	}
 

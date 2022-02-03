@@ -17,7 +17,6 @@ import ma.azdad.model.PoDeliveryStatus;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
 import ma.azdad.model.RevenueType;
-import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.PoRepos;
 import ma.azdad.repos.PodetailsRepos;
 
@@ -40,9 +39,6 @@ public class PoService {
 	@Autowired
 	private CacheService cacheService;
 
-	@Autowired
-	private DeliveryRequestRepos deliveryRequestRepos;
-
 	public Po findOne(Integer id) {
 		return repos.findById(id).get();
 	}
@@ -54,7 +50,9 @@ public class PoService {
 	public void updateBoqStatus(Integer poId) {
 		System.out.println("updateBoqStatus poId: " + poId);
 		PoBoqStatus boqStatus = null;
-		if (boqMappingService.countByPo(poId) == 0 && boqService.countByPo(poId) > 0)
+		if (boqService.countByPo(poId) == 0)
+			boqStatus = null;
+		else if (boqMappingService.countByPo(poId) == 0 && boqService.countByPo(poId) > 0)
 			boqStatus = PoBoqStatus.PENDING;
 		else {
 			List<Podetails> podetailsList = podetailsRepos.findByPoAndHavingBoq(poId);

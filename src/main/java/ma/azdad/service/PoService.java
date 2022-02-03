@@ -72,6 +72,7 @@ public class PoService {
 		}
 		repos.updateBoqStatus(poId, boqStatus);
 		cacheService.evictCache("poService");
+		cacheService.evictCacheOthers("poService");
 	}
 
 	public void updateAllBoqStatusAndDeliveryStatusScript() {
@@ -102,6 +103,7 @@ public class PoService {
 				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
 		repos.updateDeliveryStatus(poId, deliveryStatus);
 		cacheService.evictCache("poService");
+		cacheService.evictCacheOthers("poService");
 	}
 
 }

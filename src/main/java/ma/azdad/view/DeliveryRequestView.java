@@ -1472,6 +1472,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				deliveryRequest.setOutboundDeliveryRequestReturn(null);
 			if (!deliveryRequest.getIsInboundTransfer())
 				deliveryRequest.setOutboundDeliveryRequestTransfer(null);
+
+			if ((deliveryRequest.getIsInboundNew() && CompanyType.COMPANY.equals(deliveryRequest.getOwnerType())) //
+					|| (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId())))
+				deliveryRequest.setMissingPo(deliveryRequest.getPo() == null);
+
 		} catch (Exception e) {
 			FacesContextMessages.ErrorMessages(e.getMessage());
 		}
@@ -1839,6 +1844,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (!canEditDestinationProject())
 			return;
 		deliveryRequest.setDestinationProject(projectService.findOne(deliveryRequest.getDestinationProjectId()));
+		if (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()))
+			deliveryRequest.setMissingPo(deliveryRequest.getPo() == null);
 		service.save(deliveryRequest);
 		refreshDeliveryRequest();
 		projectCrossService.deleteAndReCreateCrossCharge(deliveryRequest);
@@ -2033,6 +2040,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setPo(poService.findOne(deliveryRequest.getPo().getIdpo()));
 		if (deliveryRequest.getContainsBoqMapping() == null)
 			deliveryRequest.setContainsBoqMapping(false);
+		deliveryRequest.setMissingPo(false);
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		deliveryRequest.init();

@@ -58,6 +58,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Boolean isFullyReturned = false;
 	private Boolean sdm = true;
 	private Boolean containsBoqMapping = null;
+	private Boolean missingPo = null;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
@@ -1851,6 +1852,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setContainsBoqMapping(Boolean containsBoqMapping) {
 		this.containsBoqMapping = containsBoqMapping;
+	}
+
+	public Boolean getMissingPo() {
+		return missingPo;
+	}
+
+	public void setMissingPo(Boolean missingPo) {
+		this.missingPo = missingPo;
 	}
 
 }

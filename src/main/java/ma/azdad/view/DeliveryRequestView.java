@@ -1006,6 +1006,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getPo() != null) {
 			poId = deliveryRequest.getPo().getIdpo();
 			deliveryRequest.setPo(null);
+			deliveryRequest.setMissingPo(null);
 		}
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
@@ -1083,6 +1084,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getPo() != null) {
 			poId = deliveryRequest.getPo().getIdpo();
 			deliveryRequest.setPo(null);
+			deliveryRequest.setMissingPo(true);
 		}
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());

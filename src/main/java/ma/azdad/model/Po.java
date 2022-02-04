@@ -86,7 +86,7 @@ public class Po implements Serializable {
 		this.madConversionRate = madConversionRate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "currency_idcurrency", nullable = true)
 	public Currency getCurrency() {
 		return currency;

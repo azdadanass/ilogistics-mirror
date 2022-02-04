@@ -63,9 +63,14 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 			initLists(service.findLight());
 	}
 
+	@Override
+	protected Boolean canAccess() {
+		return sessionView.getIsAdmin();
+	}
+
 	// save
 	public Boolean canSave() {
-		return sessionView.isSE();
+		return sessionView.getIsAdmin();
 	}
 
 	public String save() {
@@ -92,7 +97,7 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 
 	// delete
 	public Boolean canDelete() {
-		return true;
+		return sessionView.getIsAdmin();
 	}
 
 	public String delete() {
@@ -118,7 +123,7 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 	private String fileType;
 
 	public Boolean canAddFile() {
-		return true;
+		return sessionView.getIsAdmin();
 	}
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
@@ -148,7 +153,7 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 	private PartNumberPricingComment comment = new PartNumberPricingComment();
 
 	public Boolean canAddComment() {
-		return true;
+		return sessionView.getIsAdmin();
 	}
 
 	public void addComment() {

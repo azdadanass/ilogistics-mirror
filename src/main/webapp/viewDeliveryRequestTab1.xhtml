@@ -62,7 +62,11 @@
 						<h:outputText value="Is SN Required" />
 					</div>
 					<div class="profile-info-value">
-						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" />
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" rendered="#{!deliveryRequestView.canEditIsSnRequired()}"/>
+						<p:commandLink id="isSnRequired" action="#{deliveryRequestView.editIsSnRequired()}" update=":main_form"  rendered="#{deliveryRequestView.canEditIsSnRequired()}" >
+							<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
+						</p:commandLink>
 						&nbsp;
 					</div>
 				</div>

@@ -245,6 +245,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public void updateQrKey(Integer id, String qrKey);
 
 	@Modifying
+	@Query("update DeliveryRequest set isSnRequired = ?2 where id = ?1")
+	public void updateIsSnRequired(Integer id, Boolean isSnRequired);
+
+	@Modifying
 	@Query("update DeliveryRequest set isFullyReturned = ?2 where id = ?1")
 	public void updateIsFullyReturned(Integer id, Boolean isFullyReturned);
 

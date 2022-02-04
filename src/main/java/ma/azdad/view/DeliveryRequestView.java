@@ -62,6 +62,7 @@ import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.JobRequestDeliveryDetailService;
 import ma.azdad.service.OldEmailService;
+import ma.azdad.service.PackingDetailService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
@@ -174,6 +175,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
+
+	@Autowired
+	PackingDetailService packingDetailService;
 
 	@Autowired
 	IndexView indexView;
@@ -858,6 +862,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		service.save(deliveryRequest);
 	}
 
+	public Boolean canEditIsSnRequired() {
+		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+				&& ((deliveryRequest.getIsSnRequired() && deliveryRequestSerialNumberService.countByDeliveryRequest(deliveryRequest.getId()) == 0) //
+						|| (!deliveryRequest.getIsSnRequired()) && packingDetailService.countByDeliveryRequestAndHasSerialNumber(deliveryRequest.getId()) > 0);
+	}
+
+	public void editIsSnRequired() {
+		if (!canEditIsSnRequired())
+			return;
+		service.updateIsSnRequired(deliveryRequest.getId(), deliveryRequest.getIsSnRequired());
+	}
+
 	/*
 	 * INBOUND WORKFLOW
 	 */
@@ -1302,6 +1318,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.getDetailList().forEach(i -> i.getPartNumber().setTmpPackingList(packingService.findByPartNumberAndActive(i.getPartNumber().getId())));
 		// if tmp packing list size == 1 then select this item as packing
 		deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getTmpPackingList().size() == 1).forEach(i -> i.setPacking(i.getPartNumber().getTmpPackingList().get(0)));
+		changePackingListener();
 	}
 
 	private Boolean validateStep4() {

@@ -50,9 +50,6 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	@Autowired
 	private DeliveryRequestService deliveryRequestService;
 
-	@Autowired
-	private DeliveryRequestView deliveryRequestView;
-
 	private DeliveryRequestSerialNumber deliveryRequestSerialNumber = new DeliveryRequestSerialNumber();
 
 	@Override

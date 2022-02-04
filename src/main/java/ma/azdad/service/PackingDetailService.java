@@ -2,6 +2,7 @@ package ma.azdad.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import ma.azdad.repos.PackingDetailRepos;
 public class PackingDetailService extends GenericService<Integer, PackingDetail, PackingDetailRepos> {
 
 	@Autowired
-	PackingDetailRepos packingDetailRepos;
+	PackingDetailRepos repos;
 
 	@Override
 	public PackingDetail findOne(Integer id) {
@@ -22,7 +23,11 @@ public class PackingDetailService extends GenericService<Integer, PackingDetail,
 	}
 
 	public List<PackingDetail> findByPartNumber(Integer partNumberId) {
-		return packingDetailRepos.findByPartNumber(partNumberId);
+		return repos.findByPartNumber(partNumberId);
+	}
+
+	public Long countByDeliveryRequestAndHasSerialNumber(Integer deliveryRequestId) {
+		return ObjectUtils.firstNonNull(repos.countByDeliveryRequestAndHasSerialNumber(deliveryRequestId), 0l);
 	}
 
 }

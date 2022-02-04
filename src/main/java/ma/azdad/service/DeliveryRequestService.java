@@ -1078,4 +1078,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		repos.findIdList().forEach(id -> updateCountIssues(id));
 	}
 
+	public void updateIsSnRequired(Integer id, Boolean isSnRequired) {
+		repos.updateIsSnRequired(id, isSnRequired);
+		evictCache();
+	}
+
 }

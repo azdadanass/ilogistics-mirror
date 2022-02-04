@@ -15,23 +15,27 @@ import ma.azdad.utils.LabelValue;
 public class SupplierService {
 
 	@Autowired
-	private SupplierRepos supplierRepos;
+	private SupplierRepos repos;
 
 	public List<LabelValue> findLabelValueList() {
-		return supplierRepos.findLabelValueList();
+		return repos.findLabelValueList();
 	}
 
 	public Supplier findOne(Integer id) {
-		return supplierRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public Supplier findOneNullable(Integer id) {
 		if (id == null)
 			return null;
-		return supplierRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public List<Supplier> findLight() {
-		return supplierRepos.findLight();
+		return repos.findLight();
+	}
+
+	public String findNameByPo(Integer poId) {
+		return repos.findNameByPo(poId);
 	}
 }

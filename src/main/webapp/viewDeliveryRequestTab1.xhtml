@@ -183,7 +183,7 @@
 				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
-							<h:outputText value="Destination Project Manager" styleClass="smaller-90"/>
+							<h:outputText value="Destination Project Manager" styleClass="smaller-90" />
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.manager.fullName}" styleClass="bolder green" />
@@ -240,8 +240,12 @@
 							<h:outputText value="Po" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isOutbound}" />
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy}" styleClass="orange bolder" rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isInbound}" />
+							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isOutbound}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}-#{customerView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}" styleClass="orange bolder" />
+							</f:subview>
+							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isInbound}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy-#{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}" styleClass="orange bolder" />
+							</f:subview>
 							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">
 								<h:outputText value="None" styleClass="grey bolder" />
 							</p:commandLink>
@@ -666,7 +670,6 @@
 						</p:inplace>
 						<h:outputText value=" MAD" styleClass="red" />
 					</p:column>
-
 					<p:column headerText="Unit Price" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showPriceInformations()}">
 						<p:inplace editor="true" styleClass="blue #{deliveryRequestView.canUpdateUnitPrice()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
 							disabled="#{!deliveryRequestView.canUpdateUnitPrice()}">
@@ -675,7 +678,7 @@
 							<p:ajax event="cancel" />
 						</p:inplace>
 						<h:outputText value=" MAD" styleClass="blue" />
-					</p:column> 
+					</p:column>
 					<p:column headerText="Quantity" width="60">
 						<h:outputText value="#{item.quantity}" styleClass="bolder green">
 							<f:convertNumber type="number" maxFractionDigits="2" />

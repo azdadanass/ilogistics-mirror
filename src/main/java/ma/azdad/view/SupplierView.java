@@ -20,15 +20,19 @@ import ma.azdad.utils.LabelValue;
 public class SupplierView {
 
 	@Autowired
-	protected SupplierService supplierService;
+	protected SupplierService service;
 
 	// GENERIC
 	public List<LabelValue> findLabelValueList() {
-		return supplierService.findLabelValueList();
+		return service.findLabelValueList();
 	}
 
 	public List<Supplier> findLight() {
-		return supplierService.findLight();
+		return service.findLight();
+	}
+
+	public String findNameByPo(Integer poId) {
+		return service.findNameByPo(poId);
 	}
 
 }

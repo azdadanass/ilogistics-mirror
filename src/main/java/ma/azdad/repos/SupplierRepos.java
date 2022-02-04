@@ -14,7 +14,10 @@ public interface SupplierRepos extends JpaRepository<Supplier, Integer> {
 
 	@Query("select new ma.azdad.utils.LabelValue(name,id,'supplier') from  Supplier")
 	public List<LabelValue> findLabelValueList();
-	
+
 	@Query("select new Supplier(id,name) from Supplier")
 	public List<Supplier> findLight();
+
+	@Query("select a.supplier.name from Po a where a.idpo = ?1")
+	String findNameByPo(Integer poId);
 }

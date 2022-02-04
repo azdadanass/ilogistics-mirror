@@ -30,33 +30,33 @@ public class CustomerService {
 	}
 
 	@Autowired
-	private CustomerRepos customerRepos;
+	private CustomerRepos repos;
 
 	@Autowired
 	private StockRowService stockRowService;
 
 	public List<LabelValue> findLabelValueList() {
-		return customerRepos.findLabelValueList();
+		return repos.findLabelValueList();
 	}
 
 	public Customer findOne(Integer id) {
-		return customerRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public Customer findOneNullable(Integer id) {
 		if (id == null)
 			return null;
-		return customerRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public List<Customer> findLight() {
-		return customerRepos.findLight();
+		return repos.findLight();
 	}
 
 	public List<Customer> findLight(List<Integer> idList) {
 		if (idList == null || idList.isEmpty())
 			return null;
-		return customerRepos.findLight(idList);
+		return repos.findLight(idList);
 	}
 
 	public List<Customer> findLight(List<Integer> idList, String category, Boolean isStockEmpty) {
@@ -64,16 +64,20 @@ public class CustomerService {
 			return null;
 
 		if (CustomerCategories.ALL.getValue().equals(category))
-			return customerRepos.findLight(idList, isStockEmpty);
+			return repos.findLight(idList, isStockEmpty);
 		else
-			return customerRepos.findLight(idList, isStockEmpty, category);
+			return repos.findLight(idList, isStockEmpty, category);
 	}
 
 	public void updateIsStockEmpty(Integer customerId) {
-		customerRepos.updateIsStockEmpty(customerId, stockRowService.isSotckEmpty(customerId));
+		repos.updateIsStockEmpty(customerId, stockRowService.isSotckEmpty(customerId));
 	}
 
 	public void updateIsStockEmptyScript() {
 		findLight().forEach(i -> updateIsStockEmpty(i.getId()));
+	}
+
+	public String findNameByPo(Integer poId) {
+		return repos.findNameByPo(poId);
 	}
 }

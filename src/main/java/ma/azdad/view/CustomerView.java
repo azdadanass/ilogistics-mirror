@@ -21,24 +21,27 @@ import ma.azdad.utils.LabelValue;
 public class CustomerView {
 
 	@Autowired
-	protected CustomerService customerService;
+	protected CustomerService service;
 
 	private Customer customer;
 
 	private List<CustomerCategory> categoryList = CustomerService.CATEGORY_LIST;
-	
 
 	public void setCustomer(Integer customerId) {
-		customer = customerService.findOne(customerId);
+		customer = service.findOne(customerId);
 	}
 
 	// GENERIC
 	public List<LabelValue> findLabelValueList() {
-		return customerService.findLabelValueList();
+		return service.findLabelValueList();
 	}
 
 	public List<Customer> findLight() {
-		return customerService.findLight();
+		return service.findLight();
+	}
+
+	public String findNameByPo(Integer poId) {
+		return service.findNameByPo(poId);
 	}
 
 	public Customer getCustomer() {

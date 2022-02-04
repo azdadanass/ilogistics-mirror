@@ -40,7 +40,9 @@ public class PackingService extends GenericService<Integer, Packing, PackingRepo
 	}
 
 	public List<Packing> findByPartNumberAndActive(Integer partNumberId) {
-		return packingRepos.findByPartNumberAndActive(partNumberId);
+		List<Packing> result = packingRepos.findByPartNumberAndActive(partNumberId);
+		result.forEach(p -> initialize(p.getDetailList()));
+		return result;
 	}
 
 	public void createPackingForPartNumberWithoutPackingList() {

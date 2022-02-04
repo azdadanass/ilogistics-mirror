@@ -1607,6 +1607,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return true;
 	}
 
+	public Boolean noPackingDetailHasSerialNumber() {
+		return deliveryRequest.getDetailList().stream().filter(d -> d.getPacking() != null && d.getPacking().getDetailList().stream().filter(packingDetail -> packingDetail.getHasSerialnumber()).count() > 0).count() == 0;
+	}
+
+	public void changePackingListener() {
+		deliveryRequest.setIsSnRequired(!noPackingDetailHasSerialNumber());
+	}
+
 	public String saveDeliveryRequest() {
 
 		// to be sure

@@ -910,39 +910,6 @@
 										</div>
 									</div>
 									<div class="space-8" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="Is SN Required" />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<p:commandLink id="isSnRequired" update="isSnRequired" partialSubmit="true" process="@this">
-													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
-												</p:commandLink>
-												<br />
-											</div>
-										</div>
-									</div>
-									<div class="space-8" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="Is Packing List Required" />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<p:commandLink>
-													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isPackingListRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-												</p:commandLink>
-												<br />
-											</div>
-										</div>
-									</div>
-									<div class="space-8" />
 								</f:subview>
 								<f:subview rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
 									<div class="row">
@@ -1275,7 +1242,7 @@
 														<h:selectOneMenu value="#{item.packing}" converter="#{genericSecuredConverter}">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{item.partNumber.tmpPackingList}" var="p" itemLabel="#{p.name}" itemValue="#{p}" />
-															<p:ajax update="packingQuantity" />
+															<p:ajax listener="#{deliveryRequestView.changePackingListener()}" update="packingQuantity,:main_form:step4:isSnRequired" />
 														</h:selectOneMenu>
 													</p:column>
 													<p:column headerText="Packing qty" width="60">
@@ -1286,6 +1253,40 @@
 										</div>
 									</div>
 								</div>
+								<div class="space-16"/>
+								<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Is SN Required" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink id="isSnRequired" update="isSnRequired" partialSubmit="true" process="@this" disabled="#{deliveryRequestView.noPackingDetailHasSerialNumber()}">
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Is Packing List Required" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink>
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isPackingListRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
 							</f:subview>
 							<f:subview id="step5" rendered="#{deliveryRequestView.step==5}">
 								<h3 class="lighter block green">

@@ -164,12 +164,14 @@
 							<h:outputText value=" Stock History" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<li>
-						<a data-toggle="tab" href="#tab5" onclick="initExpiryList()">
-							<i class="purple ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Expiry Informations" styleClass="hidden-xs" />
-						</a>
-					</li>
+					<f:subview rendered="#{partNumberView.partNumber.expirable}">
+						<li>
+							<a data-toggle="tab" href="#tab5" onclick="initExpiryList()">
+								<i class="purple ace-icon fa fa-list bigger-120"></i>
+								<h:outputText value=" Expiry Informations" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
 					<f:subview rendered="#{partNumberView.partNumber.stockItem and deliveryRequestDetailView.companyId != null}">
 						<li>
 							<a data-toggle="tab" href="#tab4" onclick="costHistory()">

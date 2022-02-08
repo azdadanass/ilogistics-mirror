@@ -88,12 +88,6 @@
 						</a>
 					</li>
 					<li>
-						<a data-toggle="tab" href="#tab2">
-							<i class="purple ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Details" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
 						<a data-toggle="tab" href="#tab3">
 							<i class="blue ace-icon fa fa-file bigger-120"></i>
 							<h:outputText value=" Attachements" />
@@ -120,6 +114,7 @@
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
+						<p:messages id="messages" closable="true"/>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
@@ -231,10 +226,9 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					<div id="tab2" class="tab-pane">
-						<div class="space-8" />
-						<p:messages id="messagesTab2" closable="true"/>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Detail List" />
+						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -263,8 +257,8 @@
 											<p:inputNumber value="#{item.maxAllowedDiscount}" minValue="0" maxValue="100" decimalSeparator="." rendered="#{partNumberPricingView.editDetailList}">
 												<p:ajax event="blur" update="minPrice,minMargin" />
 											</p:inputNumber>
-											<h:outputText value="#{item.maxAllowedDiscount / 100.0}" styleClass="pink" rendered="#{!partNumberPricingView.editDetailList}" >
-											<f:convertNumber type="percent" />
+											<h:outputText value="#{item.maxAllowedDiscount / 100.0}" styleClass="pink" rendered="#{!partNumberPricingView.editDetailList}">
+												<f:convertNumber type="percent" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Min Price">
@@ -301,11 +295,11 @@
 													<i class="fa fa-edit orange" />
 													<f:setPropertyActionListener value="true" target="#{partNumberPricingView.editDetailList}" />
 												</p:commandLink>
-												<p:commandLink title="Save" action="#{partNumberPricingView.saveDetailList()}" update="detailList,:main_form:messagesTab2" partialSubmit="true" process="detailList"
+												<p:commandLink title="Save" action="#{partNumberPricingView.saveDetailList()}" update="detailList,:main_form:messages" partialSubmit="true" process="detailList"
 													rendered="#{partNumberPricingView.canSaveDetailList()}">
 													<i class="fa fa-save green" />
 												</p:commandLink>
-												<p:commandLink title="Add New Item" action="#{partNumberPricingView.addDetail()}" update="detailList,:main_form:messagesTab2" partialSubmit="true" process="detailList"
+												<p:commandLink title="Add New Item" action="#{partNumberPricingView.addDetail()}" update="detailList,:main_form:messages" partialSubmit="true" process="detailList"
 													rendered="#{partNumberPricingView.canAddDetail() and partNumberPricingView.editDetailList}">
 													<i class="fa fa-plus green" />
 												</p:commandLink>

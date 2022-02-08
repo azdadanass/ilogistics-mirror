@@ -234,6 +234,7 @@
 					</div>
 					<div id="tab2" class="tab-pane">
 						<div class="space-8" />
+						<p:messages id="messagesTab2" closable="true"/>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -300,11 +301,11 @@
 													<i class="fa fa-edit orange" />
 													<f:setPropertyActionListener value="true" target="#{partNumberPricingView.editDetailList}" />
 												</p:commandLink>
-												<p:commandLink title="Save" action="#{partNumberPricingView.saveDetailList()}" update="detailList" partialSubmit="true" process="detailList"
+												<p:commandLink title="Save" action="#{partNumberPricingView.saveDetailList()}" update="detailList,:main_form:messagesTab2" partialSubmit="true" process="detailList"
 													rendered="#{partNumberPricingView.canSaveDetailList()}">
 													<i class="fa fa-save green" />
 												</p:commandLink>
-												<p:commandLink title="Add New Item" action="#{partNumberPricingView.addDetail()}" update="detailList" partialSubmit="true" process="detailList"
+												<p:commandLink title="Add New Item" action="#{partNumberPricingView.addDetail()}" update="detailList,:main_form:messagesTab2" partialSubmit="true" process="detailList"
 													rendered="#{partNumberPricingView.canAddDetail() and partNumberPricingView.editDetailList}">
 													<i class="fa fa-plus green" />
 												</p:commandLink>

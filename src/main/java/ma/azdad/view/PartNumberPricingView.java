@@ -104,8 +104,24 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 			model.addDetail(new PartNumberPricingDetail());
 	}
 
+	public Boolean validateDetailList() {
+		for (PartNumberPricingDetail detail : model.getDetailList()) {
+			if (detail.getBusinessType() == null)
+				return FacesContextMessages.ErrorMessages("Business Type should not be null");
+			if (detail.getDate() == null)
+				return FacesContextMessages.ErrorMessages("Date should not be null");
+			if (detail.getMaxAllowedDiscount() == null)
+				return FacesContextMessages.ErrorMessages("Max Allowed Discount should not be null");
+		}
+
+		if (model.getDetailList().stream().map(d -> d.getBusinessType().name() + ";" + d.getDate()).distinct().count() < model.getDetailList().size())
+			return FacesContextMessages.ErrorMessages("Combination (Business Type  / Date) should be unique");
+
+		return true;
+	}
+
 	public void saveDetailList() {
-		if (!canSaveDetailList())
+		if (!canSaveDetailList() || !validateDetailList())
 			return;
 		model = service.saveAndRefresh(model);
 		editDetailList = false;

@@ -2,7 +2,6 @@ package ma.azdad.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import ma.azdad.service.UtilsFunctions;
@@ -24,20 +21,18 @@ import ma.azdad.service.UtilsFunctions;
 @Entity
 public class PartNumberPricing extends GenericModel<Integer> {
 
-	private Date date;
 	private Double baseLineCost;
 	private Double baseLinePrice;
-	private Double maxAllowedDiscount = 0.0;
 	private Double physicalQuantity = 0.0;
 	private Double pendingQuantity = 0.0; // pending outbound qty
 	private Integer deliveryLeadTime;
-	private CustomerType businessType;
 	private Integer countFiles = 0;
 
 	private Currency currency;
 	private PartNumber partNumber;
 	private Company company;
 
+	private List<PartNumberPricingDetail> detailList = new ArrayList<>();
 	private List<PartNumberPricingFile> fileList = new ArrayList<>();
 	private List<PartNumberPricingHistory> historyList = new ArrayList<>();
 	private List<PartNumberPricingComment> commentList = new ArrayList<>();
@@ -49,12 +44,10 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	}
 
 	// c1
-	public PartNumberPricing(Integer id, Date date, Double baseLineCost, Double baseLinePrice, Double maxAllowedDiscount, Double physicalQuantity, Double pendingQuantity, Integer countFiles, String currencyName, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, String companyName) {
+	public PartNumberPricing(Integer id, Double baseLineCost, Double baseLinePrice, Double physicalQuantity, Double pendingQuantity, Integer countFiles, String currencyName, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, String companyName) {
 		super(id);
-		this.date = date;
 		this.baseLineCost = baseLineCost;
 		this.baseLinePrice = baseLinePrice;
-		this.maxAllowedDiscount = maxAllowedDiscount;
 		this.physicalQuantity = physicalQuantity;
 		this.pendingQuantity = pendingQuantity;
 		this.countFiles = countFiles;
@@ -70,7 +63,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, getPartNumberName(), date);
+		return contains(query, getPartNumberName());
 	}
 
 	public void calculateCountFiles() {
@@ -85,6 +78,16 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	@Transient
 	public Double getAvailableQuantity() {
 		return physicalQuantity - pendingQuantity;
+	}
+
+	public void addDetail(PartNumberPricingDetail detail) {
+		detail.setPartNumberPricing(this);
+		detailList.add(detail);
+	}
+
+	public void removeDetail(PartNumberPricingDetail detail) {
+		detail.setPartNumberPricing(null);
+		detailList.remove(detail);
 	}
 
 	public void addFile(PartNumberPricingFile file) {
@@ -142,20 +145,6 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	@Transient
 	public void setCommentGroupList(List<CommentGroup<PartNumberPricingComment>> commentGroupList) {
 		this.commentGroupList = commentGroupList;
-	}
-
-	@Transient
-	public Double getMaxMarginPercentage() {
-		if (baseLinePrice > 0)
-			return (baseLinePrice - baseLineCost) / baseLinePrice;
-		return null;
-	}
-
-	@Transient
-	public Double getMinMarginPercentage() {
-		if (baseLinePrice > 0)
-			return ((baseLinePrice * (1 - maxAllowedDiscount / 100.0)) - baseLineCost) / (baseLinePrice * (1 - maxAllowedDiscount / 100.0));
-		return null;
 	}
 
 	@Transient
@@ -296,15 +285,6 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		this.id = id;
 	}
 
-	@Temporal(TemporalType.DATE)
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
 	public Double getBaseLineCost() {
 		return baseLineCost;
 	}
@@ -319,14 +299,6 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	public void setBaseLinePrice(Double baseLinePrice) {
 		this.baseLinePrice = baseLinePrice;
-	}
-
-	public Double getMaxAllowedDiscount() {
-		return maxAllowedDiscount;
-	}
-
-	public void setMaxAllowedDiscount(Double maxAllowedDiscount) {
-		this.maxAllowedDiscount = maxAllowedDiscount;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -415,12 +387,13 @@ public class PartNumberPricing extends GenericModel<Integer> {
 		this.deliveryLeadTime = deliveryLeadTime;
 	}
 
-	public CustomerType getBusinessType() {
-		return businessType;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "partNumberPricing", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<PartNumberPricingDetail> getDetailList() {
+		return detailList;
 	}
 
-	public void setBusinessType(CustomerType businessType) {
-		this.businessType = businessType;
+	public void setDetailList(List<PartNumberPricingDetail> detailList) {
+		this.detailList = detailList;
 	}
 
 }

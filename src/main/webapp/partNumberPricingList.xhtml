@@ -114,11 +114,6 @@
 								<p:column headerText="Brand">
 								<h:outputText value="#{item.partNumberBrandName}" styleClass="orange" />
 							</p:column>
-							<p:column headerText="Date ">
-								<h:outputText value="#{item.date}" styleClass="bolder purple">
-									<f:convertDateTime pattern="yyyy-MM-dd" />
-								</h:outputText>
-							</p:column>
 							<p:column headerText="Base Line Cost ">
 								<h:outputText value="#{item.baseLineCost}" styleClass="green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
@@ -130,12 +125,6 @@
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" #{item.currencyName}" styleClass="blue" />
-							</p:column>
-							<p:column headerText="Max Allowed Discount">
-								<h:outputText value="#{item.maxAllowedDiscount}">
-									<f:convertNumber type="number" maxFractionDigits="2" />
-								</h:outputText>
-								<h:outputText value="%" />
 							</p:column>
 							<p:column headerText="Physical Quantity">
 								<h:outputText value="#{item.physicalQuantity}">

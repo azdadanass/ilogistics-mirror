@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberPricing;
 import ma.azdad.model.PartNumberPricingComment;
+import ma.azdad.model.PartNumberPricingDetail;
 import ma.azdad.model.PartNumberPricingFile;
 import ma.azdad.model.PartNumberPricingHistory;
 import ma.azdad.repos.PartNumberPricingRepos;
@@ -44,6 +45,8 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 
 	@Autowired
 	private FileUploadView fileUploadView;
+
+	private Boolean editDetailList = false;
 
 	@Override
 	@PostConstruct
@@ -76,8 +79,6 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 	public String save() {
 		if (!canSave())
 			return addParameters(listPage, "faces-redirect=true");
-		if (!validate())
-			return null;
 
 		model.setPartNumber(partNumberService.findOne(model.getPartNumberId()));
 		model.setCurrency(currencyService.findOne(model.getCurrencyId()));
@@ -89,10 +90,34 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());
 	}
 
-	public Boolean validate() {
-		if (service.countByPartNumberAndDate(model.getPartNumberId(), model.getDate(), model.getId()) > 0)
-			return FacesContextMessages.ErrorMessages("PN / Date should be unique");
-		return true;
+	// details
+	public Boolean canAddDetail() {
+		return sessionView.getIsAdmin();
+	}
+
+	public Boolean canSaveDetailList() {
+		return canAddDetail() && editDetailList;
+	}
+
+	public void addDetail() {
+		if (canAddDetail())
+			model.addDetail(new PartNumberPricingDetail());
+	}
+
+	public void saveDetailList() {
+		if (!canSaveDetailList())
+			return;
+		model = service.saveAndRefresh(model);
+		editDetailList = false;
+	}
+
+	public Boolean canDeleteDetail() {
+		return canAddDetail();
+	}
+
+	public void deleteDetail(PartNumberPricingDetail detail) {
+		if (canDeleteDetail())
+			model.removeDetail(detail);
 	}
 
 	// delete
@@ -213,6 +238,14 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 
 	public void setComment(PartNumberPricingComment comment) {
 		this.comment = comment;
+	}
+
+	public Boolean getEditDetailList() {
+		return editDetailList;
+	}
+
+	public void setEditDetailList(Boolean editDetailList) {
+		this.editDetailList = editDetailList;
 	}
 
 }

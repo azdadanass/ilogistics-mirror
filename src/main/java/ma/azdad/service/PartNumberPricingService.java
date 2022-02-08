@@ -24,11 +24,11 @@ public class PartNumberPricingService extends GenericService<Integer, PartNumber
 	}
 
 	@Override
-	@Cacheable("partNumberPricingService.findOne")
 	public PartNumberPricing findOne(Integer id) {
 		PartNumberPricing partNumberPricing = super.findOne(id);
 		initialize(partNumberPricing.getPartNumber());
 		initialize(partNumberPricing.getCompany());
+		initialize(partNumberPricing.getDetailList());
 		initialize(partNumberPricing.getFileList());
 		initialize(partNumberPricing.getHistoryList());
 		initialize(partNumberPricing.getCommentList());
@@ -60,7 +60,7 @@ public class PartNumberPricingService extends GenericService<Integer, PartNumber
 	}
 
 	public void updateQuantities() {
-		companyService.findIdList().forEach(id->updateQuantities(id));
+		companyService.findIdList().forEach(id -> updateQuantities(id));
 	}
 
 }

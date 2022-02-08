@@ -25,6 +25,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.CustomerType" var="CustomerType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -84,6 +85,12 @@
 						<a data-toggle="tab" href="#tab1">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab2">
+							<i class="purple ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Details" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
@@ -154,40 +161,6 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Max Allowed Discount" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.maxAllowedDiscount}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value="%" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Max Margin %" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.maxMarginPercentage}">
-												<f:convertNumber type="percent" maxFractionDigits="2" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Min Margin %" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.minMarginPercentage}">
-												<f:convertNumber type="percent" maxFractionDigits="2" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
 											<h:outputText value="Unit Type" />
 										</div>
 										<div class="profile-info-value">
@@ -248,17 +221,6 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Date" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.date}" styleClass="bolder purple">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
 											<h:outputText value="Unit Type" />
 										</div>
 										<div class="profile-info-value">
@@ -266,15 +228,89 @@
 											&nbsp;
 										</div>
 									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Business Type" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{partNumberPricingView.model.businessType.value}" styleClass="#{partNumberPricingView.model.businessType.color.name}" />
-											&nbsp;
-										</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab2" class="tab-pane">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Details" />
 									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="detailList" value="#{partNumberPricingView.model.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Business Type">
+											<h:selectOneMenu value="#{item.businessType}" rendered="#{partNumberPricingView.editDetailList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{CustomerType.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
+											<h:outputText value="#{item.businessType.value}" styleClass="#{item.businessType.color.name}" rendered="#{!partNumberPricingView.editDetailList}" />
+										</p:column>
+										<p:column headerText="Date">
+											<p:calendar value="#{item.date}" navigator="true" rendered="#{partNumberPricingView.editDetailList}" />
+											<h:outputText value="#{item.date}" styleClass="bolder purple" rendered="#{!partNumberPricingView.editDetailList}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Max Allowed Discount">
+											<p:inputNumber value="#{item.maxAllowedDiscount}" minValue="0" maxValue="100" decimalSeparator="." rendered="#{partNumberPricingView.editDetailList}">
+												<p:ajax event="blur" update="minPrice,minMargin" />
+											</p:inputNumber>
+											<h:outputText value="#{item.maxAllowedDiscount / 100.0}" styleClass="pink" rendered="#{!partNumberPricingView.editDetailList}" >
+											<f:convertNumber type="percent" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Min Price">
+											<h:outputText id="minPrice" value="#{item.minPrice}" styleClass="blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Max Price">
+											<h:outputText value="#{item.maxPrice}" styleClass="green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Min Margin">
+											<h:outputText id="minMargin" value="#{item.minMargin}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Max Margin">
+											<h:outputText value="#{item.maxMargin}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Actions" styleClass="center" width="100" rendered="#{partNumberPricingView.editDetailList}">
+											<div class="action-buttons center">
+												<p:commandLink title="Remove row" action="#{partNumberPricingView.deleteDetail(item)}" update="detailList" partialSubmit="true" process="detailList"
+													rendered="#{partNumberPricingView.canDeleteDetail()}">
+													<i class="ace-icon fa fa-remove bigger-130 red" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{partNumberPricingView.canAddDetail() and !partNumberPricingView.editDetailList}">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{partNumberPricingView.editDetailList}" />
+												</p:commandLink>
+												<p:commandLink title="Save" action="#{partNumberPricingView.saveDetailList()}" update="detailList" partialSubmit="true" process="detailList"
+													rendered="#{partNumberPricingView.canSaveDetailList()}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+												<p:commandLink title="Add New Item" action="#{partNumberPricingView.addDetail()}" update="detailList" partialSubmit="true" process="detailList"
+													rendered="#{partNumberPricingView.canAddDetail() and partNumberPricingView.editDetailList}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
 								</div>
 							</div>
 						</div>
@@ -386,8 +422,7 @@
 										<ui:repeat var="commentGroup" value="#{partNumberPricingView.model.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
-													<b>
-														<h:outputText value="#{commentGroup.date}">
+													<b> <h:outputText value="#{commentGroup.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
 													</b>

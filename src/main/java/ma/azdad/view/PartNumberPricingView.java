@@ -90,6 +90,18 @@ public class PartNumberPricingView extends GenericView<Integer, PartNumberPricin
 		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());
 	}
 
+	// toggle status
+	public Boolean canToggle() {
+		return sessionView.getIsAdmin();
+	}
+
+	public void toggle() {
+		if (!canToggle())
+			return;
+		model.setActive(!model.getActive());
+		model = service.saveAndRefresh(model);
+	}
+
 	// details
 	public Boolean canAddDetail() {
 		return sessionView.getIsAdmin();

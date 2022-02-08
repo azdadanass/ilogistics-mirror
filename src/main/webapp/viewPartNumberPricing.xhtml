@@ -70,6 +70,11 @@
 							<i class="ace-icon fa fa-comment bigger-230"></i>
 							<h:outputText value="Comment" />
 						</p:commandLink>
+						<p:commandLink title="#{partNumberPricingView.model.active?'Disable':'Enable'}" styleClass="btn btn-app btn-sm #{partNumberPricingView.model.active?'btn-danger':'btn-success'} hover aa-tooltip"
+							update=":toggleForm" oncomplete="PF('toggleDlg').show()">
+							<i class="ace-icon fa fa-power-off bigger-230"></i>
+							<h:outputText value="#{partNumberPricingView.model.active?'Disable':'Enable'}" />
+						</p:commandLink>
 					</div>
 					<div class=" col-sm-2">
 						<img src="#{partNumberPricingView.model.partNumber.brand.image}" width="80px" height="80px" />
@@ -177,6 +182,15 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Status" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{partNumberPricingView.model.active?'Active':'Non Active'}" styleClass="badge #{partNumberPricingView.model.active?'badge-success':'badge-danger'}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Description" />
 										</div>
 										<div class="profile-info-value">
@@ -277,7 +291,7 @@
 										</p:column>
 										<p:column headerText="Max Margin %">
 											<h:outputText value="#{item.maxMarginPercentage}">
-												<f:convertNumber type="percent"  />
+												<f:convertNumber type="percent" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Actions" styleClass="center" width="100" rendered="#{partNumberPricingView.editDetailList}">

@@ -26,6 +26,7 @@ public class PartNumberPricing extends GenericModel<Integer> {
 	private Double physicalQuantity = 0.0;
 	private Double pendingQuantity = 0.0; // pending outbound qty
 	private Integer deliveryLeadTime;
+	private Boolean active = true;
 	private Integer countFiles = 0;
 
 	private Currency currency;
@@ -394,6 +395,14 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	public void setDetailList(List<PartNumberPricingDetail> detailList) {
 		this.detailList = detailList;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

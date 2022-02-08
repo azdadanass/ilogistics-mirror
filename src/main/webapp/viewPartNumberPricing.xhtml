@@ -270,14 +270,14 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="Min Margin">
-											<h:outputText id="minMargin" value="#{item.minMargin}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
+										<p:column headerText="Min Margin %">
+											<h:outputText id="minMargin" value="#{item.minMarginPercentage}">
+												<f:convertNumber type="percent" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="Max Margin">
-											<h:outputText value="#{item.maxMargin}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
+										<p:column headerText="Max Margin %">
+											<h:outputText value="#{item.maxMarginPercentage}">
+												<f:convertNumber type="percent"  />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Actions" styleClass="center" width="100" rendered="#{partNumberPricingView.editDetailList}">

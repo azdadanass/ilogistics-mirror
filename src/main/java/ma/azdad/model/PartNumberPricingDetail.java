@@ -34,7 +34,7 @@ public class PartNumberPricingDetail extends GenericModel<Integer> {
 	@Transient
 	public Double getMaxMarginPercentage() {
 		if (partNumberPricing.getBaseLinePrice() > 0)
-			return getMaxMargin() / partNumberPricing.getBaseLinePrice();
+			return getMaxMargin() / getMaxPrice();
 		return null;
 	}
 
@@ -51,7 +51,7 @@ public class PartNumberPricingDetail extends GenericModel<Integer> {
 	@Transient
 	public Double getMinMarginPercentage() {
 		if (partNumberPricing.getBaseLinePrice() > 0)
-			return getMinMarginPercentage() / getMinPrice();
+			return getMinMargin() / getMinPrice();
 		return null;
 	}
 

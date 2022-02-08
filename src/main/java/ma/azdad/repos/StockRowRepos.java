@@ -26,7 +26,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String c3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.inboundDeliveryRequest,a.unitCost,a.location)";
 	String c4 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end))";
 	String c5 = "select  new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.deliveryRequest) ";
-	String c6 = " select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName) ";
+	String c6 = " select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,(select b.name from PartNumber b where b.id = a.partNumber.partNumberOrange.id)) ";
 	String c7 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.location) ";
 	String c8 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest) ";
 	String c9 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName) ";
@@ -400,9 +400,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select count(*) from StockRow a where  a.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and a.deliveryRequest.status not in (?2)")
 	public Long countTransferredStockRowList(Integer outboundDeliveryRequestId, List<DeliveryRequestStatus> notInStatus);
-	
-	
+
 	@Query(c16 + "from StockRow a where a.partNumber.id = ?1 and a.deliveryRequest.project.type = 'Stock' and a.deliveryRequest.project.costcenter.lob.bu.company.id = ?2 group by a.deliveryRequest.id,a.inboundDeliveryRequest.id,a.status")
-	public List<StockRow> findStockHistoryByPartNumberAndProjectStock(Integer partNumberId,Integer companyId);
+	public List<StockRow> findStockHistoryByPartNumberAndProjectStock(Integer partNumberId, Integer companyId);
 
 }

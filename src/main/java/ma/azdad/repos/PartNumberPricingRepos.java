@@ -1,6 +1,5 @@
 package ma.azdad.repos;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,9 +22,6 @@ public interface PartNumberPricingRepos extends JpaRepository<PartNumberPricing,
 
 	@Query(c1 + "from PartNumberPricing a")
 	List<PartNumberPricing> findLight();
-
-	@Query("select count(*) from PartNumberPricing a where a.partNumber.id = ?1 and a.date = ?2 and (?3 is null or a.id != ?3)")
-	Long countByPartNumberAndDate(Integer partNumberId, Date date, Integer id);
 
 	@Modifying
 	@Query("update PartNumberPricing a set a.physicalQuantity = COALESCE((select sum(b.quantity) from StockRow b where b.partNumber.id = a.partNumber.id and b.deliveryRequest.project.type = 'Stock' and b.deliveryRequest.type in ('INBOUND','OUTBOUND') and b.deliveryRequest.project.costcenter.lob.bu.company.id = ?1),0) where a.company.id = ?1")

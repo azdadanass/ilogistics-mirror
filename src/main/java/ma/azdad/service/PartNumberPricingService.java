@@ -1,7 +1,6 @@
 package ma.azdad.service;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +37,6 @@ public class PartNumberPricingService extends GenericService<Integer, PartNumber
 	@Cacheable("partNumberPricingService.findLight")
 	public List<PartNumberPricing> findLight() {
 		return repos.findLight();
-	}
-
-	public Long countByPartNumberAndDate(Integer partNumberId, Date date, Integer id) {
-		return repos.countByPartNumberAndDate(partNumberId, date, id);
 	}
 
 	public void updatePhysicalQuantity(Integer companyId) {

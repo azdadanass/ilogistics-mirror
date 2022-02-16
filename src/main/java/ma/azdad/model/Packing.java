@@ -60,6 +60,11 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 				volume += packingDetail.getQuantity() * packingDetail.getVolume();
 		}
 	}
+	
+	@Transient
+	public Boolean getHasSerialnumber() {
+		return detailList.stream().anyMatch(i->i.getHasSerialnumber());
+	}
 
 	@Transient
 	public String getStatus() {

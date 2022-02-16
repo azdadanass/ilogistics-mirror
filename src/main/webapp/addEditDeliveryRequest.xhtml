@@ -494,7 +494,7 @@
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
 												<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
-													requiredMessage="Needed Delivery Date should not be null" autocomplete="off" mindate="#{utilsView.currentDate}"/>
+													requiredMessage="Needed Delivery Date should not be null" autocomplete="off" mindate="#{utilsView.currentDate}" />
 												<br />
 											</div>
 										</div>
@@ -563,8 +563,9 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:inputText value="#{deliveryRequestView.deliveryRequest.ownerType.value}" readonly="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}"/>
-												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+												<p:inputText value="#{deliveryRequestView.deliveryRequest.ownerType.value}" readonly="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" />
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6"
+													rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
 													<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
@@ -585,14 +586,17 @@
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
 												<h:panelGroup id="owner">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.company.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}"/>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.company.name}" readonly="true"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-														required="true" requiredMessage="Owner should not be null" disabled="#{(deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null) or (deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId))}"
-														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" >
+														required="true" requiredMessage="Owner should not be null"
+														disabled="#{(deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null) or (deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId))}"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}" disabled="deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId)"/>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}"
+														disabled="deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId)" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.supplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
 														required="true" requiredMessage="Owner should not be null" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.SUPPLIER}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
@@ -1242,51 +1246,56 @@
 														<h:selectOneMenu value="#{item.packing}" converter="#{genericSecuredConverter}">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{item.partNumber.tmpPackingList}" var="p" itemLabel="#{p.name}" itemValue="#{p}" />
-															<p:ajax listener="#{deliveryRequestView.changePackingListener()}" update="packingQuantity,:main_form:step4:isSnRequired" />
+															<p:ajax listener="#{deliveryRequestView.changePackingListener()}" update="packingQuantity,hasSerialnumber,:main_form:step4:isSnRequired" />
 														</h:selectOneMenu>
 													</p:column>
 													<p:column headerText="Packing qty" width="60">
 														<h:outputText id="packingQuantity" value="#{item.quantity / item.packing.quantity}" styleClass="bolder" />
+													</p:column>
+													<p:column headerText="SN" width="150">
+														<h:panelGroup id="hasSerialnumber">
+															<i class="ace-icon fa #{item.packing.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														</h:panelGroup>
 													</p:column>
 												</p:dataTable>
 											</div>
 										</div>
 									</div>
 								</div>
-								<div class="space-16"/>
+								<div class="space-16" />
 								<div class="space-8" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="Is SN Required" />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<p:commandLink id="isSnRequired" update="isSnRequired" partialSubmit="true" process="@this" disabled="#{deliveryRequestView.noPackingDetailHasSerialNumber()}">
-													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
-												</p:commandLink>
-												<br />
-											</div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Is SN Required" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:commandLink id="isSnRequired" update="isSnRequired" partialSubmit="true" process="@this" disabled="#{deliveryRequestView.noPackingDetailHasSerialNumber()}">
+												<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
+											</p:commandLink>
+											<br />
 										</div>
 									</div>
-									<div class="space-8" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="Is Packing List Required" />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<p:commandLink>
-													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isPackingListRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-												</p:commandLink>
-												<br />
-											</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Is Packing List Required" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:commandLink>
+												<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isPackingListRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											</p:commandLink>
+											<br />
 										</div>
 									</div>
+								</div>
 							</f:subview>
 							<f:subview id="step5" rendered="#{deliveryRequestView.step==5}">
 								<h3 class="lighter block green">

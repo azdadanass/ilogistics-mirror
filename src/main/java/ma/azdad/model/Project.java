@@ -38,8 +38,15 @@ public class Project implements Serializable {
 	private String duration;
 	private ProjectCustomerType customerType;
 
+	private Boolean companyWarehousing = true;
+	private Boolean companyStockManagement = true;
+
+	private Boolean supplierWarehousing = false;
+	private Boolean supplierStockManagement = false;
+
 	private Boolean customerWarehousing = false;
 	private Boolean customerStockManagement = false;
+
 	private Boolean sdm = false;
 
 	private List<ProjectManager> managerList = new ArrayList<>();
@@ -297,6 +304,38 @@ public class Project implements Serializable {
 
 	public void setCustomerType(ProjectCustomerType customerType) {
 		this.customerType = customerType;
+	}
+
+	public Boolean getCompanyWarehousing() {
+		return companyWarehousing;
+	}
+
+	public void setCompanyWarehousing(Boolean companyWarehousing) {
+		this.companyWarehousing = companyWarehousing;
+	}
+
+	public Boolean getCompanyStockManagement() {
+		return companyStockManagement;
+	}
+
+	public void setCompanyStockManagement(Boolean companyStockManagement) {
+		this.companyStockManagement = companyStockManagement;
+	}
+
+	public Boolean getSupplierWarehousing() {
+		return supplierWarehousing;
+	}
+
+	public void setSupplierWarehousing(Boolean supplierWarehousing) {
+		this.supplierWarehousing = supplierWarehousing;
+	}
+
+	public Boolean getSupplierStockManagement() {
+		return supplierStockManagement;
+	}
+
+	public void setSupplierStockManagement(Boolean supplierStockManagement) {
+		this.supplierStockManagement = supplierStockManagement;
 	}
 
 }

@@ -1687,6 +1687,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return true;
 	}
 
+	public List<CompanyType> getOwnerTypeList() {
+		List<CompanyType> result = new ArrayList<CompanyType>();
+		if (deliveryRequest.getProject().getCompanyWarehousing())
+			result.add(CompanyType.COMPANY);
+		if (deliveryRequest.getProject().getCustomerWarehousing())
+			result.add(CompanyType.CUSTOMER);
+		if (deliveryRequest.getProject().getSupplierWarehousing())
+			result.add(CompanyType.SUPPLIER);
+
+		return result;
+	}
+
 	// DELETE DELIVERYREQUEST
 	public Boolean canDeleteDeliveryRequest() {
 		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getType()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
@@ -1948,6 +1960,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void changeProjectListener() {
+		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
+
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
 

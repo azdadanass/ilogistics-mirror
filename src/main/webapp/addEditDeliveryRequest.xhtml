@@ -567,9 +567,7 @@
 												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6"
 													rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
-													<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
-													<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+													<f:selectItems value="#{deliveryRequestView.ownerTypeList}" var="item" itemLabel="#{item.value}" itemValue="#{item}"/>
 													<p:ajax listener="#{deliveryRequestView.changeOwnerTypeListener()}" update="owner" />
 												</h:selectOneMenu>
 												<br />

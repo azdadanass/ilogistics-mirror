@@ -44,6 +44,9 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query(select1 + " from Project where " + cond1 + " and status = ?2")
 	public List<Project> findByResourceAndStatus(String username, String status);
 
+	@Query(select1 + " from Project where " + cond1 + " and status = ?2 and (companyWarehousing is true or customerWarehousing is true or supplierWarehousing is true)")
+	public List<Project> findByResourceAndStatusAndHavingWarehousing(String username, String status);
+
 	@Query(select1 + " from Project where " + cond1 + " and status = ?2 and type != ?3")
 	public List<Project> findByResourceAndStatusAndNotType(String username, String status, String type);
 

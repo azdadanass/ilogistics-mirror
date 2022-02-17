@@ -97,7 +97,7 @@ public class ProjectService {
 	}
 
 	public List<Project> findInboundProjectList(String username) {
-		return repos.findByResourceAndStatus(username, "Open");
+		return repos.findByResourceAndStatusAndHavingWarehousing(username, "Open");
 	}
 
 	public List<Project> findXboundProjectList(String username) {

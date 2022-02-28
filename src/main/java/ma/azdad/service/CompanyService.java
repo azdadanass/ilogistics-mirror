@@ -48,4 +48,8 @@ public class CompanyService {
 	public List<Integer> findIdList(){
 		return repos.findIdList();
 	}
+	
+	public Company findCompanyUser(String username) {
+		return repos.findCompanyUser(username);
+	}
 }

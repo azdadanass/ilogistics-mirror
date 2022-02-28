@@ -25,7 +25,7 @@ public class CompanyView {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	public CompanyService companyService;
+	public CompanyService service;
 
 	@Autowired
 	public CacheManager cacheManager;
@@ -38,16 +38,20 @@ public class CompanyView {
 
 	@Cacheable("companyView.findAll")
 	public List<Company> findAll() {
-		return companyService.findAll();
+		return service.findAll();
 	}
 
 	@Cacheable("companyView.findIdByProject")
 	public Integer findIdByProject(Integer projectId) {
-		return companyService.findIdByProject(projectId);
+		return service.findIdByProject(projectId);
 	}
 
 	public List<Company> findLight() {
-		return companyService.findLight();
+		return service.findLight();
+	}
+	
+	public Company findCompanyUser(String username) {
+		return service.findCompanyUser(username);
 	}
 
 }

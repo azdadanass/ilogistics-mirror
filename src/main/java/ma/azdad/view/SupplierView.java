@@ -34,5 +34,9 @@ public class SupplierView {
 	public String findNameByPo(Integer poId) {
 		return service.findNameByPo(poId);
 	}
+	
+	public List<Supplier> findByHavingActiveProjectAssignment(Integer projectId){
+		return service.findByHavingActiveProjectAssignment(projectId);
+	}
 
 }

@@ -38,4 +38,8 @@ public class SupplierService {
 	public String findNameByPo(Integer poId) {
 		return repos.findNameByPo(poId);
 	}
+	
+	public List<Supplier> findByHavingActiveProjectAssignment(Integer projectId){
+		return repos.findByHavingActiveProjectAssignment(projectId);
+	}
 }

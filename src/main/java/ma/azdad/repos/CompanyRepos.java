@@ -26,5 +26,8 @@ public abstract interface CompanyRepos extends JpaRepository<Company, Integer> {
 
 	@Query("select new Company(id,name) from Company")
 	List<Company> findLight();
+	
+	@Query("select a.company from User a where a.username = ?1")
+	Company findCompanyUser(String username);
 
 }

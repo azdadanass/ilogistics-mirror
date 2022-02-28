@@ -1145,7 +1145,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// ACKNOWLEDGE DELIVERY REQUEST
 	public Boolean canAcknowledgeDeliveryRequest(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())
+		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())// && (external pm + destination project + deliver to company) && deliverToUser 
 				&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus());
 	}
 
@@ -1983,7 +1983,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// UNIT PRICE
 	public Boolean showPriceInformations() {
-		return (sessionView.getInternal() ||  sessionView.getUser().getIsCustomerUser())//
+		return (sessionView.getInternal() || sessionView.getUser().getIsCustomerUser())//
 				&& deliveryRequest.getIsOutbound() //
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
@@ -2015,6 +2015,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			changeOwnerTypeListener();
 		}
 
+	}
+	
+	public void changeDeliverToTypeListener() {
+		if(DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType()))
+			deliveryRequest.setDeliverToCompany(null);
+	}
+	
+	public void changeInternalResourceListener() {
+			deliveryRequest.setDeliverToCompany(companyService.findCompanyUser(deliveryRequest.getToUser().getUsername()));
 	}
 
 	public void changeOwnerTypeListener() {
@@ -2137,15 +2146,19 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// Return / Transfer from outbound
 	public Boolean canReturnFromOutbound() {
-		return deliveryRequest.getIsOutbound() && Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(deliveryRequest.getStatus())
-				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-						|| cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId()))
+		return sessionView.getInternal() //
+				&& deliveryRequest.getIsOutbound() //
+				&& Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(deliveryRequest.getStatus()) //
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) //
+						|| cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId())) //
 				&& !deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest);
 
 	}
 
 	public Boolean canTransferFromOutbound() {
-		return deliveryRequest.getIsOutbound() && Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(deliveryRequest.getStatus())
+		return sessionView.getInternal() //
+				&& deliveryRequest.getIsOutbound() && Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(deliveryRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 						|| cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId()))
 				&& deliveryRequest.getIsForTransfer() && service.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;

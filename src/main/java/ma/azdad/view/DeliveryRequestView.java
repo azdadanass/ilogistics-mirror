@@ -67,6 +67,7 @@ import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PoService;
+import ma.azdad.service.ProjectAssignmentService;
 import ma.azdad.service.ProjectCrossService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SiteService;
@@ -181,6 +182,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	IndexView indexView;
+	
+	@Autowired
+	ProjectAssignmentService projectAssignmentService;
 
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
@@ -1145,8 +1149,25 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// ACKNOWLEDGE DELIVERY REQUEST
 	public Boolean canAcknowledgeDeliveryRequest(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester())// && (external pm + destination project + deliver to company) && deliverToUser 
-				&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus());
+		try {
+			return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) // 
+					&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()) //
+					&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+							|| sessionView.isTheConnectedUser(deliveryRequest.getToUserUsername())//
+							|| (sessionView.getIsExternalPm() //
+									&& sessionView.getUser().getIsSupplierUser() //
+									&& sessionView.getUser().getSupplierId().equals(deliveryRequest.getDeliverToSupplierId()) //
+									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername())) //
+							|| (sessionView.getIsExternalPm() //
+									&& sessionView.getUser().getIsCustomerUser() //
+									&& sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
+									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername()))
+							)  
+					;
+		} catch (Exception e) {
+			return false;
+		}
+		
 	}
 
 	public Boolean canAcknowledgeDeliveryRequest() {

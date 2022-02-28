@@ -10,7 +10,7 @@ public class TestJava {
 	@Test
 	public void test() throws InterruptedException, IOException {
 
-		System.out.println(ObjectUtils.notEqual(null, "a"));
+		System.out.println("test".equalsIgnoreCase(null));
 
 	}
 

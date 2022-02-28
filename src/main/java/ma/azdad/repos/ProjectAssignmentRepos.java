@@ -62,4 +62,7 @@ public interface ProjectAssignmentRepos extends JpaRepository<ProjectAssignment,
 	@Query("from ProjectAssignment a where a.project.id = ?1 and a.supplier.id = ?2")
 	ProjectAssignment findByProjectAndSupplier(Integer projectId, Integer supplierId);
 
+	@Query("select count(*) from ProjectAssignment a where a.project.id = ?1 and a.user.username = ?2 and current_date between a.startDate and a.endDate")
+	Long countActiveByProjectAndUser(Integer projectId, String username);
+
 }

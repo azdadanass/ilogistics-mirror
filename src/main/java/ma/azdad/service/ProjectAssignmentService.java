@@ -2,6 +2,7 @@ package ma.azdad.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,14 +55,18 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 		switch (projectAssignment.getType()) {
 		case INTERNAL:
 		case EXTERNAL_PM:
-			return repos.countByUserAndOverlapsWidthDates(projectAssignment.getUserUsername(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
+			return repos.countByUserAndOverlapsWidthDates(projectAssignment.getUserUsername(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(),
+					projectAssignment.getEndDate()) > 0;
 		case INTERNAL_TEAM:
 		case EXTERNAL_TEAM:
-			return repos.countByTeamAndOverlapsWidthDates(projectAssignment.getTeamId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
+			return repos.countByTeamAndOverlapsWidthDates(projectAssignment.getTeamId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(),
+					projectAssignment.getEndDate()) > 0;
 		case SUPPLIER:
-			return repos.countBySupplierAndOverlapsWidthDates(projectAssignment.getSupplierId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
+			return repos.countBySupplierAndOverlapsWidthDates(projectAssignment.getSupplierId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(),
+					projectAssignment.getEndDate()) > 0;
 		case CUSTOMER:
-			return repos.countByCustomerAndOverlapsWidthDates(projectAssignment.getCustomerId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(), projectAssignment.getEndDate()) > 0;
+			return repos.countByCustomerAndOverlapsWidthDates(projectAssignment.getCustomerId(), projectAssignment.getProjectId(), projectAssignment.getId(), projectAssignment.getStartDate(),
+					projectAssignment.getEndDate()) > 0;
 		default:
 			return null;
 		}
@@ -86,6 +91,14 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 			}
 		}
 
+	}
+
+	public Long countActiveByProjectAndUser(Integer projectId, String username) {
+		return ObjectUtils.firstNonNull(repos.countActiveByProjectAndUser(projectId, username), 0l);
+	}
+
+	public Boolean isUserHavingActiveAssignmentInProject(Integer projectId, String username) {
+		return countActiveByProjectAndUser(projectId, username) > 0;
 	}
 
 }

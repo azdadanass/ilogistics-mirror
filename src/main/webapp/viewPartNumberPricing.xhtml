@@ -575,7 +575,7 @@
 													<f:convertDateTime pattern="yyyy-MM-dd" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Unit Cost">
+											<p:column headerText="Unit Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>

@@ -629,7 +629,7 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
-											<p:column headerText="Unit Cost">
+											<p:column headerText="Unit Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>

@@ -1983,7 +1983,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// UNIT PRICE
 	public Boolean showPriceInformations() {
-		return sessionView.getInternal() //
+		return (sessionView.getInternal() ||  sessionView.getUser().getIsCustomerUser())//
 				&& deliveryRequest.getIsOutbound() //
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//

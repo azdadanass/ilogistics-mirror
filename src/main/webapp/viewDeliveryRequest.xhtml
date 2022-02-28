@@ -474,7 +474,7 @@
 							</a>
 						</li>
 					</f:subview>
-					<f:subview rendered="#{sessionView.internal and deliveryRequestView.deliveryRequest.po != null}">
+					<f:subview rendered="#{(sessionView.internal or sessionView.user.isCustomerUser) and deliveryRequestView.deliveryRequest.po != null}">
 						<li>
 							<a data-toggle="tab" href="#tab9">
 								<i class="green ace-icon fa fa-link bigger-120"></i>

@@ -703,7 +703,7 @@
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{CompanyType.ALL_ENUM_VALUES}" />
 															<!-- <p:ajax update="deliverToOther,toUser" /> -->
-															<p:ajax update="deliverToOther,:main_form:step2:subview2:externalSubview:toUser" />
+															<p:ajax listener="#{deliveryRequestView.changeDeliverToCompanyTypeListener()}" update="deliverToOther,:main_form:step2:subview2:externalSubview:toUser" />
 														</h:selectOneMenu>
 														<br />
 													</div>

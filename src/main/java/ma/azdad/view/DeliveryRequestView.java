@@ -182,7 +182,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	IndexView indexView;
-	
+
 	@Autowired
 	ProjectAssignmentService projectAssignmentService;
 
@@ -1150,7 +1150,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	// ACKNOWLEDGE DELIVERY REQUEST
 	public Boolean canAcknowledgeDeliveryRequest(DeliveryRequest deliveryRequest) {
 		try {
-			return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) // 
+			return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) //
 					&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()) //
 					&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 							|| sessionView.isTheConnectedUser(deliveryRequest.getToUserUsername())//
@@ -1161,13 +1161,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 							|| (sessionView.getIsExternalPm() //
 									&& sessionView.getUser().getIsCustomerUser() //
 									&& sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
-									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername()))
-							)  
-					;
+									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername())));
 		} catch (Exception e) {
 			return false;
 		}
-		
+
 	}
 
 	public Boolean canAcknowledgeDeliveryRequest() {
@@ -2037,14 +2035,27 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		}
 
 	}
-	
+
 	public void changeDeliverToTypeListener() {
-		if(DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType()))
+		if (DeliverToType.EXTERNAL.equals(deliveryRequest.getDeliverToType()))
 			deliveryRequest.setDeliverToCompany(null);
 	}
-	
+
+	public void changeDeliverToCompanyTypeListener() {
+		if (deliveryRequest.getDeliverToCompanyType() != null)
+			switch (deliveryRequest.getDeliverToCompanyType()) {
+			case CUSTOMER:
+				if (deliveryRequest.getDestinationProject() != null)
+					deliveryRequest.setDeliverToCustomerId(deliveryRequest.getDestinationProject().getCustomer().getId());
+				break;
+
+			default:
+				break;
+			}
+	}
+
 	public void changeInternalResourceListener() {
-			deliveryRequest.setDeliverToCompany(companyService.findCompanyUser(deliveryRequest.getToUser().getUsername()));
+		deliveryRequest.setDeliverToCompany(companyService.findCompanyUser(deliveryRequest.getToUser().getUsername()));
 	}
 
 	public void changeOwnerTypeListener() {

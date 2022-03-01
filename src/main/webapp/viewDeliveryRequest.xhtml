@@ -365,7 +365,7 @@
 												<h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
 											</span>
 											<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date5,deliveryRequestView.deliveryRequest.requester.username)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date5,deliveryRequestView.deliveryRequest.user5.username,deliveryRequestView.deliveryRequest.requester.username)}" />
 											</p:overlayPanel>
 										</li>
 									</f:subview>

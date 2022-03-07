@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -516,6 +518,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpQuantity = tmpQuantity;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public StockRowStatus getStatus() {
 		return status;
 	}

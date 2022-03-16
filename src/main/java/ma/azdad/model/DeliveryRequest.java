@@ -178,7 +178,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.crossChargeId = crossChargeId;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4, Double qTotalCost, Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4, Double qTotalCost,
+			Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -192,7 +193,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Project destinationProject, String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Project destinationProject,
+			String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -212,8 +214,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate, String originName, String customerName, String supplierName,
-			String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
+	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
+			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate, String originName,
+			String customerName, String supplierName, String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber,
+			Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -384,6 +388,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.transporter = template.transporter;
 		this.preferedLocation = template.preferedLocation;
 		this.approximativeStoragePeriod = template.approximativeStoragePeriod;
+		this.sdm = template.sdm;
 		init();
 		if (getIsInbound() || getIsXbound()) {
 			for (DeliveryRequestDetail detail : template.getDetailList())
@@ -492,7 +497,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Boolean showSerialNumberData() {
-		return detailList.stream().filter(i -> i.getPacking().getDetailList().stream().filter(j -> j.getHasSerialnumber()).count() > 0).count() > 0 && (getIsOutbound() || (getIsInbound() && isSnRequired));
+		return detailList.stream().filter(i -> i.getPacking().getDetailList().stream().filter(j -> j.getHasSerialnumber()).count() > 0).count() > 0
+				&& (getIsOutbound() || (getIsInbound() && isSnRequired));
 	}
 
 	@Transient
@@ -615,7 +621,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public Integer getNumberOfItems() {
 		Integer result = 0;
 		for (DeliveryRequestDetail deliveryRequestDetail : detailList)
-			result += deliveryRequestDetail.getPacking().getDetailList().stream().mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity())).sum();
+			result += deliveryRequestDetail.getPacking().getDetailList().stream()
+					.mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity())).sum();
 		return result;
 	}
 

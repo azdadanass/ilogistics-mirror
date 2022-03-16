@@ -67,7 +67,8 @@ public class Site extends GenericPlace implements Serializable {
 			contactUsername = contact.getUsername();
 	}
 
-	public Site(String name, Double latitude, Double longitude, String address1, String address2, String address3, String phone, String fax, SiteType type, Integer ownerType, Customer customer, Supplier supplier, String owner, User user) {
+	public Site(String name, Double latitude, Double longitude, String address1, String address2, String address3, String phone, String fax, SiteType type, Integer ownerType, Customer customer,
+			Supplier supplier, String owner, User user) {
 		super(name, latitude, longitude, address1, address2, address3, phone, fax);
 		this.type = type;
 		this.ownerType = ownerType;
@@ -85,10 +86,12 @@ public class Site extends GenericPlace implements Serializable {
 		super(id, name, latitude, longitude);
 	}
 
-	public Site(Integer id, String name, SiteModel model, Double latitude, Double longitude, SiteType type, User user, String googleAddress, String customerName, String supplierName, String owner) {
+	public Site(Integer id, String name, SiteModel model, Double latitude, Double longitude, SiteType type, User user, String googleRegion, String googleAddress, String customerName,
+			String supplierName, String owner) {
 		super(id, name, latitude, longitude);
 		this.model = model;
 		this.type = type;
+		this.googleRegion = googleRegion;
 		this.googleAddress = googleAddress;
 		this.user = user;
 		this.customerName = customerName;

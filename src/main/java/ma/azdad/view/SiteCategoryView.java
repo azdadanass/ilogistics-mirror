@@ -7,6 +7,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -101,6 +102,7 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 	}
 
 	// GENERIC
+	@Cacheable("siteView.findAll")
 	public List<SiteCategory> findAll() {
 		return siteCategoryService.findAll();
 	}

@@ -12,13 +12,15 @@ import ma.azdad.service.PoService;
 public class Repos extends GenericTest {
 
 	@Autowired
-	PoService poService;
+	SiteRepos sr;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 
-		poService.updateAllBoqStatusAndDeliveryStatusScript();
+		System.out.println(sr.findByCategoryAndGoogleRegion(5, "Oriental").size());
+		System.out.println(sr.findByCategoryAndGoogleRegion(null, "Oriental").size());
+		System.out.println(sr.findByCategoryAndGoogleRegion(null, null).size());
 
 	}
 

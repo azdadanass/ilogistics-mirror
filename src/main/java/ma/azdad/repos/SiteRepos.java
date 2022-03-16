@@ -12,10 +12,13 @@ import ma.azdad.model.Site;
 @Repository
 public interface SiteRepos extends JpaRepository<Site, Integer> {
 
-	String select1 = "select new Site(a.id, a.name ,a.model,a.latitude,a.longitude, a.type, a.user,a.googleAddress,(select b.name from Customer b where a.customer.id = b.id),(select b.name from Supplier b where a.supplier.id = b.id),a.owner) ";
+	String select1 = "select new Site(a.id, a.name ,a.model,a.latitude,a.longitude, a.type, a.user,a.googleRegion,a.googleAddress,(select b.name from Customer b where a.customer.id = b.id),(select b.name from Supplier b where a.supplier.id = b.id),a.owner) ";
 
 	@Query(select1 + "from Site a")
 	public List<Site> findLight();
+	
+	@Query(select1 + "from Site a where (?1 is null or a.type.category.id = ?1) and (?2 is null or ?2 = 'null' or a.googleRegion = ?2)")
+	public List<Site> findByCategoryAndGoogleRegion(Integer categoryId,String googleRegion);
 
 	@Query(select1 + "from Site a where a.warehouse is not null")
 	public List<Site> findLightAndHavingWarehouse();
@@ -65,4 +68,7 @@ public interface SiteRepos extends JpaRepository<Site, Integer> {
 
 	@Query("from Site where googleAddress is null or googleAddress='' ")
 	public List<Site> findByNotHavingGoogleAddress();
+	
+	@Query("select distinct googleRegion from Site where googleRegion is not null and googleRegion != '' ")
+	public List<String> findGoogleRegionList();
 }

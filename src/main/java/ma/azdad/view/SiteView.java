@@ -19,6 +19,7 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,12 +84,15 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	private Boolean filterByUser = true;
 
-	private SiteCategory siteCategory;
-
 	private Boolean ignore = false;
+
+	private SiteCategory siteCategory;
 
 	private Boolean fromExcel = false;
 	private String editSiteCoordinatesPage = "editSiteCoordinates.xhtml";
+
+	private Integer categoryId ;
+	private String googleRegion;
 
 	@Override
 	@PostConstruct
@@ -132,9 +136,15 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	@Override
 	public void refreshList() {
+		
+		System.out.println("categoryId "+categoryId);
+		System.out.println(categoryId==null);
+		System.out.println("googleRegion "+googleRegion);
+		System.out.println(googleRegion==null);
+		
 		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
 			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
-				list2 = list1 = siteService.findLight();
+				list2 = list1 = siteService.findByCategoryAndGoogleRegion(categoryId, googleRegion);
 			else
 				list2 = list1 = siteService.findLightAndHavingWarehouse();
 		}
@@ -469,8 +479,14 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	}
 
 	// GENERIC
+	@Cacheable("siteView.findLight")
 	public List<Site> findLight() {
 		return siteService.findLight();
+	}
+
+	@Cacheable("siteView.findGoogleRegionList")
+	public List<String> findGoogleRegionList() {
+		return service.findGoogleRegionList();
 	}
 
 	// GETTERS & SETTERS
@@ -577,6 +593,22 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	public void setFromExcel(Boolean fromExcel) {
 		this.fromExcel = fromExcel;
+	}
+
+	public String getGoogleRegion() {
+		return googleRegion;
+	}
+
+	public void setGoogleRegion(String googleRegion) {
+		this.googleRegion = googleRegion;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
 	}
 
 }

@@ -30,7 +30,7 @@ import ma.azdad.utils.SiteExcelFileException;
 public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 
 	@Autowired
-	SiteRepos siteRepos;
+	SiteRepos repos;
 
 	@Autowired
 	TransportationRequestRepos transportationRequestRepos;
@@ -71,18 +71,23 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 	}
 
 	public List<Site> findLight() {
-		return siteRepos.findLight();
+		return repos.findLight();
 	}
+	
+	public List<Site> findByCategoryAndGoogleRegion(Integer categoryId,String googleRegion){
+		return repos.findByCategoryAndGoogleRegion(categoryId, googleRegion);
+	}
+	
 
 	@Cacheable(value = "siteService.cache2")
 	public List<Site> findLight(Integer typeId) {
-		return siteRepos.findLight(typeId);
+		return repos.findLight(typeId);
 	}
 
 	@Cacheable(value = "siteService.cache3")
 	public Map<String, List<Site>> findLightMap(Integer typeId) {
 		Map<String, List<Site>> result = new HashMap<String, List<Site>>();
-		for (Site site : siteRepos.findAllCoordinates(typeId)) {
+		for (Site site : repos.findAllCoordinates(typeId)) {
 			String key = site.getCustomerId() + ";" + site.getSupplierId() + ";" + site.getOwner();
 
 			result.putIfAbsent(key, new ArrayList<Site>());
@@ -107,7 +112,7 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 	}
 
 	public List<Site> findLight(Integer typeId, String username) {
-		return siteRepos.findLight(typeId, username);
+		return repos.findLight(typeId, username);
 	}
 
 	public List<Site> findAllCoordinates(Integer typeId) {
@@ -115,11 +120,11 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 	}
 
 	public List<Site> findLight(String username) {
-		return siteRepos.findLight(username);
+		return repos.findLight(username);
 	}
 
 	public Long countByName(String name, Integer id) {
-		Long l = id == null ? siteRepos.countByName(name) : siteRepos.countByName(name, id);
+		Long l = id == null ? repos.countByName(name) : repos.countByName(name, id);
 		return l != null ? l : 0;
 	}
 
@@ -128,12 +133,12 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 	}
 
 	public Boolean isCodeExists(Site site) {
-		return siteRepos.countByCode(site.getCode(), site.getId()) > 0;
+		return repos.countByCode(site.getCode(), site.getId()) > 0;
 	}
 
 	@Cacheable(value = "siteService.cache1")
 	public List<Site> findAllCoordinates() {
-		return siteRepos.findAllCoordinates();
+		return repos.findAllCoordinates();
 	}
 
 	public List<Site> readFile(InputStream inputStream, Site template) throws SiteExcelFileException {
@@ -229,8 +234,8 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 
 	// EDIT SITE Coordinates
 	public void editSiteCoordinates(Integer siteId, Double latitude, Double longitude) {
-		siteRepos.updateLatitude(siteId, latitude);
-		siteRepos.updateLongitude(siteId, longitude);
+		repos.updateLatitude(siteId, latitude);
+		repos.updateLongitude(siteId, longitude);
 		googleGeocodeService.updateGoogleGeocodeDataAsync(findOne(siteId));
 
 		// update Associated TR
@@ -252,12 +257,16 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 
 	public void updateGoogleGeocodeData() {
 		System.out.println("updateGoogleGeocodeData!");
-		List<Site> list = siteRepos.findByNotHavingGoogleAddress();
+		List<Site> list = repos.findByNotHavingGoogleAddress();
 		for (Site site : list)
 			googleGeocodeService.updateGoogleGeocodeData(site);
 	}
 
 	public List<Site> findLightAndHavingWarehouse() {
-		return siteRepos.findLightAndHavingWarehouse();
+		return repos.findLightAndHavingWarehouse();
+	}
+	
+	public List<String> findGoogleRegionList(){
+		return repos.findGoogleRegionList();
 	}
 }

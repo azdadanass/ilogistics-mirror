@@ -86,9 +86,25 @@
 				<div class="row">
 					<div class="col-sm-offset-1 col-sm-10">
 						<div class="table-header col-sm-12 col-xs-12">
-							<div class="col-sm-10 hidden-xs">
+							<div class="col-sm-3 hidden-xs">
 								<i class="fa fa-list" />
 								<h:outputText value=" Site List" />
+							</div>
+							<div class="col-sm-3 hidden-xs">
+								<h:outputText value="Category : " />
+								<h:selectOneMenu value="#{siteView.categoryId}">
+									<f:selectItem itemLabel="All" noSelectionOption="true"/>
+									<f:selectItems value="#{siteCategoryView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+									<p:ajax listener="#{siteView.refreshList()}" update="siteList" />
+								</h:selectOneMenu>
+							</div>
+							<div class="col-sm-4 hidden-xs">
+								<h:outputText value="Region : " />
+								<h:selectOneMenu value="#{siteView.googleRegion}">
+									<f:selectItem itemLabel="All" itemValue="null" />
+									<f:selectItems value="#{siteView.findGoogleRegionList()}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+									<p:ajax listener="#{siteView.refreshList()}" update="siteList" />
+								</h:selectOneMenu>
 							</div>
 							<div class="col-sm-2 col-xs-4">
 								<div class="nav-search minimized">
@@ -116,13 +132,16 @@
 									<h:outputText value="#{item.type.name}" styleClass="purple" />
 								</p:column>
 								<p:column headerText="Owner">
-									<h:outputText value="#{item.ownerName}" styleClass="purple" />
+									<h:outputText value="#{item.ownerName}" />
 								</p:column>
 								<p:column headerText="Created By">
-									<h:outputText value="#{item.user.fullName}" />
+									<h:outputText value="#{item.user.fullName}" styleClass="blue" />
+								</p:column>
+								<p:column headerText="Region">
+									<h:outputText value="#{item.googleRegion}" styleClass="orange" />
 								</p:column>
 								<p:column headerText="Address">
-									<h:outputText value="#{item.googleAddress}" />
+									<h:outputText value="#{item.googleAddress}" styleClass="pink" />
 								</p:column>
 							</p:dataTable>
 						</div>

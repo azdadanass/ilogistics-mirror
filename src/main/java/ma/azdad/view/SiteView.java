@@ -136,12 +136,6 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 
 	@Override
 	public void refreshList() {
-		
-		System.out.println("categoryId "+categoryId);
-		System.out.println(categoryId==null);
-		System.out.println("googleRegion "+googleRegion);
-		System.out.println(googleRegion==null);
-		
 		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
 			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
 				list2 = list1 = siteService.findByCategoryAndGoogleRegion(categoryId, googleRegion);

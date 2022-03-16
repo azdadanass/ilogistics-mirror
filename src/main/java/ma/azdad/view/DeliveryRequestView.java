@@ -266,6 +266,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				default:
 					break;
 				}
+				initOwnerType();
 			}
 			saveDeliveryRequestNextStep();
 		} else if (isEditPage) {
@@ -2025,15 +2026,16 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void changeProjectListener() {
 		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
-
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
-
+		initOwnerType();
+	}
+	
+	public void initOwnerType() {
 		if ((deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) && deliveryRequest.getOwnerType() == null) {
 			deliveryRequest.setOwnerType(CompanyType.COMPANY);
 			changeOwnerTypeListener();
 		}
-
 	}
 
 	public void changeDeliverToTypeListener() {

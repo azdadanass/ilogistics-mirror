@@ -79,6 +79,11 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Modifying
 	@Query("update DeliveryRequestDetail set purchaseCost = ?2 where id = ?1 ")
 	public void updatePurchaseCost(Integer id, Double purchaseCost);
+	
+	
+	@Modifying
+	@Query("update DeliveryRequestDetail set purchaseCost = 0 where deliveryRequest.id = ?1 ")
+	public void clearPurchaseCostByDeliveryRequest(Integer deliveryRequestId);
 
 	@Modifying
 	@Query("update DeliveryRequestDetail set unitPrice = ?2 where id in (?1) ")
@@ -140,5 +145,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.partNumber.id = ?2")
 	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId);
+	
+	
+	
 
 }

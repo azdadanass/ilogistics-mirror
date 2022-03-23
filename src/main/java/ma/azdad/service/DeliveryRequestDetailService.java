@@ -562,4 +562,8 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId) {
 		return repos.findByDeliveryRequestAndPartNumber(deliveryRequestId, partNumberId);
 	}
+	
+	public void clearPurchaseCostByDeliveryRequest(Integer deliveryRequestId) {
+		repos.clearPurchaseCostByDeliveryRequest(deliveryRequestId);
+	}
 }

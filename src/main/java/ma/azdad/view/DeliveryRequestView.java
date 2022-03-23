@@ -1091,6 +1091,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.clearBoqMappingList();
 		service.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
+		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
 		poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 		poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
 

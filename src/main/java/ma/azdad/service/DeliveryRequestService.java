@@ -978,6 +978,20 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		repos.findIdByTypeAndHavingBoqMapping(DeliveryRequestType.INBOUND).forEach(this::updateDetailListPurchaseCostFromBoqMapping);
 	}
 
+	public void updateDetailListUnitCost(Integer deliveryRequestId) {
+		DeliveryRequest deliveryRequest = findOne(deliveryRequestId);
+		if (!deliveryRequest.getIsInbound() || deliveryRequest.getPo() == null)
+			return;
+		Double conversionRate = deliveryRequest.getPo().getMadConversionRate();
+		Double totalPurchaseCost = deliveryRequest.getDetailList().stream().mapToDouble(d -> d.getQuantity() * d.getPurchaseCost() * conversionRate).sum();
+		Double otherCosts = appLinkRepos.findTotalAmountByDeliveryRequestAndNotPo(deliveryRequest.getId(), deliveryRequest.getPo().getIdpo());
+		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
+			Double purchaseCost = detail.getPurchaseCost();
+			Double unitCost = purchaseCost * conversionRate * (1 + otherCosts / totalPurchaseCost);
+			System.out.println(detail.getPartNumberName() + " : " + unitCost);
+		}
+	}
+
 	public void updateDetailListUnitPriceFromBoqMapping(Integer deliveryRequestId) {
 		DeliveryRequest deliveryRequest = findOne(deliveryRequestId);
 		Map<PartNumber, Double> boqPriceMap = new HashMap<>();

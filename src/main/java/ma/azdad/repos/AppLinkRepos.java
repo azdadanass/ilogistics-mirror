@@ -28,11 +28,9 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 
 	@Query(select + "from AppLink a where a.deliveryRequest.id = ?1 and a.costType is not null")
 	public List<AppLink> findCostsByDeliveryRequest(Integer deliveryRequestId);
-	
-	
+
 //	@Query("select  from AppLink a where a.deliveryRequest.id = ?1 and a.costType is not null")
 //	public List<AppLink> findIbuyCostsPaymentsByDeliveryRequest(Integer deliveryRequestId);
-	
 
 	@Query(select + "from AppLink a where a.deliveryRequest.id = ?1 and a.revenueType is not null")
 	public List<AppLink> findRevenuesByDeliveryRequest(Integer deliveryRequestId);
@@ -45,9 +43,12 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 
 	@Query(select + "from AppLink a where a.warehouse.id = ?1")
 	public List<AppLink> findByWarehouse(Integer warehouseId);
-	
+
 	@Modifying
 	@Query("delete from AppLink a where a.deliveryRequest.id = ?1")
 	public void deleteByDeliveryRequest(Integer deliveryRequestId);
+
+	@Query("select sum(a.amount * a.acceptance.paymentterm.po.madConversionRate) from AppLink a where a.deliveryRequest.id = ?1 and a.acceptance.paymentterm.po.idpo != ?2")
+	public Double findTotalAmountByDeliveryRequestAndNotPo(Integer deliveryRequestId, Integer poId);
 
 }

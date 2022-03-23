@@ -18,7 +18,7 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 
-		deliveryRequestService.updateDetailListPurchaseCostFromBoqMappingScript();
+		deliveryRequestService.updateDetailListUnitCost(18708);
 
 	}
 

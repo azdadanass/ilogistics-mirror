@@ -307,5 +307,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest a set a.countIssues3 = (select count(*) from Issue b where b.deliveryRequest.id = a.id and b.status in (?2)) where id = ?1")
 	void updateCountIssues3(Integer id, List<IssueStatus> issueStatusList);
+	
+	@Query("select distinct deliveryRequest.id from BoqMapping where deliveryRequest.type = ?1")
+	List<Integer> findIdByTypeAndHavingBoqMapping(DeliveryRequestType type);
 
 }

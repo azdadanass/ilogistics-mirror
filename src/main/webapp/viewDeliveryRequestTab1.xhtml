@@ -62,8 +62,8 @@
 						<h:outputText value="Is SN Required" />
 					</div>
 					<div class="profile-info-value">
-						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" rendered="#{!deliveryRequestView.canEditIsSnRequired()}"/>
-						<p:commandLink id="isSnRequired" action="#{deliveryRequestView.editIsSnRequired()}" update=":main_form"  rendered="#{deliveryRequestView.canEditIsSnRequired()}" >
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" rendered="#{!deliveryRequestView.canEditIsSnRequired()}" />
+						<p:commandLink id="isSnRequired" action="#{deliveryRequestView.editIsSnRequired()}" update=":main_form" rendered="#{deliveryRequestView.canEditIsSnRequired()}">
 							<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
 						</p:commandLink>
@@ -664,6 +664,11 @@
 					</p:column>
 					<p:column headerText="Type" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.partNumber.typeName}" styleClass="orange" />
+					</p:column>
+					<p:column headerText="Purchase Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.showCostInformations()}">
+						<h:outputText value="#{item.purchaseCost}">
+							<f:convertNumber type="number" maxFractionDigits="2" />
+						</h:outputText>
 					</p:column>
 					<p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"

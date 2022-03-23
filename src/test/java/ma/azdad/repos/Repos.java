@@ -6,21 +6,19 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.PoService;
+import ma.azdad.service.DeliveryRequestService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	SiteRepos sr;
+	DeliveryRequestService deliveryRequestService;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 
-		System.out.println(sr.findByCategoryAndGoogleRegion(5, "Oriental").size());
-		System.out.println(sr.findByCategoryAndGoogleRegion(null, "Oriental").size());
-		System.out.println(sr.findByCategoryAndGoogleRegion(null, null).size());
+		deliveryRequestService.updateDetailListPurchaseCostFromBoqMappingScript();
 
 	}
 

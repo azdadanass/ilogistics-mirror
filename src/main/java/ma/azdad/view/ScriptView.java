@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.DeliveryRequestService;
@@ -139,6 +140,10 @@ public class ScriptView {
 
 	public void generateForOutboundAssociatedWithInbound() {
 		deliveryRequestExpiryDateService.generateForOutboundAssociatedWithInbound(inboundDeliveryRequestId);
+	}
+	
+	public void updateDetailListPurchaseCostFromBoqMappingScript() {
+		deliveryRequestService.updateDetailListPurchaseCostFromBoqMappingScript();
 	}
 
 	// GETTERS & SETTERS

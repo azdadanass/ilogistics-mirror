@@ -75,6 +75,10 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Modifying
 	@Query("update DeliveryRequestDetail set unitPrice = ?2 where id = ?1 ")
 	public void updateUnitPrice(Integer id, Double unitPrice);
+	
+	@Modifying
+	@Query("update DeliveryRequestDetail set purchaseCost = ?2 where id = ?1 ")
+	public void updatePurchaseCost(Integer id, Double purchaseCost);
 
 	@Modifying
 	@Query("update DeliveryRequestDetail set unitPrice = ?2 where id in (?1) ")

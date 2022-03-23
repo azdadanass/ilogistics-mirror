@@ -28,4 +28,6 @@ public interface BoqMappingRepos extends JpaRepository<BoqMapping, Integer> {
 
 	@Query("select count(distinct a.deliveryRequest.id) from BoqMapping a where a.boq.podetails.po.idpo = ?1 and a.deliveryRequest.status not in (?2)")
 	Long countDeliveryRequestsByRelatedToPoAndNotInStatus(Integer poId, List<DeliveryRequestStatus> notInStatus);
+	
+	
 }

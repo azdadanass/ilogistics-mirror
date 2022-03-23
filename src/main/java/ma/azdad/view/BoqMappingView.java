@@ -299,6 +299,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		deliveryRequestService.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId()));
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());
+		if(deliveryRequest.getIsInbound())
+			deliveryRequestService.updateDetailListPurchaseCostFromBoqMapping(deliveryRequest.getId());
 		poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
 		poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
 		return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());

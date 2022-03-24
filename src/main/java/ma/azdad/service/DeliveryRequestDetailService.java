@@ -426,7 +426,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	public void updateUnitCost(Integer id, Double unitCost) {
 		DeliveryRequestDetail deliveryRequestDetail = findOne(id);
 
-		if (!deliveryRequestDetail.getDeliveryRequest().getIsInbound() && !deliveryRequestDetail.getDeliveryRequest().getIsXbound())
+		if (deliveryRequestDetail.getDeliveryRequest().getIsOutbound())
 			return;
 		// update inbound detail
 		repos.updateUnitCost(deliveryRequestDetail.getId(), unitCost);

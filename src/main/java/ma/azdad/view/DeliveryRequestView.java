@@ -167,6 +167,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	protected AppLinkService appLinkService;
+	
+	@Autowired
+	protected AppLinkView  appLinkView;
 
 	@Autowired
 	protected PackingService packingService;
@@ -1236,11 +1239,28 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 //		for (int i = 0; i < datesTab.length; i++)
 //			commentsTab[i] = map.get(datesTab[i]).toArray(new DeliveryRequestComment[map.get(datesTab[i]).size()]);
 //	}
+	
+	// calculate unit cost
+	public Boolean canCalculateUnitCost() {
+		Double totalAppLink = appLinkView.getTotalAmount1();
+		return deliveryRequest.getIsInboundNew() // 
+				&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()) // 
+				& !deliveryRequest.getBoqMappingList().isEmpty() // 
+				&& totalAppLink > 0  && Math.abs(totalAppLink-deliveryRequest.getTotalCost())/totalAppLink > 0.05;
+	}
+	
+	
+	public void calculateUnitCost() {
+		if(!canCalculateUnitCost())
+			return;
+		service.updateDetailListUnitCost(deliveryRequest.getId());
+		deliveryRequest = service.findOne(deliveryRequest.getId());
+	}
 
 	// comments
 	private DeliveryRequestComment comment = new DeliveryRequestComment();
 
-	public Boolean canAddComment() {
+	public Boolean canAddComment() { 
 		return true;
 	}
 

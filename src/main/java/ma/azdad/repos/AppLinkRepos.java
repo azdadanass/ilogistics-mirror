@@ -48,7 +48,10 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 	@Query("delete from AppLink a where a.deliveryRequest.id = ?1")
 	public void deleteByDeliveryRequest(Integer deliveryRequestId);
 
-	@Query("select sum(a.amount * a.acceptance.paymentterm.po.madConversionRate) from AppLink a where a.deliveryRequest.id = ?1 and a.acceptance.paymentterm.po.idpo != ?2")
-	public Double findTotalAmountByDeliveryRequestAndNotPo(Integer deliveryRequestId, Integer poId);
+//	@Query("select sum(a.amount * a.acceptance.paymentterm.po.madConversionRate) from AppLink a where a.deliveryRequest.id = ?1 and a.acceptance.paymentterm.po.idpo != ?2")
+//	public Double findTotalAmountByDeliveryRequestAndNotPo(Integer deliveryRequestId, Integer poId);
+	
+	@Query("select coalesce(sum(a.amount * a.acceptance.paymentterm.po.madConversionRate),0) from AppLink a where a.deliveryRequest.id = ?1")
+	public Double findTotalAmountByDeliveryRequest(Integer deliveryRequestId);
 
 }

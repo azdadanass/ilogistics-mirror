@@ -152,6 +152,11 @@
 							<h:outputText value="Add" styleClass="smaller-80" />
 							<f:param name="deliveryRequestId" value="#{deliveryRequestView.deliveryRequest.id}" />
 						</h:outputLink>
+						<p:commandLink title="Calculate Unit Cost" action="#{deliveryRequestView.calculateUnitCost()}" update=":main_form" rendered="#{deliveryRequestView.canCalculateUnitCost()}"
+							styleClass="btn btn-app btn-sm btn-warning  hover aa-tooltip tooltip-purple">
+							<i class="ace-icon fa fa-dollar bigger-230"></i>
+							<h:outputText value="Unit Cost" />
+						</p:commandLink>
 					</div>
 					<div class="col-sm-7  hidden-xs infobox-container">
 						<div class="row">
@@ -365,7 +370,8 @@
 												<h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
 											</span>
 											<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date5,deliveryRequestView.deliveryRequest.user5.username,deliveryRequestView.deliveryRequest.requester.username)}" />
+												<h:outputText escape="false"
+													value="#{htmlView.generateOverlayPanelContent( deliveryRequestView.deliveryRequest.date5,deliveryRequestView.deliveryRequest.user5.username,deliveryRequestView.deliveryRequest.requester.username)}" />
 											</p:overlayPanel>
 										</li>
 									</f:subview>
@@ -852,7 +858,8 @@
 										<ui:repeat var="commentGroup" value="#{deliveryRequestView.deliveryRequest.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
-													<b> <h:outputText value="#{commentGroup.date}">
+													<b>
+														<h:outputText value="#{commentGroup.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
 													</b>

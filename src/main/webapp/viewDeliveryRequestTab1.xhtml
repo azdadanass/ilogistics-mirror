@@ -669,8 +669,9 @@
 						<h:outputText value="#{item.purchaseCost}">
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
+						<h:outputText value=" #{deliveryRequestView.deliveryRequest.po.currency.currency}"/>
 					</p:column>
-					<p:column headerText="Unit Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
+					<p:column headerText="Unit Cost" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
 							disabled="#{!deliveryRequestView.canUpdateUnitCost()}">
 							<p:inputNumber value="#{item.unitCost}" thousandSeparator="" decimalPlaces="6" styleClass="red" />

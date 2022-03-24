@@ -983,13 +983,26 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (!deliveryRequest.getIsInbound() || deliveryRequest.getPo() == null)
 			return;
 		Double conversionRate = deliveryRequest.getPo().getMadConversionRate();
-		Double totalPurchaseCost = deliveryRequest.getDetailList().stream().mapToDouble(d -> d.getQuantity() * d.getPurchaseCost() * conversionRate).sum();
-		Double otherCosts = appLinkRepos.findTotalAmountByDeliveryRequestAndNotPo(deliveryRequest.getId(), deliveryRequest.getPo().getIdpo());
+		Double totalPurchaseCost = deliveryRequest.getDetailList().stream().mapToDouble(d -> d.getQuantity() * d.getPurchaseCost()).sum();
+//		Double otherCosts = appLinkRepos.findTotalAmountByDeliveryRequestAndNotPo(deliveryRequest.getId(), deliveryRequest.getPo().getIdpo());
+//		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
+//			Double purchaseCost = detail.getPurchaseCost();
+//			Double unitCost = purchaseCost * conversionRate * (1 + otherCosts / totalPurchaseCost);
+//			System.out.println(detail.getPartNumberName() + " : " + unitCost);
+//		}
+		Double totalAppLink = appLinkRepos.findTotalAmountByDeliveryRequest(deliveryRequest.getId());
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
 			Double purchaseCost = detail.getPurchaseCost();
-			Double unitCost = purchaseCost * conversionRate * (1 + otherCosts / totalPurchaseCost);
-			System.out.println(detail.getPartNumberName() + " : " + unitCost);
+			Double unitCost = (purchaseCost / totalPurchaseCost) * totalAppLink; //  equivalent ((purchaseCost * qty  / totalPurchaseCost) * totalAppLink) /qty
+
+			System.out.println(purchaseCost);
+			System.out.println(unitCost);
+			System.out.println(conversionRate);
+			System.out.println(totalPurchaseCost);
+
+			deliveryRequestDetailService.updateUnitCost(detail.getId(), unitCost);
 		}
+		evictCache();
 	}
 
 	public void updateDetailListUnitPriceFromBoqMapping(Integer deliveryRequestId) {

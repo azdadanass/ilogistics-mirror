@@ -993,7 +993,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Double totalAppLink = appLinkRepos.findTotalAmountByDeliveryRequest(deliveryRequest.getId());
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
 			Double purchaseCost = detail.getPurchaseCost();
-			Double unitCost = (purchaseCost / totalPurchaseCost) * totalAppLink; //  equivalent ((purchaseCost * qty  / totalPurchaseCost) * totalAppLink) /qty
+			Double unitCost = (purchaseCost / totalPurchaseCost) * totalAppLink; // equivalent ((purchaseCost * qty / totalPurchaseCost) * totalAppLink) /qty
+			unitCost = Math.round(unitCost * 100) / 100.0;
 
 			System.out.println(purchaseCost);
 			System.out.println(unitCost);

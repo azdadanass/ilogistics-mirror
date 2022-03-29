@@ -1044,6 +1044,11 @@
 											</h:outputText>
 											<h:outputText value=" #{item.currency}" />
 										</p:column>
+										<p:column headerText="Conversion Rate" width="100">
+											<h:outputText value="#{item.madConversionRate}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
 										<p:column headerText="Amount MAD" width="100">
 											<h:outputText value="#{item.amount*item.madConversionRate}">
 												<f:convertNumber type="number" maxFractionDigits="2" />

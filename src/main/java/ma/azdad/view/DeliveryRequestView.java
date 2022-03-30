@@ -275,6 +275,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		} else if (isEditPage) {
 			deliveryRequest = service.findOne(id);
 			deliveryRequest.init();
+			Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
+			deliveryRequest.clearBoqMappingList();
+			boqService.updateTotalUsedQuantity(boqListToUpdate);
+			deliveryRequest = service.findOne(id);
 			deliveryRequest.initDetailList();
 			saveDeliveryRequestNextStep();
 		} else if (isViewPage) {

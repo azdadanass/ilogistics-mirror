@@ -327,7 +327,8 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}" />
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isInbound}" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
 														rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />

@@ -279,8 +279,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.clearBoqMappingList();
 			boqService.updateTotalUsedQuantity(boqListToUpdate);
 			deliveryRequest = service.findOne(id);
+			deliveryRequest.init();
 			deliveryRequest.initDetailList();
 			saveDeliveryRequestNextStep();
+			System.out.println(deliveryRequest.getPoId());
+			System.out.println(deliveryRequest.getIsInbound());
+			if(deliveryRequest.getPoId()!=null && deliveryRequest.getIsInbound())
+				findRemainingDetailListByPo();
+			
 		} else if (isViewPage) {
 			deliveryRequest = service.findOne(id);
 			deliveryRequest.init();
@@ -1640,6 +1646,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void findRemainingDetailListByPo() {
+		System.out.println(deliveryRequest.getIsInbound());
+		System.out.println(getIsPoNeeded());
+		System.out.println( deliveryRequest.getPoId());
+		
 		if (deliveryRequest.getIsInbound() && getIsPoNeeded() && deliveryRequest.getPoId() != null)
 			deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailService.findRemainingByPo(deliveryRequest.getPoId());
 	}

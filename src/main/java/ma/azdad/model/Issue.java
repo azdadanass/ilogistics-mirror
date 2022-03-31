@@ -369,8 +369,7 @@ public class Issue extends GenericModel<Integer> {
 		this.severity = severity;
 	}
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@ManyToOne(fetch=FetchType.EAGER,optional=false)
 	public IssueCategory getCategory() {
 		return category;
 	}
@@ -379,8 +378,7 @@ public class Issue extends GenericModel<Integer> {
 		this.category = category;
 	}
 
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@ManyToOne(fetch=FetchType.EAGER,optional=false)
 	public IssueType getType() {
 		return type;
 	}

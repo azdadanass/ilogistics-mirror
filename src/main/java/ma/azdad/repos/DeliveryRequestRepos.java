@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.Po;
 import ma.azdad.model.User;
@@ -206,8 +207,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query(select3 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.status not in (?7)")
 	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, DeliveryRequestType outbound, List<DeliveryRequestStatus> excludeStatusList);
 
-	@Query(select4 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.status not in (?7)")
-	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, DeliveryRequestType inbound, List<DeliveryRequestStatus> excludeStatusList);
+	@Query(select4 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.inboundType = ?7 and a.status in (?8) and (select count(*) from AppLink b where b.deliveryRequest.id = a.id) > 0")
+	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, DeliveryRequestType inbound,InboundType inboundType,List<DeliveryRequestStatus> statusList);
 
 	@Query("from DeliveryRequest a where a.outboundDeliveryRequestReturn.id = ?1 ")
 	public List<DeliveryRequest> findByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);

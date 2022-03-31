@@ -51,6 +51,7 @@ import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestState;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
@@ -919,8 +920,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND,
-				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND,InboundType.NEW,
+				Arrays.asList(DeliveryRequestStatus.DELIVRED));
 	}
 
 	// fillDestinationProject script

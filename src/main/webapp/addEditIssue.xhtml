@@ -31,7 +31,6 @@
 	</ui:define>
 
 	<ui:define name="body">
-		<p:importEnum type="ma.azdad.model.IssueCategory" var="IssueCategory" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.Severity" var="Severity" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -103,9 +102,9 @@
 											<h:outputText value="Category" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{issueView.model.category}" required="true" requiredMessage="Category should not be null">
+											<h:selectOneMenu value="#{issueView.issue.category}" required="true" requiredMessage="Category should not be null" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{IssueCategory.ALL_ENUM_VALUES}" />
+												<f:selectItems value="#{issueCategoryView.findByApp()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 												<p:ajax update="type" />
 											</h:selectOneMenu>
 										</div>
@@ -117,9 +116,9 @@
 											<h:outputText value="Type" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu id="type" value="#{issueView.model.type}" required="true" requiredMessage="Type should not be null">
+											<h:selectOneMenu id="type" value="#{issueView.issue.type}" required="true" requiredMessage="Type should not be null" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{issueView.model.category.typeList}" />
+												<f:selectItems value="#{issueTypeView.findByCategory(issueView.issue.category.id)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</h:selectOneMenu>
 										</div>
 									</div>

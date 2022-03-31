@@ -98,7 +98,7 @@ public class Issue extends GenericModel<Integer> {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(category.getValue(), query) || contains(description, query) || contains(type.getValue(), query);
+		return contains(category.getName(), query) || contains(description, query) || contains(type.getName(), query);
 	}
 
 	@Transient

@@ -128,10 +128,10 @@
 								<h:outputText value="#{item.severity.value}" styleClass="#{item.severity.color} bolder" />
 							</p:column>
 							<p:column headerText="Category">
-								<h:outputText value="#{item.category.value}" styleClass="#{item.category.color.name}" />
+								<h:outputText value="#{item.category.name}" styleClass="blue" />
 							</p:column>
 							<p:column headerText="Type">
-								<h:outputText value="#{item.type.value}" styleClass="orange" />
+								<h:outputText value="#{item.type.name}" styleClass="orange" />
 							</p:column>
 							<p:column headerText="Blocking" width="70">
 								<h:outputText value="#{item.blocking?'Yes':'No'}" styleClass="badge #{item.blocking?'badge-danger':'badge-info'}" />

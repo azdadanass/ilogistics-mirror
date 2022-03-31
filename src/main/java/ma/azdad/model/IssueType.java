@@ -1,33 +1,58 @@
 package ma.azdad.model;
 
-public enum IssueType {
-	WRONG_KEYS("Wrong/Missing keys"),
-	NON_ROUTES("Non accessible routes"),
-	BAD_WEATHER("Bad weather"),
-	NEED_CRANE("Need crane"),
-	NEED_AUTHORIZATION("Need authorization"),
-	SITE_PROPRIETARY_BLOCKAGE("Site proprietary blockage"),
-	SITE_NEIGHBORS_BLOCKAGE("Site neighbors blockage"),
-	LACK_OF_SPACE("Lack of space"),
-	INADEQUATE_SPACE("Inadequate space"),
-	MISSING_TECHNICAL_REQUIREMENT("Missing technical requirement"),
-	CIVIL("Civil"),
-	POWER("Power/Battery backup"),
-	AIR_CONDITIONING("Air conditioning"),
-	OTHER("Other");
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
-	private final String value;
+@Entity
+public class IssueType extends GenericModel<Integer> {
 
-	private IssueType(String value) {
-		this.value = value;
+	private String name;
+	private IssueCategory category;
+
+	public boolean filter(String query) {
+		return contains(query, name);
 	}
 
-	public String getValue() {
-		return value;
-	}
-
+	@Transient
 	@Override
-	public String toString() {
-		return this.value;
+	public String getIdentifierName() {
+		return this.name;
 	}
+
+	// getters & setters
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	public IssueCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(IssueCategory category) {
+		this.category = category;
+	}
+
 }

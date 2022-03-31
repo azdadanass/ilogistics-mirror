@@ -1,41 +1,63 @@
 package ma.azdad.model;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 
-import ma.azdad.utils.Color;
+import ma.azdad.utils.App;
 
-public enum IssueCategory {
-	ACCESS_PROBLEM("Access problem", Color.PURPLE, Arrays.asList(IssueType.WRONG_KEYS, IssueType.NON_ROUTES, IssueType.BAD_WEATHER, IssueType.NEED_CRANE, IssueType.NEED_AUTHORIZATION, IssueType.SITE_PROPRIETARY_BLOCKAGE, IssueType.SITE_NEIGHBORS_BLOCKAGE, IssueType.OTHER)),
-	SPACE_PROBLEM("Space problem", Color.RED, Arrays.asList(IssueType.LACK_OF_SPACE, IssueType.INADEQUATE_SPACE, IssueType.OTHER)),
-	TECHNICAL("Technical", Color.BLUE, Arrays.asList(IssueType.MISSING_TECHNICAL_REQUIREMENT, IssueType.OTHER)),
-	ENVIRONMENT("Environment", Color.GREEN, Arrays.asList(IssueType.CIVIL, IssueType.POWER, IssueType.AIR_CONDITIONING, IssueType.OTHER)),
-	OTHER("Other", Color.L_BLUE, Arrays.asList(IssueType.OTHER)),;
+@Entity
+public class IssueCategory extends GenericModel<Integer> {
 
-	private final String value;
-	private final Color color;
-	private final List<IssueType> typeList;
+	private String name;
+	private App app;
 
-	private IssueCategory(String value, Color color, List<IssueType> typeList) {
-		this.value = value;
-		this.color = color;
-		this.typeList = typeList;
+	public boolean filter(String query) {
+		return contains(query, name);
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public List<IssueType> getTypeList() {
-		return typeList;
-	}
-
+	@Transient
 	@Override
-	public String toString() {
-		return this.value;
+	public String getIdentifierName() {
+		return this.name;
 	}
+
+	// getters & setters
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public App getApp() {
+		return app;
+	}
+
+	public void setApp(App app) {
+		this.app = app;
+	}
+	
+	
+
+
 }

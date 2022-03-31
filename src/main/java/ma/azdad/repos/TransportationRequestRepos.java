@@ -79,6 +79,9 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query("from TransportationRequest where deliveryRequest.id = ?1")
 	public TransportationRequest findByDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query("select id from TransportationRequest where deliveryRequest.id = ?1")
+	public Integer findIdByDeliveryRequest(Integer deliveryRequestId);
 
 	@Query("select a from TransportationRequest a where a.id in (select b.id from TransportationRequest b where b.deliveryRequest.origin.id = ?1) or a.id in (select b.id from TransportationRequest b where b.deliveryRequest.destination.id = ?1)")
 	public List<TransportationRequest> findAssociatedWithSite(Integer siteId);

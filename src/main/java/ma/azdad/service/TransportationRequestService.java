@@ -166,6 +166,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public TransportationRequest findByDeliveryRequest(Integer deliveryRequestId) {
 		return repos.findByDeliveryRequest(deliveryRequestId);
 	}
+	
+	public Integer findIdByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findIdByDeliveryRequest(deliveryRequestId);
+	}
 
 	public void calculateEstimatedDistanceAndDuration(TransportationRequest transportationRequest) {
 		Path path = PathService.getNewPath(transportationRequest.getOriginPlace(), transportationRequest.getDestinationPlace());

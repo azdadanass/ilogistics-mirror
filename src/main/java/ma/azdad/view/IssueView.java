@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Issue;
 import ma.azdad.model.IssueComment;
 import ma.azdad.model.IssueFile;
@@ -64,6 +65,9 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	@Autowired
 	private DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	private DeliveryRequestView deliveryRequestView;
 
 	private Integer deliveryRequestId;
 	private Integer projectId;
@@ -113,17 +117,22 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	// save
 	public Boolean canSave() {
-		if (isAddPage)
+		if("/viewDeliveryRequest.xhtml".equals(currentPath))
+			return sessionView.isTheConnectedUser(deliveryRequestView.getDeliveryRequest().getRequester(), deliveryRequestView.getDeliveryRequest().getProject().getManager()) //
+					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(deliveryRequestView.getDeliveryRequest().getProject().getId()));
+		else if (isAddPage)
 			return sessionView.isTheConnectedUser(model.getDeliveryRequest().getRequester(), model.getDeliveryRequest().getProject().getManager()) //
 					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(model.getDeliveryRequest().getProject().getId()));
 		else if (isViewPage || isEditPage)
 			return IssueStatus.RAISED.equals(model.getStatus()) && model.getUser1() != null && sessionView.isTheConnectedUser(model.getUser1());
 		return false;
 	}
+	
+	
 
 	public String save() {
 		if (!canSave())
-			return addParameters(listPage, "faces-redirect=true");
+			return null;
 		if (!validate())
 			return null;
 
@@ -133,7 +142,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		model.addHistory(new IssueHistory(getIsAddPage() ? "Created" : "Edited", sessionView.getUser(), getIsAddPage() ? null : UtilsFunctions.getChanges(model, old)));
 
 		model = service.save(model);
-		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());
+		return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + model.getDeliveryRequestId());
 	}
 
 	public Boolean validate() {

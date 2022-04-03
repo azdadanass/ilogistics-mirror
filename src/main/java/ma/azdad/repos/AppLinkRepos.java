@@ -54,7 +54,7 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 	@Query("select coalesce(sum(a.amount * a.acceptance.paymentterm.po.madConversionRate),0) from AppLink a where a.deliveryRequest.id = ?1")
 	public Double findTotalAmountByDeliveryRequest(Integer deliveryRequestId);
 	
-	@Query("select coalesce(sum(a.amount),0) from AppLink a where a.transporationRequest.id = ?1")
+	@Query("select coalesce(sum(a.amount),0) from AppLink a where a.transportationRequest.id = ?1")
 	public Double findTotalAmountByTransportationRequest(Integer transportationRequestId);
 
 }

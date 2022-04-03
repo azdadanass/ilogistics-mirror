@@ -88,6 +88,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	@Autowired
 	DeliveryRequestSerialNumberRepos deliveryRequestSerialNumberRepos;
 
+	@Autowired
+	TransportationRequestService transportationRequestService;
+
 	@Override
 	public DeliveryRequest findOne(Integer id) {
 		DeliveryRequest deliveryRequest = super.findOne(id);
@@ -920,8 +923,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND,InboundType.NEW,
-				Arrays.asList(DeliveryRequestStatus.DELIVRED));
+		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.INBOUND,
+				InboundType.NEW, Arrays.asList(DeliveryRequestStatus.DELIVRED));
 	}
 
 	// fillDestinationProject script
@@ -992,6 +995,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 //			System.out.println(detail.getPartNumberName() + " : " + unitCost);
 //		}
 		Double totalAppLink = appLinkRepos.findTotalAmountByDeliveryRequest(deliveryRequest.getId());
+		Integer transportationRequestId = transportationRequestService.findIdByDeliveryRequest(deliveryRequest.getId());
+		if (transportationRequestId != null)
+			totalAppLink += appLinkRepos.findTotalAmountByTransportationRequest(transportationRequestId);
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
 			Double purchaseCost = detail.getPurchaseCost();
 			Double unitCost = (purchaseCost / totalPurchaseCost) * totalAppLink; // equivalent ((purchaseCost * qty / totalPurchaseCost) * totalAppLink) /qty

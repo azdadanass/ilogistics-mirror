@@ -2176,7 +2176,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	// LINK PO
 	public Boolean getIsPoNeeded() {
 		return (deliveryRequest.getIsInbound() && deliveryRequest.getIsInboundNew())
-				|| (deliveryRequest.getIsOutbound() && projectService.isStockProject(deliveryRequest.getProjectId()) && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()));
+//				|| (deliveryRequest.getIsOutbound() && projectService.isStockProject(deliveryRequest.getProjectId()) && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()));
+				|| (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()));
 	}
 
 	public List<Po> getPoList() {

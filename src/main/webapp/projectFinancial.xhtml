@@ -2,20 +2,16 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 		<script src="resources/ace_template/assets/js/jquery.easypiechart.js" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,7 +25,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -49,12 +44,10 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
@@ -138,7 +131,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project Name" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.name}" styleClass="pink" />
 													&nbsp;
@@ -148,7 +140,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Customer" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.customer.name}" />
 													&nbsp;
@@ -158,7 +149,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project Start Date" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.startDate}">
 														<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -170,14 +160,12 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project Duration" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.duration}" />
 													&nbsp;
 												</div>
 											</div>
 										</div>
-
 									</div>
 									<div class="col-xs-12 col-sm-6">
 										<div class="profile-user-info profile-user-info-striped">
@@ -185,7 +173,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="LOB" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.costcenter.lob.name}" styleClass="blue" />
 													&nbsp;
@@ -195,7 +182,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project Manager" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.manager.fullName}" styleClass="orange" />
 													&nbsp;
@@ -205,7 +191,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project End Date" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.endDate}">
 														<f:convertDateTime pattern="yyyy-MM-dd" />
@@ -217,7 +202,6 @@
 												<div class="profile-info-name">
 													<h:outputText value="Project Status" />
 												</div>
-
 												<div class="profile-info-value">
 													<h:outputText value="#{projectView.project.status}" styleClass="#{projectView.project.status=='Open'?'green':'grey'}" />
 													&nbsp;
@@ -266,68 +250,53 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="stockRowList" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
 											<p:column headerText="Part Number" exportable="false" width="120">
 												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 													<h:outputText value="#{item.partNumber.name}" />
 													<f:param name="id" value="#{item.partNumber.id}" />
 												</h:outputLink>
 											</p:column>
-
 											<p:column headerText="Part Number" styleClass="hide">
 												<h:outputText value="#{item.partNumber.name}" />
 											</p:column>
-
-
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
-
-											<p:column headerText="Type" width="60">
-												<h:outputText value="#{item.partNumber.type}" />
+											<p:column headerText="Industry" width="80">
+												<h:outputText value="#{item.partNumber.industryName}" styleClass="bolder blue" />
 											</p:column>
-
-											<p:column headerText="Industry" width="75">
-												<h:outputText value="#{item.partNumber.industry}" />
+											<p:column headerText="Category" width="120">
+												<h:outputText value="#{item.partNumber.categoryName}" styleClass="bolder green" />
 											</p:column>
-
-											<p:column headerText="Technology" width="75">
-												<h:outputText value="#{item.partNumber.technology}" />
+											<p:column headerText="Type" width="120">
+												<h:outputText value="#{item.partNumber.typeName}" styleClass="bolder orange" />
 											</p:column>
-
-											<p:column headerText="Manufacture" width="85">
-												<h:outputText value="#{item.partNumber.manufacture}" />
+											<p:column headerText="Brand" width="120">
+												<h:outputText value="#{item.partNumber.brandName}" styleClass="bolder pink" />
 											</p:column>
-
 											<p:column headerText="Stock" width="70" exportable="false">
 												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
-
 											<p:column headerText="Stock " styleClass="hide">
 												<h:outputText value="#{item.quantity}" />
 											</p:column>
-
 											<p:column headerText="Status" width="110">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 											</p:column>
-
 											<p:column headerText="In Stock Date" sortBy="#{item.inStockDays}" width="120">
 												<h:outputText value="#{item.inStockDays}" />
 											</p:column>
-
 											<p:column headerText="Cost" width="120" exportable="false">
 												<h:outputText value="#{item.qTotalCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<h:outputText value=" MAD" />
 											</p:column>
-
 											<p:column headerText="Cost" styleClass="hide">
 												<h:outputText value="#{item.qTotalCost}" />
 											</p:column>
-
 										</p:dataTable>
 									</div>
 								</div>
@@ -491,11 +460,9 @@
 										</td>
 										<td>
 											<div class="progress progress-striped" style="margin: 0">
-												<h:outputText title="Actuals Spending #{reportView.report.getAllCostsVsPlannedCostPercentage(0.0)} %"
-													styleClass="progress-bar aa-tooltip progress-bar-primary tooltip-info"
+												<h:outputText title="Actuals Spending #{reportView.report.getAllCostsVsPlannedCostPercentage(0.0)} %" styleClass="progress-bar aa-tooltip progress-bar-primary tooltip-info"
 													style="display:block;#{reportView.report.getAllCostsVsPlannedCostPercentageWidth(0.0)}" />
-												<h:outputText title="Remaining Budget #{reportView.report.getRemainingBudgetVsPlannedCostPercentage(0.0)} %"
-													styleClass="progress-bar aa-tooltip progress-bar-success tooltip-success"
+												<h:outputText title="Remaining Budget #{reportView.report.getRemainingBudgetVsPlannedCostPercentage(0.0)} %" styleClass="progress-bar aa-tooltip progress-bar-success tooltip-success"
 													style="display:block;#{reportView.report.getRemainingBudgetVsPlannedCostPercentageWidth(0.0)}" />
 											</div>
 										</td>
@@ -624,7 +591,6 @@
 									</table>
 								</div>
 							</div>
-
 							<div class="row">
 								<div class="col-sm-offset-1 col-xs-12 col-sm-6">
 									<table class="table table-bordered aa-mr-table">
@@ -696,7 +662,6 @@
 									</table>
 								</div>
 							</div>
-
 						</h:panelGroup>
 					</div>
 				</div>

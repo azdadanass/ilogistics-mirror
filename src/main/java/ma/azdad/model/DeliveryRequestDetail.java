@@ -59,7 +59,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c1
 	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			DeliveryRequest inboundDeliveryRequest, Double unitCost) {
 		super();
 		this.remainingQuantity = remainingQuantity;
@@ -72,13 +73,15 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.unitCost = unitCost;
 	}
 
 	// c2
 	public DeliveryRequestDetail(Double remainingQuantity, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			Double unitCost) {
 		super();
 		this.remainingQuantity = remainingQuantity;
@@ -89,12 +92,14 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.unitCost = unitCost;
 	}
 
 	// c3
 	public DeliveryRequestDetail(Integer id, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double quantity, Double tmpUsedQuantity, String toUserFullName) {
 		super(id);
 		this.setPartNumberId(partNumberId);
@@ -104,6 +109,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
 		this.tmpDeliveryRequestType = tmpDeliveryRequestType;
 		this.tmpDeliveryRequestReference = tmpDeliveryRequestReference;
@@ -114,7 +120,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c4
 	public DeliveryRequestDetail(Integer id, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double unitCost, Date tmpDeliveryRequestDeliveryDate, String tmpProjectName) {
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
@@ -123,6 +130,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
 		this.tmpDeliveryRequestType = tmpDeliveryRequestType;
 		this.tmpDeliveryRequestReference = tmpDeliveryRequestReference;
@@ -133,7 +141,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c5
 	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
 		super();
 		this.remainingQuantity = remainingQuantity;
@@ -146,6 +155,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.unitCost = unitCost;
 		this.packing = packing;
@@ -153,7 +163,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c6 & c7
 	public DeliveryRequestDetail(Double remainingQuantity, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, PartNumberOrange partNumberOrange, //
 			Double unitCost, Double unitPrice) {
 		super();
 		this.remainingQuantity = remainingQuantity;
@@ -164,6 +175,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setPartNumberOrange(partNumberOrange);
 		this.unitCost = unitCost;
 		this.unitPrice = unitPrice;
 	}
@@ -180,7 +192,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c2
-	public DeliveryRequestDetail(Integer id, String tmpPartNumberName, String tmpPartNumberDescription, Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, Integer tmpDeliveryRequestTypeReferenceNumber, Double unitCost, Date tmpDeliveryRequestDeliveryDate, String tmpProjectName) {
+	public DeliveryRequestDetail(Integer id, String tmpPartNumberName, String tmpPartNumberDescription, Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType,
+			Integer tmpDeliveryRequestTypeReferenceNumber, Double unitCost, Date tmpDeliveryRequestDeliveryDate, String tmpProjectName) {
 		this.tmpPartNumberName = tmpPartNumberName;
 		this.tmpPartNumberDescription = tmpPartNumberDescription;
 		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
@@ -193,7 +206,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c3
-	public DeliveryRequestDetail(Integer id, String tmpPartNumberName, String tmpPartNumberDescription, Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, Integer tmpDeliveryRequestTypeReferenceNumber, Double quantity, Double tmpUsedQuantity, String toUserFullName) {
+	public DeliveryRequestDetail(Integer id, String tmpPartNumberName, String tmpPartNumberDescription, Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType,
+			Integer tmpDeliveryRequestTypeReferenceNumber, Double quantity, Double tmpUsedQuantity, String toUserFullName) {
 		super(id);
 		this.tmpPartNumberName = tmpPartNumberName;
 		this.tmpPartNumberDescription = tmpPartNumberDescription;
@@ -207,7 +221,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c4
-	public DeliveryRequestDetail(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
+	public DeliveryRequestDetail(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest,
+			DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -221,7 +236,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c5
-	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
+	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost,
+			Packing packing) {
 		super();
 		this.remainingQuantity = remainingQuantity;
 		this.status = status;
@@ -358,6 +374,42 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setBrandName(partNumberBrandName);
+	}
+
+	@Transient
+	public PartNumberOrange getPartNumberOrange() {
+		return partNumber == null ? null : partNumber.getPartNumberOrange();
+	}
+
+	@Transient
+	public void setPartNumberOrange(PartNumberOrange partNumberOrange) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setPartNumberOrange(partNumberOrange);
+	}
+
+	@Transient
+	public String getPartNumberOrangeName() {
+		return partNumber == null ? null : partNumber.getPartNumberOrangeName();
+	}
+
+	@Transient
+	public void setPartNumberOrangeName(String partNumberOrangeName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setPartNumberOrangeName(partNumberOrangeName);
+	}
+
+	@Transient
+	public String getPartNumberOrangeDescription() {
+		return partNumber == null ? null : partNumber.getPartNumberOrangeDescription();
+	}
+
+	@Transient
+	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setPartNumberOrangeDescription(partNumberOrangeDescription);
 	}
 
 	@Transient

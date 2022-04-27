@@ -63,6 +63,8 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private String categoryName;
 	private String typeName;
 	private String brandName;
+	private String partNumberOrangeName;
+	private String partNumberOrangeDescription;
 
 	private User user;
 	private PartNumberBrand brand;
@@ -117,7 +119,8 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		List<String> typeList = Arrays.asList("Boolean", "Integer", "Double", "String", "Date");
 		List<String> excludeList = Arrays.asList("remainingFileds");
 
-		List<Field> fileds = Arrays.stream(PartNumber.class.getDeclaredFields()).filter(f -> typeList.contains(f.getType().getSimpleName()) && !excludeList.contains(f.getName()) && !Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
+		List<Field> fileds = Arrays.stream(PartNumber.class.getDeclaredFields())
+				.filter(f -> typeList.contains(f.getType().getSimpleName()) && !excludeList.contains(f.getName()) && !Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
 
 		String result = "";
 		try {
@@ -237,36 +240,28 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 //	}
 
 	@Transient
-	public String getPartNumberOrangeName() {
-		return partNumberOrange == null ? null : partNumberOrange.getName();
-	}
-
-	@Transient
-	public void setPartNumberOrangeName(String partNumberOrangeName) {
-		if (partNumberOrange == null)
-			partNumberOrange = new PartNumberOrange();
-		partNumberOrange.setName(partNumberOrangeName);
-	}
-
-	@Transient
-	public String getPartNumberOrangeDescription() {
-		return partNumberOrange == null ? null : partNumberOrange.getDescription();
-	}
-
-	@Transient
-	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
-		if (partNumberOrange == null)
-			partNumberOrange = new PartNumberOrange();
-		partNumberOrange.setDescription(partNumberOrangeDescription);
-	}
-
-	@Transient
 	public List<PartNumberFile> getFileList2() {
 		List<PartNumberFile> result = new ArrayList<>();
 		for (PartNumberFile pnf : fileList)
 			if (!pnf.getIsImage())
 				result.add(pnf);
 		return result;
+	}
+
+	public String getPartNumberOrangeName() {
+		return partNumberOrangeName;
+	}
+
+	public void setPartNumberOrangeName(String partNumberOrangeName) {
+		this.partNumberOrangeName = partNumberOrangeName;
+	}
+
+	public String getPartNumberOrangeDescription() {
+		return partNumberOrangeDescription;
+	}
+
+	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
+		this.partNumberOrangeDescription = partNumberOrangeDescription;
 	}
 
 	@Transient
@@ -361,7 +356,8 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	public void calculateState() {
-		if (name == null || name.isEmpty() || description == null || description.isEmpty() || partNumberType == null || grossWeight == null || netWeight == null || length == null || width == null || height == null || volume == null)
+		if (name == null || name.isEmpty() || description == null || description.isEmpty() || partNumberType == null || grossWeight == null || netWeight == null || length == null || width == null
+				|| height == null || volume == null)
 			state = PartNumberState.DRAFT;
 		else
 			state = PartNumberState.CONFIRMED;
@@ -834,4 +830,5 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		this.industryName = industryName;
 	}
 
+	
 }

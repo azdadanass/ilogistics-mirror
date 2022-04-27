@@ -75,7 +75,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c2
 	public StockRow(Double quantity, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
 		super();
 		this.quantity = quantity;
@@ -88,7 +88,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.location = location;
 		this.unitCost = unitCost;
@@ -98,7 +99,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c3
 	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
 		super();
 		this.quantity = quantity;
@@ -111,7 +112,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
@@ -121,7 +123,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c4
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			Double inboundQuantity, Double outboundQuantity) {
 		super();
 		this.quantity = quantity;
@@ -132,7 +134,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundQuantity = inboundQuantity;
 		this.outboundQuantity = outboundQuantity;
 	}
@@ -140,7 +143,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c5 & c13
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			DeliveryRequest deliveryRequest) {
 		super();
 		this.quantity = quantity;
@@ -151,14 +154,15 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.deliveryRequest = deliveryRequest;
 	}
 
 	// c6
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, String partNumberOrangeName) {
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -168,8 +172,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
 		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 	}
 
 	// c7
@@ -192,7 +196,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c9
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName,PartNumberOrange partNumberOrange) {
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
@@ -204,14 +208,15 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 	}
 
 	// c10
 	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName,PartNumberOrange partNumberOrange) {
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -221,14 +226,15 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 	}
 
 	// c12
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
 		super();
 		this.quantity = quantity;
@@ -239,7 +245,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
 		this.qTotalCost = qTotalCost;
@@ -248,7 +255,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c15
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, PartNumberOrange partNumberOrange, //
+			String partNumberBrandName, String partNumberOrangeName, String partNumberOrangeDescription, //
 			Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
 		super();
 		this.quantity = quantity;
@@ -261,7 +268,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
 		this.setPartNumberBrandName(partNumberBrandName);
-		this.setPartNumberOrange(partNumberOrange);
+		this.setPartNumberOrangeName(partNumberOrangeName);
+		this.setPartNumberOrangeDescription(partNumberOrangeDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.qTotalCost = qTotalCost;
 		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
@@ -916,6 +924,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setPartNumberOrangeName(partNumberOrangeName);
+	}
+	
+	@Transient
+	public String getPartNumberOrangeDescription() {
+		return partNumber == null ? null : partNumber.getPartNumberOrangeDescription();
+	}
+
+	@Transient
+	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setPartNumberOrangeDescription(partNumberOrangeDescription);
 	}
 
 	@Transient

@@ -146,6 +146,12 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 					partNumber.setExpiryDuration(null);
 
 				partNumber.calculateState();
+				
+				if(partNumber.getPartNumberOrange()!=null) {
+					partNumber.setPartNumberOrangeName(partNumber.getPartNumberOrange().getName());
+					partNumber.setPartNumberOrangeName(partNumber.getPartNumberOrange().getDescription());
+				}
+				
 				partNumber = partNumberService.save(partNumber);
 				if (isAddPage || isAddFromExcelPage)
 					partNumberHistoryService.created(partNumber);

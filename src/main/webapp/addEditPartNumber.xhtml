@@ -265,9 +265,9 @@
 											<h:outputText value="Internal Part Number" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{partNumberView.partNumber.partNumberOrange}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
+											<p:selectOneMenu value="#{partNumberView.partNumber.internalPartNumber}" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{partNumberOrangeView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												<f:selectItems value="#{internalPartNumberView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</p:selectOneMenu>
 										</div>
 									</div>

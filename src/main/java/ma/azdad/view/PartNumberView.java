@@ -147,9 +147,9 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 
 				partNumber.calculateState();
 				
-				if(partNumber.getPartNumberOrange()!=null) {
-					partNumber.setPartNumberOrangeName(partNumber.getPartNumberOrange().getName());
-					partNumber.setPartNumberOrangeName(partNumber.getPartNumberOrange().getDescription());
+				if(partNumber.getInternalPartNumber()!=null) {
+					partNumber.setInternalPartNumberName(partNumber.getInternalPartNumber().getName());
+					partNumber.setInternalPartNumberName(partNumber.getInternalPartNumber().getDescription());
 				}
 				
 				partNumber = partNumberService.save(partNumber);

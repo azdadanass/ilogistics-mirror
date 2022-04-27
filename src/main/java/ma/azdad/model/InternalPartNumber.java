@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class PartNumberOrange extends GenericModel<Integer> {
+public class InternalPartNumber extends GenericModel<Integer> {
 
 	private String name;
 	private String description;

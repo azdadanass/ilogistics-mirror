@@ -63,13 +63,13 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private String categoryName;
 	private String typeName;
 	private String brandName;
-	private String partNumberOrangeName;
-	private String partNumberOrangeDescription;
+	private String internalPartNumberName;
+	private String internalPartNumberDescription;
 
 	private User user;
 	private PartNumberBrand brand;
 	private PartNumberType partNumberType;
-	private PartNumberOrange partNumberOrange;
+	private InternalPartNumber internalPartNumber;
 
 	private List<PartNumberDetail> detailList = new ArrayList<>();
 	private List<PartNumberFile> fileList = new ArrayList<>();
@@ -144,7 +144,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, name, description, getIndustryName(), getCategoryName(), getTypeName(), getPartNumberOrangeName(), getBrandName());
+		return contains(query, name, description, getIndustryName(), getCategoryName(), getTypeName(), getInternalPartNumberName(), getBrandName());
 	}
 
 	public void addPacking(Packing packing) {
@@ -248,20 +248,20 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		return result;
 	}
 
-	public String getPartNumberOrangeName() {
-		return partNumberOrangeName;
+	public String getInternalPartNumberName() {
+		return internalPartNumberName;
 	}
 
-	public void setPartNumberOrangeName(String partNumberOrangeName) {
-		this.partNumberOrangeName = partNumberOrangeName;
+	public void setInternalPartNumberName(String internalPartNumberName) {
+		this.internalPartNumberName = internalPartNumberName;
 	}
 
-	public String getPartNumberOrangeDescription() {
-		return partNumberOrangeDescription;
+	public String getInternalPartNumberDescription() {
+		return internalPartNumberDescription;
 	}
 
-	public void setPartNumberOrangeDescription(String partNumberOrangeDescription) {
-		this.partNumberOrangeDescription = partNumberOrangeDescription;
+	public void setInternalPartNumberDescription(String internalPartNumberDescription) {
+		this.internalPartNumberDescription = internalPartNumberDescription;
 	}
 
 	@Transient
@@ -770,12 +770,12 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	public PartNumberOrange getPartNumberOrange() {
-		return partNumberOrange;
+	public InternalPartNumber getInternalPartNumber() {
+		return internalPartNumber;
 	}
 
-	public void setPartNumberOrange(PartNumberOrange partNumberOrange) {
-		this.partNumberOrange = partNumberOrange;
+	public void setInternalPartNumber(InternalPartNumber internalPartNumber) {
+		this.internalPartNumber = internalPartNumber;
 	}
 
 	@Id

@@ -10,18 +10,18 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.PartNumberOrange;
-import ma.azdad.repos.PartNumberOrangeRepos;
+import ma.azdad.model.InternalPartNumber;
+import ma.azdad.repos.InternalPartNumberRepos;
 import ma.azdad.service.CacheService;
-import ma.azdad.service.PartNumberOrangeService;
+import ma.azdad.service.InternalPartNumberService;
 
 @ManagedBean
 @Component
 @Scope("view")
-public class PartNumberOrangeView extends GenericView<Integer, PartNumberOrange, PartNumberOrangeRepos, PartNumberOrangeService> {
+public class InternalPartNumberView extends GenericView<Integer, InternalPartNumber, InternalPartNumberRepos, InternalPartNumberService> {
 
 	@Autowired
-	PartNumberOrangeService service;
+	InternalPartNumberService service;
 
 	@Autowired
 	CacheService cacheService;
@@ -29,11 +29,11 @@ public class PartNumberOrangeView extends GenericView<Integer, PartNumberOrange,
 	@Override
 	@PostConstruct
 	public void init() {
-		cacheService.evictCache("partNumberOrangeView");
+		cacheService.evictCache("internalPartNumberView");
 	}
 
-	@Cacheable("partNumberOrangeView.findAll")
-	public List<PartNumberOrange> findAll() {
+	@Cacheable("internalPartNumberView.findAll")
+	public List<InternalPartNumber> findAll() {
 		return service.findAll();
 	}
 

@@ -121,9 +121,9 @@
 								<h:outputText value="#{item.partNumber.name}" />
 							</p:column>
 							<p:column headerText="Internal Part Number">
-								<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
-								<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-									<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+								<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
+								<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 								</p:overlayPanel>
 							</p:column>
 							<p:column headerText="Cost Center" width="190" rendered="#{stockRowView.pageIndex==3}">

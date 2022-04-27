@@ -982,13 +982,13 @@
 														<p:column>
 															<h:outputText value="#{pn.description}" />
 														</p:column>
-														<p:ajax event="itemSelect" update="partNumberOrangeName,description,industry,unit,category,type" />
+														<p:ajax event="itemSelect" update="internalPartNumberName,description,industry,unit,category,type" />
 													</p:autoComplete>
 												</p:column>
 												<p:column headerText="Internal Part Number" width="150">
-													<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
-													<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-														<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+													<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
+													<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+														<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 													</p:overlayPanel>
 												</p:column>
 												<p:column headerText="Description" width="150">
@@ -1085,9 +1085,9 @@
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
 													<p:column headerText="Internal Part Number" width="150">
-														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
-														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
+														<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 														</p:overlayPanel>
 													</p:column>
 													<p:column headerText="Description">
@@ -1140,9 +1140,9 @@
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
 													<p:column headerText="Internal Part Number" width="150">
-														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
-														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
+														<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 														</p:overlayPanel>
 													</p:column>
 													<p:column headerText="Description">
@@ -1217,9 +1217,9 @@
 														<p:inputText value="#{item.partNumber.name}" readonly="true" />
 													</p:column>
 													<p:column headerText="Internal Part Number" width="150">
-														<h:outputText id="partNumberOrangeName" value="#{item.partNumber.partNumberOrangeName}" styleClass="bolder purple" />
-														<p:overlayPanel for="partNumberOrangeName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-															<h:outputText value="#{item.partNumber.partNumberOrangeDescription}" />
+														<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
+														<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+															<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 														</p:overlayPanel>
 													</p:column>
 													<p:column headerText="Description">

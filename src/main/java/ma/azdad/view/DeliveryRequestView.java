@@ -2151,7 +2151,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setOutboundDeliveryRequestReturn(service.findOne(deliveryRequest.getOutboundDeliveryRequestReturnId()));
 		deliveryRequest.setOriginNumber(deliveryRequest.getOutboundDeliveryRequestReturn().getReference());
 		findRemainingDetailListByOutboundDeliveryRequest();
-		deliveryRequest.setProjectId(deliveryRequest.getOutboundDeliveryRequestReturn().getProject().getId());
+		deliveryRequest.setProject(deliveryRequest.getOutboundDeliveryRequestReturn().getProject());
+		deliveryRequest.setProjectId(deliveryRequest.getProject().getId());
 		deliveryRequest.setWarehouse(deliveryRequest.getOutboundDeliveryRequestReturn().getWarehouse());
 		if (deliveryRequest.getOutboundDeliveryRequestReturn().getDestination() != null)
 			deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestReturn().getDestination());

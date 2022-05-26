@@ -58,7 +58,7 @@ public class Acceptance implements Serializable {
 		this.dateAcceptance = dateAcceptance;
 	}
 
-	@Column(name = "numero1", length = 45)
+	@Column(name = "numero", length = 45)
 	public String getNumero() {
 		return this.numero;
 	}

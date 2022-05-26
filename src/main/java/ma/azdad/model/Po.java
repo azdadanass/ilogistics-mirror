@@ -106,7 +106,7 @@ public class Po implements Serializable {
 		this.supplier = supplier;
 	}
 
-	@Column(name = "numero1", length = 45)
+	@Column(name = "numero", length = 45,insertable = false, updatable = false)
 	public String getNumeroIbuy() {
 		return numeroIbuy;
 	}

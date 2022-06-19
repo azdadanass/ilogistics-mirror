@@ -18,6 +18,7 @@ public class Customer implements Serializable {
 	private Integer id;
 	private String photo;
 	private String name;
+	private Boolean isCustomer;
 	private String category;
 	private String description;
 
@@ -259,6 +260,15 @@ public class Customer implements Serializable {
 
 	public void setIsStockEmpty(Boolean isStockEmpty) {
 		this.isStockEmpty = isStockEmpty;
+	}
+	
+	@Column(name = "new_type")
+	public Boolean getIsCustomer() {
+		return isCustomer;
+	}
+
+	public void setIsCustomer(Boolean isCustomer) {
+		this.isCustomer = isCustomer;
 	}
 
 }

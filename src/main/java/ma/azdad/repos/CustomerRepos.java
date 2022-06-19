@@ -16,7 +16,7 @@ public interface CustomerRepos extends JpaRepository<Customer, Integer> {
 	@Query("select new ma.azdad.utils.LabelValue(name,id,'customer') from  Customer")
 	public List<LabelValue> findLabelValueList();
 
-	@Query("select new Customer(id,name,photo,isStockEmpty) from Customer")
+	@Query("select new Customer(id,name,photo,isStockEmpty) from Customer where isCustomer is true")
 	public List<Customer> findLight();
 
 	@Query("select new Customer(id,name,photo,isStockEmpty) from Customer where id in (?1)")

@@ -368,6 +368,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.origin = template.getOrigin();
 		this.destination = template.getDestination();
 		this.originNumber = template.getOriginNumber();
+		this.ownerType = template.getOwnerType();
 		this.customer = template.getCustomer();
 		this.supplier = template.getSupplier();
 		this.company = template.getCompany();

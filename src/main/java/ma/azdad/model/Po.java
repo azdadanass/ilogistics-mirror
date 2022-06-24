@@ -134,6 +134,7 @@ public class Po implements Serializable {
 		this.project = project;
 	}
 
+	@Column(name="old_type")
 	public String getType() {
 		return type;
 	}

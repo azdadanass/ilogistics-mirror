@@ -1957,6 +1957,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setDestinationProject(projectService.findOne2(deliveryRequest.getDestinationProjectId()));
 //		Integer destinationCustomerId = projectService.getCustomerId(deliveryRequest.getDestinationProjectId());
 		Integer destinationCustomerId = deliveryRequest.getDestinationProject().getCustomer().getId();
+		deliveryRequest.setEndCustomerId(destinationCustomerId);
 
 		Boolean isProjectStock = ProjectTypes.STOCK.getValue().equals(projectService.getType(deliveryRequest.getProjectId()));
 		if (!isProjectStock && deliveryRequest.getProjectId() != null && !deliveryRequest.getProjectId().equals(deliveryRequest.getDestinationProjectId())) {

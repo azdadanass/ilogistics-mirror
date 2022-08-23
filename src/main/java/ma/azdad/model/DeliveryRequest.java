@@ -178,8 +178,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.crossChargeId = crossChargeId;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4, Double qTotalCost,
-			Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4,
+			Double qTotalCost, Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -193,8 +193,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Project destinationProject,
-			String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project,
+			Project destinationProject, String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -215,9 +215,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
-			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate, String originName,
-			String customerName, String supplierName, String companyName, Warehouse warehouse, String transporterName1, String transporterName2, Long transportationRequestNumber,
-			Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
+			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
+			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String transporterName1, String transporterName2,
+			Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -327,27 +327,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && getReference() != null)
-			result = getReference().toLowerCase().contains(query);
-		if (!result && smsRef != null)
-			result = smsRef.toLowerCase().contains(query);
-		if (!result && project != null && project.getName() != null)
-			result = project.getName().toLowerCase().contains(query);
-		if (!result && destinationProject != null && destinationProject.getName() != null)
-			result = destinationProject.getName().toLowerCase().contains(query);
-		if (!result && description != null)
-			result = description.toLowerCase().contains(query);
-		if (!result && requester != null && requester.getFullName() != null)
-			result = requester.getFullName().toLowerCase().contains(query);
-		if (!result && originNumber != null)
-			result = originNumber.toLowerCase().contains(query);
-		if (!result && ownerName != null)
-			result = ownerName.toLowerCase().contains(query);
-		if (!result && getSubType() != null)
-			result = getSubType().toLowerCase().contains(query);
-
-		return result;
+		return contains(query, getReference(),smsRef,getProjectName(),getDestinationProjectName(),description,getRequesterFullName(),originNumber,ownerName,getSubType());
 	}
 
 	public void copyFromTemplate(DeliveryRequest template) {
@@ -1027,6 +1007,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getRequesterFullName() {
+		return requester == null ? null : requester.getFullName();
 	}
 
 	@Transient

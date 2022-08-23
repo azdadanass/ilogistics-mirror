@@ -345,7 +345,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.description = template.description;
 		this.smsRef = template.smsRef;
 		this.priority = template.getPriority();
-		this.neededDeliveryDate = template.getNeededDeliveryDate();
+//		this.neededDeliveryDate = template.getNeededDeliveryDate();
 		this.origin = template.getOrigin();
 		this.destination = template.getDestination();
 		this.originNumber = template.getOriginNumber();

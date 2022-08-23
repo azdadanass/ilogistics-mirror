@@ -216,7 +216,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
-			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String transporterName1, String transporterName2,
+			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse,String destinationProjectName, String transporterName1, String transporterName2,
 			Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
 		super(id);
 		this.description = description;
@@ -242,6 +242,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.smsRef = smsRef;
 		this.containsBoqMapping = containsBoqMapping;
 		this.missingPo = missingPo;
+		this.setDestinationProjectName(destinationProjectName);
 	}
 
 	public DeliveryRequest(DeliveryRequestType type, User requester) {

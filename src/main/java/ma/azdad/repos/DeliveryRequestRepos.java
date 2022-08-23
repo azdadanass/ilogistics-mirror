@@ -24,10 +24,11 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String supplierName = "(select b.name from Supplier b where a.supplier.id = b.id)";
 	String companyName = "(select b.name from Company b where a.company.id = b.id)";
 	String warehouse = "(select b from Warehouse b where b.id = a.warehouse.id)";
+	String destinationProjectName = "(select b.name from Project b where b.id = a.destinationProject.id)";
 	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
-	String select1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + "," + transporterName1 + "," + transporterName2 + ","
+	String select1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","+destinationProjectName + "," + transporterName1 + "," + transporterName2 + ","
 			+ transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo) ";
 	String select2 = "select count(*) ";
 

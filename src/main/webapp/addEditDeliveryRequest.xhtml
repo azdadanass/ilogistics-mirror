@@ -121,7 +121,8 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="is for transfer field should not be null" styleClass="col-xs-12 col-sm-6">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="is for transfer field should not be null"
+														styleClass="col-xs-12 col-sm-6">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 													</h:selectOneMenu>
@@ -142,7 +143,8 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForReturn}" required="true" requiredMessage="is for return field should not be null" styleClass="col-xs-12 col-sm-6">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForReturn}" required="true" requiredMessage="is for return field should not be null"
+														styleClass="col-xs-12 col-sm-6">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 														<p:ajax update=":main_form:step1:returnReason" />
@@ -165,8 +167,8 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
-														rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null"
+														styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItem itemLabel="Repair &amp; Return" itemValue="Repair &amp; Return" />
 														<f:selectItem itemLabel="Training" itemValue="Training" />
@@ -175,8 +177,8 @@
 														<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
 														<f:selectItem itemLabel="Other" itemValue="Other" />
 													</h:selectOneMenu>
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
-														rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null"
+														styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItem itemLabel="Payment Issue" itemValue="Payment Issue" />
 														<f:selectItem itemLabel="Physical Damage" itemValue="Physical Damage" />
@@ -256,8 +258,8 @@
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
 											<p:inputText value="#{deliveryRequestView.deliveryRequest.project.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
-											<p:selectOneMenu id="project" value="#{deliveryRequestView.deliveryRequest.projectId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-												requiredMessage="Project should not be null" rendered="#{deliveryRequestView.isAddPage}"
+											<p:selectOneMenu id="project" value="#{deliveryRequestView.deliveryRequest.projectId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+												required="true" requiredMessage="Project should not be null" rendered="#{deliveryRequestView.isAddPage}"
 												disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType or InboundType.TRANSFER==deliveryRequestView.deliveryRequest.inboundType}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{projectView.findLightByResource(deliveryRequestView.deliveryRequest.type)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
@@ -281,12 +283,14 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
-													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.destinationProjectId}" styleClass="col-xs-12 col-sm-6" required="true" filter="true" filterMatchMode="contains"
-														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" styleClass="col-xs-12 col-sm-6" readonly="true"
+														rendered="#{!deliveryRequestView.isAddPage}" />
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.destinationProjectId}" styleClass="col-xs-12 col-sm-6" required="true" filter="true"
+														filterMatchMode="contains" requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{projectView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm" />
+														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}"
+															update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -327,8 +331,10 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}" />
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isInbound}" />
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice}" styleClass="col-xs-12 col-sm-6" readonly="true"
+														rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}" />
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy}" styleClass="col-xs-12 col-sm-6" readonly="true"
+														rendered="#{!deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isInbound}" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.poId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
 														rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.deliveryRequest.isOutbound}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
@@ -359,11 +365,12 @@
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
 													<p:inputText value="#{deliveryRequestView.deliveryRequest.warehouse.name}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{!deliveryRequestView.isAddPage}" />
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.warehouse}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Warehouse should not be null"
-														converter="#{genericSecuredConverter}" rendered="#{deliveryRequestView.isAddPage}" disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType}">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.warehouse}" styleClass="col-xs-12 col-sm-6" required="true"
+														requiredMessage="Warehouse should not be null" converter="#{genericSecuredConverter}" rendered="#{deliveryRequestView.isAddPage}"
+														disabled="#{InboundType.RETURN==deliveryRequestView.deliveryRequest.inboundType}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{warehouseView.find(deliveryRequestView.deliveryRequest.type,deliveryRequestView.deliveryRequest.projectId)}" var="item" itemLabel="#{item.name}"
-															itemValue="#{item}" />
+														<f:selectItems value="#{warehouseView.find(deliveryRequestView.deliveryRequest.type,deliveryRequestView.deliveryRequest.projectId)}" var="item"
+															itemLabel="#{item.name}" itemValue="#{item}" />
 														<p:ajax listener="#{deliveryRequestView.findRemainingDetailListByProjectAndWarehouse()}" />
 													</h:selectOneMenu>
 													<br />
@@ -386,8 +393,8 @@
 													<p:selectOneMenu id="externalRequester" value="#{deliveryRequestView.deliveryRequest.tmpExternalRequesterUsername}" styleClass="col-xs-12 col-sm-6" filter="true"
 														filterMatchMode="contains">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findLightByCompany(companyView.findIdByProject(deliveryRequestView.deliveryRequest.projectId),true)}" var="item" itemLabel="#{item.fullName}"
-															itemValue="#{item.username}" />
+														<f:selectItems value="#{userView.findLightByCompany(companyView.findIdByProject(deliveryRequestView.deliveryRequest.projectId),true)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -502,7 +509,8 @@
 									</div>
 									<div class="space-8" />
 								</f:subview>
-								<f:subview id="subview1" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+								<f:subview id="subview1"
+									rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
 									<div class="row">
 										<div class="col-xs-12 col-sm-3">
 											<label class="control-label pull-right">
@@ -528,13 +536,13 @@
 										</div> -->
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<span class="input-icon input-icon-right pointer" onclick="selectOrigin()" style="cursor: pointer">
-													<p:inputText id="origin" value="#{deliveryRequestView.deliveryRequest.origin.name}" readonly="true" />
-													<i class="ace-icon fa fa-edit green pointer #{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer?'hide':''}"
+												<span class="input-icon input-icon-right pointer" onclick="selectOrigin()" style="cursor: pointer"> <p:inputText id="origin"
+														value="#{deliveryRequestView.deliveryRequest.origin.name}" readonly="true" /> <i
+														class="ace-icon fa fa-edit green pointer #{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer?'hide':''}"
 														onclick="selectOrigin()" />
 												</span>
-												<p:remoteCommand name="selectOrigin" actionListener="#{deliveryRequestView.setSelectOrigin(true)}" oncomplete="PF('selectSiteDlg').show()" update=":selectSiteForm" partialSubmit="true"
-													process="@this" rendered="#{!(deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer)}" />
+												<p:remoteCommand name="selectOrigin" actionListener="#{deliveryRequestView.setSelectOrigin(true)}" oncomplete="PF('selectSiteDlg').show()" update=":selectSiteForm"
+													partialSubmit="true" process="@this" rendered="#{!(deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer)}" />
 												<br />
 											</div>
 										</div>
@@ -564,11 +572,10 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:inputText value="#{deliveryRequestView.deliveryRequest.ownerType.value}" readonly="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" />
-												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6"
-													rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+												<p:inputText value="#{deliveryRequestView.deliveryRequest.ownerType.value}" readonly="true" rendered="#{!deliveryRequestView.canFillOwnerType()}" />
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ownerType}" styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.canFillOwnerType()}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{deliveryRequestView.ownerTypeList}" var="item" itemLabel="#{item.value}" itemValue="#{item}"/>
+													<f:selectItems value="#{deliveryRequestView.ownerTypeList}" var="item" itemLabel="#{item.value}" itemValue="#{item}" />
 													<p:ajax listener="#{deliveryRequestView.changeOwnerTypeListener()}" update="owner" />
 												</h:selectOneMenu>
 												<br />
@@ -587,17 +594,19 @@
 												<h:panelGroup id="owner">
 													<p:inputText value="#{deliveryRequestView.deliveryRequest.company.name}" readonly="true"
 														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}" />
-													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-														required="true" requiredMessage="Owner should not be null"
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.companyId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														converter="#{genericSecuredConverter}" required="true" requiredMessage="Owner should not be null"
 														disabled="#{(deliveryRequestView.deliveryRequest.isInboundReturn and deliveryRequestView.deliveryRequest.owner!=null) or (deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId))}"
 														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.COMPANY and !projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}"
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.customer.name}" readonly="true"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.CUSTOMER}"
 														disabled="deliveryRequestView.deliveryRequest.isInbound and projectView.isCustomerProject(deliveryRequestView.deliveryRequest.projectId)" />
-													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.supplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-														required="true" requiredMessage="Owner should not be null" rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.SUPPLIER}">
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.supplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+														converter="#{genericSecuredConverter}" required="true" requiredMessage="Owner should not be null"
+														rendered="#{deliveryRequestView.deliveryRequest.ownerType==CompanyType.SUPPLIER}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
@@ -608,7 +617,8 @@
 									</div>
 									<div class="space-8" />
 								</f:subview>
-								<f:subview id="subview2" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
+								<f:subview id="subview2"
+									rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
 									<div class="row">
 										<div class="col-xs-12 col-sm-3">
 											<label class="control-label pull-right">
@@ -635,7 +645,8 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="'Deliver to' type should not be null">
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true"
+													requiredMessage="'Deliver to' type should not be null">
 													<f:selectItem itemLabel="---" itemValue="#{null}" />
 													<f:selectItems value="#{DeliverToType.ALL_ENUM_VALUES}" />
 													<p:ajax listener="#{deliveryRequestView.changeDeliverToTypeListener()}" update="deliverTo" />
@@ -655,8 +666,8 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" converter="#{genericSecuredConverter}"
-															var="r">
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
@@ -665,7 +676,7 @@
 															<p:column>
 																<h:outputText value="#{r.cin}" />
 															</p:column>
-															<p:ajax listener="#{deliveryRequestView.changeInternalResourceListener()}" update="deliverToCompany"/>
+															<p:ajax listener="#{deliveryRequestView.changeInternalResourceListener()}" update="deliverToCompany" />
 														</p:selectOneMenu>
 														<br />
 													</div>
@@ -680,7 +691,7 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<p:inputText id="deliverToCompany" value="#{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true"/>
+														<p:inputText id="deliverToCompany" value="#{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true" />
 														<!-- <p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompany}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
 															converter="#{genericSecuredConverter}" required="true" requiredMessage="Internal Company should not be null">
 															<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
@@ -721,8 +732,8 @@
 														</div>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-																	requiredMessage="External Customer should not be null">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+																	required="true" requiredMessage="External Customer should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
@@ -741,10 +752,11 @@
 														</div>
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
-																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-																	requiredMessage="External Customer should not be null">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+																	required="true" requiredMessage="External Customer should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
-																	<f:selectItems value="#{supplierView.findByHavingActiveProjectAssignment(deliveryRequestView.deliveryRequest.destinationProjectId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+																	<f:selectItems value="#{supplierView.findByHavingActiveProjectAssignment(deliveryRequestView.deliveryRequest.destinationProjectId)}" var="item"
+																		itemLabel="#{item.name}" itemValue="#{item.id}" />
 																	<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
 																</p:selectOneMenu>
 																<br />
@@ -782,7 +794,8 @@
 														<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
 															converter="#{genericSecuredConverter}" var="r">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
-															<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
+															<f:selectItems
+																value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
 																var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
 																<h:outputText value="#{r.fullName}" />
@@ -824,12 +837,11 @@
 										</div> -->
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<span class="input-icon input-icon-right pointer" onclick="selectDestination()" style="cursor: pointer">
-													<p:inputText id="destination" value="#{deliveryRequestView.deliveryRequest.destination.name}" readonly="true" />
-													<i class="ace-icon fa fa-edit green pointer" onclick="selectDestination()" />
+												<span class="input-icon input-icon-right pointer" onclick="selectDestination()" style="cursor: pointer"> <p:inputText id="destination"
+														value="#{deliveryRequestView.deliveryRequest.destination.name}" readonly="true" /> <i class="ace-icon fa fa-edit green pointer" onclick="selectDestination()" />
 												</span>
-												<p:remoteCommand name="selectDestination" actionListener="#{deliveryRequestView.setSelectOrigin(false)}" action="#{siteView.refreshList()}" oncomplete="PF('selectSiteDlg').show()"
-													update=":selectSiteForm" partialSubmit="true" process="@this" />
+												<p:remoteCommand name="selectDestination" actionListener="#{deliveryRequestView.setSelectOrigin(false)}" action="#{siteView.refreshList()}"
+													oncomplete="PF('selectSiteDlg').show()" update=":selectSiteForm" partialSubmit="true" process="@this" />
 												<br />
 											</div>
 										</div>
@@ -890,7 +902,8 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<h:selectOneMenu id="preferedLocation" value="#{deliveryRequestView.deliveryRequest.preferedLocation}" styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}">
+												<h:selectOneMenu id="preferedLocation" value="#{deliveryRequestView.deliveryRequest.preferedLocation}" styleClass="col-xs-12 col-sm-6"
+													converter="#{genericSecuredConverter}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 												</h:selectOneMenu>
@@ -907,8 +920,9 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:inputNumber value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" required="true" requiredMessage="Approximative Storage Period should not be null"
-													styleClass="col-xs-12 col-sm-6" style="width : 100%" decimalPlaces="0" thousandSeparator="" placeholder="Days" />
+												<p:inputNumber value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" required="true"
+													requiredMessage="Approximative Storage Period should not be null" styleClass="col-xs-12 col-sm-6" style="width : 100%" decimalPlaces="0" thousandSeparator=""
+													placeholder="Days" />
 												<br />
 											</div>
 										</div>
@@ -960,12 +974,14 @@
 											</f:subview>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+												rowIndexVar="rowIndexVar"
 												rendered="#{(deliveryRequestView.deliveryRequest.isInboundNew and deliveryRequestView.deliveryRequest.poId==null) or deliveryRequestView.deliveryRequest.isXbound}">
 												<p:column headerText="Part Number" width="150">
-													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
-														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn"
+														itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
+														rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<p:column>
 															<h:outputText value="#{pn.name}" />
 														</p:column>
@@ -974,8 +990,9 @@
 														</p:column>
 														<p:ajax event="itemSelect" update="description,industry,unit,category,type" />
 													</p:autoComplete>
-													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}"
-														itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+													<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber2}" var="pn"
+														itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
+														rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 														<p:column>
 															<h:outputText value="#{pn.name}" />
 														</p:column>
@@ -1020,21 +1037,23 @@
 												</p:column>
 												<f:facet name="footer">
 													<div class="action-buttons center">
-														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.addDetail()}" update="inbound_tab" partialSubmit="true" process="inbound_tab"
-															rendered="#{deliveryRequestView.canAddDetail()}">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.addDetail()}" update="inbound_tab" partialSubmit="true"
+															process="inbound_tab" rendered="#{deliveryRequestView.canAddDetail()}">
 															<i class="fa fa-plus green" />
 														</p:commandLink>
-														<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()" partialSubmit="true"
-															process="inbound_tab" rendered="#{deliveryRequestView.canAddDetail()}">
+														<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()"
+															partialSubmit="true" process="inbound_tab" rendered="#{deliveryRequestView.canAddDetail()}">
 															<i class="fa fa-file-excel-o blue" />
 														</p:commandLink>
 													</div>
 												</f:facet>
 											</p:dataTable>
-											<f:subview id="inbound_po_subview" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.isPoNeeded and deliveryRequestView.deliveryRequest.poId !=null}">
+											<f:subview id="inbound_po_subview"
+												rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.isPoNeeded and deliveryRequestView.deliveryRequest.poId !=null}">
 												<p:dataTable id="inbound_po_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.partNumberId}"
-													selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox">
+													selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+													rowSelectMode="checkbox">
 													<p:ajax event="rowSelect" process="@this" update="inbound_po_tab" />
 													<p:ajax event="rowUnselect" process="@this" update="inbound_po_tab" />
 													<p:ajax event="rowSelectCheckbox" process="@this" update="inbound_po_tab" />
@@ -1053,18 +1072,19 @@
 														</h:outputText>
 													</p:column>
 													<p:column headerText="Quantity">
-														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}"
+															rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
 															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" />
 														</p:inputNumber>
 													</p:column>
 													<f:facet name="footer">
 														<div class="action-buttons center">
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_po_tab" partialSubmit="true"
-																process="inbound_po_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_po_tab"
+																partialSubmit="true" process="inbound_po_tab">
 																<i class="fa fa-sort-desc red" />
 															</p:commandLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
-																update="inbound_po_tab" partialSubmit="true" process="inbound_po_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities"
+																action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}" update="inbound_po_tab" partialSubmit="true" process="inbound_po_tab">
 																<i class="fa fa-sort-asc green" />
 															</p:commandLink>
 														</div>
@@ -1072,9 +1092,10 @@
 												</p:dataTable>
 											</f:subview>
 											<f:subview id="inbound_r_subview" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn or deliveryRequestView.deliveryRequest.isInboundTransfer}">
-												<p:dataTable id="inbound_r_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}" selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}"
-													var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-													paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox">
+												<p:dataTable id="inbound_r_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}"
+													selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+													rowSelectMode="checkbox">
 													<p:ajax event="rowSelect" process="@this" update="inbound_r_tab" />
 													<p:ajax event="rowUnselect" process="@this" update="inbound_r_tab" />
 													<p:ajax event="rowSelectCheckbox" process="@this" update="inbound_r_tab" />
@@ -1099,7 +1120,8 @@
 														</h:outputText>
 													</p:column>
 													<p:column headerText="Quantity">
-														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}"
+															rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
 															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" />
 														</p:inputNumber>
 													</p:column>
@@ -1109,16 +1131,17 @@
 																process="inbound_r_tab" >
 																<i class="fa fa-file-excel-o blue" />
 															</p:commandLink> -->
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.initAddDetailForInboundTransfer()}" update=":addDetailType3Form"
-																oncomplete="PF('addDetailType3Dlg').show()" partialSubmit="true" process="inbound_r_tab" rendered="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" action="#{deliveryRequestView.initAddDetailForInboundTransfer()}"
+																update=":addDetailType3Form" oncomplete="PF('addDetailType3Dlg').show()" partialSubmit="true" process="inbound_r_tab"
+																rendered="#{deliveryRequestView.deliveryRequest.isInboundTransfer}">
 																<i class="fa fa-plus green" />
 															</p:commandLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_r_tab" partialSubmit="true"
-																process="inbound_r_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="inbound_r_tab"
+																partialSubmit="true" process="inbound_r_tab">
 																<i class="fa fa-sort-desc red" />
 															</p:commandLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
-																update="inbound_r_tab" partialSubmit="true" process="inbound_r_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities"
+																action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}" update="inbound_r_tab" partialSubmit="true" process="inbound_r_tab">
 																<i class="fa fa-sort-asc green" />
 															</p:commandLink>
 														</div>
@@ -1126,10 +1149,10 @@
 												</p:dataTable>
 											</f:subview>
 											<f:subview id="outbound" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
-												<p:dataTable id="outbound_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}" selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}"
-													var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-													paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox"
-													rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
+												<p:dataTable id="outbound_tab" value="#{deliveryRequestView.deliveryRequestDetailList2}" rowKey="#{item.key}"
+													selection="#{deliveryRequestView.deliveryRequestDetailSelectionList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+													rowSelectMode="checkbox" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
 													<p:ajax event="rowSelect" process="@this" update="outbound_tab" />
 													<p:ajax event="rowUnselect" process="@this" update="outbound_tab" />
 													<p:ajax event="rowSelectCheckbox" process="@this" update="outbound_tab" />
@@ -1163,7 +1186,8 @@
 														</h:outputText>
 													</p:column>
 													<p:column headerText="Quantity">
-														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}" rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
+														<p:inputNumber value="#{item.quantity}" thousandSeparator="" maxValue="#{item.remainingQuantity}"
+															rendered="#{deliveryRequestView.deliveryRequestDetailSelectionList.contains(item)}">
 															<p:ajax listener="#{deliveryRequestView.message()}" event="blur" update="packingQuantity" />
 														</p:inputNumber>
 													</p:column>
@@ -1175,16 +1199,16 @@
 													</p:column>
 													<f:facet name="footer">
 														<div class="action-buttons center">
-															<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()" partialSubmit="true"
-																process="outbound_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-info" title="Add From Excel Template" update=":addFromExcelForm" oncomplete="PF('addFromExcelDlg').show()"
+																partialSubmit="true" process="outbound_tab">
 																<i class="fa fa-file-excel-o blue" />
 															</p:commandLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="outbound_tab" partialSubmit="true"
-																process="outbound_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to zero" action="#{deliveryRequestView.setQuantitiesToZero()}" update="outbound_tab"
+																partialSubmit="true" process="outbound_tab">
 																<i class="fa fa-sort-desc red" />
 															</p:commandLink>
-															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities" action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}"
-																update="outbound_tab" partialSubmit="true" process="outbound_tab">
+															<p:commandLink styleClass="aa-tooltip tooltip-success" title="Set quantities to Remaining quantities"
+																action="#{deliveryRequestView.setQuantitiesToRemainingQuantities()}" update="outbound_tab" partialSubmit="true" process="outbound_tab">
 																<i class="fa fa-sort-asc green" />
 															</p:commandLink>
 														</div>
@@ -1210,8 +1234,8 @@
 												</div>
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
-												<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
+												<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
 													rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type or DeliveryRequestType.XBOUND==deliveryRequestView.deliveryRequest.type}">
 													<p:column headerText="Part Number" width="150">
 														<p:inputText value="#{item.partNumber.name}" readonly="true" />
@@ -1316,8 +1340,9 @@
 											<h:outputText value=" Notification List" />
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable id="notification_tab" value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:dataTable id="notification_tab" value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+												rowIndexVar="rowIndexVar">
 												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
 													<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 														<f:param name="fileName" value="#{item.photo}" />
@@ -1349,15 +1374,16 @@
 												</p:column>
 												<p:column headerText="Actions" styleClass="center" width="100">
 													<div class="action-buttons center">
-														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true" process="notification_tab">
+														<p:commandLink title="Remove row" action="#{deliveryRequestView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true"
+															process="notification_tab">
 															<i class="ace-icon fa fa-remove bigger-130 red" />
 														</p:commandLink>
 													</div>
 												</p:column>
 												<f:facet name="footer">
 													<div class="action-buttons center">
-														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()" partialSubmit="true"
-															process="notification_tab">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()"
+															partialSubmit="true" process="notification_tab">
 															<i class="fa fa-plus green" />
 														</p:commandLink>
 													</div>

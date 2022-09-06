@@ -507,6 +507,19 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			company = new Company();
 		company.setId(companyId);
 	}
+	
+	@Transient
+	public Integer getCustomerId() {
+		return customer == null ? null : customer.getId();
+	}
+
+	@Transient
+	public void setCustomerId(Integer customerId) {
+		if (customer == null || !customer.getId().equals(customerId))
+			customer = new Customer();
+		customer.setId(customerId);
+	}
+
 
 	@Transient
 	public Integer getSupplierId() {

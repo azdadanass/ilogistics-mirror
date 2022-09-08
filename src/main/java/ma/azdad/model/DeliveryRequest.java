@@ -728,6 +728,20 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return null;
 		return toUser.getFullName();
 	}
+	
+	@Transient
+	public Integer getOwnerId() {
+		switch (ownerType) {
+		case COMPANY:
+			return company.getId();
+		case CUSTOMER:
+			return customer.getId();
+		case SUPPLIER:
+			return supplier.getId();
+		default:
+			return null;
+		}
+	}
 
 	@Transient
 	public String getOwnerName() {

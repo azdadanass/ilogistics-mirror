@@ -1343,6 +1343,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			}
 			if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer()) {
 				findRemainingDetailListByOutboundDeliveryRequest();
+				System.out.println("FFFFFFFFFFFFF " + deliveryRequest.getOwnerType());
+				System.out.println("FFFFFFFFFFFFF " + deliveryRequest.getOwnerId());
+
+				deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream(). //
+						filter(i -> deliveryRequest.getOwnerType().equals(i.getTmpOwnerType()) && deliveryRequest.getOwnerId().equals(i.getTmpOwnerId()))
+						.collect(Collectors.toList());
+
 				fillDetailSelectionList();
 			}
 			break;
@@ -1827,15 +1834,22 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public List<CompanyType> getOwnerTypeList() {
-		List<CompanyType> result = new ArrayList<CompanyType>();
-		if (deliveryRequest.getProject().getCompanyWarehousing())
-			result.add(CompanyType.COMPANY);
-		if (deliveryRequest.getProject().getCustomerWarehousing())
-			result.add(CompanyType.CUSTOMER);
-		if (deliveryRequest.getProject().getSupplierWarehousing())
-			result.add(CompanyType.SUPPLIER);
-
-		return result;
+		switch (deliveryRequest.getInboundType()) {
+		case NEW:
+			List<CompanyType> result = new ArrayList<CompanyType>();
+			if (deliveryRequest.getProject().getCompanyWarehousing())
+				result.add(CompanyType.COMPANY);
+			if (deliveryRequest.getProject().getCustomerWarehousing())
+				result.add(CompanyType.CUSTOMER);
+			if (deliveryRequest.getProject().getSupplierWarehousing())
+				result.add(CompanyType.SUPPLIER);
+			return result;
+		case RETURN:
+			return stockRowService.findOwnerTypeListByDeliveryRequest(outboundDeliveryRequestId);
+		case TRANSFER:
+			return stockRowService.findOwnerTypeListByDeliveryRequest(outboundDeliveryRequestId);
+		}
+		return null;
 	}
 
 	// DELETE DELIVERYREQUEST

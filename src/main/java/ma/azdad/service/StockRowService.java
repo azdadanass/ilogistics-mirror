@@ -573,4 +573,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRowRepos.countTransferredStockRowList(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
+	public List<CompanyType> findOwnerTypeListByDeliveryRequest(Integer deliveryRequestId){
+		return stockRowRepos.findOwnerTypeListByDeliveryRequest(deliveryRequestId); 
+	}
 }

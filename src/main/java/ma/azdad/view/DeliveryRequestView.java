@@ -1343,9 +1343,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			}
 			if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer()) {
 				findRemainingDetailListByOutboundDeliveryRequest();
-				System.out.println("FFFFFFFFFFFFF " + deliveryRequest.getOwnerType());
-				System.out.println("FFFFFFFFFFFFF " + deliveryRequest.getOwnerId());
-
 				deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream(). //
 						filter(i -> deliveryRequest.getOwnerType().equals(i.getTmpOwnerType()) && deliveryRequest.getOwnerId().equals(i.getTmpOwnerId()))
 						.collect(Collectors.toList());

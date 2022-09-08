@@ -29,7 +29,8 @@
 						</div>
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" rendered="#{!deliveryRequestView.canEditDestinationProject()}" />
-							<p:commandLink update=":editDestinationProjectForm" styleClass="editable-click" oncomplete="PF('editDestinationProjectDlg').show()" rendered="#{deliveryRequestView.canEditDestinationProject()}">
+							<p:commandLink update=":editDestinationProjectForm" styleClass="editable-click" oncomplete="PF('editDestinationProjectDlg').show()"
+								rendered="#{deliveryRequestView.canEditDestinationProject()}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.destinationProject.name}" />
 								<h:outputText value="None" rendered="#{deliveryRequestView.deliveryRequest.destinationProject==null}" />
 							</p:commandLink>
@@ -104,7 +105,8 @@
 					</div>
 					<div class="profile-info-value">
 						<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationNeeded?'Yes':'No'}" rendered="#{!deliveryRequestView.canUpdateTransportationNeeded()}" />
-						<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateTransportationNeeded()}">
+						<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+							rendered="#{deliveryRequestView.canUpdateTransportationNeeded()}">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationNeeded?'Yes':'No'}" />
 							<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
 								<f:selectItem itemLabel="Yes" itemValue="true" />
@@ -116,6 +118,17 @@
 						&nbsp;
 					</div>
 				</div>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound()}">
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Owner" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.ownerName}" />
+							&nbsp;
+						</div>
+					</div>
+				</f:subview>
 				<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
@@ -201,7 +214,8 @@
 							<h:outputText value="Appr Storage Period" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days" rendered="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod!=null}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days"
+								rendered="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod!=null}" />
 							&nbsp;
 						</div>
 					</div>
@@ -245,10 +259,12 @@
 						</div>
 						<div class="profile-info-value">
 							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isOutbound}">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice} - #{customerView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}" styleClass="orange bolder" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice} - #{customerView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}"
+									styleClass="orange bolder" />
 							</f:subview>
 							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isInbound}">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy} - #{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}" styleClass="orange bolder" />
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy} - #{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}"
+									styleClass="orange bolder" />
 							</f:subview>
 							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">
 								<h:outputText value="None" styleClass="grey bolder" />
@@ -266,7 +282,8 @@
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.requestDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateRequestDate()}">
 								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
-							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateRequestDate()}">
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								rendered="#{deliveryRequestView.canUpdateRequestDate()}">
 								<p:calendar value="#{deliveryRequestView.deliveryRequest.requestDate}" navigator="true" pattern="yyyy-MM-dd HH:mm">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
@@ -291,7 +308,8 @@
 						<div class="profile-info-value">
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.sdm?'Yes':'No'}" styleClass="bolder #{deliveryRequestView.deliveryRequest.sdm?'green':'orange'}"
 								rendered="#{!deliveryRequestView.canEditSdm()}" />
-							<p:inplace editor="true" styleClass="editable-click green " saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canEditSdm()}">
+							<p:inplace editor="true" styleClass="editable-click green " saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								rendered="#{deliveryRequestView.canEditSdm()}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.sdm?'Yes':'No'}" />
 								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}">
 									<f:selectItem itemLabel="Yes" itemValue="true" />
@@ -319,7 +337,8 @@
 							<h:outputText value="TR Status" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationRequest.status.value}" styleClass="#{deliveryRequestView.deliveryRequest.transportationRequest.status.color}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.transportationRequest.status.value}"
+								styleClass="#{deliveryRequestView.deliveryRequest.transportationRequest.status.color}" />
 							&nbsp;
 						</div>
 					</div>
@@ -398,7 +417,8 @@
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateNeededDeliveryDate()}">
 								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
-							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
 								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" mindate="#{utilsView.currentDate}">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
@@ -493,7 +513,8 @@
 							<h:outputText value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" styleClass="purple bolder" rendered="#{!deliveryRequestView.canUpdateNeededDeliveryDate()}">
 								<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 							</h:outputText>
-							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								rendered="#{deliveryRequestView.canUpdateNeededDeliveryDate()}">
 								<p:calendar value="#{deliveryRequestView.deliveryRequest.neededDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" mindate="#{utilsView.currentDate}">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</p:calendar>
@@ -565,8 +586,9 @@
 				</div>
 			</div>
 			<div class="col-sm-12 col-xs-12 aa-datatable-container">
-				<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" id="main_tab" widgetVar="main_tab" var="item" rows="50" styleClass="table table-striped table-hover center"
-					paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+				<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" id="main_tab" widgetVar="main_tab" var="item" rows="50"
+					styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 					<p:column headerText="Part Number" width="150">
 						<h:outputLink id="pn" value="viewPartNumber.xhtml" target="blank">
 							<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
@@ -635,7 +657,8 @@
 							<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
 						</h:outputLink>
 					</p:column>
-					<p:column headerText="Inbound Date" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+					<p:column headerText="Inbound Date" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="100"
+						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.inboundDeliveryRequest.date4}" styleClass="bolder green">
 							<f:convertDateTime pattern="yyyy-MM-dd" />
 						</h:outputText>
@@ -644,7 +667,8 @@
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.originNumber}" />
 					</p:column>
-					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="60" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="60"
+						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.status.value}" />
 					</p:column>
 					<p:column headerText="Unit / Kit" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
@@ -665,11 +689,12 @@
 					<p:column headerText="Type" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.partNumber.typeName}" styleClass="orange" />
 					</p:column>
-					<p:column headerText="Purchase Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.showCostInformations()}">
+					<p:column headerText="Purchase Cost" width="80" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}"
+						rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.showCostInformations()}">
 						<h:outputText value="#{item.purchaseCost}">
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
-						<h:outputText value=" #{deliveryRequestView.deliveryRequest.po.currency.currency}"/>
+						<h:outputText value=" #{deliveryRequestView.deliveryRequest.po.currency.currency}" />
 					</p:column>
 					<p:column headerText="Unit Cost" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
@@ -681,8 +706,8 @@
 						<h:outputText value=" MAD" styleClass="red" />
 					</p:column>
 					<p:column headerText="Unit Price" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showPriceInformations()}">
-						<p:inplace editor="true" styleClass="blue #{deliveryRequestView.canUpdateUnitPrice()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
-							disabled="#{!deliveryRequestView.canUpdateUnitPrice()}">
+						<p:inplace editor="true" styleClass="blue #{deliveryRequestView.canUpdateUnitPrice()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none"
+							emptyLabel="None" disabled="#{!deliveryRequestView.canUpdateUnitPrice()}">
 							<p:inputNumber value="#{item.unitPrice}" thousandSeparator="" decimalPlaces="6" styleClass="blue" />
 							<p:ajax event="save" listener="#{deliveryRequestView.updateUnitPrice(item)}" update="main_tab" />
 							<p:ajax event="cancel" />

@@ -160,7 +160,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private String transporterName;
 	private Boolean hasTransportationRequest;
 	private String destinationProjectCustomerName;
-	private String poNumero;
 
 	// Queries var
 	private Double qTotalCost = 0.0;
@@ -207,7 +206,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.qTotalRevenue = qTotalRevenue;
 		this.qTotalCrossCharge = qTotalCrossCharge;
 		this.destinationProjectCustomerName = destinationProjectCustomerName;
-		this.poNumero = poNumero;
+		this.setPoNumero(poNumero);
 	}
 
 	public DeliveryRequest() {
@@ -216,8 +215,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
-			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse,String destinationProjectName, String transporterName1, String transporterName2,
-			Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
+			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String destinationProjectName, String transporterName1,
+			String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -328,7 +327,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, getReference(),smsRef,getProjectName(),getDestinationProjectName(),description,getRequesterFullName(),originNumber,ownerName,getSubType());
+		return contains(query, getReference(), smsRef, getProjectName(), getDestinationProjectName(), description, getRequesterFullName(), originNumber, ownerName, getSubType());
 	}
 
 	public void copyFromTemplate(DeliveryRequest template) {
@@ -507,7 +506,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			company = new Company();
 		company.setId(companyId);
 	}
-	
+
 	@Transient
 	public Integer getCustomerId() {
 		return customer == null ? null : customer.getId();
@@ -519,7 +518,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			customer = new Customer();
 		customer.setId(customerId);
 	}
-
 
 	@Transient
 	public Integer getSupplierId() {
@@ -561,6 +559,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 				return "Customer / " + getDeliverToCustomerName();
 			case SUPPLIER:
 				return "Supplier / " + getDeliverToSupplierName();
+			case OTHER:
+				return "Other / " + deliverToOther;
 			default:
 				return "";
 			}
@@ -728,7 +728,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return null;
 		return toUser.getFullName();
 	}
-	
+
 	@Transient
 	public Integer getOwnerId() {
 		switch (ownerType) {
@@ -1646,13 +1646,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.po = po;
 	}
 
-	@Transient
-	public String getExternalRequesterFullName() {
-		if (externalRequester != null)
-			return externalRequester.getFullName();
-		return null;
-	}
-
 	@Temporal(TemporalType.DATE)
 	public Date getRequestDate() {
 		return requestDate;
@@ -1735,7 +1728,26 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public String getPoNumero() {
-		return poNumero;
+		return po != null ? po.getNumeroInvoice() : null;
+	}
+
+	@Transient
+	public void setPoNumero(String poNumero) {
+		if (po == null)
+			po = new Po();
+		po.setNumeroInvoice(poNumero);
+	}
+
+	@Transient
+	public String getOutboundDeliveryRequestTransferPoNumero() {
+		return outboundDeliveryRequestTransfer != null ? outboundDeliveryRequestTransfer.getPoNumero() : null;
+	}
+
+	@Transient
+	public void setOutboundDeliveryRequestTransferPoNumero(String outboundDeliveryRequestTransferPoNumero) {
+		if (outboundDeliveryRequestTransfer == null)
+			outboundDeliveryRequestTransfer = new DeliveryRequest();
+		outboundDeliveryRequestTransfer.setPoNumero(outboundDeliveryRequestTransferPoNumero);
 	}
 
 	public Boolean getIsFullyReturned() {
@@ -1811,15 +1823,39 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@Transient
-	public Boolean getDestinationProjectSdm() {
-		return destinationProject != null ? destinationProject.getSdm() : null;
-	}
-
-	@Transient
 	public void setDestinationProjectName(String destinationProjectName) {
 		if (destinationProject == null)
 			destinationProject = new Project();
 		destinationProject.setName(destinationProjectName);
+	}
+
+	@Transient
+	public String getExternalRequesterFullName() {
+		return externalRequester != null ? externalRequester.getFullName() : null;
+	}
+
+	@Transient
+	public void setExternalRequesterFullName(String externalRequesterFullName) {
+		if (externalRequester == null)
+			externalRequester = new User();
+		externalRequester.setFullName(externalRequesterFullName);
+	}
+
+	@Transient
+	public String getDestinationName() {
+		return destination != null ? destination.getName() : null;
+	}
+
+	@Transient
+	public void setDestinationName(String destinationName) {
+		if (destination == null)
+			destination = new Site();
+		destination.setName(destinationName);
+	}
+
+	@Transient
+	public Boolean getDestinationProjectSdm() {
+		return destinationProject != null ? destinationProject.getSdm() : null;
 	}
 
 	public Long getCountIssues1() {

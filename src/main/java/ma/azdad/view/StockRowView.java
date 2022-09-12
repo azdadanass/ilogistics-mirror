@@ -63,10 +63,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private Boolean viewDetails = false;
 	private Boolean viewAll = false;
 
+	private List<StockRow> deliveryList1;
+	private List<StockRow> deliveryList2;
+
 	private List<Company> companyList;
 	private List<Customer> customerList;
 	private String customerCategory;
 	private List<Project> projectList;
+	private List<String> projectStrList;
 	private List<Site> destinationList;
 	private List<String> deliverToOtherNameList;
 	private List<User> externalRequesterList;
@@ -94,7 +98,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	private List<ChartContainer> chartList;
 
-	private Integer reportType;
+	private String projectName = "All";
+	private String reportType = "All";
+	private String reportTypeValue = "All";
+	private List<String> reportTypeValueList;
 
 	private List<StockRow> currentList = null;
 	private List<StockRow> historyList1 = null;
@@ -130,15 +137,19 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			switch (pageIndex) {
 			case 1:
 				if (companyId != null)
-					list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndGroupByPartNumber(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+					list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndGroupByPartNumber(companyId, sessionView.getUsername(),
+							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
 				else if (customerId != null)
-					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, sessionView.getUsername(),
+							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
 				break;
 			case 2:
 				if (companyId != null)
-					list2 = list1 = stockRowService.findOverdueByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+					list2 = list1 = stockRowService.findOverdueByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							companyId);
 				else if (customerId != null)
-					list2 = list1 = stockRowService.findOverdueByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+					list2 = list1 = stockRowService.findOverdueByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							customerId);
 				break;
 			case 3:
 				list2 = list1 = stockRowService.getFastMovingItems(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
@@ -151,41 +162,52 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			companyList = companyService.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
 		else if ("/projectReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
-				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						companyId);
 			else if (customerId != null)
-				projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+				projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						customerId);
 		} else if ("/deliveryReporting.xhtml".equals(currentPath)) {
-			if (companyId != null)
-				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+			initDeliveryLists();
+			refreshDeliveryLists();
+			projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
+//			if (companyId != null)
+//				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+//			else if (customerId != null)
+//				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
 		} else if ("/destinationReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
 				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						customerId);
 		} else if ("/deliverToOtherReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
 				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						customerId);
 		} else if ("/externalRequesterReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
 				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						customerId);
 		} else if ("/destinationCustomerReporting.xhtml".equals(currentPath)) {
 			if (companyId != null)
-				customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+				customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), companyId);
 		} else if ("/projectFinancial.xhtml".equals(currentPath)) {
 			if (companyId != null) {
-				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, ProjectTypes.STOCK.getValue());
+				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						companyId, ProjectTypes.STOCK.getValue());
 			}
 		}
 	}
 
 	public void refreshCustomerList() {
-		customerList = customerService.findLight(stockRowService.findCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()), customerCategory, !customerStockActive);
+		customerList = customerService.findLight(stockRowService.findCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()),
+				customerCategory, !customerStockActive);
 	}
 
 	public void getMaxMinThreshold(Boolean maxThreshold) {
@@ -196,84 +218,140 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	public void getCostCenterFinancialSituation() {
-		list2 = list1 = stockRowService.getCostCenterFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+		list2 = list1 = stockRowService.getCostCenterFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+				projectId);
 	}
 
 	public void getDestinationCustomerReportingLists() {
 		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDestinationCustomerAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, customerId);
+			list2 = list1 = stockRowService.findStockHistoryByDestinationCustomerAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), companyId, customerId);
 	}
 
 	// Delivery Reports
+
+	public void initDeliveryLists() {
+		if (companyId != null)
+			deliveryList1 = stockRowService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+		if (customerId != null)
+			deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId);
+
+		changeProjectNameListener();
+	}
+
+	public void changeProjectNameListener() {
+		this.reportType = "All";
+		this.reportTypeValue = "All";
+
+		if ("All".equals(projectName))
+			deliveryList2 = new ArrayList<StockRow>(deliveryList1);
+		else
+			deliveryList2 = deliveryList1.stream().filter(i -> i.getProjectName().equals(projectName)).collect(Collectors.toList());
+
+		refreshDeliveryLists();
+	}
+
+	public void changeReportTypeListener() {
+		switch (reportType) {
+		case "3rd Party / Subcontractor":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDeliverToEntityName() != null).map(i -> i.getDeliverToEntityName()).distinct()
+					.collect(Collectors.toList());
+			break;
+		case "Customer Requester":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getExternalRequesterFullName() != null).map(i -> i.getExternalRequesterFullName()).distinct()
+					.collect(Collectors.toList());
+			break;
+		case "Destination Site":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationName() != null).map(i -> i.getDestinationName()).distinct().collect(Collectors.toList());
+			break;
+		case "Purchase Order":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getPoNumero() != null).map(i -> i.getPoNumero()).distinct().collect(Collectors.toList());
+			break;
+		case "Destination Project":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationProjectName() != null).map(i -> i.getDestinationProjectName()).distinct()
+					.collect(Collectors.toList());
+			break;
+		case "Yearly":
+			break;
+		case "Monthly":
+			break;
+		case "Part Number":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getPartNumberName() != null).map(i -> i.getPartNumberName()).distinct().collect(Collectors.toList());
+			break;
+		default:
+			break;
+		}
+		refreshDeliveryLists();
+	}
+
+	public void refreshDeliveryLists() {
+		switch (reportType) {
+		case "All":
+			initLists(new ArrayList<StockRow>(deliveryList2));
+			break;
+		case "3rd Party / Subcontractor":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDeliverToEntityName())).collect(Collectors.toList()));
+			break;
+		case "Customer Requester":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getExternalRequesterFullName())).collect(Collectors.toList()));
+			break;
+		case "Destination Site":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationName())).collect(Collectors.toList()));
+			break;
+		case "Purchase Order":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getPoNumero())).collect(Collectors.toList()));
+			break;
+		case "Destination Project":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationProjectName())).collect(Collectors.toList()));
+			break;
+		case "Yearly":
+			break;
+		case "Monthly":
+			break;
+		case "Part Number":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getPartNumberName())).collect(Collectors.toList()));
+			break;
+		default:
+			break;
+		}
+
+	}
 
 	public void setTab(int tab) {
 		this.tab = tab;
 		getReportingLists();
 	}
 
-	public void changeReportTypeListener() {
-		if (projectId == null || reportType == null)
-			return;
-
-		switch (reportType) {
-		case 0:
-			refreshDeliverToOtherNameList();
-			break;
-		case 1:
-			refreshExternalRequesterNameList();
-			break;
-		case 2:
-			refreshDestinationNameList();
-			break;
-		case 3:
-			refreshPoNameList();
-			break;
-		case 4:
-			refreshDestinationProjectNameList();
-			break;
-		case 5:
-			refreshYearNameList();
-			break;
-		case 6:
-			refreshYearAndMonthNameList();
-			break;
-		case 7:
-			refreshPartNumberNameList();
-			break;
-		default:
-			break;
-		}
-	}
-
 	public void getReportingLists() {
-		switch (reportType) {
-		case 0:
-			getDeliverToOtherReportingLists();
-			break;
-		case 1:
-			getExternalRequesterReportingLists();
-			break;
-		case 2:
-			getDestinationReportingLists();
-			break;
-		case 3:
-			getPoReportingLists();
-			break;
-		case 4:
-			getDestinationProjectReportingLists();
-			break;
-		case 5:
-			getYearReportingLists();
-			break;
-		case 6:
-			getYearAndMonthReportingLists();
-			break;
-		case 7:
-			getPartNumberReportingLists();
-			break;
-		default:
-			break;
-		}
+//		switch (reportType) {
+//		case 0:
+//			getDeliverToOtherReportingLists();
+//			break;
+//		case 1:
+//			getExternalRequesterReportingLists();
+//			break;
+//		case 2:
+//			getDestinationReportingLists();
+//			break;
+//		case 3:
+//			getPoReportingLists();
+//			break;
+//		case 4:
+//			getDestinationProjectReportingLists();
+//			break;
+//		case 5:
+//			getYearReportingLists();
+//			break;
+//		case 6:
+//			getYearAndMonthReportingLists();
+//			break;
+//		case 7:
+//			getPartNumberReportingLists();
+//			break;
+//		default:
+//			break;
+//		}
 
 		// add related return from outbound
 		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
@@ -283,8 +361,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		if (tab == 2 || tab == 3) {
 			List<StockRow> result = new ArrayList<>();
-			Map<PartNumber, Double> priceMap = list1.stream().filter(s -> s.getqTotalCost() != null).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getqTotalCost)));
-			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity))).forEach((x, y) -> result.add(new StockRow(y, x)));
+			Map<PartNumber, Double> priceMap = list1.stream().filter(s -> s.getqTotalCost() != null)
+					.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getqTotalCost)));
+			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+					.forEach((x, y) -> result.add(new StockRow(y, x)));
 			result.forEach(s -> s.setqTotalCost(priceMap.get(s.getPartNumber())));
 			list2 = list1 = result;
 
@@ -293,9 +373,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void refreshDeliverToOtherNameList() {
 		if (companyId != null)
-			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), companyId, projectId);
 		else if (customerId != null)
-			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), customerId, projectId);
 
 		if (deliverToOtherNameList != null)
 			deliverToOtherNameList = deliverToOtherNameList.stream().distinct().collect(Collectors.toList());
@@ -303,129 +385,150 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void refreshExternalRequesterNameList() {
 		if (companyId != null)
-			externalRequesterList = stockRowService.findLightExternalRequesterCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			externalRequesterList = stockRowService.findLightExternalRequesterCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), companyId, projectId);
 		else if (customerId != null)
-			externalRequesterList = stockRowService.findLightExternalRequesterCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			externalRequesterList = stockRowService.findLightExternalRequesterCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), customerId, projectId);
 	}
 
 	public void refreshDestinationNameList() {
 		if (companyId != null)
-			destinationList = stockRowService.findLightDestinationCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			destinationList = stockRowService.findLightDestinationCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					companyId, projectId);
 		else if (customerId != null)
-			destinationList = stockRowService.findLightDestinationCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			destinationList = stockRowService.findLightDestinationCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId, projectId);
 	}
 
 	public void refreshPoNameList() {
 		if (companyId != null)
 			poList = stockRowService.findLightPoCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
 		else if (customerId != null)
-			poList = stockRowService.findLightPoCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			poList = stockRowService.findLightPoCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
+					projectId);
 	}
 
 	public void refreshPartNumberNameList() {
 		if (companyId != null)
-			partNumberList = stockRowService.findLightPartNumberCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			partNumberList = stockRowService.findLightPartNumberCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					companyId, projectId);
 		else if (customerId != null)
-			partNumberList = stockRowService.findLightPartNumberCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			partNumberList = stockRowService.findLightPartNumberCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId, projectId);
 	}
 
 	public void refreshDestinationProjectNameList() {
 		if (companyId != null)
-			destinationProjectList = stockRowService.findLightDestinationProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			destinationProjectList = stockRowService.findLightDestinationProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), companyId, projectId);
 		else if (customerId != null)
-			destinationProjectList = stockRowService.findLightDestinationProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			destinationProjectList = stockRowService.findLightDestinationProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), customerId, projectId);
 	}
 
 	public void refreshYearNameList() {
 		if (companyId != null)
-			yearList = stockRowService.findLightYearCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			yearList = stockRowService.findLightYearCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					projectId);
 		else if (customerId != null)
-			yearList = stockRowService.findLightYearCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			yearList = stockRowService.findLightYearCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
+					projectId);
 	}
 
 	public void refreshYearAndMonthNameList() {
 		if (companyId != null)
-			yearAndMonthList = stockRowService.findLightYearAndMonthCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+			yearAndMonthList = stockRowService.findLightYearAndMonthCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					companyId, projectId);
 		else if (customerId != null)
-			yearAndMonthList = stockRowService.findLightYearAndMonthCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+			yearAndMonthList = stockRowService.findLightYearAndMonthCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId, projectId);
 	}
 
-	public void getDeliverToOtherReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDeliverToEntityAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, deliverToOtherName, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDeliverToOtherAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, deliverToOtherName, projectId);
-	}
+//	public void getDeliverToOtherReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDeliverToEntityAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, deliverToOtherName, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDeliverToOtherAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, deliverToOtherName, projectId);
+//	}
 
-	public void getExternalRequesterReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByExternalRequesterAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, externalRequesterId, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByExternalRequesterAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, externalRequesterId, projectId);
-	}
+//	public void getExternalRequesterReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByExternalRequesterAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, externalRequesterId, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByExternalRequesterAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, externalRequesterId, projectId);
+//	}
 
 	public void getPartNumberReportingLists() {
 		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), partNumberId, projectId);
+			list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), partNumberId, projectId);
 		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), partNumberId, projectId);
+			list2 = list1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
+					cacheView.getAssignedProjectList(), partNumberId, projectId);
 	}
 
-	public void getDestinationReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDestinationAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, destinationId, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDestinationAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, destinationId, projectId);
-	}
-
-	public void getPoReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByPoAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, poId, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByPoAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, poId, projectId);
-	}
-
-	public void getDestinationProjectReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDestinationProjectAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, destinationProjectId, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByDestinationProjectAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, destinationProjectId, projectId);
-	}
-
-	public void getYearReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByYearAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, year, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByYearAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, year, projectId);
-	}
-
-	public void getYearAndMonthReportingLists() {
-		if (companyId != null)
-			list2 = list1 = stockRowService.findStockHistoryByYearAndMonthAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, yearAndMonth, projectId);
-		else if (customerId != null)
-			list2 = list1 = stockRowService.findStockHistoryByYearAndMonthAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, yearAndMonth, projectId);
-	}
+//	public void getDestinationReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDestinationAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, destinationId, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDestinationAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, destinationId, projectId);
+//	}
+//
+//	public void getPoReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByPoAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, poId, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByPoAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, poId, projectId);
+//	}
+//
+//	public void getDestinationProjectReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDestinationProjectAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, destinationProjectId, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByDestinationProjectAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, destinationProjectId, projectId);
+//	}
+//
+//	public void getYearReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByYearAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, year, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByYearAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, year, projectId);
+//	}
+//
+//	public void getYearAndMonthReportingLists() {
+//		if (companyId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByYearAndMonthAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, yearAndMonth, projectId);
+//		else if (customerId != null)
+//			list2 = list1 = stockRowService.findStockHistoryByYearAndMonthAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, yearAndMonth, projectId);
+//	}
 
 	public void getProjectReportingLists(Boolean currentStock) {
 		if (currentStock) {
 			if (companyId != null)
-				list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndProjectAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId));
+				list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndProjectAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), companyId, projectId));
 			else if (customerId != null)
-				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndProjectAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId));
+				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndProjectAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), customerId, projectId));
 		} else {
 			if (companyId != null)
-				list2 = list1 = stockRowService.findStockHistoryByProjectAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+				list2 = list1 = stockRowService.findStockHistoryByProjectAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), companyId, projectId);
 			else if (customerId != null)
-				list2 = list1 = stockRowService.findStockHistoryByProjectAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId);
+				list2 = list1 = stockRowService.findStockHistoryByProjectAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), customerId, projectId);
 		}
 	}
 
 	public void initCurrentList() {
 		if (currentList == null) {
 			if (companyId != null)
-				currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+				currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), id);
 			else if (customerId != null)
-				currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+				currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), id);
 		}
 		list2 = list1 = currentList;
 	}
@@ -440,9 +543,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private void initHistorylist1() {
 		if (historyList1 == null) {
 			if (companyId != null)
-				historyList1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+				historyList1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), id);
 			else if (customerId != null)
-				historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), id);
+				historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), id);
 		}
 		list2 = list1 = historyList1;
 	}
@@ -484,14 +589,15 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		initMapInboundDeliveryRequestMapDeliveryRequestQuantity();
 		List<Integer> deliveryRequestIdList = mapInboundDnMapDnQuantity.values().stream().map(v -> v.keySet()).collect(ArrayList::new, List::addAll, List::addAll);
-		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(id, deliveryRequestIdList);
-		
+		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService
+				.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(id, deliveryRequestIdList);
 
 		System.out.println("mapInboundDnMapDnQuantity : " + mapInboundDnMapDnQuantity);
 
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
 			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
-			Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().filter(i->i.getInboundDeliveryRequestId().equals(inbound.getId())).collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+			Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId()))
+					.collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getDeliveryRequestId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
 			Boolean test = true;
 			for (Integer dnId : map.keySet()) {
 				Double dnQty = map.get(dnId);
@@ -502,9 +608,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				}
 			}
 			if (test) {
-				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId())).map(i -> i.getExpiryDate()).distinct().collect(Collectors.toSet());
+				Set<Date> dateSet = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId())).map(i -> i.getExpiryDate())
+						.distinct().collect(Collectors.toSet());
 				for (Date date : dateSet) {
-					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inbound.getId().equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate())).mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
+					Double quantity = deliveryRequestExpiryDateList.stream().filter(i -> inbound.getId().equals(i.getInboundDeliveryRequestId()) && date.equals(i.getExpiryDate()))
+							.mapToDouble(i -> i.getDeliveryRequestId().equals(i.getInboundDeliveryRequestId()) ? i.getQuantity() : -i.getQuantity()).sum();
 					if (quantity == 0.0)
 						continue;
 					DeliveryRequestExpiryDate deliveryRequestExpiryDate = new DeliveryRequestExpiryDate();
@@ -773,11 +881,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		this.externalRequesterList = externalRequesterList;
 	}
 
-	public Integer getReportType() {
+	public String getReportType() {
 		return reportType;
 	}
 
-	public void setReportType(Integer reportType) {
+	public void setReportType(String reportType) {
 		this.reportType = reportType;
 	}
 
@@ -899,6 +1007,38 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setExpiryList(List<DeliveryRequestExpiryDate> expiryList) {
 		this.expiryList = expiryList;
+	}
+
+	public List<String> getProjectStrList() {
+		return projectStrList;
+	}
+
+	public void setProjectStrList(List<String> projectStrList) {
+		this.projectStrList = projectStrList;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public List<String> getReportTypeValueList() {
+		return reportTypeValueList;
+	}
+
+	public void setReportTypeValueList(List<String> reportTypeValueList) {
+		this.reportTypeValueList = reportTypeValueList;
+	}
+
+	public String getReportTypeValue() {
+		return reportTypeValue;
+	}
+
+	public void setReportTypeValue(String reportTypeValue) {
+		this.reportTypeValue = reportTypeValue;
 	}
 
 }

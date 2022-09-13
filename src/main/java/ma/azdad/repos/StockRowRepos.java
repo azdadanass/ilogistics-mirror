@@ -52,7 +52,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String drd_c7 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
 
 	String c22 = "select new StockRow(sum(a.quantity),a.status,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,a.partNumber.id,a.partNumber.name,a.partNumber.description," + brandName
-			+ ",a.deliveryRequest.reference,a.deliveryRequest.date4," + externalRequesterFullName + "," + destinationName + "," + destinationProjectName
+			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.deliveryRequest.date4," + externalRequesterFullName + "," + destinationName + "," + destinationProjectName
 			+ ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther,"
 			+ poNumero + "," + endCustomerName + ") ";
 

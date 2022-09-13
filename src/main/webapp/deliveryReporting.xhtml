@@ -87,6 +87,8 @@
 												<f:selectItem itemValue="Yearly" itemLabel="Yearly" />
 												<f:selectItem itemValue="Monthly" itemLabel="Monthly" />
 												<f:selectItem itemValue="Part Number" itemLabel="Part Number" />
+												<f:selectItem itemValue="Brand" itemLabel="Brand" />
+												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
 											</h:selectOneMenu>
 										</div>
@@ -182,6 +184,9 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
+											<p:column headerText="Brand">
+												<h:outputText value="#{item.partNumberBrandName}" styleClass="blue aa-cut-text" />
+											</p:column>
 											<p:column headerText="Warehouse" width="120">
 												<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
 											</p:column>
@@ -205,6 +210,18 @@
 											</p:column>
 											<p:column headerText="3rd Party / Subcontractor">
 												<h:outputText value="#{item.deliverToEntityName}" />
+											</p:column>
+											<p:column headerText="Customer Requester">
+												<h:outputText value="#{item.externalRequesterFullName}" />
+											</p:column>
+											<p:column headerText="Destination Site">
+												<h:outputText value="#{item.destinationName}" />
+											</p:column>
+											<p:column headerText="Po">
+												<h:outputText value="#{item.poNumero}" />
+											</p:column>
+											<p:column headerText="End Customer">
+												<h:outputText value="#{item.endCustomerName}" />
 											</p:column>
 											<p:column headerText="Delivery Date" width="100">
 												<h:outputText value="#{item.deliveryRequest.date4}">

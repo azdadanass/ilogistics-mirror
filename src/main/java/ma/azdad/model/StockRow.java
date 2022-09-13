@@ -361,18 +361,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c22 --> deliveryReporting
 	public StockRow(Double quantity,StockRowStatus status,String projectName,String warehouseName,//
 			Integer partNumberId, String partNumberName, String partNumberDescription,String partNumberBrandName,//
-			String deliveryRequestReference,Date deliveryRequestDate4,String externalRequesterFullName,
+			Integer deliveryRequestId,DeliveryRequestType deliveryRequestType,String deliveryRequestReference,Date deliveryRequestDate4,String externalRequesterFullName,
 			String destinationName,String destinationProjectName,//
 			CompanyType deliverToCompanyType ,String deliverToCompanyName ,String deliverToCustomerName,String deliverToSupplierName,String deliverToOther,//
 			String poNumero,String endCustomerName) {
 		this.quantity = quantity;
 		this.status = status;
+		this.setDeliveryRequestId(deliveryRequestId);
 		this.setProjectName(projectName);
 		this.setWarehouseName(warehouseName);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberBrandName(partNumberBrandName);
+		this.setDeliveryRequestType(deliveryRequestType);
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setDeliveryRequestDate4(deliveryRequestDate4);
 		this.setExternalRequesterFullName(externalRequesterFullName);
@@ -531,6 +533,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDate4(deliveryRequestDate4);
+	}
+	
+	@Transient
+	public String getDeliveryYear() {
+		if(getDeliveryRequestDate4()==null)
+			return null;
+		return String.valueOf(UtilsFunctions.getYear(getDeliveryRequestDate4())); 
+	}
+	
+	@Transient
+	public String getDeliveryMonthAndYear() {
+		if(getDeliveryRequestDate4()==null)
+			return null;
+		return String.valueOf(UtilsFunctions.getMonth(getDeliveryRequestDate4())+"/"+UtilsFunctions.getYear(getDeliveryRequestDate4())); 
 	}
 
 	@Transient

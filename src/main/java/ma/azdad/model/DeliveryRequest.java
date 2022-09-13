@@ -159,7 +159,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private String originName;
 	private String transporterName;
 	private Boolean hasTransportationRequest;
-	private String destinationProjectCustomerName;
 
 	// Queries var
 	private Double qTotalCost = 0.0;
@@ -205,7 +204,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.qTotalCost = qTotalCost;
 		this.qTotalRevenue = qTotalRevenue;
 		this.qTotalCrossCharge = qTotalCrossCharge;
-		this.destinationProjectCustomerName = destinationProjectCustomerName;
+		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 		this.setPoNumero(poNumero);
 	}
 
@@ -1484,7 +1483,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public String getDestinationProjectCustomerName() {
-		return destinationProjectCustomerName;
+		return destinationProject != null ? destinationProject.getCustomerName() : null;
+	}
+	
+	@Transient
+	public void setDestinationProjectCustomerName(String destinationProjectCustomerName) {
+		if(destinationProject==null)
+			destinationProject = new Project();
+		destinationProject.setCustomerName(destinationProjectCustomerName);
 	}
 
 	@Transient

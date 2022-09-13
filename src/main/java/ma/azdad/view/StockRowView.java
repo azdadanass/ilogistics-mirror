@@ -258,8 +258,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDeliverToEntityName() != null).map(i -> i.getDeliverToEntityName()).distinct()
 					.collect(Collectors.toList());
 			break;
-		case "Customer Requester":
-			reportTypeValueList = deliveryList2.stream().filter(i -> i.getExternalRequesterFullName() != null).map(i -> i.getExternalRequesterFullName()).distinct()
+		case "Customer":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationProjectCustomerName() != null).map(i -> i.getDestinationProjectCustomerName()).distinct()
 					.collect(Collectors.toList());
 			break;
 		case "Destination Site":
@@ -294,7 +294,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 		refreshDeliveryLists();
 	}
-	
+
 	public void setTab(int tab) {
 		this.tab = tab;
 		refreshDeliveryLists();
@@ -308,8 +308,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		case "3rd Party / Subcontractor":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDeliverToEntityName())).collect(Collectors.toList()));
 			break;
-		case "Customer Requester":
-			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getExternalRequesterFullName())).collect(Collectors.toList()));
+		case "Customer":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationProjectCustomerName())).collect(Collectors.toList()));
 			break;
 		case "Destination Site":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationName())).collect(Collectors.toList()));
@@ -340,23 +340,24 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 
 		// add related return from outbound
-//		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
-//		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
-//		list1.addAll(stockRowService.findStockHistoryByOutboundDeliveryRequestReturn(dnIdList, partNumberIdList));
+		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
+		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
+		if (companyId != null)
+			list1.addAll(stockRowService.findStockHistoryByCompanyOwnerAndOutboundDeliveryRequestReturn(companyId,dnIdList, partNumberIdList));
+		else if (customerId != null)
+			list1.addAll(stockRowService.findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(customerId,dnIdList, partNumberIdList));
 
-		if (tab == 2 || tab == 3) {
-			List<StockRow> result = new ArrayList<>();
-			Map<PartNumber, Double> priceMap = list1.stream().filter(s -> s.getqTotalCost() != null)
-					.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getqTotalCost)));
-			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
-					.forEach((x, y) -> result.add(new StockRow(y, x)));
-			result.forEach(s -> s.setqTotalCost(priceMap.get(s.getPartNumber())));
-			list2 = list1 = result;
-		}
+//		if (tab == 2 || tab == 3) {
+//			List<StockRow> result = new ArrayList<>();
+//			Map<PartNumber, Double> priceMap = list1.stream().filter(s -> s.getqTotalCost() != null)
+//					.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getqTotalCost)));
+//			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+//					.forEach((x, y) -> result.add(new StockRow(y, x)));
+//			result.forEach(s -> s.setqTotalCost(priceMap.get(s.getPartNumber())));
+//			list2 = list1 = result;
+//		}
 
 	}
-
-	
 
 //	public void getReportingLists() {
 //		switch (reportType) {
@@ -388,7 +389,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 //			break;
 //		}
 
-		// add related return from outbound
+	// add related return from outbound
 //		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
 //		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
 //

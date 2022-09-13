@@ -359,14 +359,16 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 	
 	// c22 --> deliveryReporting
-	public StockRow(Double quantity,StockRowStatus status,String projectName,String warehouseName,//
+	public StockRow(Double quantity,StockRowStatus status,Double unitCost,Double unitPrice,String projectName,String warehouseName,//
 			Integer partNumberId, String partNumberName, String partNumberDescription,String partNumberBrandName,//
-			Integer deliveryRequestId,DeliveryRequestType deliveryRequestType,String deliveryRequestReference,Date deliveryRequestDate4,String externalRequesterFullName,
+			Integer deliveryRequestId,DeliveryRequestType deliveryRequestType,String deliveryRequestReference,Date deliveryRequestDate4,String destinationProjectCustomerName,
 			String destinationName,String destinationProjectName,//
 			CompanyType deliverToCompanyType ,String deliverToCompanyName ,String deliverToCustomerName,String deliverToSupplierName,String deliverToOther,//
 			String poNumero,String endCustomerName) {
 		this.quantity = quantity;
 		this.status = status;
+		this.unitCost=unitCost;
+		this.unitPrice=unitPrice;
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setProjectName(projectName);
 		this.setWarehouseName(warehouseName);
@@ -377,7 +379,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setDeliveryRequestType(deliveryRequestType);
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setDeliveryRequestDate4(deliveryRequestDate4);
-		this.setExternalRequesterFullName(externalRequesterFullName);
+		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 		this.setDestinationName(destinationName);
 		this.setDestinationProjectName(destinationProjectName);
 		this.setDeliverToCompanyType(deliverToCompanyType);
@@ -829,6 +831,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 	
 	@Transient
+	public String getDestinationProjectCustomerName() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getDestinationProjectCustomerName();
+	}
+
+	@Transient
+	public void setDestinationProjectCustomerName(String destinationProjectCustomerName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDestinationProjectCustomerName(destinationProjectCustomerName);
+	}
+	
+	@Transient
 	public String getProjectName() {
 		if (deliveryRequest == null)
 			return null;
@@ -945,14 +961,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public String getPoNumero() {
-		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getOutboundDeliveryRequestTransferPoNumero() : null;
+		return deliveryRequest != null ? deliveryRequest.getPoNumero() : null;
 	}
 
 	@Transient
 	public void setPoNumero(String poNumero) {
-		if (inboundDeliveryRequest == null)
-			inboundDeliveryRequest = new DeliveryRequest();
-		inboundDeliveryRequest.setOutboundDeliveryRequestTransferPoNumero(poNumero);
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setPoNumero(poNumero);
 	}
 
 

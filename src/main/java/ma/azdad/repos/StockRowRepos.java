@@ -30,7 +30,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String deliverToCompanyName = "(select b.name from Company b where b.id = a.deliveryRequest.deliverToCompany.id)";
 	String deliverToCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.deliverToCustomer.id)";
 	String deliverToSupplierName = "(select b.name from Supplier b where b.id = a.deliveryRequest.deliverToSupplier.id)";
-	String poNumero = "(select b.numeroInvoice from Po b where b.id = a.deliveryRequest.po.id)";
+	String poNumero = "(select concat(b.numeroInvoice,'-',(select c.project.customer.abbreviation from Po c where c.id = a.deliveryRequest.po.id)) from Po b where b.id = a.deliveryRequest.po.id)";
 	String endCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.endCustomer.id)";
 
 	String c1 = "select new StockRow(a.id,a.quantity,a.status,a.partNumber,a.inboundDeliveryRequest,a.location) ";

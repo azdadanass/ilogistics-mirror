@@ -228,6 +228,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					cacheView.getAssignedProjectList(), companyId, customerId);
 	}
 
+	public Double getList2TotalCost() {
+		return list2.stream().mapToDouble(i -> i.getTotalCost()).sum();
+	}
+	
+	public Double getList2TotalPrice() {
+		return list2.stream().mapToDouble(i -> i.getTotalPrice()).sum();
+	}
+
 	// Delivery Reports
 
 	public void initDeliveryLists() {
@@ -414,79 +422,79 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 //		}
 //	}
 
-	public void refreshDeliverToOtherNameList() {
-		if (companyId != null)
-			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), companyId, projectId);
-		else if (customerId != null)
-			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), customerId, projectId);
+//	public void refreshDeliverToOtherNameList() {
+//		if (companyId != null)
+//			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), companyId, projectId);
+//		else if (customerId != null)
+//			deliverToOtherNameList = stockRowService.findDeliverToOtherNameListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), customerId, projectId);
+//
+//		if (deliverToOtherNameList != null)
+//			deliverToOtherNameList = deliverToOtherNameList.stream().distinct().collect(Collectors.toList());
+//	}
 
-		if (deliverToOtherNameList != null)
-			deliverToOtherNameList = deliverToOtherNameList.stream().distinct().collect(Collectors.toList());
-	}
+//	public void refreshExternalRequesterNameList() {
+//		if (companyId != null)
+//			externalRequesterList = stockRowService.findLightExternalRequesterCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), companyId, projectId);
+//		else if (customerId != null)
+//			externalRequesterList = stockRowService.findLightExternalRequesterCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), customerId, projectId);
+//	}
+//
+//	public void refreshDestinationNameList() {
+//		if (companyId != null)
+//			destinationList = stockRowService.findLightDestinationCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					companyId, projectId);
+//		else if (customerId != null)
+//			destinationList = stockRowService.findLightDestinationCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					customerId, projectId);
+//	}
+//
+//	public void refreshPoNameList() {
+//		if (companyId != null)
+//			poList = stockRowService.findLightPoCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+//		else if (customerId != null)
+//			poList = stockRowService.findLightPoCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
+//					projectId);
+//	}
+//
+//	public void refreshPartNumberNameList() {
+//		if (companyId != null)
+//			partNumberList = stockRowService.findLightPartNumberCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					companyId, projectId);
+//		else if (customerId != null)
+//			partNumberList = stockRowService.findLightPartNumberCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					customerId, projectId);
+//	}
 
-	public void refreshExternalRequesterNameList() {
-		if (companyId != null)
-			externalRequesterList = stockRowService.findLightExternalRequesterCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), companyId, projectId);
-		else if (customerId != null)
-			externalRequesterList = stockRowService.findLightExternalRequesterCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), customerId, projectId);
-	}
+//	public void refreshDestinationProjectNameList() {
+//		if (companyId != null)
+//			destinationProjectList = stockRowService.findLightDestinationProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), companyId, projectId);
+//		else if (customerId != null)
+//			destinationProjectList = stockRowService.findLightDestinationProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+//					cacheView.getAssignedProjectList(), customerId, projectId);
+//	}
 
-	public void refreshDestinationNameList() {
-		if (companyId != null)
-			destinationList = stockRowService.findLightDestinationCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					companyId, projectId);
-		else if (customerId != null)
-			destinationList = stockRowService.findLightDestinationCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					customerId, projectId);
-	}
+//	public void refreshYearNameList() {
+//		if (companyId != null)
+//			yearList = stockRowService.findLightYearCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+//					projectId);
+//		else if (customerId != null)
+//			yearList = stockRowService.findLightYearCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
+//					projectId);
+//	}
 
-	public void refreshPoNameList() {
-		if (companyId != null)
-			poList = stockRowService.findLightPoCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
-		else if (customerId != null)
-			poList = stockRowService.findLightPoCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
-					projectId);
-	}
-
-	public void refreshPartNumberNameList() {
-		if (companyId != null)
-			partNumberList = stockRowService.findLightPartNumberCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					companyId, projectId);
-		else if (customerId != null)
-			partNumberList = stockRowService.findLightPartNumberCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					customerId, projectId);
-	}
-
-	public void refreshDestinationProjectNameList() {
-		if (companyId != null)
-			destinationProjectList = stockRowService.findLightDestinationProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), companyId, projectId);
-		else if (customerId != null)
-			destinationProjectList = stockRowService.findLightDestinationProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-					cacheView.getAssignedProjectList(), customerId, projectId);
-	}
-
-	public void refreshYearNameList() {
-		if (companyId != null)
-			yearList = stockRowService.findLightYearCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
-					projectId);
-		else if (customerId != null)
-			yearList = stockRowService.findLightYearCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
-					projectId);
-	}
-
-	public void refreshYearAndMonthNameList() {
-		if (companyId != null)
-			yearAndMonthList = stockRowService.findLightYearAndMonthCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					companyId, projectId);
-		else if (customerId != null)
-			yearAndMonthList = stockRowService.findLightYearAndMonthCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-					customerId, projectId);
-	}
+//	public void refreshYearAndMonthNameList() {
+//		if (companyId != null)
+//			yearAndMonthList = stockRowService.findLightYearAndMonthCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					companyId, projectId);
+//		else if (customerId != null)
+//			yearAndMonthList = stockRowService.findLightYearAndMonthCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//					customerId, projectId);
+//	}
 
 //	public void getDeliverToOtherReportingLists() {
 //		if (companyId != null)

@@ -300,6 +300,102 @@
 					<div id="tab3" class="tab-pane">
 						<p:remoteCommand name="tab3" action="#{stockRowView.setTab(3)}" update="tab3" />
 						<h:panelGroup id="tab3">
+							<div class="space-8" />
+							<div class="row">
+								<div class="col-sm-offset-3 col-sm-6">
+									<h:panelGroup id="summary">
+										<table class="table table-bordered">
+											<tbody>
+												<tr>
+													<th colspan="4" style="background: #86b558; color: white">
+														<h:outputText value="Summary" styleClass="bolder" />
+													</th>
+												</tr>
+												<tr>
+													<td>
+														<i class="ace-icon fa fa-minus bigger-230 red" style="margin-right: 20px"></i>
+														<h:outputText value="Total Cost" />
+													</td>
+													<td class="center purple bolder">
+														<h:outputText value="#{-stockRowView.list2TotalCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+														<h:outputText value=" MAD" />
+													</td>
+													<td rowspan="4" class="center" style="vertical-align: middle">
+														<div class="easy-pie-chart percentage" data-percent="#{(-stockRowView.list2TotalPrice+stockRowView.list2TotalCost) * 100.0/-stockRowView.list2TotalCost}"
+															data-color="#{(-stockRowView.list2TotalPrice+stockRowView.list2TotalCost) * 100.0/-stockRowView.list2TotalCost==100?'#87B87F':'#d3413b'}">
+															<span class="percent">
+																<h:outputText value="#{(-stockRowView.list2TotalPrice+stockRowView.list2TotalCost)/-stockRowView.list2TotalCost}">
+																	<f:convertNumber type="percent" maxFractionDigits="0" />
+																</h:outputText>
+															</span>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<i class="ace-icon fa fa-plus bigger-230 green" style="margin-right: 20px"></i>
+														<h:outputText value="Total Price" />
+													</td>
+													<td class="center purple bolder">
+														<h:outputText value="#{-stockRowView.list2TotalPrice}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+														<h:outputText value=" MAD" />
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<i class="ace-icon fa fa-table bigger-230 blue" style="margin-right: 20px"></i>
+														<h:outputText value="Margin" />
+													</td>
+													<td class="center green bolder">
+														<h:outputText value="#{-stockRowView.list2TotalPrice+stockRowView.list2TotalCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+														<h:outputText value=" MAD" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<script src="/resources/ace_template/assets/js/jquery.easypiechart.js" />
+										<h:panelGroup id="easy-pie-chart-script">
+											<script>
+												var oldie = /msie\s*(8|7|6)/
+														.test(navigator.userAgent
+																.toLowerCase());
+												$('.easy-pie-chart.percentage')
+														.each(
+																function() {
+																	$(this)
+																			.easyPieChart(
+																					{
+																						barColor : $(
+																								this)
+																								.data(
+																										'color'),
+																						trackColor : '#EEEEEE',
+																						scaleColor : false,
+																						lineCap : 'butt',
+																						lineWidth : 8,
+																						animate : oldie ? false
+																								: 1000,
+																						size : 75
+																					})
+																			.css(
+																					'color',
+																					$(
+																							this)
+																							.data(
+																									'color'));
+																});
+											</script>
+										</h:panelGroup>
+									</h:panelGroup>
+								</div>
+							</div>
+							<div class="space-8" />
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
@@ -319,7 +415,7 @@
 											<div class="nav-search minimized">
 												<span class="input-icon">
 													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-														<p:ajax event="keyup" update="datatable" />
+														<p:ajax event="keyup" update="datatable,summary" />
 													</p:inputText>
 													<i class="ace-icon fa fa-search nav-search-icon" />
 												</span>
@@ -341,6 +437,15 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
+											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.reference}" exportable="false">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.deliveryRequest.reference}" styleClass="#{item.deliveryRequest.type.color} bolder" />
+													<f:param name="id" value="#{item.deliveryRequest.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN" styleClass="hide">
+												<h:outputText value="#{item.deliveryRequest.reference}" />
+											</p:column>
 											<p:column headerText="Delivred Qantity" exportable="false">
 												<h:outputText value="#{-item.quantity}" styleClass="bolder">
 													<f:convertNumber type="number" maxFractionDigits="2" />
@@ -350,31 +455,31 @@
 												<h:outputText value="#{-item.quantity}" />
 											</p:column>
 											<p:column headerText="Unit Cost" exportable="false">
-												<h:outputText value="#{item.unitCost}" styleClass="bolder">
+												<h:outputText value="#{item.unitCost}" styleClass="orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder" />
+												<h:outputText value=" MAD" styleClass="orange" />
 											</p:column>
 											<p:column headerText="Total Cost" exportable="false">
-												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" styleClass="bolder">
+												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" styleClass="bolder orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder" />
+												<h:outputText value=" MAD" styleClass="bolder orange" />
 											</p:column>
 											<p:column headerText="Total Cost" styleClass="hide">
 												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" />
 											</p:column>
 											<p:column headerText="Unit Price" exportable="false">
-												<h:outputText value="#{item.unitPrice}" styleClass="bolder">
+												<h:outputText value="#{item.unitPrice}" styleClass="green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder" />
+												<h:outputText value=" MAD" styleClass="green" />
 											</p:column>
 											<p:column headerText="Total Price" exportable="false">
-												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder">
+												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder" />
+												<h:outputText value=" MAD" styleClass="bolder green" />
 											</p:column>
 											<p:column headerText="Total Price" styleClass="hide">
 												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" />

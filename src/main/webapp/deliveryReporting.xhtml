@@ -81,6 +81,7 @@
 												<f:selectItem itemLabel="All" itemValue="All" />
 												<f:selectItem itemValue="3rd Party / Subcontractor" itemLabel="3rd Party / Subcontractor" />
 												<f:selectItem itemValue="Customer" itemLabel="Customer" />
+												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<f:selectItem itemValue="Destination Site" itemLabel="Destination Site" />
 												<f:selectItem itemValue="Purchase Order" itemLabel="Purchase Order" />
 												<f:selectItem itemValue="Destination Project" itemLabel="Destination Project" />
@@ -88,7 +89,6 @@
 												<f:selectItem itemValue="Monthly" itemLabel="Monthly" />
 												<f:selectItem itemValue="Part Number" itemLabel="Part Number" />
 												<f:selectItem itemValue="Brand" itemLabel="Brand" />
-												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
 											</h:selectOneMenu>
 										</div>
@@ -229,7 +229,7 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivred Qantity" width="90" exportable="false">
-											<h:outputText value="#{-item.quantity}" styleClass="bolder">
+											<h:outputText value="#{-item.quantity}" styleClass="bolder #{-item.quantity ge 0 ?'green':'red'}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>

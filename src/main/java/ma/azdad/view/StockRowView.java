@@ -348,6 +348,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			else if (customerId != null)
 				list1.addAll(stockRowService.findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(customerId, dnIdList, partNumberIdList));
 
+		if (tab == 2) {
+			List<StockRow> result = new ArrayList<>();
+			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+					.forEach((x, y) -> result.add(new StockRow(y, x)));
+			list2 = list1 = result;
+		}
+
 //		if (tab == 2 || tab == 3) {
 //			List<StockRow> result = new ArrayList<>();
 //			Map<PartNumber, Double> priceMap = list1.stream().filter(s -> s.getqTotalCost() != null)

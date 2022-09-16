@@ -64,10 +64,25 @@
 								<div class="col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+											<h:outputText value="Stock " />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{stockRowView.stock}">
+												<f:selectItem noSelectionOption="true" itemLabel="---" />
+												<f:selectItem itemLabel="Yes" itemValue="true"/>
+												<f:selectItem itemLabel="No" itemValue="false"/>
+												<p:ajax listener="#{stockRowView.refreshProjectList()}" update="project"/>
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
 											<h:outputText value="Project " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
+											<p:selectOneMenu id="project" value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
 												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />

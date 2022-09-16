@@ -109,6 +109,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<DeliveryRequestExpiryDate> expiryList = null;
 	private Boolean removeFullyDelivered = false;
 
+	private Boolean stock;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -160,14 +162,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			getMaxMinThreshold(true);
 		else if ("/companyList.xhtml".equals(currentPath))
 			companyList = companyService.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-		else if ("/projectReporting.xhtml".equals(currentPath)) {
-			if (companyId != null)
-				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						companyId);
-			else if (customerId != null)
-				projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						customerId);
-		} else if ("/deliveryReporting.xhtml".equals(currentPath)) {
+		else if ("/deliveryReporting.xhtml".equals(currentPath)) {
 			initDeliveryLists();
 			refreshDeliveryLists();
 			projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
@@ -205,6 +200,15 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 	}
 
+	public void refreshProjectList() {
+		if (companyId != null)
+			projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					stock);
+		else if (customerId != null)
+			projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
+					stock);
+	}
+
 	public void refreshCustomerList() {
 		customerList = customerService.findLight(stockRowService.findCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()),
 				customerCategory, !customerStockActive);
@@ -231,7 +235,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public Double getList2TotalCost() {
 		return list2.stream().mapToDouble(i -> i.getTotalCost()).sum();
 	}
-	
+
 	public Double getList2TotalPrice() {
 		return list2.stream().mapToDouble(i -> i.getTotalPrice()).sum();
 	}
@@ -1090,6 +1094,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setReportTypeValue(String reportTypeValue) {
 		this.reportTypeValue = reportTypeValue;
+	}
+
+	public Boolean getStock() {
+		return stock;
+	}
+
+	public void setStock(Boolean stock) {
+		this.stock = stock;
 	}
 
 }

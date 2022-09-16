@@ -295,6 +295,14 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id")
 	public List<Integer> findProjectIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+	
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+	public List<Integer> findProjectIdListByCompanyOwnerAndHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+	
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+	public List<Integer> findProjectIdListByCompanyOwnerAndNotHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+	
+	
 
 	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
 			+ "and a.deliveryRequest.project.type = ?5   group by a.deliveryRequest.project.id")
@@ -302,6 +310,12 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id")
 	public List<Integer> findProjectIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+	
+	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+	public List<Integer> findProjectIdListByCustomerOwnerAndHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+	
+	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+	public List<Integer> findProjectIdListByCustomerOwnerAndNotHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
 	@Query("select a.deliveryRequest.destination.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
 			+ " and a.deliveryRequest.destination is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.destination.id ")

@@ -1041,6 +1041,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			deliveryRequestDetailRepos.updateUnitPrice(drd.getId(), unitPrice);
 
+			// call service too so we update stock row unit price
+			deliveryRequestDetailService.updateUnitPrice(drd.getId(), unitPrice);
+
 		}
 
 		evictCache();

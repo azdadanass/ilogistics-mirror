@@ -1794,9 +1794,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		deliveryRequest = service.save(deliveryRequest);
 
-		if (deliveryRequest.getIsInboundReturn())
+		if (deliveryRequest.getIsInboundReturn()) {
 			service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(),
 					deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+			
+			service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturnId());
+		}
+			
 		if (deliveryRequest.getIsInboundTransfer())
 			service.updateIsForTransfer(deliveryRequest.getOutboundDeliveryRequestTransfer().getId(), true);
 

@@ -559,4 +559,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
 	List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
+
+
+	@Modifying
+	@Query("update StockRow a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.outboundDeliveryRequestReturn.id = ?3")
+	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
 }

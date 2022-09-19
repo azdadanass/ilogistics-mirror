@@ -18,7 +18,7 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 
-		deliveryRequestService.updateDetailListUnitCost(18879);
+		deliveryRequestService.updateReturnInboundsUnitPrice(19872);
 
 	}
 

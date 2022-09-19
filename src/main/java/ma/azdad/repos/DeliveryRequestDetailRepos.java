@@ -168,7 +168,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId);
 
 	@Modifying
-	@Query("update DeliveryRequestDetail a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.outboundDeliveryRequestReturn.id = ?3")
+	@Query("update DeliveryRequestDetail a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
 	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
 
 }

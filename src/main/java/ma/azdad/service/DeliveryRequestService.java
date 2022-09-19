@@ -1056,6 +1056,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			// call service too so we update stock row unit price
 			deliveryRequestDetailService.updateUnitPrice(drd.getId(), unitPrice);
+			
+			// update all return details & sock row unit price
+			updateReturnInboundsUnitPrice(deliveryRequestId);
 
 		}
 
@@ -1192,6 +1195,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		DeliveryRequest outboundDeliveryRequest = findOne(outboundDeliveryRequestId);
 		Map<Integer, Double> map = new HashMap<Integer, Double>();
 		outboundDeliveryRequest.getDetailList().forEach(d -> map.put(d.getPartNumberId(), d.getUnitPrice()));
+		System.out.println(map);
 
 		// update inbound delivery details
 		map.forEach((pnId, unitPrice) -> deliveryRequestDetailRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));

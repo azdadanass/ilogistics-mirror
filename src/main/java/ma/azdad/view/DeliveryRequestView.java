@@ -533,6 +533,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
+			
+			
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -631,10 +633,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
 				projectCrossService.addCrossChargeForReturnFromOutbound(deliveryRequest);
 
-			if (deliveryRequest.getIsInboundReturn())
+			if (deliveryRequest.getIsInboundReturn()) {
 				service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(),
 						deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
-
+				service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
+			}
+				
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
 
@@ -1797,8 +1801,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getIsInboundReturn()) {
 			service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(),
 					deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
-			
-			service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturnId());
+			service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 		}
 			
 		if (deliveryRequest.getIsInboundTransfer())
@@ -2125,6 +2128,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (!canUpdateUnitPrice())
 			return;
 		deliveryRequestDetailService.updateUnitPrice(detail.getId(), detail.getUnitPrice());
+		service.updateReturnInboundsUnitPrice(deliveryRequest.getId());
 	}
 
 	public void changeTypeListener() {

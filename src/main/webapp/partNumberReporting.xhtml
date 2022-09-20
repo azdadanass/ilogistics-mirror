@@ -58,7 +58,8 @@
 					<div class=" col-sm-2 infobox-container">
 						<div class="infobox infobox-blue2">
 							<div class="infobox-progress">
-								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
+								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45"
+									style="height: 46px; width: 46px; line-height: 45px;">
 									<span class="percent">
 										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
@@ -192,7 +193,8 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder blue" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
+											<i
+												class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
 												title="Must be filled" />
 											&nbsp;
 										</div>
@@ -351,8 +353,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{partNumberView.partNumber.name}" />
@@ -426,8 +428,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{partNumberView.partNumber.name}" />
@@ -500,8 +502,8 @@
 									<h:outputText value=" Expiry Informations" />
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="expiryList" value="#{stockRowView.expiryList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="expiryList" value="#{stockRowView.expiryList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{partNumberView.partNumber.name}" />
@@ -615,8 +617,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="costHistory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="costHistory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false">
 												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 													<h:outputText value="#{partNumberView.partNumber.name}" />
@@ -629,6 +631,12 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
+											<p:column headerText="Purchase Cost" rendered="#{sessionView.internal}">
+												<h:outputText value="#{item.purchaseCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
 											<p:column headerText="Unit Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
@@ -640,6 +648,17 @@
 													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color} bolder" />
 													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
 												</h:outputLink>
+											</p:column>
+											<p:column headerText="PO">
+												<h:outputText value="#{item.tmpPoNumero}" styleClass="bolder orange" />
+											</p:column>
+											<p:column headerText="PO Date">
+												<h:outputText value="#{item.tmpPoDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Supplier">
+												<h:outputText value="#{item.tmpPoName}" styleClass="pink" />
 											</p:column>
 											<p:column headerText="DN" styleClass="hide">
 												<h:outputText value="#{item.tmpDeliveryRequestReference}" />

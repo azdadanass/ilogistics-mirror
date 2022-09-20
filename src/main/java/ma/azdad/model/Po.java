@@ -1,6 +1,7 @@
 package ma.azdad.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "po")
@@ -20,6 +23,7 @@ import javax.persistence.Table;
 public class Po implements Serializable {
 
 	private Integer idpo;
+	private Date date;
 	private Boolean ibuy;
 	private Double madConversionRate;
 	private String numeroIbuy;
@@ -178,5 +182,17 @@ public class Po implements Serializable {
 	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "podate")
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	
 
 }

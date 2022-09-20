@@ -208,8 +208,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query(select3 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.status not in (?7)")
 	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, DeliveryRequestType outbound, List<DeliveryRequestStatus> excludeStatusList);
 
-	@Query(select4 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.inboundType = ?7 and a.status in (?8) and (select count(*) from AppLink b where b.deliveryRequest.id = a.id) > 0")
-	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock, DeliveryRequestType inbound,InboundType inboundType,List<DeliveryRequestStatus> statusList);
+	@Query(select4 + from1 + " where " + usernameCondition + " and a.company.id = ?4 and a.type = ?5 and a.inboundType = ?6 and a.status in (?7) and (select count(*) from AppLink b where b.deliveryRequest.id = a.id) > 0")
+	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, DeliveryRequestType inbound,InboundType inboundType,List<DeliveryRequestStatus> statusList);
 
 	@Query("from DeliveryRequest a where a.outboundDeliveryRequestReturn.id = ?1 ")
 	public List<DeliveryRequest> findByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);

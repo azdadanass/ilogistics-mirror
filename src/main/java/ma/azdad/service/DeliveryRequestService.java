@@ -82,7 +82,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	DeliveryRequestDetailRepos deliveryRequestDetailRepos;
-	
+
 	@Autowired
 	StockRowRepos stockRowRepos;
 
@@ -935,8 +935,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(),
-				DeliveryRequestType.INBOUND, InboundType.NEW, Arrays.asList(DeliveryRequestStatus.DELIVRED));
+//		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(),
+//				DeliveryRequestType.INBOUND, InboundType.NEW, Arrays.asList(DeliveryRequestStatus.DELIVRED));
+		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId,DeliveryRequestType.INBOUND, InboundType.NEW,
+				Arrays.asList(DeliveryRequestStatus.DELIVRED));
 	}
 
 	// fillDestinationProject script
@@ -1056,7 +1058,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			// call service too so we update stock row unit price
 			deliveryRequestDetailService.updateUnitPrice(drd.getId(), unitPrice);
-			
+
 			// update all return details & sock row unit price
 			updateReturnInboundsUnitPrice(deliveryRequestId);
 

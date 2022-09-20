@@ -496,7 +496,7 @@
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-7 hidden-xs">
 											<i class="fa fa-list" />
-											<h:outputText value=" Install Base" />
+											<h:outputText value=" Team Inventory" />
 										</div>
 										<div class="col-sm-2">
 											<div class="action-buttons center">
@@ -521,10 +521,10 @@
 										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false">
-												<h:outputText value="#{item.tmpPartNumberName}" styleClass="bolder pink" />
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
 											</p:column>
 											<p:column headerText="Description">
-												<h:outputText value="#{item.tmpPartNumberDescription}" styleClass="blue aa-cut-text" />
+												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="DN" width="70">
 												<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color}" />

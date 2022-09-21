@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,7 @@ import ma.azdad.repos.BoqRepos;
 
 @Component
 @Transactional
-public class BoqService {
-
-	@Autowired
-	private BoqRepos repos;
+public class BoqService extends GenericService<Integer, Boq, BoqRepos> {
 
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId) {
 		return repos.findPartNumberIdListByPoAndHavingRemainingQuantity(poId);
@@ -54,6 +50,10 @@ public class BoqService {
 
 	public Long countByPo(Integer poId) {
 		return ObjectUtils.firstNonNull(repos.countByPo(poId), 0l);
+	}
+	
+	public List<Boq> findByPo(Integer poId) {
+		return repos.findByPo(poId);
 	}
 
 }

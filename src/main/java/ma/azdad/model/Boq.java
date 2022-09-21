@@ -29,6 +29,108 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 	// tmp
 	private Boolean directEquivalence = true;
 
+	// constructor1
+	public Boq(Integer id, Integer reference, Double quantity, Double unitPrice, Double totalPrice, Double totalQuantity, Double totalUsedQuantity, Integer poDetailReference,
+			String poDetailDescription, Double poDetailQuantity, String partNumberName, String partNumberDescription, String partNumberImage) {
+		super(id);
+		this.reference = reference;
+		this.quantity = quantity;
+		this.unitPrice = unitPrice;
+		this.totalPrice = totalPrice;
+		this.totalQuantity = totalQuantity;
+		this.totalUsedQuantity = totalUsedQuantity;
+		this.setPoDetailReference(poDetailReference);
+		this.setPoDetailDescription(poDetailDescription);
+		this.setPoDetailQuantity(poDetailQuantity);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
+	}
+	
+	@Transient
+	public Integer getPoDetailReference() {
+		if (podetails == null)
+			return null;
+		return podetails.getReference();
+	}
+
+	@Transient
+	public void setPoDetailReference(Integer poDetailReference) {
+		if (podetails == null)
+			podetails = new Podetails();
+		podetails.setReference(poDetailReference);
+	}
+
+	@Transient
+	public Double getPoDetailQuantity() {
+		if (podetails == null)
+			return null;
+		return podetails.getUnit();
+	}
+
+	@Transient
+	public void setPoDetailQuantity(Double poDetailQuantity) {
+		if (podetails == null)
+			podetails = new Podetails();
+		podetails.setUnit(poDetailQuantity);
+	}
+
+	@Transient
+	public String getPoDetailDescription() {
+		if (podetails == null)
+			return null;
+		return podetails.getDescription();
+	}
+
+	@Transient
+	public void setPoDetailDescription(String poDetailDescription) {
+		if (podetails == null)
+			podetails = new Podetails();
+		podetails.setDescription(poDetailDescription);
+	}
+
+	@Transient
+	public String getPartNumberName() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getName();
+	}
+
+	@Transient
+	public void setPartNumberName(String partNumberName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setName(partNumberName);
+	}
+	
+	@Transient
+	public String getPartNumberImage() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getImage();
+	}
+
+	@Transient
+	public void setPartNumberImage(String partNumberImage) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setImage(partNumberImage);
+	}
+
+	@Transient
+	public String getPartNumberDescription() {
+		if (partNumber == null)
+			return null;
+		return partNumber.getDescription();
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setDescription(partNumberDescription);
+	}
+
 	@Transient
 	public Double getRemainingQuantity() {
 		return getTotalQuantity() - totalUsedQuantity;

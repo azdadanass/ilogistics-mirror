@@ -13,6 +13,8 @@ import ma.azdad.model.Boq;
 @Repository
 public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
+	String constructor1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
+
 	@Query("select a.partNumber.id from Boq a where a.podetails.po.idpo = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);
 
@@ -37,4 +39,7 @@ public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
 	@Query("select count(*) from Boq a where a.podetails.po.idpo = ?1")
 	Long countByPo(Integer poId);
+
+	@Query(constructor1 + "from Boq a where a.podetails.po.id = ?1")
+	public List<Boq> findByPo(Integer poId);
 }

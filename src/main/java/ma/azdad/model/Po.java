@@ -42,6 +42,8 @@ public class Po implements Serializable {
 	private PoBoqStatus boqStatus;
 	private PoDeliveryStatus deliveryStatus;
 
+	private Company company;
+
 	public Po() {
 	}
 
@@ -73,7 +75,7 @@ public class Po implements Serializable {
 	}
 
 	public boolean filter(String query) {
-		return contains(query, numero, amountHt, status.getValue(), getProjectName(),getSupplierName(),getCustomerName());
+		return contains(query, numero, amountHt, status.getValue(), getProjectName(), getSupplierName(), getCustomerName());
 	}
 
 	protected Boolean contains(String query, Object... objects) {
@@ -304,6 +306,16 @@ public class Po implements Serializable {
 
 	public void setAmountHt(Double amountHt) {
 		this.amountHt = amountHt;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "company_idcompany")
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 }

@@ -46,10 +46,10 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	public Set<Integer> findPoIdListContainingProjectGoodsPurchase(CostType projectGoodsPurchase);
 	
 	// c1
-	@Query("select distinct new Po(a.po.idpo,a.po.ibuy,a.po.numero,a.po.date,a.po.amountHt,a.po.status,a.po.boqStatus,a.po.deliveryStatus,a.po.currency.name,a.po.project.name,a.po.supplier.name) from DeliveryRequest a where a.type = 'INBOUND' and (a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.customer.manager.username = ?1 or a.project.id in (?2))")
-	List<Po> findSupplierPoList(String username,List<Integer> assignedProjectList);
+	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3))")
+	List<Po> findSupplierPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 	
-	@Query("select distinct new Po(a.po.idpo,a.po.ibuy,a.po.numero,a.po.date,a.po.amountHt,a.po.status,a.po.boqStatus,a.po.deliveryStatus,a.po.currency.name,a.po.project.name,a.po.project.customer.name) from DeliveryRequest a where a.type = 'OUTBOUND' and (a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.customer.manager.username = ?1 or a.project.id in (?2))")
-	List<Po> findCustomerPoList(String username,List<Integer> assignedProjectList);
+	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is false and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3))")
+	List<Po> findCustomerPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 
 }

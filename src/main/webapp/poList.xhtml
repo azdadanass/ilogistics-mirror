@@ -79,30 +79,9 @@
 				<p:messages id="messages" />
 				<div class="col-sm-offset-1 col-sm-10">
 					<div class="table-header col-sm-12 col-xs-12">
-						<div class="col-sm-3 hidden-xs">
+						<div class="col-sm-8 hidden-xs">
 							<i class="fa fa-list" />
 							<h:outputText value=" List" />
-						</div>
-						<div class="col-sm-5">
-							<table style="margin-top: 5px">
-								<tr>
-									<td>
-										<h:outputText value="Filter by :" />
-									</td>
-									<td>
-										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="tooltip-success aa-tooltip" title="Supplier">
-											<div class="aa-icon-active" />
-											<f:setPropertyActionListener value="true" target="#{poView.ibuy}" />
-										</p:commandLink>
-									</td>
-									<td>
-										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip" title="Customer">
-											<div class="aa-icon-all" />
-											<f:setPropertyActionListener value="false" target="#{poView.ibuy}" />
-										</p:commandLink>
-									</td>
-								</tr>
-							</table>
 						</div>
 						<div class="col-sm-2">
 							<div class="action-buttons center">

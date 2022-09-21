@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Po;
 import ma.azdad.service.PoService;
+import ma.azdad.service.UtilsFunctions;
 
 @ManagedBean
 @Component
@@ -28,8 +29,11 @@ public class PoView {
 	@Autowired
 	private CacheView cacheView;
 
-	protected String currentPath;
+	private String currentPath;
+	private Integer id;
+	private Integer companyId;
 
+	private Po model;
 	private List<Po> list1 = new ArrayList<>();
 	private List<Po> list2 = new ArrayList<>();
 	private String searchBean = "";
@@ -39,12 +43,24 @@ public class PoView {
 	@PostConstruct
 	public void init() {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
-		refreshList();
+		id = UtilsFunctions.getIntegerParameter("id");
+		companyId = UtilsFunctions.getIntegerParameter("companyId");
+		switch (currentPath) {
+		case "/poList.xhtml":
+			refreshList();
+			break;
+		case "/viewPo.xhtml":
+			model = service.findOne(id);
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	public void refreshList() {
 		if ("/poList.xhtml".equals(currentPath))
-			list2 = list1 = service.find(ibuy, sessionView.getUsername(), cacheView.getAssignedProjectList());
+			list2 = list1 = service.find(ibuy, companyId, sessionView.getUsername(), cacheView.getAssignedProjectList());
 	}
 
 	private void filterBean(String query) {
@@ -92,6 +108,30 @@ public class PoView {
 
 	public void setIbuy(Boolean ibuy) {
 		this.ibuy = ibuy;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Po getModel() {
+		return model;
+	}
+
+	public void setModel(Po model) {
+		this.model = model;
+	}
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
 	}
 
 }

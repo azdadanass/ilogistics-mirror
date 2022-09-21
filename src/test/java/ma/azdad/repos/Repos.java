@@ -19,9 +19,6 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 
-System.out.println(poRepos.findSupplierPoList("m.bougri",  Arrays.asList(-1)));
-System.out.println(poRepos.findCustomerPoList("m.bougri",  Arrays.asList(-1)));
-
 	}
 
 }

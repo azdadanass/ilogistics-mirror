@@ -108,11 +108,11 @@ public class PoService {
 		cacheService.evictCacheOthers("poService");
 	}
 
-	public List<Po> find(Boolean ibuy, String username, List<Integer> assignedProjectList) {
+	public List<Po> find(Boolean ibuy,Integer companyId, String username, List<Integer> assignedProjectList) {
 		if (ibuy)
-			return repos.findSupplierPoList(username, assignedProjectList);
+			return repos.findSupplierPoList(companyId,username, assignedProjectList);
 		else
-			return repos.findCustomerPoList(username, assignedProjectList);
+			return repos.findCustomerPoList(companyId,username, assignedProjectList);
 	}
 
 }

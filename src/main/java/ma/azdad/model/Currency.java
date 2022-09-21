@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 public class Currency implements Serializable {
 	private Integer idcurrency;
+	private String name;
 	private String currency;
 	private Double max_value;
 	private Double min_value;
@@ -32,6 +33,15 @@ public class Currency implements Serializable {
 
 	public void setIdcurrency(Integer idcurrency) {
 		this.idcurrency = idcurrency;
+	}
+
+	@Column(name = "currency", insertable = false, updatable = false)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Column(name = "currency", nullable = false, unique = true, length = 45)

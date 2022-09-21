@@ -17,6 +17,7 @@ import ma.azdad.model.RevenueType;
 
 @Repository
 public interface PoRepos extends JpaRepository<Po, Integer> {
+	
 
 	@Query("from Po a where a.type = ?1 and a.project.id = ?2 and a.boqStatus is not null and a.boqStatus  != ?3  and a.status not in (?4)")
 	public List<Po> findByTypeAndProjectAndNotBoqStatus(String type, Integer projectId, PoBoqStatus boqStatus, List<PoStatus> notInStatus);
@@ -43,5 +44,12 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 
 	@Query("select distinct a.po.idpo  from Podetails a where a.costType  =?1 ")
 	public Set<Integer> findPoIdListContainingProjectGoodsPurchase(CostType projectGoodsPurchase);
+	
+	// c1
+	@Query("select distinct new Po(a.po.idpo,a.po.ibuy,a.po.numero,a.po.date,a.po.amountHt,a.po.status,a.po.boqStatus,a.po.deliveryStatus,a.po.currency.name,a.po.project.name,a.po.supplier.name) from DeliveryRequest a where a.type = 'INBOUND' and (a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.customer.manager.username = ?1 or a.project.id in (?2))")
+	List<Po> findSupplierPoList(String username,List<Integer> assignedProjectList);
+	
+	@Query("select distinct new Po(a.po.idpo,a.po.ibuy,a.po.numero,a.po.date,a.po.amountHt,a.po.status,a.po.boqStatus,a.po.deliveryStatus,a.po.currency.name,a.po.project.name,a.po.project.customer.name) from DeliveryRequest a where a.type = 'OUTBOUND' and (a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.customer.manager.username = ?1 or a.project.id in (?2))")
+	List<Po> findCustomerPoList(String username,List<Integer> assignedProjectList);
 
 }

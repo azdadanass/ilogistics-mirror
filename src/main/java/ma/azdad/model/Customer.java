@@ -5,9 +5,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -43,6 +46,7 @@ public class Customer implements Serializable {
 	private String website;
 
 	private Boolean isStockEmpty;
+	private User manager;
 
 	public Customer() {
 	}
@@ -269,6 +273,16 @@ public class Customer implements Serializable {
 
 	public void setIsCustomer(Boolean isCustomer) {
 		this.isCustomer = isCustomer;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "manager_idmanager")
+	public User getManager() {
+		return manager;
+	}
+
+	public void setManager(User manager) {
+		this.manager = manager;
 	}
 
 }

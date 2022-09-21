@@ -1,0 +1,97 @@
+package ma.azdad.view;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import ma.azdad.model.Po;
+import ma.azdad.service.PoService;
+
+@ManagedBean
+@Component
+@Scope("view")
+public class PoView {
+
+	@Autowired
+	private PoService service;
+
+	@Autowired
+	private SessionView sessionView;
+
+	@Autowired
+	private CacheView cacheView;
+
+	protected String currentPath;
+
+	private List<Po> list1 = new ArrayList<>();
+	private List<Po> list2 = new ArrayList<>();
+	private String searchBean = "";
+
+	private Boolean ibuy = true;
+
+	@PostConstruct
+	public void init() {
+		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+		refreshList();
+	}
+
+	public void refreshList() {
+		if ("/poList.xhtml".equals(currentPath))
+			list2 = list1 = service.find(ibuy, sessionView.getUsername(), cacheView.getAssignedProjectList());
+	}
+
+	private void filterBean(String query) {
+		List<Po> list = new ArrayList<>();
+		query = query.toLowerCase().trim();
+		for (Po bean : list1) {
+			if (bean.filter(query))
+				list.add(bean);
+		}
+		list2 = list;
+	}
+
+	public Integer getRowsNumber() {
+		return list2.size();
+	}
+
+	public String getSearchBean() {
+		return searchBean;
+	}
+
+	public void setSearchBean(String searchBean) {
+		this.searchBean = searchBean;
+		filterBean(searchBean);
+	}
+
+	public List<Po> getList1() {
+		return list1;
+	}
+
+	public void setList1(List<Po> list1) {
+		this.list1 = list1;
+	}
+
+	public List<Po> getList2() {
+		return list2;
+	}
+
+	public void setList2(List<Po> list2) {
+		this.list2 = list2;
+	}
+
+	public Boolean getIbuy() {
+		return ibuy;
+	}
+
+	public void setIbuy(Boolean ibuy) {
+		this.ibuy = ibuy;
+	}
+
+}

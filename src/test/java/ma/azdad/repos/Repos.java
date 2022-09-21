@@ -1,24 +1,26 @@
 package ma.azdad.repos;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.DeliveryRequestService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	DeliveryRequestService deliveryRequestService;
+	PoRepos poRepos;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 
-		deliveryRequestService.updateReturnInboundsUnitPrice(19872);
+System.out.println(poRepos.findSupplierPoList("m.bougri",  Arrays.asList(-1)));
+System.out.println(poRepos.findCustomerPoList("m.bougri",  Arrays.asList(-1)));
 
 	}
 

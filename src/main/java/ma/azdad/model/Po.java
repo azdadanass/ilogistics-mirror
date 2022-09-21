@@ -16,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import ma.azdad.service.UtilsFunctions;
 
 @Entity
 @Table(name = "po")
@@ -23,8 +26,11 @@ import javax.persistence.TemporalType;
 public class Po implements Serializable {
 
 	private Integer idpo;
-	private Date date;
 	private Boolean ibuy;
+	private String numero;
+	private Date date;
+	private Double amountHt = 0.0;
+
 	private Double madConversionRate;
 	private String numeroIbuy;
 	private String numeroInvoice;
@@ -39,10 +45,52 @@ public class Po implements Serializable {
 	public Po() {
 	}
 
+	// c1
 	public Po(Integer idpo, String numeroInvoice) {
 		super();
 		this.idpo = idpo;
 		this.numeroInvoice = numeroInvoice;
+	}
+
+	// c2
+	public Po(Integer idpo, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoBoqStatus boqStatus, PoDeliveryStatus deliveryStatus, //
+			String currencyName, String projectName, String supplierOrCustomerName) {
+		super();
+		this.idpo = idpo;
+		this.ibuy = ibuy;
+		this.numero = numero;
+		this.date = date;
+		this.amountHt = amountHt;
+		this.status = status;
+		this.boqStatus = boqStatus;
+		this.deliveryStatus = deliveryStatus;
+		this.setCurrencyName(currencyName);
+		this.setProjectName(projectName);
+		if (ibuy)
+			this.setSupplierName(supplierOrCustomerName);
+		else
+			this.setCustomerName(supplierOrCustomerName);
+	}
+
+	public boolean filter(String query) {
+		return contains(query, numero, amountHt, status.getValue(), getProjectName(),getSupplierName(),getCustomerName());
+	}
+
+	protected Boolean contains(String query, Object... objects) {
+		for (int i = 0; i < objects.length; i++) {
+			Object o = objects[i];
+			if (o == null)
+				continue;
+			if (o instanceof String && ((String) o).toLowerCase().contains(query))
+				return true;
+			if (o instanceof Double && ((Double) o).toString().contains(query))
+				return true;
+			if (o instanceof Integer && ((Integer) o).toString().contains(query))
+				return true;
+			if (o instanceof Date && UtilsFunctions.getFormattedDate(((Date) o)).contains(query))
+				return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -68,6 +116,54 @@ public class Po implements Serializable {
 		} else if (!idpo.equals(other.idpo))
 			return false;
 		return true;
+	}
+
+	@Transient
+	public String getSupplierName() {
+		return supplier != null ? supplier.getName() : null;
+	}
+
+	@Transient
+	public void setSupplierName(String supplierName) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setName(supplierName);
+	}
+
+	@Transient
+	public String getCurrencyName() {
+		return currency != null ? currency.getName() : null;
+	}
+
+	@Transient
+	public void setCurrencyName(String currencyName) {
+		if (currency == null)
+			currency = new Currency();
+		currency.setName(currencyName);
+	}
+
+	@Transient
+	public String getProjectName() {
+		return project != null ? project.getName() : null;
+	}
+
+	@Transient
+	public void setProjectName(String projectName) {
+		if (project == null)
+			project = new Project();
+		project.setName(projectName);
+	}
+
+	@Transient
+	public String getCustomerName() {
+		return project != null ? project.getCustomerName() : null;
+	}
+
+	@Transient
+	public void setCustomerName(String customerName) {
+		if (project == null)
+			project = new Project();
+		project.setCustomerName(customerName);
 	}
 
 	@Id
@@ -110,7 +206,7 @@ public class Po implements Serializable {
 		this.supplier = supplier;
 	}
 
-	@Column(name = "numero", length = 45,insertable = false, updatable = false)
+	@Column(name = "numero", length = 45, insertable = false, updatable = false)
 	public String getNumeroIbuy() {
 		return numeroIbuy;
 	}
@@ -119,7 +215,7 @@ public class Po implements Serializable {
 		this.numeroIbuy = numeroIbuy;
 	}
 
-	@Column(name = "numero", length = 45)
+	@Column(name = "numero", length = 45, insertable = false, updatable = false)
 	public String getNumeroInvoice() {
 		return numeroInvoice;
 	}
@@ -138,7 +234,7 @@ public class Po implements Serializable {
 		this.project = project;
 	}
 
-	@Column(name="old_type")
+	@Column(name = "old_type")
 	public String getType() {
 		return type;
 	}
@@ -192,7 +288,22 @@ public class Po implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	@Column(name = "total_amount")
+	public Double getAmountHt() {
+		return amountHt;
+	}
+
+	public void setAmountHt(Double amountHt) {
+		this.amountHt = amountHt;
+	}
 
 }

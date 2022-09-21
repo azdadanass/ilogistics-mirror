@@ -58,12 +58,14 @@ public class PoService {
 			List<Podetails> podetailsList = podetailsRepos.findByPoAndHavingBoq(poId);
 			Boolean ibuy = repos.getIbuy(poId);
 			if (!ibuy)
-				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType())
+						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 					boqStatus = PoBoqStatus.IN_PROGRESS;
 				else
 					boqStatus = PoBoqStatus.MAPPED;
 			else {
-				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType()) && (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
+				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType())
+						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
 					boqStatus = PoBoqStatus.IN_PROGRESS;
 				else
 					boqStatus = PoBoqStatus.MAPPED;
@@ -104,6 +106,13 @@ public class PoService {
 		repos.updateDeliveryStatus(poId, deliveryStatus);
 		cacheService.evictCache("poService");
 		cacheService.evictCacheOthers("poService");
+	}
+
+	public List<Po> find(Boolean ibuy, String username, List<Integer> assignedProjectList) {
+		if (ibuy)
+			return repos.findSupplierPoList(username, assignedProjectList);
+		else
+			return repos.findCustomerPoList(username, assignedProjectList);
 	}
 
 }

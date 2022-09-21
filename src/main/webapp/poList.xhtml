@@ -126,18 +126,18 @@
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
 						<p:dataTable value="#{poView.list2}" id="main_tab" widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center"
 							paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-							<p:column headerText="Numero">
+							<p:column headerText="Numero" width="100">
 								<h:outputText value="#{item.numero}" styleClass="bolder orange" />
 							</p:column>
-							<p:column headerText="Date">
+							<p:column headerText="Date" width="80">
 								<h:outputText value="#{item.date}">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Status">
+							<p:column headerText="Status" width="100">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
 							</p:column>
-							<p:column headerText="Amount">
+							<p:column headerText="Amount" width="120">
 								<h:outputText value="#{item.amountHt}" styleClass="bolder green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
@@ -149,18 +149,18 @@
 							<p:column headerText="Customer" rendered="#{!poView.ibuy}">
 								<h:outputText value="#{item.customerName}" styleClass="aa-cut-text blue" />
 							</p:column>
-							<p:column headerText="BoQ Status">
+							<p:column headerText="BoQ Status" width="120">
 								<h:outputText value="#{item.boqStatus.value}" styleClass="#{item.boqStatus.color.name}" />
 							</p:column>
-							<p:column headerText="Delivery Status">
+							<p:column headerText="Delivery Status" width="130">
 								<h:outputText value="#{item.deliveryStatus.value}" styleClass="#{item.deliveryStatus.color.badge}" />
 							</p:column>
-							<p:column headerText="Actions" style="width:150px">
+							<p:column headerText="Actions" width="80">
 								<div class="action-buttons center">
-									<!-- <h:outputLink value="#{poView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+									<h:outputLink value="viewPo.xhtml" title="Show details" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-										<f:param name="poname" value="#{item.poname}" />
-									</h:outputLink> -->
+										<f:param name="id" value="#{item.idpo}" />
+									</h:outputLink>
 								</div>
 							</p:column>
 						</p:dataTable>

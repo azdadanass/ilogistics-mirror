@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PartNumberRepos;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.File;
 import ma.azdad.utils.PartNumberExcelFileException;
 
 @Component
@@ -226,4 +228,7 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 		evictCache();
 	}
 
+	public List<File> findFileListByPo(Integer poId) {
+		return repos.findFileListByPo(poId).stream().filter(i->!i.getIsImage()).collect(Collectors.toList());
+	}
 }

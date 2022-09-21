@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -330,6 +331,10 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 
 	public List<PartNumber> findLightByStockItem(Boolean stockItem) {
 		return partNumberService.findLightByStockItem(stockItem);
+	}
+	
+	public List<ma.azdad.utils.File> findFileListByPo(Integer poId) {
+		return service.findFileListByPo(poId);
 	}
 
 	// not used anymore

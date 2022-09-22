@@ -46,10 +46,10 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	public Set<Integer> findPoIdListContainingProjectGoodsPurchase(CostType projectGoodsPurchase);
 	
 	// c1
-	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3))")
+	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
 	List<Po> findSupplierPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 	
-	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3))")
+	@Query("select distinct new Po(a.idpo,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
 	List<Po> findCustomerPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 
 }

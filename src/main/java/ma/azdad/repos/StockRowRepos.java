@@ -295,14 +295,14 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id")
 	public List<Integer> findProjectIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
-	
-	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
+			+ " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
 	public List<Integer> findProjectIdListByCompanyOwnerAndHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
-	
-	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+
+	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
+			+ " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
 	public List<Integer> findProjectIdListByCompanyOwnerAndNotHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
-	
-	
 
 	@Query("select a.deliveryRequest.project.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
 			+ "and a.deliveryRequest.project.type = ?5   group by a.deliveryRequest.project.id")
@@ -310,11 +310,13 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id")
 	public List<Integer> findProjectIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
-	
-	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+
+	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition
+			+ " group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
 	public List<Integer> findProjectIdListByCustomerOwnerAndHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
-	
-	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+
+	@Query("select a.deliveryRequest.project.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition
+			+ " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
 	public List<Integer> findProjectIdListByCustomerOwnerAndNotHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
 	@Query("select a.deliveryRequest.destination.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
@@ -425,11 +427,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(c22 + from2
 			+ "where (company1.id = ?1 or company2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice ")
 	public List<StockRow> findStockHistoryByCompanyOwnerAndOutboundDeliveryRequestReturn(Integer companyId, List<Integer> outboundSrouceList, List<Integer> partNumberList);
-	
+
 	@Query(c22 + from3
 			+ "where (customer1.id = ?1 or customer2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice ")
 	public List<StockRow> findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(Integer customerId, List<Integer> outboundSrouceList, List<Integer> partNumberList);
-
 
 	//
 
@@ -559,7 +560,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
 	List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
-
+	@Query(c22 + "from StockRow a where a.deliveryRequest.po.idpo = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+	List<StockRow> findDeliveryListsByPo(Integer poId);
 
 	@Modifying
 	@Query("update StockRow a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")

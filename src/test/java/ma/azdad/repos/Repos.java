@@ -1,7 +1,5 @@
 package ma.azdad.repos;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -15,9 +13,15 @@ public class Repos extends GenericTest {
 	@Autowired
 	PoRepos poRepos;
 
+	@Autowired
+	StockRowRepos stockRowRepos;
+
+	
 	@Test
 	@Transactional
 	public void test() throws Exception {
+		
+		stockRowRepos.findDeliveryListsByPo(17491).forEach(i->System.out.println(i.getPoNumero()));;
 
 	}
 

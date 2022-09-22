@@ -131,6 +131,18 @@ public class Po implements Serializable {
 			supplier = new Supplier();
 		supplier.setName(supplierName);
 	}
+	
+	@Transient
+	public String getCompanyName(){
+		return company!=null?company.getName():null;
+	}
+
+	@Transient
+	public void setCompanyName(String companyName){
+		if(company==null)
+			company=new Company();
+		company.setName(companyName);
+	}
 
 	@Transient
 	public String getCurrencyName() {

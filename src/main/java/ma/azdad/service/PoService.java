@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +41,12 @@ public class PoService {
 	private CacheService cacheService;
 
 	public Po findOne(Integer id) {
-		return repos.findById(id).get();
+		Po po = repos.findById(id).get();
+		Hibernate.initialize(po.getProject().getCustomer());
+		Hibernate.initialize(po.getSupplier());
+		Hibernate.initialize(po.getCompany());
+		Hibernate.initialize(po.getCurrency());
+		return po;
 	}
 
 	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {

@@ -274,10 +274,25 @@ public class Project implements Serializable {
 		return customer.getName();
 	}
 
+	@Transient
 	public void setCustomerName(String name) {
 		if (customer == null)
 			customer = new Customer();
 		customer.setName(name);
+	}
+	
+	@Transient
+	public String getCustomerPhoto() {
+		if (customer == null)
+			return null;
+		return customer.getPhoto();
+	}
+
+	@Transient
+	public void setCustomerPhoto(String name) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setPhoto(name);
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)

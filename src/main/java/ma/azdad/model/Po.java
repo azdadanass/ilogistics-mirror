@@ -179,6 +179,18 @@ public class Po implements Serializable {
 			project = new Project();
 		project.setCustomerName(customerName);
 	}
+	
+	@Transient
+	public String getCustomerPhoto() {
+		return project != null ? project.getCustomerPhoto() : null;
+	}
+
+	@Transient
+	public void setCustomerPhoto(String customerPhoto) {
+		if (project == null)
+			project = new Project();
+		project.setCustomerPhoto(customerPhoto);
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

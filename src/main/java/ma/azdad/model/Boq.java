@@ -29,6 +29,10 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 	// tmp
 	private Boolean directEquivalence = true;
 
+	public Boq() {
+		super();
+	}
+
 	// constructor1
 	public Boq(Integer id, Integer reference, Double quantity, Double unitPrice, Double totalPrice, Double totalQuantity, Double totalUsedQuantity, Integer poDetailReference,
 			String poDetailDescription, Double poDetailQuantity, String partNumberName, String partNumberDescription, String partNumberImage) {
@@ -46,7 +50,7 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberImage(partNumberImage);
 	}
-	
+
 	@Transient
 	public Integer getPoDetailReference() {
 		if (podetails == null)
@@ -102,7 +106,7 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 			partNumber = new PartNumber();
 		partNumber.setName(partNumberName);
 	}
-	
+
 	@Transient
 	public String getPartNumberImage() {
 		if (partNumber == null)

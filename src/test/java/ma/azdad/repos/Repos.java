@@ -1,5 +1,8 @@
 package ma.azdad.repos;
 
+import java.util.Arrays;
+import java.util.Date;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -21,7 +24,7 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 		
-		stockRowRepos.findDeliveryListsByPo(17491).forEach(i->System.out.println(i.getPoNumero()));;
+		System.out.println(stockRowRepos.getTotalCostBeforeDate("m.bougri", Arrays.asList(-1),  Arrays.asList(-1), 1, 429, new Date()));
 
 	}
 

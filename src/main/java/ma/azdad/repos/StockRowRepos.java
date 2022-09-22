@@ -501,7 +501,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	// CHART
 	@Query("select sum(a.quantity * a.unitCost) " + from1 + " where a.unitCost is not null and " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 and "
-			+ projectCondition + "  and date(a.creationDate) <= date(?5)")
+			+ projectCondition + "  and date(a.creationDate) <= date(?6)")
 	public Double getTotalCostBeforeDate(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId, Date maxDate);
 
 	// RETURN FROM OUTBOUND

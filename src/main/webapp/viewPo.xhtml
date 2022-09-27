@@ -216,7 +216,7 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="boqList" value="#{boqView.list2}" var="item" rows="10" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+									<p:dataTable id="boqList" value="#{boqView.list2}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Po Detail" width="80" rendered="#{!boqView.summary}">
 											<h:outputText value="#{item.poDetailReference}" />
@@ -259,10 +259,11 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="Delivered Quantity" width="100">
-											<h:outputText value="#{item.deliveredQuantity}">
+										<p:column headerText="Delivered Quantity">
+											<h:outputText value="#{item.deliveredQuantity}" styleClass="editable-click  aa-tooltip" title="#{boqView.summary?'':'Partially Delivered Quantities are ignored in detailed situation'}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
+											
 										</p:column>
 										<p:column headerText="Total Price" width="100" rendered="#{!boqView.summary}">
 											<h:outputText value="#{item.quantity * item.poDetailQuantity * item.unitPrice}">

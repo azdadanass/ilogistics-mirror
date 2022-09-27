@@ -28,14 +28,15 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 
 	// tmp
 	private Boolean directEquivalence = true;
+	private Double deliveredQuantity = 0.0; // DN where status in ('DELIVRED','ACKNOWLEDGED') ps : case P.DELIVRED ignored
 
 	public Boq() {
 		super();
 	}
 
-	// constructor1
+	// c1
 	public Boq(Integer id, Integer reference, Double quantity, Double unitPrice, Double totalPrice, Double totalQuantity, Double totalUsedQuantity, Integer poDetailReference,
-			String poDetailDescription, Double poDetailQuantity, String partNumberName, String partNumberDescription, String partNumberImage) {
+			String poDetailDescription, Double poDetailQuantity, String partNumberName, String partNumberDescription, String partNumberImage, Double deliveredQuantity) {
 		super(id);
 		this.reference = reference;
 		this.quantity = quantity;
@@ -49,6 +50,27 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberImage(partNumberImage);
+		this.deliveredQuantity = deliveredQuantity;
+	}
+
+	// c2
+	public Boq(Double totalQuantity,Double deliveredQuantity,String partNumberName,String partNumberDescription) {
+		this.totalQuantity = totalQuantity;
+		this.deliveredQuantity = deliveredQuantity;
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+	}
+
+	@Transient
+	public Integer getPartNumberId() {
+		return partNumber != null ? partNumber.getId() : null;
+	}
+
+	@Transient
+	public void setPartNumberId(Integer partNumberId) {
+		if (partNumber == null || !partNumberId.equals(partNumber.getId()))
+			partNumber = new PartNumber();
+		partNumber.setId(partNumberId);
 	}
 
 	@Transient
@@ -228,4 +250,15 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Transient
+	public Double getDeliveredQuantity() {
+		return deliveredQuantity;
+	}
+
+	@Transient
+	public void setDeliveredQuantity(Double deliveredQuantity) {
+		this.deliveredQuantity = deliveredQuantity;
+	}
+
 }

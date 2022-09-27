@@ -34,4 +34,8 @@ public class BoqMappingService extends GenericService<Integer, BoqMapping, BoqMa
 	public Long countDeliveryRequestsByRelatedToPoAndInStatus(Integer poId, List<DeliveryRequestStatus> inStatus) {
 		return ObjectUtils.firstNonNull(repos.countDeliveryRequestsByRelatedToPoAndInStatus(poId, inStatus), 0l);
 	}
+
+//	public Double findTotalQuantityByPoDetailAndPartNumberAndDeliveryRequestDelivered(Integer poDetailId, Integer partNumberId) {
+//		return ObjectUtils.firstNonNull(repos.findTotalQuantityByPoDetailAndPartNumberAndDeliveryRequestDelivered(poDetailId, partNumberId), 0.0);
+//	}
 }

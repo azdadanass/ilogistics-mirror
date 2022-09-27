@@ -16,6 +16,8 @@ import ma.azdad.utils.FacesContextMessages;
 @Component
 @Scope("view")
 public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
+	
+	private Boolean summary = false;
 
 	@Override
 	@PostConstruct
@@ -33,7 +35,7 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 	public void refreshList() {
 		switch (currentPath) {
 		case "/viewPo.xhtml":
-			list2 = list1 = service.findByPo(id);
+			initLists(summary?service.findSummaryByPo(id):service.findByPo(id));
 			break;
 		}
 	}
@@ -97,4 +99,13 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 		this.model = model;
 	}
 
+	public Boolean getSummary() {
+		return summary;
+	}
+
+	public void setSummary(Boolean summary) {
+		this.summary = summary;
+	}
+
+	
 }

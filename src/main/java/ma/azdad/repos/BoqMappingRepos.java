@@ -30,4 +30,7 @@ public interface BoqMappingRepos extends JpaRepository<BoqMapping, Integer> {
 	Long countDeliveryRequestsByRelatedToPoAndNotInStatus(Integer poId, List<DeliveryRequestStatus> notInStatus);
 	
 	
+//	@Query("select sum(a.quantity) from BoqMapping a where a.boq.podetails.idpoDetails = ?1 and a.boq.partNumber.id = ?2 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED')")
+//	Double findTotalQuantityByPoDetailAndPartNumberAndDeliveryRequestDelivered(Integer poDetailId,Integer partNumberId);
+	
 }

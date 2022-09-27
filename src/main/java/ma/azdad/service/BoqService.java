@@ -51,9 +51,13 @@ public class BoqService extends GenericService<Integer, Boq, BoqRepos> {
 	public Long countByPo(Integer poId) {
 		return ObjectUtils.firstNonNull(repos.countByPo(poId), 0l);
 	}
-	
+
 	public List<Boq> findByPo(Integer poId) {
 		return repos.findByPo(poId);
+	}
+
+	public List<Boq> findSummaryByPo(Integer poId){
+		return repos.findSummaryByPo(poId);
 	}
 
 }

@@ -247,7 +247,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c4
 	public DeliveryRequestDetail(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber,
-			DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
+			DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost,Double unitPrice, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -257,6 +257,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.unitCost = unitCost;
+		this.unitPrice = unitPrice;
 		this.packing = packing;
 	}
 

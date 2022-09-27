@@ -1661,7 +1661,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					inboundDeliveryRequestDetail = deliveryRequestDetailService
 							.findByDeliveryRequestAndPartNumber(detail.getInboundDeliveryRequest().getId(), detail.getPartNumber().getId()).get(0);
 				deliveryRequest.getDetailList().add(new DeliveryRequestDetail(detail.getQuantity(), detail.getPartNumber(), deliveryRequest, detail.getStatus(),
-						detail.getOriginNumber(), detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(), detail.getPacking()));
+						detail.getOriginNumber(), detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(),deliveryRequest.getIsForTransfer()?detail.getUnitCost():0.0, detail.getPacking()));
 
 			}
 

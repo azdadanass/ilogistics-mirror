@@ -4,8 +4,8 @@ import ma.azdad.utils.Color;
 
 public enum PoBoqStatus {
 	PENDING("Pending", Color.ORANGE),
-	IN_PROGRESS("BoQ in Progress", Color.BLUE),
-	MAPPED("BoQ Mapped", Color.GREEN),;
+	IN_PROGRESS("In Progress", Color.BLUE),
+	MAPPED("Mapped", Color.GREEN),;
 
 	private final String value;
 	private final Color color;

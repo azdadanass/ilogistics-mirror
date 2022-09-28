@@ -1,6 +1,9 @@
 package ma.azdad.view;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +18,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.Profile;
 import ma.azdad.model.User;
+import ma.azdad.service.CompanyProfileService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 
@@ -29,17 +34,22 @@ public class SessionView implements Serializable {
 	@Autowired
 	protected UserService userService;
 
+	@Autowired
+	private CompanyProfileService companyProfileService;
+
 	private String login;
 	private String serverName;
 	private User user;
 
+	private List<Integer> companyCfoIdList = new ArrayList<>(Arrays.asList(-1));
+
 	@PostConstruct
 	public void init() {
-
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		serverName = UtilsFunctions.getServerName();
 		login = auth.getName().toLowerCase().trim();
 		user = userService.findByLogin(login);
+		companyCfoIdList.addAll(companyProfileService.findCompanyIdList(user.getUsername(), Profile.CFO));
 		System.out.println("**********************************");
 		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");
 		System.out.println("serverName : " + serverName);
@@ -70,6 +80,14 @@ public class SessionView implements Serializable {
 
 	public Boolean isTheConnectedUser(User... users) {
 		return Stream.of(users).anyMatch(i -> isTheConnectedUser(i));
+	}
+
+	public Boolean getIsCfo() {
+		return companyCfoIdList.size() > 1;
+	}
+
+	public Boolean getIsCfo(Integer companyId) {
+		return companyCfoIdList.contains(companyId);
 	}
 
 	public Boolean isUser() {
@@ -178,6 +196,22 @@ public class SessionView implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public CompanyProfileService getCompanyProfileService() {
+		return companyProfileService;
+	}
+
+	public void setCompanyProfileService(CompanyProfileService companyProfileService) {
+		this.companyProfileService = companyProfileService;
+	}
+
+	public List<Integer> getCompanyCfoIdList() {
+		return companyCfoIdList;
+	}
+
+	public void setCompanyCfoIdList(List<Integer> companyCfoIdList) {
+		this.companyCfoIdList = companyCfoIdList;
 	}
 
 }

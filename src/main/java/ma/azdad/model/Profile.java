@@ -1,0 +1,14 @@
+package ma.azdad.model;
+
+public enum Profile {
+	ASSISTANT,
+	BUYER,
+	ACCOUNTANT,
+	CFO,
+	CASH_CONTROLLER,
+	USER,
+	PRESALES_OWNER,
+	DELIVERY_MANAGER,
+	INVOICE_MANAGER,
+	PAYMENT_MANAGER
+}

@@ -183,18 +183,9 @@
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-4 col-xs-8">
+									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
 										<h:outputText value="BoQ  List" />
-									</div>
-									<div class="col-sm-4 hidden-xs">
-										<div class="action-buttons center">
-											<h:outputText value="Summary" styleClass="white bolder" style="margin-right:20px" />
-											<p:commandLink id="toggleSummary" action="#{boqView.refreshList()}" update="toggleSummary,boqList">
-												<i class="ace-icon fa #{boqView.summary?'fa-toggle-on':'fa-toggle-off'} bigger-130 white" />
-												<f:setPropertyActionListener value="#{!boqView.summary}" target="#{boqView.summary}" />
-											</p:commandLink>
-										</div>
 									</div>
 									<div class="col-sm-2 hidden-xs">
 										<div class="action-buttons center">
@@ -218,18 +209,18 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="boqList" value="#{boqView.list2}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Po Detail" width="80" rendered="#{!boqView.summary}">
+										<p:column headerText="Po Detail" width="80">
 											<h:outputText value="#{item.poDetailReference}" />
 										</p:column>
-										<p:column headerText="Reference" width="80" rendered="#{!boqView.summary}">
+										<p:column headerText="Reference" width="80">
 											<h:outputText value="#{item.reference}" />
 										</p:column>
-										<p:column headerText="Photo" width="80" rendered="#{!boqView.summary}">
+										<p:column headerText="Photo" width="80">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.partNumberImage}" />
 											</p:graphicImage>
 										</p:column>
-										<p:column headerText="Description" rendered="#{!boqView.summary}">
+										<p:column headerText="Description">
 											<h:outputText value="#{item.poDetailDescription}" styleClass="blue aa-cut-text" />
 										</p:column>
 										<p:column headerText="Part Number">
@@ -238,32 +229,21 @@
 										<p:column headerText="PN Description">
 											<h:outputText value="#{item.partNumberDescription}" styleClass="green aa-cut-text" />
 										</p:column>
-										<p:column headerText="Quantity" width="80" rendered="#{!boqView.summary}">
-											<h:outputText value="#{item.quantity}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
 										<p:column headerText="PN Unit Price" width="120" rendered="#{!boqView.summary}">
 											<h:outputText value="#{item.unitPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" #{poView.model.currencyName}" />
 										</p:column>
-										<p:column headerText="Total Quantity" width="100" rendered="#{!boqView.summary}">
+										<!-- <p:column headerText="Total Quantity" width="100" rendered="#{!boqView.summary}">
 											<h:outputText value="#{item.quantity * item.poDetailQuantity}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-										</p:column>
-											<p:column headerText="Total Quantity" width="100" rendered="#{boqView.summary}">
+										</p:column> -->
+										<p:column headerText="Total Quantity" width="100" rendered="#{boqView.summary}">
 											<h:outputText value="#{item.totalQuantity}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-										</p:column>
-										<p:column headerText="Delivered Quantity">
-											<h:outputText value="#{item.deliveredQuantity}" styleClass="editable-click  aa-tooltip" title="#{boqView.summary?'':'Partially Delivered Quantities are ignored in detailed situation'}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											
 										</p:column>
 										<p:column headerText="Total Price" width="100" rendered="#{!boqView.summary}">
 											<h:outputText value="#{item.quantity * item.poDetailQuantity * item.unitPrice}">

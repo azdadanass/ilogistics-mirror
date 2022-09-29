@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -886,6 +887,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public List<StockRow> findByDeliveryRequest(Integer deliveryRequestId) {
 		return stockRowService.findByDeliveryRequest(deliveryRequestId);
+	}
+	
+	@Cacheable("stockRowView.findDeliveryListsByPo")
+	public List<StockRow> findDeliveryListsByPo(Integer poId){
+		return service.findDeliveryListsByPo(poId);
 	}
 
 	// GETTERS & SETTERS

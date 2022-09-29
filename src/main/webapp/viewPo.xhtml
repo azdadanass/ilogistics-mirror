@@ -190,8 +190,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{poView.model.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable value="#{poView.model.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -253,11 +253,9 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{boqView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon"> <p:inputText value="#{boqView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="boqList" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -285,23 +283,23 @@
 										<p:column headerText="PN Description">
 											<h:outputText value="#{item.partNumberDescription}" styleClass="green aa-cut-text" />
 										</p:column>
-										<p:column headerText="PN Unit Price" width="120" rendered="#{!boqView.summary}">
+										<p:column headerText="PN Unit Price" width="120">
 											<h:outputText value="#{item.unitPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" #{poView.model.currencyName}" />
 										</p:column>
-										<!-- <p:column headerText="Total Quantity" width="100" rendered="#{!boqView.summary}">
+										<!-- <p:column headerText="Total Quantity" width="100" >
 											<h:outputText value="#{item.quantity * item.poDetailQuantity}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column> -->
-										<p:column headerText="Total Quantity" width="100" rendered="#{boqView.summary}">
+										<p:column headerText="Total Quantity" width="100">
 											<h:outputText value="#{item.totalQuantity}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="Total Price" width="100" rendered="#{!boqView.summary}">
+										<p:column headerText="Total Price" width="100">
 											<h:outputText value="#{item.quantity * item.poDetailQuantity * item.unitPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
@@ -317,11 +315,9 @@
 								<div class="col-sm-5 pull-right">
 									<h4 class="pull-right">
 										<h:outputText value="Total amount :" />
-										<span class="green">
-											<h:outputText value="#{boqView.list2TotalPrice}">
+										<span class="green"> <h:outputText value="#{boqView.list2TotalPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" #{poView.model.currencyName}" />
+											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
 										</span>
 									</h4>
 								</div>
@@ -379,13 +375,117 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Delivery Status" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 col-xs-8">
+										<i class="fa fa-list" />
+										<h:outputText value="Delivery Status" />
+									</div>
+									<div class="col-sm-2 hidden-xs">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="boqList" fileName="boqList" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{boqView.list1}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Po Detail" width="80">
+											<h:outputText value="#{item.poDetailReference}" />
+										</p:column>
+										<p:column headerText="Reference" width="80">
+											<h:outputText value="#{item.reference}" />
+										</p:column>
+										<p:column headerText="Photo" width="80">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.partNumberImage}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Part Number">
+											<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="PN Unit Price" width="120">
+											<h:outputText value="#{item.unitPrice}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" />
+										</p:column>
+										<p:column headerText="Total Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity}" styleClass="blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Total Price" width="100">
+											<h:outputText value="#{item.totalQuantity * item.unitPrice}" styleClass="bolder blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Delivered Quantity" width="100">
+											<h:outputText value="#{item.deliveredQuantity}" styleClass="green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Delivered Price" width="100">
+											<h:outputText value="#{item.deliveredQuantity * item.unitPrice}" styleClass="bolder green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Remaining Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity - item.deliveredQuantity}" styleClass="red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Remaining Price" width="100">
+											<h:outputText value="#{(item.totalQuantity - item.deliveredQuantity) * item.unitPrice}" styleClass="bolder red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" styleClass="bolder red" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div style="width: 90%; margin: auto;">
+							<div class="hr hr8 hr-double hr-dotted"></div>
+							<div class="row">
+								<div class="col-sm-7 pull-right">
+									<h4 class="pull-right">
+										<h:outputText value="Total Delivered :" />
+										<span class="green"> <h:outputText value="#{boqView.list1TotalDeliveredPrice}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
+										</span>
+										<h:outputText value="Remaining :" style="margin-left:30px" />
+										<span class="red"> <h:outputText value="#{boqView.list1TotalRemainingPrice}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
+										</span>
+									</h4>
+								</div>
+								<div class="col-sm-5 pull-left">
+									<h:outputText value="Extra Information" />
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Detailed Delivery" />
+						</h4>
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-7 hidden-xs">
 										<i class="fa fa-list" />
 										<h:outputText value=" Detailed Delivery" />
-										<h:outputText id="list1Size" value=" (#{stockRowView.list2.size()})" />
+										<h:outputText value=" (#{stockRowView.list2.size()})" />
 									</div>
 									<div class="col-sm-2">
 										<div class="action-buttons center">
@@ -395,20 +495,10 @@
 											</h:commandLink>
 										</div>
 									</div>
-									<div class="col-sm-2 col-xs-4">
-										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="list1,list1Size" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
-											</span>
-										</div>
-									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list1" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="list3" value="#{stockRowView.findDeliveryListsByPo(poView.model.id)}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />

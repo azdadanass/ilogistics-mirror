@@ -1002,7 +1002,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			return;
 		Double conversionRate = deliveryRequest.getPo().getMadConversionRate();
 		Double totalPurchaseCost = deliveryRequest.getDetailList().stream().mapToDouble(d -> d.getQuantity() * d.getPurchaseCost()).sum();
-//		Double otherCosts = appLinkRepos.findTotalAmountByDeliveryRequestAndNotPo(deliveryRequest.getId(), deliveryRequest.getPo().getIdpo());
+//		Double otherCosts = appLinkRepos.findTotalAmountByDeliveryRequestAndNotPo(deliveryRequest.getId(), deliveryRequest.getPo().getId());
 //		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
 //			Double purchaseCost = detail.getPurchaseCost();
 //			Double unitCost = purchaseCost * conversionRate * (1 + otherCosts / totalPurchaseCost);

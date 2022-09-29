@@ -32,7 +32,7 @@ public interface CustomerRepos extends JpaRepository<Customer, Integer> {
 	@Query("update Customer set isStockEmpty = ?2 where id = ?1")
 	public void updateIsStockEmpty(Integer customerId, Boolean isStockEmpty);
 
-	@Query("select a.project.customer.name from Po a where a.idpo = ?1")
+	@Query("select a.project.customer.name from Po a where a.id = ?1")
 	String findNameByPo(Integer poId);
 
 }

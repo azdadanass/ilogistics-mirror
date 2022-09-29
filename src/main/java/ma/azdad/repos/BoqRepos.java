@@ -14,15 +14,15 @@ import ma.azdad.model.Boq;
 public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
 	String c1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image,(select sum(b.quantity) from BoqMapping b where b.boq.id = a.id and b.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED'))) ";
-	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.idpo = a.podetails.po.idpo and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description) ";
+	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.id = a.podetails.po.id and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description) ";
 
-	@Query("select a.partNumber.id from Boq a where a.podetails.po.idpo = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
+	@Query("select a.partNumber.id from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);
 
-	@Query("from Boq a where a.podetails.po.idpo = ?1 and (a.partNumber.id = ?2 or (select count(*) from PartNumberEquivalenceDetail b where b.partNumber.id = ?2 and b.parent.partNumber.id = a.partNumber.id and b.parent.active is true) > 0) ")
+	@Query("from Boq a where a.podetails.po.id = ?1 and (a.partNumber.id = ?2 or (select count(*) from PartNumberEquivalenceDetail b where b.partNumber.id = ?2 and b.parent.partNumber.id = a.partNumber.id and b.parent.active is true) > 0) ")
 	public List<Boq> findByPoAndPartNumber(Integer poId, Integer partNumberId);
 
-	@Query("from Boq a where a.podetails.po.idpo = ?1 and a.partNumber.id in (?2) ")
+	@Query("from Boq a where a.podetails.po.id = ?1 and a.partNumber.id in (?2) ")
 	public List<Boq> findByPoAndPartNumber(Integer poId, List<Integer> partNumberListId);
 
 	@Query("select COALESCE((select sum(b.quantity) from BoqMapping b where b.boq.id = a.id),0) from Boq a where a.id = ?1 ")
@@ -38,7 +38,7 @@ public interface BoqRepos extends JpaRepository<Boq, Integer> {
 	@Query("select count(*) from Boq a where a.podetails.id = ?1 and  totalQuantity > totalUsedQuantity ")
 	public Long countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(Integer podetailsId);
 
-	@Query("select count(*) from Boq a where a.podetails.po.idpo = ?1")
+	@Query("select count(*) from Boq a where a.podetails.po.id = ?1")
 	Long countByPo(Integer poId);
 
 	@Query(c1 + "from Boq a where a.podetails.po.id = ?1")

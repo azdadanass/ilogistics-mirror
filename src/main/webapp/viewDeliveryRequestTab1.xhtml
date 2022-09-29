@@ -259,11 +259,11 @@
 						</div>
 						<div class="profile-info-value">
 							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isOutbound}">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice} - #{customerView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}"
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroInvoice} - #{customerView.findNameByPo(deliveryRequestView.deliveryRequest.po.id)}"
 									styleClass="orange bolder" />
 							</f:subview>
 							<f:subview rendered="#{deliveryRequestView.deliveryRequest.po!=null and deliveryRequestView.deliveryRequest.isInbound}">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy} - #{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.idpo)}"
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy} - #{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.id)}"
 									styleClass="orange bolder" />
 							</f:subview>
 							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">

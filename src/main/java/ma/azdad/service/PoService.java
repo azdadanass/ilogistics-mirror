@@ -46,6 +46,7 @@ public class PoService {
 		Hibernate.initialize(po.getSupplier());
 		Hibernate.initialize(po.getCompany());
 		Hibernate.initialize(po.getCurrency());
+		Hibernate.initialize(po.getFileList());
 		return po;
 	}
 

@@ -276,7 +276,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (outboundDeliveryRequestTransfer != null)
 			outboundDeliveryRequestTransferId = outboundDeliveryRequestTransfer.getId();
 		if (po != null)
-			poId = po.getIdpo();
+			poId = po.getId();
 		if (externalRequester != null)
 			tmpExternalRequesterUsername = externalRequester.getUsername();
 	}

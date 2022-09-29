@@ -195,12 +195,12 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 	}
 
 	private List<Boq> findDirectBoqList(Integer partNumberId) {
-		return boqService.findByPoAndPartNumber(deliveryRequest.getPo().getIdpo(), partNumberId);
+		return boqService.findByPoAndPartNumber(deliveryRequest.getPo().getId(), partNumberId);
 	}
 
 	private List<Boq> findNonDirectBoqList(Integer partNumberId) {
 		PartNumber partNumber = partNumberService.findOne(partNumberId);
-		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getIdpo(), partNumber.getEquivalenceList().stream().filter(i -> i.getActive() && i.getDetailList().size() == 1).map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
+		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getId(), partNumber.getEquivalenceList().stream().filter(i -> i.getActive() && i.getDetailList().size() == 1).map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
 
 		result.forEach(i -> i.setDirectEquivalence(false));
 		return result;
@@ -301,8 +301,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());
 		if(deliveryRequest.getIsInbound())
 			deliveryRequestService.updateDetailListPurchaseCostFromBoqMapping(deliveryRequest.getId());
-		poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
-		poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+		poService.updateBoqStatus(deliveryRequest.getPo().getId());
+		poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 		return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

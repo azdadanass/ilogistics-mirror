@@ -1,8 +1,10 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,9 +26,9 @@ import ma.azdad.service.UtilsFunctions;
 @Entity
 @Table(name = "po")
 
-public class Po implements Serializable {
+public class Po extends GenericModel<Integer> {
 
-	private Integer idpo;
+	private Integer id;
 	private Boolean ibuy;
 	private String numero;
 	private Date date;
@@ -43,22 +46,24 @@ public class Po implements Serializable {
 	private PoDeliveryStatus deliveryStatus;
 
 	private Company company;
+	
+	private List<PoFile> fileList = new ArrayList<>();
 
 	public Po() {
 	}
 
 	// c1
-	public Po(Integer idpo, String numeroInvoice) {
+	public Po(Integer id, String numeroInvoice) {
 		super();
-		this.idpo = idpo;
+		this.id = id;
 		this.numeroInvoice = numeroInvoice;
 	}
 
 	// c2
-	public Po(Integer idpo, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoBoqStatus boqStatus, PoDeliveryStatus deliveryStatus, //
+	public Po(Integer id, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoBoqStatus boqStatus, PoDeliveryStatus deliveryStatus, //
 			String currencyName, String projectName, String supplierOrCustomerName) {
 		super();
-		this.idpo = idpo;
+		this.id = id;
 		this.ibuy = ibuy;
 		this.numero = numero;
 		this.date = date;
@@ -95,31 +100,6 @@ public class Po implements Serializable {
 		return false;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((idpo == null) ? 0 : idpo.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Po other = (Po) obj;
-		if (idpo == null) {
-			if (other.idpo != null)
-				return false;
-		} else if (!idpo.equals(other.idpo))
-			return false;
-		return true;
-	}
-
 	@Transient
 	public String getSupplierName() {
 		return supplier != null ? supplier.getName() : null;
@@ -131,16 +111,16 @@ public class Po implements Serializable {
 			supplier = new Supplier();
 		supplier.setName(supplierName);
 	}
-	
+
 	@Transient
-	public String getCompanyName(){
-		return company!=null?company.getName():null;
+	public String getCompanyName() {
+		return company != null ? company.getName() : null;
 	}
 
 	@Transient
-	public void setCompanyName(String companyName){
-		if(company==null)
-			company=new Company();
+	public void setCompanyName(String companyName) {
+		if (company == null)
+			company = new Company();
 		company.setName(companyName);
 	}
 
@@ -179,7 +159,7 @@ public class Po implements Serializable {
 			project = new Project();
 		project.setCustomerName(customerName);
 	}
-	
+
 	@Transient
 	public String getCustomerPhoto() {
 		return project != null ? project.getCustomerPhoto() : null;
@@ -194,13 +174,13 @@ public class Po implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idpo", unique = true, nullable = false)
-	public Integer getIdpo() {
-		return this.idpo;
+	@Column(name = "idpo")
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdpo(Integer idpo) {
-		this.idpo = idpo;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	@Column(name = "madconversionrate")
@@ -340,6 +320,15 @@ public class Po implements Serializable {
 
 	public void setCompany(Company company) {
 		this.company = company;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<PoFile> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<PoFile> fileList) {
+		this.fileList = fileList;
 	}
 
 }

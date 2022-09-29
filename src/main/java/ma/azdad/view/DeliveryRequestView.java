@@ -520,8 +520,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
 			if (deliveryRequest.getPo() != null) {
-				// poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+				// poService.updateBoqStatus(deliveryRequest.getPo().getId());
+				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
 			// update field missing sn
@@ -623,8 +623,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
 			if (deliveryRequest.getPo() != null) {
-				// poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+				// poService.updateBoqStatus(deliveryRequest.getPo().getId());
+				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
 			if (deliveryRequest.getIsSnRequired())
@@ -1060,7 +1060,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		Integer poId = null;
 		if (deliveryRequest.getPo() != null) {
-			poId = deliveryRequest.getPo().getIdpo();
+			poId = deliveryRequest.getPo().getId();
 			deliveryRequest.setPo(null);
 			deliveryRequest.setMissingPo(null);
 		}
@@ -1113,8 +1113,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		service.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
-		poService.updateBoqStatus(deliveryRequest.getPo().getIdpo());
-		poService.updateDeliveryStatus(deliveryRequest.getPo().getIdpo());
+		poService.updateBoqStatus(deliveryRequest.getPo().getId());
+		poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
@@ -1148,7 +1148,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.clearBoqMappingList();
 		Integer poId = null;
 		if (deliveryRequest.getPo() != null) {
-			poId = deliveryRequest.getPo().getIdpo();
+			poId = deliveryRequest.getPo().getId();
 			deliveryRequest.setPo(null);
 			deliveryRequest.setMissingPo(null);
 		}
@@ -1867,7 +1867,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		try {
 			Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
-			Integer poId = deliveryRequest.getPo() != null ? deliveryRequest.getPo().getIdpo() : null;
+			Integer poId = deliveryRequest.getPo() != null ? deliveryRequest.getPo().getId() : null;
 			service.delete(deliveryRequest);
 			boqService.updateTotalUsedQuantity(boqListToUpdate);
 			if (poId != null)
@@ -2307,7 +2307,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void editPo() {
 		if (!canEditPo())
 			return;
-		deliveryRequest.setPo(poService.findOne(deliveryRequest.getPo().getIdpo()));
+		deliveryRequest.setPo(poService.findOne(deliveryRequest.getPo().getId()));
 		if (deliveryRequest.getContainsBoqMapping() == null)
 			deliveryRequest.setContainsBoqMapping(false);
 		deliveryRequest.setMissingPo(false);

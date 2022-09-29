@@ -536,25 +536,26 @@
 						<h4 class="header blue bolder smaller">
 							<h:outputText value="Detailed Delivery" />
 						</h4>
+						<c:set var="list3" value="#{stockRowView.findByPo(poView.model.id)}"/>
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-7 hidden-xs">
 										<i class="fa fa-list" />
 										<h:outputText value=" Detailed Delivery" />
-										<h:outputText value=" (#{stockRowView.list2.size()})" />
+										<h:outputText value=" (#{list3.size()})" />
 									</div>
 									<div class="col-sm-2">
 										<div class="action-buttons center">
 											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="list1" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
+												<p:dataExporter type="xls" target="list3" fileName="list3" postProcessor="#{utilsView.excelExportation}" />
 											</h:commandLink>
 										</div>
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list3" value="#{stockRowView.findDeliveryListsByPo(poView.model.id)}" var="item" rows="20" styleClass="table table-striped table-hover center"
+									<p:dataTable id="list3" value="#{list3}" var="item" rows="20" styleClass="table table-striped table-hover center"
 										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
@@ -618,6 +619,98 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivred Qantity" styleClass="hide">
+											<h:outputText value="#{-item.quantity}" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Delivered and Mapping Remaining" />
+						</h4>
+						<c:set var="list4" value="#{stockRowView.findByPoAndDeliveredWithoutBoqMapping(poView.model.id)}"/>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-7 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Delivered and Mapping Remaining" />
+										<h:outputText value=" (#{list4.size()})" />
+									</div>
+									<div class="col-sm-2">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="list4" fileName="list4" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="list4" value="#{list4}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Part Number" exportable="false">
+											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+												<h:outputText value="#{item.partNumber.name}" />
+												<f:param name="id" value="#{item.partNumber.id}" />
+											</h:outputLink>
+										</p:column>
+										<p:column headerText="Part Number" styleClass="hide" rendered="#{!list4.isEmpty()}">
+											<h:outputText value="#{item.partNumber.name}" />
+										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+										</p:column>
+										<p:column headerText="Brand">
+											<h:outputText value="#{item.partNumberBrandName}" styleClass="blue aa-cut-text" />
+										</p:column>
+										<p:column headerText="Warehouse" width="120">
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
+										</p:column>
+										<p:column headerText="Project">
+											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="blue bolder" />
+										</p:column>
+										<p:column headerText="Destination Project">
+											<h:outputText value="#{item.deliveryRequest.destinationProjectName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.reference}" exportable="false">
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{item.deliveryRequest.reference}" styleClass="#{item.deliveryRequest.type.color} bolder" />
+												<f:param name="id" value="#{item.deliveryRequest.id}" />
+											</h:outputLink>
+										</p:column>
+										<p:column headerText="DN" styleClass="hide" rendered="#{!list4.isEmpty()}">
+											<h:outputText value="#{item.deliveryRequest.reference}" />
+										</p:column>
+										<p:column headerText="Status" width="70">
+											<h:outputText value="#{item.status.value}" />
+										</p:column>
+										<p:column headerText="3rd Party / Subcontractor">
+											<h:outputText value="#{item.deliverToEntityName}" />
+										</p:column>
+										<p:column headerText="Destination Site">
+											<h:outputText value="#{item.destinationName}" />
+										</p:column>
+										<p:column headerText="PO" width="100">
+											<h:outputText value="#{item.poNumero}" />
+										</p:column>
+										<p:column headerText="Customer">
+											<h:outputText value="#{item.destinationProjectCustomerName}" />
+										</p:column>
+										<p:column headerText="End Customer">
+											<h:outputText value="#{item.endCustomerName}" />
+										</p:column>
+										<p:column headerText="Delivery Date" width="100">
+											<h:outputText value="#{item.deliveryRequest.date4}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Delivred Qantity" width="90" exportable="false">
+											<h:outputText value="#{-item.quantity}" styleClass="bolder #{-item.quantity ge 0 ?'green':'red'}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Delivred Qantity" styleClass="hide" rendered="#{!list4.isEmpty()}">
 											<h:outputText value="#{-item.quantity}" />
 										</p:column>
 									</p:dataTable>

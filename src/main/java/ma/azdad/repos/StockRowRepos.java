@@ -576,7 +576,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
 	@Query(c22 + "from StockRow a where a.deliveryRequest.po.id = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
-	List<StockRow> findDeliveryListsByPo(Integer poId);
+	List<StockRow> findByPo(Integer poId);
+
+	@Query(c22
+			+ "from StockRow a where a.deliveryRequest.po.id = ?1 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED') and (select count(*) from BoqMapping b where b.deliveryRequest.id = a.deliveryRequest.id) = 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+	List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId);
 
 	@Modifying
 	@Query("update StockRow a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")

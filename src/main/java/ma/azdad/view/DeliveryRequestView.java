@@ -1858,7 +1858,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// DELETE DELIVERYREQUEST
 	public Boolean canDeleteDeliveryRequest() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getType())
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus())
 				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 	}
 

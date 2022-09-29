@@ -219,7 +219,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			generateTotalCostChart();
 			break;
 		case "/viewPo.xhtml":
-			initLists(service.findDeliveryListsByPo(id));
+			initLists(service.findByPo(id));
 		default:
 			break;
 		}
@@ -889,9 +889,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		return stockRowService.findByDeliveryRequest(deliveryRequestId);
 	}
 	
-	@Cacheable("stockRowView.findDeliveryListsByPo")
-	public List<StockRow> findDeliveryListsByPo(Integer poId){
-		return service.findDeliveryListsByPo(poId);
+	@Cacheable("stockRowView.findByPo")
+	public List<StockRow> findByPo(Integer poId){
+		return service.findByPo(poId);
+	}
+	
+	@Cacheable("stockRowView.findByPoAndDeliveredWithoutBoqMapping")
+	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId){
+		return service.findByPoAndDeliveredWithoutBoqMapping(poId);
 	}
 
 	// GETTERS & SETTERS

@@ -695,7 +695,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
 
-	public List<StockRow> findDeliveryListsByPo(Integer poId) {
-		return repos.findDeliveryListsByPo(poId);
+	public List<StockRow> findByPo(Integer poId) {
+		return repos.findByPo(poId);
+	}
+	
+	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId){
+		return repos.findByPoAndDeliveredWithoutBoqMapping(poId);
 	}
 }

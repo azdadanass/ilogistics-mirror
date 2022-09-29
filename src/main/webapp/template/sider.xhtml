@@ -480,6 +480,15 @@
 									<b class="arrow"></b>
 									<ul class="submenu">
 										<li>
+											<h:outputLink value="companyFinancial.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-list-alt bigger-130 orange" style="margin-right: 10px" />
+												<h:outputText value="Company Financial" />
+												<f:param name="id" value="#{stockRowView.companyId}" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+										<li>
 											<h:outputLink value="projectFinancial.xhtml">
 												<i class="menu-icon fa fa-caret-right"></i>
 												<i class="ace-icon fa fa-list-alt bigger-130 blue" style="margin-right: 10px" />

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Company;
 import ma.azdad.service.CompanyService;
+import ma.azdad.service.UtilsFunctions;
 
 @ManagedBean
 @Component
@@ -30,10 +32,19 @@ public class CompanyView {
 	@Autowired
 	public CacheManager cacheManager;
 
+	private Company model;
+
+	private String currentPath;
+	private Integer id;
+
 	@PostConstruct
 	public void init() {
 		cacheManager.getCache("companyView.findAll").clear();
 		cacheManager.getCache("companyView.findIdByProject").clear();
+		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+		id = UtilsFunctions.getIntegerParameter("id");
+		if ("/companyFinancial.xhtml".equals(currentPath))
+			model = service.findOne(id);
 	}
 
 	@Cacheable("companyView.findAll")
@@ -49,9 +60,17 @@ public class CompanyView {
 	public List<Company> findLight() {
 		return service.findLight();
 	}
-	
+
 	public Company findCompanyUser(String username) {
 		return service.findCompanyUser(username);
+	}
+
+	public Company getModel() {
+		return model;
+	}
+
+	public void setModel(Company model) {
+		this.model = model;
 	}
 
 }

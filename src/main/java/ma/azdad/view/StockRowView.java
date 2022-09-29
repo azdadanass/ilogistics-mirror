@@ -209,6 +209,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 						companyId, ProjectTypes.STOCK.getValue());
 			}
 			break;
+		case "/companyFinancial.xhtml":
+			this.companyId = this.id;
+			if (sessionView.getIsCfo(companyId))
+				list2 = list1 = stockRowService.getFinancialSituation(companyId);
+			else
+				list2 = list1 = stockRowService.getFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			generateTotalCostChart();
+			break;
 		case "/viewPo.xhtml":
 			initLists(service.findDeliveryListsByPo(id));
 		default:
@@ -845,7 +853,22 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	// charts
 	public void generateTotalCostChart() {
-		chartList = stockRowService.generateTotalCostChart(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, projectId);
+		switch (currentPath) {
+		case "/projectFinancial.xhtml":
+			chartList = stockRowService.generateProjectTotalCostChart(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					projectId);
+			break;
+		case "/companyFinancial.xhtml":
+			if (sessionView.getIsCfo(companyId))
+				chartList = stockRowService.generateTotalCostChart(companyId);
+			else
+				chartList = stockRowService.generateTotalCostChart(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			break;
+
+		default:
+			break;
+		}
+
 	}
 
 	// GENERIC

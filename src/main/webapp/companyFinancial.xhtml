@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+		<script src="resources/ace_template/assets/js/jquery.easypiechart.js" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li>
+				<i class="ace-icon fa fa-home" />
+				<a href="#">
+					<h:outputText value="Main Menu" />
+				</a>
+			</li>
+			<li class="active">
+				<h:outputText value="Company Financial" />
+			</li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
+					<h:outputText value=" Company Financial" />
+					<small>
+						<i class="ace-icon fa fa-angle-double-right"></i>
+						<h:outputText value=" #{companyView.model.name}" />
+					</small>
+				</h1>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class=" col-sm-offset-1 col-sm-8">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="/index.xhtml">
+							<i class="ace-icon fa fa-home bigger-230"></i>
+							<h:outputText value="Home" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+							<i class="ace-icon fa fa-refresh bigger-230"></i>
+							<h:outputText value="Reload" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+							<i class="ace-icon fa fa-undo bigger-230"></i>
+							<h:outputText value="Back" />
+						</h:outputLink>
+					</div>
+				</div>
+			</div>
+			<div class="hr dotted" />
+			<div class="space-16" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#tab1">
+							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab2">
+							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Company Inventory" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="blue ace-icon fa fa-area-chart bigger-120"></i>
+							<h:outputText value=" Inventory Trend" styleClass="hidden-xs" />
+						</a>
+					</li>
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="tab1" class="tab-pane in active">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Name" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.name}" styleClass="bolder green" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Region" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.region}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.type}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="RI" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.ri}" styleClass="bolder blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="VAT" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.vat}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Phone" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.phone1}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Fax" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.fax}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Establishment Date" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.establishmentDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Company Parent" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.groupName}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="ICE" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.ice}" styleClass="orange" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Country" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.country}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Address" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.address}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="City" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.city}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Postal Code" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.postalCode}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Sector" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.sector}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="CNSS" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.cnss}" styleClass="purple" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Labor Law" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.laborLaw}" styleClass="#{companyView.model.laborLaw=='MOR'?'green':'blue'}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Patent" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.patent}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Capital" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.capital}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Ownership structure" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{companyView.model.structure}" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab2" class="tab-pane">
+						<h:panelGroup id="panel2">
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Cost Center Inventory" />
+										</div>
+										<div class="col-sm-2">
+											<h:outputText id="qTotalCost" value="#{stockRowView.qTotalCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
+										</div>
+										<div class="col-sm-1">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="stockRowList" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="stockRowList,qTotalCost" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="stockRowList" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number" exportable="false" width="120">
+												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+													<h:outputText value="#{item.partNumber.name}" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Part Number" styleClass="hide">
+												<h:outputText value="#{item.partNumber.name}" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Industry" width="80">
+												<h:outputText value="#{item.partNumber.industryName}" styleClass="bolder blue" />
+											</p:column>
+											<p:column headerText="Category" width="120">
+												<h:outputText value="#{item.partNumber.categoryName}" styleClass="bolder green" />
+											</p:column>
+											<p:column headerText="Type" width="120">
+												<h:outputText value="#{item.partNumber.typeName}" styleClass="bolder orange" />
+											</p:column>
+											<p:column headerText="Brand" width="120">
+												<h:outputText value="#{item.partNumber.brandName}" styleClass="bolder pink" />
+											</p:column>
+											<p:column headerText="Stock" width="70" exportable="false">
+												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Stock " styleClass="hide">
+												<h:outputText value="#{item.quantity}" />
+											</p:column>
+											<p:column headerText="Status" width="110">
+												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+											</p:column>
+											<p:column headerText="In Stock Date" sortBy="#{item.inStockDays}" width="120">
+												<h:outputText value="#{item.inStockDays}" />
+											</p:column>
+											<p:column headerText="Cost" width="120" exportable="false">
+												<h:outputText value="#{item.qTotalCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+											<p:column headerText="Cost" styleClass="hide">
+												<h:outputText value="#{item.qTotalCost}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<script src="resources/templates/highcharts/highcharts.js"></script>
+						<script src="resources/templates/highcharts/modules/series-label.js"></script>
+						<script src="resources/templates/highcharts/modules/exporting.js"></script>
+						<h:panelGroup id="panel3">
+							<p:tabView value="#{stockRowView.chartList}" var="item">
+								<p:tab title="#{item.title}">
+									<div id="#{item.id}"></div>
+									<h:outputText value="#{item.chart}" escape="false" />
+								</p:tab>
+							</p:tabView>
+						</h:panelGroup>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>

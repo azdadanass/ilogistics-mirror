@@ -546,8 +546,16 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.getCostCenterFinancialSituation(username, warehouseList, assignedProjectList, companyId, projectId);
 	}
 
-	// generate char
-	public List<ChartContainer> generateTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
+	public List<StockRow> getFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		return repos.getFinancialSituation(username, warehouseList, assignedProjectList, companyId);
+	}
+
+	public List<StockRow> getFinancialSituation(Integer companyId) {
+		return repos.getFinancialSituation(companyId);
+	}
+
+	// generate chart
+	public List<ChartContainer> generateTotalCostChart(Integer companyId) {
 		List<ChartContainer> result = new ArrayList<>();
 		Calendar c = Calendar.getInstance();
 		Integer currentMonth = c.get(Calendar.MONTH);
@@ -556,7 +564,49 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			Double[] data = new Double[12];
 			for (int j = 0; j < (i != 0 ? 12 : currentMonth + 1); j++) {
 				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-				data[j] = repos.getTotalCostBeforeDate(username, warehouseList, assignedProjectList, companyId, projectId, c.getTime());
+				data[j] = repos.getTotalCostBeforeDate(companyId, c.getTime());
+				if (j != 11)
+					c.add(Calendar.MONTH, 1);
+			}
+			Series[] series = { new Series("Cost Trend", "blue", data) };
+			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR),
+					highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend", "" + c.get(Calendar.YEAR), "MAD", series)));
+			c.add(Calendar.YEAR, -1);
+		}
+		return result;
+	}
+	
+	public List<ChartContainer> generateTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		List<ChartContainer> result = new ArrayList<>();
+		Calendar c = Calendar.getInstance();
+		Integer currentMonth = c.get(Calendar.MONTH);
+		for (int i = 0; i < 5; i++) {
+			c.set(Calendar.MONTH, 0);
+			Double[] data = new Double[12];
+			for (int j = 0; j < (i != 0 ? 12 : currentMonth + 1); j++) {
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				data[j] = repos.getTotalCostBeforeDate(username, warehouseList, assignedProjectList, companyId, c.getTime());
+				if (j != 11)
+					c.add(Calendar.MONTH, 1);
+			}
+			Series[] series = { new Series("Cost Trend", "blue", data) };
+			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR),
+					highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend", "" + c.get(Calendar.YEAR), "MAD", series)));
+			c.add(Calendar.YEAR, -1);
+		}
+		return result;
+	}
+	
+	public List<ChartContainer> generateProjectTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
+		List<ChartContainer> result = new ArrayList<>();
+		Calendar c = Calendar.getInstance();
+		Integer currentMonth = c.get(Calendar.MONTH);
+		for (int i = 0; i < 5; i++) {
+			c.set(Calendar.MONTH, 0);
+			Double[] data = new Double[12];
+			for (int j = 0; j < (i != 0 ? 12 : currentMonth + 1); j++) {
+				c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+				data[j] = repos.getProjectTotalCostBeforeDate(username, warehouseList, assignedProjectList, companyId, projectId, c.getTime());
 				if (j != 11)
 					c.add(Calendar.MONTH, 1);
 			}
@@ -645,7 +695,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
 
-	public List<StockRow> findDeliveryListsByPo(Integer poId){
+	public List<StockRow> findDeliveryListsByPo(Integer poId) {
 		return repos.findDeliveryListsByPo(poId);
 	}
 }

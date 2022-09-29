@@ -203,6 +203,9 @@
 										<p:column headerText="DN" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.reference}" />
 										</p:column>
+										<p:column headerText="REF" styleClass="hide">
+											<h:outputText value="#{item.deliveryRequest.smsRef}" />
+										</p:column>
 										<p:column headerText="Status" width="70">
 											<h:outputText value="#{item.status.value}" />
 										</p:column>
@@ -211,6 +214,9 @@
 										</p:column>
 										<p:column headerText="Destination Site">
 											<h:outputText value="#{item.destinationName}" />
+										</p:column>
+										<p:column headerText="Origin Site" styleClass="hide">
+											<h:outputText value="#{item.originName}" />
 										</p:column>
 										<p:column headerText="PO" width="100">
 											<h:outputText value="#{item.poNumero}" />

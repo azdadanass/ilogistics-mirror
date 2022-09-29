@@ -24,6 +24,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String brandName = "(select b.name from PartNumberBrand b where b.id = a.partNumber.brand.id)";
 	String externalRequesterFullName = "(select b.fullName from User b where b.username = a.deliveryRequest.externalRequester.username)";
 	String destinationName = "(select b.name from Site b where b.id = a.deliveryRequest.destination.id)";
+	String originName = "(select b.name from Site b where b.id = a.deliveryRequest.origin.id)";
 	String projectName = "(select b.name from Project b where b.id = a.deliveryRequest.project.id)";
 	String destinationProjectName = "(select b.name from Project b where b.id = a.deliveryRequest.destinationProject.id)";
 	String destinationProjectCustomerName = "(select b.name from Customer b where b.id = (select c.customer.id from Project c where c.id = a.deliveryRequest.destinationProject.id))";
@@ -53,8 +54,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String drd_c7 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
 
 	String c22 = "select new StockRow(sum(a.quantity),a.status,a.unitCost,a.unitPrice,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,a.partNumber.id,a.partNumber.name,a.partNumber.description,"
-			+ brandName + ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.deliveryRequest.date4," + destinationProjectCustomerName + ","
-			+ destinationName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + ","
+			+ brandName + ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4," + destinationProjectCustomerName + ","
+			+ destinationName + ","+originName+"," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + ","
 			+ deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + endCustomerName + ") ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")

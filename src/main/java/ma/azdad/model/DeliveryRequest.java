@@ -156,7 +156,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	// PERFORMANCE
 	private String ownerName;
-	private String originName;
 	private String transporterName;
 	private Boolean hasTransportationRequest;
 
@@ -231,7 +230,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.originNumber = originNumber;
 		this.date4 = date4;
 		this.neededDeliveryDate = neededDeliveryDate;
-		this.originName = originName;
+		this.setOriginName(originName);
 		this.ownerName = customerName != null ? customerName : supplierName != null ? supplierName : companyName;
 		this.warehouse = warehouse;
 		this.transporterName = transporterName1 != null ? transporterName1 : transporterName2;
@@ -1361,12 +1360,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public String getOriginName() {
-		return originName;
+		return origin != null ? origin.getName() : null;
 	}
 
 	@Transient
 	public void setOriginName(String originName) {
-		this.originName = originName;
+		if (origin == null)
+			origin = new Site();
+		origin.setName(originName);
 	}
 
 	public String getRejectionReason() {
@@ -1485,10 +1486,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getDestinationProjectCustomerName() {
 		return destinationProject != null ? destinationProject.getCustomerName() : null;
 	}
-	
+
 	@Transient
 	public void setDestinationProjectCustomerName(String destinationProjectCustomerName) {
-		if(destinationProject==null)
+		if (destinationProject == null)
 			destinationProject = new Project();
 		destinationProject.setCustomerName(destinationProjectCustomerName);
 	}

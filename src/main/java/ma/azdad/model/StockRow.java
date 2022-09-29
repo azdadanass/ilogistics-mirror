@@ -463,7 +463,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Override
 	public boolean filter(String query) {
 		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
-				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName());
+				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName(),status!=null?status.getValue():null);
 	}
 
 	public StockRow() {

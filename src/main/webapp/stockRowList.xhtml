@@ -108,9 +108,14 @@
 						</div>
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
-						<p:dataTable value="#{stockRowView.list2}" filteredValue="#{stockRowView.list3}" rowKey="#{item.id}" selection="#{stockRowView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="50"
-							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+						<p:dataTable value="#{stockRowView.list2}" filteredValue="#{stockRowView.list3}" rowKey="#{item.id}" selection="#{stockRowView.list4}" id="main_tab" widgetVar="main_tab"
+							var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+							<p:column headerText="Photo" width="80">
+								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+									<f:param name="fileName" value="#{item.partNumberImage}" />
+								</p:graphicImage>
+							</p:column>
 							<p:column headerText="Part Number" exportable="false" width="120">
 								<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 									<h:outputText value="#{item.partNumber.name}" />

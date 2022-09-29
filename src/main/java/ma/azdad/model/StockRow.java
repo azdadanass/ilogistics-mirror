@@ -161,13 +161,14 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	// c6
 	public StockRow(Double quantity, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			Integer partNumberId, String partNumberName, String partNumberDescription,String partNumberImage, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
 		this.setPartNumberIndustryName(partNumberIndustryName);
 		this.setPartNumberCategoryName(partNumberCategoryName);
 		this.setPartNumberTypeName(partNumberTypeName);
@@ -1203,6 +1204,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setDescription(partNumberDescription);
+	}
+	
+	@Transient
+	public String getPartNumberImage() {
+		return partNumber == null ? null : partNumber.getImage();
+	}
+
+	@Transient
+	public void setPartNumberImage(String partNumberImage) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setImage(partNumberImage);
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

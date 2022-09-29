@@ -236,7 +236,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
+			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate,Double unitCost, Double qTotalCost) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -250,6 +250,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
+		this.unitCost = unitCost;
 		this.qTotalCost = qTotalCost;
 	}
 

@@ -122,6 +122,9 @@
 								</h:outputText>
 								<h:outputText value=" #{item.currencyName}" styleClass="bolder green" />
 							</p:column>
+							<p:column headerText="Project" >
+								<h:outputText value="#{item.projectName}" styleClass="pink" />
+							</p:column>
 							<p:column headerText="Supplier" rendered="#{poView.ibuy}">
 								<h:outputText value="#{item.supplierName}" styleClass="aa-cut-text blue" />
 							</p:column>

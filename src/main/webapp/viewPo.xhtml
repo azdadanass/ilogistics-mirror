@@ -253,9 +253,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{boqView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{boqView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="boqList" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -315,9 +317,11 @@
 								<div class="col-sm-5 pull-right">
 									<h4 class="pull-right">
 										<h:outputText value="Total amount :" />
-										<span class="green"> <h:outputText value="#{boqView.list2TotalPrice}">
+										<span class="green">
+											<h:outputText value="#{boqView.list2TotalPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
-											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" />
 										</span>
 									</h4>
 								</div>
@@ -389,14 +393,14 @@
 										<div class="action-buttons center">
 											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="boqList" fileName="boqList" postProcessor="#{utilsView.excelExportation}" />
+												<p:dataExporter type="xls" target="deliveryStatus" fileName="deliveryStatus" postProcessor="#{utilsView.excelExportation}" />
 											</h:commandLink>
 										</div>
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{boqView.list1}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="deliveryStatus" value="#{boqView.list1}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Po Detail" width="80">
 											<h:outputText value="#{item.poDetailReference}" />
 										</p:column>
@@ -460,19 +464,72 @@
 								<div class="col-sm-7 pull-right">
 									<h4 class="pull-right">
 										<h:outputText value="Total Delivered :" />
-										<span class="green"> <h:outputText value="#{boqView.list1TotalDeliveredPrice}">
+										<span class="green">
+											<h:outputText value="#{boqView.list1TotalDeliveredPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
-											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" />
 										</span>
 										<h:outputText value="Remaining :" style="margin-left:30px" />
-										<span class="red"> <h:outputText value="#{boqView.list1TotalRemainingPrice}">
+										<span class="red">
+											<h:outputText value="#{boqView.list1TotalRemainingPrice}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
-											</h:outputText> <h:outputText value=" #{poView.model.currencyName}" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currencyName}" />
 										</span>
 									</h4>
 								</div>
 								<div class="col-sm-5 pull-left">
 									<h:outputText value="Extra Information" />
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Summary" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 col-xs-8">
+										<i class="fa fa-list" />
+										<h:outputText value="Summary" />
+									</div>
+									<div class="col-sm-2 hidden-xs">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="summary" fileName="summary" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="summary" value="#{boqView.findSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="80">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.partNumberImage}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Part Number">
+											<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="Total Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity}" styleClass="blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Delivered Quantity" width="100">
+											<h:outputText value="#{item.deliveredQuantity}" styleClass="green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Remaining Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity - item.deliveredQuantity}" styleClass="red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
 								</div>
 							</div>
 						</div>

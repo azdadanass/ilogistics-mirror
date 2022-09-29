@@ -1,8 +1,11 @@
 package ma.azdad.view;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -16,8 +19,6 @@ import ma.azdad.utils.FacesContextMessages;
 @Component
 @Scope("view")
 public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
-	
-	
 
 	@Override
 	@PostConstruct
@@ -39,11 +40,11 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 			break;
 		}
 	}
-	
+
 	public Double getList1TotalDeliveredPrice() {
 		return list1.stream().mapToDouble(i -> i.getDeliveredQuantity() * i.getUnitPrice()).sum();
 	}
-	
+
 	public Double getList1TotalRemainingPrice() {
 		return list1.stream().mapToDouble(i -> (i.getTotalQuantity() - i.getDeliveredQuantity()) * i.getUnitPrice()).sum();
 	}
@@ -97,12 +98,12 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 		}
 		return addParameters(listPage, "faces-redirect=true");
 	}
-	
+
 	// generic
-//	@Cacheable("boqView.findByPo")
-//	public List<Boq> findByPo(Integer poId){
-//		return service.findByPo(poId);
-//	}
+	@Cacheable("boqView.findSummaryByPo")
+	public List<Boq> findSummaryByPo(Integer poId) {
+		return service.findSummaryByPo(poId);
+	}
 
 	// getters & setters
 	public Boq getModel() {
@@ -113,7 +114,4 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 		this.model = model;
 	}
 
-
-	
 }
- 

@@ -54,11 +54,12 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c2
-	public Boq(Double totalQuantity,Double deliveredQuantity,String partNumberName,String partNumberDescription) {
+	public Boq(Double totalQuantity,Double deliveredQuantity,String partNumberName,String partNumberDescription,String partNumberImage) {
 		this.totalQuantity = totalQuantity;
 		this.deliveredQuantity = deliveredQuantity;
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
 	}
 
 	@Transient

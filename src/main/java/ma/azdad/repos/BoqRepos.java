@@ -14,7 +14,7 @@ import ma.azdad.model.Boq;
 public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
 	String c1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image,(select sum(b.quantity) from BoqMapping b where b.boq.id = a.id and b.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED'))) ";
-	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.id = a.podetails.po.id and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description) ";
+	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.id = a.podetails.po.id and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
 
 	@Query("select a.partNumber.id from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);

@@ -57,6 +57,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ brandName + ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,"
 			+ destinationProjectCustomerName + "," + destinationName + "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ,"
 			+ deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + endCustomerName + ") ";
+	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.unitCost,sum(a.unitCost*a.quantity),a.deliveryRequest.project.name)";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -494,10 +495,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getCostCenterFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 
-	@Query(c12 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	@Query(c23 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
-	@Query(c12 + from2 + "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	@Query(c23 + from2 + "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(Integer companyId);
 
 	// fast moving items

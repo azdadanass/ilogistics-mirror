@@ -394,6 +394,29 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPoNumero(poNumero);
 		this.setEndCustomerName(endCustomerName);
 	}
+	
+	// c12
+		public StockRow(Double quantity, //
+				Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+				String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
+				StockRowStatus status, Date inboundDeliveryRequestDeliveryDate,Double unitCost, Double qTotalCost,String projectName) {
+			super();
+			this.quantity = quantity;
+			this.setPartNumberId(partNumberId);
+			this.setPartNumberName(partNumberName);
+			this.setPartNumberDescription(partNumberDescription);
+			this.setPartNumberIndustryName(partNumberIndustryName);
+			this.setPartNumberCategoryName(partNumberCategoryName);
+			this.setPartNumberTypeName(partNumberTypeName);
+			this.setPartNumberBrandName(partNumberBrandName);
+			this.setInternalPartNumberName(internalPartNumberName);
+			this.setInternalPartNumberDescription(internalPartNumberDescription);
+			this.status = status;
+			this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
+			this.unitCost = unitCost;
+			this.qTotalCost = qTotalCost;
+			this.setProjectName(projectName);
+		}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -334,6 +334,9 @@
 											<p:column headerText="Brand" width="120">
 												<h:outputText value="#{item.partNumber.brandName}" styleClass="bolder pink" />
 											</p:column>
+											<p:column headerText="Project" width="120">
+												<h:outputText value="#{item.projectName}" styleClass="light-blue" />
+											</p:column>
 											<p:column headerText="Stock" width="70" exportable="false">
 												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
@@ -348,13 +351,22 @@
 											<p:column headerText="In Stock Date" sortBy="#{item.inStockDays}" width="120">
 												<h:outputText value="#{item.inStockDays}" />
 											</p:column>
-											<p:column headerText="Cost" width="120" exportable="false">
+											<p:column headerText="Unit Cost" width="120" exportable="false">
+												<h:outputText value="#{item.unitCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+											<p:column headerText="Unit Cost" width="120" styleClass="hide">
+												<h:outputText value="#{item.unitCost}"/>
+											</p:column>
+											<p:column headerText="Total Cost" width="120" exportable="false">
 												<h:outputText value="#{item.qTotalCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<h:outputText value=" MAD" />
 											</p:column>
-											<p:column headerText="Cost" styleClass="hide">
+											<p:column headerText="Total Cost" styleClass="hide">
 												<h:outputText value="#{item.qTotalCost}" />
 											</p:column>
 										</p:dataTable>

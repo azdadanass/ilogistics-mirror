@@ -13,7 +13,7 @@ import ma.azdad.model.Boq;
 @Repository
 public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
-	String c1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image,(select sum(b.quantity) from BoqMapping b where b.boq.id = a.id and b.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED'))) ";
+	String c1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image,COALESCE((select sum(b.quantity) from BoqMapping b where b.boq.id = a.id and b.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED')),0)) ";
 	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.id = a.podetails.po.id and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
 	String c3 = "select new Boq(a.partNumber.name,a.partNumber.description,a.partNumber.image,sum(a.totalQuantity),sum(a.totalUsedQuantity)) ";
 

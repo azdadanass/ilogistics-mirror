@@ -15,6 +15,7 @@ public interface BoqRepos extends JpaRepository<Boq, Integer> {
 
 	String c1 = "select new Boq(a.id,a.reference,a.quantity,a.unitPrice,a.totalPrice,a.totalQuantity,a.totalUsedQuantity,a.podetails.reference,a.podetails.description,a.podetails.unit,a.partNumber.name,a.partNumber.description,a.partNumber.image,(select sum(b.quantity) from BoqMapping b where b.boq.id = a.id and b.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED'))) ";
 	String c2 = "select new Boq(sum(a.totalQuantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.po.id = a.podetails.po.id and b.partNumber.id = a.partNumber.id),a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
+	String c3 = "select new Boq(a.partNumber.name,a.partNumber.description,a.partNumber.image,sum(a.totalQuantity),sum(a.totalUsedQuantity)) ";
 
 	@Query("select a.partNumber.id from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber.id")
 	public Set<Integer> findPartNumberIdListByPoAndHavingRemainingQuantity(Integer poId);
@@ -44,6 +45,12 @@ public interface BoqRepos extends JpaRepository<Boq, Integer> {
 	@Query(c1 + "from Boq a where a.podetails.po.id = ?1")
 	public List<Boq> findByPo(Integer poId);
 	
+	@Query(c1 + "from Boq a where a.podetails.po.id = ?1")
+	public List<Boq> findByPoGroupByPartNumber(Integer poId);
+	
 	@Query(c2 + "from Boq a where a.podetails.po.id = ?1 group by a.partNumber.id")
-	public List<Boq> findSummaryByPo(Integer poId);
+	public List<Boq> findDeliveredSummaryByPo(Integer poId);
+	
+	@Query(c3 + "from Boq a where a.podetails.po.id = ?1 group by a.partNumber.id")
+	public List<Boq> findBoqSummaryByPo(Integer poId);
 }

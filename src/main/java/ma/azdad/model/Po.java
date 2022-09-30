@@ -28,7 +28,6 @@ import ma.azdad.service.UtilsFunctions;
 
 public class Po extends GenericModel<Integer> {
 
-	private Integer id;
 	private Boolean ibuy;
 	private String numero;
 	private Date date;
@@ -46,7 +45,7 @@ public class Po extends GenericModel<Integer> {
 	private PoDeliveryStatus deliveryStatus;
 
 	private Company company;
-	
+
 	private List<PoFile> fileList = new ArrayList<>();
 
 	public Po() {
@@ -98,25 +97,6 @@ public class Po extends GenericModel<Integer> {
 				return true;
 		}
 		return false;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-//		if (getClass() != obj.getClass())
-//			return false;
-//		System.out.println(this.getClass().getSimpleName());
-//		System.out.println(obj .getClass().getSimpleName());
-		Po other = (Po) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
 	}
 
 	@Transient
@@ -340,7 +320,7 @@ public class Po extends GenericModel<Integer> {
 	public void setCompany(Company company) {
 		this.company = company;
 	}
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<PoFile> getFileList() {
 		return fileList;

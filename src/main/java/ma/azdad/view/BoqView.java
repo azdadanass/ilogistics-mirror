@@ -100,11 +100,15 @@ public class BoqView extends GenericView<Integer, Boq, BoqRepos, BoqService> {
 	}
 
 	// generic
-	@Cacheable("boqView.findSummaryByPo")
-	public List<Boq> findSummaryByPo(Integer poId) {
-		return service.findSummaryByPo(poId);
+	@Cacheable("boqView.findDeliveredSummaryByPo")
+	public List<Boq> findDeliveredSummaryByPo(Integer poId) {
+		return service.findDeliveredSummaryByPo(poId);
 	}
 
+	@Cacheable("boqView.findBoqSummaryByPo")
+	public List<Boq> findBoqSummaryByPo(Integer poId){
+		return service.findBoqSummaryByPo(poId);
+	}
 	// getters & setters
 	public Boq getModel() {
 		return model;

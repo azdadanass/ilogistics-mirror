@@ -56,8 +56,12 @@ public class BoqService extends GenericService<Integer, Boq, BoqRepos> {
 		return repos.findByPo(poId);
 	}
 
-	public List<Boq> findSummaryByPo(Integer poId){
-		return repos.findSummaryByPo(poId);
+	public List<Boq> findDeliveredSummaryByPo(Integer poId){
+		return repos.findDeliveredSummaryByPo(poId);
+	}
+	
+	public List<Boq> findBoqSummaryByPo(Integer poId){
+		return repos.findBoqSummaryByPo(poId);
 	}
 
 }

@@ -236,6 +236,9 @@
 						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="BoQ Details" />
+						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -330,7 +333,61 @@
 								</div>
 							</div>
 						</div>
-						<div class="space-16" />
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Remaining PN" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 col-xs-8">
+										<i class="fa fa-list" />
+										<h:outputText value="Remaining PN" />
+									</div>
+									<div class="col-sm-2 hidden-xs">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="remaining" fileName="remaining" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="remaining" value="#{boqView.findBoqSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="80">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.partNumberImage}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Part Number">
+											<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
+										</p:column>
+											<p:column headerText="PN Description">
+											<h:outputText value="#{item.partNumberDescription}" styleClass="green aa-cut-text" />
+										</p:column>
+										<p:column headerText="Total Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity}" styleClass="blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Ilogistics Quantity" width="100">
+											<h:outputText value="#{item.totalUsedQuantity}" styleClass="green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Remaining Quantity" width="100">
+											<h:outputText value="#{item.totalQuantity - item.totalUsedQuantity}" styleClass="red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="BoQ documents" />
+						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -383,7 +440,7 @@
 							<h:outputText value="Delivery Status" />
 						</h4>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
@@ -458,7 +515,7 @@
 								</div>
 							</div>
 						</div>
-						<div style="width: 90%; margin: auto;">
+						<div style="width: 80%; margin: auto;">
 							<div class="hr hr8 hr-double hr-dotted"></div>
 							<div class="row">
 								<div class="col-sm-7 pull-right">
@@ -488,7 +545,7 @@
 							<h:outputText value="Summary" />
 						</h4>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
@@ -504,7 +561,7 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="summary" value="#{boqView.findSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+									<p:dataTable id="summary" value="#{boqView.findDeliveredSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="80">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -538,7 +595,7 @@
 						</h4>
 						<c:set var="list3" value="#{stockRowView.findByPo(poView.model.id)}"/>
 						<div class="row">
-							<div class="col-sm-12">
+							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-7 hidden-xs">
 										<i class="fa fa-list" />

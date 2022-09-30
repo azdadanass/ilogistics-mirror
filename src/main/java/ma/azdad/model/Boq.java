@@ -54,9 +54,18 @@ public class Boq extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c2
-	public Boq(Double totalQuantity,Double deliveredQuantity,String partNumberName,String partNumberDescription,String partNumberImage) {
+	public Boq(Double totalQuantity, Double deliveredQuantity, String partNumberName, String partNumberDescription, String partNumberImage) {
 		this.totalQuantity = totalQuantity;
 		this.deliveredQuantity = deliveredQuantity;
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
+	}
+
+	// c3
+	public Boq(String partNumberName, String partNumberDescription, String partNumberImage,Double totalQuantity, Double totalUsedQuantity) {
+		this.totalQuantity = totalQuantity;
+		this.totalUsedQuantity = totalUsedQuantity;
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberImage(partNumberImage);

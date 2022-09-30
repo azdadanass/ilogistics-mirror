@@ -6,6 +6,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.model.Po;
 
 @Rollback(false)
 public class Repos extends GenericTest {
@@ -24,7 +25,12 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 		
-		System.out.println(boqRepos.findSummaryByPo(34334));
+		poRepos.findById(6).get().equals(new Po());
+		System.out.println("--------------");
+		poRepos.findAll().get(0).equals(new Po());
+		
+		System.out.println(poRepos.findById(6).get().getSupplier().getClass().getSimpleName());
+		System.out.println(poRepos.findById(6).get().getProject().getClass().getSimpleName());
 
 	}
 

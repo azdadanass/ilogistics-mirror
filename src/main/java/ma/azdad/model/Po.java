@@ -99,6 +99,25 @@ public class Po extends GenericModel<Integer> {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		System.out.println(this.getClass().getSimpleName());
+//		System.out.println(obj .getClass().getSimpleName());
+		Po other = (Po) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 
 	@Transient
 	public String getSupplierName() {

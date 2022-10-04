@@ -337,7 +337,9 @@
 									</div>
 									<div class="col-sm-3">
 										<h:outputText value=" Total : " />
-										<h:outputText id="total1" value="#{stockRowView.list2TotalQuantity}" />
+										<h:outputText id="total1" value="#{stockRowView.list2TotalQuantity}">
+											<f:convertNumber type="number" maxFractionDigits="0" />
+										</h:outputText>
 									</div>
 									<div class="col-sm-2">
 										<div class="action-buttons center">
@@ -417,7 +419,9 @@
 									</div>
 									<div class="col-sm-3">
 										<h:outputText value=" Total : " />
-										<h:outputText id="total2" value="#{stockRowView.list2TotalQuantity}" />
+										<h:outputText id="total2" value="#{stockRowView.list2TotalQuantity}">
+											<f:convertNumber type="number" maxFractionDigits="0" />
+										</h:outputText>
 									</div>
 									<div class="col-sm-1">
 										<div class="action-buttons center">
@@ -535,7 +539,9 @@
 											</h:outputLink>
 										</p:column>
 										<p:column headerText="Quantity">
-											<h:outputText value="#{item.quantity}" />
+											<h:outputText value="#{item.quantity}">
+												<f:convertNumber type="number" maxFractionDigits="0" />
+											</h:outputText>
 										</p:column>
 										<p:column headerText="Expiry Date">
 											<h:outputText value="#{item.expiryDate}" styleClass="#{utilsView.currentDate.compareTo(item.expiryDate) lt 0 ?'green':'red bolder'}">

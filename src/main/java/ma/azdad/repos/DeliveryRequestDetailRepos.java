@@ -121,7 +121,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	// ";
 
 	@Query(c4
-			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.company.id = ?3 and a.deliveryRequest.status in (?4)")
+			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.company.id = ?3 and a.deliveryRequest.status in (?4) order by a.deliveryRequest.date4 desc")
 	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId,
 			List<DeliveryRequestStatus> deliveryRequestStatus);
 

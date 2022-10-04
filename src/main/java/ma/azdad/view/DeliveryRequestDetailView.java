@@ -122,7 +122,7 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	// GENERIC
+	// generic
 	public void refreshCostHistory(Integer partNumberId) {
 		refreshCostHistory(partNumberId, companyId);
 	}

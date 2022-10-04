@@ -65,6 +65,11 @@ public class CompanyView {
 		return service.findCompanyUser(username);
 	}
 
+	public String findName(Integer id) {
+		return service.findNameMap().get(id);
+	}
+
+	// getters & setters
 	public Company getModel() {
 		return model;
 	}

@@ -536,7 +536,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		mapModel = mapService.generate(origin, destination);
 	}
 
-	// GENERIC
+	// generic
 
 	public Long countToAcknowledgeRequests() {
 		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);

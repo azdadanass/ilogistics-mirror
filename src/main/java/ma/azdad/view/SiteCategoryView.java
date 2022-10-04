@@ -101,7 +101,7 @@ public class SiteCategoryView extends GenericView<Integer, SiteCategory, SiteCat
 		return true;
 	}
 
-	// GENERIC
+	// generic
 	@Cacheable("siteView.findAll")
 	public List<SiteCategory> findAll() {
 		return siteCategoryService.findAll();

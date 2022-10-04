@@ -269,7 +269,7 @@ public class UserView {
 		refreshUser();
 	}
 
-	// GENERIC
+	// generic
 	public List<User> findLight() {
 		return userService.findLight();
 	}

@@ -112,7 +112,7 @@ public class PartNumberTypeView extends GenericView<Integer, PartNumberType, Par
 
 	}
 
-	// GENERIC
+	// generic
 	public List<PartNumberType> findByCategory(Integer categoryId) {
 		return partNumberTypeService.findByCategory(categoryId);
 	}

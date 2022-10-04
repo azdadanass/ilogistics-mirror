@@ -313,7 +313,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	}
 
-	// GENERIC
+	// generic
 	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(DeliveryRequestSerialNumber current) {
 		return deliveryRequestSerialNumberService.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(current, exculdeList);
 	}

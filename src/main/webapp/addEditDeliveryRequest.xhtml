@@ -960,18 +960,6 @@
 												<i class="fa fa-list" />
 												<h:outputText value=" Detail List" />
 											</div>
-											<f:subview rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}">
-												<div class="col-sm-2 col-xs-4">
-													<!-- <div class="nav-search minimized">
-														<span class="input-icon">
-															 <p:inputText value="#{deliveryRequestView.searchDetail}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-																<p:ajax event="keyup" update=":main_form:step3:outbound_tab" />
-															</p:inputText> 
-															<i class="ace-icon fa fa-search nav-search-icon" />
-														</span>
-													</div> -->
-												</div>
-											</f:subview>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="inbound_tab" value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" styleClass="table table-striped table-hover center"
@@ -1162,7 +1150,7 @@
 													<p:column headerText="Part Number" width="150">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder pink" />
 													</p:column>
-													<p:column headerText="Internal Part Number" width="150">
+													<p:column headerText="Internal Part Number" width="100">
 														<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
 														<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 															<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
@@ -1175,7 +1163,16 @@
 														<h:outputText value="#{item.originNumber}" styleClass="orange bolder" />
 													</p:column>
 													<p:column headerText="Inbound Request">
-														<h:outputText value="#{item.inboundDeliveryRequest.reference}" />
+														<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+															<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="#{item.inboundDeliveryRequest.type.color} bolder" />
+															<f:param name="id" value="#{item.inboundDeliveryRequest.id}"/>
+														</h:outputLink>
+														
+													</p:column>
+													<p:column headerText="Owner">
+														<h:outputText value="#{companyView.findName(item.inboundDeliveryRequest.company.id)}" styleClass="#{item.inboundDeliveryRequest.ownerType.color.name}" rendered="#{CompanyType.COMPANY==item.inboundDeliveryRequest.ownerType}"/>
+														<h:outputText value="#{customerView.findName(item.inboundDeliveryRequest.customer.id)}" styleClass="#{item.inboundDeliveryRequest.ownerType.color.name}" rendered="#{CompanyType.CUSTOMER==item.inboundDeliveryRequest.ownerType}"/>
+														<h:outputText value="#{supplierView.findName(item.inboundDeliveryRequest.supplier.id)}" styleClass="#{item.inboundDeliveryRequest.ownerType.color.name}" rendered="#{CompanyType.SUPPLIER==item.inboundDeliveryRequest.ownerType}"/>
 													</p:column>
 													<p:column headerText="Status">
 														<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />

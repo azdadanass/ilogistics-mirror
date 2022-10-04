@@ -116,7 +116,7 @@ public class ProjectView {
 		refreshList();
 	}
 
-	// GENERIC
+	// generic
 	public List<Project> findLightOpen() {
 		return projectService.findLight(ProjectStatus.OPEN.getValue());
 	}

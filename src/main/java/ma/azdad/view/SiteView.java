@@ -472,7 +472,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 		System.out.println("site.getGeographicFile() : " + site.getGeographicFile());
 	}
 
-	// GENERIC
+	// generic
 	@Cacheable("siteView.findLight")
 	public List<Site> findLight() {
 		return siteService.findLight();

@@ -112,7 +112,7 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	// GENERIC
+	// generic
 	public List<VehicleType> findAll() {
 		return vehicleTypeService.findAll();
 	}

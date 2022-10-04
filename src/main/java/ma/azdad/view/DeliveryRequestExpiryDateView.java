@@ -219,7 +219,7 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	// GENERIC
+	// generic
 	public List<Date> findRemainingExpiryDateList(StockRow outboundStockRow) {
 		return deliveryRequestExpiryDateService.findRemainingExpiryDateList(outboundStockRow);
 	}

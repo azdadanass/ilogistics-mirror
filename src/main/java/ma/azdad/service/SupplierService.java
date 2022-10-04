@@ -1,8 +1,11 @@
 package ma.azdad.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,5 +44,10 @@ public class SupplierService {
 	
 	public List<Supplier> findByHavingActiveProjectAssignment(Integer projectId){
 		return repos.findByHavingActiveProjectAssignment(projectId);
+	}
+	
+	@Cacheable("supplierService.findNameMap")
+	public Map<Integer, String> findNameMap() {
+		return repos.findLight().stream().collect(Collectors.toMap(s -> s.getId(), s -> s.getName()));
 	}
 }

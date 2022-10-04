@@ -22,7 +22,7 @@ public class SupplierView {
 	@Autowired
 	protected SupplierService service;
 
-	// GENERIC
+	// generic
 	public List<LabelValue> findLabelValueList() {
 		return service.findLabelValueList();
 	}
@@ -37,6 +37,10 @@ public class SupplierView {
 	
 	public List<Supplier> findByHavingActiveProjectAssignment(Integer projectId){
 		return service.findByHavingActiveProjectAssignment(projectId);
+	}
+	
+	public String findName(Integer id) {
+		return service.findNameMap().get(id);
 	}
 
 }

@@ -75,7 +75,7 @@ public class AppLinkView extends GenericView<Integer, AppLink, AppLinkRepos, App
 		return result;
 	}
 
-	// GENERIC
+	// generic
 
 	// GETTERS & SETTERS
 

@@ -243,7 +243,7 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 			warehouse.removeManager(manager);
 	}
 
-	// GENERIC
+	// generic
 	public List<Warehouse> findLight() {
 		return warehouseService.findLight();
 	}

@@ -111,7 +111,7 @@ public class PackingDetailView extends GenericView<Integer, PackingDetail, Packi
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
-	// GENERIC
+	// generic
 	public List<PackingDetail> findByPartNumber(Integer partNumberId) {
 		return packingDetailService.findByPartNumber(partNumberId);
 	}

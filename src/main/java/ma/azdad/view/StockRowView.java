@@ -872,7 +872,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	}
 
-	// GENERIC
+	// generic
 	public List<StockRow> findByInboundDeliveryRequest(Integer deliveryRequestId) {
 		return stockRowService.findByInboundDeliveryRequest(deliveryRequestId);
 	}

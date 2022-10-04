@@ -1,6 +1,8 @@
 package ma.azdad.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -51,5 +53,11 @@ public class CompanyService {
 	
 	public Company findCompanyUser(String username) {
 		return repos.findCompanyUser(username);
+	}
+	
+
+	@Cacheable("companyService.findNameMap")
+	public Map<Integer, String> findNameMap() {
+		return repos.findLight().stream().collect(Collectors.toMap(s -> s.getId(), s -> s.getName()));
 	}
 }

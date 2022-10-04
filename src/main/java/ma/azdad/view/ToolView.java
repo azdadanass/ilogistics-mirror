@@ -27,7 +27,7 @@ public class ToolView {
 
 	}
 
-	// GENERIC
+	// generic
 	public List<Tool> findLightCarList() {
 		return toolService.findLightCarList();
 	}

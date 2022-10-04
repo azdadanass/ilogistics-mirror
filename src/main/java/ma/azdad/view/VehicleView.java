@@ -136,7 +136,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	}
 
-	// GENERIC
+	// generic
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleService.findLightByTransporter(transporterId);
 	}

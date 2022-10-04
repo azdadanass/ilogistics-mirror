@@ -310,7 +310,7 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 
 	}
 
-	// GENERIC FUNCTIONS
+	// generic FUNCTIONS
 	public List<PartNumber> findLight(Boolean unit) {
 		return partNumberService.findLight(unit);
 	}

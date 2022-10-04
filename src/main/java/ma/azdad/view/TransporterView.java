@@ -217,7 +217,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		}
 	}
 
-	// GENERIC
+	// generic
 	public List<Transporter> findLight() {
 		return transporterService.findLight();
 	}

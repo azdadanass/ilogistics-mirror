@@ -282,8 +282,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.init();
 			deliveryRequest.initDetailList();
 			saveDeliveryRequestNextStep();
-			System.out.println(deliveryRequest.getPoId());
-			System.out.println(deliveryRequest.getIsInbound());
 			if (deliveryRequest.getPoId() != null && deliveryRequest.getIsInbound())
 				findRemainingDetailListByPo();
 
@@ -430,11 +428,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list.add(detail);
 		}
 
-		System.out.println(deliveryRequestDetailSelectionList);
 		list.addAll(deliveryRequestDetailSelectionList);
 		deliveryRequestDetailList2 = new ArrayList<>();
 		deliveryRequestDetailList2.addAll(list);
-		System.out.println(deliveryRequestDetailSelectionList);
 	}
 
 	/*
@@ -495,8 +491,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 2:
 			System.out.println("step2");
-			System.out.println("##############" + deliveryRequest.getToUser());
-			System.out.println("##############" + deliveryRequest.getToUserUsername());
 			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			step++;
 			break;
@@ -533,8 +527,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
-			
-			
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -616,7 +608,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setStatus(deliveryRequest.getIsPartial() ? DeliveryRequestStatus.PARTIALLY_DELIVRED : DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
-			System.out.println("deliveryRequest.getStockRowList().size() " + deliveryRequest.getStockRowList().size());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
 
@@ -638,7 +629,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 				service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 			}
-				
+
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
 
@@ -1457,11 +1448,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void addToNotifyItem() {
-		System.out.println("addToNotifyItem");
 		User toNotifyUser = userService.findOne(toNotifyUserUsername);
 		if (deliveryRequest.getToNotifyList().stream().filter(i -> i.getInternalResource().getUsername().equals(toNotifyUser.getUsername())).count() == 0)
 			deliveryRequest.getToNotifyList().add(new ToNotify(toNotifyUser, deliveryRequest));
-		System.out.println(deliveryRequest.getToNotifyList());
 	}
 
 	public void removeToNotifyItem(int index) {
@@ -1646,10 +1635,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	private void fillDetailListFromSelection() {
 		try {
-
-			System.out.println("fillDetailListFromSelection");
-			System.out.println(deliveryRequestDetailSelectionList);
-
 			if (deliveryRequest.getId() != null)
 				for (DeliveryRequestDetail detail : deliveryRequest.getDetailList())
 					deliveryRequestDetailService.delete(detail.getId());
@@ -1660,8 +1645,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				if (deliveryRequest.getIsOutbound())
 					inboundDeliveryRequestDetail = deliveryRequestDetailService
 							.findByDeliveryRequestAndPartNumber(detail.getInboundDeliveryRequest().getId(), detail.getPartNumber().getId()).get(0);
-				deliveryRequest.getDetailList().add(new DeliveryRequestDetail(detail.getQuantity(), detail.getPartNumber(), deliveryRequest, detail.getStatus(),
-						detail.getOriginNumber(), detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(),deliveryRequest.getIsForTransfer()?detail.getUnitCost():0.0, detail.getPacking()));
+				deliveryRequest.getDetailList()
+						.add(new DeliveryRequestDetail(detail.getQuantity(), detail.getPartNumber(), deliveryRequest, detail.getStatus(), detail.getOriginNumber(),
+								detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(),
+								deliveryRequest.getIsForTransfer() ? detail.getUnitCost() : 0.0, detail.getPacking()));
 
 			}
 
@@ -1692,7 +1679,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// dont use in edit case
 			if (getIsPoNeeded() && deliveryRequest.getPoId() != null) {
 				Set<Integer> boqSet = boqService.findPartNumberIdListByPoAndHavingRemainingQuantity(deliveryRequest.getPoId());
-				System.out.println("boqSet " + boqSet);
 				Set<Integer> equivalenceSet = partNumberEquivalenceService.findPartNumberIdListByEquivalence(boqSet);
 				deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream()
 						.filter(item -> item.getQuantity() > 0 || boqSet.contains(item.getPartNumber().getId()) || equivalenceSet.contains(item.getPartNumber().getId()))
@@ -1704,10 +1690,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void findRemainingDetailListByPo() {
-		System.out.println(deliveryRequest.getIsInbound());
-		System.out.println(getIsPoNeeded());
-		System.out.println(deliveryRequest.getPoId());
-
 		if (deliveryRequest.getIsInbound() && getIsPoNeeded() && deliveryRequest.getPoId() != null)
 			deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailService.findRemainingByPo(deliveryRequest.getPoId());
 	}
@@ -1760,8 +1742,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					if (!mapPartNumberPacking.get(detail.getPartNumber().getId()).equals(detail.getPacking().getId()))
 						return FacesContextMessages.ErrorMessages("In Case of Planned Transfer, PN should have same packing ");
 				}
-
 			}
+			if (deliveryRequest.getDetailList().stream().map(i -> i.getInboundDeliveryRequest().getOwnerType() + ";" + i.getInboundDeliveryRequest().getOwnerId()).distinct()
+					.count() > 1)
+				return FacesContextMessages.ErrorMessages("All the selected items should belong to the same Owner");
 
 		}
 
@@ -1789,8 +1773,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (DeliveryRequestType.XBOUND.equals(deliveryRequest.getType()))
 			deliveryRequest.setWarehouse(null);
 
-		System.out.println("saveDeliveryRequest size" + deliveryRequest.getDetailList().size());
-
 		if (deliveryRequest.getReference() == null)
 			deliveryRequest.generateReference();
 
@@ -1803,7 +1785,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 			service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 		}
-			
+
 		if (deliveryRequest.getIsInboundTransfer())
 			service.updateIsForTransfer(deliveryRequest.getOutboundDeliveryRequestTransfer().getId(), true);
 
@@ -2027,7 +2009,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void changeDestinationProjectListener() {
-		System.out.println("changeDestinationProjectListener");
 		deliveryRequest.setDestinationProject(projectService.findOne2(deliveryRequest.getDestinationProjectId()));
 //		Integer destinationCustomerId = projectService.getCustomerId(deliveryRequest.getDestinationProjectId());
 		Integer destinationCustomerId = deliveryRequest.getDestinationProject().getCustomer().getId();
@@ -2356,7 +2337,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return stockRowService.findTransferredStockRowList(deliveryRequest.getId());
 	}
 
-	// GENERIC
+	// generic
 
 	public List<DeliveryRequest> findByCanBeTransported() {
 		return service.findByCanBeTransported(sessionView.getUsername());
@@ -2739,7 +2720,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void setDeliveryRequestDetail(DeliveryRequestDetail deliveryRequestDetail) {
-		System.out.println("setDeliveryRequestDetail : " + deliveryRequestDetail);
 		this.deliveryRequestDetail = deliveryRequestDetail;
 	}
 

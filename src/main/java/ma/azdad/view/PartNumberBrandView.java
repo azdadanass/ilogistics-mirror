@@ -186,7 +186,7 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 		}
 	}
 
-	// GENERIC
+	// generic
 	public List<PartNumberBrand> findAll() {
 		return brandService.findAll();
 	}

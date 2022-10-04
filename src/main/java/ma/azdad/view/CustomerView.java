@@ -31,7 +31,7 @@ public class CustomerView {
 		customer = service.findOne(customerId);
 	}
 
-	// GENERIC
+	// generic
 	public List<LabelValue> findLabelValueList() {
 		return service.findLabelValueList();
 	}
@@ -44,6 +44,11 @@ public class CustomerView {
 		return service.findNameByPo(poId);
 	}
 
+	public String findName(Integer id) {
+		return service.findNameMap().get(id);
+	}
+
+	// getters & setters
 	public Customer getCustomer() {
 		return customer;
 	}

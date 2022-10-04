@@ -166,16 +166,28 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		return repos.findCustomerOwnerList(username, warehouseList, assignedProjectList);
 	}
+	
+	private Map<Integer, Double> findProjectStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		List<Object[]> data = repos.findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
+		return result;
+	}
 
 	public List<StockRow> findByCompanyOwnerAndGroupByPartNumber(Integer companyId, String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
 		if (assignedProjectList == null || assignedProjectList.isEmpty())
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = repos.findByCompanyOwnerAndGroupByPartNumber2(username, warehouseList, assignedProjectList, companyId);
+		
+		// set project stock
+		Map<Integer, Double> map1 = findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList,companyId);
+		for (StockRow stockRow : result)
+			stockRow.setProjectSubTypeStockQuantity(map1.getOrDefault(stockRow.getPartNumberId(), 0.0));
 
 		// set pending quantity = pending outbounds qty
-		Map<Integer, Double> map = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+		Map<Integer, Double> map2 = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		for (StockRow stockRow : result)
-			stockRow.setPendingQuantity(map.getOrDefault(stockRow.getPartNumberId(), 0.0));
+			stockRow.setPendingQuantity(map2.getOrDefault(stockRow.getPartNumberId(), 0.0));
 		return result;
 	}
 

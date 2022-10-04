@@ -149,13 +149,18 @@
 							<p:column headerText="Brand" width="120">
 								<h:outputText value="#{item.partNumber.brandName}" styleClass="bolder pink" />
 							</p:column>
-							<p:column headerText="Physical Stock" width="70" rendered="#{stockRowView.pageIndex==1 or stockRowView.pageIndex==2}">
+							<p:column headerText="Physical Inventory" width="70" rendered="#{stockRowView.pageIndex==1 or stockRowView.pageIndex==2}">
 								<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
+							<p:column headerText="Project Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
+								<h:outputText value="#{item.quantity-item.projectSubTypeStockQuantity}" styleClass="orange">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
 							<p:column headerText="Available Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
-								<h:outputText value="#{item.availableQuantity}" styleClass="#{item.quantity!=item.availableQuantity?'bolder':''}">
+								<h:outputText value="#{item.projectSubTypeStockQuantity-item.pendingQuantity}" styleClass="#{item.quantity!=item.projectSubTypeStockQuantity-item.pendingQuantity?'bolder':''}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>

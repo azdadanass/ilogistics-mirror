@@ -495,10 +495,12 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getCostCenterFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 
-	@Query(c23 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	@Query(c23 + from2 + "  where  " + usernameCondition + " and " + companyCondition
+			+ " group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
-	@Query(c23 + from2 + "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	@Query(c23 + from2
+			+ "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(Integer companyId);
 
 	// fast moving items
@@ -586,4 +588,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Modifying
 	@Query("update StockRow a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
 	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
+
+	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + "where" + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.subType = 'Stock' group by a.partNumber.id")
+	List<Object[]> findProjectStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 }

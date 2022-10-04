@@ -1056,6 +1056,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			project = new Project();
 		project.setName(name);
 	}
+	
+	@Transient
+	@JsonIgnore
+	public String getProjectSubType() {
+		if (project != null)
+			return project.getSubType();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setProjectSubType(String name) {
+		if (project == null)
+			project = new Project();
+		project.setSubType(name);
+	}
 
 	@Transient
 	@JsonIgnore

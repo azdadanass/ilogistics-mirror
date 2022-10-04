@@ -320,6 +320,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			list2 = list1 = stockRowService.findStockHistoryByDestinationCustomerAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
 					cacheView.getAssignedProjectList(), companyId, customerId);
 	}
+	
+	public Double getList2TotalQuantity() {
+		return list2.stream().mapToDouble(i -> i.getQuantity()).sum();
+	}
 
 	public Double getList2TotalCost() {
 		return list2.stream().mapToDouble(i -> i.getTotalCost()).sum();

@@ -1,11 +1,13 @@
 package ma.azdad.view;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,6 @@ import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.UtilsFunctions;
-import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -28,6 +29,9 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 
 	@Autowired
 	private CacheView cacheView;
+	
+	@Autowired
+	private SessionView sessionView;
 
 	private DeliveryRequestDetail deliveryRequestDetail = new DeliveryRequestDetail();
 
@@ -157,6 +161,16 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		} catch (Exception e) {
 			return null;
 		}
+	}
+	
+	@Cacheable("deliveryRequestDetailView.findInboundByCompanyOwnerAndPartNumberAndNotDelivered")
+	public List<DeliveryRequestDetail> findInboundByCompanyOwnerAndPartNumberAndNotDelivered(Integer partNumberId) {
+		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(),  cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,DeliveryRequestType.INBOUND, partNumberId);
+	}
+	
+	@Cacheable("deliveryRequestDetailView.findOutboundByCompanyOwnerAndPartNumberAndNotDelivered")
+	public List<DeliveryRequestDetail> findOutboundByCompanyOwnerAndPartNumberAndNotDelivered(Integer partNumberId) {
+		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(),  cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,DeliveryRequestType.OUTBOUND, partNumberId);
 	}
 
 	// GETTERS & SETTERS

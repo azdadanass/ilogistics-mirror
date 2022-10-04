@@ -60,8 +60,7 @@
 							<div class="infobox-progress">
 								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45"
 									style="height: 46px; width: 46px; line-height: 45px;">
-									<span class="percent">
-										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+									<span class="percent"> <h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>
@@ -69,8 +68,7 @@
 								</div>
 							</div>
 							<div class="infobox-data">
-								<span class="infobox-text">
-									<h:outputText value="PN completeness" />
+								<span class="infobox-text"> <h:outputText value="PN completeness" />
 								</span>
 								<div class="infobox-content">
 									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
@@ -95,9 +93,7 @@
 								<h:panelGroup id="activeIcon">
 									<i class="ace-icon fa fa-circle #{PartNumberStatus.ACTIVE==partNumberView.partNumber.status?'light-green':'red'}" />
 								</h:panelGroup>
-								&nbsp;
-								<span class="white">
-									<h:outputText value="#{partNumberView.partNumber.name}" />
+								&nbsp; <span class="white"> <h:outputText value="#{partNumberView.partNumber.name}" />
 								</span>
 							</a>
 						</div>
@@ -150,19 +146,25 @@
 					<li class="active">
 						<a data-toggle="tab" href="#tab1">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
-							<h:outputText value=" Informations" styleClass="hidden-xs" />
+							<h:outputText value="Part Number Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
 						<a data-toggle="tab" href="#tab2" onclick="initCurrentList()">
 							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
-							<h:outputText value=" Current Stock" styleClass="hidden-xs" />
+							<h:outputText value=" Current Inventory" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6">
+							<i class="green ace-icon fa fa-spinner bigger-120"></i>
+							<h:outputText value=" Delivery In Progress" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
 						<a data-toggle="tab" href="#tab3" onclick="initHistorylist()">
 							<i class="purple ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Stock History" styleClass="hidden-xs" />
+							<h:outputText value=" Inventory History" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<f:subview rendered="#{partNumberView.partNumber.expirable}">
@@ -325,13 +327,17 @@
 						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="initCurrentList" action="#{stockRowView.initCurrentList()}" update="currentStock" />
+						<p:remoteCommand name="initCurrentList" action="#{stockRowView.initCurrentList()}" update="currentStock,total1" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-7 hidden-xs">
+									<div class="col-sm-4 hidden-xs">
 										<i class="fa fa-list" />
-										<h:outputText value=" Current Stock" />
+										<h:outputText value=" Current Inventory" />
+									</div>
+									<div class="col-sm-3">
+										<h:outputText value=" Total : " />
+										<h:outputText id="total1" value="#{stockRowView.list2TotalQuantity}" />
 									</div>
 									<div class="col-sm-2">
 										<div class="action-buttons center">
@@ -343,11 +349,9 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="currentStock" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
+											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="currentStock,total1" />
+												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -369,6 +373,9 @@
 										</p:column>
 										<p:column headerText="Project">
 											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Project Type">
+											<h:outputText value="#{item.deliveryRequest.project.subType}" />
 										</p:column>
 										<p:column headerText="Warehouse">
 											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
@@ -393,11 +400,11 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="initHistorylist" action="#{stockRowView.initHistorylist()}" update="stockHistory" />
+						<p:remoteCommand name="initHistorylist" action="#{stockRowView.initHistorylist()}" update="stockHistory,total2" />
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-5 hidden-xs">
+									<div class="col-sm-2 hidden-xs">
 										<i class="fa fa-list" />
 										<h:outputText value=" Stock History" />
 									</div>
@@ -407,6 +414,10 @@
 											<i class="ace-icon fa #{stockRowView.removeFullyDelivered?'fa-toggle-on white':'fa-toggle-off white'} " />
 											<f:setPropertyActionListener value="#{!stockRowView.removeFullyDelivered}" target="#{stockRowView.removeFullyDelivered}" />
 										</p:commandLink>
+									</div>
+									<div class="col-sm-3">
+										<h:outputText value=" Total : " />
+										<h:outputText id="total2" value="#{stockRowView.list2TotalQuantity}" />
 									</div>
 									<div class="col-sm-1">
 										<div class="action-buttons center">
@@ -418,11 +429,9 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="stockHistory" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
+											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="stockHistory,total2" />
+												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -447,6 +456,9 @@
 										</p:column>
 										<p:column headerText="Project">
 											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Project Type">
+											<h:outputText value="#{item.deliveryRequest.project.subType}" />
 										</p:column>
 										<p:column headerText="Destination Project">
 											<h:outputText value="#{item.deliveryRequest.destinationProject.name}" styleClass="orange bolder" />
@@ -607,11 +619,10 @@
 										</div>
 										<div class="col-sm-2 col-xs-4">
 											<div class="nav-search minimized">
-												<span class="input-icon">
-													<p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+												<span class="input-icon"> <p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input"
+														autocomplete="off">
 														<p:ajax event="keyup" update="costHistory" />
-													</p:inputText>
-													<i class="ace-icon fa fa-search nav-search-icon" />
+													</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 												</span>
 											</div>
 										</div>
@@ -630,6 +641,9 @@
 											</p:column>
 											<p:column headerText="Description">
 												<h:outputText value="#{partNumberView.partNumber.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Project">
+												<h:outputText value="#{item.tmpProjectName}" styleClass="purple" />
 											</p:column>
 											<p:column headerText="Purchase Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.purchaseCost}">
@@ -668,14 +682,113 @@
 													<f:convertDateTime pattern="yyyy-MM-dd" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Project">
-												<h:outputText value="#{item.tmpProjectName}" styleClass="purple" />
-											</p:column>
 										</p:dataTable>
 									</div>
 								</div>
 							</div>
 						</h:panelGroup>
+					</div>
+					<div id="tab6" class="tab-pane">
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Inbound In Progress" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 col-xs-8">
+										<i class="fa fa-list" />
+										<h:outputText value="Inbound In Progress" />
+									</div>
+									<div class="col-sm-2 hidden-xs">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="inbound" fileName="inbound" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="inbound" value="#{deliveryRequestDetailView.findInboundByCompanyOwnerAndPartNumberAndNotDelivered(partNumberView.partNumber.id)}" var="item" rows="10"
+										styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Part Number">
+											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="PN Description">
+											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="green aa-cut-text" />
+										</p:column>
+										<p:column headerText="DN">
+											<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+										</p:column>
+										<p:column headerText="Project">
+											<h:outputText value="#{item.projectName}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Warehouse">
+											<h:outputText value="#{item.warehouseName}" styleClass="pink" />
+										</p:column>
+										<p:column headerText="Quantity">
+											<h:outputText value="#{item.quantity}" styleClass="bolder green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Outbound In Progress" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 col-xs-8">
+										<i class="fa fa-list" />
+										<h:outputText value="Outbound In Progress" />
+									</div>
+									<div class="col-sm-2 hidden-xs">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="outbound" fileName="outbound" postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="outbound" value="#{deliveryRequestDetailView.findOutboundByCompanyOwnerAndPartNumberAndNotDelivered(partNumberView.partNumber.id)}" var="item" rows="10"
+										styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Part Number">
+											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="PN Description">
+											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="green aa-cut-text" />
+										</p:column>
+										<p:column headerText="DN">
+											<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+										</p:column>
+										<p:column headerText="Project">
+											<h:outputText value="#{item.projectName}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Project Sub Type">
+											<h:outputText value="#{item.projectSubType}" />
+										</p:column>
+										<p:column headerText="Warehouse">
+											<h:outputText value="#{item.warehouseName}" styleClass="pink" />
+										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+										</p:column>
+										<p:column headerText="Quantity">
+											<h:outputText value="#{item.quantity}" styleClass="bolder green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

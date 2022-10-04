@@ -490,7 +490,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public boolean filter(String query) {
 		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
 				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName(),
-				status != null ? status.getValue() : null);
+				status != null ? status.getValue() : null,getProjectSubType());
 	}
 
 	public StockRow() {
@@ -899,6 +899,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setProjectName(ProjectName);
+	}
+	
+	@Transient
+	public String getProjectSubType() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getProjectSubType();
+	}
+
+	@Transient
+	public void setProjectSubType(String ProjectSubType) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setProjectSubType(ProjectSubType);
 	}
 
 	@Transient

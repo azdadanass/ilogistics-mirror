@@ -3,6 +3,7 @@ package ma.azdad.model;
 import ma.azdad.utils.Color;
 
 public enum PoDeliveryStatus {
+	PENDING("Pending", Color.ORANGE),
 	PARTIALLY_DELIVRED("Partially Delivered", Color.BLUE),
 	DELIVRED("Delivred", Color.GREEN),;
 

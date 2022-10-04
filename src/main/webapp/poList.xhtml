@@ -24,6 +24,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.PoDeliveryStatus" var="PoDeliveryStatus" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -79,9 +80,39 @@
 				<p:messages id="messages" />
 				<div class="col-sm-offset-1 col-sm-10">
 					<div class="table-header col-sm-12 col-xs-12">
-						<div class="col-sm-8 hidden-xs">
+						<div class="col-sm-2 hidden-xs">
 							<i class="fa fa-list" />
 							<h:outputText value=" List" />
+						</div>
+						<div class="col-sm-6">
+							<table style="margin-top: 5px">
+								<tr>
+									<td>
+										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-warning" title="Pending">
+											<div class="aa-icon-pending" />
+											<f:setPropertyActionListener value="#{PoDeliveryStatus.PENDING}" target="#{poView.deliveryStatus}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-info" title="Partially Delivered">
+											<div class="aa-icon-paid" />
+											<f:setPropertyActionListener value="#{PoDeliveryStatus.PARTIALLY_DELIVRED}" target="#{poView.deliveryStatus}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-success" title="Delivred">
+											<div class="icon-a-green" />
+											<f:setPropertyActionListener value="#{PoDeliveryStatus.DELIVRED}" target="#{poView.deliveryStatus}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip" title="All">
+											<div class="aa-icon-all" />
+											<f:setPropertyActionListener value="#{null}" target="#{poView.deliveryStatus}" />
+										</p:commandLink>
+									</td>
+								</tr>
+							</table>
 						</div>
 						<div class="col-sm-2">
 							<div class="action-buttons center">
@@ -122,7 +153,7 @@
 								</h:outputText>
 								<h:outputText value=" #{item.currencyName}" styleClass="bolder green" />
 							</p:column>
-							<p:column headerText="Project" >
+							<p:column headerText="Project">
 								<h:outputText value="#{item.projectName}" styleClass="pink" />
 							</p:column>
 							<p:column headerText="Supplier" rendered="#{poView.ibuy}">

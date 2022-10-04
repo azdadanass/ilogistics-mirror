@@ -115,11 +115,20 @@ public class PoService {
 		cacheService.evictCacheOthers("poService");
 	}
 
-	public List<Po> find(Boolean ibuy,Integer companyId, String username, List<Integer> assignedProjectList) {
+	public List<Po> find(Boolean ibuy, Integer companyId, String username, List<Integer> assignedProjectList, PoDeliveryStatus deliveryStatus) {
 		if (ibuy)
-			return repos.findSupplierPoList(companyId,username, assignedProjectList);
+			if (deliveryStatus == null)
+				return repos.findSupplierPoList(companyId, username, assignedProjectList);
+			else if (PoDeliveryStatus.PENDING.equals(deliveryStatus))
+				return repos.findSupplierPoListByDeliveryStatusNull(companyId, username, assignedProjectList);
+			else
+				return repos.findSupplierPoListByDeliveryStatus(companyId, username, assignedProjectList, deliveryStatus);
+		else if (deliveryStatus == null)
+			return repos.findCustomerPoList(companyId, username, assignedProjectList);
+		else if (PoDeliveryStatus.PENDING.equals(deliveryStatus))
+			return repos.findCustomerPoListByDeliveryStatusNull(companyId, username, assignedProjectList);
 		else
-			return repos.findCustomerPoList(companyId,username, assignedProjectList);
+			return repos.findCustomerPoListByDeliveryStatus(companyId, username, assignedProjectList, deliveryStatus);
 	}
 
 }

@@ -69,7 +69,7 @@ public class Po extends GenericModel<Integer> {
 		this.amountHt = amountHt;
 		this.status = status;
 		this.boqStatus = boqStatus;
-		this.deliveryStatus = deliveryStatus;
+		this.deliveryStatus = deliveryStatus != null ? deliveryStatus : PoDeliveryStatus.PENDING;
 		this.setCurrencyName(currencyName);
 		this.setProjectName(projectName);
 		if (ibuy)

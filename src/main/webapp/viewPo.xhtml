@@ -577,12 +577,12 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivered Quantity" width="100">
-											<h:outputText value="#{item.deliveredQuantity}" styleClass="green">
+											<h:outputText value="#{poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity}" styleClass="green" >
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Remaining Quantity" width="100">
-											<h:outputText value="#{item.totalQuantity - item.deliveredQuantity}" styleClass="red">
+											<h:outputText value="#{item.totalQuantity - (poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity)}" styleClass="red" >
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
@@ -671,12 +671,12 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivred Qantity" width="90" exportable="false">
-											<h:outputText value="#{-item.quantity}" styleClass="bolder #{-item.quantity ge 0 ?'green':'red'}">
+											<h:outputText value="#{poView.model.ibuy?item.quantity:-item.quantity}" styleClass="bolder #{-item.quantity ge 0 ?'green':'red'}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivred Qantity" styleClass="hide">
-											<h:outputText value="#{-item.quantity}" />
+											<h:outputText value="#{poView.model.ibuy?item.quantity:-item.quantity}" />
 										</p:column>
 									</p:dataTable>
 								</div>

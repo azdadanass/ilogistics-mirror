@@ -60,7 +60,8 @@
 							<div class="infobox-progress">
 								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45"
 									style="height: 46px; width: 46px; line-height: 45px;">
-									<span class="percent"> <h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+									<span class="percent">
+										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>
@@ -68,7 +69,8 @@
 								</div>
 							</div>
 							<div class="infobox-data">
-								<span class="infobox-text"> <h:outputText value="PN completeness" />
+								<span class="infobox-text">
+									<h:outputText value="PN completeness" />
 								</span>
 								<div class="infobox-content">
 									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
@@ -93,7 +95,9 @@
 								<h:panelGroup id="activeIcon">
 									<i class="ace-icon fa fa-circle #{PartNumberStatus.ACTIVE==partNumberView.partNumber.status?'light-green':'red'}" />
 								</h:panelGroup>
-								&nbsp; <span class="white"> <h:outputText value="#{partNumberView.partNumber.name}" />
+								&nbsp;
+								<span class="white">
+									<h:outputText value="#{partNumberView.partNumber.name}" />
 								</span>
 							</a>
 						</div>
@@ -351,9 +355,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="currentStock,total1" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -433,9 +439,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="stockHistory,total2" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -625,10 +633,11 @@
 										</div>
 										<div class="col-sm-2 col-xs-4">
 											<div class="nav-search minimized">
-												<span class="input-icon"> <p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input"
-														autocomplete="off">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 														<p:ajax event="keyup" update="costHistory" />
-													</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
 												</span>
 											</div>
 										</div>

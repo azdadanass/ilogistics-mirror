@@ -22,6 +22,7 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.InboundType;
 import ma.azdad.model.JobRequestStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.StockRow;
@@ -506,9 +507,9 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId,
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType, Integer companyId,
 			List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus);
+		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType,inboundType, companyId, deliveryRequestStatus);
 	}
 
 //	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId) {

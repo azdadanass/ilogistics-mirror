@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.InboundType;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.UtilsFunctions;
@@ -133,7 +134,7 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 	
 	public void refreshCostHistory(Integer partNumberId,Integer companyId) {
 		if ("/partNumberReporting.xhtml".equals(currentPath))
-			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
+			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND,InboundType.NEW, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
 		else if("/viewPartNumberPricing.xhtml".equals(currentPath))
 			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
 	}

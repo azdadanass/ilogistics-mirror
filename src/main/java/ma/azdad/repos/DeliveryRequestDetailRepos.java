@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.InboundType;
 import ma.azdad.model.JobRequestStatus;
 
 @Repository
@@ -121,8 +122,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	// ";
 
 	@Query(c4
-			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.company.id = ?3 and a.deliveryRequest.status in (?4) order by a.deliveryRequest.date4 desc")
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId,
+			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.inboundType = ?3 and a.deliveryRequest.company.id = ?4 and a.deliveryRequest.status in (?5) order by a.deliveryRequest.date4 desc")
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType,InboundType inboundType, Integer companyId,
 			List<DeliveryRequestStatus> deliveryRequestStatus);
 
 	@Query("select new DeliveryRequestDetail(0.0,sum(a.totalQuantity-a.totalUsedQuantity),a.partNumber) from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber")

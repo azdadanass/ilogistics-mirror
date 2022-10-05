@@ -24,7 +24,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	String c3 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.quantity, "
 			+ usedQuantity3 + "," + toUserFullName + ")";
 	String c4 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.unitCost,a.purchaseCost,a.deliveryRequest.date4,a.deliveryRequest.project.name,(select b.numeroIbuy from Po b where b.id = a.deliveryRequest.po.id),(select b.date from Po b where b.id = a.deliveryRequest.po.id),(select b.supplier.name from Po b where b.id = a.deliveryRequest.po.id)) ";
-	
+
 	String c8 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.project.name,a.deliveryRequest.project.subType,a.deliveryRequest.warehouse.name)";
 
 //	String select1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.unitCost) ";
@@ -123,8 +123,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query(c4
 			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.inboundType = ?3 and a.deliveryRequest.company.id = ?4 and a.deliveryRequest.status in (?5) order by a.deliveryRequest.date4 desc")
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType,InboundType inboundType, Integer companyId,
-			List<DeliveryRequestStatus> deliveryRequestStatus);
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType,
+			Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
 
 	@Query("select new DeliveryRequestDetail(0.0,sum(a.totalQuantity-a.totalUsedQuantity),a.partNumber) from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber")
 	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId);
@@ -174,7 +174,13 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Query("update DeliveryRequestDetail a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
 	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
 
-	@Query(c8+from1 + "where" + usernameCondition + " and " + companyCondition + "and a.deliveryRequest.type = ?5 and a.partNumber.id = ?6 and a.deliveryRequest.date4 is null and a.deliveryRequest.status not in ('REJECTED','CANCELED') group by a.deliveryRequest.id,a.status")
-	List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,DeliveryRequestType type ,Integer partNumberId);
+	@Query(c8 + from1 + "where" + usernameCondition + " and " + companyCondition
+			+ "and a.deliveryRequest.type = ?5 and a.partNumber.id = ?6 and a.deliveryRequest.date4 is null and a.deliveryRequest.status not in ('REJECTED','CANCELED') group by a.deliveryRequest.id,a.status")
+	List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			DeliveryRequestType type, Integer partNumberId);
+
+	@Query("select a.partNumber.id,sum(a.quantity) " + from1 + "where" + usernameCondition + " and " + companyCondition
+			+ "and a.deliveryRequest.type = 'INBOUND'and a.deliveryRequest.date4 is null and a.deliveryRequest.status not in ('REJECTED','CANCELED') group by a.partNumber.id")
+	List<Object[]> findForecastQuantityGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 }

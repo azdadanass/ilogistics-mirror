@@ -507,9 +507,9 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType, Integer companyId,
-			List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType,inboundType, companyId, deliveryRequestStatus);
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType,
+			Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus) {
+		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, inboundType, companyId, deliveryRequestStatus);
 	}
 
 //	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId) {
@@ -527,6 +527,13 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		List<Object[]> data = repos.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId,
 				DeliveryRequestType.OUTBOUND,
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
+		return result;
+	}
+
+	public Map<Integer, Double> findForecastQuantityGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		List<Object[]> data = repos.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
@@ -598,8 +605,9 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		repos.clearPurchaseCostByDeliveryRequest(deliveryRequestId);
 	}
 
-	public List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer companyId,DeliveryRequestType type, Integer partNumberId) {
-		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList, companyId,type, partNumberId);
+	public List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
+			Integer companyId, DeliveryRequestType type, Integer partNumberId) {
+		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList, companyId, type, partNumberId);
 	}
+
 }

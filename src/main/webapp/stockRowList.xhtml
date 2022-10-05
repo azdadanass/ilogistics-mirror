@@ -160,7 +160,13 @@
 								</h:outputText>
 							</p:column>
 							<p:column headerText="Available Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
-								<h:outputText value="#{item.projectSubTypeStockQuantity-item.pendingQuantity}" styleClass="#{item.quantity!=item.projectSubTypeStockQuantity-item.pendingQuantity?'bolder':''}">
+								<h:outputText value="#{item.projectSubTypeStockQuantity-item.pendingQuantity}"
+									styleClass="#{item.quantity!=item.projectSubTypeStockQuantity-item.pendingQuantity?'bolder':''}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Forecast Quantity" width="70" rendered="#{stockRowView.pageIndex==1}">
+								<h:outputText value="#{item.forecastQuantity}" styleClass="light-green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>

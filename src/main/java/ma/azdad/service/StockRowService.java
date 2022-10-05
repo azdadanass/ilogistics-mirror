@@ -188,6 +188,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		Map<Integer, Double> map2 = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		for (StockRow stockRow : result)
 			stockRow.setPendingQuantity(map2.getOrDefault(stockRow.getPartNumberId(), 0.0));
+		
+		// set forecast quantity
+		Map<Integer, Double> map3 = deliveryRequestDetailService.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+		for (StockRow stockRow : result)
+			stockRow.setForecastQuantity(map3.getOrDefault(stockRow.getPartNumberId(), 0.0));
+		
+		
 		return result;
 	}
 

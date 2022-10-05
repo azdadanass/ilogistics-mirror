@@ -53,6 +53,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	private Double projectSubTypeStockQuantity;
 	private Double pendingQuantity;
+	private Double forecastQuantity;
 
 	private String deliverToEntityName;
 
@@ -490,7 +491,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public boolean filter(String query) {
 		return contains(query, originNumber, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), getInboundDeliveryRequestReference() //
 				, getPartNumberIndustryName(), getPartNumberCategoryName(), getPartNumberTypeName(), getPartNumberBrandName(), getWarehouseName(), getProjectName(),
-				status != null ? status.getValue() : null,getProjectSubType());
+				status != null ? status.getValue() : null, getProjectSubType());
 	}
 
 	public StockRow() {
@@ -900,7 +901,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setProjectName(ProjectName);
 	}
-	
+
 	@Transient
 	public String getProjectSubType() {
 		if (deliveryRequest == null)
@@ -1273,6 +1274,16 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public void setProjectSubTypeStockQuantity(Double projectSubTypeStockQuantity) {
 		this.projectSubTypeStockQuantity = projectSubTypeStockQuantity;
+	}
+
+	@Transient
+	public Double getForecastQuantity() {
+		return forecastQuantity;
+	}
+
+	@Transient
+	public void setForecastQuantity(Double forecastQuantity) {
+		this.forecastQuantity = forecastQuantity;
 	}
 
 }

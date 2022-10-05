@@ -705,14 +705,14 @@
 					</div>
 					<div id="tab6" class="tab-pane">
 						<h4 class="header blue bolder smaller">
-							<h:outputText value="Inbound In Progress" />
+							<h:outputText value=" Inbound In Progress" />
 						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
-										<h:outputText value="Inbound In Progress" />
+										<h:outputText value=" Inbound In Progress" />
 									</div>
 									<div class="col-sm-2 hidden-xs">
 										<div class="action-buttons center">
@@ -734,7 +734,10 @@
 											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="green aa-cut-text" />
 										</p:column>
 										<p:column headerText="DN">
-											<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+												<f:param name="id" value="#{item.deliveryRequestId}" />
+											</h:outputLink>
 										</p:column>
 										<p:column headerText="Project">
 											<h:outputText value="#{item.projectName}" styleClass="blue" />
@@ -781,7 +784,10 @@
 											<h:outputText value="#{partNumberView.partNumber.description}" styleClass="green aa-cut-text" />
 										</p:column>
 										<p:column headerText="DN">
-											<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
+												<f:param name="id" value="#{item.deliveryRequestId}" />
+											</h:outputLink>
 										</p:column>
 										<p:column headerText="Project">
 											<h:outputText value="#{item.projectName}" styleClass="blue" />

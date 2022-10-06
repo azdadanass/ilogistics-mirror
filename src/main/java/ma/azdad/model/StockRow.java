@@ -55,8 +55,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private Double pendingQuantity;
 	private Double forecastQuantity;
 
-	private String deliverToEntityName;
-
 	// c0
 	public StockRow(Double quantity, PartNumber partNumber) {
 		super();
@@ -260,7 +258,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
+			Double qTotalCost,CompanyType deliverToCompanyType, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
@@ -276,8 +274,12 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.qTotalCost = qTotalCost;
-		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany
-				: deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
+		
+		this.setDeliverToCompanyType(deliverToCompanyType);
+		this.setDeliverToCompanyName(deliverToCompany);
+		this.setDeliverToCustomerName(deliverToCustomer);
+		this.setDeliverToSupplierName(deliverToSupplier);
+		this.setDeliverToOther(deliverToOther);
 	}
 
 	// c16
@@ -843,7 +845,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public String getDeliverToEntityName() {
-		return deliverToEntityName;
+		if(getDeliverToCompanyType()==null)
+			return null;
+		switch (getDeliverToCompanyType()) {
+		case COMPANY:
+			return getDeliverToCompanyName();
+		case CUSTOMER:
+			return getDeliverToCustomerName();
+		case SUPPLIER:
+			return getDeliverToSupplierName();
+		default:
+			return getDeliverToOther();
+		}
 	}
 
 	@Transient

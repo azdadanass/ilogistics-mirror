@@ -341,20 +341,22 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 //		return projectRepos.findLight(idList);
 //	}
 
-	public List<Project> findLightProjectCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Boolean stock) {
-		List<Integer> idList = stock ? repos.findProjectIdListByCompanyOwnerAndHavingStock(username, warehouseList, assignedProjectList, companyId)
-				: repos.findProjectIdListByCompanyOwnerAndNotHavingStock(username, warehouseList, assignedProjectList, companyId);
-		if (idList.isEmpty() || idList == null)
-			return null;
-		return projectRepos.findLight(idList);
+	public List<Project> findLightProjectCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		List<Project> havingStockList = repos.findProjectListByCompanyOwnerAndHavingStock(username, warehouseList, assignedProjectList, companyId);
+		List<Project> notHavingStock = repos.findProjectListByCompanyOwnerAndNotHavingStock(username, warehouseList, assignedProjectList, companyId);
+		List<Project> result = new ArrayList<Project>();
+		result.addAll(havingStockList);
+		result.addAll(notHavingStock);
+		return result;
 	}
 
-	public List<Project> findLightProjectCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Boolean stock) {
-		List<Integer> idList = stock ? repos.findProjectIdListByCustomerOwnerAndHavingStock(username, warehouseList, assignedProjectList, customerId)
-				: repos.findProjectIdListByCustomerOwnerAndNotHavingStock(username, warehouseList, assignedProjectList, customerId);
-		if (idList.isEmpty() || idList == null)
-			return null;
-		return projectRepos.findLight(idList);
+	public List<Project> findLightProjectCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
+		List<Project> havingStockList = repos.findProjectListByCustomerOwnerAndHavingStock(username, warehouseList, assignedProjectList, customerId);
+		List<Project> notHavingStock = repos.findProjectListByCustomerOwnerAndNotHavingStock(username, warehouseList, assignedProjectList, customerId);
+		List<Project> result = new ArrayList<Project>();
+		result.addAll(havingStockList);
+		result.addAll(notHavingStock);
+		return result;
 	}
 
 	public List<Project> findLightProjectCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectType) {

@@ -113,8 +113,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<StockRow> historyList2 = null;
 	private List<DeliveryRequestExpiryDate> expiryList = null;
 	private Boolean removeFullyDelivered = false;
+	
+	
 
-	private Boolean stock;
+//	private Boolean stock;
 
 	@Override
 	@PostConstruct
@@ -126,6 +128,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			stockRow = stockRowService.findOne(id);
 		else if (isViewPage)
 			stockRow = stockRowService.findOne(id);
+		else if(isPage("projectReporting"))
+			refreshProjectList();
+		
 
 	}
 
@@ -291,11 +296,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void refreshProjectList() {
 		if (companyId != null)
-			projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
-					stock);
+			projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 		else if (customerId != null)
-			projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
-					stock);
+			projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId);
 	}
 
 	public void refreshCustomerList() {
@@ -320,7 +324,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			list2 = list1 = stockRowService.findStockHistoryByDestinationCustomerAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
 					cacheView.getAssignedProjectList(), companyId, customerId);
 	}
-	
+
 	public Double getList2TotalQuantity() {
 		return list2.stream().mapToDouble(i -> i.getQuantity()).sum();
 	}
@@ -892,14 +896,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public List<StockRow> findByDeliveryRequest(Integer deliveryRequestId) {
 		return stockRowService.findByDeliveryRequest(deliveryRequestId);
 	}
-	
+
 	@Cacheable("stockRowView.findByPo")
-	public List<StockRow> findByPo(Integer poId){
+	public List<StockRow> findByPo(Integer poId) {
 		return service.findByPo(poId);
 	}
-	
+
 	@Cacheable("stockRowView.findByPoAndDeliveredWithoutBoqMapping")
-	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId){
+	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId) {
 		return service.findByPoAndDeliveredWithoutBoqMapping(poId);
 	}
 
@@ -1219,14 +1223,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setReportTypeValue(String reportTypeValue) {
 		this.reportTypeValue = reportTypeValue;
-	}
-
-	public Boolean getStock() {
-		return stock;
-	}
-
-	public void setStock(Boolean stock) {
-		this.stock = stock;
 	}
 
 }

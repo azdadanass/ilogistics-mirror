@@ -53,6 +53,7 @@ public class Project implements Serializable {
 
 	// tmp
 	private Integer tmpCustomerId;
+	private Boolean hasStock;
 
 	public Project() {
 	}
@@ -61,6 +62,13 @@ public class Project implements Serializable {
 		super();
 		this.id = id;
 		this.name = name;
+	}
+
+	public Project(Integer id, String name, Boolean hasStock) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.hasStock = hasStock;
 	}
 
 	public Project(Integer id, String name, String type) {
@@ -88,7 +96,8 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm) {
+	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing,
+			Boolean customerStockManagement, Boolean sdm) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -280,7 +289,7 @@ public class Project implements Serializable {
 			customer = new Customer();
 		customer.setName(name);
 	}
-	
+
 	@Transient
 	public String getCustomerPhoto() {
 		if (customer == null)
@@ -351,6 +360,16 @@ public class Project implements Serializable {
 
 	public void setSupplierStockManagement(Boolean supplierStockManagement) {
 		this.supplierStockManagement = supplierStockManagement;
+	}
+
+	@Transient
+	public Boolean getHasStock() {
+		return hasStock;
+	}
+
+	@Transient
+	public void setHasStock(Boolean hasStock) {
+		this.hasStock = hasStock;
 	}
 
 }

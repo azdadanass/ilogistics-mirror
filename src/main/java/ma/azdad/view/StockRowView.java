@@ -25,7 +25,6 @@ import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
-import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
 import ma.azdad.model.User;
@@ -113,8 +112,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<StockRow> historyList2 = null;
 	private List<DeliveryRequestExpiryDate> expiryList = null;
 	private Boolean removeFullyDelivered = false;
-	
-	
 
 //	private Boolean stock;
 
@@ -128,9 +125,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			stockRow = stockRowService.findOne(id);
 		else if (isViewPage)
 			stockRow = stockRowService.findOne(id);
-		else if(isPage("projectReporting"))
-			refreshProjectList();
-		
 
 	}
 
@@ -209,12 +203,16 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
 						cacheView.getAssignedProjectList(), companyId);
 			break;
+		case "/projectReporting.xhtml":
 		case "/projectFinancial.xhtml":
-			if (companyId != null) {
-				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						companyId, ProjectTypes.STOCK.getValue());
-			}
+			refreshProjectList();
 			break;
+//		case "/projectFinancial.xhtml":
+//			if (companyId != null) {
+//				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+//						companyId, ProjectTypes.STOCK.getValue());
+//			}
+//			break;
 		case "/companyFinancial.xhtml":
 			this.companyId = this.id;
 			if (sessionView.getIsCfo(companyId))

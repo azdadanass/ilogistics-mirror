@@ -69,7 +69,7 @@
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu id="project" value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains" > 
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
-												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}" itemDescription="Test" />
+												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}"  />
 												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />
 												<p:ajax listener="#{jobRequestDeliveryDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel4" />
 												<p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel5" />

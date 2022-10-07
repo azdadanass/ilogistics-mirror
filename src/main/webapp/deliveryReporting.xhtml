@@ -207,7 +207,7 @@
 										</p:column>
 										<p:column headerText="Type" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.type.value}"/>
-											<h:outputText value="#{item.deliveryRequest.inboundType.value}" rendered="#{item.deliveryRequest.isInbound}"/>
+											<h:outputText value=", #{item.deliveryRequest.inboundType.value}" rendered="#{item.deliveryRequest.isInbound}"/>
 										</p:column>
 										<p:column headerText="REF" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.smsRef}" />

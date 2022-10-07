@@ -367,7 +367,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	// c22 --> deliveryReporting
 	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Double unitPrice, String projectName, String warehouseName, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberBrandName, //
-			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, String deliveryRequestReference, String deliveryRequestSmsRef, Date deliveryRequestDate4,
+			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType,InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef, Date deliveryRequestDate4,
 			String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
 			String poNumero, String endCustomerName) {
@@ -383,6 +383,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberBrandName(partNumberBrandName);
 		this.setDeliveryRequestType(deliveryRequestType);
+		this.setDeliveryRequestInboundType(deliveryRequestInboundType);
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
 		this.setDeliveryRequestDate4(deliveryRequestDate4);
@@ -1103,6 +1104,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setType(deliveryRequestType);
+	}
+	
+	@Transient
+	public InboundType getDeliveryRequestInboundType() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getInboundType();
+	}
+
+	@Transient
+	public void setDeliveryRequestInboundType(InboundType deliveryRequestInboundType) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setInboundType(deliveryRequestInboundType);
 	}
 
 	@Transient

@@ -160,9 +160,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="list1,list1Size" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -202,6 +204,9 @@
 										</p:column>
 										<p:column headerText="DN" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.reference}" />
+										</p:column>
+										<p:column headerText="Inbound Type" styleClass="hide">
+											<h:outputText value="#{item.deliveryRequest.inboundType}" />
 										</p:column>
 										<p:column headerText="REF" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.smsRef}" />
@@ -275,9 +280,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="tab2" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -338,7 +345,8 @@
 													<td rowspan="4" class="center" style="vertical-align: middle">
 														<c:set var="margin" value="#{(-stockRowView.list2TotalPrice+stockRowView.list2TotalCost)/-stockRowView.list2TotalPrice}" />
 														<div class="easy-pie-chart percentage" data-percent="#{margin*100.0}" data-color="#{margin lt 0?'#d3413b':(margin lt 0.2?'#478FCA':'#87B87F')}">
-															<span class="percent"> <h:outputText value="#{margin}">
+															<span class="percent">
+																<h:outputText value="#{margin}">
 																	<f:convertNumber type="percent" maxFractionDigits="0" />
 																</h:outputText>
 															</span>
@@ -425,9 +433,11 @@
 										</div>
 										<div class="col-sm-2 col-xs-4">
 											<div class="nav-search minimized">
-												<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+												<span class="input-icon">
+													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 														<p:ajax event="keyup" update="datatable,summary" />
-													</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
 												</span>
 											</div>
 										</div>

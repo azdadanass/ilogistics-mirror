@@ -781,6 +781,15 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				}
 			}
 		}
+		
+		Collections.sort(expiryList,new Comparator<DeliveryRequestExpiryDate>() {
+
+			@Override
+			public int compare(DeliveryRequestExpiryDate o1, DeliveryRequestExpiryDate o2) {
+				// TODO Auto-generated method stub
+				return o1.getExpiryDate().compareTo(o2.getExpiryDate());
+			}
+		});
 
 		System.out.println("expiryList " + expiryList);
 

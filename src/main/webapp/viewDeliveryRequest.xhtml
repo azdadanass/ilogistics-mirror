@@ -1068,7 +1068,14 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Invoice Status">
-											<h:outputText value="#{item.invoiceStatus}" />
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Edited'}" styleClass="badge badge-orange"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Pending'}" styleClass="badge badge-orange"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Submitted'}" styleClass="badge badge-pink"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L1'}" styleClass="badge badge-light-blue"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L2'}" styleClass="badge badge-blue"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='In Progress'}" styleClass="badge badge-light-green"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Paid'}" styleClass="badge badge-green"/>
+											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Rejected'}" styleClass="badge badge-red"/>
 										</p:column>
 										<p:column headerText="Po">
 											<h:outputText value="#{item.poNumeroIbuy}" />

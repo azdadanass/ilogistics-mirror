@@ -894,4 +894,12 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		return tmpSupplierName;
 	}
 
+	@Transient
+	public String getTmpPoCurrencyName() {
+		return tmpPoCurrencyName;
+	}
+
+	
+	
+
 }

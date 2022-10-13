@@ -54,6 +54,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private String tmpProjectName;
 	private String tmpPoNumero;
 	private Date tmpPoDate;
+	private String tmpPoCurrencyName;
 	private String tmpSupplierName;
 	private CompanyType tmpOwnerType;
 	private Integer tmpCompanyId;
@@ -134,7 +135,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
 			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double unitCost, Double purchaseCost,
-			Date tmpDeliveryRequestDeliveryDate, String tmpProjectName, String tmpPoNumero, Date tmpPoDate, String tmpSupplierName) {
+			Date tmpDeliveryRequestDeliveryDate, String tmpProjectName, String tmpPoNumero, Date tmpPoDate,String tmpPoCurrencyName, String tmpSupplierName) {
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
@@ -153,6 +154,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpProjectName = tmpProjectName;
 		this.tmpPoNumero = tmpPoNumero;
 		this.tmpPoDate = tmpPoDate;
+		this.tmpPoCurrencyName = tmpPoCurrencyName;		
 		this.tmpSupplierName = tmpSupplierName;
 	}
 

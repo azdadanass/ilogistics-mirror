@@ -584,7 +584,6 @@
 																<h:outputText value="#{deliveryRequestDetailView.maxCost}">
 																	<f:convertNumber type="number" maxFractionDigits="2" />
 																</h:outputText>
-																<h:outputText value=" MAD" />
 															</td>
 														</tr>
 														<tr>
@@ -595,7 +594,6 @@
 																<h:outputText value="#{deliveryRequestDetailView.minCost}">
 																	<f:convertNumber type="number" maxFractionDigits="2" />
 																</h:outputText>
-																<h:outputText value=" MAD" />
 															</td>
 														</tr>
 														<tr>
@@ -606,7 +604,6 @@
 																<h:outputText value="#{deliveryRequestDetailView.averageCost}">
 																	<f:convertNumber type="number" maxFractionDigits="2" />
 																</h:outputText>
-																<h:outputText value=" MAD" />
 															</td>
 														</tr>
 													</table>
@@ -664,13 +661,13 @@
 												<h:outputText value="#{item.purchaseCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" />
+												<h:outputText value=" #{item.tmpPoCurrencyName}" />
 											</p:column>
 											<p:column headerText="Unit Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" />
+												<h:outputText value=" #{item.tmpPoCurrencyName}" />
 											</p:column>
 											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.tmpDeliveryRequestReference}" exportable="false">
 												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">

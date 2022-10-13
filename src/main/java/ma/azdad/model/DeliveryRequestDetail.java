@@ -24,7 +24,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	private DeliveryRequest deliveryRequest;
 
-	private Currency pruchaseCurrency;
+	private Currency purchaseCurrency;
 	private Currency costCurrency;
 	private Currency priceCurrency;
 
@@ -824,12 +824,12 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	public Currency getPruchaseCurrency() {
-		return pruchaseCurrency;
+	public Currency getPurchaseCurrency() {
+		return purchaseCurrency;
 	}
 
-	public void setPruchaseCurrency(Currency pruchaseCurrency) {
-		this.pruchaseCurrency = pruchaseCurrency;
+	public void setPurchaseCurrency(Currency purchaseCurrency) {
+		this.purchaseCurrency = purchaseCurrency;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

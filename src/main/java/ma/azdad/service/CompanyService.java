@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Company;
+import ma.azdad.model.Currency;
 import ma.azdad.repos.CompanyRepos;
 import ma.azdad.utils.LabelValue;
 
@@ -46,15 +47,18 @@ public class CompanyService {
 	public List<Company> findLight() {
 		return repos.findLight();
 	}
-	
-	public List<Integer> findIdList(){
+
+	public List<Integer> findIdList() {
 		return repos.findIdList();
 	}
-	
+
 	public Company findCompanyUser(String username) {
 		return repos.findCompanyUser(username);
 	}
-	
+
+	public Currency findAccountingCurrency(Integer id) {
+		return repos.findAccountingCurrency(id);
+	}
 
 	@Cacheable("companyService.findNameMap")
 	public Map<Integer, String> findNameMap() {

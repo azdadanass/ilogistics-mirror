@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Company;
+import ma.azdad.model.Currency;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.UtilsFunctions;
 
@@ -55,6 +56,11 @@ public class CompanyView {
 	@Cacheable("companyView.findIdByProject")
 	public Integer findIdByProject(Integer projectId) {
 		return service.findIdByProject(projectId);
+	}
+	
+	@Cacheable("companyView.findAccountingCurrency")
+	public Currency findAccountingCurrency(Integer id) {
+		return service.findAccountingCurrency(id);
 	}
 
 	public List<Company> findLight() {

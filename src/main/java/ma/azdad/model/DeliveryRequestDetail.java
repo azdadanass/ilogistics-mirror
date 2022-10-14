@@ -823,7 +823,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.purchaseCost = purchaseCost;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Currency getPurchaseCurrency() {
 		return purchaseCurrency;
 	}
@@ -832,7 +832,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.purchaseCurrency = purchaseCurrency;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Currency getCostCurrency() {
 		return costCurrency;
 	}
@@ -841,7 +841,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.costCurrency = costCurrency;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	public Currency getPriceCurrency() {
 		return priceCurrency;
 	}

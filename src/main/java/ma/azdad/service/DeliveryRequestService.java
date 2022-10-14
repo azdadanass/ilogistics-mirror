@@ -45,6 +45,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.model.BoqMapping;
+import ma.azdad.model.Currency;
 import ma.azdad.model.DeliverToType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
@@ -937,7 +938,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 //		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(),
 //				DeliveryRequestType.INBOUND, InboundType.NEW, Arrays.asList(DeliveryRequestStatus.DELIVRED));
-		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId,DeliveryRequestType.INBOUND, InboundType.NEW,
+		return deliveryRequestRepos.findInboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, DeliveryRequestType.INBOUND, InboundType.NEW,
 				Arrays.asList(DeliveryRequestStatus.DELIVRED));
 	}
 
@@ -990,6 +991,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			deliveryRequestDetailRepos.updatePurchaseCost(detail.getId(), purchaseCost);
 		}
 		evictCache();
+	}
+
+	public void updateDetailListPurchaseCurrency(Integer deliveryRequestId, Currency purchaseCurrency) {
+		deliveryRequestDetailRepos.updatePurchaseCurrencyByDeliveryRequest(deliveryRequestId, purchaseCurrency);
+	}
+	
+	public void updateDetailListPriceCurrency(Integer deliveryRequestId, Currency priceCurrency) {
+		deliveryRequestDetailRepos.updatePriceCurrencyByDeliveryRequest(deliveryRequestId, priceCurrency);
 	}
 
 	public void updateDetailListPurchaseCostFromBoqMappingScript() {

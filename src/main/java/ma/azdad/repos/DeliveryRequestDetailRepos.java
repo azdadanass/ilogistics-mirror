@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import ma.azdad.model.Currency;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
@@ -89,6 +90,16 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Modifying
 	@Query("update DeliveryRequestDetail set purchaseCost = ?2 where id = ?1 ")
 	public void updatePurchaseCost(Integer id, Double purchaseCost);
+	
+	@Modifying
+	@Query("update DeliveryRequestDetail a set a.purchaseCurrency = ?2 where a.deliveryRequest.id = ?1 ")
+	public void updatePurchaseCurrencyByDeliveryRequest(Integer deliveryRequestId, Currency purchaseCurrency);
+	
+	@Modifying
+	@Query("update DeliveryRequestDetail a set a.priceCurrency = ?2 where a.deliveryRequest.id = ?1 ")
+	public void updatePriceCurrencyByDeliveryRequest(Integer deliveryRequestId, Currency purchaseCurrency);
+	
+	
 
 	@Modifying
 	@Query("update DeliveryRequestDetail set purchaseCost = 0 where deliveryRequest.id = ?1 ")

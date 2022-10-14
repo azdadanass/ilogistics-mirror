@@ -5,9 +5,11 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -39,6 +41,8 @@ public class Company implements Serializable {
 	private String capital;
 	private String structure;
 
+	private Currency accountingCurrency;
+	
 	public Company() {
 		super();
 	}
@@ -246,4 +250,12 @@ public class Company implements Serializable {
 		this.postalCode = postalCode;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Currency getAccountingCurrency() {
+		return accountingCurrency;
+	}
+
+	public void setAccountingCurrency(Currency accountingCurrency) {
+		this.accountingCurrency = accountingCurrency;
+	}
 }

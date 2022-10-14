@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.Company;
+import ma.azdad.model.Currency;
 import ma.azdad.utils.LabelValue;
 
 @Repository
@@ -29,5 +30,8 @@ public abstract interface CompanyRepos extends JpaRepository<Company, Integer> {
 	
 	@Query("select a.company from User a where a.username = ?1")
 	Company findCompanyUser(String username);
+	
+	@Query("select a.accountingCurrency from Company a where a.id = ?1")
+	Currency findAccountingCurrency(Integer id);
 
 }

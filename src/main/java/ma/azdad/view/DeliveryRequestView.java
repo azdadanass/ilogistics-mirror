@@ -1619,6 +1619,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					|| (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId())))
 				deliveryRequest.setMissingPo(deliveryRequest.getPo() == null);
 
+			// fill details currencies
+			if (deliveryRequest.getPo() != null)
+				if (deliveryRequest.getIsInbound())
+					deliveryRequest.getDetailList().forEach(d -> d.setPurchaseCurrency(deliveryRequest.getPo().getCurrency()));
+				else if (deliveryRequest.getIsOutbound())
+					deliveryRequest.getDetailList().forEach(d -> d.setPriceCurrency(deliveryRequest.getPo().getCurrency()));
+
+			if (deliveryRequest.getIsInboundNew())
+				deliveryRequest.getDetailList().forEach(d -> {
+					d.setCostCurrency(companyService.findAccountingCurrency(companyService.findIdByProject(deliveryRequest.getProject().getId())));
+				});
+
 		} catch (Exception e) {
 			FacesContextMessages.ErrorMessages(e.getMessage());
 		}
@@ -2292,6 +2304,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getContainsBoqMapping() == null)
 			deliveryRequest.setContainsBoqMapping(false);
 		deliveryRequest.setMissingPo(false);
+		// fil currencies
+		if (deliveryRequest.getIsInbound())
+			deliveryRequest.getDetailList().forEach(d -> d.setPurchaseCurrency(deliveryRequest.getPo().getCurrency()));
+		else if (deliveryRequest.getIsOutbound())
+			deliveryRequest.getDetailList().forEach(d -> d.setPriceCurrency(deliveryRequest.getPo().getCurrency()));
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		deliveryRequest.init();

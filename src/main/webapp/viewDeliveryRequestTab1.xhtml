@@ -694,7 +694,7 @@
 						<h:outputText value="#{item.purchaseCost}">
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
-						<h:outputText value=" #{deliveryRequestView.deliveryRequest.po.currency.currency}" />
+						<h:outputText value=" #{item.purchaseCurrency.currency}" />
 					</p:column>
 					<p:column headerText="Unit Cost" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showCostInformations()}">
 						<p:inplace editor="true" styleClass="red #{deliveryRequestView.canUpdateUnitCost()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
@@ -703,7 +703,7 @@
 							<p:ajax event="save" listener="#{deliveryRequestView.updateUnitCost(item)}" update="main_tab" />
 							<p:ajax event="cancel" />
 						</p:inplace>
-						<h:outputText value=" MAD" styleClass="red" />
+						<h:outputText value=" #{item.costCurrency.currency}" styleClass="red" />
 					</p:column>
 					<p:column headerText="Unit Price" width="90" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.showPriceInformations()}">
 						<p:inplace editor="true" styleClass="blue #{deliveryRequestView.canUpdateUnitPrice()?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none"
@@ -712,7 +712,7 @@
 							<p:ajax event="save" listener="#{deliveryRequestView.updateUnitPrice(item)}" update="main_tab" />
 							<p:ajax event="cancel" />
 						</p:inplace>
-						<h:outputText value=" MAD" styleClass="blue" />
+						<h:outputText value=" #{item.priceCurrency.currency}" styleClass="blue" />
 					</p:column>
 					<p:column headerText="Quantity" width="60">
 						<h:outputText value="#{item.quantity}" styleClass="bolder green">

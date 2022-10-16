@@ -757,7 +757,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				detail.setRemainingQuantity(detail.getRemainingQuantity() - detail.getTmpQuantity());
 				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
 						.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
-				deliveryRequest.getStockRowList().add(new StockRow(detail.getTmpQuantity(), detail.getTmpQuantity(), detail.getPartNumber(), deliveryRequest, true,
+				deliveryRequest.getStockRowList().add(new StockRow(detail,detail.getTmpQuantity(), detail.getTmpQuantity(), detail.getPartNumber(), deliveryRequest, true,
 						deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, detail.getUnitCost(), currentDate, detail.getPacking()));
 			}
 	}
@@ -862,9 +862,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		Date currentDate = new Date();
 
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
-			deliveryRequest.getStockRowList().add(new StockRow(detail.getQuantity(), currentDate, deliveryRequest.getOriginNumber(), detail.getPartNumber(), deliveryRequest,
+			deliveryRequest.getStockRowList().add(new StockRow(detail,detail.getQuantity(), currentDate, deliveryRequest.getOriginNumber(), detail.getPartNumber(), deliveryRequest,
 					detail.getUnitCost(), detail.getPacking()));
-			deliveryRequest.getStockRowList().add(new StockRow(-detail.getQuantity(), currentDate, deliveryRequest.getOriginNumber(), detail.getPartNumber(), deliveryRequest,
+			deliveryRequest.getStockRowList().add(new StockRow(detail,-detail.getQuantity(), currentDate, deliveryRequest.getOriginNumber(), detail.getPartNumber(), deliveryRequest,
 					detail.getUnitCost(), detail.getPacking()));
 		}
 

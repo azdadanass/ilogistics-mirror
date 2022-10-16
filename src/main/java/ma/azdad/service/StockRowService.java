@@ -102,7 +102,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				quantity -= newStockRowQuantity;
 				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
 						.findByDeliveryRequestAndPartNumber(stockRow.getInboundDeliveryRequest().getId(), stockRow.getPartNumber().getId()).get(0);
-				result.add(new StockRow(-newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(),
+				result.add(new StockRow(detail,-newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(),
 						stockRow.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, stockRow.getUnitCost(), detail.getUnitPrice(), stockRow.getLocation(), currentDate,
 						stockRow.getPacking()));
 				if (UtilsFunctions.compareDoubles(quantity, 0.0, 4) == 0)

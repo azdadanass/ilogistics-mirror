@@ -355,7 +355,7 @@
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" />
+												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" />
 											</p:column>
 											<p:column headerText="Unit Cost" width="120" styleClass="hide">
 												<h:outputText value="#{item.unitCost}"/>
@@ -364,7 +364,7 @@
 												<h:outputText value="#{item.qTotalCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" />
+												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" />
 											</p:column>
 											<p:column headerText="Total Cost" styleClass="hide">
 												<h:outputText value="#{item.qTotalCost}" />

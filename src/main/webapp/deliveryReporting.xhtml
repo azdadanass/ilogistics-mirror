@@ -479,13 +479,13 @@
 												<h:outputText value="#{item.unitCost}" styleClass="orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="orange" />
+												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" styleClass="orange" />
 											</p:column>
 											<p:column headerText="Total Cost" exportable="false">
 												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" styleClass="bolder orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder orange" />
+												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" styleClass="bolder orange" />
 											</p:column>
 											<p:column headerText="Total Cost" styleClass="hide">
 												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" />
@@ -494,13 +494,13 @@
 												<h:outputText value="#{item.unitPrice}" styleClass="green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="green" />
+												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="green" />
 											</p:column>
 											<p:column headerText="Total Price" exportable="false">
 												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" MAD" styleClass="bolder green" />
+												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="bolder green" />
 											</p:column>
 											<p:column headerText="Total Price" styleClass="hide">
 												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" />

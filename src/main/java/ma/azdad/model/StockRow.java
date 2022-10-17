@@ -77,7 +77,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
+			DeliveryRequest inboundDeliveryRequest, Double unitCost, Integer costCurrencyId, Location location, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
@@ -94,6 +94,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.location = location;
 		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
 		this.packing = packing;
 	}
 
@@ -101,7 +102,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
+			DeliveryRequest inboundDeliveryRequest, Double unitCost, Integer costCurrencyId, Location location) {
 		super();
 		this.quantity = quantity;
 		this.status = status;
@@ -119,6 +120,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
 		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
 	}
 
 	// c4
@@ -237,7 +239,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double unitCost, Double qTotalCost) {
+			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double unitCost, Integer costCurrencyId, Double qTotalCost) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -252,6 +254,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
 		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
 		this.qTotalCost = qTotalCost;
 	}
 
@@ -303,7 +306,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	// c18
 	public StockRow(DeliveryRequestDetail deliveryRequestDetail, Double quantity, Date creationDate, String originNumber, PartNumber partNumber, DeliveryRequest deliveryRequest,
-			Double unitCost, Packing packing) {
+			Packing packing) {
 		super();
 		this.deliveryRequestDetail = deliveryRequestDetail;
 		this.quantity = quantity;
@@ -311,13 +314,12 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.originNumber = originNumber;
 		this.partNumber = partNumber;
 		this.deliveryRequest = deliveryRequest;
-		this.setUnitCost(unitCost);
 		this.packing = packing;
 	}
 
 	// c19
 	public StockRow(DeliveryRequestDetail deliveryRequestDetail, Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber,
-			PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Double unitPrice, Location location,
+			PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Location location,
 			Date creationDate, Packing packing) {
 		super();
 		this.deliveryRequestDetail = deliveryRequestDetail;
@@ -329,15 +331,13 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
-		this.setUnitCost(unitCost);
-		this.setUnitPrice(unitPrice);
 		this.creationDate = creationDate;
 		this.packing = packing;
 	}
 
 	// c20
 	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber,
-			DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Packing packing) {
+			DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -348,13 +348,12 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
-		this.setUnitCost(unitCost);
 		this.packing = packing;
 	}
 
 	// c21
 	public StockRow(DeliveryRequestDetail deliveryRequestDetail, Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, Boolean initial,
-			String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Date creationDate, Packing packing) {
+			String originNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Date creationDate, Packing packing) {
 		super();
 		this.deliveryRequestDetail = deliveryRequestDetail;
 		this.quantity = quantity;
@@ -365,13 +364,12 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
-		this.setUnitCost(unitCost);
 		this.creationDate = creationDate;
 		this.packing = packing;
 	}
 
 	// c22 --> deliveryReporting
-	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Double unitPrice, String projectName, String warehouseName, //
+	public StockRow(Double quantity, StockRowStatus status, Double unitCost,Integer costCurrencyId, Double unitPrice,Integer priceCurrencyId, String projectName, String warehouseName, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference,
 			String deliveryRequestSmsRef, Date deliveryRequestDate4, String destinationProjectCustomerName, String destinationName, String originName,
@@ -381,7 +379,9 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.quantity = quantity;
 		this.status = status;
 		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
 		this.setUnitPrice(unitPrice);
+		this.setPriceCurrencyId(priceCurrencyId);
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setProjectName(projectName);
 		this.setWarehouseName(warehouseName);
@@ -407,11 +407,11 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setEndCustomerName(endCustomerName);
 	}
 
-	// c12
+	// c23
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double unitCost, Double qTotalCost, String projectName) {
+			StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double unitCost,Integer costCurrencyId, Double qTotalCost, String projectName) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -426,76 +426,13 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
 		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
 		this.qTotalCost = qTotalCost;
 		this.setProjectName(projectName);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//	public StockRow(Double quantity, StockRowStatus status, String partNumberName, DeliveryRequestType deliveryRequestType, Integer deliveryRequestReferenceNumber, String originNumber) {
-//		super();
-//		this.quantity = quantity;
-//		this.status = status;
-//		this.setPartNumberName(partNumberName);
-//		this.setDeliveryRequestType(deliveryRequestType);
-//		this.setDeliveryRequestReferenceNumber(deliveryRequestReferenceNumber);
-//		this.originNumber = originNumber;
-//
-//	}
-
-//	public StockRow(Double quantity, PartNumber partNumber, StockRowStatus status, Date inboundDeliveryRequestDeliveryDate, Double qTotalCost) {
-//		super();
-//		this.quantity = quantity;
-//		this.partNumber = partNumber;
-//		this.status = status;
-//		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
-//		this.qTotalCost = qTotalCost;
-//	}
-
-	// public StockRow(Double quantity, StockRowStatus status, DeliveryRequest
-	// deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber
-	// partNumber,Double qTotalCost) {
-	// super();
-	// this.quantity = quantity;
-	// this.status = status;
-	// this.deliveryRequest = deliveryRequest;
-	// this.partNumber = partNumber;
-	// this.inboundDeliveryRequest = inboundDeliveryRequest;
-	// this.qTotalCost = qTotalCost;
-	// }
-
-//	public StockRow(Double quantity, StockRowStatus status, DeliveryRequest deliveryRequest, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber, Double qTotalCost, String deliverToCompany, String deliverToCustomer, String deliverToSupplier, String deliverToOther) {
-//		super();
-//		this.quantity = quantity;
-//		this.status = status;
-//		this.deliveryRequest = deliveryRequest;
-//		this.partNumber = partNumber;
-//		this.inboundDeliveryRequest = inboundDeliveryRequest;
-//		this.qTotalCost = qTotalCost;
-//		this.deliverToEntityName = deliverToCompany != null ? deliverToCompany : deliverToCustomer != null ? deliverToCustomer : deliverToSupplier != null ? deliverToSupplier : deliverToOther;
-//	}
-
-//	public StockRow(Double quantity, PartNumber partNumber, DeliveryRequest deliveryRequest) {
-//		super();
-//		this.quantity = quantity;
-//		this.partNumber = partNumber;
-//		this.deliveryRequest = deliveryRequest;
-//	}
-
-//	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, PartNumber partNumber) {
-//		super();
-//		this.quantity = quantity;
-//		this.partNumber = partNumber;
-//		this.inboundDeliveryRequest = inboundDeliveryRequest;
-//	}
-
-//	public StockRow(Double quantity, PartNumber partNumber, Double inboundQuantity, Double outboundQuantity) {
-//		super();
-//		this.quantity = quantity;
-//		this.partNumber = partNumber;
-//		this.inboundQuantity = inboundQuantity;
-//		this.outboundQuantity = outboundQuantity;
-//	}
 
 	@Override
 	public boolean filter(String query) {
@@ -509,29 +446,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = new Date();
 	}
 
-//	public StockRow(Double quantity, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location, Packing packing) {
-//		super();
-//		this.quantity = quantity;
-//		this.status = status;
-//		this.originNumber = originNumber;
-//		this.partNumber = partNumber;
-//		this.inboundDeliveryRequest = inboundDeliveryRequest;
-//		this.location = location;
-//		this.setUnitCost(unitCost);
-//		this.packing = packing;
-//	}
-
-//	public StockRow(Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, Double unitCost, Location location) {
-//		super();
-//		this.quantity = quantity;
-//		this.status = status;
-//		this.originNumber = originNumber;
-//		this.partNumber = partNumber;
-//		this.inboundDeliveryRequest = inboundDeliveryRequest;
-//		this.location = location;
-//		this.deliveryRequest = deliveryRequest;
-//		this.setUnitCost(unitCost);
-//	}
 
 	@Transient
 	public String getKey() {

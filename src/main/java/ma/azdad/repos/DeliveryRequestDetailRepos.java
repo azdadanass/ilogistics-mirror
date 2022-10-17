@@ -20,16 +20,13 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	String usedQuantity3 = " COALESCE((select sum(b.installedQuantity) from JobRequestDeliveryDetail b where b.deliveryRequestDetail.id = a.id and b.jobRequest.status not in (?4)),0) ";
 	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequest.toUser.username)";
 
-	String c1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.unitCost) ";
-	String c2 = "select new DeliveryRequestDetail(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost) ";
+	String c1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.unitCost,a.costCurrency.id) ";
+	String c2 = "select new DeliveryRequestDetail(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.costCurrency.id) ";
 	String c3 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.quantity, "
 			+ usedQuantity3 + "," + toUserFullName + ")";
-	String c4 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.unitCost,a.purchaseCost,a.deliveryRequest.date4,a.deliveryRequest.project.name,(select b.numeroIbuy from Po b where b.id = a.deliveryRequest.po.id),(select b.date from Po b where b.id = a.deliveryRequest.po.id),(select b.currency.name from Po b where b.id = a.deliveryRequest.po.id),(select b.supplier.name from Po b where b.id = a.deliveryRequest.po.id)) ";
+	String c4 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.unitCost,a.costCurrency.id,a.purchaseCost,a.purchaseCurrency.id,a.deliveryRequest.date4,a.deliveryRequest.project.name,(select b.numeroIbuy from Po b where b.id = a.deliveryRequest.po.id),(select b.date from Po b where b.id = a.deliveryRequest.po.id),(select b.currency.name from Po b where b.id = a.deliveryRequest.po.id),(select b.supplier.name from Po b where b.id = a.deliveryRequest.po.id)) ";
 
 	String c8 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.project.name,a.deliveryRequest.project.subType,a.deliveryRequest.warehouse.name)";
-
-//	String select1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.unitCost) ";
-//	String select4 = "select new DeliveryRequestDetail(sum(a.quantity),a.partNumber,a.unitCost) ";
 
 	@Query(c1
 			+ " from DeliveryRequestDetail a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and  a.deliveryRequest.type = ?3 and a.deliveryRequest.status in (?4) group by a.status, a.originNumber, a.partNumber.id, a.inboundDeliveryRequest.id")
@@ -90,16 +87,14 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Modifying
 	@Query("update DeliveryRequestDetail set purchaseCost = ?2 where id = ?1 ")
 	public void updatePurchaseCost(Integer id, Double purchaseCost);
-	
+
 	@Modifying
 	@Query("update DeliveryRequestDetail a set a.purchaseCurrency = ?2 where a.deliveryRequest.id = ?1 ")
 	public void updatePurchaseCurrencyByDeliveryRequest(Integer deliveryRequestId, Currency purchaseCurrency);
-	
+
 	@Modifying
 	@Query("update DeliveryRequestDetail a set a.priceCurrency = ?2 where a.deliveryRequest.id = ?1 ")
 	public void updatePriceCurrencyByDeliveryRequest(Integer deliveryRequestId, Currency purchaseCurrency);
-	
-	
 
 	@Modifying
 	@Query("update DeliveryRequestDetail set purchaseCost = 0 where deliveryRequest.id = ?1 ")
@@ -127,10 +122,6 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select a.inboundDeliveryRequest.company.id from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.inboundDeliveryRequest.company is not null group by a.inboundDeliveryRequest.company")
 	public List<Integer> findOwnerCompanyList(Integer outboundDeliveryRequestId);
-
-	// String select5 = "select new
-	// DeliveryRequestDetail(id,a.partNumber.name,a.partNumber.description,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.referenceNumber,unitCost,a.deliveryRequest.date4,a.deliveryRequest.project.name)
-	// ";
 
 	@Query(c4
 			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.inboundType = ?3 and a.deliveryRequest.company.id = ?4 and a.deliveryRequest.status in (?5) order by a.deliveryRequest.date4 desc")

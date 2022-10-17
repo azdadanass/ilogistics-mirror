@@ -102,9 +102,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				quantity -= newStockRowQuantity;
 				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
 						.findByDeliveryRequestAndPartNumber(stockRow.getInboundDeliveryRequest().getId(), stockRow.getPartNumber().getId()).get(0);
-				result.add(new StockRow(detail,-newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(),
-						stockRow.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, stockRow.getUnitCost(), detail.getUnitPrice(), stockRow.getLocation(), currentDate,
-						stockRow.getPacking()));
+				result.add(new StockRow(detail, -newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(),
+						stockRow.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, stockRow.getLocation(), currentDate, stockRow.getPacking()));
 				if (UtilsFunctions.compareDoubles(quantity, 0.0, 4) == 0)
 					break;
 			}
@@ -166,7 +165,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			assignedProjectList = Arrays.asList(-1);
 		return repos.findCustomerOwnerList(username, warehouseList, assignedProjectList);
 	}
-	
+
 	private Map<Integer, Double> findProjectStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		List<Object[]> data = repos.findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
@@ -178,23 +177,23 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		if (assignedProjectList == null || assignedProjectList.isEmpty())
 			assignedProjectList = Arrays.asList(-1);
 		List<StockRow> result = repos.findByCompanyOwnerAndGroupByPartNumber2(username, warehouseList, assignedProjectList, companyId);
-		
+
 		// set project stock
-		Map<Integer, Double> map1 = findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList,companyId);
+		Map<Integer, Double> map1 = findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		for (StockRow stockRow : result)
 			stockRow.setProjectSubTypeStockQuantity(map1.getOrDefault(stockRow.getPartNumberId(), 0.0));
 
 		// set pending quantity = pending outbounds qty
-		Map<Integer, Double> map2 = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+		Map<Integer, Double> map2 = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList,
+				assignedProjectList, companyId);
 		for (StockRow stockRow : result)
 			stockRow.setPendingQuantity(map2.getOrDefault(stockRow.getPartNumberId(), 0.0));
-		
+
 		// set forecast quantity
 		Map<Integer, Double> map3 = deliveryRequestDetailService.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		for (StockRow stockRow : result)
 			stockRow.setForecastQuantity(map3.getOrDefault(stockRow.getPartNumberId(), 0.0));
-		
-		
+
 		return result;
 	}
 
@@ -596,7 +595,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		}
 		return result;
 	}
-	
+
 	public List<ChartContainer> generateTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		List<ChartContainer> result = new ArrayList<>();
 		Calendar c = Calendar.getInstance();
@@ -617,8 +616,9 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		}
 		return result;
 	}
-	
-	public List<ChartContainer> generateProjectTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId) {
+
+	public List<ChartContainer> generateProjectTotalCostChart(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer projectId) {
 		List<ChartContainer> result = new ArrayList<>();
 		Calendar c = Calendar.getInstance();
 		Integer currentMonth = c.get(Calendar.MONTH);
@@ -719,8 +719,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findByPo(Integer poId) {
 		return repos.findByPo(poId);
 	}
-	
-	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId){
+
+	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId) {
 		return repos.findByPoAndDeliveredWithoutBoqMapping(poId);
 	}
 }

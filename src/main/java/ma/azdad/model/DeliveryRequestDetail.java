@@ -69,7 +69,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			DeliveryRequest inboundDeliveryRequest, Double unitCost) {
+			DeliveryRequest inboundDeliveryRequest, Double unitCost,Integer costCurrencyId) {
 		super();
 		this.remainingQuantity = remainingQuantity;
 		this.status = status;
@@ -85,13 +85,14 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.unitCost = unitCost;
+		this.setCostCurrencyId(costCurrencyId);
 	}
 
 	// c2
 	public DeliveryRequestDetail(Double remainingQuantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Double unitCost) {
+			Double unitCost,Integer costCurrencyId) {
 		super();
 		this.remainingQuantity = remainingQuantity;
 		this.setPartNumberId(partNumberId);
@@ -104,6 +105,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setInternalPartNumberName(internalPartNumberName);
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.unitCost = unitCost;
+		this.setCostCurrencyId(costCurrencyId);
 	}
 
 	// c3
@@ -134,7 +136,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public DeliveryRequestDetail(Integer id, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double unitCost, Double purchaseCost,
+			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double unitCost,Integer costCurrencyId, Double purchaseCost,Integer purchaseCurrencyId,
 			Date tmpDeliveryRequestDeliveryDate, String tmpProjectName, String tmpPoNumero, Date tmpPoDate, String tmpPoCurrencyName, String tmpSupplierName) {
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
@@ -149,7 +151,9 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpDeliveryRequestType = tmpDeliveryRequestType;
 		this.tmpDeliveryRequestReference = tmpDeliveryRequestReference;
 		this.unitCost = unitCost;
+		this.setCostCurrencyId(costCurrencyId);
 		this.purchaseCost = purchaseCost;
+		this.setPurchaseCurrencyId(purchaseCurrencyId);
 		this.tmpDeliveryRequestDeliveryDate = tmpDeliveryRequestDeliveryDate;
 		this.tmpProjectName = tmpProjectName;
 		this.tmpPoNumero = tmpPoNumero;
@@ -162,7 +166,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public DeliveryRequestDetail(Double remainingQuantity, StockRowStatus status, String originNumber, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			DeliveryRequest inboundDeliveryRequest, Double unitCost, Packing packing) {
+			DeliveryRequest inboundDeliveryRequest, Double unitCost,Integer costCurrencyId, Packing packing) {
 		super();
 		this.remainingQuantity = remainingQuantity;
 		this.status = status;
@@ -178,6 +182,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.unitCost = unitCost;
+		this.setCostCurrencyId(costCurrencyId);
 		this.packing = packing;
 	}
 
@@ -185,7 +190,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public DeliveryRequestDetail(Double remainingQuantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Double unitCost, Double unitPrice, CompanyType ownerType, Integer ownerCompanyId, Integer ownerCustomerId, Integer ownerSupplierId) {
+			Double unitCost,Integer costCurrencyId, Double unitPrice,Integer priceCurrencyId, CompanyType ownerType, Integer ownerCompanyId, Integer ownerCustomerId, Integer ownerSupplierId) {
 		super();
 		this.remainingQuantity = remainingQuantity;
 		this.setPartNumberId(partNumberId);
@@ -198,12 +203,13 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setInternalPartNumberName(internalPartNumberName);
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.unitCost = unitCost;
+		this.setCostCurrencyId(costCurrencyId);
 		this.unitPrice = unitPrice;
+		this.setPriceCurrencyId(priceCurrencyId);
 		this.tmpOwnerType = ownerType;
 		this.tmpCompanyId = ownerCompanyId;
 		this.tmpCustomerId = ownerCustomerId;
 		this.tmpSupplierId = ownerSupplierId;
-
 	}
 
 	// c8

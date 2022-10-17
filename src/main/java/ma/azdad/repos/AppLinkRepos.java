@@ -13,7 +13,7 @@ import ma.azdad.model.AppLink;
 public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 
 	String madConversionRate = "(select b.paymentterm.po.madConversionRate from Acceptance b where a.acceptance.idacceptance = b.idacceptance),(select b.budgetdetail.budget.madConversionRate from Expensepayment b where a.expensepayment.idexpensepayment = b.idexpensepayment )";
-	String currency = "(select b.paymentterm.po.currency.name from Acceptance b where a.acceptance.idacceptance = b.idacceptance),(select b.budgetdetail.budget.currency.currency from Expensepayment b where a.expensepayment.idexpensepayment = b.idexpensepayment )";
+	String currency = "(select b.paymentterm.po.currency.name from Acceptance b where a.acceptance.idacceptance = b.idacceptance),(select b.budgetdetail.budget.currency.name from Expensepayment b where a.expensepayment.idexpensepayment = b.idexpensepayment )";
 	String acceptanceId = "(select b.idacceptance from Acceptance b where b.idacceptance = a.acceptance.id)";
 	String expensepaymentId = "(select b.idexpensepayment from Expensepayment b where b.idexpensepayment = a.expensepayment.id)";
 	String supplierName = " (select b.paymentterm.po.supplier.name from Acceptance b where a.acceptance.idacceptance = b.idacceptance) ";

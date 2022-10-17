@@ -35,8 +35,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String endCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.endCustomer.id)";
 
 	String c1 = "select new StockRow(a.id,a.quantity,a.status,a.partNumber,a.inboundDeliveryRequest,a.location) ";
-	String c2 = "select new StockRow(sum(a.quantity),a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.unitCost,a.location,a.packing) ";
-	String c3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.unitCost,a.location)";
+	String c2 = "select new StockRow(sum(a.quantity),a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.location,a.packing) ";
+	String c3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.location)";
 	String c4 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end))";
 	String c5 = "select  new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest) ";
 	String c6 = " select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.image,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription) ";
@@ -44,34 +44,32 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String c8 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest) ";
 	String c9 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription) ";
 	String c10 = " select new StockRow(sum(a.quantity),a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription) ";
-	String c12 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.unitCost,sum(a.unitCost*a.quantity))";
+	String c12 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.deliveryRequestDetail.unitCost,sum(a.deliveryRequestDetail.unitCost*a.quantity))";
 	String c13 = " select new StockRow(a.quantity,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest) ";
-	String c15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,sum(a.unitCost*a.quantity),a.deliveryRequest.deliverToCompanyType,(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
+	String c15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.deliverToCompanyType,(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
 	String c16 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest) ";
 
-	String drd_c5 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.unitCost,a.packing) ";
-	String drd_c6 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
-	String drd_c7 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
+	String drd_c5 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.packing) ";
+	String drd_c6 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
+	String drd_c7 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
 
-	String c22 = "select new StockRow(sum(a.quantity),a.status,a.unitCost,a.unitPrice,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,a.partNumber.id,a.partNumber.name,a.partNumber.description,"
+	String c22 = "select new StockRow(sum(a.quantity),a.status,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,a.partNumber.id,a.partNumber.name,a.partNumber.description,"
 			+ brandName + ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,"
 			+ destinationProjectCustomerName + "," + destinationName + "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ,"
 			+ deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + endCustomerName + ") ";
-	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.unitCost,sum(a.unitCost*a.quantity),a.deliveryRequest.project.name)";
+	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.deliveryRequestDetail.unitCost,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.project.name)";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//	String select1 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber,a.inboundDeliveryRequest,a.unitCost,a.packing) ";
-
 	@Query(drd_c5
 			+ " from StockRow a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 group by a.status,a.originNumber,a.partNumber.id,a.inboundDeliveryRequest.id having sum(a.quantity) != 0")
 	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	String select2 = "select new StockRow(sum(a.quantity),a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.unitCost,a.location,a.packing) ";
+//	String select2 = "select new StockRow(sum(a.quantity),a.status, a.originNumber, a.partNumber, a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.location,a.packing) ";
 
 	@Query(c2
 			+ " from StockRow a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and a.partNumber.id = ?3 and a.status = ?4 and a.originNumber = ?5 and a.inboundDeliveryRequest.id = ?6 group by a.location.id having sum(a.quantity) != 0 order by sum(a.quantity) ")
@@ -79,7 +77,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			Integer inboundDeliveryRequestId);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//	String select3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber,a.inboundDeliveryRequest,a.unitCost,a.location)";
+//	String select3 = "select new StockRow(sum(a.quantity),a.deliveryRequest,a.status,a.originNumber,a.partNumber,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.location)";
 
 	@Query(c3 + "from StockRow a where a.deliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id")
 	public List<StockRow> findByDeliveryRequest(Integer deliveryRequestId);
@@ -92,34 +90,30 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//	String select4 = "select new StockRow(sum(a.quantity),a.partNumber,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end))";
-
 	@Query(c4 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.partNumber.id")
 	public List<StockRow> findByInboundDeliveryRequest(Integer deliveryRequestId);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//	String select5 = "select  new StockRow(sum(a.quantity),a.partNumber,a.deliveryRequest) ";
 
 	@Query(c5 + "from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.quantity < 0 group by a.partNumber.id,a.deliveryRequest.id")
 	public List<StockRow> findAttachedOutboundDeliveryRequestList(Integer deliveryRequestId);
 
 	// UPDATE UNIT COST
-	@Modifying
-	@Query("update StockRow set unitCost = ?2 where id = ?1 ")
-	public void updateUnitCost(Integer id, Double unitCost);
+//	@Modifying
+//	@Query("update StockRow set unitCost = ?2 where id = ?1 ")
+//	public void updateUnitCost(Integer id, Double unitCost);
 
-	@Modifying
-	@Query("update StockRow set unitCost = ?2 where id in (?1) ")
-	public void updateUnitCost(List<Integer> idList, Double unitCost);
+//	@Modifying
+//	@Query("update StockRow set unitCost = ?2 where id in (?1) ")
+//	public void updateUnitCost(List<Integer> idList, Double unitCost);
 
 	// UPDATE UNIT COST
-	@Modifying
-	@Query("update StockRow set unitPrice = ?2 where id = ?1 ")
-	public void updateUnitPrice(Integer id, Double unitPrice);
+//	@Modifying
+//	@Query("update StockRow set unitPrice = ?2 where id = ?1 ")
+//	public void updateUnitPrice(Integer id, Double unitPrice);
 
-	@Modifying
-	@Query("update StockRow set unitPrice = ?2 where id in (?1) ")
-	public void updateUnitPrice(List<Integer> idList, Double unitPrice);
+//	@Modifying
+//	@Query("update StockRow set unitPrice = ?2 where id in (?1) ")
+//	public void updateUnitPrice(List<Integer> idList, Double unitPrice);
 
 	@Query("select a.id from StockRow a where a.partNumber.id =?1  and a.inboundDeliveryRequest.id = ?2 ")
 	public List<Integer> findIdListByPartNumberAndInboundDeliveryRequest(Integer partNumberId, Integer inboundDeliveryRequestId);
@@ -151,7 +145,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 //	String select8 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest) ";
 //	String select9 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber) ";
 //	String select10 = " select new StockRow(sum(a.quantity),a.inboundDeliveryRequest,a.partNumber) ";
-//	String select15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber,sum(a.unitCost*a.quantity),(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
+//	String select15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber,sum(a.deliveryRequestDetail.unitCost*a.quantity),(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
 //	String select17 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest) ";
 	String projectCondition = "a.deliveryRequest.project.id = ?5";
 	String destinationCondition = "a.deliveryRequest.destination.id = ?5";
@@ -229,66 +223,6 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<StockRow> findStockHistoryByProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
 			Integer projectId);
 
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + destinationCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByDestinationAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-//			Integer destinationId, Integer projectId);
-//
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + externalRequesterCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByExternalRequesterAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-//			Integer externalRequesterId, Integer projectId);
-//
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + poCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByPoAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer poId,
-//			Integer projectId);
-
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + destinationProjectCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByDestinationProjectAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-//			Integer destinationProjectId, Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + destinationCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByDestinationAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-//			Integer destinationId, Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + externalRequesterCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByExternalRequesterAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-//			Integer externalRequesterId, Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + poCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByPoAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer poId,
-//			Integer projectId);
-//
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + yearCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByYearAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer year,
-//			Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + yearCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByYearAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer year,
-//			Integer projectId);
-//
-//	@Query(c15 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + yearAndMonthCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByYearAndMonthAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-//			String yearAndMonth, Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + yearAndMonthCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByYearAndMonthAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-//			String yearAndMonth, Integer projectId);
-//
-//	@Query(c15 + from3 + " where " + usernameCondition + " and " + customerCondition + " and " + destinationProjectCondition
-//			+ " and a.quantity < 0 and a.deliveryRequest.project.id = ?6  group by a.deliveryRequest.id,a.status,a.partNumber.id")
-//	public List<StockRow> findStockHistoryByDestinationProjectAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-//			Integer destinationProjectId, Integer projectId);
-
 	@Query(c9 + from1 + " where " + usernameCondition
 			+ " and  a.inboundDeliveryRequest.company.id = ?4 and a.inboundDeliveryRequest.project.type = ?5 and a.deliveryRequest.destinationProject.customer.id = ?6"
 			+ " and a.quantity < 0  group by a.deliveryRequest.id,a.status,a.partNumber.id order by a.deliveryRequest.date4")
@@ -344,12 +278,6 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " and a.deliveryRequest.externalRequester is not null and a.deliveryRequest.project.id = ?5 group by a.deliveryRequest.externalRequester.id ")
 	public List<Integer> findExternalRequesterIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> delegatedExternalRequesterList, Integer customerId,
 			Integer projectId);
-
-//	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.id ")
-//	public List<Integer> findPoIdListByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
-//
-//	@Query("select a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.id " + from3 + "  where  " + usernameCondition + " and " + customerCondition + " and a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po is not null and a.deliveryRequest.project.id = ?5 group by a.inboundDeliveryRequest.outboundDeliveryRequestTransfer.po.id ")
-//	public List<Integer> findPoIdListByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer projectId);
 
 	@Query("select distinct a.deliveryRequest.po.id " + from2 + "  where  " + usernameCondition + " and " + companyCondition
 			+ " and a.deliveryRequest.po is not null and a.deliveryRequest.project.id = ?5 and a.deliveryRequest.type = ?6")
@@ -423,15 +351,12 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<StockRow> findStockHistoryByDeliverToEntityAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyOwnerId,
 			String deliverToName, Integer projectId, String projectTypeStock);
 
-//	@Query(select15 + " from StockRow a where a.deliveryRequest.outboundDeliveryRequestReturn.id in (?1) group by a.deliveryRequest.id,a.status,a.partNumber.id ")
-//	public List<StockRow> findStockHistoryByOutboundDeliveryRequestReturn(List<Integer> outboundSrouceList);
-
 	@Query(c22 + from2
-			+ "where (company1.id = ?1 or company2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice ")
+			+ "where (company1.id = ?1 or company2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice ")
 	public List<StockRow> findStockHistoryByCompanyOwnerAndOutboundDeliveryRequestReturn(Integer companyId, List<Integer> outboundSrouceList, List<Integer> partNumberList);
 
 	@Query(c22 + from3
-			+ "where (customer1.id = ?1 or customer2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice ")
+			+ "where (customer1.id = ?1 or customer2.id = ?1 ) and  a.deliveryRequest.outboundDeliveryRequestReturn.id in (?2) and a.partNumber.id in (?3) group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice ")
 	public List<StockRow> findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(Integer customerId, List<Integer> outboundSrouceList, List<Integer> partNumberList);
 
 	//
@@ -489,48 +414,46 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<StockRow> findMinStockThreshold(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 	//// Cost Center Financial//////////////
-//	String select12 = "select new StockRow(sum(a.quantity),a.partNumber,a.status,a.inboundDeliveryRequest.date4,sum(a.unitCost*a.quantity))";
 
 	@Query(c12 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and " + projectCondition
 			+ " group by a.partNumber,a.status,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getCostCenterFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId);
 
 	@Query(c23 + from2 + "  where  " + usernameCondition + " and " + companyCondition
-			+ " group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+			+ " group by a.partNumber,a.status,a.deliveryRequest.project.id,a.deliveryRequestDetail.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 	@Query(c23 + from2
-			+ "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+			+ "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.deliveryRequestDetail.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(Integer companyId);
 
 	// fast moving items
-//	String select13 = " select new StockRow(a.quantity,a.partNumber,a.deliveryRequest) ";
 
 	@Query(c13 + from2 + "  where  " + usernameCondition + " and " + companyCondition + " and a.partNumber.stockItem = true group by a.partNumber.id,a.deliveryRequest.id")
 	public List<StockRow> findByCompanyOwnerGroupbyPartNumberAndDeliveryRequest(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 	// CHART
-	@Query("select sum(a.quantity * a.unitCost) " + from1 + " where a.unitCost is not null and a.inboundDeliveryRequest.company.id = ?1 and date(a.creationDate) <= date(?2)")
+	@Query("select sum(a.quantity * a.deliveryRequestDetail.unitCost) " + from1
+			+ " where a.deliveryRequestDetail.unitCost is not null and a.inboundDeliveryRequest.company.id = ?1 and date(a.creationDate) <= date(?2)")
 	public Double getTotalCostBeforeDate(Integer companyId, Date maxDate);
 
-	@Query("select sum(a.quantity * a.unitCost) " + from1 + " where a.unitCost is not null and " + usernameCondition
+	@Query("select sum(a.quantity * a.deliveryRequestDetail.unitCost) " + from1 + " where a.deliveryRequestDetail.unitCost is not null and " + usernameCondition
 			+ " and a.inboundDeliveryRequest.company.id = ?4 and date(a.creationDate) <= date(?5)")
 	public Double getTotalCostBeforeDate(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Date maxDate);
 
-	@Query("select sum(a.quantity * a.unitCost) " + from1 + " where a.unitCost is not null and " + usernameCondition + " and a.inboundDeliveryRequest.company.id = ?4 and "
-			+ projectCondition + "  and date(a.creationDate) <= date(?6)")
+	@Query("select sum(a.quantity * a.deliveryRequestDetail.unitCost) " + from1 + " where a.deliveryRequestDetail.unitCost is not null and " + usernameCondition
+			+ " and a.inboundDeliveryRequest.company.id = ?4 and " + projectCondition + "  and date(a.creationDate) <= date(?6)")
 	public Double getProjectTotalCostBeforeDate(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer projectId,
 			Date maxDate);
 
 	// RETURN FROM OUTBOUND
-//	String select14 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber,a.unitCost,a.unitPrice) ";
 
 	@Query(drd_c6
 			+ " from StockRow a where a.deliveryRequest.id = ?1 group by a.partNumber.id having (sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0)) > 0")
 	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);
 
 	// TRANSFER FROM OUTBOUND
-//	String select16 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber,a.unitCost,a.unitPrice) ";
+//	String select16 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice) ";
 
 	@Query(drd_c7
 			+ " from StockRow a where a.deliveryRequest.id = ?1 group by a.partNumber.id having (sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1 and b.partNumber.id = a.partNumber.id),0)) > 0")
@@ -571,24 +494,26 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	List<CompanyType> findOwnerTypeListByDeliveryRequest(Integer deliveryRequestId);
 
 	@Query(c22 + from2 + "where" + usernameCondition + " and " + companyCondition
-			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 	@Query(c22 + from3 + "where" + usernameCondition + " and " + customerCondition
-			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
-	@Query(c22 + "from StockRow a where a.deliveryRequest.po.id = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+	@Query(c22
+			+ "from StockRow a where a.deliveryRequest.po.id = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findByPo(Integer poId);
 
 	@Query(c22
-			+ "from StockRow a where a.deliveryRequest.po.id = ?1 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED') and (select count(*) from BoqMapping b where b.deliveryRequest.id = a.deliveryRequest.id) = 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.unitCost,a.unitPrice")
+			+ "from StockRow a where a.deliveryRequest.po.id = ?1 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED') and (select count(*) from BoqMapping b where b.deliveryRequest.id = a.deliveryRequest.id) = 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId);
 
 	@Modifying
-	@Query("update StockRow a set a.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
+	@Query("update StockRow a set a.deliveryRequestDetail.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
 	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
 
-	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + "where" + usernameCondition + " and " + companyCondition + " and a.deliveryRequest.project.subType = 'Stock' group by a.partNumber.id")
+	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + "where" + usernameCondition + " and " + companyCondition
+			+ " and a.deliveryRequest.project.subType = 'Stock' group by a.partNumber.id")
 	List<Object[]> findProjectStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 }

@@ -21,8 +21,8 @@ import ma.azdad.service.UtilsFunctions;
 public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	private Double quantity;
-	private Double unitCost;
-	private Double unitPrice;
+//	private Double unitCost;
+//	private Double unitPrice;
 	private Date creationDate;
 
 	private StockRowStatus status = StockRowStatus.NORMAL;
@@ -93,7 +93,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.location = location;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.packing = packing;
 	}
 
@@ -118,7 +118,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 	}
 
 	// c4
@@ -251,7 +251,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.qTotalCost = qTotalCost;
 	}
 
@@ -302,23 +302,25 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c18
-	public StockRow(DeliveryRequestDetail deliveryRequestDetail,Double quantity, Date creationDate, String originNumber, PartNumber partNumber, DeliveryRequest deliveryRequest, Double unitCost, Packing packing) {
+	public StockRow(DeliveryRequestDetail deliveryRequestDetail, Double quantity, Date creationDate, String originNumber, PartNumber partNumber, DeliveryRequest deliveryRequest,
+			Double unitCost, Packing packing) {
 		super();
-		this.deliveryRequestDetail=deliveryRequestDetail;
+		this.deliveryRequestDetail = deliveryRequestDetail;
 		this.quantity = quantity;
 		this.creationDate = creationDate;
 		this.originNumber = originNumber;
 		this.partNumber = partNumber;
 		this.deliveryRequest = deliveryRequest;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.packing = packing;
 	}
 
 	// c19
-	public StockRow(DeliveryRequestDetail deliveryRequestDetail,Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, PartNumber partNumber, DeliveryRequest inboundDeliveryRequest,
-			DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Double unitPrice, Location location, Date creationDate, Packing packing) {
+	public StockRow(DeliveryRequestDetail deliveryRequestDetail, Double quantity, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber,
+			PartNumber partNumber, DeliveryRequest inboundDeliveryRequest, DeliveryRequestDetail inboundDeliveryRequestDetail, Double unitCost, Double unitPrice, Location location,
+			Date creationDate, Packing packing) {
 		super();
-		this.deliveryRequestDetail=deliveryRequestDetail;
+		this.deliveryRequestDetail = deliveryRequestDetail;
 		this.quantity = quantity;
 		this.status = status;
 		this.originNumber = originNumber;
@@ -327,8 +329,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.location = location;
 		this.deliveryRequest = deliveryRequest;
-		this.unitCost = unitCost;
-		this.unitPrice = unitPrice;
+		this.setUnitCost(unitCost);
+		this.setUnitPrice(unitPrice);
 		this.creationDate = creationDate;
 		this.packing = packing;
 	}
@@ -346,7 +348,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.packing = packing;
 	}
 
@@ -363,7 +365,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.creationDate = creationDate;
 		this.packing = packing;
 	}
@@ -378,8 +380,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			String poNumero, String endCustomerName) {
 		this.quantity = quantity;
 		this.status = status;
-		this.unitCost = unitCost;
-		this.unitPrice = unitPrice;
+		this.setUnitCost(unitCost);
+		this.setUnitPrice(unitPrice);
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setProjectName(projectName);
 		this.setWarehouseName(warehouseName);
@@ -423,7 +425,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
 		this.status = status;
 		this.inboundDeliveryRequestDeliveryDate = inboundDeliveryRequestDeliveryDate;
-		this.unitCost = unitCost;
+		this.setUnitCost(unitCost);
 		this.qTotalCost = qTotalCost;
 		this.setProjectName(projectName);
 	}
@@ -515,7 +517,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 //		this.partNumber = partNumber;
 //		this.inboundDeliveryRequest = inboundDeliveryRequest;
 //		this.location = location;
-//		this.unitCost = unitCost;
+//		this.setUnitCost(unitCost);
 //		this.packing = packing;
 //	}
 
@@ -528,7 +530,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 //		this.inboundDeliveryRequest = inboundDeliveryRequest;
 //		this.location = location;
 //		this.deliveryRequest = deliveryRequest;
-//		this.unitCost = unitCost;
+//		this.setUnitCost(unitCost);
 //	}
 
 	@Transient
@@ -545,6 +547,42 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public static String getKey(Integer statusOrdinal, String originNumber, Integer partNumberId, Integer inboundDeliveryRequestId) {
 		Integer originNumberHashCode = originNumber != null ? originNumber.hashCode() : 0;
 		return statusOrdinal + ";" + originNumberHashCode + ";" + partNumberId + ";" + inboundDeliveryRequestId;
+	}
+
+	@Transient
+	public Integer getPurchaseCurrencyId() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getPurchaseCurrencyId() : null;
+	}
+
+	@Transient
+	public void setPurchaseCurrencyId(Integer purchaseCurrencyId) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setPurchaseCurrencyId(purchaseCurrencyId);
+	}
+
+	@Transient
+	public Integer getCostCurrencyId() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getCostCurrencyId() : null;
+	}
+
+	@Transient
+	public void setCostCurrencyId(Integer costCurrencyId) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setCostCurrencyId(costCurrencyId);
+	}
+
+	@Transient
+	public Integer getPriceCurrencyId() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getPriceCurrencyId() : null;
+	}
+
+	@Transient
+	public void setPriceCurrencyId(Integer priceCurrencyId) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setPriceCurrencyId(priceCurrencyId);
 	}
 
 	@Transient
@@ -623,7 +661,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public Double getTotalCost() {
 		try {
-			return quantity * unitCost;
+			return quantity * getUnitCost();
 		} catch (Exception e) {
 			return 0.0;
 		}
@@ -632,7 +670,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public Double getTotalPrice() {
 		try {
-			return quantity * unitPrice;
+			return quantity * getUnitPrice();
 		} catch (Exception e) {
 			return 0.0;
 		}
@@ -743,20 +781,28 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		return outboundQuantity;
 	}
 
+	@Transient
 	public Double getUnitCost() {
-		return unitCost;
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getUnitCost() : null;
 	}
 
-	public void setUnitCost(Double unitCost) {
-		this.unitCost = unitCost;
+	@Transient
+	public void setUnitCost(Double deliveryRequestDetailUnitCost) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setUnitCost(deliveryRequestDetailUnitCost);
 	}
 
+	@Transient
 	public Double getUnitPrice() {
-		return unitPrice;
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getUnitPrice() : null;
 	}
 
-	public void setUnitPrice(Double unitPrice) {
-		this.unitPrice = unitPrice;
+	@Transient
+	public void setUnitPrice(Double deliveryRequestDetailUnitPrice) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setUnitPrice(deliveryRequestDetailUnitPrice);
 	}
 
 	@Transient

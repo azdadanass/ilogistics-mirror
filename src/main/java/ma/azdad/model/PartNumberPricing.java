@@ -252,26 +252,26 @@ public class PartNumberPricing extends GenericModel<Integer> {
 
 	@Transient
 	public String getCurrencyName() {
-		return currency == null ? null : currency.getCurrency();
+		return currency == null ? null : currency.getName();
 	}
 
 	@Transient
 	public void setCurrencyName(String currencyName) {
 		if (currency == null)
 			currency = new Currency();
-		currency.setCurrency(currencyName);
+		currency.setName(currencyName);
 	}
 
 	@Transient
 	public Integer getCurrencyId() {
-		return currency == null ? null : currency.getIdcurrency();
+		return currency == null ? null : currency.id();
 	}
 
 	@Transient
 	public void setCurrencyId(Integer currencyId) {
-		if (currency == null || !currencyId.equals(currency.getIdcurrency()))
+		if (currency == null || !currencyId.equals(currency.getId()))
 			currency = new Currency();
-		currency.setIdcurrency(currencyId);
+		currency.setId(currencyId);
 	}
 
 	// getters & setters

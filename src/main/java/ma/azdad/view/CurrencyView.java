@@ -2,27 +2,36 @@ package ma.azdad.view;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Currency;
+import ma.azdad.repos.CurrencyRepos;
 import ma.azdad.service.CurrencyService;
 
 @ManagedBean
 @Component
-@Transactional
 @Scope("view")
-public class CurrencyView {
+public class CurrencyView extends GenericView<Integer, Currency, CurrencyRepos, CurrencyService> {
 
-	@Autowired
-	protected CurrencyService service;
+	@Override
+	@PostConstruct
+	public void init() {
+		super.init();
+		time();
+	}
 
+	// generic
+	
 	public List<Currency> findAll() {
 		return service.findAll();
+	}
+
+	public String findName(Integer id) {
+		return service.findName(id);
 	}
 
 }

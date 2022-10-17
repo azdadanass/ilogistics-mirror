@@ -448,10 +448,10 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		List<Integer> idList;
 		if (deliveryRequestDetail.getDeliveryRequest().getIsInbound()) {
 			// update related StockRow
-			idList = stockRowRepos.findIdListByPartNumberAndInboundDeliveryRequest(deliveryRequestDetail.getPartNumber().getId(),
-					deliveryRequestDetail.getDeliveryRequest().getId());
-			if (idList != null && !idList.isEmpty())
-				stockRowRepos.updateUnitCost(idList, unitCost);
+//			idList = stockRowRepos.findIdListByPartNumberAndInboundDeliveryRequest(deliveryRequestDetail.getPartNumber().getId(),
+//					deliveryRequestDetail.getDeliveryRequest().getId());
+//			if (idList != null && !idList.isEmpty())
+//				stockRowRepos.updateUnitCost(idList, unitCost);
 
 			// update related outbound details
 			idList = repos.findIdList(DeliveryRequestType.OUTBOUND, deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
@@ -466,12 +466,13 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				}
 			}
 
-		} else if (deliveryRequestDetail.getDeliveryRequest().getIsXbound()) {
-			// update related StockRow
-			idList = stockRowRepos.findIdList(DeliveryRequestType.XBOUND, deliveryRequestDetail.getDeliveryRequest().getId(), deliveryRequestDetail.getPartNumber().getId());
-			if (idList != null && !idList.isEmpty())
-				stockRowRepos.updateUnitCost(idList, unitCost);
-		}
+		} 
+//		else if (deliveryRequestDetail.getDeliveryRequest().getIsXbound()) {
+//			// update related StockRow
+//			idList = stockRowRepos.findIdList(DeliveryRequestType.XBOUND, deliveryRequestDetail.getDeliveryRequest().getId(), deliveryRequestDetail.getPartNumber().getId());
+//			if (idList != null && !idList.isEmpty())
+//				stockRowRepos.updateUnitCost(idList, unitCost);
+//		}
 
 	}
 
@@ -483,13 +484,13 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 
 		repos.updateUnitPrice(deliveryRequestDetail.getId(), unitPrice);
 
-		List<Integer> idList;
-		if (deliveryRequestDetail.getDeliveryRequest().getIsOutbound()) {
-			// update related StockRow
-			idList = stockRowRepos.findIdListByPartNumberAndDeliveryRequest(deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
-			if (idList != null && !idList.isEmpty())
-				stockRowRepos.updateUnitPrice(idList, unitPrice);
-		}
+//		List<Integer> idList;
+//		if (deliveryRequestDetail.getDeliveryRequest().getIsOutbound()) {
+//			// update related StockRow
+//			idList = stockRowRepos.findIdListByPartNumberAndDeliveryRequest(deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
+//			if (idList != null && !idList.isEmpty())
+//				stockRowRepos.updateUnitPrice(idList, unitPrice);
+//		}
 
 	}
 

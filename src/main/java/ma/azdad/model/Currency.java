@@ -1,41 +1,45 @@
 package ma.azdad.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name = "currency")
 
-public class Currency implements Serializable {
-	private Integer idcurrency;
+public class Currency extends GenericModel<Integer> {
+
 	private String name;
-	private String currency;
-	private Double max_value;
-	private Double min_value;
-	private Integer month;
-	private Integer year;
+	private Double maxValue;
+	private Double minValue;
 
-	public Currency() {
+	@Override
+	public boolean filter(String query) {
+		return contains(query, name);
 	}
+
+	@Transient
+	@Override
+	public String getIdentifierName() {
+		return this.name;
+	}
+
+	// getters & setters
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "idcurrency", unique = true, nullable = false)
-	public Integer getIdcurrency() {
-		return idcurrency;
+	@Column(name = "idcurrency")
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdcurrency(Integer idcurrency) {
-		this.idcurrency = idcurrency;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	@Column(name = "currency", insertable = false, updatable = false)
+	@Column(name = "currency")
 	public String getName() {
 		return name;
 	}
@@ -44,49 +48,20 @@ public class Currency implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "currency", nullable = false, unique = true, length = 45)
-	public String getCurrency() {
-		return currency;
+	public Double getMaxValue() {
+		return maxValue;
 	}
 
-	public void setCurrency(String currency) {
-		this.currency = currency;
+	public void setMaxValue(Double maxValue) {
+		this.maxValue = maxValue;
 	}
 
-	@Column(name = "max_value")
-	public Double getMax_value() {
-		return max_value;
+	public Double getMinValue() {
+		return minValue;
 	}
 
-	public void setMax_value(Double max_value) {
-		this.max_value = max_value;
-	}
-
-	@Column(name = "min_value")
-	public Double getMin_value() {
-		return min_value;
-	}
-
-	public void setMin_value(Double min_value) {
-		this.min_value = min_value;
-	}
-
-	@Column(name = "month")
-	public Integer getMonth() {
-		return month;
-	}
-
-	public void setMonth(Integer month) {
-		this.month = month;
-	}
-
-	@Column(name = "year")
-	public Integer getYear() {
-		return year;
-	}
-
-	public void setYear(Integer year) {
-		this.year = year;
+	public void setMinValue(Double minValue) {
+		this.minValue = minValue;
 	}
 
 }

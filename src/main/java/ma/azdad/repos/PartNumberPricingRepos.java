@@ -17,7 +17,7 @@ public interface PartNumberPricingRepos extends JpaRepository<PartNumberPricing,
 	String partNumberTypeName = "(select b.name from PartNumberType b where b.id = a.partNumber.partNumberType.id)";
 	String partNumberBrandName = "(select b.name from PartNumberBrand b where b.id = a.partNumber.brand.id)";
 
-	String c1 = "select new PartNumberPricing(a.id,a.baseLineCost,a.baseLinePrice,a.physicalQuantity,a.pendingQuantity,a.countFiles,a.currency.currency," //
+	String c1 = "select new PartNumberPricing(a.id,a.baseLineCost,a.baseLinePrice,a.physicalQuantity,a.pendingQuantity,a.countFiles,a.currency.name," //
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.description," + partNumberCategoryName + "," + partNumberTypeName + "," + partNumberBrandName + ",a.company.name) ";
 
 	@Query(c1 + "from PartNumberPricing a")

@@ -213,13 +213,14 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	}
 
 	// c8
-	public DeliveryRequestDetail(Double quantity, StockRowStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
+	public DeliveryRequestDetail(Double quantity, StockRowStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,Date neededDeliveryDate,
 			String projectName, String projectSubType, String warehouseName) {
 		this.quantity = quantity;
 		this.status = status;
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setDeliveryRequestType(deliveryRequestType);
+		this.setNeededDeliveryDate(neededDeliveryDate);
 		this.setProjectName(projectName);
 		this.setProjectSubType(projectSubType);
 		this.setWarehouseName(warehouseName);
@@ -343,6 +344,19 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			return false;
 		}
 	}
+	
+	@Transient
+	public Date getNeededDeliveryDate(){
+		return deliveryRequest!=null?deliveryRequest.getNeededDeliveryDate():null;
+	}
+
+	@Transient
+	public void setNeededDeliveryDate(Date deliveryRequestNeededDeliveryDate){
+		if(deliveryRequest==null)
+			deliveryRequest=new DeliveryRequest();
+		deliveryRequest.setNeededDeliveryDate(deliveryRequestNeededDeliveryDate);
+	}
+
 
 	@Transient
 	public Integer getPurchaseCurrencyId() {

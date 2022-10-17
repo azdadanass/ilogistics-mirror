@@ -742,6 +742,9 @@
 										<p:column headerText="Warehouse">
 											<h:outputText value="#{item.warehouseName}" styleClass="pink" />
 										</p:column>
+										<p:column headerText="Needed Delivery Date">
+											<h:outputText value="#{item.neededDeliveryDate}"  />
+										</p:column>
 										<p:column headerText="Quantity">
 											<h:outputText value="#{item.quantity}" styleClass="bolder green">
 												<f:convertNumber type="number" maxFractionDigits="2" />

@@ -474,7 +474,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public void cancelTransportationRequest() {
 		if (!canCancelTransportationRequest())
 			return;
-		transportationRequest = transportationRequestService.cancelTransportationRequest(transportationRequest, sessionView.getUser(), null);
+		transportationRequest = transportationRequestService.cancelTransportationRequest(transportationRequest.getId(), sessionView.getUser(), null);
 		// refreshTransportationRequest();
 	}
 

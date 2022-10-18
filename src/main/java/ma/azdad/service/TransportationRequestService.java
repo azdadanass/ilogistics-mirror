@@ -102,7 +102,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (paymentStatus == null)
 			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
 		else
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus)
+					: repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
 
 	}
 
@@ -166,7 +167,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public TransportationRequest findByDeliveryRequest(Integer deliveryRequestId) {
 		return repos.findByDeliveryRequest(deliveryRequestId);
 	}
-	
+
 	public Integer findIdByDeliveryRequest(Integer deliveryRequestId) {
 		return repos.findIdByDeliveryRequest(deliveryRequestId);
 	}
@@ -223,7 +224,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return transportationRequest;
 	}
 
-	public TransportationRequest cancelTransportationRequest(TransportationRequest transportationRequest, User connectedUser, String reason) {
+	public TransportationRequest cancelTransportationRequest(Integer id, User connectedUser, String reason) {
+		TransportationRequest transportationRequest = findOne(id);
 		transportationRequest.setStatus(TransportationRequestStatus.CANCELED);
 		transportationRequest.setDate9(new Date());
 		transportationRequest.setUser9(connectedUser);

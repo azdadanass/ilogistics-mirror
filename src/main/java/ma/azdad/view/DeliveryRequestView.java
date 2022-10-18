@@ -1147,7 +1147,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 
 		if (deliveryRequest.getTransportationRequest() != null)
-			transportationRequestService.cancelTransportationRequest(deliveryRequest.getTransportationRequest(), sessionView.getUser(), "DN Canceled");
+			transportationRequestService.cancelTransportationRequest(deliveryRequest.getTransportationRequest().getId(), sessionView.getUser(), "DN Canceled");
 
 		if (projectCross != null && projectCross.getIdprojectcross() != null)
 			projectCrossService.delete(projectCross.getIdprojectcross());

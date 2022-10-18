@@ -652,13 +652,13 @@
 												<h:outputText value="#{item.purchaseCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" #{item.tmpPoCurrencyName}" />
+												<h:outputText value=" #{currencyView.findName(item.purchaseCurrencyId)}" />
 											</p:column>
 											<p:column headerText="Unit Cost" rendered="#{sessionView.internal}">
 												<h:outputText value="#{item.unitCost}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value=" #{item.tmpPoCurrencyName}" />
+												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" />
 											</p:column>
 											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.tmpDeliveryRequestReference}" exportable="false">
 												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">

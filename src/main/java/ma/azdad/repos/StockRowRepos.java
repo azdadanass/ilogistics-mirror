@@ -509,9 +509,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ "from StockRow a where a.deliveryRequest.po.id = ?1 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED') and (select count(*) from BoqMapping b where b.deliveryRequest.id = a.deliveryRequest.id) = 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId);
 
-	@Modifying
-	@Query("update StockRow a set a.deliveryRequestDetail.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
-	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
+//	@Modifying
+//	@Query("update StockRow a set a.deliveryRequestDetail.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")
+//	void updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(Double unitPrice, Integer partNumberId, Integer outboundDeliveryRequestReturnId);
 
 	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + "where" + usernameCondition + " and " + companyCondition
 			+ " and a.deliveryRequest.project.subType = 'Stock' group by a.partNumber.id")

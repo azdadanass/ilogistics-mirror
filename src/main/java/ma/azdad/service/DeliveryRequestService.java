@@ -996,7 +996,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void updateDetailListPurchaseCurrency(Integer deliveryRequestId, Currency purchaseCurrency) {
 		deliveryRequestDetailRepos.updatePurchaseCurrencyByDeliveryRequest(deliveryRequestId, purchaseCurrency);
 	}
-	
+
 	public void updateDetailListPriceCurrency(Integer deliveryRequestId, Currency priceCurrency) {
 		deliveryRequestDetailRepos.updatePriceCurrencyByDeliveryRequest(deliveryRequestId, priceCurrency);
 	}
@@ -1212,7 +1212,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		map.forEach((pnId, unitPrice) -> deliveryRequestDetailRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
 
 		// update inbound stock row
-		map.forEach((pnId, unitPrice) -> stockRowRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
+//		map.forEach((pnId, unitPrice) -> stockRowRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
 	}
 
 }

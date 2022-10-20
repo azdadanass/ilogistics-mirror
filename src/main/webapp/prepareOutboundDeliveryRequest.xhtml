@@ -77,7 +77,8 @@
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable id="stock_row_tab" value="#{deliveryRequestView.deliveryRequest.stockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center"
-												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+												rowIndexVar="rowIndexVar">
 												<p:column headerText="Part Number">
 													<h:outputLink value="viewPartNumber.xhtml" target="blank">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
@@ -138,7 +139,8 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType?'Internal resource':'Extneral resource'}" readonly="true" styleClass="col-xs-12 col-sm-6" />
+											<p:inputText value="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType?'Internal resource':'Extneral resource'}" readonly="true"
+												styleClass="col-xs-12 col-sm-6" />
 											<br />
 										</div>
 									</div>
@@ -154,8 +156,9 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}"/>
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-														requiredMessage="'To Resource' should not be null" converter="#{genericSecuredConverter}" var="r">
+														requiredMessage="'To Resource' should not be null" converter="#{genericSecuredConverter}" var="r" rendered="#{deliveryRequestView.deliveryRequest.toUser==null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 														<p:column>
@@ -180,17 +183,32 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Deliver to should not be null"
-														styleClass="col-xs-12 col-sm-6" converter="#{genericSecuredConverter}" var="r">
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}"/>
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+														converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
-															var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+														<f:selectItems value="#{userView.findActiveByCustomer(deliveryRequestView.deliveryRequest.deliverToCustomerId)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item}" />
 														<p:column>
 															<h:outputText value="#{r.fullName}" />
 														</p:column>
 														<p:column>
 															<h:outputText value="#{r.cin}" />
 														</p:column>
+														<p:ajax listener="#{deliveryRequestView.changeToUserListener()}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+														converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findActiveBySupplier(deliveryRequestView.deliveryRequest.deliverToSupplierId)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item}" />
+														<p:column>
+															<h:outputText value="#{r.fullName}" />
+														</p:column>
+														<p:column>
+															<h:outputText value="#{r.cin}" />
+														</p:column>
+														<p:ajax listener="#{deliveryRequestView.changeToUserListener()}" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -225,9 +243,9 @@
 									<div class="space-16" />
 									<div class="row">
 										<h:panelGroup id="fileUploadPanel">
-											<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload2}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,files_table"
-												sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/" styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}"
-												style="margin: auto;width: 80%">
+											<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload2}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
+												update="messages,files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/"
+												styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}" style="margin: auto;width: 80%">
 												<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
 											</p:fileUpload>
 											<p:growl id="messages" showDetail="true" />
@@ -241,8 +259,8 @@
 												<h:outputText value=" List Of Attachements" />
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
-												<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+												<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover"
+													paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 													<p:column headerText="Name">
 														<h:outputText value="#{item.name}" />
 													</p:column>
@@ -289,7 +307,8 @@
 								<i class="ace-icon fa fa-arrow-left"></i>
 								<h:outputText value="Prev" />
 							</p:commandLink>
-							<p:commandLink id="nextButton" action="#{deliveryRequestView.preparationNextStep()}" update="messages,nav-wizard,steps,nextButton,previousButton" styleClass="btn btn-success btn-next">
+							<p:commandLink id="nextButton" action="#{deliveryRequestView.preparationNextStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
+								styleClass="btn btn-success btn-next">
 								<h:outputText value="#{deliveryRequestView.step==4?'Finish':'Next'}" />
 								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
 							</p:commandLink>
@@ -315,8 +334,8 @@
 					<!-- <ui:include src="addEditUserBody.xhtml" /> -->
 				</div>
 				<div class="modal-footer">
-					<p:commandButton actionListener="#{userView.saveUser()}" update=":main_form:messages,:main_form:step2:subview2:deliverTo" styleClass="btn btn-success " value="Add External Resource"
-						oncomplete="PF('addUserDlg').hide()" rendered="#{userView.parent==1}">
+					<p:commandButton actionListener="#{userView.saveUser()}" update=":main_form:messages,:main_form:step2:subview2:deliverTo" styleClass="btn btn-success "
+						value="Add External Resource" oncomplete="PF('addUserDlg').hide()" rendered="#{userView.parent==1}">
 						<f:setPropertyActionListener value="#{userView.user}" target="#{deliveryRequestView.deliveryRequest.toUser}" />
 					</p:commandButton>
 					<p:commandButton onclick="PF('addUserDlg').hide()" value="Hide" styleClass="btn btn-warning" />

@@ -2316,6 +2316,20 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.init();
 	}
 
+	// edit deliver to
+	public Boolean canEditDeliverTo() {
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)
+				.contains(deliveryRequest.getStatus()) //
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) //
+						|| cacheView.hasDelegation(deliveryRequest.getProject().getId()));
+	}
+
+	public void editDeliverTo() {
+		if (!canEditDeliverTo())
+			return;
+	}
+
 	// Return / Transfer from outbound
 	public Boolean canReturnFromOutbound() {
 		return sessionView.getInternal() //

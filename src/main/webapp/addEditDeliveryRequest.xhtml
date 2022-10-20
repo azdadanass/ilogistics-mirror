@@ -648,7 +648,8 @@
 												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true"
 													requiredMessage="'Deliver to' type should not be null">
 													<f:selectItem itemLabel="---" itemValue="#{null}" />
-													<f:selectItems value="#{DeliverToType.ALL_ENUM_VALUES}" />
+													<f:selectItem itemLabel="#{DeliverToType.USER.value}" itemValue="#{DeliverToType.USER}"/>
+													<f:selectItem itemLabel="#{DeliverToType.EXTERNAL.value}" itemValue="#{DeliverToType.EXTERNAL}"/>
 													<p:ajax listener="#{deliveryRequestView.changeDeliverToTypeListener()}" update="deliverTo" />
 												</h:selectOneMenu>
 												<br />
@@ -692,10 +693,6 @@
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
 														<p:inputText id="deliverToCompany" value="#{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true" />
-														<!-- <p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompany}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-															converter="#{genericSecuredConverter}" required="true" requiredMessage="Internal Company should not be null">
-															<f:selectItems value="#{companyView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
-														</p:selectOneMenu> -->
 														<br />
 													</div>
 												</div>
@@ -713,8 +710,8 @@
 													<div class="clearfix">
 														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
-															<f:selectItems value="#{CompanyType.ALL_ENUM_VALUES}" />
-															<!-- <p:ajax update="deliverToOther,toUser" /> -->
+															<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}"/>
+															<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}"/>
 															<p:ajax listener="#{deliveryRequestView.changeDeliverToCompanyTypeListener()}" update="deliverToOther,:main_form:step2:subview2:externalSubview:toUser" />
 														</h:selectOneMenu>
 														<br />

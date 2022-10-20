@@ -486,6 +486,9 @@
 							</div>
 							<div class="profile-info-value">
 								<h:outputText value="External / #{deliveryRequestView.deliveryRequest.deliverToEntityName}" styleClass="purple" />
+								<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditDeliverTo()}" onclick="PF('deliverToDlg').show()" styleClass="pull-right">
+									<i class="ace-icon fa fa-edit bigger-130 orange" />
+								</p:commandLink>
 								&nbsp;
 							</div>
 						</div>
@@ -497,6 +500,9 @@
 							</div>
 							<div class="profile-info-value">
 								<h:outputText value="Internal / #{deliveryRequestView.deliveryRequest.deliverToCompany.name}" styleClass="blue" />
+								<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditDeliverTo()}" onclick="PF('deliverToDlg').show()" styleClass="pull-right">
+									<i class="ace-icon fa fa-edit bigger-130 orange" />
+								</p:commandLink>
 								&nbsp;
 							</div>
 						</div>
@@ -533,35 +539,21 @@
 							&nbsp;
 						</div>
 					</div>
-					<f:subview rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
-						<div class="profile-info-row">
-							<div class="profile-info-name">
-								<h:outputText value="Deliver to" />
-							</div>
-							<div class="profile-info-value orange">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
-								<h:outputText value="CIN : #{deliveryRequestView.deliveryRequest.toUser.cin}" styleClass="purple" />
-								&nbsp;
-							</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Deliver to" />
 						</div>
-					</f:subview>
-					<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
-						<div class="profile-info-row">
-							<div class="profile-info-name">
-								<h:outputText value="Deliver To" />
-							</div>
-							<div class="profile-info-value">
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
-								<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
-								<h:outputText value="CIN : #{deliveryRequestView.deliveryRequest.toUser.cin}" styleClass="purple" />
-								<!-- <h:outputText value="#{cacheView.getCin(deliveryRequestView.deliveryRequest.toUser.username)}" styleClass="purple" /> -->
-								&nbsp;
-							</div>
+						<div class="profile-info-value orange">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" styleClass="green" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.email}" styleClass="blue" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.toUser.phone}" styleClass="orange" />
+							<h:outputText value="CIN : #{deliveryRequestView.deliveryRequest.toUser.cin}" styleClass="purple" />
+							<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditDeliverTo()}" onclick="PF('deliverToDlg').show()" styleClass="pull-right">
+								<i class="ace-icon fa fa-edit bigger-130 orange" />
+							</p:commandLink>
+							&nbsp;
 						</div>
-					</f:subview>
+					</div>
 				</div>
 			</div>
 		</div>

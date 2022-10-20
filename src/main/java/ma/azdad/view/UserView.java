@@ -355,7 +355,7 @@ public class UserView {
 	}
 
 	public Boolean hasRolePm(String username) {
-		return hasRole(username, Role.ROLE_SDM_PM);
+		return hasRole(username, Role.ROLE_ILOGISTICS_PM);
 	}
 
 	// getters & setters

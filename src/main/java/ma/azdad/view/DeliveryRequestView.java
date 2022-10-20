@@ -2270,9 +2270,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// LINK PO
 	public Boolean getIsPoNeeded() {
-		return (deliveryRequest.getIsInbound() && deliveryRequest.getIsInboundNew())
-//				|| (deliveryRequest.getIsOutbound() && projectService.isStockProject(deliveryRequest.getProjectId()) && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()));
-				|| (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId()));
+		if (deliveryRequest.getIsInboundNew())
+			return CompanyType.COMPANY.equals(deliveryRequest.getOwnerType());
+		else if (deliveryRequest.getIsOutbound())
+			return projectService.isDstrProject(deliveryRequest.getDestinationProjectId());
+		return false;
 	}
 
 	public List<Po> getPoList() {

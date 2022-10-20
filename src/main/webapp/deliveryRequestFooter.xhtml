@@ -21,18 +21,16 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
-									completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
-									rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+							<span class="input-icon input-icon-right"> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10"
+									style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}"
+									forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
 										<h:outputText value="#{pn.name}" />
 									</p:column>
 									<p:column>
 										<h:outputText value="#{pn.description}" />
 									</p:column>
-								</p:autoComplete>
-								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
+								</p:autoComplete> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
 									completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
 									rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
@@ -42,8 +40,7 @@
 										<h:outputText value="#{pn.description}" />
 									</p:column>
 								</p:autoComplete>
-							</span>
-							<br />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -56,11 +53,9 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true" requiredMessage="Quantity should not be null" style="width : 100%"
-									decimalPlaces="0" thousandSeparator="" />
-							</span>
-							<br />
+							<span class="input-icon input-icon-right"> <p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true"
+									requiredMessage="Quantity should not be null" style="width : 100%" decimalPlaces="0" thousandSeparator="" />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -110,11 +105,9 @@
 							</div>
 							<div class="col-sm-2 col-xs-4">
 								<div class="nav-search minimized">
-									<span class="input-icon">
-										<p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+									<span class="input-icon"> <p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 											<p:ajax event="keyup" update="siteList" />
-										</p:inputText>
-										<i class="ace-icon fa fa-search nav-search-icon" />
+										</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 									</span>
 								</div>
 							</div>
@@ -252,13 +245,12 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true" requiredMessage="New Location should not be null">
+							<span class="input-icon input-icon-right"> <h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true"
+									requiredMessage="New Location should not be null">
 									<f:selectItem itemLabel="---" noSelectionOption="true" />
 									<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
 								</h:selectOneMenu>
-							</span>
-							<br />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -761,164 +753,188 @@
 				<div class="row">
 					<div class="space-8" />
 					<div class="row">
-						<div class="col-sm-3">
-							<label class="control-label pull-right">
-								<h:outputText value="'Deliver to' type " />
-							</label>
-						</div>
-						<div class="col-sm-9">
-							<div class="clearfix">
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true"
-									requiredMessage="'Deliver to' type should not be null">
-									<f:selectItem itemLabel="---" itemValue="#{null}" />
-									<f:selectItem itemLabel="#{DeliverToType.USER.value}" itemValue="#{DeliverToType.USER}" />
-									<f:selectItem itemLabel="#{DeliverToType.EXTERNAL.value}" itemValue="#{DeliverToType.EXTERNAL}" />
-									<p:ajax listener="#{deliveryRequestView.changeDeliverToTypeListener()}" update="deliverTo" />
-								</h:selectOneMenu>
-								<br />
-							</div>
-						</div>
-					</div>
-					<div class="space-8" />
-					<h:panelGroup id="deliverTo">
-						<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
-							<div class="row">
-								<div class="col-xs-12 col-sm-3">
-									<label class="control-label pull-right">
-										<h:outputText value="Internal Resource " />
-									</label>
-								</div>
-								<div class="col-xs-12 col-sm-9">
-									<div class="clearfix">
-										<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-											converter="#{genericSecuredConverter}" var="r">
-											<f:selectItem itemLabel="---" noSelectionOption="true" />
-											<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
-											<p:column>
-												<h:outputText value="#{r.fullName}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{r.cin}" />
-											</p:column>
-											<p:ajax listener="#{deliveryRequestView.changeInternalResourceListener()}" update="deliverToCompany" />
-										</p:selectOneMenu>
-										<br />
-									</div>
-								</div>
-							</div>
-							<div class="space-8" />
-							<div class="row">
-								<div class="col-xs-12 col-sm-3">
-									<label class="control-label pull-right">
-										<h:outputText value="Internal Company " />
-									</label>
-								</div>
-								<div class="col-xs-12 col-sm-9">
-									<div class="clearfix">
-										<p:inputText id="deliverToCompany" value="#{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true" />
-										<br />
-									</div>
-								</div>
-							</div>
-							<div class="space-8" />
-						</f:subview>
-						<f:subview id="externalSubview" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
-							<div class="row">
-								<div class="col-xs-12 col-sm-3">
-									<label class="control-label pull-right">
-										<h:outputText value="External Company Type " />
-									</label>
-								</div>
-								<div class="col-xs-12 col-sm-9">
-									<div class="clearfix">
-										<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6">
-											<f:selectItem itemLabel="---" noSelectionOption="true" />
-											<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
-											<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
-											<p:ajax listener="#{deliveryRequestView.changeDeliverToCompanyTypeListener()}" update="deliverToOther,:deliverToForm:externalSubview:toUser" />
-										</h:selectOneMenu>
-										<br />
-									</div>
-								</div>
-							</div>
-							<div class="space-8" />
-							<h:panelGroup id="deliverToOther">
-								<f:subview rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
-									<div class="row">
 										<div class="col-xs-12 col-sm-3">
 											<label class="control-label pull-right">
-												<h:outputText value="Customer " />
+												<h:outputText value="'Deliver to' type " />
 											</label>
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-													required="true" requiredMessage="External Customer should not be null">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-													<p:ajax update=":main_form:step2:subview2:externalSubview:toUser" />
-												</p:selectOneMenu>
+												<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToType}" styleClass="col-xs-12 col-sm-6" required="true"
+													requiredMessage="'Deliver to' type should not be null">
+													<f:selectItem itemLabel="---" itemValue="#{null}" />
+													<f:selectItem itemLabel="#{DeliverToType.USER.value}" itemValue="#{DeliverToType.USER}" />
+													<f:selectItem itemLabel="#{DeliverToType.EXTERNAL.value}" itemValue="#{DeliverToType.EXTERNAL}" />
+													<p:ajax listener="#{deliveryRequestView.changeDeliverToTypeListener()}" update="deliverTo" />
+												</h:selectOneMenu>
 												<br />
 											</div>
 										</div>
 									</div>
-								</f:subview>
-								<f:subview rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
-									<div class="row">
-										<div class="col-xs-12 col-sm-3">
-											<label class="control-label pull-right">
-												<h:outputText value="Supplier " />
-											</label>
-										</div>
-										<div class="col-xs-12 col-sm-9">
-											<div class="clearfix">
-												<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-													required="true" requiredMessage="External Customer should not be null">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{supplierView.findByHavingActiveProjectAssignment(deliveryRequestView.deliveryRequest.destinationProjectId)}" var="item"
-														itemLabel="#{item.name}" itemValue="#{item.id}" />
-													<p:ajax update=":deliverToForm:externalSubview:toUser" />
-												</p:selectOneMenu>
-												<br />
+									<div class="space-8" />
+									<h:panelGroup id="deliverTo">
+										<f:subview rendered="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType}">
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Internal Resource " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+															converter="#{genericSecuredConverter}" var="r">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
+															<p:column>
+																<h:outputText value="#{r.fullName}" />
+															</p:column>
+															<p:column>
+																<h:outputText value="#{r.cin}" />
+															</p:column>
+															<p:ajax listener="#{deliveryRequestView.changeToUserListener()}" update="deliverToCompany" />
+														</p:selectOneMenu>
+														<br />
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
-								</f:subview>
-								<div class="space-8" />
-							</h:panelGroup>
-							<div class="row">
-								<div class="col-xs-12 col-sm-3">
-									<label class="control-label pull-right">
-										<h:outputText value="External Resource " />
-									</label>
-								</div>
-								<div class="col-xs-12 col-sm-9">
-									<div class="clearfix">
-										<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
-											converter="#{genericSecuredConverter}" var="r">
-											<f:selectItem itemLabel="---" noSelectionOption="true" />
-											<f:selectItems
-												value="#{userView.findActiveByCustomerOrSupplier(deliveryRequestView.deliveryRequest.deliverToCustomerId,deliveryRequestView.deliveryRequest.deliverToSupplierId)}"
-												var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
-											<p:column>
-												<h:outputText value="#{r.fullName}" />
-											</p:column>
-											<p:column>
-												<h:outputText value="#{r.cin}" />
-											</p:column>
-										</p:selectOneMenu>
-										<br />
-									</div>
-								</div>
-							</div>
-							<div class="space-8" />
-						</f:subview>
-					</h:panelGroup>
+											<div class="space-8" />
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Internal Company " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:inputText id="deliverToCompany" value="#{deliveryRequestView.deliveryRequest.deliverToCompany.name}" readonly="true" />
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+										</f:subview>
+										<f:subview id="externalSubview" rendered="#{DeliverToType.EXTERNAL==deliveryRequestView.deliveryRequest.deliverToType}">
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="External Company Type " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+															<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+															<p:ajax listener="#{deliveryRequestView.changeDeliverToCompanyTypeListener()}" update="deliverToOther" />
+														</h:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+											<h:panelGroup id="deliverToOther">
+												<f:subview rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="Customer " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+																	required="true" requiredMessage="External Customer should not be null">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+																	<p:ajax update="toUser" />
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+													<div class="space-8" />
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="External Resource " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{userView.findActiveByCustomer(deliveryRequestView.deliveryRequest.deliverToCustomerId)}" var="item" itemLabel="#{item.fullName}"
+																		itemValue="#{item}" />
+																	<p:column>
+																		<h:outputText value="#{r.fullName}" />
+																	</p:column>
+																	<p:column>
+																		<h:outputText value="#{r.cin}" />
+																	</p:column>
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+												</f:subview>
+												<f:subview rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="Supplier " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
+																	required="true" requiredMessage="External Customer should not be null">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{supplierView.findByHavingActiveProjectAssignment(deliveryRequestView.deliveryRequest.destinationProjectId)}" var="item"
+																		itemLabel="#{item.name}" itemValue="#{item.id}" />
+																	<p:ajax update="" />
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+													<div class="space-8" />
+													<div class="row">
+														<div class="col-xs-12 col-sm-3">
+															<label class="control-label pull-right">
+																<h:outputText value="External Resource " />
+															</label>
+														</div>
+														<div class="col-xs-12 col-sm-9">
+															<div class="clearfix">
+																<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
+																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+																	<f:selectItem itemLabel="---" noSelectionOption="true" />
+																	<f:selectItems value="#{userView.findActiveBySupplier(deliveryRequestView.deliveryRequest.deliverToSupplierId)}" var="item" itemLabel="#{item.fullName}"
+																		itemValue="#{item}" />
+																	<p:column>
+																		<h:outputText value="#{r.fullName}" />
+																	</p:column>
+																	<p:column>
+																		<h:outputText value="#{r.cin}" />
+																	</p:column>
+																</p:selectOneMenu>
+																<br />
+															</div>
+														</div>
+													</div>
+												</f:subview>
+											</h:panelGroup>
+											<div class="space-8" />
+										</f:subview>
+									</h:panelGroup>
 				</div>
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('deliverToDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{deliveryRequestView.editPo()}" value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('deliverToDlg').hide()" />
+				<p:commandButton action="#{deliveryRequestView.editDeliverTo()}" value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('deliverToDlg').hide()" />
 			</div>
 		</p:dialog>
 	</h:form>

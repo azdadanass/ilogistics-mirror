@@ -2185,8 +2185,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			}
 	}
 
-	public void changeInternalResourceListener() {
-		deliveryRequest.setDeliverToCompany(companyService.findCompanyUser(deliveryRequest.getToUser().getUsername()));
+	public void changeToUserListener() {
+		if (deliveryRequest.getToUserUsername() == null) {
+			deliveryRequest.setToUser(null);
+			deliveryRequest.setDeliverToCompany(null);
+		} else {
+			deliveryRequest.setToUser(userService.findOneLight(deliveryRequest.getToUserUsername()));
+			if (DeliverToType.USER.equals(deliveryRequest.getDeliverToType()))
+				deliveryRequest.setDeliverToCompany(companyService.findCompanyUser(deliveryRequest.getToUser().getUsername()));
+		}
 	}
 
 	public void changeOwnerTypeListener() {
@@ -2328,6 +2335,35 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void editDeliverTo() {
 		if (!canEditDeliverTo())
 			return;
+
+		switch (deliveryRequest.getDeliverToType()) {
+		case USER:
+			deliveryRequest.setDeliverToCompanyType(CompanyType.COMPANY);
+			deliveryRequest.setDeliverToCustomer(null);
+			deliveryRequest.setDeliverToSupplier(null);
+			break;
+		case EXTERNAL:
+			switch (deliveryRequest.getDeliverToCompanyType()) {
+			case CUSTOMER:
+				deliveryRequest.setDeliverToCustomer(customerService.findOne(deliveryRequest.getDeliverToCustomerId()));
+				deliveryRequest.setDeliverToCompany(null);
+				deliveryRequest.setDeliverToSupplier(null);
+				break;
+			case SUPPLIER:
+				deliveryRequest.setDeliverToSupplier(supplierService.findOne(deliveryRequest.getDeliverToSupplierId()));
+				deliveryRequest.setDeliverToCompany(null);
+				deliveryRequest.setDeliverToCustomer(null);
+				break;
+			default:
+				break;
+			}
+			break;
+		}
+
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
+		deliveryRequest.init();
+
 	}
 
 	// Return / Transfer from outbound

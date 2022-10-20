@@ -277,6 +277,14 @@ public class UserView {
 	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
 		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
+	
+	public List<User> findActiveByCustomer(Integer customerId) {
+		return userService.findActiveByCustomer(customerId);
+	}
+
+	public List<User> findActiveBySupplier(Integer supplierId) {
+		return userService.findActiveBySupplier(supplierId);
+	}
 
 	public List<User> findLightByStatus(Boolean active) {
 		return userService.findLightByStatus(active);
@@ -312,10 +320,6 @@ public class UserView {
 
 	public List<User> findLightByDeliverToOther(User user) {
 		return userService.findLightByDeliverToOther(user);
-	}
-
-	public List<User> findActiveByCustomerOrSupplier(Integer customerId, Integer supplierId) {
-		return userService.findActiveByCustomerOrSupplier(customerId, supplierId);
 	}
 
 	public List<User> findLightActive(Boolean internal) {

@@ -121,8 +121,12 @@ public class UserService {
 		return new ArrayList<User>();
 	}
 
-	public List<User> findActiveByCustomerOrSupplier(Integer customerId, Integer supplierId) {
-		return repos.findByCustomerOrSupplier(customerId, supplierId, true);
+	public List<User> findActiveByCustomer(Integer customerId) {
+		return repos.findActiveByCustomer(customerId);
+	}
+
+	public List<User> findActiveBySupplier(Integer supplierId) {
+		return repos.findActiveBySupplier(supplierId);
 	}
 
 	public Long countByCin(String cin, String username) {

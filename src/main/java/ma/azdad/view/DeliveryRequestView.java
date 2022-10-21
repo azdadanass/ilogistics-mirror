@@ -2366,24 +2366,35 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.init();
 
 	}
-	
+
 	// edit sub type
 	public Boolean canEditSubType() {
-		return true; // TODO
+		return deliveryRequest.getIsOutbound() //
+				&& !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus()) //
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) //
+						|| cacheView.hasDelegation(deliveryRequest.getProject().getId()));
 	}
-	
-	public void editSubType() {
-		if(!canEditSubType())
-			return;
-		
-	}
-	
+
 	public Boolean canEditIsForTransfer() {
-		return false; // TODO
+		return !deliveryRequest.getIsForTransfer() || service.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;
 	}
-	
+
 	public Boolean canEditIsForReturn() {
-		return false; // TODO
+		return !deliveryRequest.getIsForReturn() || service.countByOutboundDeliveryRequestReturn(deliveryRequest.getId()) == 0;
+	}
+
+	public void editSubType() {
+		if (!canEditSubType())
+			return;
+
+		if (!deliveryRequest.getIsForReturn())
+			deliveryRequest.setReturnReason(null);
+
+		service.save(deliveryRequest);
+		deliveryRequest = service.findOne(deliveryRequest.getId());
+		deliveryRequest.init();
+
 	}
 
 	// Return / Transfer from outbound
@@ -2410,18 +2421,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return service.getTransferStatus(deliveryRequest.getId());
 	}
 
-	public List<DeliveryRequestDetail> getTransferOrReturnSituation(List<StockRow> deliveredList,List<DeliveryRequestDetail> inProgressList) {
+	public List<DeliveryRequestDetail> getTransferOrReturnSituation(List<StockRow> deliveredList, List<DeliveryRequestDetail> inProgressList) {
 		List<DeliveryRequestDetail> result = new ArrayList<DeliveryRequestDetail>();
 
 		Map<PartNumber, Double> sum = deliveryRequest.getDetailList().stream()
 				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
-		
-		sum.keySet().forEach(pn->{
-			DeliveryRequestDetail deliveryRequestDetail= new DeliveryRequestDetail(); 
+
+		sum.keySet().forEach(pn -> {
+			DeliveryRequestDetail deliveryRequestDetail = new DeliveryRequestDetail();
 			deliveryRequestDetail.setPartNumber(pn);
 			deliveryRequestDetail.setQuantity(sum.get(pn));
-			deliveryRequestDetail.setTmpQuantity1(deliveredList.stream().filter(drd->drd.getPartNumber().equals(pn)).mapToDouble(drd->drd.getQuantity()).sum());
-			deliveryRequestDetail.setTmpQuantity2(inProgressList.stream().filter(drd->drd.getPartNumber().equals(pn)).mapToDouble(drd->drd.getQuantity()).sum());
+			deliveryRequestDetail.setTmpQuantity1(deliveredList.stream().filter(drd -> drd.getPartNumber().equals(pn)).mapToDouble(drd -> drd.getQuantity()).sum());
+			deliveryRequestDetail.setTmpQuantity2(inProgressList.stream().filter(drd -> drd.getPartNumber().equals(pn)).mapToDouble(drd -> drd.getQuantity()).sum());
 			result.add(deliveryRequestDetail);
 		});
 

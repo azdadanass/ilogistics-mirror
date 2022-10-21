@@ -1079,6 +1079,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Long countByOutboundDeliveryRequestTransfer(Integer outboundDeliveryRequestId) {
 		return ObjectUtils.firstNonNull(deliveryRequestRepos.countByOutboundDeliveryRequestTransfer(outboundDeliveryRequestId), 0l);
 	}
+	
+	public Long countByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId) {
+		return ObjectUtils.firstNonNull(deliveryRequestRepos.countByOutboundDeliveryRequestReturn(outboundDeliveryRequestId), 0l);
+	}
 
 	public void generateQrKeyScript() {
 		deliveryRequestRepos.findIdListWithoutQrKey().forEach(id -> deliveryRequestRepos.updateQrKey(id, UtilsFunctions.generateQrKey()));

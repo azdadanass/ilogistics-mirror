@@ -238,6 +238,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select count(*) from DeliveryRequest where outboundDeliveryRequestTransfer.id = ?1")
 	public Long countByOutboundDeliveryRequestTransfer(Integer outboundDeliveryRequestId);
+	
+	@Query("select count(*) from DeliveryRequest where outboundDeliveryRequestReturn.id = ?1")
+	public Long countByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);
 
 	@Query("select id from DeliveryRequest where qrKey is null")
 	public List<Integer> findIdListWithoutQrKey();

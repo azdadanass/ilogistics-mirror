@@ -21,18 +21,16 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
-									completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
-									rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+							<span class="input-icon input-icon-right"> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10"
+									style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}"
+									forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
 										<h:outputText value="#{pn.name}" />
 									</p:column>
 									<p:column>
 										<h:outputText value="#{pn.description}" />
 									</p:column>
-								</p:autoComplete>
-								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
+								</p:autoComplete> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
 									completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
 									rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
@@ -42,8 +40,7 @@
 										<h:outputText value="#{pn.description}" />
 									</p:column>
 								</p:autoComplete>
-							</span>
-							<br />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -56,11 +53,9 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true" requiredMessage="Quantity should not be null" style="width : 100%"
-									decimalPlaces="0" thousandSeparator="" />
-							</span>
-							<br />
+							<span class="input-icon input-icon-right"> <p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true"
+									requiredMessage="Quantity should not be null" style="width : 100%" decimalPlaces="0" thousandSeparator="" />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -110,11 +105,9 @@
 							</div>
 							<div class="col-sm-2 col-xs-4">
 								<div class="nav-search minimized">
-									<span class="input-icon">
-										<p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+									<span class="input-icon"> <p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 											<p:ajax event="keyup" update="siteList" />
-										</p:inputText>
-										<i class="ace-icon fa fa-search nav-search-icon" />
+										</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
 									</span>
 								</div>
 							</div>
@@ -252,13 +245,12 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right">
-								<h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true" requiredMessage="New Location should not be null">
+							<span class="input-icon input-icon-right"> <h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true"
+									requiredMessage="New Location should not be null">
 									<f:selectItem itemLabel="---" noSelectionOption="true" />
 									<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
 								</h:selectOneMenu>
-							</span>
-							<br />
+							</span> <br />
 						</div>
 					</div>
 				</div>
@@ -966,8 +958,10 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
+							<p:inputText value="#{deliveryRequestView.deliveryRequest.isForTransfer?'Yes':'No'}" styleClass="col-xs-12 col-sm-6" readonly="true"
+								rendered="#{!deliveryRequestView.canEditIsForTransfer()}" />
 							<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="is for transfer field should not be null"
-								styleClass="col-xs-12 col-sm-6">
+								styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.canEditIsForTransfer()}">
 								<f:selectItem itemLabel="No" itemValue="false" />
 								<f:selectItem itemLabel="Yes" itemValue="true" />
 							</h:selectOneMenu>
@@ -994,41 +988,32 @@
 						</div>
 					</div>
 				</div>
-				<div class="space-8" />
 				<h:panelGroup id="returnReason">
-					<div class="row">
-						<div class="col-xs-12 col-sm-3">
-							<label class="control-label pull-right">
-								<h:outputText value="Return Reason " />
-							</label>
-						</div>
-						<div class="col-xs-12 col-sm-9">
-							<div class="clearfix">
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null"
-									styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
-									<f:selectItem itemLabel="---" noSelectionOption="true" />
-									<f:selectItem itemLabel="Repair &amp; Return" itemValue="Repair &amp; Return" />
-									<f:selectItem itemLabel="Training" itemValue="Training" />
-									<f:selectItem itemLabel="Expo" itemValue="Expo" />
-									<f:selectItem itemLabel="RFQ Samples" itemValue="RFQ Samples" />
-									<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
-									<f:selectItem itemLabel="Other" itemValue="Other" />
-								</h:selectOneMenu>
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null"
-									styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
-									<f:selectItem itemLabel="---" noSelectionOption="true" />
-									<f:selectItem itemLabel="Payment Issue" itemValue="Payment Issue" />
-									<f:selectItem itemLabel="Physical Damage" itemValue="Physical Damage" />
-									<f:selectItem itemLabel="Faulty" itemValue="Faulty" />
-									<f:selectItem itemLabel="Wrong delivery" itemValue="Wrong delivery" />
-									<f:selectItem itemLabel="Wrong Specs" itemValue="Wrong Specs" />
-									<f:selectItem itemLabel="Destination site issue" itemValue="Destination site issue" />
-									<f:selectItem itemLabel="Other" itemValue="Other" />
-								</h:selectOneMenu>
-								<br />
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isForReturn}">
+						<div class="space-8" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-3">
+								<label class="control-label pull-right">
+									<h:outputText value="Return Reason " />
+								</label>
+							</div>
+							<div class="col-xs-12 col-sm-9">
+								<div class="clearfix">
+									<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null"
+										styleClass="col-xs-12 col-sm-6" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="Repair &amp; Return" itemValue="Repair &amp; Return" />
+										<f:selectItem itemLabel="Training" itemValue="Training" />
+										<f:selectItem itemLabel="Expo" itemValue="Expo" />
+										<f:selectItem itemLabel="RFQ Samples" itemValue="RFQ Samples" />
+										<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
+										<f:selectItem itemLabel="Other" itemValue="Other" />
+									</h:selectOneMenu>
+									<br />
+								</div>
 							</div>
 						</div>
-					</div>
+					</f:subview>
 				</h:panelGroup>
 			</div>
 			<div class="modal-footer">

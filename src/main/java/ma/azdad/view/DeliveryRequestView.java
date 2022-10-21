@@ -41,6 +41,7 @@ import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.Location;
 import ma.azdad.model.PackingDetail;
+import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoTypes;
 import ma.azdad.model.ProjectCross;
@@ -2390,21 +2391,39 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return service.getTransferStatus(deliveryRequest.getId());
 	}
 
-	public Boolean getHasReturnedStockRowList() {
-		return stockRowService.countReturnedStockRowList(deliveryRequest.getId()) > 0;
+	public List<DeliveryRequestDetail> getTransferOrReturnSituation(List<StockRow> deliveredList,List<DeliveryRequestDetail> inProgressList) {
+		List<DeliveryRequestDetail> result = new ArrayList<DeliveryRequestDetail>();
+
+		Map<PartNumber, Double> sum = deliveryRequest.getDetailList().stream()
+				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+		
+		sum.keySet().forEach(pn->{
+			DeliveryRequestDetail deliveryRequestDetail= new DeliveryRequestDetail(); 
+			deliveryRequestDetail.setPartNumber(pn);
+			deliveryRequestDetail.setQuantity(sum.get(pn));
+			deliveryRequestDetail.setTmpQuantity1(deliveredList.stream().filter(drd->drd.getPartNumber().equals(pn)).mapToDouble(drd->drd.getQuantity()).sum());
+			deliveryRequestDetail.setTmpQuantity2(inProgressList.stream().filter(drd->drd.getPartNumber().equals(pn)).mapToDouble(drd->drd.getQuantity()).sum());
+			result.add(deliveryRequestDetail);
+		});
+
+		return result;
 	}
 
-	public List<StockRow> getReturnedStockRowList() {
-		return stockRowService.findReturnedStockRowList(deliveryRequest.getId());
-	}
+//	public Boolean getHasReturnedStockRowList() {
+//		return stockRowService.countReturnedStockRowList(deliveryRequest.getId()) > 0;
+//	}
 
-	public Boolean getHasTransferredStockRowList() {
-		return stockRowService.countTransferredStockRowList(deliveryRequest.getId()) > 0;
-	}
+//	public List<StockRow> getReturnedStockRowList() {
+//		return stockRowService.findReturnedStockRowList(deliveryRequest.getId());
+//	}
 
-	public List<StockRow> getTransferredStockRowList() {
-		return stockRowService.findTransferredStockRowList(deliveryRequest.getId());
-	}
+//	public Boolean getHasTransferredStockRowList() {
+//		return stockRowService.countTransferredStockRowList(deliveryRequest.getId()) > 0;
+//	}
+//
+//	public List<StockRow> getTransferredStockRowList() {
+//		return stockRowService.findTransferredStockRowList(deliveryRequest.getId());
+//	}
 
 	// generic
 

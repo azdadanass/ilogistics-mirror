@@ -170,7 +170,8 @@
 									<i class="ace-icon fa fa-list" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number"> <h:outputText value="Number Of Items" />
+									<span class="infobox-data-number">
+										<h:outputText value="Number Of Items" />
 									</span>
 									<div class="infobox-content">
 										<h:outputText value="#{deliveryRequestView.deliveryRequest.numberOfItems}">
@@ -184,7 +185,8 @@
 									<i class="ace-icon fa fa-anchor" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number"> <h:outputText value="Gross Weight" />
+									<span class="infobox-data-number">
+										<h:outputText value="Gross Weight" />
 									</span>
 									<div class="infobox-content">
 										<h:outputText value="#{deliveryRequestView.deliveryRequest.grossWeight}">
@@ -199,7 +201,8 @@
 									<i class="ace-icon fa fa-cube" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number"> <h:outputText value="Volume" />
+									<span class="infobox-data-number">
+										<h:outputText value="Volume" />
 									</span>
 									<div class="infobox-content">
 										<h:outputText value="#{deliveryRequestView.deliveryRequest.volume}">
@@ -216,7 +219,8 @@
 									<i class="ace-icon fa fa-dollar" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number"> <h:outputText value="Total Cost" />
+									<span class="infobox-data-number">
+										<h:outputText value="Total Cost" />
 									</span>
 									<div class="infobox-content">
 										<h:outputText value="#{deliveryRequestView.deliveryRequest.totalCost}">
@@ -232,7 +236,8 @@
 										<i class="ace-icon fa fa-dollar" />
 									</div>
 									<div class="infobox-data">
-										<span class="infobox-data-number"> <h:outputText value="Total Price" />
+										<span class="infobox-data-number">
+											<h:outputText value="Total Price" />
 										</span>
 										<div class="infobox-content">
 											<h:outputText value="#{deliveryRequestView.deliveryRequest.totalPrice}">
@@ -247,7 +252,8 @@
 										<i class="ace-icon fa fa-dollar" />
 									</div>
 									<div class="infobox-data">
-										<span class="infobox-data-number"> <h:outputText value="Margin" />
+										<span class="infobox-data-number">
+											<h:outputText value="Margin" />
 										</span>
 										<div class="infobox-content">
 											<h:outputText value="#{deliveryRequestView.deliveryRequest.totalPrice-deliveryRequestView.deliveryRequest.totalCost}">
@@ -279,8 +285,11 @@
 						<div class="widget-body">
 							<ul class="steps">
 								<li class="complete">
-									<span class="step"> <h:outputText value="1" />
-									</span> <span class="title"> <h:outputText id="step1" value="#{DeliveryRequestStatus.EDITED.value}" />
+									<span class="step">
+										<h:outputText value="1" />
+									</span>
+									<span class="title">
+										<h:outputText id="step1" value="#{DeliveryRequestStatus.EDITED.value}" />
 									</span>
 									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 										<h:outputText escape="false"
@@ -289,8 +298,11 @@
 								</li>
 								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date2!=null || deliveryRequestView.deliveryRequest.date7==null}">
 									<li class="#{deliveryRequestView.deliveryRequest.date2!=null?'complete':''}">
-										<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span> <span class="title"> <h:outputText id="step2" value="#{DeliveryRequestStatus.REQUESTED.value}" />
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step2" value="#{DeliveryRequestStatus.REQUESTED.value}" />
 										</span>
 										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
@@ -301,9 +313,12 @@
 								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date6==null}">
 									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date3!=null || deliveryRequestView.deliveryRequest.date7==null}">
 										<li class="#{deliveryRequestView.deliveryRequest.date3!=null?'complete':''}">
-											<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span> <span class="title"> <h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED1.value}" /> <p:overlayPanel for="step3"
-													style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step3" value="#{DeliveryRequestStatus.APPROVED1.value}" />
+												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date3,deliveryRequestView.deliveryRequest.user3.username,deliveryRequestView.deliveryRequest.project.manager.username)}" />
 												</p:overlayPanel>
@@ -312,9 +327,12 @@
 									</f:subview>
 									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null}">
 										<li class="#{deliveryRequestView.deliveryRequest.date8!=null?'complete':''}">
-											<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span> <span class="title"> <h:outputText id="step8" value="#{DeliveryRequestStatus.APPROVED2.value}" /> <p:overlayPanel for="step8"
-													style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step8" value="#{DeliveryRequestStatus.APPROVED2.value}" />
+												<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date8,deliveryRequestView.deliveryRequest.user8.username,projectView.findFirstHardwareManager(deliveryRequestView.deliveryRequest.project.id).username)}" />
 												</p:overlayPanel>
@@ -324,8 +342,11 @@
 									<f:subview
 										rendered="#{deliveryRequestView.deliveryRequest.isPartial and (deliveryRequestView.deliveryRequest.date4!=null || deliveryRequestView.deliveryRequest.date7==null)}">
 										<li class="#{deliveryRequestView.deliveryRequest.date4!=null and deliveryRequestView.deliveryRequest.isPartial?'complete':''}">
-											<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span> <span class="title"> <h:outputText id="step4_1" value="#{DeliveryRequestStatus.PARTIALLY_DELIVRED.value}" />
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step4_1" value="#{DeliveryRequestStatus.PARTIALLY_DELIVRED.value}" />
 											</span>
 											<p:overlayPanel for="step4_1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false"
@@ -335,9 +356,12 @@
 									</f:subview>
 									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date4!=null || deliveryRequestView.deliveryRequest.date7==null}">
 										<li class="#{deliveryRequestView.deliveryRequest.date4!=null and !deliveryRequestView.deliveryRequest.isPartial?'complete':''}">
-											<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span> <span class="title"> <h:outputText id="step4_2" value="#{DeliveryRequestStatus.DELIVRED.value}" /> <p:overlayPanel for="step4_2"
-													style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step4_2" value="#{DeliveryRequestStatus.DELIVRED.value}" />
+												<p:overlayPanel for="step4_2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(deliveryRequestView.deliveryRequest.date4,deliveryRequestView.deliveryRequest.user4.username,DeliveryRequestType.XBOUND!=deliveryRequestView.deliveryRequest.type?deliveryRequestView.deliveryRequest.warehouse.firstManager.username:deliveryRequestView.deliveryRequest.requester.username)}" />
 												</p:overlayPanel>
@@ -347,8 +371,11 @@
 									<f:subview
 										rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type and (deliveryRequestView.deliveryRequest.date5!=null || deliveryRequestView.deliveryRequest.date7==null)}">
 										<li class="#{deliveryRequestView.deliveryRequest.date5!=null?'complete':''}">
-											<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span> <span class="title"> <h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step5" value="#{DeliveryRequestStatus.ACKNOWLEDGED.value}" />
 											</span>
 											<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false"
@@ -359,8 +386,11 @@
 								</f:subview>
 								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date6!=null}">
 									<li class="error">
-										<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span> <span class="title"> <h:outputText id="step6" value="#{DeliveryRequestStatus.REJECTED.value}" />
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step6" value="#{DeliveryRequestStatus.REJECTED.value}" />
 										</span>
 										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
@@ -370,8 +400,11 @@
 								</f:subview>
 								<f:subview rendered="#{deliveryRequestView.deliveryRequest.date7!=null}">
 									<li class="error">
-										<span class="step"> <i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span> <span class="title"> <h:outputText id="step7" value="#{DeliveryRequestStatus.CANCELED.value}" />
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step7" value="#{DeliveryRequestStatus.CANCELED.value}" />
 										</span>
 										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
@@ -561,27 +594,40 @@
 														<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
 															<f:param name="fileName" value="#{item.partNumber.image}" />
 														</p:graphicImage>
-														<br /> <span class="bolder green smaller-80"> <h:outputText value="#{item.partNumber.name}" />
+														<br />
+														<span class="bolder green smaller-80">
+															<h:outputText value="#{item.partNumber.name}" />
 														</span>
 													</div>
 													<div class="col-xs-8">
 														<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
-														<span class="bolder blue"> <h:outputText value="Industry : #{item.partNumber.industryName}" />
-														</span> <br />
+														<span class="bolder blue">
+															<h:outputText value="Industry : #{item.partNumber.industryName}" />
+														</span>
+														<br />
 														<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
-														<span class="pink"> <h:outputText value="Category : #{item.partNumber.categoryName}" />
-														</span> <br />
+														<span class="pink">
+															<h:outputText value="Category : #{item.partNumber.categoryName}" />
+														</span>
+														<br />
 														<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
-														<span class="green"> <h:outputText value="Type : #{item.partNumber.typeName}" />
-														</span> <br />
+														<span class="green">
+															<h:outputText value="Type : #{item.partNumber.typeName}" />
+														</span>
+														<br />
 														<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
-														<span class="orange"> <h:outputText value="Brand : #{item.partNumber.brandName}" />
-														</span> <br />
+														<span class="orange">
+															<h:outputText value="Brand : #{item.partNumber.brandName}" />
+														</span>
+														<br />
 														<i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
-														<span class="light-blue"> <h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
-														</span> <br />
+														<span class="light-blue">
+															<h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+														</span>
+														<br />
 														<i class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
-														<span class="purple"> <h:outputText value="Description : #{item.partNumber.description}" />
+														<span class="purple">
+															<h:outputText value="Description : #{item.partNumber.description}" />
 														</span>
 														<hr />
 													</div>
@@ -712,8 +758,59 @@
 								</div>
 							</div>
 						</f:subview>
-						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !deliveryRequestView.returnedStockRowList.isEmpty())}">
+						<f:subview
+							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id).isEmpty())}">
 							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-list blue" />
+									<h:outputText value=" Return Status" />
+								</h4>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<div class="col-sm-9 hidden-xs">
+												<i class="fa fa-list" />
+												<h:outputText value=" Return Status" />
+											</div>
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable
+												value="#{deliveryRequestView.getTransferOrReturnSituation(stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id),deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id))}"
+												var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+												<p:column headerText="Part Number" width="120">
+													<h:outputLink value="viewPartNumber.xhtml" target="blank">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
+														<f:param name="id" value="#{item.partNumber.id}" />
+													</h:outputLink>
+												</p:column>
+												<p:column headerText="Description" width="150">
+													<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+												</p:column>
+												<p:column headerText="Quantity" width="50">
+													<h:outputText value="#{item.quantity}" styleClass="blue">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Returned" width="50">
+													<h:outputText value="#{item.tmpQuantity1}" styleClass="green">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="In Progress" width="50">
+													<h:outputText value="#{item.tmpQuantity2}" styleClass="orange">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Pending" width="50">
+													<h:outputText value="#{item.quantity-(item.tmpQuantity1+item.tmpQuantity2)}" styleClass="bolder pink">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-spinner orange" />
 									<h:outputText value=" In Progress" />
@@ -776,8 +873,9 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{deliveryRequestView.returnedStockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:dataTable value="#{stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20"
+												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number">
 													<h:outputLink value="viewPartNumber.xhtml" target="blank">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
@@ -816,8 +914,58 @@
 							</div>
 						</f:subview>
 						<f:subview
-							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !deliveryRequestView.transferredStockRowList.isEmpty())}">
+							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id).isEmpty())}">
 							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-list blue" />
+									<h:outputText value=" Transfer Status" />
+								</h4>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<div class="col-sm-9 hidden-xs">
+												<i class="fa fa-list" />
+												<h:outputText value=" Transfer Status" />
+											</div>
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable
+												value="#{deliveryRequestView.getTransferOrReturnSituation(stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id),deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id))}"
+												var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+												<p:column headerText="Part Number" width="120">
+													<h:outputLink value="viewPartNumber.xhtml" target="blank">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
+														<f:param name="id" value="#{item.partNumber.id}" />
+													</h:outputLink>
+												</p:column>
+												<p:column headerText="Description" width="150">
+													<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+												</p:column>
+												<p:column headerText="Quantity" width="50">
+													<h:outputText value="#{item.quantity}" styleClass="blue">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Returned" width="50">
+													<h:outputText value="#{item.tmpQuantity1}" styleClass="green">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="In Progress" width="50">
+													<h:outputText value="#{item.tmpQuantity2}" styleClass="orange">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Pending" width="50">
+													<h:outputText value="#{item.quantity-(item.tmpQuantity1+item.tmpQuantity2)}" styleClass="bolder pink">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-spinner orange" />
 									<h:outputText value=" In Progress" />
@@ -880,8 +1028,9 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{deliveryRequestView.transferredStockRowList}" var="item" rows="20" styleClass="table table-striped table-hover center"
-												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:dataTable value="#{stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20"
+												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number">
 													<h:outputLink value="viewPartNumber.xhtml" target="blank">
 														<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
@@ -927,7 +1076,8 @@
 									<div class="timeline-container timeline-style2">
 										<ui:repeat var="commentGroup" value="#{deliveryRequestView.deliveryRequest.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
-												<span class="label label-purple arrowed-in-right label-lg"> <b>
+												<span class="label label-purple arrowed-in-right label-lg">
+													<b>
 														<h:outputText value="#{commentGroup.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
@@ -942,7 +1092,10 @@
 																<f:param name="fileName" value="#{comment.userPhoto}" />
 															</p:graphicImage>
 															<i class="timeline-indicator btn btn-info no-hover"></i>
-															<br /> <span class="orange"> <i class="ace-icon fa fa-clock-o bigger-120"></i> <h:outputText value="#{comment.date}">
+															<br />
+															<span class="orange">
+																<i class="ace-icon fa fa-clock-o bigger-120"></i>
+																<h:outputText value="#{comment.date}">
 																	<f:convertDateTime pattern="HH:mm" />
 																</h:outputText>
 															</span>
@@ -954,7 +1107,8 @@
 																		<h:outputText value="#{comment.userFullName}" />
 																	</a>
 																	<i class="ace-icon fa fa-angle-double-right"></i>
-																	<span class="grey"> <h:outputText value="#{comment.title}" styleClass="green" />
+																	<span class="grey">
+																		<h:outputText value="#{comment.title}" styleClass="green" />
 																	</span>
 																</h5>
 															</div>
@@ -1055,7 +1209,8 @@
 									<p:dataTable id="deliveryRequesthistoryList" value="#{deliveryRequestView.deliveryRequest.historyList}" var="item" rows="20" styleClass="table table-striped table-hover "
 										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
-											<span class="#{item.statusStyleClass}"> <h:outputText value="#{item.status}" styleClass="bolder" />
+											<span class="#{item.statusStyleClass}">
+												<h:outputText value="#{item.status}" styleClass="bolder" />
 											</span>
 										</p:column>
 										<p:column headerText="Date" width="90" styleClass="center">
@@ -1361,7 +1516,8 @@
 											<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" thousandSeparator="" rendered="#{boqMappingView.canSave()}">
 												<p:ajax update="action-buttons" />
 											</p:inputNumber>
-											<span class="action-buttons center"> <h:panelGroup id="action-buttons">
+											<span class="action-buttons center">
+												<h:panelGroup id="action-buttons">
 													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{boqMappingView.changeQuantityListener(item,rowIndexVar)}" update="boq_mapping">
 														<i class="ace-icon fa fa-check bigger-130 green" />
 													</p:commandLink>
@@ -1424,9 +1580,11 @@
 								<div class="col-sm-5 pull-right">
 									<h4 class="pull-right">
 										<h:outputText value="Total amount :" />
-										<span class="green"> <h:outputText value="#{boqMappingView.deliveryRequest.totalBoq}">
+										<span class="green">
+											<h:outputText value="#{boqMappingView.deliveryRequest.totalBoq}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
-											</h:outputText> <h:outputText value=" MAD" />
+											</h:outputText>
+											<h:outputText value=" MAD" />
 										</span>
 									</h4>
 								</div>
@@ -1552,7 +1710,8 @@
 											<p:inputNumber value="#{item.quantity}" readonly="#{item.id!=null}" maxValue="#{item.tmpQuantity}" minValue="0" rendered="#{deliveryRequestExpiryDateView.editMode}">
 												<p:ajax update="action-buttons" />
 											</p:inputNumber>
-											<span class="action-buttons center"> <h:panelGroup id="action-buttons">
+											<span class="action-buttons center">
+												<h:panelGroup id="action-buttons">
 													<p:commandLink rendered="#{item.tmpQuantity > item.quantity}" action="#{deliveryRequestExpiryDateView.changeQuantityListener(item,rowIndexVar)}"
 														update="expiryDateList,:main_form:messages">
 														<i class="ace-icon fa fa-check bigger-130 green" />

@@ -913,6 +913,16 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId) {
 		return service.findByPoAndDeliveredWithoutBoqMapping(poId);
 	}
+	
+	@Cacheable("stockRowView.findReturnedStockRowList")
+	public List<StockRow> findReturnedStockRowList(Integer outboundDeliveryRequestId) {
+		return service.findReturnedStockRowList(outboundDeliveryRequestId);
+	}
+	
+	@Cacheable("stockRowView.findTransferredStockRowList")
+	public List<StockRow> findTransferredStockRowList(Integer outboundDeliveryRequestId) {
+		return stockRowService.findTransferredStockRowList(outboundDeliveryRequestId);
+	}
 
 	// GETTERS & SETTERS
 

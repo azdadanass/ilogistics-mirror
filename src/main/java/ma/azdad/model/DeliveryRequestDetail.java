@@ -61,6 +61,9 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private Integer tmpCustomerId;
 	private Integer tmpSupplierId;
 
+	private Double tmpQuantity1;
+	private Double tmpQuantity2;
+
 	public DeliveryRequestDetail() {
 		super();
 	}
@@ -426,8 +429,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
-	
-	
+
 	@Transient
 	public DeliveryRequestType getDeliveryRequestType() {
 		if (deliveryRequest == null)
@@ -441,7 +443,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setType(deliveryRequestType);
 	}
-	
+
 	@Transient
 	public DeliveryRequestStatus getDeliveryRequestStatus() {
 		if (deliveryRequest == null)
@@ -988,6 +990,26 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	@Transient
 	public String getTmpPoCurrencyName() {
 		return tmpPoCurrencyName;
+	}
+
+	@Transient
+	public Double getTmpQuantity1() {
+		return tmpQuantity1;
+	}
+
+	@Transient
+	public void setTmpQuantity1(Double tmpQuantity1) {
+		this.tmpQuantity1 = tmpQuantity1;
+	}
+
+	@Transient
+	public Double getTmpQuantity2() {
+		return tmpQuantity2;
+	}
+
+	@Transient
+	public void setTmpQuantity2(Double tmpQuantity2) {
+		this.tmpQuantity2 = tmpQuantity2;
 	}
 
 }

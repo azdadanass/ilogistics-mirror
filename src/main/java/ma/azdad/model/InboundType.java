@@ -3,7 +3,7 @@ package ma.azdad.model;
 public enum InboundType {
 	NEW("New", "green", "#69aa46"),
 	RETURN("Return From Outbound", "red", "#dd5a43"),
-	TRANSFER("Transfer from Outbond", "blue", "#ff851d"),;
+	TRANSFER("Transfer from Outbound", "blue", "#ff851d"),;
 
 	private final String value;
 	private final String color;

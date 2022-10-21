@@ -466,7 +466,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				}
 			}
 
-		} 
+		}
 //		else if (deliveryRequestDetail.getDeliveryRequest().getIsXbound()) {
 //			// update related StockRow
 //			idList = stockRowRepos.findIdList(DeliveryRequestType.XBOUND, deliveryRequestDetail.getDeliveryRequest().getId(), deliveryRequestDetail.getPartNumber().getId());
@@ -609,6 +609,14 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	public List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
 			Integer companyId, DeliveryRequestType type, Integer partNumberId) {
 		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList, companyId, type, partNumberId);
+	}
+
+	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId){
+		return repos.findTransferredAndPendingDetailList(outboundDeliveryRequestId);
+	}
+	
+	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId){
+		return repos.findReturnedAndPendingDetailList(outboundDeliveryRequestId);
 	}
 
 }

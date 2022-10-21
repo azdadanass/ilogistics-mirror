@@ -164,6 +164,16 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		}
 	}
 	
+	@Cacheable("deliveryRequestDetailView.findTransferredAndPendingDetailList")
+	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId){
+		return service.findTransferredAndPendingDetailList(outboundDeliveryRequestId);
+	}
+	
+	@Cacheable("deliveryRequestDetailView.findReturnedAndPendingDetailList")
+	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId){
+		return service.findReturnedAndPendingDetailList(outboundDeliveryRequestId);
+	}
+	
 	@Cacheable("deliveryRequestDetailView.findInboundByCompanyOwnerAndPartNumberAndNotDelivered")
 	public List<DeliveryRequestDetail> findInboundByCompanyOwnerAndPartNumberAndNotDelivered(Integer partNumberId) {
 		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(),  cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,DeliveryRequestType.INBOUND, partNumberId);

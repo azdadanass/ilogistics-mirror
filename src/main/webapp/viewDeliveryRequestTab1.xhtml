@@ -185,6 +185,9 @@
 						</f:subview>
 						<h:outputText value="#{deliveryRequestView.deliveryRequest.type.value}" />
 						<h:outputText value=", #{deliveryRequestView.deliveryRequest.subType}" rendered="#{deliveryRequestView.deliveryRequest.subType!=null}" />
+						<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditSubType()}" onclick="PF('subTypeDlg').show()" styleClass="pull-right">
+							<i class="ace-icon fa fa-edit bigger-130 orange" />
+						</p:commandLink>
 						&nbsp;
 					</div>
 				</div>
@@ -593,27 +596,40 @@
 								<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
 									<f:param name="fileName" value="#{item.partNumber.image}" />
 								</p:graphicImage>
-								<br /> <span class="bolder green smaller-80"> <h:outputText value="#{item.partNumber.name}" />
+								<br />
+								<span class="bolder green smaller-80">
+									<h:outputText value="#{item.partNumber.name}" />
 								</span>
 							</div>
 							<div class="col-xs-8">
 								<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
-								<span class="bolder blue"> <h:outputText value="Industry : #{item.partNumber.industryName}" />
-								</span> <br />
+								<span class="bolder blue">
+									<h:outputText value="Industry : #{item.partNumber.industryName}" />
+								</span>
+								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
-								<span class="pink"> <h:outputText value="Category : #{item.partNumber.categoryName}" />
-								</span> <br />
+								<span class="pink">
+									<h:outputText value="Category : #{item.partNumber.categoryName}" />
+								</span>
+								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
-								<span class="green"> <h:outputText value="Type : #{item.partNumber.typeName}" />
-								</span> <br />
+								<span class="green">
+									<h:outputText value="Type : #{item.partNumber.typeName}" />
+								</span>
+								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
-								<span class="orange"> <h:outputText value="Brand : #{item.partNumber.brandName}" />
-								</span> <br />
+								<span class="orange">
+									<h:outputText value="Brand : #{item.partNumber.brandName}" />
+								</span>
+								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
-								<span class="light-blue"> <h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
-								</span> <br />
+								<span class="light-blue">
+									<h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+								</span>
+								<br />
 								<i class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
-								<span class="purple"> <h:outputText value="Description : #{item.partNumber.description}" />
+								<span class="purple">
+									<h:outputText value="Description : #{item.partNumber.description}" />
 								</span>
 								<hr />
 							</div>

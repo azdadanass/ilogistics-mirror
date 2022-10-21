@@ -2366,6 +2366,25 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.init();
 
 	}
+	
+	// edit sub type
+	public Boolean canEditSubType() {
+		return true; // TODO
+	}
+	
+	public void editSubType() {
+		if(!canEditSubType())
+			return;
+		
+	}
+	
+	public Boolean canEditIsForTransfer() {
+		return false; // TODO
+	}
+	
+	public Boolean canEditIsForReturn() {
+		return false; // TODO
+	}
 
 	// Return / Transfer from outbound
 	public Boolean canReturnFromOutbound() {

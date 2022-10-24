@@ -2281,7 +2281,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getIsInboundNew())
 			return CompanyType.COMPANY.equals(deliveryRequest.getOwnerType());
 		else if (deliveryRequest.getIsOutbound())
-			return projectService.isDstrProject(deliveryRequest.getDestinationProjectId());
+			if (deliveryRequest.getIsForReturn() || deliveryRequest.getIsForTransfer())
+				return false;
+			else if (isAddPage && deliveryRequest.getProject() != null)
+				return !deliveryRequest.getProject().getCustomerWarehousing() && !deliveryRequest.getProject().getSupplierWarehousing();
+			else
+				return CompanyType.COMPANY.equals(deliveryRequest.getOwnerType());
 		return false;
 	}
 

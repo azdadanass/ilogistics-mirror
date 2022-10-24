@@ -84,6 +84,8 @@ public class ProjectAssignment extends GenericModel<Integer> implements Serializ
 			return getUserFullName();
 		case SUPPLIER:
 			return getSupplierName();
+		case CUSTOMER:
+			return getCustomerName();
 		case INTERNAL_TEAM:
 		case EXTERNAL_TEAM:
 			return getTeamName();

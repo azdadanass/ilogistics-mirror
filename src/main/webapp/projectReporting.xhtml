@@ -67,9 +67,9 @@
 											<h:outputText value="Project " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="project" value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains" > 
+											<p:selectOneMenu id="project" value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
-												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}"  />
+												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}" />
 												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />
 												<p:ajax listener="#{jobRequestDeliveryDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel4" />
 												<p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel5" />
@@ -103,18 +103,20 @@
 							<h:outputText value=" Stock History" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<li>
-						<a data-toggle="tab" href="#tab4">
-							<i class="green ace-icon fa fa-check bigger-120"></i>
-							<h:outputText value=" Install Base" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab5">
-							<i class="blue ace-icon fa fa-spinner bigger-120"></i>
-							<h:outputText value=" Team Inventory (Running)" styleClass="hidden-xs" />
-						</a>
-					</li>
+					<f:subview rendered="#{projectView.getSdm(stockRowView.projectId)}">
+						<li>
+							<a data-toggle="tab" href="#tab4">
+								<i class="green ace-icon fa fa-check bigger-120"></i>
+								<h:outputText value=" SDM Install base" styleClass="hidden-xs" />
+							</a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#tab5">
+								<i class="blue ace-icon fa fa-spinner bigger-120"></i>
+								<h:outputText value=" Team running inventory" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -262,8 +264,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false" width="120">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -342,8 +344,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -437,8 +439,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false">
 												<h:outputText value="#{item.tmpPartNumberName}" styleClass="bolder pink" />
 											</p:column>
@@ -503,8 +505,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false">
 												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
 											</p:column>

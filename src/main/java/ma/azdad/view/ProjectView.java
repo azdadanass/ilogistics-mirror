@@ -176,6 +176,10 @@ public class ProjectView {
 	public List<Project> findProjectListHavingIssues() {
 		return projectService.findProjectListHavingIssues(cacheView.getAllProjectList());
 	}
+	
+	public Boolean getSdm(Integer id) {
+		return projectService.getSdm(id);
+	}
 
 	// GETTERS & SETTERS
 	public Project getProject() {

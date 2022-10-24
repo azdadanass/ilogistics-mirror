@@ -139,6 +139,7 @@ public class ProjectService {
 		return repos.getCustomerId(id);
 	}
 
+	@Cacheable("projectService.getSdm")
 	public Boolean getSdm(Integer id) {
 		return repos.getSdm(id);
 	}

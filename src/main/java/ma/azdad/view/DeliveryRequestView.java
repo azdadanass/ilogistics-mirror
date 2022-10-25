@@ -1445,6 +1445,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				toNotifyUserSet.add(deliveryRequest.getToUser());
 			}
 		}
+		if(getIsCustomerRequesterDataNeeded())
+			toNotifyUserSet.add(userService.findOneLight(deliveryRequest.getTmpExternalRequesterUsername()));
+			
+			
 		toNotifyUserSet.stream().filter(user -> Boolean.TRUE.equals(user.getActive())).forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 

@@ -190,32 +190,29 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			return repos.findLightBySupplierUser(deliverToSupplierId, destinationProjectList, type, warehouseList, state.getStatusList());
 	}
 
-	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		List<DeliveryRequest> result = deliveryRequestRepos.findByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
-
+	public List<DeliveryRequest> findByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type) {
+		List<DeliveryRequest> result = deliveryRequestRepos.findByMissingPo(username, warehouseList, assignedProjectList, type);
 		result.forEach(i -> {
 			i.setTotalCost(deliveryRequestRepos.getTotalCost(i.getId()));
 			i.setTotalPrice(deliveryRequestRepos.getTotalPrice(i.getId()));
 			i.setEndCustomerName(deliveryRequestRepos.getEndCustomerName(i.getId()));
 		});
-
 		return result;
 	}
 
-	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.countByMissingPo(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+	
+	@Cacheable(value = "deliveryRequestService.countByMissingPo")
+	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type) {
+		return deliveryRequestRepos.countByMissingPo(username, warehouseList, assignedProjectList, type);
 	}
 
-	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.findByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,DeliveryRequestType type) {
+		return deliveryRequestRepos.findByMissingBoqMapping(username, warehouseList, assignedProjectList, type);
 	}
 
-	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		return deliveryRequestRepos.countByMissingBoqMapping(username, warehouseList, assignedProjectList, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED));
+	@Cacheable(value = "deliveryRequestService.countByMissingBoqMapping")
+	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,DeliveryRequestType type) {
+		return deliveryRequestRepos.countByMissingBoqMapping(username, warehouseList, assignedProjectList, type);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightByRequester")
@@ -1079,7 +1076,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Long countByOutboundDeliveryRequestTransfer(Integer outboundDeliveryRequestId) {
 		return ObjectUtils.firstNonNull(deliveryRequestRepos.countByOutboundDeliveryRequestTransfer(outboundDeliveryRequestId), 0l);
 	}
-	
+
 	public Long countByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId) {
 		return ObjectUtils.firstNonNull(deliveryRequestRepos.countByOutboundDeliveryRequestReturn(outboundDeliveryRequestId), 0l);
 	}

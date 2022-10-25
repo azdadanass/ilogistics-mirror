@@ -27,13 +27,13 @@
 								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 									<i class="ace-icon fa fa-tasks"></i>
 									<span class="badge badge-grey">
-										<h:outputText value="#{deliveryRequestView.countByMissingPo() + deliveryRequestView.countByMissingBoqMapping()}" />
+										<h:outputText value="#{deliveryRequestView.countByMissingCustomerPo() + deliveryRequestView.countByMissingCustomerBoqMapping()}" />
 									</span>
 								</a>
 								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-check"></i>
-										<h:outputText value="PO &amp; BOQ" />
+										<h:outputText value="Customer PO &amp; BOQ" />
 									</li>
 									<li class="dropdown-content">
 										<ul class="dropdown-menu dropdown-navbar">
@@ -46,7 +46,7 @@
 															<h:outputText value="  Missing PO " />
 														</span>
 														<span class="pull-right badge badge-success">
-															<h:outputText value="#{deliveryRequestView.countByMissingPo()}" />
+															<h:outputText value="#{deliveryRequestView.countByMissingCustomerPo()}" />
 														</span>
 													</span>
 													<f:param name="pageIndex" value="5" />
@@ -61,10 +61,58 @@
 															<h:outputText value="  Missing BoQ " />
 														</span>
 														<span class="pull-right badge badge-primary">
-															<h:outputText value="#{deliveryRequestView.countByMissingBoqMapping()}" />
+															<h:outputText value="#{deliveryRequestView.countByMissingCustomerBoqMapping()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="13" />
+												</h:outputLink>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="purple">
+								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+									<i class="ace-icon fa fa-tasks"></i>
+									<span class="badge badge-grey">
+										<h:outputText value="#{deliveryRequestView.countByMissingSupplierPo() + deliveryRequestView.countByMissingSupplierBoqMapping()}" />
+									</span>
+								</a>
+								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+									<li class="dropdown-header">
+										<i class="ace-icon fa fa-check"></i>
+										<h:outputText value="Supplier PO &amp; BOQ" />
+									</li>
+									<li class="dropdown-content">
+										<ul class="dropdown-menu dropdown-navbar">
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-remove green " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value="  Missing PO " />
+														</span>
+														<span class="pull-right badge badge-success">
+															<h:outputText value="#{deliveryRequestView.countByMissingSupplierPo()}" />
 														</span>
 													</span>
 													<f:param name="pageIndex" value="6" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-remove blue " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value="  Missing BoQ " />
+														</span>
+														<span class="pull-right badge badge-primary">
+															<h:outputText value="#{deliveryRequestView.countByMissingSupplierBoqMapping()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="14" />
 												</h:outputLink>
 											</li>
 										</ul>

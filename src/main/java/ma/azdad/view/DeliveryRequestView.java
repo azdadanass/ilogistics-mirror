@@ -372,10 +372,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 				break;
 			case 5:
-				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
 				break;
 			case 6:
-				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
 				break;
 			case 7:
 				if (sessionView.getInternal())
@@ -399,6 +399,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case 12:
 				list2 = list1 = service.findLightByMissingExpiry(cacheView.getWarehouseList());
 				break;
+			case 13:
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+				break;
+			case 14:
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+				break;
+			
 			default:
 				break;
 			}
@@ -1445,10 +1452,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				toNotifyUserSet.add(deliveryRequest.getToUser());
 			}
 		}
-		if(getIsCustomerRequesterDataNeeded())
+		if (getIsCustomerRequesterDataNeeded())
 			toNotifyUserSet.add(userService.findOneLight(deliveryRequest.getTmpExternalRequesterUsername()));
-			
-			
+
 		toNotifyUserSet.stream().filter(user -> Boolean.TRUE.equals(user.getActive())).forEach(i -> deliveryRequest.addToNotify(new ToNotify(i)));
 	}
 
@@ -1620,8 +1626,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (!deliveryRequest.getIsInboundTransfer())
 				deliveryRequest.setOutboundDeliveryRequestTransfer(null);
 
-			if ((deliveryRequest.getIsInboundNew() && CompanyType.COMPANY.equals(deliveryRequest.getOwnerType())) //
-					|| (deliveryRequest.getIsOutbound() && projectService.isDstrProject(deliveryRequest.getDestinationProjectId())))
+			if (CompanyType.COMPANY.equals(deliveryRequest.getOwnerType()) && //
+					(deliveryRequest.getIsInboundNew() //
+							|| (deliveryRequest.getIsOutbound() && !deliveryRequest.getIsForReturn() && !deliveryRequest.getIsForTransfer())))
 				deliveryRequest.setMissingPo(deliveryRequest.getPo() == null);
 
 			// fill details currencies
@@ -2530,12 +2537,21 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return service.findLightByRequester(sessionView.getUsername());
 	}
 
-	public Long countByMissingPo() {
-		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+	
+	public Long countByMissingSupplierPo() {
+		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+	}
+	
+	public Long countByMissingCustomerPo() {
+		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
 	}
 
-	public Long countByMissingBoqMapping() {
-		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
+	public Long countByMissingCustomerBoqMapping() {
+		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+	}
+	
+	public Long countByMissingSupplierBoqMapping() {
+		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
 	}
 
 	public Long countToAddTransport() {

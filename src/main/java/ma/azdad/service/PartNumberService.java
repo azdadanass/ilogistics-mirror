@@ -58,6 +58,7 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	@Override
 	public PartNumber findOne(Integer id) {
 		PartNumber partNumber = super.findOne(id);
+		Hibernate.initialize(partNumber.getUser());
 		Hibernate.initialize(partNumber.getBrand());
 		Hibernate.initialize(partNumber.getFileList());
 		Hibernate.initialize(partNumber.getHistoryList());

@@ -418,6 +418,10 @@
 				</div>
 			</div>
 			<div class="space-16" />
+			<c:set var="returnedList" value="#{stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id)}" />
+			<c:set var="pendingReturnList" value="#{deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id)}" />
+			<c:set var="transferredList" value="#{stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id)}" />
+			<c:set var="pendingTransferList" value="#{deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id)}" />
 			<div class="tabbable">
 				<ul class="nav nav-tabs padding-18">
 					<li class="active">
@@ -440,7 +444,7 @@
 							</a>
 						</li>
 					</f:subview>
-					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null}">
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isForTransfer or deliveryRequestView.deliveryRequest.isForReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty())}">
 						<li>
 							<a data-toggle="tab" href="#tab2">
 								<i class="purple ace-icon fa fa-list bigger-120"></i>
@@ -759,7 +763,7 @@
 							</div>
 						</f:subview>
 						<f:subview
-							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id).isEmpty())}">
+							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isForReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty()) }">
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-list blue" />
@@ -774,9 +778,8 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable
-												value="#{deliveryRequestView.getTransferOrReturnSituation(stockRowView.findReturnedStockRowList(deliveryRequestView.deliveryRequest.id),deliveryRequestDetailView.findReturnedAndPendingDetailList(deliveryRequestView.deliveryRequest.id))}"
-												var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+											<p:dataTable value="#{deliveryRequestView.getTransferOrReturnSituation(returnedList,pendingReturnList)}" var="item" rows="20"
+												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number" width="120">
 													<h:outputLink value="viewPartNumber.xhtml" target="blank">
@@ -914,7 +917,7 @@
 							</div>
 						</f:subview>
 						<f:subview
-							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id).isEmpty() or !stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id).isEmpty())}">
+							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (!pendingTransferList.isEmpty() or !transferredList.isEmpty())}">
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-list blue" />
@@ -930,7 +933,7 @@
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
 											<p:dataTable
-												value="#{deliveryRequestView.getTransferOrReturnSituation(stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id),deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id))}"
+												value="#{deliveryRequestView.getTransferOrReturnSituation(transferredList,pendingTransferList)}"
 												var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number" width="120">
@@ -979,7 +982,7 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{deliveryRequestDetailView.findTransferredAndPendingDetailList(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20"
+											<p:dataTable value="#{pendingTransferList}" var="item" rows="20"
 												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number" width="120">
@@ -1028,7 +1031,7 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{stockRowView.findTransferredStockRowList(deliveryRequestView.deliveryRequest.id)}" var="item" rows="20"
+											<p:dataTable value="#{transferredList}" var="item" rows="20"
 												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 												<p:column headerText="Part Number">

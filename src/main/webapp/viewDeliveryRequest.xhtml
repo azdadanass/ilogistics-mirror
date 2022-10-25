@@ -162,6 +162,16 @@
 							<i class="ace-icon fa fa-dollar bigger-230"></i>
 							<h:outputText value="Unit Cost" />
 						</p:commandLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-pink" title="Go to origin site " value="map.xhtml" rendered="#{deliveryRequestView.deliveryRequest.origin!=null}">
+							<i class="ace-icon fa fa-map-marker bigger-230"></i>
+							<h:outputText value="Map" />
+							<f:param name="siteId" value="#{deliveryRequestView.deliveryRequest.origin.id}" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-pink" title="Go to destination site " value="map.xhtml" rendered="#{deliveryRequestView.deliveryRequest.destination!=null}">
+							<i class="ace-icon fa fa-map-marker bigger-230"></i>
+							<h:outputText value="Map" />
+							<f:param name="siteId" value="#{deliveryRequestView.deliveryRequest.destination.id}" />
+						</h:outputLink>
 					</div>
 					<div class="col-sm-7  hidden-xs infobox-container">
 						<div class="row">

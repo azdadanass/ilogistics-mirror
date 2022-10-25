@@ -178,7 +178,7 @@ public class OldEmailService {
 			}
 
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
-			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
+			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal() && (cc ==null || !cc.contains(item.getEmail()))  ).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
 		default:
 			break;
 		}

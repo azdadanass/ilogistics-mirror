@@ -859,9 +859,7 @@
 													<h:outputText value="#{item.deliveryRequestStatus.value}" styleClass="#{item.deliveryRequestStatus.color}" />
 												</p:column>
 												<p:column headerText="Needed Delivery Date" width="80">
-													<h:outputText value="#{item.neededDeliveryDate}">
-														<f:convertDateTime pattern="yyyy-MM-dd" />
-													</h:outputText>
+													<h:outputText value="#{item.neededDeliveryDateStr}" styleClass="#{item.neededDeliveryDateColor.name} bolder" />
 												</p:column>
 												<p:column headerText="Quantity" width="50">
 													<h:outputText value="#{item.quantity}">
@@ -1014,9 +1012,7 @@
 													<h:outputText value="#{item.deliveryRequestStatus.value}" styleClass="#{item.deliveryRequestStatus.color}" />
 												</p:column>
 												<p:column headerText="Needed Delivery Date" width="80">
-													<h:outputText value="#{item.neededDeliveryDate}">
-														<f:convertDateTime pattern="yyyy-MM-dd" />
-													</h:outputText>
+													<h:outputText value="#{item.neededDeliveryDateStr}" styleClass="#{item.neededDeliveryDateColor.name} bolder" />
 												</p:column>
 												<p:column headerText="Quantity" width="50">
 													<h:outputText value="#{item.quantity}">

@@ -269,8 +269,9 @@
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.po.numeroIbuy} - #{supplierView.findNameByPo(deliveryRequestView.deliveryRequest.po.id)}"
 									styleClass="orange bolder" />
 							</f:subview>
-							<p:commandLink rendered="#{deliveryRequestView.deliveryRequest.po==null}" onclick="PF('poDlg').show()">
-								<h:outputText value="None" styleClass="grey bolder" />
+							<h:outputText value="None" styleClass="grey bolder" rendered="#{deliveryRequestView.deliveryRequest.po==null}" />
+							<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditPo()}" onclick="PF('poDlg').show()" styleClass="pull-right">
+								<i class="ace-icon fa fa-edit bigger-130 orange" />
 							</p:commandLink>
 							&nbsp;
 						</div>

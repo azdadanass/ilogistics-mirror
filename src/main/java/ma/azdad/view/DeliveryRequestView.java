@@ -2320,7 +2320,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// EDIT PO
 	public Boolean canEditPo() {
-		return sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername());
+		return sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) //
+				&& (deliveryRequest.getPo() == null || deliveryRequest.getBoqMappingList().isEmpty());
 	}
 
 	public void editPo() {

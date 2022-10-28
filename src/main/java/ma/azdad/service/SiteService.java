@@ -14,7 +14,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -62,9 +61,8 @@ public class SiteService extends GenericService<Integer, Site, SiteRepos> {
 		return super.findOne(id);
 	}
 
-	@Override
-	@CacheEvict(value = { "siteService.cache1", "siteService.cache2", "siteService.cache3", "siteService.cache4" }, allEntries = true)
 	public Site save(Site a) {
+		evictCache();
 		Site site = super.save(a);
 		googleGeocodeService.updateGoogleGeocodeDataAsync(site);
 		return site;

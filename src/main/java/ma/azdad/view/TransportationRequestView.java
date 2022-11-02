@@ -563,27 +563,22 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// generic
 
-	@Cacheable("transportationRequestView.countToAcknowledgeRequests")
 	public Long countToAcknowledgeRequests() {
 		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
 	}
 
-	@Cacheable("transportationRequestView.countToApproveRequests")
 	public Long countToApproveRequests() {
 		return transportationRequestService.countByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 	}
 
-	@Cacheable("transportationRequestView.countToAssignRequests")
 	public Long countToAssignRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
 	}
 
-	@Cacheable("transportationRequestView.countToPickupRequests")
 	public Long countToPickupRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
 	}
 
-	@Cacheable("transportationRequestView.countToDeliverRequests")
 	public Long countToDeliverRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
 	}
@@ -593,6 +588,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		return deliveryRequestService.countByPendingTransportation(sessionView.getUsername());
 	}
 
+	@Cacheable("transportationRequestView.countTotal")
 	public Long countTotal() {
 		Long total = 0l;
 		if (sessionView.getIsUser())

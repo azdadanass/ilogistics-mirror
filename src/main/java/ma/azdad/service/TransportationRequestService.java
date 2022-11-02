@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequestStatus;
@@ -92,6 +93,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return repos.findLight(status);
 	}
 
+	@Cacheable("transportationRequestService.count")
 	public Long count(TransportationRequestStatus status, Boolean isTM) {
 		if (!isTM)
 			return 0l;
@@ -152,6 +154,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return repos.findLightByRequester(username, status);
 	}
 
+	@Cacheable("transportationRequestService.countByRequester")
 	public Long countByRequester(String username, TransportationRequestStatus status) {
 		return repos.countByRequester(username, status);
 	}
@@ -160,6 +163,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return repos.findLightByProjectManager(username, status);
 	}
 
+	@Cacheable("transportationRequestService.countByProjectManager")
 	public Long countByProjectManager(String username, TransportationRequestStatus status) {
 		return repos.countByProjectManager(username, status);
 	}

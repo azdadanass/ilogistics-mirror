@@ -229,6 +229,21 @@
 														<f:param name="pageIndex" value="10" />
 													</h:outputLink>
 												</li>
+												<li>
+													<h:outputLink value="transportationRequestList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" Acknowledge " />
+															</span>
+															<span class="pull-right badge badge-purple">
+																<h:outputText value="#{transportationRequestView.countToAcknowledgeRequests()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="2" />
+													</h:outputLink>
+												</li>
 											</f:subview>
 											<f:subview rendered="#{sessionView.isPM()}">
 												<li>
@@ -291,23 +306,6 @@
 															</span>
 														</span>
 														<f:param name="pageIndex" value="6" />
-													</h:outputLink>
-												</li>
-											</f:subview>
-											<f:subview rendered="#{sessionView.isUser()}">
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Acknowledge " />
-															</span>
-															<span class="pull-right badge badge-purple">
-																<h:outputText value="#{transportationRequestView.countToAcknowledgeRequests()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="2" />
 													</h:outputLink>
 												</li>
 											</f:subview>

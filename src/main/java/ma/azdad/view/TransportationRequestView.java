@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.map.MapModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -562,28 +563,46 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// generic
 
+	@Cacheable("transportationRequestView.countToAcknowledgeRequests")
 	public Long countToAcknowledgeRequests() {
 		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
 	}
 
+	@Cacheable("transportationRequestView.countToApproveRequests")
 	public Long countToApproveRequests() {
 		return transportationRequestService.countByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 	}
 
+	@Cacheable("transportationRequestView.countToAssignRequests")
 	public Long countToAssignRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
 	}
 
+	@Cacheable("transportationRequestView.countToPickupRequests")
 	public Long countToPickupRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
 	}
 
+	@Cacheable("transportationRequestView.countToDeliverRequests")
 	public Long countToDeliverRequests() {
 		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
 	}
 
+	@Cacheable("transportationRequestView.countToAdd")
+	public Long countToAdd() {
+		return deliveryRequestService.countByPendingTransportation(sessionView.getUsername());
+	}
+
 	public Long countTotal() {
-		return countToApproveRequests() + countToAssignRequests() + countToPickupRequests() + countToDeliverRequests() + countToAcknowledgeRequests();
+		Long total = 0l;
+		if (sessionView.getIsUser())
+			total += countToAdd() + countToAcknowledgeRequests();
+		if (sessionView.getIsPM())
+			total += countToApproveRequests();
+		if (sessionView.getIsTM())
+			total += countToAssignRequests() + countToPickupRequests() + countToDeliverRequests();
+
+		return total;
 	}
 
 	// GETTERS & SETTERS

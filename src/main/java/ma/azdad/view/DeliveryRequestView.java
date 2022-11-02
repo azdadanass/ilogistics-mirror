@@ -372,10 +372,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
 				break;
 			case 5:
-				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);
 				break;
 			case 6:
-				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.INBOUND);
 				break;
 			case 7:
 				if (sessionView.getInternal())
@@ -400,12 +400,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list2 = list1 = service.findLightByMissingExpiry(cacheView.getWarehouseList());
 				break;
 			case 13:
-				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						DeliveryRequestType.OUTBOUND);
 				break;
 			case 14:
-				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						DeliveryRequestType.INBOUND);
 				break;
-			
+
 			default:
 				break;
 			}
@@ -2538,21 +2540,20 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return service.findLightByRequester(sessionView.getUsername());
 	}
 
-	
 	public Long countByMissingSupplierPo() {
-		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.INBOUND);
 	}
-	
+
 	public Long countByMissingCustomerPo() {
-		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+		return service.countByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);
 	}
 
 	public Long countByMissingCustomerBoqMapping() {
-		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.OUTBOUND);
+		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);
 	}
-	
+
 	public Long countByMissingSupplierBoqMapping() {
-		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),DeliveryRequestType.INBOUND);
+		return service.countByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.INBOUND);
 	}
 
 	public Long countToAddTransport() {
@@ -2568,8 +2569,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Long countTotal() {
-		return countToAcknowledgeRequests() + countToApproveRequests() + countToDeliverRequests() + countToDeliverXboundRequests() + countToTransfer() + countToReturn()
-				+ countToAddTransport() + countMissingSerialNumber() + countMissingExpiry();
+		Long total = 0l;
+		if (sessionView.getIsInternalPM())
+			total += countToApproveRequests() + countToTransfer();
+		if (sessionView.getIsWM())
+			total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
+		if (sessionView.getIsUser())
+			total += countToReturn() + countToDeliverXboundRequests() + countToAcknowledgeRequests();
+		return total;
 	}
 
 	// GETTERS & SETTERS

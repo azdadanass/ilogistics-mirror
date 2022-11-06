@@ -377,6 +377,11 @@ public class User extends GenericModel<String> {
 	public Boolean getIsLobManager() {
 		return hasRole(Role.ROLE_ILOGISTICS_LOB_MANAGER);
 	}
+	
+	@Transient
+	public Boolean getIsBuManager() {
+		return hasRole(Role.ROLE_ILOGISTICS_BU_MANAGER);
+	}
 
 	@Column(name = "username", insertable = false, updatable = false)
 	public String getId() {

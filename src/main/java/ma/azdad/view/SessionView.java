@@ -125,6 +125,10 @@ public class SessionView implements Serializable {
 	public Boolean getIsLobManager() {
 		return user.getIsLobManager();
 	}
+	
+	public Boolean getIsBuManager() {
+		return user.getIsBuManager();
+	}
 
 	public Boolean isWM() {
 		return user.getIsWM();

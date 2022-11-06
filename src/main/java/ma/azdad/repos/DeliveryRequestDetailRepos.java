@@ -136,7 +136,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	// EFFECTIVE STOCK
 	String from1 = " from DeliveryRequestDetail a left join a.deliveryRequest.warehouse as warehouse left join a.deliveryRequest.company as company1 left join a.inboundDeliveryRequest.company as company2 ";
 	String from2 = " from DeliveryRequestDetail a left join a.deliveryRequest.warehouse as warehouse left join a.deliveryRequest.customer as customer1 left join a.inboundDeliveryRequest.customer as customer2 ";
-	String usernameCondition = " (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) ";
+	String usernameCondition = " (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1 or warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) ";
 	String companyCondition = " (company1.id = ?4 or company2.id = ?4 ) ";
 	String customerCondition = " (customer1.id = ?4 or customer2.id = ?4 ) ";
 

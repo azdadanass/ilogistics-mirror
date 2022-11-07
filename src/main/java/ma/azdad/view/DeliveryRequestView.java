@@ -457,6 +457,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			test = test || (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
 			test = test || sessionView.isTM();
 			test = test || sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername());
+			test = test || sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
 			if (!test)
 				cacheView.accessDenied();
 		}

@@ -130,8 +130,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound())
 			Hibernate.initialize(deliveryRequest.getWarehouse().getLocationList());
 		Hibernate.initialize(deliveryRequest.getTransportationRequest());
-		if (deliveryRequest.getProject() != null)
+		if (deliveryRequest.getProject() != null) {
 			Hibernate.initialize(deliveryRequest.getProject().getManager());
+			Hibernate.initialize(deliveryRequest.getProject().getCostcenter().getLob().getManager());
+			Hibernate.initialize(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector());
+		}
 		if (deliveryRequest.getDestinationProject() != null)
 			Hibernate.initialize(deliveryRequest.getDestinationProject().getManager());
 		Hibernate.initialize(deliveryRequest.getToNotifyList());

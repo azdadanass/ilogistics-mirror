@@ -13,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.Color;
+
 @Entity
 
 public class DeliveryRequestDetail extends GenericModel<Integer> implements Serializable {
@@ -378,6 +381,38 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setNeededDeliveryDate(deliveryRequestNeededDeliveryDate);
+	}
+	
+	@Transient
+	public String getNeededDeliveryDateStr() {
+		if (getNeededDeliveryDate() == null)
+			return null;
+		if (UtilsFunctions.compareDates(new Date(), getNeededDeliveryDate()) > 0)
+			return "Overdue";
+		else if (UtilsFunctions.compareDates(new Date(), getNeededDeliveryDate()) == 0)
+			return "Today";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 1), getNeededDeliveryDate()) == 0)
+			return "Tomorrow";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 2), getNeededDeliveryDate()) == 0)
+			return "In 2 Days";
+		else if (UtilsFunctions.compareDates(UtilsFunctions.addDays(new Date(), 3), getNeededDeliveryDate()) == 0)
+			return "In 3 Days";
+		else if (UtilsFunctions.isDateInCurrentWeek(getNeededDeliveryDate()))
+			return "This week";
+		else if (UtilsFunctions.isDateInNextWeek(getNeededDeliveryDate()))
+			return "Next week";
+		return UtilsFunctions.formatDate(getNeededDeliveryDate());
+	}
+
+	@Transient
+	public Color getNeededDeliveryDateColor() {
+		if (getNeededDeliveryDate() == null)
+			return null;
+		if (UtilsFunctions.compareDates(new Date(), getNeededDeliveryDate()) < 0)
+			return Color.BLUE;
+		else if (UtilsFunctions.compareDates(new Date(), getNeededDeliveryDate()) > 0)
+			return Color.RED;
+		return Color.GREEN;
 	}
 
 	@Transient

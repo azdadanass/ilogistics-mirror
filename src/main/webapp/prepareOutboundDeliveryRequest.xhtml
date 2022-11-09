@@ -28,6 +28,7 @@
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.StockRowStatus" var="StockRowStatus" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.DeliverToType" var="DeliverToType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="widget-box">
 				<div class="widget-header widget-header-blue widget-header-flat">
@@ -139,7 +140,7 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType?'Internal resource':'Extneral resource'}" readonly="true"
+											<p:inputText value="#{DeliverToType.USER==deliveryRequestView.deliveryRequest.deliverToType?'Internal resource':'External resource'}" readonly="true"
 												styleClass="col-xs-12 col-sm-6" />
 											<br />
 										</div>

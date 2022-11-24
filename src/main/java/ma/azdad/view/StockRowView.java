@@ -396,6 +396,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		case "End Customer":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getEndCustomerName() != null).map(i -> i.getEndCustomerName()).distinct().collect(Collectors.toList());
 			break;
+		case "Warehouse":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getWarehouseName() != null).map(i -> i.getWarehouseName()).distinct().collect(Collectors.toList());
+			break;
 		default:
 			break;
 		}
@@ -441,6 +444,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			break;
 		case "End Customer":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getEndCustomerName())).collect(Collectors.toList()));
+			break;
+		case "Warehouse":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getWarehouseName())).collect(Collectors.toList()));
 			break;
 		default:
 			break;

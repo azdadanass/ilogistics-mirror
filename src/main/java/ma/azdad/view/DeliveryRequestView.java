@@ -410,7 +410,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case 15:
 				initLists(service.findByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
 				break;
-
 			default:
 				break;
 			}

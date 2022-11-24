@@ -38,7 +38,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ transporterName2 + "," + transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo) ";
 	String select2 = "select count(*) ";
 
-	String c2 = "select new DeliveryRequest(a.id,a.reference,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
+	String c2 = "select new DeliveryRequest(a.id,a.reference,a.type,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
 			+ "a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";
 
 	@Query("select id from DeliveryRequest")
@@ -83,7 +83,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 //			List<DeliveryRequestStatus> rejectedAndCanceledStatus);
 
 	@Query(c2
-			+ "from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note')")
+			+ "from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') order by a.id desc")
 	List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
 	@Query("select count(*) from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note')")

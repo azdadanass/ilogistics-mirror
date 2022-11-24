@@ -244,11 +244,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 	
 	// c2
-	public DeliveryRequest(Integer id,String reference,DeliveryRequestStatus status,Date date4,//
+	public DeliveryRequest(Integer id,String reference,DeliveryRequestType type,DeliveryRequestStatus status,Date date4,//
 			String requesterUsername,String requesterPhoto,String warehouseName,String projectName,String destinationProjectName,//
 			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,String toUserFullName) {
 		super(id);
 		this.reference=reference;
+		this.type=type;
 		this.status=status;
 		this.date4=date4;
 		this.setRequesterUsername(requesterUsername);

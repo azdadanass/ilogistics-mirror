@@ -133,7 +133,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByRequester(DeliveryRequestType type, String username, DeliveryRequestStatus status);
 
 	@Query(select1
-			+ " from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id) and a.status in (?4)")
+			+ " from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id and b.status not in ('REJECTED','CANCELED')) and a.status in (?4)")
 	public List<DeliveryRequest> findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username,
 			List<Integer> assignedProjectList, List<DeliveryRequestStatus> status);
 

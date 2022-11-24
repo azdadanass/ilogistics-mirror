@@ -407,6 +407,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 						DeliveryRequestType.INBOUND);
 				break;
+			case 15:
+				initLists(service.findByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
+				break;
 
 			default:
 				break;
@@ -2569,6 +2572,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return service.countByMissingExpiry(cacheView.getWarehouseList());
 	}
 
+	public Long countByMissingOutbondDeliveryNoteFile() {
+		return service.countByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
+	}
+
 	public Long countTotal() {
 		Long total = 0l;
 		if (sessionView.getIsInternalPM())
@@ -2577,6 +2584,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
 		if (sessionView.getIsUser())
 			total += countToReturn() + countToDeliverXboundRequests() + countToAcknowledgeRequests();
+		total += countByMissingOutbondDeliveryNoteFile();
 		return total;
 	}
 

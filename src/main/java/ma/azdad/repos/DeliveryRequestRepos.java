@@ -1,5 +1,6 @@
 package ma.azdad.repos;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +20,10 @@ import ma.azdad.model.User;
 @Repository
 public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Integer> {
 
+	String deliverToCompanyName = "(select b.name from Company b where a.deliverToCompany.id = a.id)";
+	String deliverToCustomerName = "(select b.name from Customer b where a.deliverToCustomer.id = a.id)";
+	String deliverToSupplierName = "(select b.name from Supplier b where a.deliverToSupplier.id = a.id)";
+	String toUserFullName = "(select b.fullName from User b where a.toUser.username = b.username)";
 	String originName = "(select b.name from Site b where a.origin.id = b.id)";
 	String customerName = "(select b.name from Customer b where a.customer.id = b.id)";
 	String supplierName = "(select b.name from Supplier b where a.supplier.id = b.id)";
@@ -32,6 +37,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + "," + destinationProjectName + "," + transporterName1 + ","
 			+ transporterName2 + "," + transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo) ";
 	String select2 = "select count(*) ";
+
+	String c2 = "select new DeliveryRequest(a.id,a.reference,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
+			+ "a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";
 
 	@Query("select id from DeliveryRequest")
 	List<Integer> findIdList();
@@ -74,11 +82,18 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 //	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType deliveryRequestTypeOutbound,
 //			List<DeliveryRequestStatus> rejectedAndCanceledStatus);
 
+	@Query(c2
+			+ "from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note')")
+	List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
+
+	@Query("select count(*) from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note')")
+	Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
+
 	@Query(select1 + " from DeliveryRequest a "
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))"
 			+ " and a.type = ?4 and a.po is not null and 0 = (select count(*) from BoqMapping b where b.deliveryRequest.id = a.id ) and a.status not in ('REJECTED','CANCELED') ")
 	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type);
-	
+
 	@Query("select count(*) from DeliveryRequest a "
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))"
 			+ " and a.type = ?4 and a.po is not null and 0 = (select count(*) from BoqMapping b where b.deliveryRequest.id = a.id ) and a.status not in ('REJECTED','CANCELED') ")

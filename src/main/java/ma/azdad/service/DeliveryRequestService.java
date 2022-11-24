@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1218,5 +1219,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		// update inbound stock row
 //		map.forEach((pnId, unitPrice) -> stockRowRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
 	}
+	
+	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList){
+		return repos.findByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFile")
+	public Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList){
+		return repos.countByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
+	}
+	
 
 }

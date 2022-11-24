@@ -150,8 +150,8 @@
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
 						<p:remoteCommand name="panelUpdaters" process="@this" update=":main_form:widgetPanel" />
-						<p:dataTable value="#{deliveryRequestView.list2}" filteredValue="#{deliveryRequestView.list3}" rowKey="#{item.id}" selection="#{deliveryRequestView.list4}" id="main_tab" widgetVar="main_tab"
-							var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+						<p:dataTable value="#{deliveryRequestView.list2}" filteredValue="#{deliveryRequestView.list3}" rowKey="#{item.id}" selection="#{deliveryRequestView.list4}" id="main_tab"
+							widgetVar="main_tab" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
@@ -170,18 +170,9 @@
 								<h:outputText value="#{item.requester.fullName}" />
 							</p:column>
 							<p:column headerText="Type" width="100" sortBy="#{item.type}">
-								<!-- <f:subview rendered="#{item.type==DeliveryRequestType.INBOUND}">
-									<i class="ace-icon fa fa-long-arrow-right bigger-130 green aa-tooltip tooltip-success" title="Inbound" style="margin-right: 10px" />
-								</f:subview>
-								<f:subview rendered="#{item.type==DeliveryRequestType.OUTBOUND}">
-									<i class="ace-icon fa fa-long-arrow-left bigger-130 red aa-tooltip tooltip-error" title="Outbound" style="margin-right: 10px" />
-								</f:subview>
-								<f:subview rendered="#{item.type==DeliveryRequestType.XBOUND}">
-									<i class="ace-icon fa fa-exchange bigger-130 blue aa-tooltip tooltip-info" title="Xbound" style="margin-right: 10px" />
-								</f:subview> -->
 								<h:outputText value=" #{item.type.value}" styleClass="#{item.type.color}" />
 							</p:column>
-							<p:column headerText="Priority" styleClass="center" width="70" sortBy="#{item.priority}">
+							<p:column headerText="Priority" styleClass="center" width="70" sortBy="#{item.priority}" rendered="#{deliveryRequestView.pageIndex!=15}">
 								<h:outputText value=" #{item.priority.value}" styleClass="#{item.priority.color} bolder" />
 							</p:column>
 							<p:column headerText="Numero" width="70" sortBy="#{item.reference}" exportable="false">
@@ -196,34 +187,53 @@
 							<p:column headerText="Project">
 								<h:outputText value="#{item.project.name}" styleClass="blue" />
 							</p:column>
-							<p:column headerText="Owner" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type}">
+							<p:column headerText="Destination Project" rendered="#{deliveryRequestView.pageIndex==15}">
+								<h:outputText value="#{item.destinationProject.name}" styleClass="pink" />
+							</p:column>
+							<p:column headerText="Delivery Date" rendered="#{deliveryRequestView.pageIndex==15}">
+								<h:outputText value="#{item.date4}">
+									<f:convertDateTime pattern="yyyy-MM-dd" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Deliver To" rendered="#{deliveryRequestView.pageIndex==15}">
+								<h:outputText value="#{item.deliverToCompanyType.value}" />
+								<h:outputText value="#{item.deliverToCompanyName}" />
+								<h:outputText value="#{item.deliverToCustomerName}" />
+								<h:outputText value="#{item.deliverToSupplierName}" />
+							</p:column>
+							<p:column headerText="Deliver To User" rendered="#{deliveryRequestView.pageIndex==15}">
+								<h:outputText value="#{item.toUserFullName}" />
+							</p:column>
+							<p:column headerText="Owner"
+								rendered="#{(DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type) and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.ownerName}" styleClass="purple aa-cut-text" />
 							</p:column>
-							<p:column headerText="Origin Site" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type}">
+							<p:column headerText="Origin Site"
+								rendered="#{(DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type) and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originName}" />
 							</p:column>
-							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex != 5}">
+							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex!=5 and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originNumber}" styleClass="bolder" />
 							</p:column>
-							<p:column headerText="End Customer" rendered="#{deliveryRequestView.pageIndex == 5}">
+							<p:column headerText="End Customer" rendered="#{deliveryRequestView.pageIndex==5}">
 								<h:outputText value="#{item.endCustomerName}" />
 							</p:column>
-							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex == 5}">
+							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex==5}">
 								<h:outputText value="#{item.totalCost}" styleClass="red">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" styleClass="red" />
 							</p:column>
-							<p:column headerText="DN Price" rendered="#{deliveryRequestView.pageIndex == 5}">
+							<p:column headerText="DN Price" rendered="#{deliveryRequestView.pageIndex==5}">
 								<h:outputText value="#{item.totalPrice}" styleClass="green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" styleClass="green" />
 							</p:column>
-							<p:column headerText="DN Type">
+							<p:column headerText="DN Type" rendered="#{deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.subType}" styleClass="bolder #{item.subTypeColor}" />
 							</p:column>
-							<p:column headerText="REF">
+							<p:column headerText="REF" rendered="#{deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.smsRef}" />
 							</p:column>
 							<p:column headerText="Warehouse">
@@ -267,12 +277,14 @@
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 										<f:param name="id" value="#{item.id}" />
 									</h:outputLink>
-									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Transfer from this outbound" styleClass="aa-tooltip tooltip-success" rendered="#{deliveryRequestView.pageIndex==8}">
+									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Transfer from this outbound" styleClass="aa-tooltip tooltip-success"
+										rendered="#{deliveryRequestView.pageIndex==8}">
 										<i class="ace-icon fa fa-plus bigger-130 green" />
 										<f:param name="outboundDeliveryRequestId" value="#{item.id}" />
 										<f:param name="inboundType" value="2" />
 									</h:outputLink>
-									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Return from this outbound" styleClass="aa-tooltip tooltip-success" rendered="#{deliveryRequestView.pageIndex==9}">
+									<h:outputLink value="#{deliveryRequestView.addEditPage}" title="Add Return from this outbound" styleClass="aa-tooltip tooltip-success"
+										rendered="#{deliveryRequestView.pageIndex==9}">
 										<i class="ace-icon fa fa-plus bigger-130 green" />
 										<f:param name="outboundDeliveryRequestId" value="#{item.id}" />
 										<f:param name="inboundType" value="1" />

@@ -211,6 +211,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		super();
 	}
 
+	// c1
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
 			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String destinationProjectName, String transporterName1,
@@ -240,6 +241,26 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.containsBoqMapping = containsBoqMapping;
 		this.missingPo = missingPo;
 		this.setDestinationProjectName(destinationProjectName);
+	}
+	
+	// c2
+	public DeliveryRequest(Integer id,String reference,DeliveryRequestStatus status,Date date4,//
+			String requesterUsername,String requesterPhoto,String warehouseName,String projectName,String destinationProjectName,//
+			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,String toUserFullName) {
+		super(id);
+		this.reference=reference;
+		this.status=status;
+		this.date4=date4;
+		this.setRequesterUsername(requesterUsername);
+		this.setRequesterPhoto(requesterPhoto);
+		this.setWarehouseName(warehouseName);
+		this.setProjectName(projectName);
+		this.setDestinationProjectName(destinationProjectName);
+		this.setDeliverToCompanyType(deliverToCompanyType);
+		this.setDeliverToCompanyName(deliverToCompanyName);
+		this.setDeliverToCustomerName(deliverToCustomerName);
+		this.setDeliverToSupplierName(deliverToSupplierName);
+		this.setToUserFullName(toUserFullName);
 	}
 
 	public DeliveryRequest(DeliveryRequestType type, User requester) {
@@ -1034,6 +1055,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
 	}
+	
+	@Transient
+	public String getRequesterUsername(){
+		return requester!=null?requester.getUsername():null;
+	}
+
+	@Transient
+	public void setRequesterUsername(String requesterUsername){
+		if(requester==null || !requesterUsername.equals(requester.getUsername()))
+			requester=new User();
+		requester.setUsername(requesterUsername);
+	}
 
 	@Transient
 	@JsonIgnore
@@ -1087,6 +1120,38 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (warehouse == null)
 			warehouse = new Warehouse();
 		warehouse.setName(name);
+	}
+	
+	@Transient
+	@JsonIgnore
+	public String getRequesterPhoto() {
+		if (requester != null)
+			return requester.getPhoto();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setRequesterPhoto(String name) {
+		if (requester == null)
+			requester = new User();
+		requester.setPhoto(name);
+	}
+	
+	@Transient
+	@JsonIgnore
+	public String getToUserFullName() {
+		if (toUser != null)
+			return toUser.getFullName();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setToUserFullName(String name) {
+		if (toUser == null)
+			toUser = new User();
+		toUser.setFullName(name);
 	}
 
 	@Transient

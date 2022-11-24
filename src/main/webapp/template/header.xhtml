@@ -454,6 +454,21 @@
 														<f:param name="pageIndex" value="2" />
 													</h:outputLink>
 												</li>
+												<li>
+													<h:outputLink value="deliveryRequestList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" Missing BL Attachment " />
+															</span>
+															<span class="pull-right badge badge-purple">
+																<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="15" />
+													</h:outputLink>
+												</li>
 											</f:subview>
 										</ul>
 									</li>

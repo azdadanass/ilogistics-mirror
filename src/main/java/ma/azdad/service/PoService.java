@@ -15,6 +15,7 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoBoqStatus;
 import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoFile;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
 import ma.azdad.model.RevenueType;
@@ -129,6 +130,10 @@ public class PoService {
 			return repos.findCustomerPoListByDeliveryStatusNull(companyId, username, assignedProjectList);
 		else
 			return repos.findCustomerPoListByDeliveryStatus(companyId, username, assignedProjectList, deliveryStatus);
+	}
+	
+	public List<PoFile> findFileList(Integer id){
+		return repos.findFileList(id);
 	}
 
 }

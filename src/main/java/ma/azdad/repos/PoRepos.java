@@ -12,6 +12,7 @@ import ma.azdad.model.CostType;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoBoqStatus;
 import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoFile;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.RevenueType;
 
@@ -44,6 +45,10 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 
 	@Query("select distinct a.po.id  from Podetails a where a.costType  =?1 ")
 	public Set<Integer> findPoIdListContainingProjectGoodsPurchase(CostType projectGoodsPurchase);
+	
+	
+	@Query("from PoFile where parent.id = ?1")
+	List<PoFile> findFileList(Integer id);
 	
 	// c1
 	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.boqStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.boqStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Po;
 import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.PoFile;
 import ma.azdad.service.PoService;
 import ma.azdad.service.UtilsFunctions;
 
@@ -40,8 +41,8 @@ public class PoView {
 	private String searchBean = "";
 
 	private Boolean ibuy = true;
-	
-	private PoDeliveryStatus deliveryStatus; 
+
+	private PoDeliveryStatus deliveryStatus;
 
 	@PostConstruct
 	public void init() {
@@ -63,7 +64,7 @@ public class PoView {
 
 	public void refreshList() {
 		if ("/poList.xhtml".equals(currentPath))
-			list2 = list1 = service.find(ibuy, companyId, sessionView.getUsername(), cacheView.getAssignedProjectList(),deliveryStatus);
+			list2 = list1 = service.find(ibuy, companyId, sessionView.getUsername(), cacheView.getAssignedProjectList(), deliveryStatus);
 	}
 
 	private void filterBean(String query) {
@@ -75,6 +76,14 @@ public class PoView {
 		}
 		list2 = list;
 	}
+
+	// generic
+	
+	public List<PoFile> findFileList(Integer id) {
+		return service.findFileList(id);
+	}
+
+	// getters & setters
 
 	public Integer getRowsNumber() {
 		return list2.size();
@@ -144,7 +153,5 @@ public class PoView {
 	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
 		this.deliveryStatus = deliveryStatus;
 	}
-	
-	
 
 }

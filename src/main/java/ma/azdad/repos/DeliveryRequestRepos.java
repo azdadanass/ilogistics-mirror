@@ -120,6 +120,24 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query(select1 + " from DeliveryRequest a where a.type = ?1 and a.requester.username = ?2 and a.status = ?3 order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightByRequester(DeliveryRequestType type, String username, DeliveryRequestStatus status);
 
+	@Query(select1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.requester.username = ?1 or a.toUser.username = ?1) ")
+	List<DeliveryRequest> findToAcknowledgeInternal(String username);
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.requester.username = ?1 or a.toUser.username = ?1) ")
+	Long countToAcknowledgeInternal(String username);
+
+	@Query(select1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
+	List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList);
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
+	Long countToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList);
+	
+	@Query(select1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToCustomer.id = ?2 and a.destinationProject.id in (?3)))")
+	List<DeliveryRequest> findToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList);
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToCustomer.id = ?2 and a.destinationProject.id in (?3)))")
+	Long countToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList);
+
 	@Query(select2 + " from DeliveryRequest a where a.type = ?1 and a.requester.username = ?2 and a.status = ?3  order by a.neededDeliveryDate desc")
 	public Long countByRequester(DeliveryRequestType type, String username, DeliveryRequestStatus status);
 

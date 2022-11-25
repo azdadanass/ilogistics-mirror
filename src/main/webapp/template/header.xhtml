@@ -314,7 +314,7 @@
 								</ul>
 							</li>
 						</f:subview>
-						<f:subview rendered="#{sessionView.isPM() or sessionView.isWM() or sessionView.isUser()}">
+						<f:subview rendered="#{sessionView.isPM() or sessionView.isWM() or sessionView.isUser() or sessionView.isExternalPm}">
 							<li class="green">
 								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 									<i class="ace-icon fa fa-tasks"></i>
@@ -439,37 +439,37 @@
 														<f:param name="pageIndex" value="7" />
 													</h:outputLink>
 												</li>
-												<li>
-													<h:outputLink value="deliveryRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" To Acknowledge " />
-															</span>
-															<span class="pull-right badge badge-purple">
-																<h:outputText value="#{deliveryRequestView.countToAcknowledgeRequests()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="2" />
-													</h:outputLink>
-												</li>
-												<li>
-													<h:outputLink value="deliveryRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-remove red " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Missing BL Attachment " />
-															</span>
-															<span class="pull-right badge badge-danger">
-																<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="15" />
-													</h:outputLink>
-												</li>
 											</f:subview>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" To Acknowledge " />
+														</span>
+														<span class="pull-right badge badge-purple">
+															<h:outputText value="#{deliveryRequestView.countToAcknowledgeRequests()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="2" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-remove red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" Missing BL Attachment " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="15" />
+												</h:outputLink>
+											</li>
 										</ul>
 									</li>
 								</ul>

@@ -204,24 +204,50 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return result;
 	}
 
-	
 	@Cacheable(value = "deliveryRequestService.countByMissingPo")
 	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type) {
 		return deliveryRequestRepos.countByMissingPo(username, warehouseList, assignedProjectList, type);
 	}
 
-	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,DeliveryRequestType type) {
+	public List<DeliveryRequest> findByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type) {
 		return deliveryRequestRepos.findByMissingBoqMapping(username, warehouseList, assignedProjectList, type);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countByMissingBoqMapping")
-	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,DeliveryRequestType type) {
+	public Long countByMissingBoqMapping(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type) {
 		return deliveryRequestRepos.countByMissingBoqMapping(username, warehouseList, assignedProjectList, type);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightByRequester")
 	public List<DeliveryRequest> findLightByRequester(String username, DeliveryRequestType type, DeliveryRequestStatus status) {
 		return deliveryRequestRepos.findLightByRequester(type, username, status);
+	}
+
+	public List<DeliveryRequest> findToAcknowledgeInternal(String username) {
+		return deliveryRequestRepos.findToAcknowledgeInternal(username);
+	}
+
+	@Cacheable(value = "deliveryRequestService.countToAcknowledgeInternal")
+	public Long countToAcknowledgeInternal(String username) {
+		return deliveryRequestRepos.countToAcknowledgeInternal(username);
+	}
+
+	public List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList) {
+		return deliveryRequestRepos.findToAcknowledgeExternalSupplierUser(username, supplierId, projectIdList);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countToAcknowledgeExternalSupplierUser")
+	public Long countToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList) {
+		return deliveryRequestRepos.countToAcknowledgeExternalSupplierUser(username, supplierId, projectIdList);
+	}
+
+	public List<DeliveryRequest> findToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList) {
+		return deliveryRequestRepos.findToAcknowledgeExternalCustomerUser(username, customerId, projectIdList);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countToAcknowledgeExternalCustomerUser")
+	public Long countToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList) {
+		return deliveryRequestRepos.countToAcknowledgeExternalCustomerUser(username, customerId, projectIdList);
 	}
 
 	// @Cacheable(value = "deliveryRequestService.cache4")
@@ -1219,15 +1245,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		// update inbound stock row
 //		map.forEach((pnId, unitPrice) -> stockRowRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
 	}
-	
-	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList){
+
+	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
 		return repos.findByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFile")
-	public Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList){
+	public Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
 		return repos.countByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
 	}
-	
 
 }

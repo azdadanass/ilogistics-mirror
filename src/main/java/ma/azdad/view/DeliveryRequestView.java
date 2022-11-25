@@ -2598,7 +2598,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
 		if (sessionView.getIsUser())
 			total += countToReturn() + countToDeliverXboundRequests() + countToAcknowledgeRequests();
-		total += countByMissingOutbondDeliveryNoteFile();
 		return total;
 	}
 

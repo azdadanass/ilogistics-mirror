@@ -322,13 +322,13 @@
 										<h:outputText value="#{deliveryRequestView.countTotal()}" />
 									</span>
 								</a>
-								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close" style="height: 500px">
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-check"></i>
 										<h:outputText value="Delivery Tasks" />
 									</li>
 									<li class="dropdown-content">
-										<ul class="dropdown-menu dropdown-navbar">
+										<ul class="dropdown-menu dropdown-navbar"  >
 											<f:subview rendered="#{sessionView.isInternalPM}">
 												<li>
 													<h:outputLink value="deliveryRequestList.xhtml">

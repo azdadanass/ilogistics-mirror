@@ -462,45 +462,37 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	/*
 	 * Redirection
 	 */
-	private Boolean canAccess() {
-		if (isViewPage)
-			if(sessionView.getInternal())
-				return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
-						||cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId()) //
-						||cacheView.getDelegatedProjectList().contains(deliveryRequest.getProject().getId())//
-						||sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
-						|| (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()))//
-						||sessionView.isTM()//
-				||sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername())//
-				||sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
+	public Boolean canAccess() {
+		if (isViewPage) {
+			if (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()))
+				return true;
+			if (sessionView.isTM())
+				return true;
+			if (sessionView.getInternal())
+				return sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+						|| cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId()) //
+						|| cacheView.getDelegatedProjectList().contains(deliveryRequest.getProject().getId())//
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername())//
+						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
+			else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getUser().getIsSupplierUser())
+					return sessionView.getUser().getSupplier().equals(deliveryRequest.getDeliverToSupplierId()) //
+							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
+				else if (sessionView.getUser().getIsCustomerUser())
+					return sessionView.getUser().getCustomer().equals(deliveryRequest.getDeliverToCustomerId()) //
+							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
+			}
+		}
+		if (isStoragePage)
+			return canStoreDeliveryRequest();
+		return false;
 	}
 
 	@Override
 	public void redirect() {
-		if (isViewPage) {
-			if(sessionView.getInternal())
-				if
-						)
-						
-						
-				
-				
-			Boolean test = sessionView.isTheConnectedUser(deliveryRequest.getRequester());
-			test = test || cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
-			test = test || cacheView.getDelegatedProjectList().contains(deliveryRequest.getProject().getId());
-			test = test || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername());
-			test = test || (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()));
-			test = test || sessionView.isTM();
-			test = test || sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername());
-			test = test || sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
-			if (!test)
-				cacheView.accessDenied();
-		}
-		if (isStoragePage) {
-			Boolean test = canStoreDeliveryRequest();
-			if (!test)
-				cacheView.accessDenied();
-		}
+		if(!canAccess())
+			cacheView.accessDenied();
 	}
 
 	/*

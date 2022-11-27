@@ -415,7 +415,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						DeliveryRequestType.INBOUND);
 				break;
 			case 15:
-				initLists(service.findByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
+				if (sessionView.getInternal())
+					initLists(service.findByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
+				else if (sessionView.getIsExternalPm()) {
+					if (sessionView.getUser().getIsSupplierUser())
+						initLists(service.findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
+					else if (sessionView.getUser().getIsCustomerUser())
+						initLists(service.findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
+				}
 				break;
 			default:
 				break;
@@ -455,10 +462,29 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	/*
 	 * Redirection
 	 */
+	private Boolean canAccess() {
+		if (isViewPage)
+			if(sessionView.getInternal())
+				return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+						||cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId()) //
+						||cacheView.getDelegatedProjectList().contains(deliveryRequest.getProject().getId())//
+						||sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
+						|| (deliveryRequest.getWarehouse() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()))//
+						||sessionView.isTM()//
+				||sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername())//
+				||sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
+	}
 
 	@Override
 	public void redirect() {
 		if (isViewPage) {
+			if(sessionView.getInternal())
+				if
+						)
+						
+						
+				
+				
 			Boolean test = sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 			test = test || cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
 			test = test || cacheView.getDelegatedProjectList().contains(deliveryRequest.getProject().getId());
@@ -2587,7 +2613,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Long countByMissingOutbondDeliveryNoteFile() {
-		return service.countByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
+		if (sessionView.getInternal())
+			return service.countByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
+		else if (sessionView.getIsExternalPm()) {
+			if (sessionView.getUser().getIsSupplierUser())
+				return service.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
+			else if (sessionView.getUser().getIsCustomerUser())
+				return service.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList());
+		}
+		return 0l;
 	}
 
 	public Long countTotal() {

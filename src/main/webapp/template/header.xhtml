@@ -328,7 +328,7 @@
 										<h:outputText value="Delivery Tasks" />
 									</li>
 									<li class="dropdown-content">
-										<ul class="dropdown-menu dropdown-navbar"  >
+										<ul class="dropdown-menu dropdown-navbar">
 											<f:subview rendered="#{sessionView.isInternalPM}">
 												<li>
 													<h:outputLink value="deliveryRequestList.xhtml">
@@ -455,21 +455,23 @@
 													<f:param name="pageIndex" value="2" />
 												</h:outputLink>
 											</li>
-											<li>
-												<h:outputLink value="deliveryRequestList.xhtml">
-													<span class="clearfix">
-														<span class="pull-left">
-															<i class="ace-icon fa fa-remove red " style="font-size: 20px" />
-															&nbsp;&nbsp;
-															<h:outputText value=" Missing BL Attachment " />
+											<f:subview rendered="#{sessionView.internal or sessionView.isExternalPm}">
+												<li>
+													<h:outputLink value="deliveryRequestList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-remove red " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" Missing BL Attachment " />
+															</span>
+															<span class="pull-right badge badge-danger">
+																<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
+															</span>
 														</span>
-														<span class="pull-right badge badge-danger">
-															<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
-														</span>
-													</span>
-													<f:param name="pageIndex" value="15" />
-												</h:outputLink>
-											</li>
+														<f:param name="pageIndex" value="15" />
+													</h:outputLink>
+												</li>
+											</f:subview>
 										</ul>
 									</li>
 								</ul>

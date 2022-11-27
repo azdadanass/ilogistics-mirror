@@ -71,11 +71,25 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type);
 
 	@Query(c2
-			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status not in ('REJECTED','CANCELED') order by a.id desc")
+			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') order by a.id desc")
 	List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
-	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status not in ('REJECTED','CANCELED') ")
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') ")
 	Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
+	
+	@Query(c2
+			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and a.deliverToSupplier.id = ?1 and a.project.id in (?2) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') order by a.id desc")
+	List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList);
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.deliverToSupplier.id = ?1 and a.project.id in (?2) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') order by a.id desc")
+	Long countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList);
+	
+	@Query(c2
+			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and a.deliverToCustomer.id = ?1 and a.project.id in (?2) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') order by a.id desc")
+	List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList);
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.deliverToCustomer.id = ?1 and a.project.id in (?2) and 0 = (select count(*) from DeliveryRequestFile b where b.parent.id = a.id and b.type = 'Outbond Delivery Note') and a.status in ('DELIVRED','ACKNOWLEDGED') order by a.id desc")
+	Long countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList);
 
 	@Query(select1 + " from DeliveryRequest a "
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))"

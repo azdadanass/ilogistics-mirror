@@ -235,7 +235,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList) {
 		return deliveryRequestRepos.findToAcknowledgeExternalSupplierUser(username, supplierId, projectIdList);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countToAcknowledgeExternalSupplierUser")
 	public Long countToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList) {
 		return deliveryRequestRepos.countToAcknowledgeExternalSupplierUser(username, supplierId, projectIdList);
@@ -244,7 +244,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<DeliveryRequest> findToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList) {
 		return deliveryRequestRepos.findToAcknowledgeExternalCustomerUser(username, customerId, projectIdList);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countToAcknowledgeExternalCustomerUser")
 	public Long countToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList) {
 		return deliveryRequestRepos.countToAcknowledgeExternalCustomerUser(username, customerId, projectIdList);
@@ -1253,6 +1253,24 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFile")
 	public Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
 		return repos.countByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
+	}
+	
+	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+		return repos.findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier")
+	public Long  countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+		return repos.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
+	}
+	
+	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+		return repos.findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer")
+	public Long  countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+		return repos.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
 	}
 
 }

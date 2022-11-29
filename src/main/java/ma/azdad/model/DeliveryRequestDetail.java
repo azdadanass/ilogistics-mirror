@@ -118,8 +118,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	public DeliveryRequestDetail(Integer id, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double quantity, Double tmpUsedQuantity,
-			String toUserFullName) {
+			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double quantity, Double tmpUsedQuantity,//
+			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,  String toUserFullName) {
 		super(id);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
@@ -135,6 +135,12 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpDeliveryRequestReference = tmpDeliveryRequestReference;
 		this.quantity = quantity;
 		this.tmpUsedQuantity = tmpUsedQuantity;
+		
+		this.setDeliverToCompanyType(deliverToCompanyType);
+		this.setDeliverToCompanyName(deliverToCompanyName);
+		this.setDeliverToCustomerName(deliverToCustomerName);
+		this.setDeliverToSupplierName(deliverToSupplierName);
+		
 		this.tmpDeliverToFullName = toUserFullName;
 	}
 
@@ -1047,4 +1053,63 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpQuantity2 = tmpQuantity2;
 	}
 
+	@Transient
+	public CompanyType getDeliverToCompanyType() {
+		return deliveryRequest != null ? deliveryRequest.getDeliverToCompanyType() : null;
+	}
+
+	@Transient
+	public void setDeliverToCompanyType(CompanyType deliverToCompanyType) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDeliverToCompanyType(deliverToCompanyType);
+	}
+	
+	@Transient
+	public String getDeliverToCompanyName() {
+		return deliveryRequest != null ? deliveryRequest.getDeliverToCompanyName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCompanyName(String deliverToCompanyName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDeliverToCompanyName(deliverToCompanyName);
+	}
+
+	@Transient
+	public String getDeliverToCustomerName() {
+		return deliveryRequest != null ? deliveryRequest.getDeliverToCustomerName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCustomerName(String deliverToCustomerName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDeliverToCustomerName(deliverToCustomerName);
+	}
+
+	@Transient
+	public String getDeliverToSupplierName() {
+		return deliveryRequest != null ? deliveryRequest.getDeliverToSupplierName() : null;
+	}
+
+	@Transient
+	public void setDeliverToSupplierName(String deliverToSupplierName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDeliverToSupplierName(deliverToSupplierName);
+	}
+
+	@Transient
+	public String getDeliverToOther() {
+		return deliveryRequest != null ? deliveryRequest.getDeliverToOther() : null;
+	}
+
+	@Transient
+	public void setDeliverToOther(String deliverToOther) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDeliverToOther(deliverToOther);
+	}
 }

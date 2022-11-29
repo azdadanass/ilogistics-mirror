@@ -478,10 +478,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			else if (sessionView.getIsExternalPm()) {
 				if (sessionView.getUser().getIsSupplierUser())
 					return sessionView.getUser().getSupplierId().equals(deliveryRequest.getDeliverToSupplierId()) //
-							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
+							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getDestinationProject().getId());
 				else if (sessionView.getUser().getIsCustomerUser())
 					return sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
-							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
+							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getDestinationProject().getId());
 			}
 		}
 		else if (isStoragePage)

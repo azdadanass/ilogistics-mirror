@@ -484,8 +484,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getProject().getId());
 			}
 		}
-		if (isStoragePage)
+		else if (isStoragePage)
 			return canStoreDeliveryRequest();
+		else if (isPreparationPage)
+			return canPrepareOutboundDeliveryRequest();
 		return false;
 	}
 

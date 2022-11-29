@@ -491,7 +491,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Override
 	public void redirect() {
-		if(!canAccess())
+		if (!canAccess())
 			cacheView.accessDenied();
 	}
 
@@ -2541,15 +2541,21 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Long countToTransfer() {
-		return service.countByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
+		if (sessionView.getIsInternalPM())
+			return service.countByIsForTransferAndDestinationProjectAndNotTransferred(sessionView.getUsername(), cacheView.getAssignedProjectList());
+		return 0l;
 	}
 
 	public Long countToReturn() {
-		return service.countByIsForReturnAndNotFullyReturned(sessionView.getUsername());
+		if (sessionView.getIsUser())
+			return service.countByIsForReturnAndNotFullyReturned(sessionView.getUsername());
+		return 0l;
 	}
 
 	public Long countToDeliverXboundRequests() {
-		return service.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
+		if (sessionView.getIsUser())
+			return service.countByRequester(sessionView.getUsername(), DeliveryRequestType.XBOUND, DeliveryRequestStatus.APPROVED2);
+		return 0l;
 	}
 
 	public Long countToAcknowledgeRequests() {
@@ -2565,11 +2571,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Long countToApproveRequests() {
-		return service.countToApprove(sessionView.getUsername());
+		if (sessionView.getIsInternalPM())
+			return service.countToApprove(sessionView.getUsername());
+		return 0l;
 	}
 
 	public Long countToDeliverRequests() {
-		return service.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+		if (sessionView.getIsWM())
+			return service.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+		return 0l;
 	}
 
 	public List<DeliveryRequest> findLightByRequester() {
@@ -2597,11 +2607,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Long countMissingSerialNumber() {
-		return service.countByMissingSerialNumber(cacheView.getWarehouseList());
+		if (sessionView.getIsWM())
+			return service.countByMissingSerialNumber(cacheView.getWarehouseList());
+		return 0l;
 	}
 
 	public Long countMissingExpiry() {
-		return service.countByMissingExpiry(cacheView.getWarehouseList());
+		if (sessionView.getIsWM())
+			return service.countByMissingExpiry(cacheView.getWarehouseList());
+		return 0l;
 	}
 
 	public Long countByMissingOutbondDeliveryNoteFile() {
@@ -2618,12 +2632,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Long countTotal() {
 		Long total = 0l;
-		if (sessionView.getIsInternalPM())
-			total += countToApproveRequests() + countToTransfer();
-		if (sessionView.getIsWM())
-			total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
-		if (sessionView.getIsUser())
-			total += countToReturn() + countToDeliverXboundRequests() + countToAcknowledgeRequests();
+		total += countToApproveRequests() + countToTransfer();
+		total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
+		total += countToReturn() + countToDeliverXboundRequests();
+		total += countToAcknowledgeRequests();
 		return total;
 	}
 

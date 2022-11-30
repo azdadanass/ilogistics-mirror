@@ -116,13 +116,14 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c3
 	public DeliveryRequestDetail(Integer id, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			Integer partNumberId, String partNumberName,String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Double quantity, Double tmpUsedQuantity,//
+			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference,Date deliveryRequestDate1, Double quantity, Double tmpUsedQuantity,//
 			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,  String toUserFullName) {
 		super(id);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberImage(partNumberImage);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberIndustryName(partNumberIndustryName);
 		this.setPartNumberCategoryName(partNumberCategoryName);
@@ -133,6 +134,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
 		this.tmpDeliveryRequestType = tmpDeliveryRequestType;
 		this.tmpDeliveryRequestReference = tmpDeliveryRequestReference;
+		this.setDeliveryRequestDate1(deliveryRequestDate1);
 		this.quantity = quantity;
 		this.tmpUsedQuantity = tmpUsedQuantity;
 		
@@ -470,6 +472,20 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
+	
+	@Transient
+	public Date getDeliveryRequestDate1() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getDate1();
+	}
+
+	@Transient
+	public void setDeliveryRequestDate1(Date deliveryRequestDate1) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDate1(deliveryRequestDate1);
+	}
 
 	@Transient
 	public DeliveryRequestType getDeliveryRequestType() {
@@ -575,6 +591,18 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		if (partNumber == null)
 			partNumber = new PartNumber();
 		partNumber.setName(partNumberName);
+	}
+	
+	@Transient
+	public String getPartNumberImage() {
+		return partNumber == null ? null : partNumber.getImage();
+	}
+
+	@Transient
+	public void setPartNumberImage(String partNumberImage) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setImage(partNumberImage);
 	}
 
 	@Transient

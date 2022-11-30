@@ -507,6 +507,11 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Photo" width="100">
+												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+													<f:param name="fileName" value="#{item.partNumberImage}" />
+												</p:graphicImage>
+											</p:column>
 											<p:column headerText="Part Number" exportable="false">
 												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
 											</p:column>
@@ -514,7 +519,24 @@
 												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="DN" width="70">
-												<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color}" />
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color}" />
+													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN Date" width="70">
+												<h:outputText value="#{item.deliveryRequestDate1}" styleClass="orange">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Deliver To">
+												<h:outputText value="#{item.deliverToCompanyType.value} / " styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToCompanyName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToCustomerName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToSupplierName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+											</p:column>
+											<p:column headerText="Deliver To User">
+												<h:outputText value="#{item.tmpDeliverToFullName}" styleClass="bolder green" />
 											</p:column>
 											<p:column headerText="Delivered Qty" width="80">
 												<h:outputText value="#{item.quantity}" styleClass="blue">
@@ -530,9 +552,6 @@
 												<h:outputText value="#{item.quantity-item.tmpUsedQuantity}" styleClass="orange bolder">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-											</p:column>
-											<p:column headerText="Delivered To">
-												<h:outputText value="#{item.tmpDeliverToFullName}" />
 											</p:column>
 										</p:dataTable>
 									</div>

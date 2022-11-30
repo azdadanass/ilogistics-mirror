@@ -116,10 +116,11 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	// c3
 	public DeliveryRequestDetail(Integer id, //
-			Integer partNumberId, String partNumberName,String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
-			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference,Date deliveryRequestDate1, Double quantity, Double tmpUsedQuantity,//
-			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,  String toUserFullName) {
+			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName,
+			String partNumberTypeName, String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
+			Integer tmpDeliveryRequestId, DeliveryRequestType tmpDeliveryRequestType, String tmpDeliveryRequestReference, Date deliveryRequestDate1, Double quantity,
+			Double tmpUsedQuantity, //
+			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName) {
 		super(id);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
@@ -137,12 +138,12 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 		this.setDeliveryRequestDate1(deliveryRequestDate1);
 		this.quantity = quantity;
 		this.tmpUsedQuantity = tmpUsedQuantity;
-		
+
 		this.setDeliverToCompanyType(deliverToCompanyType);
 		this.setDeliverToCompanyName(deliverToCompanyName);
 		this.setDeliverToCustomerName(deliverToCustomerName);
 		this.setDeliverToSupplierName(deliverToSupplierName);
-		
+
 		this.tmpDeliverToFullName = toUserFullName;
 	}
 
@@ -390,7 +391,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setNeededDeliveryDate(deliveryRequestNeededDeliveryDate);
 	}
-	
+
 	@Transient
 	public String getNeededDeliveryDateStr() {
 		if (getNeededDeliveryDate() == null)
@@ -472,7 +473,21 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
-	
+
+	@Transient
+	public String getInboundDeliveryRequestReference() {
+		if (inboundDeliveryRequest == null)
+			return null;
+		return inboundDeliveryRequest.getReference();
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestReference(String inboundDeliveryRequestReference) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setReference(inboundDeliveryRequestReference);
+	}
+
 	@Transient
 	public Date getDeliveryRequestDate1() {
 		if (deliveryRequest == null)
@@ -592,7 +607,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			partNumber = new PartNumber();
 		partNumber.setName(partNumberName);
 	}
-	
+
 	@Transient
 	public String getPartNumberImage() {
 		return partNumber == null ? null : partNumber.getImage();
@@ -784,23 +799,9 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && originNumber != null)
-			result = originNumber.toLowerCase().contains(query);
-		if (!result && inboundDeliveryRequest != null)
-			result = inboundDeliveryRequest.getReference().toLowerCase().contains(query);
-		if (!result && partNumber != null)
-			result = partNumber.filter(query);
-		if (!result && tmpPartNumberName != null)
-			result = tmpPartNumberName.toLowerCase().contains(query);
-		if (!result && tmpPartNumberDescription != null)
-			result = tmpPartNumberDescription.toLowerCase().contains(query);
-		if (!result && tmpDeliveryRequestReference != null)
-			result = tmpDeliveryRequestReference.toLowerCase().contains(query);
-		if (!result && tmpProjectName != null)
-			result = tmpProjectName.toLowerCase().contains(query);
-
-		return result;
+		return contains(query, getPartNumberName(), getPartNumberDescription(), getDeliveryRequestReference(), tmpDeliveryRequestReference //
+				, getDeliverToCompanyType() != null ? getDeliverToCompanyType().getValue() : null, getDeliverToCompanyName(), getDeliverToCustomerName(), //
+				getDeliverToSupplierName(), tmpDeliverToFullName, getInboundDeliveryRequestReference(), getProjectName(), tmpProjectName);
 	}
 
 	@Transient
@@ -1092,7 +1093,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDeliverToCompanyType(deliverToCompanyType);
 	}
-	
+
 	@Transient
 	public String getDeliverToCompanyName() {
 		return deliveryRequest != null ? deliveryRequest.getDeliverToCompanyName() : null;

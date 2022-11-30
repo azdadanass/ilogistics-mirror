@@ -1129,6 +1129,18 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDeliverToSupplierName(deliverToSupplierName);
 	}
+	
+	@Transient
+	public String getToUserFullName() {
+		return deliveryRequest != null ? deliveryRequest.getToUserFullName() : null;
+	}
+
+	@Transient
+	public void setToUserFullName(String toUserFullName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setToUserFullName(toUserFullName);
+	}
 
 	@Transient
 	public String getDeliverToOther() {

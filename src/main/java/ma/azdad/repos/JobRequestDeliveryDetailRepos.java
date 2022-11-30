@@ -10,10 +10,19 @@ import ma.azdad.model.JobRequestDeliveryDetail;
 
 @Repository
 public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestDeliveryDetail, Integer> {
+	String deliverToCompanyName = "(select b.name from Company b where b.id = a.deliveryRequestDetail.deliveryRequest.deliverToCompany.id)";
+	String deliverToCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequestDetail.deliveryRequest.deliverToCustomer.id)";
+	String deliverToSupplierName = "(select b.name from Supplier b where b.id = a.deliveryRequestDetail.deliveryRequest.deliverToSupplier.id)";
+	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequestDetail.deliveryRequest.toUser.username)";
 
-	String select1 = "select new JobRequestDeliveryDetail(a.installedQuantity,a.isSerialNumberRequired,a.deliveryRequestDetail.id,a.deliveryRequestDetail.partNumber.name,a.deliveryRequestDetail.partNumber.image,a.deliveryRequestDetail.partNumber.description,a.deliveryRequestDetail.deliveryRequest.id,a.deliveryRequestDetail.deliveryRequest.referenceNumber,a.deliveryRequestDetail.deliveryRequest.type,a.jobRequest.id,a.jobRequest.site.name,a.jobRequest.team.name)";
+	String c1 = "select new JobRequestDeliveryDetail(a.installedQuantity,a.isSerialNumberRequired,a.deliveryRequestDetail.id," //
+			+ "a.deliveryRequestDetail.partNumber.name,a.deliveryRequestDetail.partNumber.image,a.deliveryRequestDetail.partNumber.description,"//
+			+ "a.deliveryRequestDetail.deliveryRequest.id,a.deliveryRequestDetail.deliveryRequest.referenceNumber,a.deliveryRequestDetail.deliveryRequest.type,"//
+			+ "a.jobRequest.id,a.jobRequest.site.name,a.jobRequest.team.name,"//
+			+ "a.deliveryRequestDetail.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + ","
+			+ toUserFullName + ")";
 
-	@Query(select1 + " from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
+	@Query(c1 + " from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	public List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
 
 	@Query("select count(*) from JobRequestDeliveryDetail where deliveryRequestDetail.deliveryRequest.id = ?1")

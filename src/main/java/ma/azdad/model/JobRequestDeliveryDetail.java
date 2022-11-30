@@ -55,9 +55,11 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.tmpTeamName = tmpTeamName;
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, String tmpPartNumberName,
-			String tmpPartNumberImage, String tmpPartNumberDescription,Integer tmpDeliveryRequestId, Integer referenceNumber, DeliveryRequestType deliveryRequestType, Integer tmpJobRequestId,
-			String tmpSiteName, String tmpTeamName) {
+	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, //
+			String tmpPartNumberName, String tmpPartNumberImage, //
+			String tmpPartNumberDescription, Integer tmpDeliveryRequestId, Integer referenceNumber, DeliveryRequestType deliveryRequestType, //
+			Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName, //
+			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
@@ -71,6 +73,12 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.tmpJobRequestReference = "JR" + String.format("%05d", tmpJobRequestId);
 		this.tmpSiteName = tmpSiteName;
 		this.tmpTeamName = tmpTeamName;
+
+		this.setDeliverToCompanyType(deliverToCompanyType);
+		this.setDeliverToCompanyName(deliverToCompanyName);
+		this.setDeliverToCustomerName(deliverToCustomerName);
+		this.setDeliverToSupplierName(deliverToSupplierName);
+		this.setToUserFullName(toUserFullName);
 	}
 
 	public JobRequestDeliveryDetail(Double quantity, Boolean isSerialNumberRequired, JobRequest jobRequest, DeliveryRequestDetail deliveryRequestDetail) {
@@ -86,7 +94,9 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	@Override
 	public boolean filter(String query) {
 		return contains(query, tmpPartNumberName, tmpPartNumberDescription, tmpDeliveryRequestReference, //
-				tmpJobRequestReference, tmpSiteName, tmpSerialNumber, tmpTeamName);
+				tmpJobRequestReference, tmpSiteName, tmpSerialNumber, tmpTeamName, //
+				getDeliverToCompanyType() != null ? getDeliverToCompanyType().getValue() : null, getDeliverToCompanyName(), getDeliverToCustomerName(), getDeliverToSupplierName(),
+				getToUserFullName());
 	}
 
 	@Transient
@@ -247,7 +257,77 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	public Integer getTmpDeliveryRequestId() {
 		return tmpDeliveryRequestId;
 	}
-	
-	
+
+	@Transient
+	public CompanyType getDeliverToCompanyType() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getDeliverToCompanyType() : null;
+	}
+
+	@Transient
+	public void setDeliverToCompanyType(CompanyType deliverToCompanyType) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setDeliverToCompanyType(deliverToCompanyType);
+	}
+
+	@Transient
+	public String getDeliverToCompanyName() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getDeliverToCompanyName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCompanyName(String deliverToCompanyName) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setDeliverToCompanyName(deliverToCompanyName);
+	}
+
+	@Transient
+	public String getDeliverToCustomerName() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getDeliverToCustomerName() : null;
+	}
+
+	@Transient
+	public void setDeliverToCustomerName(String deliverToCustomerName) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setDeliverToCustomerName(deliverToCustomerName);
+	}
+
+	@Transient
+	public String getDeliverToSupplierName() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getDeliverToSupplierName() : null;
+	}
+
+	@Transient
+	public void setDeliverToSupplierName(String deliverToSupplierName) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setDeliverToSupplierName(deliverToSupplierName);
+	}
+
+	@Transient
+	public String getDeliverToOther() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getDeliverToOther() : null;
+	}
+
+	@Transient
+	public void setDeliverToOther(String deliverToOther) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setDeliverToOther(deliverToOther);
+	}
+
+	@Transient
+	public String getToUserFullName() {
+		return deliveryRequestDetail != null ? deliveryRequestDetail.getToUserFullName() : null;
+	}
+
+	@Transient
+	public void setToUserFullName(String toUserFullName) {
+		if (deliveryRequestDetail == null)
+			deliveryRequestDetail = new DeliveryRequestDetail();
+		deliveryRequestDetail.setToUserFullName(toUserFullName);
+	}
 
 }

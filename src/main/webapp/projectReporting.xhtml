@@ -478,6 +478,15 @@
 											<p:column headerText="Team">
 												<h:outputText value="#{item.tmpTeamName}" />
 											</p:column>
+											<p:column headerText="Deliver To">
+												<h:outputText value="#{item.deliverToCompanyType.value} / " styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToCompanyName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToCustomerName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+												<h:outputText value="#{item.deliverToSupplierName}" styleClass="#{item.deliverToCompanyType.color.name}" />
+											</p:column>
+											<p:column headerText="Deliver To User">
+												<h:outputText value="#{item.toUserFullName}" styleClass="bolder green" />
+											</p:column>
 										</p:dataTable>
 									</div>
 								</div>

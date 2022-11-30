@@ -441,6 +441,11 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Photo" width="100">
+												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+													<f:param name="fileName" value="#{item.tmpPartNumberImage}" />
+												</p:graphicImage>
+											</p:column>
 											<p:column headerText="Part Number" exportable="false">
 												<h:outputText value="#{item.tmpPartNumberName}" styleClass="bolder pink" />
 											</p:column>
@@ -448,7 +453,10 @@
 												<h:outputText value="#{item.tmpPartNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="DN" width="70">
-												<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="red" />
+												<h:outputLink value="viewDeliveryRequest.xtml">
+													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="red" />
+													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
+												</h:outputLink>
 											</p:column>
 											<p:column headerText="Quantity" width="70">
 												<h:outputText value="#{item.installedQuantity}" styleClass=" bolder green">

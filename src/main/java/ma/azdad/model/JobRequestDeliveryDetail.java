@@ -27,7 +27,9 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	// TMP
 	private Integer tmpDeliveryRequestDetailId;
 	private String tmpPartNumberName;
+	private String tmpPartNumberImage;
 	private String tmpPartNumberDescription;
+	private Integer tmpDeliveryRequestId;
 	private String tmpDeliveryRequestReference;
 	private String tmpJobRequestReference;
 	private String tmpSiteName;
@@ -39,7 +41,8 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		super();
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference, Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName) {
+	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference,
+			Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.tmpSerialNumber = tmpSerialNumber;
@@ -52,13 +55,17 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.tmpTeamName = tmpTeamName;
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, String tmpPartNumberName, String tmpPartNumberDescription, Integer referenceNumber, DeliveryRequestType deliveryRequestType, Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName) {
+	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, String tmpPartNumberName,
+			String tmpPartNumberImage, String tmpPartNumberDescription,Integer tmpDeliveryRequestId, Integer referenceNumber, DeliveryRequestType deliveryRequestType, Integer tmpJobRequestId,
+			String tmpSiteName, String tmpTeamName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.tmpDeliveryRequestDetailId = tmpDeliveryRequestDetailId;
 		this.tmpPartNumberName = tmpPartNumberName;
+		this.tmpPartNumberImage = tmpPartNumberImage;
 		this.tmpPartNumberDescription = tmpPartNumberDescription;
+		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
 		this.tmpDeliveryRequestReference = "DN" + (deliveryRequestType.ordinal() + 1) + String.format("%05d", referenceNumber);
 		this.tmpJobRequestId = tmpJobRequestId;
 		this.tmpJobRequestReference = "JR" + String.format("%05d", tmpJobRequestId);
@@ -78,24 +85,8 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && jobRequest != null)
-			result = jobRequest.filter(query);
-		if (!result && tmpPartNumberName != null)
-			result = tmpPartNumberName.toLowerCase().contains(query);
-		if (!result && tmpPartNumberDescription != null)
-			result = tmpPartNumberDescription.toLowerCase().contains(query);
-		if (!result && tmpDeliveryRequestReference != null)
-			result = tmpDeliveryRequestReference.toLowerCase().contains(query);
-		if (!result && tmpJobRequestReference != null)
-			result = tmpJobRequestReference.toLowerCase().contains(query);
-		if (!result && tmpSiteName != null)
-			result = tmpSiteName.toLowerCase().contains(query);
-		if (!result && tmpTeamName != null)
-			result = tmpTeamName.toLowerCase().contains(query);
-		if (!result && tmpSerialNumber != null)
-			result = tmpSerialNumber.toLowerCase().contains(query);
-		return result;
+		return contains(query, tmpPartNumberName, tmpPartNumberDescription, tmpDeliveryRequestReference, //
+				tmpJobRequestReference, tmpSiteName, tmpSerialNumber, tmpTeamName);
 	}
 
 	@Transient
@@ -246,4 +237,17 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Transient
+	public String getTmpPartNumberImage() {
+		return tmpPartNumberImage;
+	}
+
+	@Transient
+	public Integer getTmpDeliveryRequestId() {
+		return tmpDeliveryRequestId;
+	}
+	
+	
+
 }

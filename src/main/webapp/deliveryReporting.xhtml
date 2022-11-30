@@ -207,8 +207,8 @@
 											<h:outputText value="#{item.deliveryRequest.reference}" />
 										</p:column>
 										<p:column headerText="Type" styleClass="hide">
-											<h:outputText value="#{item.deliveryRequest.type.value}"/>
-											<h:outputText value=", #{item.deliveryRequest.inboundType.value}" rendered="#{item.deliveryRequest.isInbound}"/>
+											<h:outputText value="#{item.deliveryRequest.type.value}" />
+											<h:outputText value=", #{item.deliveryRequest.inboundType.value}" rendered="#{item.deliveryRequest.isInbound}" />
 										</p:column>
 										<p:column headerText="REF" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.smsRef}" />
@@ -294,6 +294,11 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="tab2" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="100">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.partNumberImage}" />
+											</p:graphicImage>
+										</p:column>
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />

@@ -137,10 +137,10 @@
 							<p:column headerText="Description">
 								<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 							</p:column>
-							<p:column headerText="Industry" width="80">
+							<p:column headerText="Industry" width="80" rendered="#{stockRowView.pageIndex!=2}">
 								<h:outputText value="#{item.partNumber.industryName}" styleClass="bolder blue" />
 							</p:column>
-							<p:column headerText="Category" width="120">
+							<p:column headerText="Category" width="120" rendered="#{stockRowView.pageIndex!=2}">
 								<h:outputText value="#{item.partNumber.categoryName}" styleClass="bolder green" />
 							</p:column>
 							<p:column headerText="Type" width="120">
@@ -205,6 +205,9 @@
 							</p:column>
 							<p:column headerText="Overdue" width="100" sortBy="#{item.overdue}" rendered="#{stockRowView.pageIndex==2}">
 								<h:outputText value="#{item.overdue}" styleClass="bolder red" />
+							</p:column>
+							<p:column headerText="Total Storage Period" width="100" sortBy="#{item.overdue}" rendered="#{stockRowView.pageIndex==2}">
+								<h:outputText value="#{item.inboundDeliveryRequest.approximativeStoragePeriod+item.overdue}" />
 							</p:column>
 							<p:column headerText="Inbound Qty" width="90" rendered="#{stockRowView.pageIndex==3}">
 								<h:outputText value="#{item.inboundQuantity}" styleClass="green">

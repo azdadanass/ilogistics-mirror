@@ -219,12 +219,13 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	// c10
 	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			Integer partNumberId, String partNumberName,String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberImage(partNumberImage);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberIndustryName(partNumberIndustryName);
 		this.setPartNumberCategoryName(partNumberCategoryName);
@@ -370,7 +371,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	// c22 --> deliveryReporting
 	public StockRow(Double quantity, StockRowStatus status, Double unitCost,Integer costCurrencyId, Double unitPrice,Integer priceCurrencyId, String projectName, String warehouseName, //
-			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberBrandName, //
+			Integer partNumberId, String partNumberName,String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference,
 			String deliveryRequestSmsRef, Date deliveryRequestDate4, String destinationProjectCustomerName, String destinationName, String originName,
 			String destinationProjectName, //
@@ -387,6 +388,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setWarehouseName(warehouseName);
 		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberImage(partNumberImage);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberBrandName(partNumberBrandName);
 		this.setDeliveryRequestType(deliveryRequestType);

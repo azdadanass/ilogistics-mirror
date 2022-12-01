@@ -21,8 +21,8 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 		
-		System.out.println(drs.findByMissingOutbondDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)).size());
-		System.out.println(drs.countByMissingOutbondDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)));
+		System.out.println(drs.findByMissingOutboundDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)).size());
+		System.out.println(drs.countByMissingOutboundDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)));
 
 	}
 

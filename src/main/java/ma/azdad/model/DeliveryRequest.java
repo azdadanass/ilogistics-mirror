@@ -1,6 +1,7 @@
 package ma.azdad.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Boolean sdm = true;
 	private Boolean containsBoqMapping = null;
 	private Boolean missingPo = null;
+	private Boolean missingOutboundDeliveryNote = false;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
@@ -215,7 +217,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
 			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String destinationProjectName, String transporterName1,
-			String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo) {
+			String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo,
+			Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName,
+			String deliverToSupplierName, String toUserFullName,String endCustomerName) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -240,7 +244,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.smsRef = smsRef;
 		this.containsBoqMapping = containsBoqMapping;
 		this.missingPo = missingPo;
+		this.missingOutboundDeliveryNote = missingOutboundDeliveryNote;
 		this.setDestinationProjectName(destinationProjectName);
+		this.setPoNumero(poNumero);
+		this.deliverToCompanyType = deliverToCompanyType;
+		this.setDeliverToCompanyName(deliverToCompanyName);
+		this.setDeliverToCustomerName(deliverToCustomerName);
+		this.setDeliverToSupplierName(deliverToSupplierName);
+		this.setToUserFullName(toUserFullName);
+		this.setEndCustomerName(endCustomerName);
 	}
 
 	// c2
@@ -1407,6 +1419,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.reference = "DN" + (type.ordinal() + 1) + String.format("%05d", referenceNumber);
 	}
 
+	public void calculateMissingOutboundDeliveryNote() {
+		this.missingOutboundDeliveryNote = getIsOutbound() //
+				&& Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(status) //
+				&& fileList.stream().filter(f -> "Outbound Delivery Note".equals(f.getType())).count() == 0;
+	}
+
 	public String getReference() {
 		return reference;
 	}
@@ -1857,6 +1875,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		return endCustomer.getName();
 	}
 
+	@Transient
 	public void setEndCustomerName(String name) {
 		if (endCustomer == null)
 			endCustomer = new Customer();
@@ -2011,6 +2030,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setMissingPo(Boolean missingPo) {
 		this.missingPo = missingPo;
+	}
+
+	public Boolean getMissingOutboundDeliveryNote() {
+		return missingOutboundDeliveryNote;
+	}
+
+	public void setMissingOutboundDeliveryNote(Boolean missingOutboundDeliveryNote) {
+		this.missingOutboundDeliveryNote = missingOutboundDeliveryNote;
 	}
 
 }

@@ -416,12 +416,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 15:
 				if (sessionView.getInternal())
-					initLists(service.findByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
+					initLists(service.findByMissingOutboundDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
 				else if (sessionView.getIsExternalPm()) {
 					if (sessionView.getUser().getIsSupplierUser())
-						initLists(service.findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
+						initLists(service.findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
 					else if (sessionView.getUser().getIsCustomerUser())
-						initLists(service.findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
+						initLists(service.findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
 				}
 				break;
 			default:
@@ -483,8 +483,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					return sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
 							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getDestinationProject().getId());
 			}
-		}
-		else if (isStoragePage)
+		} else if (isStoragePage)
 			return canStoreDeliveryRequest();
 		else if (isPreparationPage)
 			return canPrepareOutboundDeliveryRequest();
@@ -2107,6 +2106,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequestFileService.save(deliveryRequestFile);
 		synchronized (DeliveryRequestView.class) {
 			refreshDeliveryRequest();
+			if ("Outbound Delivery Note".equals(deliveryRequestFile.getType())) {
+				deliveryRequest.calculateMissingOutboundDeliveryNote();
+				service.save(deliveryRequest);
+				refreshDeliveryRequest();
+			}
+
 		}
 	}
 
@@ -2114,6 +2119,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequest.getFileList().add(deliveryRequestFile);
+		deliveryRequest.calculateMissingOutboundDeliveryNote();
 	}
 
 	public Boolean canDeleteFile(User user) {
@@ -2620,14 +2626,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return 0l;
 	}
 
-	public Long countByMissingOutbondDeliveryNoteFile() {
+	public Long countByMissingOutboundDeliveryNoteFile() {
 		if (sessionView.getInternal())
-			return service.countByMissingOutbondDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
+			return service.countByMissingOutboundDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
 		else if (sessionView.getIsExternalPm()) {
 			if (sessionView.getUser().getIsSupplierUser())
-				return service.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
+				return service.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
 			else if (sessionView.getUser().getIsCustomerUser())
-				return service.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList());
+				return service.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList());
 		}
 		return 0l;
 	}

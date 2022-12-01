@@ -1246,31 +1246,31 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 //		map.forEach((pnId, unitPrice) -> stockRowRepos.updateUnitPriceByPartNumberAndOutboundDeliveryRequestReturn(unitPrice, pnId, outboundDeliveryRequestId));
 	}
 
-	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
-		return repos.findByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
+	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
+		return repos.findByMissingOutboundDeliveryNoteFile(username, warehouseList, projectIdList);
 	}
 
-	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFile")
-	public Long countByMissingOutbondDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
-		return repos.countByMissingOutbondDeliveryNoteFile(username, warehouseList, projectIdList);
+	@Cacheable(value = "deliveryRequestService.countByMissingOutboundDeliveryNoteFile")
+	public Long countByMissingOutboundDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
+		return repos.countByMissingOutboundDeliveryNoteFile(username, warehouseList, projectIdList);
 	}
 	
-	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
-		return repos.findByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
+	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+		return repos.findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
 	}
 	
-	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier")
-	public Long  countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
-		return repos.countByMissingOutbondDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
+	@Cacheable(value = "deliveryRequestService.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier")
+	public Long  countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+		return repos.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
 	}
 	
-	public List<DeliveryRequest> findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
-		return repos.findByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
+	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+		return repos.findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
 	}
 	
-	@Cacheable(value = "deliveryRequestService.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer")
-	public Long  countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
-		return repos.countByMissingOutbondDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
+	@Cacheable(value = "deliveryRequestService.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer")
+	public Long  countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+		return repos.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
 	}
 
 }

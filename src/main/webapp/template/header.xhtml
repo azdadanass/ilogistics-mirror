@@ -345,21 +345,6 @@
 														<f:param name="pageIndex" value="3" />
 													</h:outputLink>
 												</li>
-												<li>
-													<h:outputLink value="deliveryRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check pink " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" To Transfer " />
-															</span>
-															<span class="pull-right badge badge-pink">
-																<h:outputText value="#{deliveryRequestView.countToTransfer()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="8" />
-													</h:outputLink>
-												</li>
 											</f:subview>
 											<f:subview rendered="#{sessionView.isWM()}">
 												<li>
@@ -413,21 +398,6 @@
 													<h:outputLink value="deliveryRequestList.xhtml">
 														<span class="clearfix">
 															<span class="pull-left">
-																<i class="ace-icon fa fa-check green " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" To Return " />
-															</span>
-															<span class="pull-right badge badge-success">
-																<h:outputText value="#{deliveryRequestView.countToReturn()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="9" />
-													</h:outputLink>
-												</li>
-												<li>
-													<h:outputLink value="deliveryRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
 																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
 																&nbsp;&nbsp;
 																<h:outputText value=" To Deliver " />
@@ -465,7 +435,7 @@
 																<h:outputText value=" Missing BL Attachment " />
 															</span>
 															<span class="pull-right badge badge-danger">
-																<h:outputText value="#{deliveryRequestView.countByMissingOutbondDeliveryNoteFile()}" />
+																<h:outputText value="#{deliveryRequestView.countByMissingOutboundDeliveryNoteFile()}" />
 															</span>
 														</span>
 														<f:param name="pageIndex" value="15" />
@@ -474,6 +444,46 @@
 											</f:subview>
 										</ul>
 									</li>
+									<f:subview rendered="#{sessionView.isInternalPM or sessionView.isUser()}">
+									<li class="dropdown-header">
+										<i class="ace-icon fa fa-check"></i>
+										<h:outputText value="To Transfer / To Return" />
+									</li>
+									<f:subview rendered="#{sessionView.isInternalPM}">
+										<li>
+											<h:outputLink value="deliveryRequestList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-check pink " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Transfer " />
+													</span>
+													<span class="pull-right badge badge-pink">
+														<h:outputText value="#{deliveryRequestView.countToTransfer()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="8" />
+											</h:outputLink>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{sessionView.isUser()}">
+										<li>
+											<h:outputLink value="deliveryRequestList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-check green " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" To Return " />
+													</span>
+													<span class="pull-right badge badge-success">
+														<h:outputText value="#{deliveryRequestView.countToReturn()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="9" />
+											</h:outputLink>
+										</li>
+									</f:subview>
+									</f:subview>
 								</ul>
 							</li>
 						</f:subview>

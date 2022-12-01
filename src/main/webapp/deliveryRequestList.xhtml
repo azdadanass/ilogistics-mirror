@@ -187,21 +187,27 @@
 							<p:column headerText="Project">
 								<h:outputText value="#{item.project.name}" styleClass="blue" />
 							</p:column>
-							<p:column headerText="Destination Project" rendered="#{deliveryRequestView.pageIndex==15}">
+							<p:column headerText="Destination Project" styleClass="#{deliveryRequestView.pageIndex==15?'':'hide'}">
 								<h:outputText value="#{item.destinationProject.name}" styleClass="pink" />
 							</p:column>
-							<p:column headerText="Delivery Date" rendered="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15}">
+							<p:column headerText="End Customer" styleClass="hide" rendered="#{deliveryRequestView.list2.size()>0}">
+								<h:outputText value="#{item.endCustomerName}" />
+							</p:column>
+							<p:column headerText="Delivery Date" styleClass="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15?'':'hide'}">
 								<h:outputText value="#{item.date4}">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Deliver To" rendered="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15}">
+							<p:column headerText="Po" styleClass="hide">
+								<h:outputText value="#{item.poNumero}" />
+							</p:column>
+							<p:column headerText="Deliver To" styleClass="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15?'':'hide'}">
 								<h:outputText value="#{item.deliverToCompanyType.value} / " />
 								<h:outputText value="#{item.deliverToCompanyName}" />
 								<h:outputText value="#{item.deliverToCustomerName}" />
 								<h:outputText value="#{item.deliverToSupplierName}" />
 							</p:column>
-							<p:column headerText="Deliver To User" rendered="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15}">
+							<p:column headerText="Deliver To User" styleClass="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15?'':'hide'}">
 								<h:outputText value="#{item.toUserFullName}" />
 							</p:column>
 							<p:column headerText="Owner"
@@ -215,7 +221,7 @@
 							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=5 and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originNumber}" styleClass="bolder" />
 							</p:column>
-							<p:column headerText="End Customer" rendered="#{deliveryRequestView.pageIndex==5}">
+							<p:column headerText="End Customer" styleClass="#{deliveryRequestView.pageIndex==5?'':'hide'}">
 								<h:outputText value="#{item.endCustomerName}" />
 							</p:column>
 							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex==5}">
@@ -241,6 +247,9 @@
 							</p:column>
 							<p:column headerText="Status" width="125">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.statusStyleClass}" />
+							</p:column>
+							<p:column headerText="Missing Outbound Delivery Note" styleClass="hide">
+								<h:outputText value="#{item.missingOutboundDeliveryNote?'Yes':'No'}" />
 							</p:column>
 							<p:column headerText="Exp Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}" rendered="#{DeliveryRequestState.WAITING==deliveryRequestView.state}">
 								<h:outputText value="#{item.neededDeliveryDateStr}" styleClass="#{item.neededDeliveryDateColor.name} bolder" />

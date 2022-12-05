@@ -310,6 +310,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void message() {
 		System.out.println(deliveryRequestDetailSelectionList);
 	}
+	
+	public Boolean getIsInbound() {
+		return DeliveryRequestType.INBOUND.equals(type);
+	}
+	
+	public Boolean getIsOutbound() {
+		return DeliveryRequestType.OUTBOUND.equals(type);
+	}
+	
+	public Boolean getIsXbound() {
+		return DeliveryRequestType.XBOUND.equals(type);
+	}
 
 	@Override
 	public void initParameters() {

@@ -20,6 +20,7 @@ import ma.azdad.model.User;
 @Repository
 public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Integer> {
 
+	String destinationProjectCustomerName= "(select b.customer.name from Project b where a.destinationProject.id = b.id)";
 	String endCustomerName= "(select b.name from Customer b where a.endCustomer.id = b.id)";
 	String poNumero = "(select b.numero from Po b where a.po.id = b.id)";
 	String deliverToCompanyName = "(select b.name from Company b where a.deliverToCompany.id = b.id)";
@@ -35,11 +36,11 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
-	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer," //
-			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + "," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","
+	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.sdm," //
+			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","
 			+ destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName
-			+ "," + deliverToSupplierName + "," + toUserFullName + ","+endCustomerName+") ";
+			+ "," + deliverToSupplierName + "," + toUserFullName + ","+endCustomerName+",a.project.customer.name,"+destinationProjectCustomerName+") ";
 
 	String c2 = "select new DeliveryRequest(a.id,a.reference,a.type,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
 			+ "a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";

@@ -503,7 +503,7 @@
 												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="green" />
 											</p:column>
 											<p:column headerText="Total Price" exportable="false">
-												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder green">
+												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder #{item.totalPrice lt 0?'green':'red'}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="bolder green" />

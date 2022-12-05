@@ -214,12 +214,13 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	// c1
-	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type,
-			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, DeliveryRequestStatus status, String originNumber, Date date4, Date neededDeliveryDate,
-			String originName, String customerName, String supplierName, String companyName, Warehouse warehouse, String destinationProjectName, String transporterName1,
-			String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, Boolean containsBoqMapping, Boolean missingPo,
-			Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName,
-			String deliverToSupplierName, String toUserFullName,String endCustomerName) {
+	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, //
+			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4,//
+			Date neededDeliveryDate, String originName, CompanyType ownerType, String customerName, String supplierName, String companyName, Warehouse warehouse,//
+			String destinationProjectName, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef,//
+			Boolean containsBoqMapping, Boolean missingPo, Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName,//
+			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName,String projectCustomerName,String destinationProjectCustomerName
+			) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -229,6 +230,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 		this.isForReturn = isForReturn;
 		this.isForTransfer = isForTransfer;
+		this.sdm = sdm;
 		this.status = status;
 		this.referenceNumber = referenceNumber;
 		this.reference = reference;
@@ -236,7 +238,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.date4 = date4;
 		this.neededDeliveryDate = neededDeliveryDate;
 		this.setOriginName(originName);
-		this.ownerName = customerName != null ? customerName : supplierName != null ? supplierName : companyName;
+		this.setOwnerType(ownerType);
+		this.setCompanyName(companyName);
+		this.setCustomerName(customerName);
+		this.setSupplierName(supplierName);
 		this.warehouse = warehouse;
 		this.transporterName = transporterName1 != null ? transporterName1 : transporterName2;
 		this.transportationNeeded = transportationNeeded;
@@ -253,6 +258,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.setDeliverToSupplierName(deliverToSupplierName);
 		this.setToUserFullName(toUserFullName);
 		this.setEndCustomerName(endCustomerName);
+		this.setProjectCustomerName(projectCustomerName);
+		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 	}
 
 	// c2
@@ -780,15 +787,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public String getOwnerName() {
-		if (ownerName != null)
-			return ownerName;
-		if (customer != null)
-			return "Customer / " + customer.getName();
-		if (supplier != null)
-			return "Supplier / " + supplier.getName();
-		if (company != null)
-			return "Company / " + company.getName();
-		return null;
+		if (ownerType == null)
+			return null;
+		switch (ownerType) {
+		case COMPANY:
+			return getCompanyName();
+		case CUSTOMER:
+			return getCustomerName();
+		case SUPPLIER:
+			return getSupplierName();
+		default:
+			return null;
+		}
 	}
 
 	@Column(nullable = false)
@@ -1104,6 +1114,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (project == null)
 			project = new Project();
 		project.setName(name);
+	}
+
+	@Transient
+	@JsonIgnore
+	public String getProjectCustomerName() {
+		if (project != null)
+			return project.getCustomerName();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setProjectCustomerName(String name) {
+		if (project == null)
+			project = new Project();
+		project.setCustomerName(name);
 	}
 
 	@Transient
@@ -1880,6 +1906,48 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (endCustomer == null)
 			endCustomer = new Customer();
 		endCustomer.setName(name);
+	}
+
+	@Transient
+	public String getCustomerName() {
+		if (customer == null)
+			return null;
+		return customer.getName();
+	}
+
+	@Transient
+	public void setCustomerName(String name) {
+		if (customer == null)
+			customer = new Customer();
+		customer.setName(name);
+	}
+
+	@Transient
+	public String getSupplierName() {
+		if (supplier == null)
+			return null;
+		return supplier.getName();
+	}
+
+	@Transient
+	public void setSupplierName(String name) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setName(name);
+	}
+
+	@Transient
+	public String getCompanyName() {
+		if (company == null)
+			return null;
+		return company.getName();
+	}
+
+	@Transient
+	public void setCompanyName(String name) {
+		if (company == null)
+			company = new Company();
+		company.setName(name);
 	}
 
 	public Boolean getMissingSerialNumber() {

@@ -28,6 +28,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String deliverToSupplierName = "(select b.name from Supplier b where a.deliverToSupplier.id = b.id)";
 	String toUserFullName = "(select b.fullName from User b where a.toUser.username = b.username)";
 	String originName = "(select b.name from Site b where a.origin.id = b.id)";
+	String destinationName = "(select b.name from Site b where a.destination.id = b.id)";
 	String customerName = "(select b.name from Customer b where a.customer.id = b.id)";
 	String supplierName = "(select b.name from Supplier b where a.supplier.id = b.id)";
 	String companyName = "(select b.name from Company b where a.company.id = b.id)";
@@ -37,7 +38,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.sdm," //
-			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","
+			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName+","+destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","
 			+ destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName
 			+ "," + deliverToSupplierName + "," + toUserFullName + ","+endCustomerName+",a.project.customer.name,"+destinationProjectCustomerName+") ";

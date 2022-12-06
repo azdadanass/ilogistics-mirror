@@ -1,6 +1,7 @@
 package ma.azdad.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,22 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 	public List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();
 		List<JobRequestDeliveryDetail> data = repos.findInstalledByProject(projectId);
+		for (JobRequestDeliveryDetail jrdd : data)
+			if (!jrdd.getIsSerialNumberRequired())
+				result.add(jrdd);
+			else {
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestDetail(jrdd.getTmpJobRequestId(), jrdd.getTmpDeliveryRequestDetailId());
+				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(), jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(), jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+			}
+		return result;
+	}
+	
+	public List<JobRequestDeliveryDetail> findInstalled(Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList) {
+		List<JobRequestDeliveryDetail> result = new ArrayList<>();
+		if(deliveryRequestIdList.isEmpty() || partNumberIdList.isEmpty())
+			return result;
+		List<JobRequestDeliveryDetail> data = repos.findInstalled(deliveryRequestIdList,partNumberIdList);
 		for (JobRequestDeliveryDetail jrdd : data)
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);

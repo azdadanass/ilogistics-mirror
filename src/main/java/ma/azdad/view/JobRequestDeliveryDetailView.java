@@ -1,5 +1,8 @@
 package ma.azdad.view;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -11,7 +14,6 @@ import ma.azdad.model.JobRequestDeliveryDetail;
 import ma.azdad.repos.JobRequestDeliveryDetailRepos;
 import ma.azdad.service.JobRequestDeliveryDetailService;
 import ma.azdad.utils.FacesContextMessages;
-import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
@@ -19,10 +21,10 @@ import ma.azdad.utils.FacesContextMessages;
 public class JobRequestDeliveryDetailView extends GenericView<Integer, JobRequestDeliveryDetail, JobRequestDeliveryDetailRepos, JobRequestDeliveryDetailService> {
 
 	@Autowired
-	private JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
-
-	@Autowired
 	private CacheView cacheView;
+	
+	@Autowired
+	private StockRowView stockRowView;
 
 	private JobRequestDeliveryDetail jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
 
@@ -33,9 +35,9 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 		if (isListPage)
 			refreshList();
 		else if (isEditPage)
-			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(id);
+			jobRequestDeliveryDetail = service.findOne(id);
 		else if (isViewPage)
-			jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(id);
+			jobRequestDeliveryDetail = service.findOne(id);
 	}
 
 	@Override
@@ -46,19 +48,27 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	@Override
 	public void refreshList() {
 		if (isListPage)
-			list2 = list1 = jobRequestDeliveryDetailService.findAll();
+			list2 = list1 = service.findAll();
+		if ("/sdmDeliveryReporting.xhtml".equals(currentPath)) {
+			List<Integer> deliveryRequestIdList =  stockRowView.getList2().stream().map(i->i.getDeliveryRequestId()).distinct().collect(Collectors.toList());
+			List<Integer> partNumberIdList = stockRowView.getList2().stream().map(i->i.getPartNumberId()).distinct().collect(Collectors.toList());
+			System.out.println("deliveryRequestIdList "+deliveryRequestIdList);
+			System.out.println("partNumberIdList "+partNumberIdList);
+			initLists(service.findInstalled(deliveryRequestIdList, partNumberIdList));
+		}
+			
 	}
 
 	public void refreshList(Integer projectId) {
-		list2 = list1 = jobRequestDeliveryDetailService.findInstalledByProject(projectId);
+		list2 = list1 = service.findInstalledByProject(projectId);
 	}
 
 	public void flushJobRequestDeliveryDetail() {
-		jobRequestDeliveryDetailService.flush();
+		service.flush();
 	}
 
 	public void refreshJobRequestDeliveryDetail() {
-		jobRequestDeliveryDetail = jobRequestDeliveryDetailService.findOne(jobRequestDeliveryDetail.getId());
+		jobRequestDeliveryDetail = service.findOne(jobRequestDeliveryDetail.getId());
 	}
 
 	/*
@@ -88,7 +98,7 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 			return addParameters(listPage, "faces-redirect=true");
 		if (!validateJobRequestDeliveryDetail())
 			return null;
-		jobRequestDeliveryDetail = jobRequestDeliveryDetailService.save(jobRequestDeliveryDetail);
+		jobRequestDeliveryDetail = service.save(jobRequestDeliveryDetail);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + jobRequestDeliveryDetail.getId());
 	}
@@ -105,7 +115,7 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	public String deleteJobRequestDeliveryDetail() {
 		if (canDeleteJobRequestDeliveryDetail())
 			try {
-				jobRequestDeliveryDetailService.delete(jobRequestDeliveryDetail);
+				service.delete(jobRequestDeliveryDetail);
 			} catch (Exception e) {
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return null;

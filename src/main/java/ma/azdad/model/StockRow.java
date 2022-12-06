@@ -373,7 +373,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, StockRowStatus status, Double unitCost,Integer costCurrencyId, Double unitPrice,Integer priceCurrencyId, String projectName, String warehouseName, //
 			Integer partNumberId, String partNumberName,String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference,
-			String deliveryRequestSmsRef, Date deliveryRequestDate4, String destinationProjectCustomerName, String destinationName, String originName,
+			String deliveryRequestSmsRef, Date deliveryRequestDate4,Boolean deliveryRequestSdm, String destinationProjectCustomerName, String destinationName, String originName,
 			String destinationProjectName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
 			String poNumero, String endCustomerName) {
@@ -396,6 +396,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
 		this.setDeliveryRequestDate4(deliveryRequestDate4);
+		this.setDeliveryRequestSdm(deliveryRequestSdm);
 		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 		this.setDestinationName(destinationName);
 		this.setOriginName(originName);
@@ -513,6 +514,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
+	}
+	
+	@Transient
+	public Boolean getDeliveryRequestSdm() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getSdm();
+	}
+
+	@Transient
+	public void setDeliveryRequestSdm(Boolean deliveryRequestSdm) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setSdm(deliveryRequestSdm);
 	}
 
 	@Transient

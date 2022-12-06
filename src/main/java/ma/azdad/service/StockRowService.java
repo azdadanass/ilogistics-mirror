@@ -715,6 +715,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
+	
+	public List<StockRow> findSdmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		return repos.findSdmDeliveryListsByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
+	}
+
+	public List<StockRow> findSdmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
+		return repos.findSdmDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
+	}
 
 	public List<StockRow> findByPo(Integer poId) {
 		return repos.findByPo(poId);

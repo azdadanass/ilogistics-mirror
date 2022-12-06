@@ -187,9 +187,9 @@
 							<p:column headerText="DN Type" rendered="#{deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.subType}" styleClass="bolder #{item.subTypeColor}" />
 							</p:column>
-							<p:column headerText="Priority" styleClass="center" width="70" sortBy="#{item.priority}" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=15}">
+							<!-- <p:column headerText="Priority" styleClass="center" width="70" sortBy="#{item.priority}" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value=" #{item.priority.value}" styleClass="#{item.priority.color} bolder" />
-							</p:column>
+							</p:column> -->
 							<p:column headerText="Owner" rendered="#{deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.ownerName}" styleClass="purple aa-cut-text" />
 							</p:column>

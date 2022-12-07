@@ -456,9 +456,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	private void filterDetail(String query) {
-
-		System.out.println("filterDetail " + query);
-
 		Set<DeliveryRequestDetail> list = new HashSet<>();
 		query = query.toLowerCase().trim();
 		for (DeliveryRequestDetail detail : deliveryRequestDetailList1) {

@@ -2444,7 +2444,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Boolean canEditIsForTransfer() {
-		return !deliveryRequest.getIsForTransfer() || service.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;
+		return Boolean.FALSE.equals(deliveryRequest.getIsForTransfer()) || service.countByOutboundDeliveryRequestTransfer(deliveryRequest.getId()) == 0;
 	}
 
 	public Boolean canEditIsForReturn() {

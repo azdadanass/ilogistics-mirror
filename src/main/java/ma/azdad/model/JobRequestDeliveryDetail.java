@@ -26,6 +26,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 
 	// TMP
 	private Integer tmpDeliveryRequestDetailId;
+	private Integer tmpPartNumberId;
 	private String tmpPartNumberName;
 	private String tmpPartNumberImage;
 	private String tmpPartNumberDescription;
@@ -55,8 +56,9 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.tmpTeamName = tmpTeamName;
 	}
 
+	// c1
 	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, //
-			String tmpPartNumberName, String tmpPartNumberImage, //
+			Integer tmpPartNumberId, String tmpPartNumberName, String tmpPartNumberImage, //
 			String tmpPartNumberDescription, Integer tmpDeliveryRequestId, Integer referenceNumber, DeliveryRequestType deliveryRequestType, //
 			Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName) {
@@ -64,6 +66,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.tmpDeliveryRequestDetailId = tmpDeliveryRequestDetailId;
+		this.tmpPartNumberId = tmpPartNumberId;
 		this.tmpPartNumberName = tmpPartNumberName;
 		this.tmpPartNumberImage = tmpPartNumberImage;
 		this.tmpPartNumberDescription = tmpPartNumberDescription;
@@ -191,6 +194,16 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 
 	public void setAdditionalQuantity(Double additionalQuantity) {
 		this.additionalQuantity = additionalQuantity;
+	}
+
+	@Transient
+	public Integer getTmpPartNumberId() {
+		return tmpPartNumberId;
+	}
+
+	@Transient
+	public void setTmpPartNumberId(Integer tmpPartNumberId) {
+		this.tmpPartNumberId = tmpPartNumberId;
 	}
 
 	@Transient

@@ -17,7 +17,7 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequestDetail.deliveryRequest.toUser.username)";
 
 	String c1 = "select new JobRequestDeliveryDetail(a.installedQuantity,a.isSerialNumberRequired,a.deliveryRequestDetail.id," //
-			+ "a.deliveryRequestDetail.partNumber.name,a.deliveryRequestDetail.partNumber.image,a.deliveryRequestDetail.partNumber.description,"//
+			+ "a.deliveryRequestDetail.partNumber.id,a.deliveryRequestDetail.partNumber.name,a.deliveryRequestDetail.partNumber.image,a.deliveryRequestDetail.partNumber.description,"//
 			+ "a.deliveryRequestDetail.deliveryRequest.id,a.deliveryRequestDetail.deliveryRequest.referenceNumber,a.deliveryRequestDetail.deliveryRequest.type,"//
 			+ "a.jobRequest.id,a.jobRequest.site.name,a.jobRequest.team.name,"//
 			+ "a.deliveryRequestDetail.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + ","
@@ -26,11 +26,21 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
 
-	@Query(c1 + "from JobRequestDeliveryDetail a where " //
-			+ "a.deliveryRequestDetail.deliveryRequest.id in (?1) " //
-			+ "and a.deliveryRequestDetail.partNumber.id in (?2) " //
+	@Query(c1
+			+ "from JobRequestDeliveryDetail a left join a.deliveryRequestDetail.deliveryRequest.company as company1 left join a.deliveryRequestDetail.inboundDeliveryRequest.company as company2 " //
+			+ "where (company1.id = ?1 or company2.id = ?1) "//
+			+ "and a.deliveryRequestDetail.deliveryRequest.id in (?2) " //
+			+ "and a.deliveryRequestDetail.partNumber.id in (?3) " //
 			+ "and a.installedQuantity > 0")
-	List<JobRequestDeliveryDetail> findInstalled(Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList);
+	List<JobRequestDeliveryDetail> findInstalledByCompanyOwner(Integer companyId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList);
+
+	@Query(c1
+			+ "from JobRequestDeliveryDetail a left join a.deliveryRequestDetail.deliveryRequest.customer as customer1 left join a.deliveryRequestDetail.inboundDeliveryRequest.customer as customer2 " //
+			+ "where (customer1.id = ?4 or customer2.id = ?4) "//
+			+ "and a.deliveryRequestDetail.deliveryRequest.id in (?2) " //
+			+ "and a.deliveryRequestDetail.partNumber.id in (?3) " //
+			+ "and a.installedQuantity > 0")
+	List<JobRequestDeliveryDetail> findInstalledByCustomerOwner(Integer customerId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList);
 
 	@Query("select count(*) from JobRequestDeliveryDetail where deliveryRequestDetail.deliveryRequest.id = ?1")
 	Long countByDeliveryRequest(Integer deliveryRequestId);

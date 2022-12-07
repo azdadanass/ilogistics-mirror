@@ -1,8 +1,5 @@
 package ma.azdad.view;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -22,9 +19,6 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 
 	@Autowired
 	private CacheView cacheView;
-	
-	@Autowired
-	private StockRowView stockRowView;
 
 	private JobRequestDeliveryDetail jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
 
@@ -49,14 +43,6 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = service.findAll();
-		if ("/sdmDeliveryReporting.xhtml".equals(currentPath)) {
-			List<Integer> deliveryRequestIdList =  stockRowView.getList2().stream().map(i->i.getDeliveryRequestId()).distinct().collect(Collectors.toList());
-			List<Integer> partNumberIdList = stockRowView.getList2().stream().map(i->i.getPartNumberId()).distinct().collect(Collectors.toList());
-			System.out.println("deliveryRequestIdList "+deliveryRequestIdList);
-			System.out.println("partNumberIdList "+partNumberIdList);
-			initLists(service.findInstalled(deliveryRequestIdList, partNumberIdList));
-		}
-			
 	}
 
 	public void refreshList(Integer projectId) {

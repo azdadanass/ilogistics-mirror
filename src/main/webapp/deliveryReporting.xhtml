@@ -142,7 +142,7 @@
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
-						<p:remoteCommand name="tab1" action="#{stockRowView.setTab(1)}" update="list1" />
+						<p:remoteCommand name="tab1" action="#{stockRowView.setSummary(false)}" update="list1" />
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -253,7 +253,7 @@
 						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="tab2" action="#{stockRowView.setTab(2)}" update="tab2" />
+						<p:remoteCommand name="tab2" action="#{stockRowView.setSummary(true)}" update="tab2" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -325,7 +325,7 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="tab3" action="#{stockRowView.setTab(3)}" update="tab3" />
+						<p:remoteCommand name="tab3" action="#{stockRowView.setSummary(false)}" update="tab3" />
 						<h:panelGroup id="tab3">
 							<div class="space-8" />
 							<div class="row">

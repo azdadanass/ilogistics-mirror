@@ -121,7 +121,7 @@
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
-						<p:remoteCommand name="stockHistory" action="#{stockRowView.setTab(0)}" update="stockHistory" />
+						<p:remoteCommand name="stockHistory" action="#{stockRowView.setSummary(false)}" update="stockHistory" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -213,7 +213,7 @@
 						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="summary" action="#{stockRowView.setTab(1)}" update="summary" />
+						<p:remoteCommand name="summary" action="#{stockRowView.setSummary(true)}" update="summary" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -275,7 +275,7 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="tab3" action="#{stockRowView.setTab(2)}" update="tab3" />
+						<p:remoteCommand name="tab3" action="#{stockRowView.setSummary(true)}" update="tab3" />
 						<h:panelGroup id="tab3">
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">

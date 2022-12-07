@@ -55,6 +55,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private Double projectSubTypeStockQuantity;
 	private Double pendingQuantity;
 	private Double forecastQuantity;
+	
+	private Double installedQuantity;
 
 	// c0
 	public StockRow(Double quantity, PartNumber partNumber) {
@@ -1304,5 +1306,17 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public void setDeliveryRequestDetail(DeliveryRequestDetail deliveryRequestDetail) {
 		this.deliveryRequestDetail = deliveryRequestDetail;
 	}
+
+	@Transient
+	public Double getInstalledQuantity() {
+		return installedQuantity;
+	}
+
+	@Transient
+	public void setInstalledQuantity(Double installedQuantity) {
+		this.installedQuantity = installedQuantity;
+	}
+	
+	
 
 }

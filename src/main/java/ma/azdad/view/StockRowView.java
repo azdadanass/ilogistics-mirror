@@ -32,6 +32,7 @@ import ma.azdad.repos.StockRowRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
+import ma.azdad.service.JobRequestDeliveryDetailService;
 import ma.azdad.service.StockRowService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.ChartContainer;
@@ -59,6 +60,12 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	@Autowired
 	protected CacheView cacheView;
+
+	@Autowired
+	private JobRequestDeliveryDetailView jobRequestDeliveryDetailView;
+
+	@Autowired
+	private JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
 
 	private StockRow stockRow = new StockRow();
 
@@ -98,7 +105,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private Boolean inStock = true;
 	private Boolean customerStockActive;
 	private Boolean maxThreshold;
-	private int tab = 0;
+//	private int tab = 0;
 
 	private List<ChartContainer> chartList;
 
@@ -112,6 +119,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<StockRow> historyList2 = null;
 	private List<DeliveryRequestExpiryDate> expiryList = null;
 	private Boolean removeFullyDelivered = false;
+	private Boolean summary = false;
 
 //	private Boolean stock;
 
@@ -417,8 +425,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		refreshDeliveryLists();
 	}
 
-	public void setTab(int tab) {
-		this.tab = tab;
+//	public void setTab(int tab) {
+//		this.tab = tab;
+//		refreshDeliveryLists();
+//	}
+
+	public void setSummary(Boolean summary) {
+		this.summary = summary;
 		refreshDeliveryLists();
 	}
 
@@ -473,18 +486,31 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			else if (customerId != null)
 				list1.addAll(stockRowService.findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(customerId, dnIdList, partNumberIdList));
 
-		if (tab == 2) {
+		refreshJobRequestDeliveryDetailList();
+
+		jobRequestDeliveryDetailView.getList1().stream().forEach(i -> {
+			System.out.println(i.getTmpPartNumberId());
+			System.out.println(i.getQuantity());
+			System.out.println(i.getInstalledQuantity());
+			System.out.println("------------");
+		});
+
+		if (this.summary) {
 			List<StockRow> result = new ArrayList<>();
 			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
 					.forEach((x, y) -> result.add(new StockRow(y, x)));
-
 			Collections.sort(result, new Comparator<StockRow>() {
 				public int compare(StockRow o1, StockRow o2) {
 					return o1.getQuantity().compareTo(o2.getQuantity());
 				}
 			});
+			initLists(result);
 
-			list2 = list1 = result;
+			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
+				list1.forEach(sr -> {
+					sr.setInstalledQuantity(jobRequestDeliveryDetailView.getList1().stream().filter(i -> i.getTmpPartNumberId().equals(sr.getPartNumberId()))
+							.mapToDouble(i -> i.getInstalledQuantity()).sum());
+				});
 		}
 
 //		if (tab == 2 || tab == 3) {
@@ -497,6 +523,17 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 //			list2 = list1 = result;
 //		}
 
+	}
+
+	private void refreshJobRequestDeliveryDetailList() {
+		if ("/sdmDeliveryReporting.xhtml".equals(currentPath)) {
+			List<Integer> deliveryRequestIdList = list1.stream().map(i -> i.getDeliveryRequestId()).distinct().collect(Collectors.toList());
+			List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumberId()).distinct().collect(Collectors.toList());
+			if (companyId != null)
+				jobRequestDeliveryDetailView.initLists(jobRequestDeliveryDetailService.findInstalled(companyId, null, deliveryRequestIdList, partNumberIdList));
+			else if (customerId != null)
+				jobRequestDeliveryDetailView.initLists(jobRequestDeliveryDetailService.findInstalled(null, customerId, deliveryRequestIdList, partNumberIdList));
+		}
 	}
 
 //	public void getReportingLists() {
@@ -1080,9 +1117,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		this.deliverToOtherNameList = deliverToOtherNameList;
 	}
 
-	public int getTab() {
-		return tab;
-	}
+//	public int getTab() {
+//		return tab;
+//	}
 
 	public Integer getExternalRequesterId() {
 		return externalRequesterId;
@@ -1258,6 +1295,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void setReportTypeValue(String reportTypeValue) {
 		this.reportTypeValue = reportTypeValue;
+	}
+
+	public Boolean getSummary() {
+		return summary;
 	}
 
 }

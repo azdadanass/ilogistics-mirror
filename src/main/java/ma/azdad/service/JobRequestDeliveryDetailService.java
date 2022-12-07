@@ -37,23 +37,31 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestDetail(jrdd.getTmpJobRequestId(), jrdd.getTmpDeliveryRequestDetailId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(), jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(), jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(),
+							jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(),
+							jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
 			}
 		return result;
 	}
-	
-	public List<JobRequestDeliveryDetail> findInstalled(Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList) {
+
+	public List<JobRequestDeliveryDetail> findInstalled(Integer companyId, Integer customerId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();
-		if(deliveryRequestIdList.isEmpty() || partNumberIdList.isEmpty())
+		if (deliveryRequestIdList.isEmpty() || partNumberIdList.isEmpty())
 			return result;
-		List<JobRequestDeliveryDetail> data = repos.findInstalled(deliveryRequestIdList,partNumberIdList);
+		List<JobRequestDeliveryDetail> data = null;
+		if (companyId != null)
+			data = repos.findInstalledByCompanyOwner(companyId, deliveryRequestIdList, partNumberIdList);
+		else if (customerId != null)
+			data = repos.findInstalledByCustomerOwner(customerId, deliveryRequestIdList, partNumberIdList);
 		for (JobRequestDeliveryDetail jrdd : data)
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestDetail(jrdd.getTmpJobRequestId(), jrdd.getTmpDeliveryRequestDetailId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(), jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(), jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getTmpPartNumberName(),
+							jrdd.getTmpPartNumberDescription(), jrdd.getTmpDeliveryRequestReference(), jrdd.getTmpJobRequestId(), jrdd.getTmpJobRequestReference(),
+							jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
 			}
 		return result;
 	}

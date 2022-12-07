@@ -342,16 +342,6 @@
 								<b class="arrow"></b>
 								<ul class="submenu">
 									<li>
-										<h:outputLink value="deliveryReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-											<h:outputText value="Delivery Reports" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
 										<h:outputLink value="stockRowList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130 green" style="margin-right: 10px" />
@@ -372,6 +362,28 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
+								</ul>
+							</li>
+							<li class="open">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-cubes"></i>
+									<span class="menu-text">
+										<h:outputText value="Delivery" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="deliveryReporting.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="Delivery Reports" />
+											<f:param name="companyId" value="#{stockRowView.companyId}" />
+											<f:param name="customerId" value="#{stockRowView.customerId}" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
 									<li>
 										<h:outputLink value="sdmDeliveryReporting.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
@@ -382,48 +394,6 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
-									<!-- <f:subview rendered="#{stockRowView.customerId!=null}">
-										<li>
-											<h:outputLink value="destinationReporting.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Site Report" />
-												<f:param name="customerId" value="#{stockRowView.customerId}" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</f:subview>
-									<li>
-										<h:outputLink value="deliverToOtherReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
-											<h:outputText value="Company Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="externalRequesterReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Requester Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li> -->
-									<!-- <f:subview rendered="#{stockRowView.companyId!=null}">
-										<li>
-											<h:outputLink value="destinationCustomerReporting.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Customer Report" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</f:subview> -->
 								</ul>
 							</li>
 							<li class="open">

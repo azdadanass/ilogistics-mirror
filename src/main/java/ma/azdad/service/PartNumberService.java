@@ -232,4 +232,8 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	public List<File> findFileListByPo(Integer poId) {
 		return repos.findFileListByPo(poId).stream().filter(i->!i.getIsImage()).collect(Collectors.toList());
 	}
+	
+	public List<File> findFileListByDeliveryRequest(Integer deliveryRequestId){
+		return repos.findFileListByDeliveryRequest(deliveryRequestId).stream().filter(i->!i.getIsImage()).collect(Collectors.toList());
+	}
 }

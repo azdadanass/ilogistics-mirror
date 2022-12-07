@@ -86,4 +86,7 @@ public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
 	
 	@Query("select new ma.azdad.utils.File('Part Number',a.parent.name,a.id,a.date,a.link,a.extension,a.type,a.size,a.name,user) from PartNumberFile a where a.parent.id in (select distinct b.partNumber.id from Boq b where b.podetails.po.id = ?1) order by a.parent.id")
 	public List<File> findFileListByPo(Integer poId);
+	
+	@Query("select new ma.azdad.utils.File('Part Number',a.parent.name,a.id,a.date,a.link,a.extension,a.type,a.size,a.name,user) from PartNumberFile a where a.parent.id in (select distinct b.partNumber.id from DeliveryRequestDetail b where b.deliveryRequest.id = ?1) order by a.parent.id")
+	public List<File> findFileListByDeliveryRequest(Integer deliveryRequestId);
 }

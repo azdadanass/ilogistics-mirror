@@ -36,7 +36,7 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 
 	@Query(c1
 			+ "from JobRequestDeliveryDetail a left join a.deliveryRequestDetail.deliveryRequest.customer as customer1 left join a.deliveryRequestDetail.inboundDeliveryRequest.customer as customer2 " //
-			+ "where (customer1.id = ?4 or customer2.id = ?4) "//
+			+ "where (customer1.id = ?1 or customer2.id = ?1) "//
 			+ "and a.deliveryRequestDetail.deliveryRequest.id in (?2) " //
 			+ "and a.deliveryRequestDetail.partNumber.id in (?3) " //
 			+ "and a.installedQuantity > 0")

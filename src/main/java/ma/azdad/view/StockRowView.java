@@ -488,12 +488,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		refreshJobRequestDeliveryDetailList();
 
-		jobRequestDeliveryDetailView.getList1().stream().forEach(i -> {
-			System.out.println(i.getTmpPartNumberId());
-			System.out.println(i.getQuantity());
-			System.out.println(i.getInstalledQuantity());
-			System.out.println("------------");
-		});
 
 		if (this.summary) {
 			List<StockRow> result = new ArrayList<>();
@@ -804,7 +798,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService
 				.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(id, deliveryRequestIdList);
 
-		System.out.println("mapInboundDnMapDnQuantity : " + mapInboundDnMapDnQuantity);
 
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
 			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
@@ -846,7 +839,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			}
 		});
 
-		System.out.println("expiryList " + expiryList);
 
 	}
 

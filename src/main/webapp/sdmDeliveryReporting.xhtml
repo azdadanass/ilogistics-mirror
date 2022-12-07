@@ -401,7 +401,7 @@
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Running Stock">
-												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder orange">
+												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>

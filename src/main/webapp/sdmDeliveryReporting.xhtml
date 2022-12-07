@@ -79,7 +79,7 @@
 										<div class="col-xs-9 col-sm-9">
 											<h:selectOneMenu id="reportType" value="#{stockRowView.reportType}">
 												<f:selectItem itemLabel="All" itemValue="All" />
-												<f:selectItem itemValue="3rd Party / Subcontractor" itemLabel="3rd Party / Subcontractor" />
+												<f:selectItem itemValue="Deliver To" itemLabel="Deliver To" />
 												<f:selectItem itemValue="Customer" itemLabel="Customer" />
 												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<f:selectItem itemValue="Destination Site" itemLabel="Destination Site" />
@@ -219,7 +219,7 @@
 										<p:column headerText="Status" width="70">
 											<h:outputText value="#{item.status.value}" />
 										</p:column>
-										<p:column headerText="3rd Party / Subcontractor">
+										<p:column headerText="Deliver To">
 											<h:outputText value="#{item.deliverToEntityName}" />
 										</p:column>
 										<p:column headerText="Destination Site">

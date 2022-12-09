@@ -154,22 +154,22 @@
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Project Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
+							<!-- <p:column headerText="Project Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
 								<h:outputText value="#{item.quantity-item.projectSubTypeStockQuantity}" styleClass="orange">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
-							</p:column>
+							</p:column> -->
 							<p:column headerText="Available Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
-								<h:outputText value="#{item.projectSubTypeStockQuantity-item.pendingQuantity}"
-									styleClass="#{item.quantity!=item.projectSubTypeStockQuantity-item.pendingQuantity?'bolder':''}">
+								<h:outputText value="#{item.quantity-item.pendingQuantity}"
+									styleClass="#{item.quantity-item.pendingQuantity gt 0?'bolder':''}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Forecast Quantity" width="70" rendered="#{stockRowView.pageIndex==1}">
+							<!-- <p:column headerText="Forecast Quantity" width="70" rendered="#{stockRowView.pageIndex==1}">
 								<h:outputText value="#{item.forecastQuantity}" styleClass="light-green">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
-							</p:column>
+							</p:column> -->
 							<p:column headerText="Actions" width="70" rendered="#{stockRowView.pageIndex==1}" exportable="false">
 								<div class="action-buttons center">
 									<h:outputLink value="partNumberReporting.xhtml" title="Show details" styleClass="aa-tooltip tooltip-info">

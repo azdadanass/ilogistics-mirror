@@ -179,9 +179,9 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		List<StockRow> result = repos.findByCompanyOwnerAndGroupByPartNumber2(username, warehouseList, assignedProjectList, companyId);
 
 		// set project stock
-		Map<Integer, Double> map1 = findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
-		for (StockRow stockRow : result)
-			stockRow.setProjectSubTypeStockQuantity(map1.getOrDefault(stockRow.getPartNumberId(), 0.0));
+//		Map<Integer, Double> map1 = findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+//		for (StockRow stockRow : result)
+//			stockRow.setProjectSubTypeStockQuantity(map1.getOrDefault(stockRow.getPartNumberId(), 0.0));
 
 		// set pending quantity = pending outbounds qty
 		Map<Integer, Double> map2 = deliveryRequestDetailService.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList,
@@ -190,9 +190,9 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			stockRow.setPendingQuantity(map2.getOrDefault(stockRow.getPartNumberId(), 0.0));
 
 		// set forecast quantity
-		Map<Integer, Double> map3 = deliveryRequestDetailService.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
-		for (StockRow stockRow : result)
-			stockRow.setForecastQuantity(map3.getOrDefault(stockRow.getPartNumberId(), 0.0));
+//		Map<Integer, Double> map3 = deliveryRequestDetailService.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
+//		for (StockRow stockRow : result)
+//			stockRow.setForecastQuantity(map3.getOrDefault(stockRow.getPartNumberId(), 0.0));
 
 		return result;
 	}
@@ -715,7 +715,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
-	
+
 	public List<StockRow> findSdmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		return repos.findSdmDeliveryListsByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
 	}

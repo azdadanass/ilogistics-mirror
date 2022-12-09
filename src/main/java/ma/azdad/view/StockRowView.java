@@ -382,8 +382,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public void changeReportTypeListener() {
 		switch (reportType) {
 		case "Deliver To":
-			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDeliverTo() != null).map(i -> i.getDeliverTo()).distinct()
-					.collect(Collectors.toList());
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDeliverTo() != null).map(i -> i.getDeliverTo()).distinct().collect(Collectors.toList());
 			break;
 		case "Customer":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationProjectCustomerName() != null).map(i -> i.getDestinationProjectCustomerName()).distinct()
@@ -487,7 +486,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				list1.addAll(stockRowService.findStockHistoryByCustomerOwnerAndOutboundDeliveryRequestReturn(customerId, dnIdList, partNumberIdList));
 
 		refreshJobRequestDeliveryDetailList();
-
 
 		if (this.summary) {
 			List<StockRow> result = new ArrayList<>();
@@ -798,7 +796,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		List<DeliveryRequestExpiryDate> deliveryRequestExpiryDateList = deliveryRequestExpiryDateService
 				.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(id, deliveryRequestIdList);
 
-
 		for (DeliveryRequest inbound : mapInboundDnMapDnQuantity.keySet()) {
 			Map<Integer, Double> map = mapInboundDnMapDnQuantity.get(inbound);
 			Map<Integer, Double> mapDnExpiryDate = deliveryRequestExpiryDateList.stream().filter(i -> i.getInboundDeliveryRequestId().equals(inbound.getId()))
@@ -838,7 +835,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				return o1.getExpiryDate().compareTo(o2.getExpiryDate());
 			}
 		});
-
 
 	}
 
@@ -932,6 +928,23 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			break;
 		}
 
+	}
+
+	// pn quantities
+	public Double getPhysicalInventoryByPartNumber() {
+		if (companyId != null)
+			return service.findPhysicalInventoryByPartNumberAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					id);
+
+		return null;
+	}
+
+	public Double getStockInventoryByPartNumber() {
+		if (companyId != null)
+			return service.findStockInventoryByPartNumberAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					id);
+
+		return null;
 	}
 
 	// generic

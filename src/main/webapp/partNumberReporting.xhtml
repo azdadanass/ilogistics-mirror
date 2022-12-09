@@ -60,7 +60,8 @@
 							<div class="infobox-progress">
 								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45"
 									style="height: 46px; width: 46px; line-height: 45px;">
-									<span class="percent"> <h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+									<span class="percent">
+										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>
@@ -68,7 +69,8 @@
 								</div>
 							</div>
 							<div class="infobox-data">
-								<span class="infobox-text"> <h:outputText value="PN completeness" />
+								<span class="infobox-text">
+									<h:outputText value="PN completeness" />
 								</span>
 								<div class="infobox-content">
 									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
@@ -93,7 +95,9 @@
 								<h:panelGroup id="activeIcon">
 									<i class="ace-icon fa fa-circle #{PartNumberStatus.ACTIVE==partNumberView.partNumber.status?'light-green':'red'}" />
 								</h:panelGroup>
-								&nbsp; <span class="white"> <h:outputText value="#{partNumberView.partNumber.name}" />
+								&nbsp;
+								<span class="white">
+									<h:outputText value="#{partNumberView.partNumber.name}" />
 								</span>
 							</a>
 						</div>
@@ -147,6 +151,12 @@
 						<a data-toggle="tab" href="#tab1">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value="Part Number Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab7">
+							<i class="blue ace-icon fa fa-list-alt bigger-120"></i>
+							<h:outputText value=" Summary" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
@@ -351,9 +361,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="currentStock,total1" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -433,9 +445,11 @@
 									</div>
 									<div class="col-sm-2 col-xs-4">
 										<div class="nav-search minimized">
-											<span class="input-icon"> <p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<span class="input-icon">
+												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="stockHistory,total2" />
-												</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
 										</div>
 									</div>
@@ -622,10 +636,11 @@
 										</div>
 										<div class="col-sm-2 col-xs-4">
 											<div class="nav-search minimized">
-												<span class="input-icon"> <p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input"
-														autocomplete="off">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 														<p:ajax event="keyup" update="costHistory" />
-													</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
 												</span>
 											</div>
 										</div>
@@ -801,6 +816,102 @@
 										</p:column>
 									</p:dataTable>
 								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab7" class="tab-pane">
+						<div class="row">
+							<c:set var="physicalInventory" value="#{stockRowView.physicalInventoryByPartNumber}" />
+							<c:set var="stockInventory" value="#{stockRowView.stockInventoryByPartNumber}" />
+							<c:set var="projectInventory" value="#{physicalInventory-stockInventory}" />
+							<c:set var="pendingStockOutbound" value="#{deliveryRequestDetailView.pendingStockOutbound}" />
+							<c:set var="pendingStockInbound" value="#{deliveryRequestDetailView.pendingStockInbound}" />
+							<c:set var="availableStock" value="#{stockInventory-pendingStockOutbound}" />
+							<div class="col-sm-offset-1 col-xs-12 col-sm-6">
+								<table class="table table-bordered aa-mr-table">
+									<thead>
+										<tr>
+											<th class="aa-cell-title" colspan="3">
+												<h:outputText value="Summary" />
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<h:outputText value="Physical Inventory" />
+											</td>
+											<td>
+												<h:outputText value="#{physicalInventory}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Project Inventory" />
+											</td>
+											<td>
+												<h:outputText value="#{projectInventory}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Stock Inventory" />
+											</td>
+											<td>
+												<h:outputText value="#{stockInventory}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Available Stock" />
+											</td>
+											<td>
+												<h:outputText value="#{availableStock}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Forecast Quantity" />
+											</td>
+											<td>todo</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Ongoing Outbound (Stock)" />
+											</td>
+											<td>
+												<h:outputText value="#{pendingStockOutbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td>
+												<h:outputText value="Inbound Not Delivered (Stock)" />
+											</td>
+											<td>
+												<h:outputText value="#{pendingStockInbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>

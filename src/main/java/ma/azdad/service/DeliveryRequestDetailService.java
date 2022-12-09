@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -611,12 +612,21 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList, companyId, type, partNumberId);
 	}
 
-	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId){
+	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId) {
 		return repos.findTransferredAndPendingDetailList(outboundDeliveryRequestId);
 	}
-	
-	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId){
+
+	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId) {
 		return repos.findReturnedAndPendingDetailList(outboundDeliveryRequestId);
 	}
 
+	// PN Reporting quantities
+	public Double findPendingStockByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer partNumberId, DeliveryRequestType deliveryRequestType) {
+		return ObjectUtils
+				.firstNonNull(
+						repos.findPendingStockByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
+								Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
+						0.0);
+	}
 }

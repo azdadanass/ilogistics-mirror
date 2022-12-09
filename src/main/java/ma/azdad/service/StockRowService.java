@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -730,5 +731,16 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	public List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId) {
 		return repos.findByPoAndDeliveredWithoutBoqMapping(poId);
+	}
+
+	// PN Reporting quantities
+	public Double findPhysicalInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer partNumberId) {
+		return ObjectUtils.firstNonNull(repos.findPhysicalInventoryByPartNumberAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, partNumberId), 0.0);
+	}
+
+	public Double findStockInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer partNumberId) {
+		return ObjectUtils.firstNonNull(repos.findStockInventoryByPartNumberAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, partNumberId), 0.0);
 	}
 }

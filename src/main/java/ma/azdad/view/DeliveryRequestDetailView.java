@@ -30,13 +30,14 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 
 	@Autowired
 	private CacheView cacheView;
-	
+
 	@Autowired
 	private SessionView sessionView;
 
 	private DeliveryRequestDetail deliveryRequestDetail = new DeliveryRequestDetail();
 
 	private Integer companyId;
+	private Integer customerId;
 
 	@Override
 	@PostConstruct
@@ -54,6 +55,8 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 	protected void initParameters() {
 		super.initParameters();
 		companyId = UtilsFunctions.getIntegerParameter("companyId");
+		customerId = UtilsFunctions.getIntegerParameter("customerId");
+		id = UtilsFunctions.getIntegerParameter("id");
 	}
 
 	@Override
@@ -127,18 +130,34 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		return addParameters(listPage, "faces-redirect=true");
 	}
 
+	// pn quantities
+	public Double getPendingStockOutbound() {
+		if (companyId != null)
+			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.OUTBOUND);
+		return null;
+	}
+	
+	public Double getPendingStockInbound() {
+		if (companyId != null)
+			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.INBOUND);
+		return null;
+	}
+
 	// generic
 	public void refreshCostHistory(Integer partNumberId) {
 		refreshCostHistory(partNumberId, companyId);
 	}
-	
-	public void refreshCostHistory(Integer partNumberId,Integer companyId) {
+
+	public void refreshCostHistory(Integer partNumberId, Integer companyId) {
 		if ("/partNumberReporting.xhtml".equals(currentPath))
-			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND,InboundType.NEW, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
-		else if("/viewPartNumberPricing.xhtml".equals(currentPath))
-			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND, companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
+			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, InboundType.NEW, companyId,
+					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
+		else if ("/viewPartNumberPricing.xhtml".equals(currentPath))
+			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND,
+					companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
 	}
-	
 
 	public Double getMaxCost() {
 		try {
@@ -163,25 +182,27 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 			return null;
 		}
 	}
-	
+
 	@Cacheable("deliveryRequestDetailView.findTransferredAndPendingDetailList")
-	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId){
+	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId) {
 		return service.findTransferredAndPendingDetailList(outboundDeliveryRequestId);
 	}
-	
+
 	@Cacheable("deliveryRequestDetailView.findReturnedAndPendingDetailList")
-	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId){
+	public List<DeliveryRequestDetail> findReturnedAndPendingDetailList(Integer outboundDeliveryRequestId) {
 		return service.findReturnedAndPendingDetailList(outboundDeliveryRequestId);
 	}
-	
+
 	@Cacheable("deliveryRequestDetailView.findInboundByCompanyOwnerAndPartNumberAndNotDelivered")
 	public List<DeliveryRequestDetail> findInboundByCompanyOwnerAndPartNumberAndNotDelivered(Integer partNumberId) {
-		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(),  cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,DeliveryRequestType.INBOUND, partNumberId);
+		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+				DeliveryRequestType.INBOUND, partNumberId);
 	}
-	
+
 	@Cacheable("deliveryRequestDetailView.findOutboundByCompanyOwnerAndPartNumberAndNotDelivered")
 	public List<DeliveryRequestDetail> findOutboundByCompanyOwnerAndPartNumberAndNotDelivered(Integer partNumberId) {
-		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(),  cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,DeliveryRequestType.OUTBOUND, partNumberId);
+		return service.findByCompanyOwnerAndPartNumberAndNotDelivered(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+				DeliveryRequestType.OUTBOUND, partNumberId);
 	}
 
 	// GETTERS & SETTERS

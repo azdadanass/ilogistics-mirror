@@ -159,9 +159,8 @@
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column> -->
-							<p:column headerText="Available Stock" width="70" rendered="#{stockRowView.pageIndex==1}">
-								<h:outputText value="#{item.quantity-item.pendingQuantity}"
-									styleClass="#{item.quantity-item.pendingQuantity gt 0?'bolder':''}">
+							<p:column headerText="Available Inventory" width="70" rendered="#{stockRowView.pageIndex==1}">
+								<h:outputText value="#{item.quantity-item.pendingQuantity}" styleClass="#{item.pendingQuantity!=0?'bolder blue':''}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>

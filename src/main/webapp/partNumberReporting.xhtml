@@ -824,94 +824,98 @@
 							<c:set var="physicalInventory" value="#{stockRowView.physicalInventoryByPartNumber}" />
 							<c:set var="stockInventory" value="#{stockRowView.stockInventoryByPartNumber}" />
 							<c:set var="projectInventory" value="#{physicalInventory-stockInventory}" />
+							<c:set var="pendingOutbound" value="#{deliveryRequestDetailView.pendingOutbound}" />
 							<c:set var="pendingStockOutbound" value="#{deliveryRequestDetailView.pendingStockOutbound}" />
-							<c:set var="pendingStockInbound" value="#{deliveryRequestDetailView.pendingStockInbound}" />
+							<c:set var="pendingProjectOutbound" value="#{pendingOutbound-pendingStockOutbound}" />
+							<c:set var="available" value="#{physicalInventory-pendingOutbound}" />
 							<c:set var="availableStock" value="#{stockInventory-pendingStockOutbound}" />
+							<c:set var="availableProject" value="#{projectInventory-availableProject}" />
+							<c:set var="pendingInbound" value="#{deliveryRequestDetailView.pendingInbound}" />
+							<c:set var="pendingStockInbound" value="#{deliveryRequestDetailView.pendingStockInbound}" />
+							<c:set var="pendingProjectInbound" value="#{pendingInbound-pendingStockInbound}" />
 							<div class="col-sm-offset-1 col-xs-12 col-sm-6">
-								<table class="table table-bordered aa-mr-table">
-									<thead>
-										<tr>
-											<th class="aa-cell-title" colspan="3">
-												<h:outputText value="Summary" />
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<h:outputText value="Physical Inventory" />
-											</td>
-											<td>
-												<h:outputText value="#{physicalInventory}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Project Inventory" />
-											</td>
-											<td>
-												<h:outputText value="#{projectInventory}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Stock Inventory" />
-											</td>
-											<td>
-												<h:outputText value="#{stockInventory}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Available Stock" />
-											</td>
-											<td>
-												<h:outputText value="#{availableStock}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Forecast Quantity" />
-											</td>
-											<td>todo</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Ongoing Outbound (Stock)" />
-											</td>
-											<td>
-												<h:outputText value="#{pendingStockOutbound}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-										<tr>
-											<td>
-												<h:outputText value="Inbound Not Delivered (Stock)" />
-											</td>
-											<td>
-												<h:outputText value="#{pendingStockInbound}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</td>
-											<td></td>
-										</tr>
-									</tbody>
-								</table>
+								<div class="row">
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+												<th class="aa-cell-title" style="width: 40%">
+													<h:outputText value="Inventory Summary" />
+												</th>
+												<th class="aa-cell-title" style="width: 20%">
+													<h:outputText value="Stock" />
+												</th>
+												<th class="aa-cell-title" style="width: 20%">
+													<h:outputText value="Project" />
+												</th>
+												<th class="aa-cell-title" style="width: 20%">
+													<h:outputText value="Total" />
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>
+													<h:outputText value="Inventory" styleClass="purple"/>
+												</td>
+												<td>
+													<h:outputText value="#{stockInventory}" styleClass="purple">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{projectInventory}" styleClass="purple">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{physicalInventory}" styleClass="badge badge-purple">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<h:outputText value="Available"   styleClass="blue"/>
+												</td>
+												<td>
+													<h:outputText value="#{availableStock}" styleClass="blue">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{availableProject}" styleClass="blue">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{available}" styleClass="badge badge-info">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<h:outputText value="Forecast Quantity" styleClass="#{pendingInbound-pendingOutbound ge 0?'green':'red'}"/>
+												</td>
+												<td>
+													<h:outputText value="#{pendingStockInbound-pendingStockOutbound}" styleClass="#{pendingStockInbound-pendingStockOutbound ge 0?'green':'red'}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{pendingProjectInbound-pendingProjectOutbound}" styleClass="#{pendingProjectInbound-pendingProjectOutbound ge 0?'green':'red'}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+												<td>
+													<h:outputText value="#{pendingInbound-pendingOutbound}" styleClass="badge #{pendingInbound-pendingOutbound ge 0?'badge-success':'badge-danger'}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>

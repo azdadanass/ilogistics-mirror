@@ -629,4 +629,10 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 								Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
 						0.0);
 	}
+
+	public Double findPendingByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+			DeliveryRequestType deliveryRequestType) {
+		return ObjectUtils.firstNonNull(repos.findPendingByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
+	}
 }

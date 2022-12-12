@@ -131,13 +131,27 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 	}
 
 	// pn quantities
+	public Double getPendingOutbound() {
+		if (companyId != null)
+			return service.findPendingByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.OUTBOUND);
+		return null;
+	}
+
 	public Double getPendingStockOutbound() {
 		if (companyId != null)
 			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
 					DeliveryRequestType.OUTBOUND);
 		return null;
 	}
-	
+
+	public Double getPendingInbound() {
+		if (companyId != null)
+			return service.findPendingByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.INBOUND);
+		return null;
+	}
+
 	public Double getPendingStockInbound() {
 		if (companyId != null)
 			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,

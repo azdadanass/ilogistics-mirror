@@ -635,4 +635,19 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return ObjectUtils.firstNonNull(repos.findPendingByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
 	}
+	
+	public Double findPendingStockByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId, DeliveryRequestType deliveryRequestType) {
+		return ObjectUtils
+				.firstNonNull(
+						repos.findPendingStockByCustomerOwnerAndPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, deliveryRequestType,
+								Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
+						0.0);
+	}
+
+	public Double findPendingByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+			DeliveryRequestType deliveryRequestType) {
+		return ObjectUtils.firstNonNull(repos.findPendingByCustomerOwnerAndPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
+	}
 }

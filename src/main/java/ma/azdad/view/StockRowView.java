@@ -936,6 +936,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		if (companyId != null)
 			return service.findPhysicalInventoryByPartNumberAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
 					id);
+		else if (customerId != null)
+			return service.findPhysicalInventoryByPartNumberAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId, id);
 
 		return null;
 	}
@@ -943,6 +946,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public Double getStockInventoryByPartNumber() {
 		if (companyId != null)
 			return service.findStockInventoryByPartNumberAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId,
+					id);
+		else if (customerId != null)
+			return service.findStockInventoryByPartNumberAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId,
 					id);
 
 		return null;

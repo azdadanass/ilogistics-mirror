@@ -135,12 +135,18 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		if (companyId != null)
 			return service.findPendingByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
 					DeliveryRequestType.OUTBOUND);
+		else if (customerId != null)
+			return service.findPendingByCustomerOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, id,
+					DeliveryRequestType.OUTBOUND);
 		return null;
 	}
 
 	public Double getPendingStockOutbound() {
 		if (companyId != null)
 			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.OUTBOUND);
+		else if (customerId != null)
+			return service.findPendingStockByCustomerOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, id,
 					DeliveryRequestType.OUTBOUND);
 		return null;
 	}
@@ -149,12 +155,18 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 		if (companyId != null)
 			return service.findPendingByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
 					DeliveryRequestType.INBOUND);
+		else if (customerId != null)
+			return service.findPendingByCustomerOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, id,
+					DeliveryRequestType.INBOUND);
 		return null;
 	}
 
 	public Double getPendingStockInbound() {
 		if (companyId != null)
 			return service.findPendingStockByCompanyOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, id,
+					DeliveryRequestType.INBOUND);
+		else if (customerId != null)
+			return service.findPendingStockByCustomerOwnerAndPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, id,
 					DeliveryRequestType.INBOUND);
 		return null;
 	}

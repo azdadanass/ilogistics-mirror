@@ -209,4 +209,14 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 			+ " and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7) and a.deliveryRequest.project.subType = 'Stock'")
 	Double findPendingStockByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> deliveryRequestStatusList);
+	
+	@Query("select sum(a.quantity)" + from2 + " where  " + usernameCondition + " and " + customerCondition
+			+ " and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7)")
+	Double findPendingByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> deliveryRequestStatusList);
+	
+	@Query("select sum(a.quantity)" + from2 + " where  " + usernameCondition + " and " + customerCondition
+			+ " and a.partNumber.id = ?5 and a.deliveryRequest.type = ?6 and a.deliveryRequest.status in (?7) and a.deliveryRequest.project.subType = 'Stock'")
+	Double findPendingStockByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> deliveryRequestStatusList);
 }

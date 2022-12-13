@@ -539,4 +539,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select sum(a.quantity)" + from2 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + companyCondition + "and a.deliveryRequest.project.subType = 'Stock'")
 	Double findStockInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId);
+	
+	@Query("select sum(a.quantity)" + from3 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + customerCondition)
+	Double findPhysicalInventoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId);
+
+	@Query("select sum(a.quantity)" + from3 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + customerCondition + "and a.deliveryRequest.project.subType = 'Stock'")
+	Double findStockInventoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId);
 }

@@ -767,4 +767,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			Integer partNumberId) {
 		return ObjectUtils.firstNonNull(repos.findStockInventoryByPartNumberAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, partNumberId), 0.0);
 	}
+	
+	public Double findPhysicalInventoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId) {
+		return ObjectUtils.firstNonNull(repos.findPhysicalInventoryByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId), 0.0);
+	}
+
+	public Double findStockInventoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId) {
+		return ObjectUtils.firstNonNull(repos.findStockInventoryByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId), 0.0);
+	}
 }

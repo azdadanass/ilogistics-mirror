@@ -161,7 +161,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	public List<Integer> findCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
 	@Query("select a.deliveryRequest.customer.id " + from1 + "  where a.deliveryRequest.customer is not null and " + usernameCondition + " group by a.deliveryRequest.customer.id")
-	public List<Integer> findCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+	public List<Integer> f(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
 	@Query(c6 + from2 + " where " + usernameCondition + " and " + companyCondition + "  group by a.partNumber.id")
 	public List<StockRow> findByCompanyOwnerAndGroupByPartNumber2(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
@@ -466,6 +466,12 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select a.partNumber.id " + from3 + " where (customer1.id = ?1 or customer2.id = ?1) group by a.partNumber.id having sum(a.quantity) > 0")
 	public Set<Integer> findInStockByCustomerOwner(Integer customerId);
 
+	@Query("select customer1.id,customer2.id " + from3 + " where " + usernameCondition)
+	public List<Object[]> findCustomerIdList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
+	@Query("select customer1.id,customer2.id " + from3 + " where " + usernameCondition + " group by a.partNumber.id,customer1.id,customer2.id having sum(a.quantity) > 0")
+	public List<Object[]> findCustomerIdListWithStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
+
 	@Query("select MONTHNAME(date1) from DeliveryRequest where id = 2")
 	public List<String> test();
 
@@ -530,8 +536,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select sum(a.quantity)" + from2 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + companyCondition)
 	Double findPhysicalInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer partNumberId);
-	
-	@Query("select sum(a.quantity)" + from2 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + companyCondition+"and a.deliveryRequest.project.subType = 'Stock'")
-	Double findStockInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-			Integer partNumberId);
+
+	@Query("select sum(a.quantity)" + from2 + "where a.partNumber.id = ?5 and" + usernameCondition + "and" + companyCondition + "and a.deliveryRequest.project.subType = 'Stock'")
+	Double findStockInventoryByPartNumberAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId);
 }

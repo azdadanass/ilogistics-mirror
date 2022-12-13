@@ -558,8 +558,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			projectCrossService.addCrossCharge(deliveryRequest);
 
-			if (deliveryRequest.getCustomer() != null)
-				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
+//			if (deliveryRequest.getCustomer() != null)
+//				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
 			if (deliveryRequest.getPo() != null) {
 				// poService.updateBoqStatus(deliveryRequest.getPo().getId());
@@ -681,8 +681,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
 
-			if (deliveryRequest.getCustomer() != null)
-				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
+//			if (deliveryRequest.getCustomer() != null)
+//				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)

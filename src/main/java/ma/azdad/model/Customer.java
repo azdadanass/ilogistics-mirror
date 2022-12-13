@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 
@@ -45,18 +46,19 @@ public class Customer implements Serializable {
 	private String capital;
 	private String website;
 
-	private Boolean isStockEmpty;
 	private User manager;
+
+	// tmp
+	private Boolean isNonEmptyStock;
 
 	public Customer() {
 	}
 
-	public Customer(Integer id, String name, String photo,Boolean isStockEmpty) {
+	public Customer(Integer id, String name, String photo) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.photo = photo;
-		this.isStockEmpty=isStockEmpty;
 	}
 
 	@Id
@@ -258,14 +260,16 @@ public class Customer implements Serializable {
 		this.website = website;
 	}
 
-	public Boolean getIsStockEmpty() {
-		return isStockEmpty;
+	@Transient
+	public Boolean getIsNonEmptyStock() {
+		return isNonEmptyStock;
 	}
 
-	public void setIsStockEmpty(Boolean isStockEmpty) {
-		this.isStockEmpty = isStockEmpty;
+	@Transient
+	public void setIsNonEmptyStock(Boolean isNonEmptyStock) {
+		this.isNonEmptyStock = isNonEmptyStock;
 	}
-	
+
 	@Column(name = "new_type")
 	public Boolean getIsCustomer() {
 		return isCustomer;
@@ -274,7 +278,7 @@ public class Customer implements Serializable {
 	public void setIsCustomer(Boolean isCustomer) {
 		this.isCustomer = isCustomer;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_idmanager")
 	public User getManager() {

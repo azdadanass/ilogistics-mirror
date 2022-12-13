@@ -3,6 +3,7 @@ package ma.azdad.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,28 +63,43 @@ public class CustomerService {
 		return repos.findLight(idList);
 	}
 
-	public List<Customer> findLight(List<Integer> idList, String category, Boolean isStockEmpty) {
-		if (idList == null || idList.isEmpty())
-			return null;
+//	public List<Customer> findLight(List<Integer> idList, String category, Boolean isStockEmpty) {
+//		if (idList == null || idList.isEmpty())
+//			return null;
+//
+//		if (CustomerCategories.ALL.getValue().equals(category))
+//			return repos.findLight(idList, isStockEmpty);
+//		else
+//			return repos.findLight(idList, isStockEmpty, category);
+//	}
 
+	public List<Customer> findLight(String category,String username,List<Integer> warehouseIdList,List<Integer> projectIdList) {
+		Set<Integer> idList = stockRowService.findCustomerIdList(username, warehouseIdList, projectIdList);
+		if(idList.isEmpty())
+			return new ArrayList<Customer>();
+		
+		List<Customer> result = null;
 		if (CustomerCategories.ALL.getValue().equals(category))
-			return repos.findLight(idList, isStockEmpty);
+			result= repos.findLight(idList);
 		else
-			return repos.findLight(idList, isStockEmpty, category);
+			result= repos.findLight(idList, category);
+		Set<Integer> customersWithStock = stockRowService.findCustomerIdListWithStock(username, warehouseIdList, projectIdList);
+		result.forEach(i->i.setIsNonEmptyStock(customersWithStock.contains(i.getId())));
+		return result;
 	}
 
-	public void updateIsStockEmpty(Integer customerId) {
-		repos.updateIsStockEmpty(customerId, stockRowService.isSotckEmpty(customerId));
-	}
+//	public void updateIsStockEmpty(Integer customerId) {
+//		repos.updateIsStockEmpty(customerId, stockRowService.isSotckEmpty(customerId));
+//	}
 
-	public void updateIsStockEmptyScript() {
-		findLight().forEach(i -> updateIsStockEmpty(i.getId()));
-	}
+//	public void updateIsStockEmptyScript() {
+//		findLight().forEach(i -> updateIsStockEmpty(i.getId()));
+//	}
 
 	public String findNameByPo(Integer poId) {
 		return repos.findNameByPo(poId);
 	}
-	
+
 	@Cacheable("customerService.findNameMap")
 	public Map<Integer, String> findNameMap() {
 		return repos.findLight().stream().collect(Collectors.toMap(s -> s.getId(), s -> s.getName()));

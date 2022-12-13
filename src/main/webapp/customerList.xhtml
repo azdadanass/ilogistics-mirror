@@ -40,14 +40,14 @@
 						<div class="itemdiv memberdiv">
 							<div class="inline position-relative">
 								<div class="user">
-									<p:commandLink update=":main_form">
+									<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
 										<p:graphicImage value="#{item.image}" styleClass="grid_images" />
 										<f:setPropertyActionListener value="#{item.category}" target="#{stockRowView.customerCategory}" />
 									</p:commandLink>
 								</div>
 								<div class="body">
 									<div class="name">
-										<p:commandLink update=":main_form">
+										<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
 											<h:outputText value=" #{item.category}" styleClass="blue" />
 											<f:setPropertyActionListener value="#{item.category}" target="#{stockRowView.customerCategory}" />
 										</p:commandLink>
@@ -56,44 +56,10 @@
 							</div>
 						</div>
 					</p:dataGrid>
-					<f:subview rendered="#{stockRowView.customerCategory!=null and stockRowView.customerStockActive==null}">
-						<div class="col-sm-offset-1 col-sm-10">
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-offset-2 col-sm-4">
-										<div class="center">
-											<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
-												<span class="rotate_section">
-													<img src="resources/img/reporting/stock_in.png" alt="" class="no_resize" style="width: 100px; height: 100px" />
-												</span>
-												<f:setPropertyActionListener value="true" target="#{stockRowView.customerStockActive}" />
-											</p:commandLink>
-											<h3>
-												<h:outputText value="Stock In" style="font-size:14px" />
-											</h3>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<div class="center">
-											<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
-												<span class="rotate_section">
-													<img src="resources/img/reporting/stock_out.png" alt="" class="no_resize" style="width: 100px; height: 100px" />
-												</span>
-												<f:setPropertyActionListener value="false" target="#{stockRowView.customerStockActive}" />
-											</p:commandLink>
-											<h3>
-												<h:outputText value="Stock Out" style="font-size:14px" />
-											</h3>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</f:subview>
 				</div>
 				<div class="row">
 					<p:dataGrid id="customerList" var="item" value="#{stockRowView.customerList}" columns="5" rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" paginatorTemplate="{PageLinks}" styleClass="center"
-						rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory!=null and stockRowView.customerStockActive!=null}">
+						rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory!=null}">
 						<div class="itemdiv memberdiv">
 							<div class="inline position-relative">
 								<div class="user">
@@ -105,7 +71,7 @@
 								</div>
 								<div class="body">
 									<div class="name">
-										<i class="ace-icon fa fa-circle #{item.isStockEmpty?'light-orange':'light-green'} "></i>
+										<i class="ace-icon fa fa-circle #{item.isNonEmptyStock?'light-green':'light-orange'} "></i>
 										<h:outputLink value="stockRowList.xhtml">
 											<h:outputText value=" #{item.name}" styleClass="blue" />
 											<f:param name="customerId" value="#{item.id}" />

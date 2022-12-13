@@ -75,6 +75,30 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return stockRow;
 	}
 
+	public Set<Integer> findCustomerIdList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
+		Set<Integer> result = new HashSet<Integer>();
+		List<Object[]> data = repos.findCustomerIdList(username, warehouseList, assignedProjectList);
+		data.forEach(tab -> {
+			if (tab[0] != null)
+				result.add((Integer) tab[0]);
+			if (tab[1] != null)
+				result.add((Integer) tab[1]);
+		});
+		return result;
+	}
+
+	public Set<Integer> findCustomerIdListWithStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
+		Set<Integer> result = new HashSet<Integer>();
+		List<Object[]> data = repos.findCustomerIdListWithStock(username, warehouseList, assignedProjectList);
+		data.forEach(tab -> {
+			if (tab[0] != null)
+				result.add((Integer) tab[0]);
+			if (tab[1] != null)
+				result.add((Integer) tab[1]);
+		});
+		return result;
+	}
+
 	public Set<Integer> findInStockByCustomerOwner(Integer customerId) {
 		return repos.findInStockByCustomerOwner(customerId);
 	}
@@ -161,11 +185,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findCompanyOwnerList(username, warehouseList, assignedProjectList);
 	}
 
-	public List<Integer> findCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
-		if (assignedProjectList == null || assignedProjectList.isEmpty())
-			assignedProjectList = Arrays.asList(-1);
-		return repos.findCustomerOwnerList(username, warehouseList, assignedProjectList);
-	}
+//	public List<Integer> findCustomerOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
+//		if (assignedProjectList == null || assignedProjectList.isEmpty())
+//			assignedProjectList = Arrays.asList(-1);
+//		return repos.findCustomerOwnerList(username, warehouseList, assignedProjectList);
+//	}
 
 	private Map<Integer, Double> findProjectStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		List<Object[]> data = repos.findProjectStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);

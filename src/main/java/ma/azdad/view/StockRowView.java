@@ -310,8 +310,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	public void refreshCustomerList() {
-		customerList = customerService.findLight(stockRowService.findCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()),
-				customerCategory, !customerStockActive);
+//		customerList = customerService.findLight(stockRowService.findCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()),
+//				customerCategory, !customerStockActive);
+		customerList = customerService.findLight(customerCategory, sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList());
 	}
 
 	public void getMaxMinThreshold(Boolean maxThreshold) {

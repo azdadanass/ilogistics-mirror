@@ -2,20 +2,16 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
-		<ui:include src="template/header.xhtml" />
 		<link rel="stylesheet" href="resources/css/css/style.css" />
+		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<!-- <ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define> -->
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,14 +25,37 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
-			<div class="space-32" />
 			<div class="col-sm-offset-1 col-sm-10">
-				<div class="row">
-					<p:dataGrid id="categoryList" var="item" value="#{customerView.categoryList}" columns="5" paginator="false" paginatorPosition="bottom" paginatorTemplate="{PageLinks}" styleClass="center"
-						rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory==null}">
+				<f:subview rendered="#{stockRowView.customerCategory==null}">
+					<div class="row">
+						<div class="col-sm-offset-1 col-sm-10">
+							<div class="col-sm-12">
+								<div class="row">
+									<ui:repeat var="customerCategory" value="#{customerView.categoryList}">
+										<div class="col-sm-3">
+											<div class="center">
+												<p:commandLink action="#{stockRowView.refreshCustomerList()}" styleClass="img1" update=":main_form">
+													<span class="rotate_section">
+														<img src="#{customerCategory.image}" alt="" class="no_resize" width="100" height="50" />
+													</span>
+													<f:setPropertyActionListener value="#{customerCategory.category}" target="#{stockRowView.customerCategory}" />
+												</p:commandLink>
+												<h3>
+													<h:outputText value="#{customerCategory.category}" style="font-size:14px" />
+												</h3>
+											</div>
+										</div>
+									</ui:repeat>
+								</div>
+							</div>
+						</div>
+					</div>
+				</f:subview>
+				<!-- <div class="row">
+					<p:dataGrid id="categoryList" var="item" value="#{customerView.categoryList}" columns="5" paginator="false" paginatorPosition="bottom" paginatorTemplate="{PageLinks}"
+						styleClass="center" rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory==null}">
 						<div class="itemdiv memberdiv">
 							<div class="inline position-relative">
 								<div class="user">
@@ -56,10 +75,11 @@
 							</div>
 						</div>
 					</p:dataGrid>
-				</div>
+				</div> -->
 				<div class="row">
-					<p:dataGrid id="customerList" var="item" value="#{stockRowView.customerList}" columns="5" rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom" paginatorTemplate="{PageLinks}" styleClass="center"
-						rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory!=null}">
+					<div class="space-32" />
+					<p:dataGrid id="customerList" var="item" value="#{stockRowView.customerList}" columns="5" rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+						paginatorTemplate="{PageLinks}" styleClass="center" rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory!=null}">
 						<div class="itemdiv memberdiv">
 							<div class="inline position-relative">
 								<div class="user">
@@ -87,4 +107,3 @@
 		</h:form>
 	</ui:define>
 </ui:composition>
-

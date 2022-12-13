@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,9 +21,62 @@ public class IndexView implements Serializable {
 	private SessionView sessionView;
 
 	private Integer selectedMenu = 2;
+	
 
 	@PostConstruct
 	public void init() {
+		
+	}
+	
+	public void changeMenuByCurrentPath() {
+		String currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+		switch (currentPath) {
+		case "/partNumberList.xhtml":
+		case "/partNumberPricingList.xhtml":
+		case "/vehicleTypeList.xhtml":
+		case "/transporterList.xhtml":
+		case "/warehouseList.xhtml":
+		case "/partNumberBrandList.xhtml":
+		case "/partNumberConfiguration.xhtml":
+		case "/siteCategoryList.xhtml":
+		case "/projectAssignmentList.xhtml":
+		case "/projectList.xhtml":
+			this.selectedMenu = 1;
+			break;
+		case "/deliveryRequestList.xhtml":
+		case "/viewDeliveryRequest.xhtml":
+		case "/addEditDeliveryRequest.xhtml":
+		case "/prepareOutboundDeliveryRequest.xhtml":
+		case "/storeDeliveryRequest.xhtml":
+			this.selectedMenu = 2;
+			break;
+		case "/transportationRequestList.xhtml":
+		case "/viewTransportationRequest.xhtml":
+		case "/addEditTransportationRequest.xhtml":
+		case "/transportationJobList.xhtml":
+		case "/viewTransportationJob.xhtml":
+		case "/addEditTransportationJob.xhtml":
+			this.selectedMenu = 3;
+			break;
+		case "/stockRowList.xhtml":
+		case "/projectReporting.xhtml":
+		case "/deliveryReporting.xhtml":
+		case "/sdmDeliveryReporting.xhtml":
+		case "/maxMinThreshold.xhtml":
+		case "/companyFinancial.xhtml":
+		case "/projectFinancial.xhtml":
+		case "/deliveryRequestfinancialReporting.xhtml":
+		case "/poList.xhtml":
+		case "/companyList.xhtml":
+		case "/customerList.xhtml":
+		case "/partNumberReporting.xhtml":
+		case "/viewPo.xhtml":
+			this.selectedMenu = 4;
+			break;
+		default:
+			break;
+		}
+		System.out.println("changeMenuByCurrentPath : "+this.selectedMenu);
 	}
 
 	public Boolean canAccessMenu(Integer menu) {

@@ -84,6 +84,9 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 			warehouse = warehouseService.findOne(id);
 		if (isAddPage || isEditPage || isViewPage)
 			refreshMapModel();
+
+		if (isPage("warehouseReporting"))
+			warehouse = null;
 	}
 
 	@Override
@@ -95,6 +98,10 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	public void refreshWarehouse() {
 		warehouseService.flush();
 		warehouse = warehouseService.findOne(warehouse.getId());
+	}
+
+	public void setWarehouse(Integer warehouseId) {
+		warehouse = warehouseService.findOne(warehouseId);
 	}
 
 	// GPS
@@ -264,9 +271,6 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public WarehouseService getWarehouseService() {
 		return warehouseService;

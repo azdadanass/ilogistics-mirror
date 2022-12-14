@@ -60,6 +60,7 @@ public class IndexView implements Serializable {
 			break;
 		case "/stockRowList.xhtml":
 		case "/projectReporting.xhtml":
+		case "/warehouseReporting.xhtml":
 		case "/deliveryReporting.xhtml":
 		case "/sdmDeliveryReporting.xhtml":
 		case "/maxMinThreshold.xhtml":

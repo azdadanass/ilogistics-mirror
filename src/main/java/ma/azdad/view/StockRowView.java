@@ -28,6 +28,7 @@ import ma.azdad.model.Project;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
 import ma.azdad.model.User;
+import ma.azdad.model.Warehouse;
 import ma.azdad.repos.StockRowRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
@@ -81,6 +82,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<Customer> customerList;
 	private String customerCategory;
 	private List<Project> projectList;
+	private List<Warehouse> warehouseList;
 	private List<String> projectStrList;
 	private List<Site> destinationList;
 	private List<String> deliverToOtherNameList;
@@ -93,6 +95,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private Integer companyId;
 	private Integer customerId;
 	private Integer projectId;
+	private Integer warehouseId;
 	private Integer destinationId;
 	private String deliverToOtherName;
 	private Integer externalRequesterId;
@@ -216,6 +219,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		case "/projectFinancial.xhtml":
 			refreshProjectList();
 			break;
+		case "/warehouseReporting.xhtml":
+			refreshWarehouseList();
+			break;
 //		case "/projectFinancial.xhtml":
 //			if (companyId != null) {
 //				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
@@ -306,6 +312,14 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
 		else if (customerId != null)
 			projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					customerId);
+	}
+	
+	public void refreshWarehouseList() {
+		if (companyId != null)
+			warehouseList = stockRowService.findLightWarehouseCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+		else if (customerId != null)
+			warehouseList = stockRowService.findLightWarehouseCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 					customerId);
 	}
 
@@ -725,6 +739,25 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 						cacheView.getAssignedProjectList(), customerId, projectId);
 		}
 	}
+	
+	public void getWarehouseReportingLists(Boolean currentStock) {
+		if (currentStock) {
+			if (companyId != null)
+				list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), companyId, warehouseId));
+			else if (customerId != null)
+				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), customerId, warehouseId));
+		} else {
+			if (companyId != null)
+				list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), companyId, warehouseId);
+			else if (customerId != null)
+				list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+						cacheView.getAssignedProjectList(), customerId, warehouseId);
+		}
+	}
+
 
 	public void initCurrentList() {
 		if (currentList == null) {
@@ -1049,12 +1082,28 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		this.projectList = projectList;
 	}
 
+	public List<Warehouse> getWarehouseList() {
+		return warehouseList;
+	}
+
+	public void setWarehouseList(List<Warehouse> warehouseList) {
+		this.warehouseList = warehouseList;
+	}
+
 	public Integer getProjectId() {
 		return projectId;
 	}
 
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
+	}
+
+	public Integer getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Integer warehouseId) {
+		this.warehouseId = warehouseId;
 	}
 
 	public Boolean getInStock() {

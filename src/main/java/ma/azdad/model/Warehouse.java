@@ -41,9 +41,15 @@ public class Warehouse extends GenericPlace implements Serializable {
 	// TMP
 	private String managerUsername;
 	private LabelValue owner;
+	private Boolean hasStock;
 
 	public Warehouse(Integer id, String name) {
 		super(id, name);
+	}
+
+	public Warehouse(Integer id, String name, Boolean hasStock) {
+		super(id, name);
+		this.hasStock = hasStock;
 	}
 
 	public Warehouse() {
@@ -226,6 +232,16 @@ public class Warehouse extends GenericPlace implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Transient
+	public Boolean getHasStock() {
+		return hasStock;
+	}
+
+	@Transient
+	public void setHasStock(Boolean hasStock) {
+		this.hasStock = hasStock;
 	}
 
 }

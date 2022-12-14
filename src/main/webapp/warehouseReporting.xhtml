@@ -21,7 +21,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="View PartNumber" />
+				<h:outputText value="Warehouse Reporting" />
 			</li>
 		</ul>
 	</ui:define>
@@ -30,11 +30,7 @@
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
-					<h:outputText value=" View PartNumber" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{partNumberView.partNumber.idStr}" />
-					</small>
+					<h:outputText value=" Warehouse Reporting" />
 				</h1>
 			</div>
 			<div class="row">
@@ -64,15 +60,15 @@
 								<div class="col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
-											<h:outputText value="Project " />
+											<h:outputText value="Warehouse " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="project" value="#{stockRowView.projectId}" filter="true" filterMatchMode="contains">
+											<p:selectOneMenu id="warehouse" value="#{stockRowView.warehouseId}" filter="true" filterMatchMode="contains">
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
-												<f:selectItems value="#{stockRowView.projectList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}" />
-												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />
-												<p:ajax listener="#{jobRequestDeliveryDetailView.refreshListByProject(stockRowView.projectId)}" update=":main_form:panel4" />
-												<p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel5" />
+												<f:selectItems value="#{stockRowView.warehouseList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}" />
+												<p:ajax listener="#{warehouseView.setWarehouse(stockRowView.warehouseId)}" update=":main_form" />
+												<!-- <p:ajax listener="#{jobRequestDeliveryDetailView.refreshListByWarehouse(stockRowView.warehouseId)}" update=":main_form:panel4" /> -->
+												<!-- <p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.warehouseId)}" update=":main_form:panel5" /> -->
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -103,7 +99,7 @@
 							<h:outputText value=" Stock History" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<f:subview rendered="#{projectView.getSdm(stockRowView.projectId)}">
+					<!-- <f:subview rendered="#{warehouseView.getSdm(stockRowView.warehouseId)}">
 						<li>
 							<a data-toggle="tab" href="#tab4">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
@@ -116,106 +112,123 @@
 								<h:outputText value=" Team running inventory" styleClass="hidden-xs" />
 							</a>
 						</li>
-					</f:subview>
+					</f:subview> -->
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
 						<h:panelGroup id="panel1">
 							<div class="row">
-								<h5 class="lighter block green">
-									<h:outputText value="Project Informations" />
-								</h5>
-								<div class="row">
-									<div class="col-xs-12 col-sm-6">
-										<div class="profile-user-info profile-user-info-striped">
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project Name" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.name}" styleClass="pink" />
-													&nbsp;
-												</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Name" />
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Customer" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.customer.name}" />
-													&nbsp;
-												</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.name}" styleClass="bolder blue" />
+												&nbsp;
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project Start Date" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.startDate}">
-														<f:convertDateTime pattern="yyyy-MM-dd" />
-													</h:outputText>
-													&nbsp;
-												</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Owner" />
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project Duration" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.duration}" />
-													&nbsp;
-												</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.ownerName}" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Surface" />
+											</div>
+											<div class="profile-info-value light-blue">
+												<h:outputText value="#{warehouseView.warehouse.surface}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" m" />
+												<sup> <h:outputText value="2" />
+												</sup> &nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Phone" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.phone}" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Latitude" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.latitude}" styleClass="bolder red" />
+												&nbsp;
 											</div>
 										</div>
 									</div>
-									<div class="col-xs-12 col-sm-6">
-										<div class="profile-user-info profile-user-info-striped">
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="LOB" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.costcenter.lob.name}" styleClass="blue" />
-													&nbsp;
-												</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Status" />
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project Manager" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.manager.fullName}" styleClass="orange" />
-													&nbsp;
-												</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.status.value}" styleClass="#{warehouseView.warehouse.statusStyleClass}" />
+												&nbsp;
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project End Date" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.endDate}">
-														<f:convertDateTime pattern="yyyy-MM-dd" />
-													</h:outputText>
-													&nbsp;
-												</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Volume" />
 											</div>
-											<div class="profile-info-row">
-												<div class="profile-info-name">
-													<h:outputText value="Project Status" />
-												</div>
-												<div class="profile-info-value">
-													<h:outputText value="#{projectView.project.status}" styleClass="#{projectView.project.status=='Open'?'green':'grey'}" />
-													&nbsp;
-												</div>
+											<div class="profile-info-value light-blue">
+												<h:outputText value="#{warehouseView.warehouse.volume}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" m" />
+												<sup> <h:outputText value="3" />
+												</sup> &nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Fax" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.fax}" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Longitude" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{warehouseView.warehouse.longitude}" styleClass="bolder red" />
+												&nbsp;
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+							<div class="space-16" />
+							<div style="width: 90%; margin: auto;">
+								<div class="well">
+									<h4 class="green smaller lighter">
+										<h:outputText value="Address" />
+									</h4>
+									<h:outputText value="#{warehouseView.warehouse.address}" styleClass="preformatted" />
+								</div>
+							</div>
 						</h:panelGroup>
 					</div>
 					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="currentStock" action="#{stockRowView.getProjectReportingLists(true)}" update="currentStock" />
+						<p:remoteCommand name="currentStock" action="#{stockRowView.getWarehouseReportingLists(true)}" update="currentStock" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -230,13 +243,13 @@
 													<h:outputText value="Filter by : " />
 												</td>
 												<td>
-													<p:commandLink action="#{stockRowView.getProjectReportingLists(true)}" update="currentStock" styleClass="aa-tooltip tooltip-success" title="In Stock">
+													<p:commandLink action="#{stockRowView.getWarehouseReportingLists(true)}" update="currentStock" styleClass="aa-tooltip tooltip-success" title="In Stock">
 														<div class="aa-icon-inbound" />
 														<f:setPropertyActionListener value="true" target="#{stockRowView.inStock}" />
 													</p:commandLink>
 												</td>
 												<td>
-													<p:commandLink action="#{stockRowView.getProjectReportingLists(true)}" update="currentStock" styleClass="aa-tooltip tooltip-error" title="Out Of Stock">
+													<p:commandLink action="#{stockRowView.getWarehouseReportingLists(true)}" update="currentStock" styleClass="aa-tooltip tooltip-error" title="Out Of Stock">
 														<div class="aa-icon-outbound" />
 														<f:setPropertyActionListener value="false" target="#{stockRowView.inStock}" />
 													</p:commandLink>
@@ -316,7 +329,7 @@
 						</div>
 					</div>
 					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="stockHistory" action="#{stockRowView.getProjectReportingLists(false)}" update="stockHistory" />
+						<p:remoteCommand name="stockHistory" action="#{stockRowView.getWarehouseReportingLists(false)}" update="stockHistory" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -358,11 +371,11 @@
 										<p:column headerText="Description">
 											<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 										</p:column>
-										<p:column headerText="Warehouse" width="120">
-											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="pruple" />
+										<p:column headerText="Project" width="120">
+											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="pruple" />
 										</p:column>
-										<p:column headerText="Project">
-											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="green bolder" />
+										<p:column headerText="Warehouse">
+											<h:outputText value="#{item.deliveryRequest.warehouse.name}" styleClass="green bolder" />
 										</p:column>
 										<p:column headerText="Destination Project">
 											<h:outputText value="#{item.deliveryRequest.destinationProject.name}" styleClass="orange bolder" />
@@ -410,7 +423,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="tab4" class="tab-pane">
+					<!-- <div id="tab4" class="tab-pane">
 						<h:panelGroup id="panel4">
 							<div class="row">
 								<div class="col-sm-12">
@@ -492,8 +505,8 @@
 								</div>
 							</div>
 						</h:panelGroup>
-					</div>
-					<div id="tab5" class="tab-pane">
+					</div> -->
+					<!-- <div id="tab5" class="tab-pane">
 						<h:panelGroup id="panel5">
 							<div class="row">
 								<div class="col-sm-12">
@@ -575,7 +588,7 @@
 								</div>
 							</div>
 						</h:panelGroup>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</h:form>

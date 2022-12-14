@@ -169,6 +169,17 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 			+ "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
 	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
 			Integer partNumberId, Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	
+	@Query("select sum(a.quantity) " + from1 + " where  a.deliveryRequest.warehouse.id = ?6 and " + usernameCondition + " and " + companyCondition
+			+ "  and a.partNumber.id = ?5 and  a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer partNumberId, Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+
+	@Query("select sum(a.quantity) " + from2 + " where  a.deliveryRequest.warehouse.id = ?6 and " + usernameCondition + " and " + customerCondition
+			+ "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId, Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+
 
 	@Query(c4
 			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.project.type = 'Stock' and a.deliveryRequest.project.costcenter.lob.bu.company.id = ?3 and a.deliveryRequest.status in (?4)")

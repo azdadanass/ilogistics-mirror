@@ -355,8 +355,18 @@
 									<li>
 										<h:outputLink value="projectReporting.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 blue" style="margin-right: 10px" />
+											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
 											<h:outputText value="#{stockRowView.companyId!=null?'Cost Center':'Project'} Report" />
+											<f:param name="companyId" value="#{stockRowView.companyId}" />
+											<f:param name="customerId" value="#{stockRowView.customerId}" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="warehouseReporting.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 blue" style="margin-right: 10px" />
+											<h:outputText value="Warehouse Report" />
 											<f:param name="companyId" value="#{stockRowView.companyId}" />
 											<f:param name="customerId" value="#{stockRowView.customerId}" />
 										</h:outputLink>

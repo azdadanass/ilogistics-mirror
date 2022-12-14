@@ -565,6 +565,23 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
+	
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			Integer partNumberId, Integer warehouseId) {
+		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(username, warehouseList, assignedProjectList, companyId, partNumberId, warehouseId,
+				DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		return d != null ? d : 0.0;
+	}
+
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
+			Integer partNumberId, Integer warehouseId) {
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(username, warehouseList, assignedProjectList, customerId, partNumberId, warehouseId,
+				DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		return d != null ? d : 0.0;
+	}
+
 
 	public Boolean isOutboundDeliveryRequestFullyReturned(DeliveryRequest outboundDeliveryRequest) {
 		return findRemainingByOutboundDeliveryRequestReturn(null, outboundDeliveryRequest).size() == 0;

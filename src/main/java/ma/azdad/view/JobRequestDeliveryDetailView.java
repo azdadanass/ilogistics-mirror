@@ -45,7 +45,7 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 			list2 = list1 = service.findAll();
 	}
 
-	public void refreshList(Integer projectId) {
+	public void refreshListByProject(Integer projectId) {
 		list2 = list1 = service.findInstalledByProject(projectId);
 	}
 

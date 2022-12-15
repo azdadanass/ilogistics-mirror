@@ -676,6 +676,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				service.updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(),
 						deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
 				service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
+				DeliveryRequest outboundDeliveryRequestReturn = service.findOne(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
+				service.clearBoqMapping(outboundDeliveryRequestReturn);
 			}
 
 			emailService.deliveryRequestNotification(deliveryRequest);
@@ -1146,15 +1148,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public String clearBoqMapping() {
 		if (!canClearBoqMapping())
 			return null;
-
-		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
-		deliveryRequest.clearBoqMappingList();
-		service.save(deliveryRequest);
-		boqService.updateTotalUsedQuantity(boqListToUpdate);
-		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
-		poService.updateBoqStatus(deliveryRequest.getPo().getId());
-		poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
-
+		service.clearBoqMapping(deliveryRequest);
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

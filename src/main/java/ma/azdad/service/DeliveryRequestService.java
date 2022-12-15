@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ecs.html.A;
@@ -96,6 +97,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
+
+	@Autowired
+	BoqService boqService;
 
 	@Override
 	public DeliveryRequest findOne(Integer id) {
@@ -1254,23 +1258,36 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Long countByMissingOutboundDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList) {
 		return repos.countByMissingOutboundDeliveryNoteFile(username, warehouseList, projectIdList);
 	}
-	
-	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+
+	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId, Collection<Integer> projectIdList) {
 		return repos.findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier")
-	public Long  countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId,Collection<Integer> projectIdList){
+	public Long countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(Integer supplierId, Collection<Integer> projectIdList) {
 		return repos.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(supplierId, projectIdList);
 	}
-	
-	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+
+	public List<DeliveryRequest> findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId, Collection<Integer> projectIdList) {
 		return repos.findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer")
-	public Long  countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId,Collection<Integer> projectIdList){
+	public Long countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(Integer customerId, Collection<Integer> projectIdList) {
 		return repos.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(customerId, projectIdList);
+	}
+
+	public void clearBoqMapping(DeliveryRequest deliveryRequest) {
+		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
+		deliveryRequest.clearBoqMappingList();
+		save(deliveryRequest);
+		boqService.updateTotalUsedQuantity(boqListToUpdate);
+		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
+		if (deliveryRequest.getPo() != null) {
+			poService.updateBoqStatus(deliveryRequest.getPo().getId());
+			poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
+		}
+
 	}
 
 }

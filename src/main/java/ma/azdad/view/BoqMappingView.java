@@ -35,6 +35,7 @@ import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PoService;
+import ma.azdad.service.StockRowService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -50,7 +51,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 	private DeliveryRequestService deliveryRequestService;
 
 	@Autowired
-	private DeliveryRequestDetailService deliveryRequestDetailService;
+	private StockRowService  stockRowService;
+	
 
 	@Autowired
 	private PartNumberService partNumberService;
@@ -103,7 +105,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		partNumberQuantityMap = deliveryRequest.getDetailList().stream().collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
 
 		// remove returned quantities
-		Map<PartNumber, Double> returnedQuantityMap = deliveryRequestDetailService.findReturnedQuantityMap(deliveryRequest.getId());
+//		Map<PartNumber, Double> returnedQuantityMap = deliveryRequestDetailService.findReturnedQuantityMap(deliveryRequest.getId());
+		Map<PartNumber, Double> returnedQuantityMap = stockRowService.findReturnedQuantityMap(deliveryRequest.getId());
 		if (deliveryRequest.getIsOutbound()) {
 			partNumberQuantityMap.forEach((k, v) -> partNumberQuantityMap.put(k, v - returnedQuantityMap.getOrDefault(k, 0.0)));
 			partNumberQuantityMap.values().removeIf(v -> v.equals(0.0));

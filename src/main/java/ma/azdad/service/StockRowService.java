@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
@@ -827,5 +828,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Double findStockInventoryByPartNumberAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
 			Integer partNumberId) {
 		return ObjectUtils.firstNonNull(repos.findStockInventoryByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId), 0.0);
+	}
+	
+	public List<StockRow> findReturnedStockRowListGroupByPartNumber(Integer outboundDeliveryRequestId) {
+		return repos.findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId);
+	}
+	
+	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
+		return findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId).stream()
+				.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)));
 	}
 }

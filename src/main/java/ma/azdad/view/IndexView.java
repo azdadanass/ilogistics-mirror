@@ -89,7 +89,7 @@ public class IndexView implements Serializable {
 		case 3:
 			return sessionView.getIsPM() || sessionView.getIsUser() || sessionView.getIsTM();
 		case 4:
-			return sessionView.getIsInternalPM() || sessionView.getIsLobManager() || sessionView.getIsBuManager() || sessionView.getIsWM() || sessionView.getIsUser();
+			return sessionView.getIsInternalPM() || sessionView.getIsLobManager() || sessionView.getIsBuManager() || sessionView.getIsWM() || sessionView.getIsUser() || sessionView.getIsExternalPm();
 		default:
 			return false;
 		}
@@ -109,7 +109,7 @@ public class IndexView implements Serializable {
 				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 		case 4:
 			if (canAccessMenu(4))
-				return addParameters("reporting.xhtml", "faces-redirect=true");
+				return addParameters(sessionView.getIsExternalPm()?"deliveryReporting.xhtml":"reporting.xhtml", "faces-redirect=true");
 		default:
 			return null;
 		}

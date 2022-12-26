@@ -545,6 +545,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
+	@Query(c22 + from3
+			+ "where (customer1.id = ?1 or customer2.id = ?2) and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findDeliveryListsByCustomerOwner(Integer customerId, List<Integer> projectIdList);
+
 	@Query(c22 + from2 + "where" + usernameCondition + " and " + companyCondition
 			+ "and a.deliveryRequest.project.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findSdmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
@@ -552,6 +556,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(c22 + from3 + "where" + usernameCondition + " and " + customerCondition
 			+ "and a.deliveryRequest.project.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findSdmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query(c22
+			+ "from StockRow a where a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList);
 
 	@Query(c22
 			+ "from StockRow a where a.deliveryRequest.po.id = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")

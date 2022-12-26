@@ -793,12 +793,23 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
 
+	public List<StockRow> findDeliveryListsByCustomerOwner(Integer customerId, List<Integer> projectIdList) {
+		return repos.findDeliveryListsByCustomerOwner(customerId, projectIdList);
+	}
+
 	public List<StockRow> findSdmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		return repos.findSdmDeliveryListsByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
 	}
 
 	public List<StockRow> findSdmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
 		return repos.findSdmDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
+	}
+
+	public List<StockRow> findDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList) {
+		System.out.println(supplierId);
+		System.out.println(projectIdList);
+		System.out.println(repos.findDeliveryListsByDeliverToSupplier(supplierId, projectIdList));
+		return repos.findDeliveryListsByDeliverToSupplier(supplierId, projectIdList);
 	}
 
 	public List<StockRow> findByPo(Integer poId) {
@@ -829,11 +840,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			Integer partNumberId) {
 		return ObjectUtils.firstNonNull(repos.findStockInventoryByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId), 0.0);
 	}
-	
+
 	public List<StockRow> findReturnedStockRowListGroupByPartNumber(Integer outboundDeliveryRequestId) {
 		return repos.findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId);
 	}
-	
+
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
 		return findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId).stream()
 				.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)));

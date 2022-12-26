@@ -314,10 +314,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 					customerId);
 	}
-	
+
 	public void refreshWarehouseList() {
 		if (companyId != null)
-			warehouseList = stockRowService.findLightWarehouseCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			warehouseList = stockRowService.findLightWarehouseCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					companyId);
 		else if (customerId != null)
 			warehouseList = stockRowService.findLightWarehouseCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 					customerId);
@@ -364,12 +365,19 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public void initDeliveryLists() {
 		switch (currentPath) {
 		case "/deliveryReporting.xhtml":
-			if (companyId != null)
-				deliveryList1 = stockRowService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						companyId);
-			if (customerId != null)
-				deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						customerId);
+			if (sessionView.getInternal()) {
+				if (companyId != null)
+					deliveryList1 = stockRowService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							companyId);
+				if (customerId != null)
+					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							customerId);
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getUser().getIsSupplierUser())
+					deliveryList1 = stockRowService.findDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
+				else if (sessionView.getUser().getIsCustomerUser())
+					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(),cacheView.getAssignedProjectList());
+			}
 			break;
 		case "/sdmDeliveryReporting.xhtml":
 			if (companyId != null)
@@ -378,6 +386,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			if (customerId != null)
 				deliveryList1 = stockRowService.findSdmDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 						customerId);
+			break;
 		}
 		changeProjectNameListener();
 	}
@@ -739,7 +748,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 						cacheView.getAssignedProjectList(), customerId, projectId);
 		}
 	}
-	
+
 	public void getWarehouseReportingLists(Boolean currentStock) {
 		if (currentStock) {
 			if (companyId != null)
@@ -757,7 +766,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 						cacheView.getAssignedProjectList(), customerId, warehouseId);
 		}
 	}
-
 
 	public void initCurrentList() {
 		if (currentList == null) {

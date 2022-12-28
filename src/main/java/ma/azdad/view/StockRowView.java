@@ -376,7 +376,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				if (sessionView.getUser().getIsSupplierUser())
 					deliveryList1 = stockRowService.findDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
 				else if (sessionView.getUser().getIsCustomerUser())
-					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(),cacheView.getAssignedProjectList());
+					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
 			}
 			break;
 		case "/sdmDeliveryReporting.xhtml":
@@ -513,8 +513,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		if (this.summary) {
 			List<StockRow> result = new ArrayList<>();
-			list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
-					.forEach((x, y) -> result.add(new StockRow(y, x)));
+
+			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
+				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestSdm()))
+						.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity))).forEach((x, y) -> result.add(new StockRow(y, x)));
+			else
+				list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+						.forEach((x, y) -> result.add(new StockRow(y, x)));
 			Collections.sort(result, new Comparator<StockRow>() {
 				public int compare(StockRow o1, StockRow o2) {
 					return o1.getQuantity().compareTo(o2.getQuantity());

@@ -173,8 +173,6 @@ public class ProjectAssignmentView extends GenericView<Integer, ProjectAssignmen
 		if (model.getStartDate().compareTo(model.getEndDate()) > 0)
 			return FacesContextMessages.ErrorMessages("Start Date should be lower than End Date");
 
-		System.out.println("service --->" + service);
-
 		if (service.isOverlap(model))
 			return FacesContextMessages.ErrorMessages("Overlap Problem");
 

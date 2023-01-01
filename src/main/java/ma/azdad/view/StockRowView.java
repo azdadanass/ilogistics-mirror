@@ -243,7 +243,12 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		else if (sessionView.getUser().getIsCustomerUser())
 			switch (currentPath) {
 			case "/stockRowList.xhtml":
-				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, cacheView.getAssignedProjectList()));
+				switch (pageIndex) {
+				case 1:
+					list2 = list1 = filterByStockSituation(
+							stockRowService.findByCustomerOwnerAndGroupByPartNumber(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList()));
+					break;
+				}
 				break;
 			}
 

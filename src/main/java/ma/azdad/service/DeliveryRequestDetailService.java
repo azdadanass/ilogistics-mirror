@@ -550,6 +550,14 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return result;
 	}
 
+	public Map<Integer, Double> findPendingQuantityByCustomerOwnerGroupByPartNumber(Integer customerId, List<Integer> projectIdList) {
+		List<Object[]> data = repos.findPendingQuantityByCustomerOwnerGroupByPartNumber(customerId,projectIdList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
+		return result;
+	}
+
 	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer partNumberId, Integer projectId) {
 		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId,
@@ -565,7 +573,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
-	
+
 	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer partNumberId, Integer warehouseId) {
 		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(username, warehouseList, assignedProjectList, companyId, partNumberId, warehouseId,
@@ -581,7 +589,6 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
-
 
 	public Boolean isOutboundDeliveryRequestFullyReturned(DeliveryRequest outboundDeliveryRequest) {
 		return findRemainingByOutboundDeliveryRequestReturn(null, outboundDeliveryRequest).size() == 0;
@@ -652,7 +659,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		return ObjectUtils.firstNonNull(repos.findPendingByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
 				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
 	}
-	
+
 	public Double findPendingStockByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
 			Integer partNumberId, DeliveryRequestType deliveryRequestType) {
 		return ObjectUtils

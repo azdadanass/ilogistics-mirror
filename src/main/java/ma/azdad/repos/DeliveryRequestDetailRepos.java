@@ -159,6 +159,11 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 			+ " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) group by a.partNumber.id")
 	public List<Object[]> findPendingQuantityByCustomerOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
 			DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	
+	
+	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + " where  (customer1.id = ?1 or customer2.id = ?1) and a.deliveryRequest.project.id in (?2) and a.deliveryRequest.type = ?3 and a.deliveryRequest.status in (?4) group by a.partNumber.id")
+	public List<Object[]> findPendingQuantityByCustomerOwnerGroupByPartNumber(Integer customerId,List<Integer> projectIdList,
+			DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from1 + " where  a.deliveryRequest.project.id = ?6 and " + usernameCondition + " and " + companyCondition
 			+ "  and a.partNumber.id = ?5 and  a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")

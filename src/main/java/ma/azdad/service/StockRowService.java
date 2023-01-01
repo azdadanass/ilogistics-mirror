@@ -234,6 +234,17 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			stockRow.setPendingQuantity(map.getOrDefault(stockRow.getPartNumberId(), 0.0));
 		return result;
 	}
+	
+	public List<StockRow> findByCustomerOwnerAndGroupByPartNumber(Integer customerId, List<Integer> projectIdList) {
+		if (projectIdList == null || projectIdList.isEmpty())
+			projectIdList = Arrays.asList(-1);
+		List<StockRow> result = repos.findByCustomerOwnerAndGroupByPartNumber(customerId,projectIdList);
+		// set pending quantity = pending outbounds qty
+		Map<Integer, Double> map = deliveryRequestDetailService.findPendingQuantityByCustomerOwnerGroupByPartNumber(customerId,projectIdList);
+		for (StockRow stockRow : result)
+			stockRow.setPendingQuantity(map.getOrDefault(stockRow.getPartNumberId(), 0.0));
+		return result;
+	}
 
 	public List<StockRow> findByCompanyOwnerAndProjectAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer projectId) {

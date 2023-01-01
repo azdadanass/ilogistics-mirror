@@ -170,6 +170,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query(c6 + from3 + " where " + usernameCondition + " and " + customerCondition + "  group by a.partNumber.id")
 	public List<StockRow> findByCustomerOwnerAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+	
+	@Query(c6 + from3 + " where (customer1.id = ?1 or customer2.id = ?1) and a.deliveryRequest.project.id in (?2)  group by a.partNumber.id")
+	public List<StockRow> findByCustomerOwnerAndGroupByPartNumber(Integer customerId, List<Integer> projectIdList);
 
 	@Query(c6 + from2 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + "  group by a.partNumber.id")
 	public List<StockRow> findByCompanyOwnerAndProjectAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,

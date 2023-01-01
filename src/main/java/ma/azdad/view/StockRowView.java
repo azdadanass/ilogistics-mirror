@@ -152,159 +152,101 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	@Override
 	public void refreshList() {
-		switch (currentPath) {
-		case "/stockRowList.xhtml":
-			switch (pageIndex) {
-			case 1:
-				if (companyId != null)
-					list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndGroupByPartNumber(companyId, sessionView.getUsername(),
-							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-				else if (customerId != null)
-					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, sessionView.getUsername(),
-							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+		if (sessionView.getInternal())
+			switch (currentPath) {
+			case "/stockRowList.xhtml":
+				switch (pageIndex) {
+				case 1:
+					if (companyId != null)
+						list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndGroupByPartNumber(companyId, sessionView.getUsername(),
+								cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+					else if (customerId != null)
+						list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, sessionView.getUsername(),
+								cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+					break;
+				case 2:
+					if (companyId != null)
+						list2 = list1 = stockRowService.findOverdueByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+								companyId);
+					else if (customerId != null)
+						list2 = list1 = stockRowService.findOverdueByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+								customerId);
+					break;
+				case 3:
+					list2 = list1 = stockRowService.getFastMovingItems(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+				default:
+					break;
+				}
 				break;
-			case 2:
+			case "/maxMinThreshold.xhtml":
+				getMaxMinThreshold(true);
+				break;
+			case "/companyList.xhtml":
+				companyList = companyService
+						.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
+				break;
+			case "/deliveryReporting.xhtml":
+			case "/sdmDeliveryReporting.xhtml":
+				initDeliveryLists();
+				refreshDeliveryLists();
+				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
+				break;
+			case "/destinationReporting.xhtml":
 				if (companyId != null)
-					list2 = list1 = stockRowService.findOverdueByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							companyId);
 				else if (customerId != null)
-					list2 = list1 = stockRowService.findOverdueByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+					projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							customerId);
 				break;
-			case 3:
-				list2 = list1 = stockRowService.getFastMovingItems(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+			case "/deliverToOtherReporting.xhtml":
+				if (companyId != null)
+					projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							companyId);
+				else if (customerId != null)
+					projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							customerId);
+				break;
+			case "/externalRequesterReporting.xhtml":
+				if (companyId != null)
+					projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							companyId);
+				else if (customerId != null)
+					projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							customerId);
+				break;
+			case "/destinationCustomerReporting.xhtml":
+				if (companyId != null)
+					customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), companyId);
+				break;
+			case "/projectReporting.xhtml":
+			case "/projectFinancial.xhtml":
+				refreshProjectList();
+				break;
+			case "/warehouseReporting.xhtml":
+				refreshWarehouseList();
+				break;
+			case "/companyFinancial.xhtml":
+				this.companyId = this.id;
+				if (sessionView.getIsCfo(companyId))
+					list2 = list1 = stockRowService.getFinancialSituation(companyId);
+				else
+					list2 = list1 = stockRowService.getFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+				generateTotalCostChart();
+				break;
+			case "/viewPo.xhtml":
+				initLists(service.findByPo(id));
 			default:
 				break;
 			}
-			break;
-		case "/maxMinThreshold.xhtml":
-			getMaxMinThreshold(true);
-			break;
-		case "/companyList.xhtml":
-			companyList = companyService.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-			break;
-		case "/deliveryReporting.xhtml":
-		case "/sdmDeliveryReporting.xhtml":
-			initDeliveryLists();
-			refreshDeliveryLists();
-			projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
-			break;
-		case "/destinationReporting.xhtml":
-			if (companyId != null)
-				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						customerId);
-			break;
-		case "/deliverToOtherReporting.xhtml":
-			if (companyId != null)
-				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						customerId);
-			break;
-		case "/externalRequesterReporting.xhtml":
-			if (companyId != null)
-				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-			else if (customerId != null)
-				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-						customerId);
-			break;
-		case "/destinationCustomerReporting.xhtml":
-			if (companyId != null)
-				customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), companyId);
-			break;
-		case "/projectReporting.xhtml":
-		case "/projectFinancial.xhtml":
-			refreshProjectList();
-			break;
-		case "/warehouseReporting.xhtml":
-			refreshWarehouseList();
-			break;
-//		case "/projectFinancial.xhtml":
-//			if (companyId != null) {
-//				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//						companyId, ProjectTypes.STOCK.getValue());
-//			}
-//			break;
-		case "/companyFinancial.xhtml":
-			this.companyId = this.id;
-			if (sessionView.getIsCfo(companyId))
-				list2 = list1 = stockRowService.getFinancialSituation(companyId);
-			else
-				list2 = list1 = stockRowService.getFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-			generateTotalCostChart();
-			break;
-		case "/viewPo.xhtml":
-			initLists(service.findByPo(id));
-		default:
-			break;
-		}
+		else if (sessionView.getUser().getIsCustomerUser())
+			switch (currentPath) {
+			case "/stockRowList.xhtml":
+				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, cacheView.getAssignedProjectList()));
+				break;
+			}
 
-//		if (isListPage)
-//			switch (pageIndex) {
-//			case 1:
-//				if (companyId != null)
-//					list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndGroupByPartNumber(companyId, sessionView.getUsername(),
-//							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-//				else if (customerId != null)
-//					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndGroupByPartNumber(customerId, sessionView.getUsername(),
-//							cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-//				break;
-//			case 2:
-//				if (companyId != null)
-//					list2 = list1 = stockRowService.findOverdueByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//							companyId);
-//				else if (customerId != null)
-//					list2 = list1 = stockRowService.findOverdueByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//							customerId);
-//				break;
-//			case 3:
-//				list2 = list1 = stockRowService.getFastMovingItems(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-//			default:
-//				break;
-//			}
-//		else if ("/maxMinThreshold.xhtml".equals(currentPath))
-//			getMaxMinThreshold(true);
-//		else if ("/companyList.xhtml".equals(currentPath))
-//			companyList = companyService.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
-//		else if ("/deliveryReporting.xhtml".equals(currentPath)) {
-//			initDeliveryLists();
-//			refreshDeliveryLists();
-//			projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
-////			if (companyId != null)
-////				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-////			else if (customerId != null)
-////				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
-//		} else if ("/destinationReporting.xhtml".equals(currentPath)) {
-//			if (companyId != null)
-//				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-//			else if (customerId != null)
-//				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//						customerId);
-//		} else if ("/deliverToOtherReporting.xhtml".equals(currentPath)) {
-//			if (companyId != null)
-//				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-//			else if (customerId != null)
-//				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//						customerId);
-//		} else if ("/externalRequesterReporting.xhtml".equals(currentPath)) {
-//			if (companyId != null)
-//				projectList = stockRowService.findProjectListByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-//			else if (customerId != null)
-//				projectList = stockRowService.findProjectListByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//						customerId);
-//		} else if ("/destinationCustomerReporting.xhtml".equals(currentPath)) {
-//			if (companyId != null)
-//				customerList = stockRowService.findLightDestinationCustomerCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(),
-//						cacheView.getAssignedProjectList(), companyId);
-//		} else if ("/projectFinancial.xhtml".equals(currentPath)) {
-//			if (companyId != null) {
-//				projectList = stockRowService.findLightProjectCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
-//						companyId, ProjectTypes.STOCK.getValue());
-//			}
-//		}
 	}
 
 	public void refreshProjectList() {

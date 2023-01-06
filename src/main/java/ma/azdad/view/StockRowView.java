@@ -152,7 +152,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	@Override
 	public void refreshList() {
-		if (sessionView.getInternal())
+		if (sessionView.getInternal() || sessionView.getIsWM())
 			switch (currentPath) {
 			case "/stockRowList.xhtml":
 				switch (pageIndex) {
@@ -312,7 +312,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	public void initDeliveryLists() {
 		switch (currentPath) {
 		case "/deliveryReporting.xhtml":
-			if (sessionView.getInternal()) {
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
 				if (companyId != null)
 					deliveryList1 = stockRowService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							companyId);

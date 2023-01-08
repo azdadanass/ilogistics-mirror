@@ -1,5 +1,7 @@
 package ma.azdad.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +14,19 @@ import ma.azdad.repos.AcceptanceRepos;
 public class AcceptanceService {
 
 	@Autowired
-	private AcceptanceRepos acceptanceRepos;
+	private AcceptanceRepos repos;
 
 	public Acceptance findOne(Integer id) {
-		return acceptanceRepos.findById(id).get();
+		return repos.findById(id).get();
 	}
 
 	public Long countPendingAcceptances(Integer transportationRequestId) {
-		Long l = acceptanceRepos.countPendingAcceptances(transportationRequestId);
+		Long l = repos.countPendingAcceptances(transportationRequestId);
 		return l != null ? l : 0;
+	}
+	
+	public List<Acceptance> findByPo(Integer poId) {
+		return repos.findByPo(poId);
 	}
 
 }

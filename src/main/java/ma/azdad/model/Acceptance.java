@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import ma.azdad.service.UtilsFunctions;
 
 @Entity
 @Table(name = "acceptance")
@@ -29,12 +34,47 @@ public class Acceptance implements Serializable {
 	private String invoiceStatus;
 	private Double totalPrice;
 	private Double totalPriceTTC;
-	
+	private AcceptanceStatus newStatus;
+
 	private Paymentterm paymentterm;
-	
-	
 
 	public Acceptance() {
+	}
+
+	public Boolean filter(String query) {
+		return contains(query, numero, dateAcceptance);
+	}
+
+	protected Boolean contains(String query, Object... objects) {
+		for (int i = 0; i < objects.length; i++) {
+			Object o = objects[i];
+			if (o == null)
+				continue;
+			if (o instanceof String && ((String) o).toLowerCase().contains(query))
+				return true;
+			if (o instanceof Double && ((Double) o).toString().contains(query))
+				return true;
+			if (o instanceof Integer && ((Integer) o).toString().contains(query))
+				return true;
+			if (o instanceof Date && UtilsFunctions.getFormattedDate(((Date) o)).contains(query))
+				return true;
+		}
+		return false;
+	}
+
+	@Transient
+	public Boolean getIsInvoiced() {
+		return AcceptanceStatus.INVOICED.equals(newStatus);
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "status_new")
+	public AcceptanceStatus getNewStatus() {
+		return newStatus;
+	}
+
+	public void setNewStatus(AcceptanceStatus newStatus) {
+		this.newStatus = newStatus;
 	}
 
 	@Id
@@ -131,7 +171,5 @@ public class Acceptance implements Serializable {
 	public void setPaymentterm(Paymentterm paymentterm) {
 		this.paymentterm = paymentterm;
 	}
-	
-	
 
 }

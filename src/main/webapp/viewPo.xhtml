@@ -84,6 +84,12 @@
 							<h:outputText value=" Delivery details" styleClass="hidden-xs" />
 						</a>
 					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4">
+							<i class="purple ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Details" styleClass="hidden-xs" />
+						</a>
+					</li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -353,8 +359,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="remaining" value="#{boqView.findBoqSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="remaining" value="#{boqView.findBoqSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="80">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.partNumberImage}" />
@@ -363,7 +369,7 @@
 										<p:column headerText="Part Number">
 											<h:outputText value="#{item.partNumberName}" styleClass="bolder orange" />
 										</p:column>
-											<p:column headerText="PN Description">
+										<p:column headerText="PN Description">
 											<h:outputText value="#{item.partNumberDescription}" styleClass="green aa-cut-text" />
 										</p:column>
 										<p:column headerText="Total Quantity" width="100">
@@ -561,8 +567,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="summary" value="#{boqView.findDeliveredSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="summary" value="#{boqView.findDeliveredSummaryByPo(poView.model.id)}" var="item" rows="10" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="80">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.partNumberImage}" />
@@ -577,12 +583,12 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Delivered Quantity" width="100">
-											<h:outputText value="#{poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity}" styleClass="green" >
+											<h:outputText value="#{poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity}" styleClass="green">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
 										<p:column headerText="Remaining Quantity" width="100">
-											<h:outputText value="#{item.totalQuantity - (poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity)}" styleClass="red" >
+											<h:outputText value="#{item.totalQuantity - (poView.model.ibuy?item.deliveredQuantity:-item.deliveredQuantity)}" styleClass="red">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
@@ -593,7 +599,7 @@
 						<h4 class="header blue bolder smaller">
 							<h:outputText value="Detailed Delivery" />
 						</h4>
-						<c:set var="list3" value="#{stockRowView.findByPo(poView.model.id)}"/>
+						<c:set var="list3" value="#{stockRowView.findByPo(poView.model.id)}" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -612,8 +618,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list3" value="#{list3}" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="list3" value="#{list3}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -685,7 +691,7 @@
 						<h4 class="header blue bolder smaller">
 							<h:outputText value="Delivered and Mapping Remaining" />
 						</h4>
-						<c:set var="list4" value="#{stockRowView.findByPoAndDeliveredWithoutBoqMapping(poView.model.id)}"/>
+						<c:set var="list4" value="#{stockRowView.findByPoAndDeliveredWithoutBoqMapping(poView.model.id)}" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -704,8 +710,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list4" value="#{list4}" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="list4" value="#{list4}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -771,6 +777,269 @@
 											<h:outputText value="#{-item.quantity}" />
 										</p:column>
 									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<div class="space-8" />
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Acceptance List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Acceptance List" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="acceptanceList" value="#{acceptanceView.list1}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Numero" sortBy="#{item.numero}">
+											<h:outputText value="#{item.numero}" styleClass="bolder purple" />
+										</p:column>
+										<p:column headerText="Po">
+											<h:outputText value="#{item.poNumero}" />
+										</p:column>
+										<p:column headerText="Customer">
+											<h:outputText value="#{item.customerName}" />
+										</p:column>
+										<p:column headerText="Project" width="200">
+											<h:outputText value="#{item.projectName}" />
+										</p:column>
+										<p:column headerText="Type">
+											<h:outputText value="#{item.oldInvoiceTermPhase}" />
+										</p:column>
+										<p:column headerText="Date">
+											<h:outputText value="#{item.date}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Total Price">
+											<h:outputText value="#{item.amountHt}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" />
+										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink title="#{item.countFiles} Attachements" styleClass="aa-tooltip">
+													<i class="ace-icon fa fa-paperclip bigger-130 #{item.hasFiles?'green':'red'}" />
+												</p:commandLink>
+												<h:outputLink value="#{acceptanceView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div style="width: 80%; margin: auto;">
+							<div class="hr hr8 hr-double hr-dotted"></div>
+							<div class="row">
+								<div class="col-sm-5 pull-right">
+									<h4 class="pull-right">
+										<h:outputText value="Total amount :" />
+										<span class="green">
+											<h:outputText value="#{acceptanceView.list1TotalAmount}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currency.name}" />
+										</span>
+									</h4>
+								</div>
+								<div class="col-sm-7 pull-left">
+									<h:outputText value="Extra Information" />
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Invoice List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Invoice List" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="invoiceList" value="#{invoiceView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="N°">
+											<h:outputText value="#{item.numero}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Customer">
+											<h:outputText value="#{item.customerName}" styleClass="purple" />
+										</p:column>
+										<p:column headerText="Company">
+											<h:outputText value="#{item.companyName}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Date" width="80">
+											<h:outputText value="#{item.date}" styleClass="pink">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Due Date" width="80">
+											<h:outputText value="#{item.dueDate}" styleClass="red">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Amount HT" width="120">
+											<h:outputText value="#{item.amountHt}" styleClass="blue">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Net Amount HT" width="120">
+											<h:outputText value="#{item.amountHt2}" styleClass="green bolder">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Net Amount TTC" width="120">
+											<h:outputText value="#{item.amountTtc2}" styleClass="green bolder">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Remainder TTC" width="120">
+											<h:outputText value="#{item.amountTtc2-item.paidTtc}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" />
+										</p:column>
+										<p:column headerText="Status" width="100">
+											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
+										</p:column>
+										<p:column headerText="Actions" width="100" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink title="#{item.appLinkPercentage} %" styleClass="aa-tooltip" rendered="#{item.mappable}">
+													<i class="ace-icon fa fa-link bigger-130 #{item.appLinkPercentageStyleClass}" />
+												</p:commandLink>
+												<p:commandLink title="#{item.countFiles} Attachements" styleClass="aa-tooltip">
+													<i class="ace-icon fa fa-paperclip bigger-130 #{item.hasFiles?'green':'red'}" />
+												</p:commandLink>
+												<h:outputLink value="viewInvoice.xhtml" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div style="width: 80%; margin: auto;">
+							<div class="hr hr8 hr-double hr-dotted"></div>
+							<div class="row">
+								<div class="col-sm-5 pull-right">
+									<h4 class="pull-right">
+										<h:outputText value="Total amount :" />
+										<span class="green">
+											<h:outputText value="#{invoiceView.list2TotalAmountTtc2}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currency.name}" />
+										</span>
+									</h4>
+								</div>
+								<div class="col-sm-7 pull-left">
+									<h:outputText value="Extra Information" />
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Payment List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Payment List" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="paymentList" value="#{invoicePaymentView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Reference" width="200">
+											<h:outputText value="#{item.reference}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Mode" width="80">
+											<h:outputText value="#{item.mode.value}" styleClass="#{item.mode.color.badge}" />
+										</p:column>
+										<p:column headerText="Customer">
+											<h:outputText value="#{item.customerName}" styleClass="aa-cut-text pink" />
+										</p:column>
+										<p:column headerText="Bank Account" width="200">
+											<h:outputText value="#{item.bankAccountFullName}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Payment Date" width="80">
+											<h:outputText value="#{item.paymentDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Cash Date" width="80">
+											<h:outputText value="#{item.cashDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Age" width="50" sortBy="#{item.age}"
+											rendered="#{PaymentStatus.INITIATED==invoicePaymentView.status or PaymentStatus.SUBMITTED==invoicePaymentView.status}">
+											<h:outputText value="#{item.age}" styleClass="red" />
+										</p:column>
+										<p:column headerText="Amount" width="120">
+											<h:outputText value="#{item.amount}" styleClass="bolder purple">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{item.currencyName}" styleClass="bolder purple" />
+										</p:column>
+										<p:column headerText="Status" width="120">
+											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
+										</p:column>
+										<p:column headerText="Actions" width="100" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink title="Mapped" styleClass="aa-tooltip" rendered="#{item.isMapped}">
+													<i class="ace-icon fa fa-link bigger-130 green" />
+												</p:commandLink>
+												<p:commandLink title="#{item.countFiles} Attachements" styleClass="aa-tooltip">
+													<i class="ace-icon fa fa-paperclip bigger-130 #{item.hasFiles?'green':'red'}" />
+												</p:commandLink>
+												<h:outputLink value="#{invoicePaymentView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div style="width: 80%; margin: auto;">
+							<div class="hr hr8 hr-double hr-dotted"></div>
+							<div class="row">
+								<div class="col-sm-5 pull-right">
+									<h4 class="pull-right">
+										<h:outputText value="Total amount :" />
+										<span class="green">
+											<h:outputText value="#{invoicePaymentView.list2TotalAmount}">
+												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" #{poView.model.currency.name}" />
+										</span>
+									</h4>
+								</div>
+								<div class="col-sm-7 pull-left">
+									<h:outputText value="Extra Information" />
 								</div>
 							</div>
 						</div>

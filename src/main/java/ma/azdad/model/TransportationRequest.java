@@ -143,13 +143,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	// select1
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status,Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
 			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String transporterName1, String transporterName2, String transporterName3, String transporterName4, //
 			String approverFullName, Double cost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
 
+		this.setDeliveryRequestId(deliveryRequestId);
 		this.deliveryRequestReference = deliveryRequestReference;
 		this.deliveryRequestType = deliveryRequestType;
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;

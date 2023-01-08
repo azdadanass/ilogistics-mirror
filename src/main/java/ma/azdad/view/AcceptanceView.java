@@ -45,7 +45,7 @@ public class AcceptanceView {
 	}
 
 	public void refreshList() {
-		if("/viewPo.xhtml".equals(currentPath)) {
+		if ("/viewPo.xhtml".equals(currentPath)) {
 			list1 = service.findByPo(id);
 			list2 = list1.stream().filter(i -> i.getIsInvoiced()).collect(Collectors.toList());
 		}
@@ -85,4 +85,21 @@ public class AcceptanceView {
 		this.searchBean = searchBean;
 		filterBean(searchBean);
 	}
+
+	public List<Acceptance> getList1() {
+		return list1;
+	}
+
+	public void setList1(List<Acceptance> list1) {
+		this.list1 = list1;
+	}
+
+	public List<Acceptance> getList2() {
+		return list2;
+	}
+
+	public void setList2(List<Acceptance> list2) {
+		this.list2 = list2;
+	}
+
 }

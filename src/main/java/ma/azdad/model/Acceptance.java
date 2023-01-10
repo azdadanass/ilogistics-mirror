@@ -30,6 +30,7 @@ public class Acceptance extends GenericModel<Integer> {
 	private Double amountTtc2;
 
 	private OldInvoiceTerm oldInvoiceTerm;
+	private Invoice invoice;
 
 	public Acceptance() {
 	}
@@ -246,6 +247,15 @@ public class Acceptance extends GenericModel<Integer> {
 
 	public void setIbuy(Boolean ibuy) {
 		this.ibuy = ibuy;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Invoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
 	}
 
 }

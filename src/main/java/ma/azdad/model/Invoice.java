@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -177,6 +179,7 @@ public class Invoice extends GenericModel<Integer> {
 		this.dueDate = dueDate;
 	}
 
+	@Enumerated(EnumType.STRING)
 	public InvoiceStatus getStatus() {
 		return status;
 	}

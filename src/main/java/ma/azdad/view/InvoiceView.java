@@ -36,6 +36,10 @@ public class InvoiceView extends GenericView<Integer, Invoice, InvoiceRepos, Inv
 			initLists(service.findByPo(id));
 	}
 	
+	public Double getList2TotalAmountTtc2() {
+		return list2.stream().mapToDouble(i -> i.getAmountTtc2()).sum();
+	}
+	
 	public Double getList2TotalAmountTtc2Mad() {
 		return list2.stream().mapToDouble(i -> i.getAmountTtc2() * i.getMadConversionRate()).sum();
 	}

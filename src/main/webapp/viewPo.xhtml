@@ -909,20 +909,6 @@
 										<p:column headerText="Status" width="100">
 											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
 										</p:column>
-										<p:column headerText="Actions" width="100" exportable="false">
-											<div class="action-buttons center">
-												<p:commandLink title="#{item.appLinkPercentage} %" styleClass="aa-tooltip" rendered="#{item.mappable}">
-													<i class="ace-icon fa fa-link bigger-130 #{item.appLinkPercentageStyleClass}" />
-												</p:commandLink>
-												<p:commandLink title="#{item.countFiles} Attachements" styleClass="aa-tooltip">
-													<i class="ace-icon fa fa-paperclip bigger-130 #{item.hasFiles?'green':'red'}" />
-												</p:commandLink>
-												<h:outputLink value="viewInvoice.xhtml" title="Show details" styleClass="aa-tooltip tooltip-info">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:param name="id" value="#{item.id}" />
-												</h:outputLink>
-											</div>
-										</p:column>
 									</p:dataTable>
 								</div>
 							</div>

@@ -87,7 +87,7 @@
 					<li>
 						<a data-toggle="tab" href="#tab4">
 							<i class="purple ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Details" styleClass="hidden-xs" />
+							<h:outputText value=" Invoicing &amp; payement" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -825,17 +825,6 @@
 										</p:column>
 										<p:column headerText="Status">
 											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
-										</p:column>
-										<p:column headerText="Actions" width="150" exportable="false">
-											<div class="action-buttons center">
-												<p:commandLink title="#{item.countFiles} Attachements" styleClass="aa-tooltip">
-													<i class="ace-icon fa fa-paperclip bigger-130 #{item.hasFiles?'green':'red'}" />
-												</p:commandLink>
-												<h:outputLink value="#{acceptanceView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:param name="id" value="#{item.id}" />
-												</h:outputLink>
-											</div>
 										</p:column>
 									</p:dataTable>
 								</div>

@@ -23,7 +23,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.numero}" styleClass="orange" />
+									<h:outputText value="#{acceptanceView.model.numero}" styleClass="orange" />
 									&nbsp;
 								</div>
 							</div>
@@ -33,7 +33,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.dateAcceptance}">
+									<h:outputText value="#{acceptanceView.model.date}">
 										<f:convertDateTime pattern="yyyy-MM-dd" />
 									</h:outputText>
 									&nbsp;
@@ -45,7 +45,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.idInvoice}" styleClass="blue bolder" />
+									<h:outputText value="#{acceptanceView.model.idInvoice}" styleClass="blue bolder" />
 									&nbsp;
 								</div>
 							</div>
@@ -55,7 +55,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.dateInvoice}">
+									<h:outputText value="#{acceptanceView.model.dateInvoice}">
 										<f:convertDateTime pattern="yyyy-MM-dd" />
 									</h:outputText>
 									&nbsp;
@@ -72,7 +72,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.status}" styleClass="#{acceptanceView.acceptance.status=='Invoiced'?'green':'red'}" />
+									<h:outputText value="#{acceptanceView.model.status.value}" styleClass="#{acceptanceView.model.status.color.name}" />
 									&nbsp;
 								</div>
 							</div>
@@ -82,7 +82,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.totalPrice}">
+									<h:outputText value="#{acceptanceView.model.amountHt}">
 										<f:convertNumber type="number" maxFractionDigits="2" />
 									</h:outputText>
 									&nbsp;
@@ -94,7 +94,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.invoiceStatus}" />
+									<h:outputText value="#{acceptanceView.model.invoiceStatus}" />
 									&nbsp;
 								</div>
 							</div>
@@ -105,7 +105,7 @@
 								</div>
 
 								<div class="profile-info-value">
-									<h:outputText value="#{acceptanceView.acceptance.totalPriceTTC}">
+									<h:outputText value="#{acceptanceView.model.amountTtc2}">
 										<f:convertNumber type="number" maxFractionDigits="2" />
 									</h:outputText>
 									&nbsp;

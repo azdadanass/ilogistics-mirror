@@ -273,10 +273,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String totalCostCoalesce = "COALESCE(" + totalCost + ",0)";
 	String totalPrice = " (select sum(b.quantity * b.unitPrice) from DeliveryRequestDetail b where  b.deliveryRequest.id = a.id) ";
 	String totalPriceCoalesce = "COALESCE(" + totalPrice + ",0)";
-	String totalRevenue = " (select sum(b.amount*b.acceptance.paymentterm.po.madConversionRate) from AppLink b where b.revenueType is not null and b.deliveryRequest.id = a.id) ";
+	String totalRevenue = " (select sum(b.amount*b.acceptance.oldInvoiceTerm.po.madConversionRate) from AppLink b where b.revenueType is not null and b.deliveryRequest.id = a.id) ";
 	String totalCrossCharge = " (select sum(b.amount) from ProjectCross b where b.deliveryRequest.id = a.id) ";
 	String totalCrossChargeCoalesce = "COALESCE(" + totalCrossCharge + ",0)";
-	String associatedCostIbuy = " (select sum(b.amount*b.acceptance.paymentterm.po.madConversionRate) from AppLink b where b.costType is not null and b.deliveryRequest.id = a.id) ";
+	String associatedCostIbuy = " (select sum(b.amount*b.acceptance.oldInvoiceTerm.po.madConversionRate) from AppLink b where b.costType is not null and b.deliveryRequest.id = a.id) ";
 	String associatedCostIexpense = " (select sum(b.amount*b.expensepayment.budgetdetail.budget.madConversionRate) from AppLink b where b.costType is not null and b.deliveryRequest.id = a.id) ";
 	String crossChargeId = " (select b.idprojectcross from ProjectCross b where b.deliveryRequest.id = a.id) ";
 	String select3 = "select new DeliveryRequest(a.id,a.reference,a.referenceNumber,a.type,a.status,a.project,a.destinationProject,a.destinationProject.customer.name,a.date4, "

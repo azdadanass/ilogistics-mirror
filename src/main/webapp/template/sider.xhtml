@@ -330,7 +330,7 @@
 						</f:subview>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 4}">
-						<f:subview rendered="#{sessionView.internal and (sessionView.isPM or sessionView.isWM or sessionView.isAdmin or sessionView.isUser)}">
+						<f:subview rendered="#{(sessionView.internal and (sessionView.isPM or sessionView.isWM or sessionView.isAdmin or sessionView.isUser)) or sessionView.isWM}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-cubes"></i>

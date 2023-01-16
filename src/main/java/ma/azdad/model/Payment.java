@@ -23,7 +23,10 @@ public class Payment implements Serializable {
 	private Integer idPayment;
 	private String approuvalPayment;
 	private Date dateCash;
+	
 	private Acceptance acceptance;
+	private InvoicePayment invoicePayment;
+	private IbuyPayment ibuyPayment;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,6 +66,24 @@ public class Payment implements Serializable {
 
 	public void setDateCash(Date dateCash) {
 		this.dateCash = dateCash;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public InvoicePayment getInvoicePayment() {
+		return invoicePayment;
+	}
+
+	public void setInvoicePayment(InvoicePayment invoicePayment) {
+		this.invoicePayment = invoicePayment;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public IbuyPayment getIbuyPayment() {
+		return ibuyPayment;
+	}
+
+	public void setIbuyPayment(IbuyPayment ibuyPayment) {
+		this.ibuyPayment = ibuyPayment;
 	}
 
 }

@@ -109,7 +109,7 @@ public class IndexView implements Serializable {
 				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 		case 4:
 			if (canAccessMenu(4))
-				return addParameters(sessionView.getIsExternalPm()?"deliveryReporting.xhtml":"reporting.xhtml", "faces-redirect=true");
+				return addParameters(sessionView.getInternal() || sessionView.getIsWM()?"reporting.xhtml":"deliveryReporting.xhtml", "faces-redirect=true");
 		default:
 			return null;
 		}

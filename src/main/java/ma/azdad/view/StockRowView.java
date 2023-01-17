@@ -240,17 +240,26 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			default:
 				break;
 			}
-		else if (sessionView.getUser().getIsCustomerUser())
+		else if (sessionView.getIsExternalPm()) {
 			switch (currentPath) {
+			case "/deliveryReporting.xhtml":
+			case "/sdmDeliveryReporting.xhtml":
+				initDeliveryLists();
+				refreshDeliveryLists();
+				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
+				break;
 			case "/stockRowList.xhtml":
 				switch (pageIndex) {
 				case 1:
-					list2 = list1 = filterByStockSituation(
-							stockRowService.findByCustomerOwnerAndGroupByPartNumber(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList()));
+					if (sessionView.getUser().getIsCustomerUser())
+						list2 = list1 = filterByStockSituation(
+								stockRowService.findByCustomerOwnerAndGroupByPartNumber(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList()));
 					break;
 				}
 				break;
 			}
+
+		}
 
 	}
 
@@ -324,6 +333,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					deliveryList1 = stockRowService.findDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
 				else if (sessionView.getUser().getIsCustomerUser())
 					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
+
+				System.out.println(cacheView.getAssignedProjectList());
+				System.out.println(deliveryList1);
 			}
 			break;
 		case "/sdmDeliveryReporting.xhtml":

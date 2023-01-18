@@ -510,71 +510,55 @@
 							</f:subview>
 						</f:subview>
 						<f:subview rendered="#{sessionView.isExternalPm}">
-							<f:subview rendered="#{sessionView.user.isSupplierUser}">
-								<li class="open">
-									<a href="#" class="dropdown-toggle">
-										<i class="menu-icon fa fa-cubes"></i>
-										<span class="menu-text">
-											<h:outputText value="Delivery" />
-										</span>
-										<b class="arrow fa fa-angle-down"></b>
-									</a>
-									<b class="arrow"></b>
-									<ul class="submenu">
-										<li>
-											<h:outputLink value="deliveryReporting.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Delivery Reports" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</ul>
-								</li>
-							</f:subview>
-							<f:subview rendered="#{sessionView.user.isCustomerUser}">
-								<li class="open">
-									<a href="#" class="dropdown-toggle">
-										<i class="menu-icon fa fa-cubes"></i>
-										<span class="menu-text">
-											<h:outputText value="Inventory" />
-										</span>
-										<b class="arrow fa fa-angle-down"></b>
-									</a>
-									<b class="arrow"></b>
-									<ul class="submenu">
-										<li>
-											<h:outputLink value="stockRowList.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
-												<h:outputText value="Part Number" />
-												<f:param name="pageIndex" value="1"/>
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</ul>
-								</li>
-								<li class="open">
-									<a href="#" class="dropdown-toggle">
-										<i class="menu-icon fa fa-cubes"></i>
-										<span class="menu-text">
-											<h:outputText value="Delivery" />
-										</span>
-										<b class="arrow fa fa-angle-down"></b>
-									</a>
-									<b class="arrow"></b>
-									<ul class="submenu">
-										<li>
-											<h:outputLink value="deliveryReporting.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Delivery Reports" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</ul>
-								</li>
-							</f:subview>
+							<li class="open">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-cubes"></i>
+									<span class="menu-text">
+										<h:outputText value="Inventory" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="stockRowList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
+											<h:outputText value="Part Number" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
+							<li class="open">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-cubes"></i>
+									<span class="menu-text">
+										<h:outputText value="Delivery" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="deliveryReporting.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="Delivery Reports" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="sdmDeliveryReporting.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+											<h:outputText value="SDM Report" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
 						</f:subview>
 					</f:subview>
 				</ul>

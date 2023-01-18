@@ -557,6 +557,14 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
+	
+	public Map<Integer, Double> findPendingQuantityBySupplierOwnerGroupByPartNumber(Integer supplierId, List<Integer> projectIdList) {
+		List<Object[]> data = repos.findPendingQuantityBySupplierOwnerGroupByPartNumber(supplierId,projectIdList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
+		return result;
+	}
 
 	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer partNumberId, Integer projectId) {

@@ -438,6 +438,24 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		result.addAll(notHavingStock);
 		return result;
 	}
+	
+	public List<Project> findLightProjectCustomerOwnerList(Integer customerId,List<Integer> projectIdList) {
+		List<Project> havingStockList = repos.findProjectListByCustomerOwnerAndHavingStock(customerId,projectIdList);
+		List<Project> notHavingStock = repos.findProjectListByCustomerOwnerAndNotHavingStock(customerId,projectIdList);
+		List<Project> result = new ArrayList<Project>();
+		result.addAll(havingStockList);
+		result.addAll(notHavingStock);
+		return result;
+	}
+	
+	public List<Project> findLightProjectSupplierOwnerList(Integer supplierId,List<Integer> projectIdList) {
+		List<Project> havingStockList = repos.findProjectListBySupplierOwnerAndHavingStock(supplierId,projectIdList);
+		List<Project> notHavingStock = repos.findProjectListBySupplierOwnerAndNotHavingStock(supplierId,projectIdList);
+		List<Project> result = new ArrayList<Project>();
+		result.addAll(havingStockList);
+		result.addAll(notHavingStock);
+		return result;
+	}
 
 	public List<Warehouse> findLightWarehouseCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		List<Warehouse> havingStockList = repos.findWarehouseListByCompanyOwnerAndHavingStock(username, warehouseList, assignedProjectList, companyId);

@@ -280,6 +280,18 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select distinct new Project(a.deliveryRequest.project.id,a.deliveryRequest.project.name,false) " + from3 + "  where  " + usernameCondition + " and " + customerCondition
 			+ " group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
 	public List<Project> findProjectListByCustomerOwnerAndNotHavingStock(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+	
+	@Query("select distinct new Project(a.deliveryRequest.project.id,a.deliveryRequest.project.name,true) " + from3 + "where (customer1.id = ?1 or customer2.id = ?1) and a.a.deliveryRequest.project.id in (?2) group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+	public List<Project> findProjectListByCustomerOwnerAndHavingStock(Integer customerId,List<Integer> projectIdList);
+
+	@Query("select distinct new Project(a.deliveryRequest.project.id,a.deliveryRequest.project.name,false) " + from3 + "where (customer1.id = ?1 or customer2.id = ?1) and a.a.deliveryRequest.project.id in (?2) group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+	public List<Project> findProjectListByCustomerOwnerAndNotHavingStock(Integer customerId,List<Integer> projectIdList);
+	
+	@Query("select distinct new Project(a.deliveryRequest.project.id,a.deliveryRequest.project.name,true) " + from4 + "where (supplier1.id = ?1 or supplier2.id = ?1) and a.a.deliveryRequest.project.id in (?2) group by a.deliveryRequest.project.id having sum(a.quantity) > 0")
+	public List<Project> findProjectListBySupplierOwnerAndHavingStock(Integer supplierId,List<Integer> projectIdList);
+
+	@Query("select distinct new Project(a.deliveryRequest.project.id,a.deliveryRequest.project.name,false) " + from4 + "where (supplier1.id = ?1 or supplier2.id = ?1) and a.a.deliveryRequest.project.id in (?2) group by a.deliveryRequest.project.id having sum(a.quantity) = 0")
+	public List<Project> findProjectListBySupplierOwnerAndNotHavingStock(Integer supplierId,List<Integer> projectIdList);
 
 	@Query("select distinct new Warehouse(a.deliveryRequest.warehouse.id,a.deliveryRequest.warehouse.name,true) " + from2 + "  where  " + usernameCondition + " and "
 			+ companyCondition + "and a.deliveryRequest.warehouse is not null group by a.deliveryRequest.warehouse.id having sum(a.quantity) > 0")

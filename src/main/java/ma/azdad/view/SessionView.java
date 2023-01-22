@@ -94,6 +94,22 @@ public class SessionView implements Serializable {
 		return user.getIsUser();
 	}
 
+	public Integer getSupplierId() {
+		return getIsSupplierUser() ? user.getSupplierId() : null;
+	}
+
+	public Boolean getIsSupplierUser() {
+		return user.getIsSupplierUser();
+	}
+
+	public Boolean getIsCustomerUser() {
+		return user.getIsCustomerUser();
+	}
+	
+	public Integer getCustomerId() {
+		return getIsCustomerUser() ? user.getCustomerId() : null;
+	}
+
 	public Boolean getIsUser() {
 		return isUser();
 	}
@@ -125,7 +141,7 @@ public class SessionView implements Serializable {
 	public Boolean getIsLobManager() {
 		return user.getIsLobManager();
 	}
-	
+
 	public Boolean getIsBuManager() {
 		return user.getIsBuManager();
 	}

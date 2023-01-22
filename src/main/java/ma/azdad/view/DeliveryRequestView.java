@@ -361,10 +361,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (isListPage)
 			switch (pageIndex) {
 			case 1:
-				if (sessionView.getInternal() || sessionView.getUser().getIsCustomerUser())
+				if (sessionView.getInternal() || sessionView.getIsCustomerUser())
 					list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(),
 							Stream.concat(cacheView.getAssignedProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
-				else if (sessionView.getUser().getIsSupplierUser())
+				else if (sessionView.getIsSupplierUser())
 					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(),
 							cacheView.getWarehouseList());
 
@@ -376,9 +376,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				if (sessionView.getInternal())
 					initLists(service.findToAcknowledgeInternal(sessionView.getUsername()));
 				else if (sessionView.getIsExternalPm()) {
-					if (sessionView.getUser().getIsSupplierUser())
+					if (sessionView.getIsSupplierUser())
 						initLists(service.findToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
-					if (sessionView.getUser().getIsCustomerUser())
+					if (sessionView.getIsCustomerUser())
 						initLists(service.findToAcknowledgeExternalCustomerUser(sessionView.getUsername(), sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
 				}
 
@@ -430,9 +430,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				if (sessionView.getInternal())
 					initLists(service.findByMissingOutboundDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
 				else if (sessionView.getIsExternalPm()) {
-					if (sessionView.getUser().getIsSupplierUser())
+					if (sessionView.getIsSupplierUser())
 						initLists(service.findByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
-					else if (sessionView.getUser().getIsCustomerUser())
+					else if (sessionView.getIsCustomerUser())
 						initLists(service.findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
 				}
 				break;
@@ -485,10 +485,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getManager().getUsername())//
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getCostcenter().getLob().getBu().getDirector().getUsername());
 			else if (sessionView.getIsExternalPm()) {
-				if (sessionView.getUser().getIsSupplierUser())
+				if (sessionView.getIsSupplierUser())
 					return sessionView.getUser().getSupplierId().equals(deliveryRequest.getDeliverToSupplierId()) //
 							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getDestinationProject().getId());
-				else if (sessionView.getUser().getIsCustomerUser())
+				else if (sessionView.getIsCustomerUser())
 					return sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
 							&& cacheView.getAssignedProjectList().contains(deliveryRequest.getDestinationProject().getId());
 			}
@@ -1213,11 +1213,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 							|| sessionView.isTheConnectedUser(deliveryRequest.getToUserUsername())//
 							|| (sessionView.getIsExternalPm() //
-									&& sessionView.getUser().getIsSupplierUser() //
+									&& sessionView.getIsSupplierUser() //
 									&& sessionView.getUser().getSupplierId().equals(deliveryRequest.getDeliverToSupplierId()) //
 									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername())) //
 							|| (sessionView.getIsExternalPm() //
-									&& sessionView.getUser().getIsCustomerUser() //
+									&& sessionView.getIsCustomerUser() //
 									&& sessionView.getUser().getCustomerId().equals(deliveryRequest.getDeliverToCustomerId()) //
 									&& projectAssignmentService.isUserHavingActiveAssignmentInProject(deliveryRequest.getDestinationProjectId(), sessionView.getUsername())));
 		} catch (Exception e) {
@@ -2159,7 +2159,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// UNIT PRICE
 	public Boolean showPriceInformations() {
-		return (sessionView.getInternal() || sessionView.getUser().getIsCustomerUser())//
+		return (sessionView.getInternal() || sessionView.getIsCustomerUser())//
 				&& deliveryRequest.getIsOutbound() //
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())//
@@ -2573,9 +2573,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (sessionView.getInternal())
 			return service.countToAcknowledgeInternal(sessionView.getUsername());
 		else if (sessionView.getIsExternalPm()) {
-			if (sessionView.getUser().getIsSupplierUser())
+			if (sessionView.getIsSupplierUser())
 				return service.countToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
-			if (sessionView.getUser().getIsCustomerUser())
+			if (sessionView.getIsCustomerUser())
 				return service.countToAcknowledgeExternalCustomerUser(sessionView.getUsername(), sessionView.getUser().getCustomerId(), cacheView.getUserProjectList());
 		}
 		return 0l;
@@ -2633,9 +2633,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (sessionView.getInternal())
 			return service.countByMissingOutboundDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
 		else if (sessionView.getIsExternalPm()) {
-			if (sessionView.getUser().getIsSupplierUser())
+			if (sessionView.getIsSupplierUser())
 				return service.countByMissingOutboundDeliveryNoteFileAndDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
-			else if (sessionView.getUser().getIsCustomerUser())
+			else if (sessionView.getIsCustomerUser())
 				return service.countByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList());
 		}
 		return 0l;

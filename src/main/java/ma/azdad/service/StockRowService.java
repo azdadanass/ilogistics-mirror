@@ -279,6 +279,22 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return result;
 	}
 
+	public List<StockRow> findByCustomerOwnerAndProjectAndGroupByPartNumber(Integer customerId, Integer projectId) {
+		List<StockRow> result = repos.findByCustomerOwnerAndProjectAndGroupByPartNumber(customerId, projectId);
+		for (StockRow stockRow : result)
+			stockRow.setPendingQuantity(
+					deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(customerId, stockRow.getPartNumber().getId(), projectId));
+		return result;
+	}
+
+	public List<StockRow> findBySupplierOwnerAndProjectAndGroupByPartNumber(Integer supplierId, Integer projectId) {
+		List<StockRow> result = repos.findBySupplierOwnerAndProjectAndGroupByPartNumber(supplierId, projectId);
+		for (StockRow stockRow : result)
+			stockRow.setPendingQuantity(
+					deliveryRequestDetailService.findPendingQuantityBySupplierOwnerAnPartNumberAndProject(supplierId, stockRow.getPartNumber().getId(), projectId));
+		return result;
+	}
+
 	public List<StockRow> findByCompanyOwnerAndWarehouseAndGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
 			Integer warehouseId) {
 		if (assignedProjectList == null || assignedProjectList.isEmpty())
@@ -301,6 +317,26 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return result;
 	}
 
+	public List<StockRow> findByCustomerOwnerAndWarehouseAndGroupByPartNumber(Integer customerId, List<Integer> projectIdList, Integer warehouseId) {
+		if (projectIdList == null || projectIdList.isEmpty())
+			projectIdList = Arrays.asList(-1);
+		List<StockRow> result = repos.findByCustomerOwnerAndWarehouseAndGroupByPartNumber(customerId, projectIdList, warehouseId);
+		for (StockRow stockRow : result)
+			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(customerId, projectIdList,
+					stockRow.getPartNumber().getId(), warehouseId));
+		return result;
+	}
+
+	public List<StockRow> findBySupplierOwnerAndWarehouseAndGroupByPartNumber(Integer supplierId, List<Integer> projectIdList, Integer warehouseId) {
+		if (projectIdList == null || projectIdList.isEmpty())
+			projectIdList = Arrays.asList(-1);
+		List<StockRow> result = repos.findBySupplierOwnerAndWarehouseAndGroupByPartNumber(supplierId, projectIdList, warehouseId);
+		for (StockRow stockRow : result)
+			stockRow.setPendingQuantity(deliveryRequestDetailService.findPendingQuantityBySupplierOwnerAnPartNumberAndWarehouse(supplierId, projectIdList,
+					stockRow.getPartNumber().getId(), warehouseId));
+		return result;
+	}
+
 	public List<StockRow> findCurrentStockByPartNumberAndCompanyOwner(Integer companyId, String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
 			Integer partNumberId) {
 		return repos.findCurrentStockByPartNumberAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, partNumberId);
@@ -311,6 +347,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findCurrentStockByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId);
 	}
 
+	public List<StockRow> findCurrentStockByPartNumberAndCustomerOwner(Integer customerId, List<Integer> projectIdList, Integer partNumberId) {
+		return repos.findCurrentStockByPartNumberAndCustomerOwner(customerId, projectIdList, partNumberId);
+	}
+
+	public List<StockRow> findCurrentStockByPartNumberAndSupplierOwner(Integer supplierId, List<Integer> projectIdList, Integer partNumberId) {
+		return repos.findCurrentStockByPartNumberAndSupplierOwner(supplierId, projectIdList, partNumberId);
+	}
+
 	public List<StockRow> findStockHistoryByPartNumberAndCompanyOwner(Integer companyId, String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
 			Integer partNumberId) {
 		return repos.findStockHistoryByPartNumberAndCompanyOwner(username, warehouseList, assignedProjectList, companyId, partNumberId);
@@ -319,6 +363,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findStockHistoryByPartNumberAndCustomerOwner(Integer customerId, String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
 			Integer partNumberId) {
 		return repos.findStockHistoryByPartNumberAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, partNumberId);
+	}
+
+	public List<StockRow> findStockHistoryByPartNumberAndCustomerOwner(Integer customerId, List<Integer> projectIdList, Integer partNumberId) {
+		return repos.findStockHistoryByPartNumberAndCustomerOwner(customerId, projectIdList, partNumberId);
+	}
+	
+	public List<StockRow> findStockHistoryByPartNumberAndSupplierOwner(Integer supplierId, List<Integer> projectIdList, Integer partNumberId) {
+		return repos.findStockHistoryByPartNumberAndSupplierOwner(supplierId, projectIdList, partNumberId);
 	}
 
 	public List<StockRow> findStockHistoryByPartNumberAndCompanyOwner(Integer companyId, String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
@@ -356,9 +408,25 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return repos.findStockHistoryByProjectAndCustomerOwner(username, warehouseList, assignedProjectList, customerId, projectId);
 	}
 
-	public List<StockRow> findStockHistoryByWarehouseAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedWarehouseList, Integer customerId,
+	public List<StockRow> findStockHistoryByProjectAndCustomerOwner(Integer customerId, Integer projectId) {
+		return repos.findStockHistoryByProjectAndCustomerOwner(customerId, projectId);
+	}
+
+	public List<StockRow> findStockHistoryByProjectAndSupplierOwner(Integer supplierId, Integer projectId) {
+		return repos.findStockHistoryByProjectAndSupplierOwner(supplierId, projectId);
+	}
+
+	public List<StockRow> findStockHistoryByWarehouseAndCustomerOwner(String username, List<Integer> warehouseList, List<Integer> projectIdList, Integer customerId,
 			Integer warehouseId) {
-		return repos.findStockHistoryByWarehouseAndCustomerOwner(username, warehouseList, assignedWarehouseList, customerId, warehouseId);
+		return repos.findStockHistoryByWarehouseAndCustomerOwner(username, warehouseList, projectIdList, customerId, warehouseId);
+	}
+
+	public List<StockRow> findStockHistoryByWarehouseAndCustomerOwner(Integer customerId, List<Integer> projectIdList, Integer warehouseId) {
+		return repos.findStockHistoryByWarehouseAndCustomerOwner(customerId, projectIdList, warehouseId);
+	}
+
+	public List<StockRow> findStockHistoryByWarehouseAndSupplierOwner(Integer supplierId, List<Integer> projectIdList, Integer warehouseId) {
+		return repos.findStockHistoryByWarehouseAndSupplierOwner(supplierId, projectIdList, warehouseId);
 	}
 
 //	public List<StockRow> findStockHistoryByDestinationAndCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer destinationId, Integer projectId) {
@@ -438,19 +506,19 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		result.addAll(notHavingStock);
 		return result;
 	}
-	
-	public List<Project> findLightProjectCustomerOwnerList(Integer customerId,List<Integer> projectIdList) {
-		List<Project> havingStockList = repos.findProjectListByCustomerOwnerAndHavingStock(customerId,projectIdList);
-		List<Project> notHavingStock = repos.findProjectListByCustomerOwnerAndNotHavingStock(customerId,projectIdList);
+
+	public List<Project> findLightProjectCustomerOwnerList(Integer customerId, List<Integer> projectIdList) {
+		List<Project> havingStockList = repos.findProjectListByCustomerOwnerAndHavingStock(customerId, projectIdList);
+		List<Project> notHavingStock = repos.findProjectListByCustomerOwnerAndNotHavingStock(customerId, projectIdList);
 		List<Project> result = new ArrayList<Project>();
 		result.addAll(havingStockList);
 		result.addAll(notHavingStock);
 		return result;
 	}
-	
-	public List<Project> findLightProjectSupplierOwnerList(Integer supplierId,List<Integer> projectIdList) {
-		List<Project> havingStockList = repos.findProjectListBySupplierOwnerAndHavingStock(supplierId,projectIdList);
-		List<Project> notHavingStock = repos.findProjectListBySupplierOwnerAndNotHavingStock(supplierId,projectIdList);
+
+	public List<Project> findLightProjectSupplierOwnerList(Integer supplierId, List<Integer> projectIdList) {
+		List<Project> havingStockList = repos.findProjectListBySupplierOwnerAndHavingStock(supplierId, projectIdList);
+		List<Project> notHavingStock = repos.findProjectListBySupplierOwnerAndNotHavingStock(supplierId, projectIdList);
 		List<Project> result = new ArrayList<Project>();
 		result.addAll(havingStockList);
 		result.addAll(notHavingStock);
@@ -848,7 +916,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findSdmDeliveryListsByCustomerOwner(Integer customerId, List<Integer> assignedProjectList) {
 		return repos.findSdmDeliveryListsByCustomerOwner(customerId, assignedProjectList);
 	}
-	
+
 	public List<StockRow> findSdmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> assignedProjectList) {
 		return repos.findSdmDeliveryListsByDeliverToSupplier(supplierId, assignedProjectList);
 	}

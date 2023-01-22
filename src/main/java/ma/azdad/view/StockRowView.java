@@ -249,10 +249,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
 				break;
 			case "/stockRowList.xhtml":
-				if (sessionView.getUser().getIsCustomerUser())
+				if (sessionView.getIsCustomerUser())
 					list2 = list1 = filterByStockSituation(
 							stockRowService.findByCustomerOwnerAndGroupByPartNumber(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList()));
-				else if (sessionView.getUser().getIsSupplierUser())
+				else if (sessionView.getIsSupplierUser())
 					list2 = list1 = filterByStockSituation(
 							stockRowService.findBySupplierOwnerAndGroupByPartNumber(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList()));
 				break;
@@ -274,9 +274,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 						customerId);
 		} else if (sessionView.getIsExternalPm()) {
-			if (sessionView.getUser().getIsCustomerUser())
+			if (sessionView.getIsCustomerUser())
 				projectList = stockRowService.findLightProjectCustomerOwnerList(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
-			else if (sessionView.getUser().getIsSupplierUser())
+			else if (sessionView.getIsSupplierUser())
 				projectList = stockRowService.findLightProjectSupplierOwnerList(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
 		}
 	}
@@ -339,9 +339,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							customerId);
 			} else if (sessionView.getIsExternalPm()) {
-				if (sessionView.getUser().getIsSupplierUser())
+				if (sessionView.getIsSupplierUser())
 					deliveryList1 = stockRowService.findDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
-				else if (sessionView.getUser().getIsCustomerUser())
+				else if (sessionView.getIsCustomerUser())
 					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
 			}
 			break;
@@ -354,9 +354,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					deliveryList1 = stockRowService.findSdmDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							customerId);
 			} else if (sessionView.getIsExternalPm()) {
-				if (sessionView.getUser().getIsSupplierUser())
+				if (sessionView.getIsSupplierUser())
 					deliveryList1 = stockRowService.findSdmDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
-				else if (sessionView.getUser().getIsCustomerUser())
+				else if (sessionView.getIsCustomerUser())
 					deliveryList1 = stockRowService.findSdmDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
 			}
 			break;
@@ -719,7 +719,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndProjectAndGroupByPartNumber(sessionView.getUsername(),
 							cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, projectId));
 			} else if (sessionView.getIsExternalPm()) {
-				aaaaaaaaaaaaaaaaaaa
+				if (sessionView.getIsCustomerUser())
+					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndProjectAndGroupByPartNumber(sessionView.getCustomerId(), projectId));
+				else if (sessionView.getIsSupplierUser())
+					list2 = list1 = filterByStockSituation(stockRowService.findBySupplierOwnerAndProjectAndGroupByPartNumber(sessionView.getSupplierId(), projectId));
 			}
 		} else {
 			if (sessionView.getInternal() || sessionView.getIsWM()) {
@@ -730,7 +733,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					list2 = list1 = stockRowService.findStockHistoryByProjectAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
 							cacheView.getAssignedProjectList(), customerId, projectId);
 			} else if (sessionView.getIsExternalPm()) {
-				aaaaaaaaaaaaaaaaaaaa
+				if (sessionView.getIsCustomerUser())
+					list2 = list1 = stockRowService.findStockHistoryByProjectAndCustomerOwner(sessionView.getCustomerId(), projectId);
+				else if (sessionView.getIsSupplierUser())
+					list2 = list1 = stockRowService.findStockHistoryByProjectAndSupplierOwner(sessionView.getSupplierId(), projectId);
 			}
 
 		}
@@ -738,30 +744,54 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void getWarehouseReportingLists(Boolean currentStock) {
 		if (currentStock) {
-			if (companyId != null)
-				list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), companyId, warehouseId));
-			else if (customerId != null)
-				list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), customerId, warehouseId));
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					list2 = list1 = filterByStockSituation(stockRowService.findByCompanyOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(),
+							cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId, warehouseId));
+				else if (customerId != null)
+					list2 = list1 = filterByStockSituation(stockRowService.findByCustomerOwnerAndWarehouseAndGroupByPartNumber(sessionView.getUsername(),
+							cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId, warehouseId));
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getIsCustomerUser())
+					list2 = list1 = filterByStockSituation(
+							stockRowService.findByCustomerOwnerAndWarehouseAndGroupByPartNumber(sessionView.getCustomerId(), cacheView.getAssignedProjectList(), warehouseId));
+				else if (sessionView.getIsSupplierUser())
+					list2 = list1 = filterByStockSituation(
+							stockRowService.findBySupplierOwnerAndWarehouseAndGroupByPartNumber(sessionView.getSupplierId(), cacheView.getAssignedProjectList(), warehouseId));
+			}
+
 		} else {
-			if (companyId != null)
-				list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), companyId, warehouseId);
-			else if (customerId != null)
-				list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), customerId, warehouseId);
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), companyId, warehouseId);
+				else if (customerId != null)
+					list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), customerId, warehouseId);
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getIsCustomerUser())
+					list2 = list1 = stockRowService.findStockHistoryByWarehouseAndCustomerOwner(sessionView.getCustomerId(), cacheView.getAssignedProjectList(), warehouseId);
+				else if (sessionView.getIsSupplierUser())
+					list2 = list1 = stockRowService.findStockHistoryByWarehouseAndSupplierOwner(sessionView.getSupplierId(), cacheView.getAssignedProjectList(), warehouseId);
+			}
 		}
 	}
 
 	public void initCurrentList() {
 		if (currentList == null) {
-			if (companyId != null)
-				currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), id);
-			else if (customerId != null)
-				currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), id);
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					currentList = stockRowService.findCurrentStockByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), id);
+				else if (customerId != null)
+					currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), id);
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getIsCustomerUser())
+					currentList = stockRowService.findCurrentStockByPartNumberAndCustomerOwner(sessionView.getCustomerId(), cacheView.getAssignedProjectList(), id);
+				else if (sessionView.getIsSupplierUser())
+					currentList = stockRowService.findCurrentStockByPartNumberAndSupplierOwner(sessionView.getSupplierId(), cacheView.getAssignedProjectList(), id);
+			}
 		}
 		list2 = list1 = currentList;
 	}
@@ -775,12 +805,19 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	private void initHistorylist1() {
 		if (historyList1 == null) {
-			if (companyId != null)
-				historyList1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), id);
-			else if (customerId != null)
-				historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
-						cacheView.getAssignedProjectList(), id);
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					historyList1 = stockRowService.findStockHistoryByPartNumberAndCompanyOwner(companyId, sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), id);
+				else if (customerId != null)
+					historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(customerId, sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), id);
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getIsCustomerUser())
+					historyList1 = stockRowService.findStockHistoryByPartNumberAndCustomerOwner(sessionView.getCustomerId(), cacheView.getAssignedProjectList(), id);
+				else if (sessionView.getIsSupplierUser())
+					historyList1 = stockRowService.findStockHistoryByPartNumberAndSupplierOwner(sessionView.getSupplierId(), cacheView.getAssignedProjectList(), id);
+			}
 		}
 		list2 = list1 = historyList1;
 	}

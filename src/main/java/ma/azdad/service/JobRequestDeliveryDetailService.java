@@ -70,4 +70,9 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		return repos.countByDeliveryRequest(deliveryRequestId);
 	}
 
+	public void deleteByDeliveryRequest(Integer deliveryRequestId) {
+		repos.deleteByDeliveryRequest(deliveryRequestId);
+		evictCache("deliveryRequestService");
+		evictCache("jobRequestService");
+	}
 }

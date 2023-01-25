@@ -102,6 +102,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	protected DeliveryRequestFileService deliveryRequestFileService;
+	
 
 	@Autowired
 	protected PartNumberService partNumberService;
@@ -1124,6 +1125,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
 			poService.updateBoqStatus(poId);
+		
+		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
@@ -1201,6 +1204,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
 			poService.updateBoqStatus(poId);
+		
+		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}

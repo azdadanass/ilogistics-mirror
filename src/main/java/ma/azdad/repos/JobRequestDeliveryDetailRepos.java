@@ -47,6 +47,6 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	Long countByDeliveryRequest(Integer deliveryRequestId);
 	
 	@Modifying
-	@Query("delete from JobRequestDeliveryDetail where deliveryRequestDetail.deliveryRequest.id = ?1")
+	@Query("delete from JobRequestDeliveryDetail where deliveryRequestDetail.id in (select distinct b.id from DeliveryRequestDetail b where b.deliveryRequest.id = ?1)")
 	void deleteByDeliveryRequest(Integer deliveryRequestId);
 }

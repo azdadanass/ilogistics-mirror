@@ -27,6 +27,7 @@ import org.apache.ecs.wml.Img;
 import org.apache.ecs.xhtml.br;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -100,6 +101,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	BoqService boqService;
+
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
 
 	@Override
 	public DeliveryRequest findOne(Integer id) {
@@ -693,8 +697,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			Image qrcodeImage = barcodeQrcode.getImage();
 			qrcodeImage.scaleToFit(95, 95);
 			// qrcodeImage.scalePercent(100);
-
-			Image logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
+			Image logo = null;
+			if ("gcom".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/gcom.png");
+			else if ("orange".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
 			logo.scaleToFit(50, 60);
 			logo.setAlignment(Element.ALIGN_CENTER);
 			cell1 = new PdfPCell();

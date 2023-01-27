@@ -71,6 +71,9 @@ import ma.azdad.utils.App;
 
 @Component
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
+	
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
 
 	@Autowired
 	DeliveryRequestRepos deliveryRequestRepos;
@@ -102,8 +105,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	@Autowired
 	BoqService boqService;
 
-	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
-	private String erp;
 
 	@Override
 	public DeliveryRequest findOne(Integer id) {

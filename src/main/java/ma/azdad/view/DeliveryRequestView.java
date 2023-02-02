@@ -102,7 +102,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	protected DeliveryRequestFileService deliveryRequestFileService;
-	
 
 	@Autowired
 	protected PartNumberService partNumberService;
@@ -311,15 +310,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void message() {
 		System.out.println(deliveryRequestDetailSelectionList);
 	}
-	
+
 	public Boolean getIsInbound() {
 		return DeliveryRequestType.INBOUND.equals(type);
 	}
-	
+
 	public Boolean getIsOutbound() {
 		return DeliveryRequestType.OUTBOUND.equals(type);
 	}
-	
+
 	public Boolean getIsXbound() {
 		return DeliveryRequestType.XBOUND.equals(type);
 	}
@@ -887,7 +886,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Boolean canDeliverDeliveryRequest(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestType.XBOUND.equals(deliveryRequest.getType()) && DeliveryRequestStatus.APPROVED2.equals(deliveryRequest.getStatus())
+		return DeliveryRequestType.XBOUND.equals(deliveryRequest.getType()) && DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus())
 				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 	}
 
@@ -1051,7 +1050,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Boolean canApproveHm(DeliveryRequest deliveryRequest) {
-		return DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus())
+		return (deliveryRequest.getIsOutbound() || deliveryRequest.getIsInbound()) //
+				&& DeliveryRequestStatus.APPROVED1.equals(deliveryRequest.getStatus()) //
 				&& projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername());
 	}
 
@@ -1125,7 +1125,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
 			poService.updateBoqStatus(poId);
-		
+
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
@@ -1204,7 +1204,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
 			poService.updateBoqStatus(poId);
-		
+
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());

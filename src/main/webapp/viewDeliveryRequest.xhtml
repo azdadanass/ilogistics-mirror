@@ -337,7 +337,7 @@
 											</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null}">
+									<f:subview rendered="#{(deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null) and (deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isInbound)}">
 										<li class="#{deliveryRequestView.deliveryRequest.date8!=null?'complete':''}">
 											<span class="step">
 												<i class="ace-icon fa fa-spinner fa-spin grey" />

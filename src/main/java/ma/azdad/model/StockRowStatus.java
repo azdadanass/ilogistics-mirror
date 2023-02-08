@@ -1,16 +1,18 @@
 package ma.azdad.model;
 
+import ma.azdad.utils.Color;
+
 public enum StockRowStatus {
-	NORMAL("Normal", "green"),
-	FAULTY("Faulty", "red"),
-	WATER_DAMAGE("Water damage", "purple"),
-	PHYSICAL_DAMAGE("Physical damage", "grey"),
-	FIRE_DAMAGE("Fire damage", "orange");
+	NORMAL("Normal", Color.GREEN),
+	FAULTY("Faulty", Color.RED),
+	WATER_DAMAGE("Water damage", Color.PURPLE),
+	PHYSICAL_DAMAGE("Physical damage", Color.GREY),
+	FIRE_DAMAGE("Fire damage", Color.ORANGE);
 
 	private final String value;
-	private final String color;
+	private final Color color;
 
-	private StockRowStatus(String value, String color) {
+	private StockRowStatus(String value, Color color) {
 		this.value = value;
 		this.color = color;
 	}
@@ -19,7 +21,9 @@ public enum StockRowStatus {
 		return value;
 	}
 
-	public String getColor() {
+	
+
+	public Color getColor() {
 		return color;
 	}
 

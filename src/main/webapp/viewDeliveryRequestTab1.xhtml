@@ -664,7 +664,7 @@
 					</p:column>
 					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="60"
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.status.value}" />
+						<h:outputText value="#{item.status.value}" styleClass="bolder #{item.status.color.badge}"/>
 					</p:column>
 					<p:column headerText="Unit / Kit" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit?'green':'blue'}" />

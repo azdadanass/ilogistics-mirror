@@ -662,7 +662,7 @@
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.originNumber}" />
 					</p:column>
-					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="60"
+					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="70"
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.status.value}" styleClass="bolder #{item.status.color.badge}"/>
 					</p:column>

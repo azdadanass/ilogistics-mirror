@@ -48,6 +48,7 @@ import ma.azdad.model.ProjectCross;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
+import ma.azdad.model.StockRowStatus;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
@@ -1766,6 +1767,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					deliveryRequest.getOutboundDeliveryRequestTransfer());
 	}
 
+	private Boolean ignoreMultipleStatusWarning = false;
+
 	private Boolean validateStep3() {
 		if (deliveryRequest.getDetailList().isEmpty()) {
 			FacesContextMessages.ErrorMessages("Detail List should not be empty");
@@ -1809,6 +1812,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (deliveryRequest.getDetailList().stream().map(i -> i.getInboundDeliveryRequest().getOwnerType() + ";" + i.getInboundDeliveryRequest().getOwnerId()).distinct()
 					.count() > 1)
 				return FacesContextMessages.ErrorMessages("All the selected items should belong to the same Owner");
+
+			Set<StockRowStatus> stockRowStatusList = deliveryRequest.getDetailList().stream().map(i -> i.getStatus()).distinct().collect(Collectors.toSet());
+			if (!ignoreMultipleStatusWarning && stockRowStatusList.contains(StockRowStatus.NORMAL) && stockRowStatusList.size() > 1) {
+				ignoreMultipleStatusWarning = true;
+				return FacesContextMessages.WarningMessages("Part Number with different status are included in the DN, are you sure ?");
+			}
 
 		}
 

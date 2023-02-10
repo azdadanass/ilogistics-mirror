@@ -337,7 +337,8 @@
 											</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{(deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null) and (deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isInbound)}">
+									<f:subview
+										rendered="#{(deliveryRequestView.deliveryRequest.date8!=null || deliveryRequestView.deliveryRequest.date7==null) and (deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isInbound)}">
 										<li class="#{deliveryRequestView.deliveryRequest.date8!=null?'complete':''}">
 											<span class="step">
 												<i class="ace-icon fa fa-spinner fa-spin grey" />
@@ -483,31 +484,17 @@
 							<h:outputText value=" History" />
 						</a>
 					</li>
-					<f:subview rendered="#{deliveryRequestView.showCostInformations()}">
+					<f:subview
+						rendered="#{deliveryRequestView.showCostInformations() or deliveryRequestView.showPriceInformations() or (sessionView.internal and deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.project.isStockProject)}">
 						<li>
 							<a data-toggle="tab" href="#tab6">
 								<i class="red ace-icon fa fa-dollar bigger-120"></i>
-								<h:outputText value=" Associated Costs" />
+								<h:outputText value=" DN Financials" />
 							</a>
 						</li>
 					</f:subview>
-					<f:subview rendered="#{deliveryRequestView.showPriceInformations()}">
-						<li>
-							<a data-toggle="tab" href="#tab7">
-								<i class="blue ace-icon fa fa-dollar bigger-120"></i>
-								<h:outputText value=" Associated Revenues" />
-							</a>
-						</li>
-					</f:subview>
-					<f:subview rendered="#{sessionView.internal and deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.project.isStockProject}">
-						<li>
-							<a data-toggle="tab" href="#tab8">
-								<i class="purple ace-icon fa fa-exchange bigger-120"></i>
-								<h:outputText value=" Associated Cross Charge" />
-							</a>
-						</li>
-					</f:subview>
-					<f:subview rendered="#{(sessionView.internal or sessionView.user.isCustomerUser) and deliveryRequestView.deliveryRequest.po != null and (deliveryRequestView.deliveryRequest.isInbound or !deliveryRequestView.deliveryRequest.isFullyReturned)}">
+					<f:subview
+						rendered="#{(sessionView.internal or sessionView.user.isCustomerUser) and deliveryRequestView.deliveryRequest.po != null and (deliveryRequestView.deliveryRequest.isInbound or !deliveryRequestView.deliveryRequest.isFullyReturned)}">
 						<li>
 							<a data-toggle="tab" href="#tab9">
 								<i class="green ace-icon fa fa-link bigger-120"></i>
@@ -1368,263 +1355,275 @@
 						</div>
 					</div>
 					<div id="tab6" class="tab-pane">
-						<div class="space-8" />
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-10">
-										<i class="fa fa-list" />
-										<h:outputText value=" Associated Costs" />
-									</div>
-									<div class="col-sm-3">
-										<h:outputText value="Total Amount : " />
-										<h:outputText value="#{appLinkView.totalAmount1}">
-											<f:convertNumber type="number" maxFractionDigits="2" />
-										</h:outputText>
-										<h:outputText value=" MAD" />
-									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{appLinkView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Cost Type" width="150">
-											<h:outputText value="#{item.costType.value}" styleClass="red bolder" />
-										</p:column>
-										<p:column headerText="Amount" width="100">
-											<h:outputText value="#{item.amount}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" #{item.currency}" />
-										</p:column>
-										<p:column headerText="Conversion Rate" width="100">
-											<h:outputText value="#{item.madConversionRate}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Amount MAD" width="100">
-											<h:outputText value="#{item.amount*item.madConversionRate}">
+						<f:subview rendered="#{deliveryRequestView.showCostInformations()}">
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Associated Cost" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Associated Costs" />
+										</div>
+										<div class="col-sm-3">
+											<h:outputText value="Total Amount : " />
+											<h:outputText value="#{appLinkView.totalAmount1}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" MAD" />
-										</p:column>
-										<p:column headerText="System" width="100">
-											<h:outputText value="Ibuy" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
-											<h:outputText value="Iexpense" rendered="#{item.expensepaymentId!=null}" styleClass="bolder green" />
-										</p:column>
-										<p:column headerText="Invoice">
-											<h:outputText value="#{item.idInvoice}" />
-										</p:column>
-										<p:column headerText="Invoice Date">
-											<h:outputText value="#{item.invoiceDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{appLinkView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Cost Type" width="150">
+												<h:outputText value="#{item.costType.value}" styleClass="red bolder" />
+											</p:column>
+											<p:column headerText="Amount" width="100">
+												<h:outputText value="#{item.amount}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" #{item.currency}" />
+											</p:column>
+											<p:column headerText="Conversion Rate" width="100">
+												<h:outputText value="#{item.madConversionRate}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Amount MAD" width="100">
+												<h:outputText value="#{item.amount*item.madConversionRate}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+											<p:column headerText="System" width="100">
+												<h:outputText value="Ibuy" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
+												<h:outputText value="Iexpense" rendered="#{item.expensepaymentId!=null}" styleClass="bolder green" />
+											</p:column>
+											<p:column headerText="Invoice">
+												<h:outputText value="#{item.idInvoice}" />
+											</p:column>
+											<p:column headerText="Invoice Date">
+												<h:outputText value="#{item.invoiceDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Invoice Status">
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Edited'}" styleClass="badge badge-orange" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Pending'}" styleClass="badge badge-orange" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Submitted'}" styleClass="badge badge-pink" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L1'}" styleClass="badge badge-light-blue" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L2'}" styleClass="badge badge-blue" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='In Progress'}" styleClass="badge badge-light-green" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Paid'}" styleClass="badge badge-green" />
+												<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Rejected'}" styleClass="badge badge-red" />
+											</p:column>
+											<p:column headerText="Po">
+												<h:outputText value="#{item.poNumeroIbuy}" />
+											</p:column>
+											<p:column headerText="Supplier" width="150">
+												<h:outputText value="#{item.supplierName}" />
+											</p:column>
+											<p:column headerText="Actions" width="70">
+												<div class="action-buttons center">
+													<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
+														styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
+														<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													</p:commandLink>
+													<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()"
+														title="Show details" styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+														<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													</p:commandLink>
+												</div>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{deliveryRequestView.showPriceInformations()}">
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Associated Revenue" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Associated Revenues" />
+										</div>
+										<div class="col-sm-2">
+											<h:outputText value="#{appLinkView.totalAmount2}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-										</p:column>
-										<p:column headerText="Invoice Status">
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Edited'}" styleClass="badge badge-orange" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Pending'}" styleClass="badge badge-orange" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Submitted'}" styleClass="badge badge-pink" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L1'}" styleClass="badge badge-light-blue" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Approved L2'}" styleClass="badge badge-blue" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='In Progress'}" styleClass="badge badge-light-green" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Paid'}" styleClass="badge badge-green" />
-											<h:outputText value="#{item.invoiceStatus}" rendered="#{item.invoiceStatus=='Rejected'}" styleClass="badge badge-red" />
-										</p:column>
-										<p:column headerText="Po">
-											<h:outputText value="#{item.poNumeroIbuy}" />
-										</p:column>
-										<p:column headerText="Supplier" width="150">
-											<h:outputText value="#{item.supplierName}" />
-										</p:column>
-										<p:column headerText="Actions" width="70">
-											<div class="action-buttons center">
-												<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
-													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
-												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()"
-													title="Show details" styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
+											<h:outputText value=" MAD" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Revenue Type" width="150">
+												<h:outputText value="#{item.revenueType.value}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Amount" width="100">
+												<h:outputText value="#{item.amount}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" #{item.currency}" />
+											</p:column>
+											<p:column headerText="Amount MAD" width="100">
+												<h:outputText value="#{item.amount*item.madConversionRate}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+											</p:column>
+											<p:column headerText="System" width="100">
+												<h:outputText value="Invoice" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
+											</p:column>
+											<p:column headerText="Invoice">
+												<h:outputText value="#{item.idInvoice}" />
+											</p:column>
+											<p:column headerText="Invoice Date">
+												<h:outputText value="#{item.invoiceDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Invoice Status">
+												<h:outputText value="#{item.invoiceStatus}" />
+											</p:column>
+											<p:column headerText="Po">
+												<h:outputText value="#{item.poNumeroInvoice}" />
+											</p:column>
+											<p:column headerText="Customer" width="150">
+												<h:outputText value="#{item.customerName}" />
+											</p:column>
+											<p:column headerText="Actions" width="70">
+												<div class="action-buttons center">
+													<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
+														styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
+														<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													</p:commandLink>
+													<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()"
+														title="Show details" styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+														<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													</p:commandLink>
+												</div>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{sessionView.internal and deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.project.isStockProject}">
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Associated Cross charges" />
+							</h4>
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="From Project" />
 											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="tab7" class="tab-pane">
-						<div class="space-8" />
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-10">
-										<i class="fa fa-list" />
-										<h:outputText value=" Associated Revenues" />
-									</div>
-									<div class="col-sm-2">
-										<h:outputText value="#{appLinkView.totalAmount2}">
-											<f:convertNumber type="number" maxFractionDigits="2" />
-										</h:outputText>
-										<h:outputText value=" MAD" />
-									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Revenue Type" width="150">
-											<h:outputText value="#{item.revenueType.value}" styleClass="blue bolder" />
-										</p:column>
-										<p:column headerText="Amount" width="100">
-											<h:outputText value="#{item.amount}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" #{item.currency}" />
-										</p:column>
-										<p:column headerText="Amount MAD" width="100">
-											<h:outputText value="#{item.amount*item.madConversionRate}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" MAD" />
-										</p:column>
-										<p:column headerText="System" width="100">
-											<h:outputText value="Invoice" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
-										</p:column>
-										<p:column headerText="Invoice">
-											<h:outputText value="#{item.idInvoice}" />
-										</p:column>
-										<p:column headerText="Invoice Date">
-											<h:outputText value="#{item.invoiceDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Invoice Status">
-											<h:outputText value="#{item.invoiceStatus}" />
-										</p:column>
-										<p:column headerText="Po">
-											<h:outputText value="#{item.poNumeroInvoice}" />
-										</p:column>
-										<p:column headerText="Customer" width="150">
-											<h:outputText value="#{item.customerName}" />
-										</p:column>
-										<p:column headerText="Actions" width="70">
-											<div class="action-buttons center">
-												<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
-													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
-												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()"
-													title="Show details" styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.fromProject.name}" styleClass="blue" />
+												&nbsp;
 											</div>
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="tab8" class="tab-pane">
-						<div class="row">
-							<div class="col-xs-12 col-sm-6">
-								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="From Project" />
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.fromProject.name}" styleClass="blue" />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Type" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.type}" styleClass="label arrowed  label-danger" />
+												&nbsp;
+											</div>
 										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Type" />
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Amount" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.amount}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.type}" styleClass="label arrowed  label-danger" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Amount" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.amount}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" MAD" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Cash Amount" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.cashAmount}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" MAD" />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Cash Amount" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.cashAmount}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value=" MAD" />
+												&nbsp;
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6">
-								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="To Project" />
+								<div class="col-xs-12 col-sm-6">
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="To Project" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.toProject.name}" styleClass="green" />
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.toProject.name}" styleClass="green" />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Currency" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="MAD" styleClass="orange" />
+												&nbsp;
+											</div>
 										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Currency" />
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Date " />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.date}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="MAD" styleClass="orange" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Date " />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.date}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Cash Date" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{deliveryRequestView.projectCross.cashDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Cash Date" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{deliveryRequestView.projectCross.cashDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+												&nbsp;
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="space-16" />
-						<div style="width: 90%; margin: auto;">
-							<div class="well">
-								<h4 class="green smaller lighter">
-									<h:outputText value="Description" />
-								</h4>
-								<h:outputText value="#{deliveryRequestView.projectCross.description}" />
+							<div class="space-16" />
+							<div style="width: 90%; margin: auto;">
+								<div class="well">
+									<h4 class="green smaller lighter">
+										<h:outputText value="Description" />
+									</h4>
+									<h:outputText value="#{deliveryRequestView.projectCross.description}" />
+								</div>
 							</div>
-						</div>
+						</f:subview>
 					</div>
 					<div id="tab9" class="tab-pane">
 						<div class="space-8" />

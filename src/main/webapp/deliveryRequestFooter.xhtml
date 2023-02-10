@@ -21,16 +21,18 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right"> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10"
-									style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}"
-									forceSelection="true" rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
+							<span class="input-icon input-icon-right">
+								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
+									completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
+									rendered="#{!projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
 										<h:outputText value="#{pn.name}" />
 									</p:column>
 									<p:column>
 										<h:outputText value="#{pn.description}" />
 									</p:column>
-								</p:autoComplete> <p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
+								</p:autoComplete>
+								<p:autoComplete value="#{deliveryRequestView.deliveryRequestDetail.partNumber}" size="30" maxResults="10" style="width:100%"
 									completeMethod="#{partNumberView.completePartNumber2}" var="pn" itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true"
 									rendered="#{projectView.isStockProject(deliveryRequestView.deliveryRequest.projectId)}">
 									<p:column>
@@ -40,7 +42,8 @@
 										<h:outputText value="#{pn.description}" />
 									</p:column>
 								</p:autoComplete>
-							</span> <br />
+							</span>
+							<br />
 						</div>
 					</div>
 				</div>
@@ -53,9 +56,11 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right"> <p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true"
-									requiredMessage="Quantity should not be null" style="width : 100%" decimalPlaces="0" thousandSeparator="" />
-							</span> <br />
+							<span class="input-icon input-icon-right">
+								<p:inputNumber value="#{deliveryRequestView.deliveryRequestDetail.quantity}" required="true" requiredMessage="Quantity should not be null" style="width : 100%"
+									decimalPlaces="0" thousandSeparator="" />
+							</span>
+							<br />
 						</div>
 					</div>
 				</div>
@@ -105,9 +110,11 @@
 							</div>
 							<div class="col-sm-2 col-xs-4">
 								<div class="nav-search minimized">
-									<span class="input-icon"> <p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+									<span class="input-icon">
+										<p:inputText value="#{siteView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 											<p:ajax event="keyup" update="siteList" />
-										</p:inputText> <i class="ace-icon fa fa-search nav-search-icon" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
 									</span>
 								</div>
 							</div>
@@ -245,12 +252,13 @@
 					</div>
 					<div class="col-xs-12 col-sm-9">
 						<div class="clearfix">
-							<span class="input-icon input-icon-right"> <h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true"
-									requiredMessage="New Location should not be null">
+							<span class="input-icon input-icon-right">
+								<h:selectOneMenu value="#{stockRowView.stockRow.newLocation}" converter="#{genericSecuredConverter}" required="true" requiredMessage="New Location should not be null">
 									<f:selectItem itemLabel="---" noSelectionOption="true" />
 									<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
 								</h:selectOneMenu>
-							</span> <br />
+							</span>
+							<br />
 						</div>
 					</div>
 				</div>
@@ -1019,6 +1027,25 @@
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('subTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
 				<p:commandButton action="#{deliveryRequestView.editSubType()}" value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('subTypeDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="warningForm">
+		<p:dialog widgetVar="warningDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('warningDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-exclamation orange" />
+					<h:outputText value=" Warning" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="#{deliveryRequestView.warningMessage}" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('warningDlg').hide()" value="Ok" styleClass="btn btn-success" oncomplete="PF('warningDlg').hide()" />
 			</div>
 		</p:dialog>
 	</h:form>

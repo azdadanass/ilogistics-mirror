@@ -239,6 +239,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	private Integer outboundDeliveryRequestId;
 	private InboundType inboundType;
 
+	private String warningMessage;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -1816,7 +1818,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			Set<StockRowStatus> stockRowStatusList = deliveryRequest.getDetailList().stream().map(i -> i.getStatus()).distinct().collect(Collectors.toSet());
 			if (!ignoreMultipleStatusWarning && stockRowStatusList.contains(StockRowStatus.NORMAL) && stockRowStatusList.size() > 1) {
 				ignoreMultipleStatusWarning = true;
-				return FacesContextMessages.WarningMessages("Part Number with different status are included in the DN, are you sure ?");
+				warningMessage = "Part Number with different status are included in the DN, are you sure ?";
+				execJavascript("PF('warningDlg').show();");
+				return FacesContextMessages.WarningMessages(warningMessage);
 			}
 
 		}
@@ -3061,6 +3065,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void setComment(DeliveryRequestComment comment) {
 		this.comment = comment;
+	}
+
+	public String getWarningMessage() {
+		return warningMessage;
+	}
+
+	public void setWarningMessage(String warningMessage) {
+		this.warningMessage = warningMessage;
 	}
 
 }

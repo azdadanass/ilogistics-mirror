@@ -150,7 +150,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public void initEdit(DeliveryRequest deliveryRequest) {
 		if (deliveryRequest.getIsOutbound()) {
 			// add remaining qty as empty rows
-			List<DeliveryRequestSerialNumber> inboundSerialNumberList = deliveryRequestSerialNumberService.findInboundSerialNumberByOutboundDeliveryRequest(deliveryRequest.getId());
+			List<DeliveryRequestSerialNumber> inboundSerialNumberList = deliveryRequestSerialNumberService
+					.findInboundSerialNumberByOutboundDeliveryRequest(deliveryRequest.getId());
 			Set<String> inboundSerialNumberKeySet = inboundSerialNumberList.stream().map(i -> i.getKey1()).collect(Collectors.toSet());
 
 			Map<String, Integer> map = new HashMap<>();
@@ -213,7 +214,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		list1.stream().filter(drsn -> drsn.getSerialNumber() != null).forEach(drsn -> drsn.setSerialNumber(drsn.getSerialNumber().replace("\\s", "")));
 
 		if (deliveryRequest.getIsInbound()) {
-			if (list1.stream().filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).count() > list1.stream().filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).map(i -> i.getSerialNumber()).distinct().count())
+			if (list1.stream().filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).count() > list1.stream()
+					.filter(i -> i.getSerialNumber() != null && !i.getSerialNumber().isEmpty()).map(i -> i.getSerialNumber()).distinct().count())
 				return FacesContextMessages.ErrorMessages("Duplicate SN !");
 		} else if (deliveryRequest.getIsOutbound()) {
 			if (list1.stream().filter(i -> i.getInboundStockRow() == null).count() > 0)
@@ -228,9 +230,12 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	public void selectSerialNumberListener(DeliveryRequestSerialNumber drsn, DeliveryRequest deliveryRequest) {
 
-		Integer packingNumero = deliveryRequestSerialNumberService.findPackingNumeroByPartNumberAndInboundDeliveryRequestAndSerialNumber(drsn.getTmpPartNumber().getId(), drsn.getTmpInboundDeliveryRequest().getId(), drsn.getSerialNumber());
-		list1.removeIf(i -> i.getInboundStockRow() == null && i.getTmpInboundDeliveryRequest().getId().equals(drsn.getTmpInboundDeliveryRequest().getId()) && i.getTmpPartNumber().getId().equals(drsn.getTmpPartNumber().getId()) && i.getPackingNumero().equals(drsn.getPackingNumero()));
-		list1.addAll(deliveryRequestSerialNumberService.findByPartNumberAndInboundDeliveryRequestAndPackingNumero(drsn.getTmpPartNumber().getId(), drsn.getTmpInboundDeliveryRequest().getId(), packingNumero));
+		Integer packingNumero = deliveryRequestSerialNumberService.findPackingNumeroByPartNumberAndInboundDeliveryRequestAndSerialNumber(drsn.getTmpPartNumber().getId(),
+				drsn.getTmpInboundDeliveryRequest().getId(), drsn.getSerialNumber());
+		list1.removeIf(i -> i.getInboundStockRow() == null && i.getTmpInboundDeliveryRequest().getId().equals(drsn.getTmpInboundDeliveryRequest().getId())
+				&& i.getTmpPartNumber().getId().equals(drsn.getTmpPartNumber().getId()) && i.getPackingNumero().equals(drsn.getPackingNumero()));
+		list1.addAll(deliveryRequestSerialNumberService.findByPartNumberAndInboundDeliveryRequestAndPackingNumero(drsn.getTmpPartNumber().getId(),
+				drsn.getTmpInboundDeliveryRequest().getId(), packingNumero));
 
 		exculdeList = list1.stream().filter(i -> i.getId() != null).map(i -> i.getId()).collect(Collectors.toList());
 

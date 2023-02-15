@@ -18,7 +18,7 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1 or a.outboundDeliveryRequest.id = ?1")
 	Long countByDeliveryRequest(Integer deliveryRequestId);
 
-	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id in (select distinct b.inboundDeliveryRequest.id from StockRow b where deliveryRequest.id = ?1 ) ")
+	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id in (select distinct b.inboundDeliveryRequestDetail.id from StockRow b where deliveryRequest.id = ?1 ) ")
 	public List<DeliveryRequestSerialNumber> findInboundSerialNumberByOutboundDeliveryRequest(Integer outboundDeliveryRequestId);
 
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.inboundStockRow.deliveryRequest.id = ?2")

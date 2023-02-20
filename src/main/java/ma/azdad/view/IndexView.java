@@ -77,7 +77,6 @@ public class IndexView implements Serializable {
 		default:
 			break;
 		}
-		System.out.println("changeMenuByCurrentPath : "+this.selectedMenu);
 	}
 
 	public Boolean canAccessMenu(Integer menu) {

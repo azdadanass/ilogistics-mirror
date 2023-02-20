@@ -130,6 +130,8 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 			return FacesContextMessages.ErrorMessages("Detail List should not be null");
 		if (packing.getDetailList().stream().filter(i -> i.getType() == null || i.getType().isEmpty() || i.getQuantity() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Type / Quantity should not be null");
+		if (packing.getDetailList().stream().filter(i -> i.getHasSerialnumber()).mapToDouble(i -> i.getQuantity()).sum() > 10.0)
+			return FacesContextMessages.ErrorMessages("Number of packing details with SN should not exceed 10");
 
 		return true;
 	}

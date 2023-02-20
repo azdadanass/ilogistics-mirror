@@ -1049,4 +1049,66 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="addOutboundSerialNumberForm">
+		<p:dialog widgetVar="addOutboundSerialNumberDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000" position="top">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addOutboundSerialNumberDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-barcode green" />
+					<h:outputText value=" Add Outbound SN" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-9 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Inbound Serial Number" />
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{deliveryRequestSerialNumberView.inboundList2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowKey="#{item.id}"
+								selection="#{deliveryRequestSerialNumberView.inboundList3}" rowSelectMode="checkbox">
+								<p:ajax event="rowSelectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/>
+								<p:ajax event="rowUnselectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/>
+								<p:ajax event="toggleSelect" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/> 
+								<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" exportable="false" />
+								<p:column headerText="Inbound DN">
+									<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+										<h:outputText value="#{item.inboundStockRow.deliveryRequest.reference}" styleClass="bolder green" />
+										<f:param name="id" value="#{item.inboundStockRow.deliveryRequest.id}" />
+									</h:outputLink>
+								</p:column>
+								<p:column headerText="Part Number">
+									<h:outputText value="#{item.inboundStockRow.partNumber.name}" styleClass="bolder blue" />
+								</p:column>
+								<p:column headerText="Packing">
+									<h:outputText value="#{item.packingDetail.parent.name}" styleClass="purple" />
+								</p:column>
+								<p:column headerText="Packing N°">
+									<h:outputText value="#{item.packingNumero}" />
+								</p:column>
+								<p:column headerText="Packing Detail">
+									<h:outputText value="#{item.packingDetail.type}" />
+								</p:column>
+								<p:column headerText="Serial Number">
+									<h:outputText value="#{item.serialNumber}" styleClass="bolder pink" />
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addOutboundSerialNumberDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton id="save" disabled="#{!deliveryRequestSerialNumberView.validateInboundSelectinList}" action="#{deliveryRequestSerialNumberView.outboundSave()}"  value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('addOutboundSerialNumberDlg').hide()" />
+				
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

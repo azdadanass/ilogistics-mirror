@@ -82,5 +82,9 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	public Long countByDeliveryRequest(Integer deliveryRequestId) {
 		return ObjectUtils.firstNonNull(repos.countByDeliveryRequest(deliveryRequestId), 0l);
 	}
+	
+	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId){
+		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
+	}
 
 }

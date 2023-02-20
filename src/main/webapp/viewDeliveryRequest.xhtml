@@ -1726,7 +1726,49 @@
 						</div>
 					</div>
 					<div id="tab10" class="tab-pane">
+						<f:subview rendered="#{deliveryRequestView.isOutbound}">
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Outbound SN Summary" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Outbound SN Summary" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestSerialNumberView.outboundSerialNumberSummaryList}" var="item" rows="20" styleClass="table table-striped table-hover"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number">
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder blue" />
+											</p:column>
+											<p:column headerText="Inbound DN">
+												<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+											</p:column>
+											<p:column headerText="Packing">
+												<h:outputText value="#{item.packingName}" />
+											</p:column>
+											<p:column headerText="Packing Detail">
+												<h:outputText value="#{item.packingDetailType}" />
+											</p:column>
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}" />
+											</p:column>
+											<p:column headerText="Remaining SN">
+												<h:outputText value="#{item.remainingQuantity}" styleClass="bolder #{item.remainingQuantity==0?'green':'red'}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
 						<div class="space-8" />
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Serial Number Details" />
+						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -1753,10 +1795,10 @@
 											<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
 											<h:outputText value="*" rendered="#{deliveryRequestSerialNumberView.editMode and item.inboundStockRow == null and deliveryRequestView.deliveryRequest.isOutbound}" />
 										</p:column>
-										<p:column headerText="KEY" styleClass="hide" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+										<p:column headerText="KEY" styleClass="hide" rendered="#{deliveryRequestView.deliveryRequest.isInbound}" >
 											<h:outputText value="#{item.key}" />
 										</p:column>
-										<p:column headerText="Reference" styleClass="hide">
+										<p:column headerText="Reference" styleClass="hide" rendered="#{!deliveryRequestSerialNumberView.list2.isEmpty()}">
 											<h:outputText value="#{item.getReference(deliveryRequestView.deliveryRequest.isOutbound)}" />
 										</p:column>
 										<p:column headerText="Packing Detail">
@@ -1789,17 +1831,21 @@
 										<f:facet name="footer">
 											<div class="action-buttons center">
 												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{deliveryRequestSerialNumberView.initEdit(deliveryRequestView.deliveryRequest)}"
-													rendered="#{deliveryRequestSerialNumberView.canEdit(deliveryRequestView.deliveryRequest)}" update="serialNumberList">
+													rendered="#{deliveryRequestSerialNumberView.canEdit() and deliveryRequestView.deliveryRequest.isInbound}" update="serialNumberList">
 													<i class="fa fa-edit orange" />
 													<f:setPropertyActionListener value="true" target="#{deliveryRequestSerialNumberView.editMode}" />
 												</p:commandLink>
 												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{deliveryRequestSerialNumberView.save(deliveryRequestView.deliveryRequest)}"
-													rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest)}" update="serialNumberList,:main_form:messages">
+													rendered="#{deliveryRequestSerialNumberView.canSave() and deliveryRequestView.deliveryRequest.isInbound}" update="serialNumberList,:main_form:messages">
 													<i class="fa fa-save green" />
 												</p:commandLink>
 												<p:commandLink styleClass="aa-tooltip tooltip-success" title="upload excel" onclick="PF('addSerialNumberFromExcelDlg').show();"
-													rendered="#{deliveryRequestSerialNumberView.canSave(deliveryRequestView.deliveryRequest) and deliveryRequestView.deliveryRequest.isInbound}">
+													rendered="#{deliveryRequestSerialNumberView.canSave() and deliveryRequestView.deliveryRequest.isInbound}">
 													<i class="fa fa-file-excel-o green" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{deliveryRequestSerialNumberView.initInboundLists()}" update="addOutboundSerialNumberForm"
+													rendered="#{deliveryRequestSerialNumberView.canEdit() and deliveryRequestView.deliveryRequest.isOutbound}" oncomplete="PF('addOutboundSerialNumberDlg').show()">
+													<i class="fa fa-edit orange" />
 												</p:commandLink>
 											</div>
 										</f:facet>

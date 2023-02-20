@@ -106,7 +106,6 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 
 	// auto save outbound list if no conflict
 	private void autoSaveOutboundExpiryList() {
-		System.out.println("autoSaveOutboundList");
 		list1.stream().filter(i -> i.getExpiryDate() != null && i.getId() == null).forEach(i -> deliveryRequestExpiryDateService.save(i));
 		if (list1.size() == list1.stream().filter(i -> i.getExpiryDate() != null).count())
 			deliveryRequestService.updateMissingExpiry(deliveryRequest.getId(), false);

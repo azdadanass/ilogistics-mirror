@@ -1183,7 +1183,7 @@
 															rendered="#{CompanyType.SUPPLIER==item.inboundDeliveryRequest.ownerType}" />
 													</p:column>
 													<p:column headerText="Status">
-														<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+														<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.name}" />
 													</p:column>
 													<p:column headerText="Remaining Quantity">
 														<h:outputText value="#{item.remainingQuantity}" styleClass="blue bolder">

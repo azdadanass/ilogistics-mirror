@@ -720,7 +720,7 @@
 		</p:dialog>
 	</h:form>
 	<h:form id="addSerialNumberFromExcelForm" rendered="#{deliveryRequestView.isViewPage}">
-		<p:dialog widgetVar="addSerialNumberFromExcelDlg" modal="true" closable="false" resizable="false" showHeader="false">
+		<p:dialog widgetVar="addSerialNumberFromExcelDlg" modal="true" closable="false" resizable="false" showHeader="false" style="z-index:1050 !important">
 			<button type="button" class="bootbox-close-button close" onclick="PF('addSerialNumberFromExcelDlg').hide()">
 				<h:outputText value="x" />
 			</button>
@@ -735,7 +735,9 @@
 					<h:panelGroup id="fileUploadPanel">
 						<p:messages id="messages" closable="true" />
 						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
-							update="messages,main_form:serialNumberList" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
+							update="messages,main_form:serialNumberList" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" rendered="#{deliveryRequestView.deliveryRequest.isInbound}"/>
+						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
+							update="messages,main_form:serialNumberList,:addOutboundSerialNumberForm" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" oncomplete="PF('addOutboundSerialNumberDlg').show()" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}"/>
 					</h:panelGroup>
 				</div>
 			</div>
@@ -1106,8 +1108,8 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addOutboundSerialNumberDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton value="Upload from Excel File" onclick="PF('addOutboundSerialNumberDlg').hide();PF('addSerialNumberFromExcelDlg').show();" styleClass="btn btn-info"  />
 				<p:commandButton id="save" disabled="#{!deliveryRequestSerialNumberView.validateInboundSelectinList}" action="#{deliveryRequestSerialNumberView.outboundSave()}"  value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('addOutboundSerialNumberDlg').hide()" />
-				
 			</div>
 		</p:dialog>
 	</h:form>

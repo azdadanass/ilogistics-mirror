@@ -3,6 +3,7 @@ package ma.azdad.view;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +158,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		if (deliveryRequest.getIsInbound())
 			return deliveryRequest.getDate4() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && !editMode;
 		else if (deliveryRequest.getIsOutbound())
-			return deliveryRequest.getDate4() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) &&  Boolean.TRUE.equals(deliveryRequest.getMissingSerialNumber()) ;
+			return deliveryRequest.getDate4() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId())
+					&& Boolean.TRUE.equals(deliveryRequest.getMissingSerialNumber());
 		return false;
 	}
 
@@ -263,57 +265,81 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public void uploadExcelFile(FileUploadEvent event) throws IOException {
 		HSSFWorkbook wb = new HSSFWorkbook(event.getFile().getInputstream());
 		Sheet sheet = wb.getSheetAt(0);
-		if (sheet.getRow(0).getLastCellNum() != 5) {
-			FacesContextMessages.ErrorMessages("File should have 5 columns : KEY - Reference - Packing Detail - Serial Number - Box Id");
-			return;
-		}
-		Map<String, String> mapSerialNumber = new HashMap<String, String>();
-		Map<String, String> mapBox = new HashMap<String, String>();
-		Iterator<Row> rowIterator = sheet.iterator();
-		// ignore first row
-		rowIterator.next();
-		while (rowIterator.hasNext()) {
-			Row row = rowIterator.next();
 
-			try {
-				String key = getCellValue(row.getCell(0));
-				String serialNumber = getCellValue(row.getCell(3));
-				String box = getCellValue(row.getCell(4));
-
-				if (mapSerialNumber.containsKey(key) || mapBox.containsKey(key)) {
-					FacesContextMessages.ErrorMessages("Duplicate Key");
-					return;
-				}
-
-				if (!StringUtils.isBlank(serialNumber)) {
-					if (mapSerialNumber.containsValue(serialNumber)) {
-						FacesContextMessages.ErrorMessages("Duplicate SN in excel file : " + serialNumber);
-						return;
-					}
-					mapSerialNumber.put(key, serialNumber);
-				}
-
-				if (!StringUtils.isBlank(box))
-					mapBox.put(key, box);
-
-			} catch (Exception e) {
-				FacesContextMessages.ErrorMessages(e.getMessage());
+		if (deliveryRequestView.getDeliveryRequest().getIsInbound()) {
+			if (sheet.getRow(0).getLastCellNum() != 5) {
+				FacesContextMessages.ErrorMessages("File should have 5 columns : KEY - Reference - Packing Detail - Serial Number - Box Id");
 				return;
 			}
-		}
+			Map<String, String> mapSerialNumber = new HashMap<String, String>();
+			Map<String, String> mapBox = new HashMap<String, String>();
+			Iterator<Row> rowIterator = sheet.iterator();
+			// ignore first row
+			rowIterator.next();
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
 
-		for (String key : mapSerialNumber.keySet()) {
-			String value = mapSerialNumber.get(key);
-			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
-			if (optional.isPresent() && StringUtils.isBlank(optional.get().getSerialNumber()))
-				optional.get().setSerialNumber(value);
-		}
+				try {
+					String key = getCellValue(row.getCell(0));
+					String serialNumber = getCellValue(row.getCell(3));
+					String box = getCellValue(row.getCell(4));
 
-		for (String key : mapBox.keySet()) {
-			String value = mapBox.get(key);
-			Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
-			if (optional.isPresent() && StringUtils.isBlank(optional.get().getBox()))
-				optional.get().setBox(value);
+					if (mapSerialNumber.containsKey(key) || mapBox.containsKey(key)) {
+						FacesContextMessages.ErrorMessages("Duplicate Key");
+						return;
+					}
+
+					if (!StringUtils.isBlank(serialNumber)) {
+						if (mapSerialNumber.containsValue(serialNumber)) {
+							FacesContextMessages.ErrorMessages("Duplicate SN in excel file : " + serialNumber);
+							return;
+						}
+						mapSerialNumber.put(key, serialNumber);
+					}
+
+					if (!StringUtils.isBlank(box))
+						mapBox.put(key, box);
+
+				} catch (Exception e) {
+					FacesContextMessages.ErrorMessages(e.getMessage());
+					return;
+				}
+			}
+
+			for (String key : mapSerialNumber.keySet()) {
+				String value = mapSerialNumber.get(key);
+				Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
+				if (optional.isPresent() && StringUtils.isBlank(optional.get().getSerialNumber()))
+					optional.get().setSerialNumber(value);
+			}
+
+			for (String key : mapBox.keySet()) {
+				String value = mapBox.get(key);
+				Optional<DeliveryRequestSerialNumber> optional = list1.stream().filter(i -> i.getKey().contentEquals(key)).findFirst();
+				if (optional.isPresent() && StringUtils.isBlank(optional.get().getBox()))
+					optional.get().setBox(value);
+			}
+		} else if (deliveryRequestView.getDeliveryRequest().getIsOutbound()) {
+			if (sheet.getRow(0).getLastCellNum() != 1) {
+				FacesContextMessages.ErrorMessages("File should have 1 column : Serial Number");
+				return;
+			}
+			Set<String> serialNumberSet = new HashSet<String>();
+			Iterator<Row> rowIterator = sheet.iterator();
+			// ignore first row
+			rowIterator.next();
+			while (rowIterator.hasNext()) {
+				Row row = rowIterator.next();
+				try {
+					String serialNumber = getCellValue(row.getCell(0));
+					if (StringUtils.isNotEmpty(serialNumber))
+						serialNumberSet.add(serialNumber);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			inboundList3 = inboundList1.stream().filter(i -> serialNumberSet.contains(i.getSerialNumber())).collect(Collectors.toList());
+			validateInboundSelectinList();
 		}
 
 	}

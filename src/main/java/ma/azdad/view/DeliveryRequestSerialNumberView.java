@@ -365,6 +365,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	public void refreshOutboundSerialNumberSummaryList() {
 		DeliveryRequest deliveryRequest = deliveryRequestView.getDeliveryRequest();
+		if(!deliveryRequest.getIsOutbound())
+			return;
 		List<StockRow> list = deliveryRequest.getStockRowList().stream()
 				.filter(i -> i.getInboundDeliveryRequest().getIsSnRequired() && i.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).count() > 0)
 				.collect(Collectors.toList());

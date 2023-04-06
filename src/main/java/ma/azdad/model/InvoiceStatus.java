@@ -11,7 +11,8 @@ public enum InvoiceStatus {
 	APPROVED2("Approved L2", Color.BLUE),
 	IN_PROGRESS("In Progress", Color.L_BLUE),
 	PAID("Paid", Color.BLUE),
-	REJECTED("Rejected", Color.RED),;
+	REJECTED("Rejected", Color.RED),
+	PENDING("Pending", Color.ORANGE), ;
 
 	private final String value;
 	private final Color color;

@@ -37,11 +37,14 @@ public class InvoicePayment extends GenericModel<Integer> {
 	public boolean filter(String query) {
 		return contains(query, reference);
 	}
-	
+
+	public InvoicePayment() {
+		super();
+	}
+
 	// c1
-	public InvoicePayment(Integer id, String reference, PaymentMode mode, Date paymentDate, Date cashDate, Double amount, Double paidTtc,
-			Boolean isMapped, Integer countFiles, Double madConversionRate, PaymentStatus status, String customerName, String bankAccountFullName,
-			String currencyName) {
+	public InvoicePayment(Integer id, String reference, PaymentMode mode, Date paymentDate, Date cashDate, Double amount, Double paidTtc, Boolean isMapped, Integer countFiles,
+			Double madConversionRate, PaymentStatus status, String customerName, String bankAccountFullName, String currencyName) {
 		super(id);
 		this.reference = reference;
 		this.mode = mode;
@@ -199,7 +202,7 @@ public class InvoicePayment extends GenericModel<Integer> {
 			bankAccount = new BankAccount();
 		bankAccount.setFullName(bankAccountFullName);
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status_new", nullable = false)
 	public PaymentStatus getStatus() {
@@ -209,7 +212,7 @@ public class InvoicePayment extends GenericModel<Integer> {
 	public void setStatus(PaymentStatus status) {
 		this.status = status;
 	}
-	
+
 	public Double getPaidTtc() {
 		return paidTtc;
 	}
@@ -217,7 +220,7 @@ public class InvoicePayment extends GenericModel<Integer> {
 	public void setPaidTtc(Double paidTtc) {
 		this.paidTtc = paidTtc;
 	}
-	
+
 	public Double getMadConversionRate() {
 		return madConversionRate;
 	}
@@ -225,7 +228,7 @@ public class InvoicePayment extends GenericModel<Integer> {
 	public void setMadConversionRate(Double madConversionRate) {
 		this.madConversionRate = madConversionRate;
 	}
-	
+
 	public Integer getCountFiles() {
 		return countFiles;
 	}

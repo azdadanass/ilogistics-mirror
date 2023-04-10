@@ -20,7 +20,7 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	String c1 = "select new JobRequestDeliveryDetail(a.installedQuantity,a.isSerialNumberRequired,a.deliveryRequestDetail.id," //
 			+ "a.deliveryRequestDetail.partNumber.id,a.deliveryRequestDetail.partNumber.name,a.deliveryRequestDetail.partNumber.image,a.deliveryRequestDetail.partNumber.description,"//
 			+ "a.deliveryRequestDetail.deliveryRequest.id,a.deliveryRequestDetail.deliveryRequest.referenceNumber,a.deliveryRequestDetail.deliveryRequest.type,"//
-			+ "a.jobRequest.id,a.jobRequest.site.name,a.jobRequest.team.name,"//
+			+ "a.jobRequest.id,a.jobRequest.reference,a.jobRequest.site.name,a.jobRequest.team.name,"//
 			+ "a.deliveryRequestDetail.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + ","
 			+ toUserFullName + ") ";
 

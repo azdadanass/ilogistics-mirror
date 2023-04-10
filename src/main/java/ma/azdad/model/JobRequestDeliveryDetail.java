@@ -60,7 +60,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, Integer tmpDeliveryRequestDetailId, //
 			Integer tmpPartNumberId, String tmpPartNumberName, String tmpPartNumberImage, //
 			String tmpPartNumberDescription, Integer tmpDeliveryRequestId, Integer referenceNumber, DeliveryRequestType deliveryRequestType, //
-			Integer tmpJobRequestId, String tmpSiteName, String tmpTeamName, //
+			Integer tmpJobRequestId,String tmpJobRequestReference, String tmpSiteName, String tmpTeamName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName) {
 		super();
 		this.installedQuantity = installedQuantity;
@@ -73,7 +73,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.tmpDeliveryRequestId = tmpDeliveryRequestId;
 		this.tmpDeliveryRequestReference = "DN" + (deliveryRequestType.ordinal() + 1) + String.format("%05d", referenceNumber);
 		this.tmpJobRequestId = tmpJobRequestId;
-		this.tmpJobRequestReference = "JR" + String.format("%05d", tmpJobRequestId);
+		this.tmpJobRequestReference = tmpJobRequestReference;
 		this.tmpSiteName = tmpSiteName;
 		this.tmpTeamName = tmpTeamName;
 

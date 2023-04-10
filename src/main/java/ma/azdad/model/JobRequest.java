@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JobRequest extends GenericModel<Integer> implements Serializable {
 
+	private String reference;
 	private Boolean important = false;
 	private Priority priority;
 	private JobRequestStatus status = JobRequestStatus.EDITED;
@@ -94,7 +95,8 @@ public class JobRequest extends GenericModel<Integer> implements Serializable {
 		super();
 	}
 
-	public JobRequest(Integer id, JobRequestStatus status, Date plannedStartDate, Date plannedCompletionDate, Date date7, String siteName, String siteGoogleAddress, Double siteLatitude, Double siteLongitude, Long tmpTotalRaisedIssues) {
+	public JobRequest(Integer id, JobRequestStatus status, Date plannedStartDate, Date plannedCompletionDate, Date date7, String siteName, String siteGoogleAddress,
+			Double siteLatitude, Double siteLongitude, Long tmpTotalRaisedIssues) {
 		super(id);
 		this.status = status;
 		this.plannedStartDate = plannedStartDate;
@@ -108,7 +110,9 @@ public class JobRequest extends GenericModel<Integer> implements Serializable {
 		this.tmpTotalRaisedIssues = tmpTotalRaisedIssues;
 	}
 
-	public JobRequest(Integer id, String smsRef, Boolean important, Priority priority, JobRequestStatus status, Date date6, Date date7, Date requestDate, Integer tmpProjectId, String tmpProjectName, String tmpSiteName, String tmpRequesterPhoto, String tmpRequesterFullName, Long tmpTotalRaisedIssues, Long tmpTotalRaisedAndBlockingIssues, String teamName) {
+	public JobRequest(Integer id, String smsRef, Boolean important, Priority priority, JobRequestStatus status, Date date6, Date date7, Date requestDate, Integer tmpProjectId,
+			String tmpProjectName, String tmpSiteName, String tmpRequesterPhoto, String tmpRequesterFullName, Long tmpTotalRaisedIssues, Long tmpTotalRaisedAndBlockingIssues,
+			String teamName) {
 		super(id);
 		this.smsRef = smsRef;
 		this.important = important;
@@ -304,10 +308,12 @@ public class JobRequest extends GenericModel<Integer> implements Serializable {
 		return null;
 	}
 
-	@Transient
-	@JsonIgnore
 	public String getReference() {
-		return "JR" + getIdStr();
+		return reference;
+	}
+
+	public void setReference(String reference) {
+		this.reference = reference;
 	}
 
 	@Enumerated(EnumType.STRING)

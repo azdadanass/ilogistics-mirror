@@ -681,6 +681,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 				DeliveryRequest outboundDeliveryRequestReturn = service.findOne(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 				service.clearBoqMapping(outboundDeliveryRequestReturn);
+				jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 			}
 
 			emailService.deliveryRequestNotification(deliveryRequest);
@@ -692,6 +693,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
+			
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:

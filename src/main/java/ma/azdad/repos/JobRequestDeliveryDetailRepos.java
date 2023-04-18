@@ -49,4 +49,11 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	@Modifying
 	@Query("delete from JobRequestDeliveryDetail where deliveryRequestDetail.id in (select distinct b.id from DeliveryRequestDetail b where b.deliveryRequest.id = ?1)")
 	void deleteByDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query("select distinct a.jobRequest.id from JobRequestDeliveryDetail a where a.jobRequest.date6 is null and a.deliveryRequestDetail.deliveryRequest.id = ?1")
+	List<Integer> findNotStartedJobRequestIdListByDeliveryRequest(Integer deliveryRequest);
+	
+	@Modifying
+	@Query("delete from JobRequestDeliveryDetail where deliveryRequestDetail.id in (select distinct b.id from DeliveryRequestDetail b where b.deliveryRequest.id = ?1) and jobRequest.id in (?2)")
+	void deleteByDeliveryRequestAndJobRequestList(Integer deliveryRequestId,List<Integer> jobRequestList);
 }

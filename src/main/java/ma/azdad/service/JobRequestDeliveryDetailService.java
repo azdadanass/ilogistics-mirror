@@ -75,4 +75,11 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		evictCache("deliveryRequestService");
 		evictCache("jobRequestService");
 	}
+	
+	public void deleteByDeliveryRequestAndNotStartedJobRequest(Integer deliveryRequestId){
+		List<Integer> jobRequestIdList = repos.findNotStartedJobRequestIdListByDeliveryRequest(deliveryRequestId);
+		repos.deleteByDeliveryRequestAndJobRequestList(deliveryRequestId, jobRequestIdList);
+		evictCache("deliveryRequestService");
+		evictCache("jobRequestService");
+	}
 }

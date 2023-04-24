@@ -1424,7 +1424,7 @@
 												<h:outputText value="#{item.poNumeroIbuy}" />
 											</p:column>
 											<p:column headerText="Supplier" width="150">
-												<h:outputText value="#{item.supplierName}" />
+												<h:outputText value="#{item.supplierName}" styleClass="#{utilsView.getColor(item.supplierName.length()).name}" />
 											</p:column>
 											<p:column headerText="Actions" width="70">
 												<div class="action-buttons center">
@@ -1715,7 +1715,7 @@
 											<h:outputText value="#{boqMappingView.deliveryRequest.totalBoq}">
 												<f:convertNumber type="number" maxFractionDigits="2" minFractionDigits="2" />
 											</h:outputText>
-											<h:outputText value=" MAD" />
+											<h:outputText value=" #{deliveryRequestView.deliveryRequest.po.currency.name}" />
 										</span>
 									</h4>
 								</div>

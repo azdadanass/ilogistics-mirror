@@ -7,8 +7,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequest;
+import ma.azdad.model.JobRequest;
 import ma.azdad.model.JobRequestDeliveryDetail;
+import ma.azdad.model.JobRequestHistory;
 import ma.azdad.model.SerialNumber;
+import ma.azdad.model.User;
 import ma.azdad.repos.JobRequestDeliveryDetailRepos;
 import ma.azdad.repos.SerialNumberRepos;
 
@@ -20,6 +24,12 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 
 	@Autowired
 	SerialNumberRepos serialNumberRepos;
+
+	@Autowired
+	JobRequestService jobRequestService;
+
+	@Autowired
+	JobRequestHistoryService jobRequestHistoryService;
 
 	@Override
 	public JobRequestDeliveryDetail findOne(Integer id) {
@@ -75,10 +85,17 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		evictCache("deliveryRequestService");
 		evictCache("jobRequestService");
 	}
-	
-	public void deleteByDeliveryRequestAndNotStartedJobRequest(Integer deliveryRequestId){
-		List<Integer> jobRequestIdList = repos.findNotStartedJobRequestIdListByDeliveryRequest(deliveryRequestId);
-		repos.deleteByDeliveryRequestAndJobRequestList(deliveryRequestId, jobRequestIdList);
+
+	public void deleteByDeliveryRequestAndNotStartedJobRequest(DeliveryRequest OutboundDeliveryRequestReturn, DeliveryRequest inboundDeliveryRequest, User connectedUser) {
+		List<Integer> jobRequestIdList = repos.findNotStartedJobRequestIdListByDeliveryRequest(OutboundDeliveryRequestReturn.getId());
+		repos.deleteByDeliveryRequestAndJobRequestList(OutboundDeliveryRequestReturn.getId(), jobRequestIdList);
+
+		jobRequestIdList.stream().distinct().forEach(i -> {
+			JobRequest jobRequest = jobRequestService.findOneLight(i);
+			jobRequestHistoryService.save(new JobRequestHistory("Edited", connectedUser, "DN Mapping Cleared for outbond DN " + OutboundDeliveryRequestReturn.getReference()
+					+ " after return DN " + inboundDeliveryRequest.getReference() + " delivered / partially delivered to the warehouse", jobRequest));
+		});
+
 		evictCache("deliveryRequestService");
 		evictCache("jobRequestService");
 	}

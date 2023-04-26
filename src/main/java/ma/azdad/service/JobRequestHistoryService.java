@@ -24,5 +24,11 @@ public class JobRequestHistoryService extends GenericService<Integer, JobRequest
 		
 		return jobRequestHistory;
 	}
+	
+	@Override
+	public JobRequestHistory save(JobRequestHistory model) {
+		evictCache("jobRequestService");
+		return super.save(model);
+	}
 
 }

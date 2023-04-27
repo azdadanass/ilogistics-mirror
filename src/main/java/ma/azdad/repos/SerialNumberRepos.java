@@ -11,7 +11,7 @@ import ma.azdad.model.SerialNumber;
 @Repository
 public interface SerialNumberRepos extends JpaRepository<SerialNumber, Integer> {
 
-	@Query("from SerialNumber a where a.jobRequest.id = ?1 and a.deliveryRequestDetail.id = ?2")
-	public List<SerialNumber> findByJobRequestAndDeliveryRequestDetail(Integer jobRequestId, Integer deliveryRequestDetailId);
+	@Query("from SerialNumber a where a.jobRequest.id = ?1 and a.deliveryRequest.id = ?2 and a.partNumber.id = ?3")
+	public List<SerialNumber> findByJobRequestAndDeliveryRequestAndPartNumber(Integer jobRequestId, Integer deliveryRequestId,Integer partNumberId);
 
 }

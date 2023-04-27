@@ -17,7 +17,7 @@ import ma.azdad.model.JobRequestStatus;
 @Repository
 public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryRequestDetail, Integer> {
 
-	String usedQuantity3 = " COALESCE((select sum(b.installedQuantity) from JobRequestDeliveryDetail b where b.deliveryRequestDetail.id = a.id and b.jobRequest.status not in (?4)),0) ";
+	String usedQuantity3 = " COALESCE((select sum(b.installedQuantity) from JobRequestDeliveryDetail b where b.deliveryRequest.id = a.deliveryRequest.id and b.partNumber.id = a.partNumber.id and b.jobRequest.status not in (?4)),0) ";
 	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequest.toUser.username)";
 	String deliverToCompanyName = "(select b.name from Company b where b.id = a.deliveryRequest.deliverToCompany.id)";
 	String deliverToCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.deliverToCustomer.id)";

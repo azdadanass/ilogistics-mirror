@@ -502,7 +502,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
 				list1.forEach(sr -> {
-					sr.setInstalledQuantity(jobRequestDeliveryDetailView.getList1().stream().filter(i -> i.getTmpPartNumberId().equals(sr.getPartNumberId()))
+					sr.setInstalledQuantity(jobRequestDeliveryDetailView.getList1().stream().filter(i -> i.getPartNumberId().equals(sr.getPartNumberId()))
 							.mapToDouble(i -> i.getInstalledQuantity()).sum());
 				});
 		}

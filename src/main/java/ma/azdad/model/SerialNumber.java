@@ -16,16 +16,18 @@ public class SerialNumber extends GenericModel<Integer> implements Serializable 
 
 	private String name;
 
-	private DeliveryRequestDetail deliveryRequestDetail;
+	private DeliveryRequest deliveryRequest;
+	private PartNumber partNumber;
 	private JobRequest jobRequest;
 
 	public SerialNumber() {
 		super();
 	}
 
-	public SerialNumber(DeliveryRequestDetail deliveryRequestDetail, JobRequest jobRequest) {
+	public SerialNumber(DeliveryRequest deliveryRequest, PartNumber partNumber, JobRequest jobRequest) {
 		super();
-		this.deliveryRequestDetail = deliveryRequestDetail;
+		this.deliveryRequest = deliveryRequest;
+		this.partNumber = partNumber;
 		this.jobRequest = jobRequest;
 	}
 
@@ -47,15 +49,6 @@ public class SerialNumber extends GenericModel<Integer> implements Serializable 
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	public DeliveryRequestDetail getDeliveryRequestDetail() {
-		return deliveryRequestDetail;
-	}
-
-	public void setDeliveryRequestDetail(DeliveryRequestDetail deliveryRequestDetail) {
-		this.deliveryRequestDetail = deliveryRequestDetail;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	public JobRequest getJobRequest() {
 		return jobRequest;
 	}
@@ -72,5 +65,23 @@ public class SerialNumber extends GenericModel<Integer> implements Serializable 
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public DeliveryRequest getDeliveryRequest() {
+		return deliveryRequest;
+	}
+
+	public void setDeliveryRequest(DeliveryRequest deliveryRequest) {
+		this.deliveryRequest = deliveryRequest;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public PartNumber getPartNumber() {
+		return partNumber;
+	}
+
+	public void setPartNumber(PartNumber partNumber) {
+		this.partNumber = partNumber;
 	}
 }

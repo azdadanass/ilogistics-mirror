@@ -49,7 +49,7 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
 					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
 							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(),
-							jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+							jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
 	}
@@ -71,7 +71,7 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
 					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
 							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(),
-							jrdd.getTmpSiteName(), jrdd.getTmpTeamName()));
+							jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
 	}

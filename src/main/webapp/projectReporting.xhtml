@@ -443,19 +443,19 @@
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-													<f:param name="fileName" value="#{item.tmpPartNumberImage}" />
+													<f:param name="fileName" value="#{item.partNumberImage}" />
 												</p:graphicImage>
 											</p:column>
 											<p:column headerText="Part Number" exportable="false">
-												<h:outputText value="#{item.tmpPartNumberName}" styleClass="bolder pink" />
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
 											</p:column>
 											<p:column headerText="Description">
-												<h:outputText value="#{item.tmpPartNumberDescription}" styleClass="blue aa-cut-text" />
+												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="DN" width="70">
 												<h:outputLink value="viewDeliveryRequest.xhtml">
-													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="red" />
-													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
+													<h:outputText value="#{item.deliveryRequestReference}" styleClass="red" />
+													<f:param name="id" value="#{item.deliveryRequestId}" />
 												</h:outputLink>
 											</p:column>
 											<p:column headerText="Quantity" width="70">
@@ -465,8 +465,8 @@
 											</p:column>
 											<p:column headerText="JR" width="70">
 												<h:outputLink value="viewJobRequest.xhtml" target="blank">
-													<h:outputText value="#{item.tmpJobRequestReference}" styleClass="purple" />
-													<f:param name="id" value="#{item.tmpJobRequestId}" />
+													<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
+													<f:param name="id" value="#{item.jobRequestId}" />
 												</h:outputLink>
 											</p:column>
 											<p:column headerText="Site">

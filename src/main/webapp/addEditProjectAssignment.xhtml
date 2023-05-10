@@ -72,7 +72,7 @@
 											<h:outputText value="Type" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<p:inputText value="#{projectAssignmentView.model.type}" rendered="#{projectAssignmentView.isEditPage}" />
+											<p:inputText value="#{projectAssignmentView.model.type}" readonly="true" rendered="#{projectAssignmentView.isEditPage}" />
 											<h:selectOneMenu value="#{projectAssignmentView.model.type}" required="true" requiredMessage="Type should not be null"
 												rendered="#{projectAssignmentView.parentId==null and projectAssignmentView.isAddPage}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />

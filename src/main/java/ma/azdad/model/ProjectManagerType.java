@@ -6,7 +6,8 @@ public enum ProjectManagerType {
 	PRESALES_MANAGER("Pre-Sales Manager", Color.GREEN),
 	TECHNICAL_MANAGER("Technical Manager", Color.BLUE),
 	HARDWARE_MANAGER("Hardware Manager", Color.ORANGE),
-	QUALITY_MANAGER("Quality Manager", Color.RED);
+	QUALITY_MANAGER("Quality Manager", Color.RED),
+	SYSTEM_ENGINEER("System Engineer", Color.PURPLE);
 
 	private final String value;
 	private final Color color;

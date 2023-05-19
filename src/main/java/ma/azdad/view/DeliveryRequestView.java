@@ -1309,7 +1309,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return deliveryRequest.getIsInboundNew() //
 				&& DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()) //
 						& !deliveryRequest.getBoqMappingList().isEmpty() //
-				&& totalAppLink > 0 && Math.abs(totalAppLink - deliveryRequest.getTotalCost()) / totalAppLink >= 0.01;
+				&& totalAppLink > 0 && Math.abs(totalAppLink - deliveryRequest.getTotalCost()) / totalAppLink >= 0.001;
 	}
 
 	public void calculateUnitCost() {

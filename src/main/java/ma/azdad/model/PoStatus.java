@@ -16,7 +16,8 @@ public enum PoStatus implements Serializable {
 	RECEIVED("Received", Color.PURPLE),
 	OPEN("Open", Color.ORANGE),
 	CLOSED("Closed", Color.GREY),
-	REJECTED("Rejected", Color.RED);
+	REJECTED("Rejected", Color.RED),
+	CANCELED("Canceled",  Color.ORANGE);
 
 	private final String value;
 	private final Color color;

@@ -15,6 +15,7 @@ import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.Po;
+import ma.azdad.model.PoStatus;
 import ma.azdad.model.User;
 
 @Repository
@@ -399,4 +400,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select distinct deliveryRequest.id from BoqMapping where deliveryRequest.type = ?1")
 	List<Integer> findIdByTypeAndHavingBoqMapping(DeliveryRequestType type);
 
+	
+	@Query("select status from DeliveryRequest where id = ?1")
+	DeliveryRequestStatus findStatusById(Integer id);
 }

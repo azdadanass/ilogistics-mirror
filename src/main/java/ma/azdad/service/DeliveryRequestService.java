@@ -59,6 +59,7 @@ import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
+import ma.azdad.model.PoStatus;
 import ma.azdad.model.Project;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.User;
@@ -1296,6 +1297,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 		}
 
+	}
+	
+	public DeliveryRequestStatus findStatusById(Integer id) {
+		return repos.findStatusById(id);
 	}
 
 }

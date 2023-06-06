@@ -659,10 +659,16 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			step++;
 			break;
 		case 8:
-			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)) {
+			if (checkDatabaseStatus(deliveryRequest.getId(),DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
 			}
+			
+//			if (checkDatabaseStatus(deliveryRequest.getId(),DeliveryRequestStatus.PARTIALLY_DELIVRED)) {
+//				!!! check quantities
+//				FacesContextMessages.ErrorMessages("Error quantities !");
+//				return null;
+//			}
 
 			deliveryRequest.setStatus(deliveryRequest.getIsPartial() ? DeliveryRequestStatus.PARTIALLY_DELIVRED : DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());

@@ -157,7 +157,7 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}"/>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="'To Resource' should not be null" converter="#{genericSecuredConverter}" var="r" rendered="#{deliveryRequestView.deliveryRequest.toUser==null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
@@ -184,9 +184,10 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}"/>
+													<p:inputText value="#{deliveryRequestView.deliveryRequest.toUser.fullName}" readonly="true" rendered="#{deliveryRequestView.deliveryRequest.toUser!=null}" />
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
-														converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
+														converter="#{genericSecuredConverter}" var="r"
+														rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{userView.findActiveByCustomer(deliveryRequestView.deliveryRequest.deliverToCustomerId)}" var="item" itemLabel="#{item.fullName}"
 															itemValue="#{item}" />
@@ -199,7 +200,8 @@
 														<p:ajax listener="#{deliveryRequestView.changeToUserListener()}" />
 													</p:selectOneMenu>
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
-														converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
+														converter="#{genericSecuredConverter}" var="r"
+														rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType and deliveryRequestView.deliveryRequest.toUser==null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{userView.findActiveBySupplier(deliveryRequestView.deliveryRequest.deliverToSupplierId)}" var="item" itemLabel="#{item.fullName}"
 															itemValue="#{item}" />
@@ -303,16 +305,21 @@
 						</h:panelGroup>
 						<hr />
 						<div class="wizard-actions">
-							<p:commandLink id="previousButton" action="#{deliveryRequestView.preparationPreviousStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
-								styleClass="btn btn-prev #{deliveryRequestView.step==1?'hide':''}">
-								<i class="ace-icon fa fa-arrow-left"></i>
-								<h:outputText value="Prev" />
-							</p:commandLink>
-							<p:commandLink id="nextButton" action="#{deliveryRequestView.preparationNextStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
-								styleClass="btn btn-success btn-next">
-								<h:outputText value="#{deliveryRequestView.step==4?'Finish':'Next'}" />
-								<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
-							</p:commandLink>
+							
+							<p:commandButton id="previousButton" value="Prev" action="#{deliveryRequestView.preparationPreviousStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"  
+							styleClass="btn btn-prev #{deliveryRequestView.step==1?'hide':''}"/>
+							
+							
+							<p:commandButton id="nextButton" widgetVar="nextButton" value="#{deliveryRequestView.step==4?'Finish':'Next'}" action="#{deliveryRequestView.preparationNextStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
+								styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
+							<p:ajaxStatus>
+								<f:facet name="start">
+									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />
+								</f:facet>
+								<f:facet name="complete">
+									<h:outputText value="" />
+								</f:facet>
+							</p:ajaxStatus>
 						</div>
 						<div class="space-16" />
 					</div>

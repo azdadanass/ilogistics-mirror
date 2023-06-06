@@ -432,8 +432,8 @@
 						</h:panelGroup>
 						<hr />
 						<div class="wizard-actions">
-							<p:commandButton widgetVar="nextButton" value="Next" action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-success btn-next"
-								icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" oncomplete="PF('nextButton').enable()"/>
+							<p:commandButton id="nextButton" widgetVar="nextButton" value="Next" action="#{deliveryRequestView.storageNextStep()}" update="messages,nav-wizard,steps,nextButton" styleClass="btn btn-success btn-next"
+								icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
 							<p:ajaxStatus>
 								<f:facet name="start">
 									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />

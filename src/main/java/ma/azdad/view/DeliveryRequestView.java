@@ -699,6 +699,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		default:
 			break;
 		}
+		
+		execJavascript("PF('nextButton').enable()");
+		
 		return null;
 	}
 

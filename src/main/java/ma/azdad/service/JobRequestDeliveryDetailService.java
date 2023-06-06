@@ -45,11 +45,10 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
-				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(),jrdd.getPartNumberId());
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
-							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(),
-							jrdd.getSiteName(), jrdd.getTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
 	}
@@ -67,11 +66,10 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
-				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(),jrdd.getPartNumberId());
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
-							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(),
-							jrdd.getSiteName(), jrdd.getTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
 	}
@@ -88,12 +86,15 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 
 	public void deleteByDeliveryRequestAndNotStartedJobRequest(DeliveryRequest OutboundDeliveryRequestReturn, DeliveryRequest inboundDeliveryRequest, User connectedUser) {
 		List<Integer> jobRequestIdList = repos.findNotStartedJobRequestIdListByDeliveryRequest(OutboundDeliveryRequestReturn.getId());
+		if (jobRequestIdList.isEmpty())
+			return;
+
 		repos.deleteByDeliveryRequestAndJobRequestList(OutboundDeliveryRequestReturn.getId(), jobRequestIdList);
 
 		jobRequestIdList.stream().distinct().forEach(i -> {
 			JobRequest jobRequest = jobRequestService.findOneLight(i);
-			jobRequestHistoryService.save(new JobRequestHistory("Edited", connectedUser, "DN Mapping Cleared for outbond DN " + OutboundDeliveryRequestReturn.getReference()
-					+ " after return DN " + inboundDeliveryRequest.getReference() + " delivered / partially delivered to the warehouse", jobRequest));
+			jobRequestHistoryService.save(new JobRequestHistory("Edited", connectedUser, "DN Mapping Cleared for outbond DN " + OutboundDeliveryRequestReturn.getReference() + " after return DN "
+					+ inboundDeliveryRequest.getReference() + " delivered / partially delivered to the warehouse", jobRequest));
 		});
 
 		evictCache("deliveryRequestService");

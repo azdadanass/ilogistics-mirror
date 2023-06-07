@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.ecs.xhtml.map;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -964,5 +965,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
 		return findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId).stream()
 				.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)));
+	}
+	
+	public Map<Integer	, Double> findQuantityPartNumberMapByDeliveryRequest(Integer deliveryRequest) {
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		List<Object[]> data =  repos.findQuantityByDeliveryRequestGroupByPartNumber(deliveryRequest);
+		for (Object[] row : data) 
+			result.put((Integer)row[0],(Double) row[1]);
+		return result;
 	}
 }

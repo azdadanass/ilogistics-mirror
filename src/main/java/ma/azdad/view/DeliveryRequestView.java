@@ -22,10 +22,13 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ecs.xhtml.map;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.sun.faces.el.FacesCompositeELResolver;
 
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.DeliverToType;
@@ -548,11 +551,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 4:
 			System.out.println("step4");
-			if (checkDatabaseStatus(deliveryRequest.getId(),DeliveryRequestStatus.DELIVRED)) {
+			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
 			}
-			
+
 			deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());
 			deliveryRequest.setUser4(sessionView.getUser());
@@ -659,16 +662,29 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			step++;
 			break;
 		case 8:
-			if (checkDatabaseStatus(deliveryRequest.getId(),DeliveryRequestStatus.DELIVRED)) {
+			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
 			}
-			
-//			if (checkDatabaseStatus(deliveryRequest.getId(),DeliveryRequestStatus.PARTIALLY_DELIVRED)) {
-//				!!! check quantities
-//				FacesContextMessages.ErrorMessages("Error quantities !");
-//				return null;
-//			}
+
+			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.PARTIALLY_DELIVRED)) {
+				// Part Number / Qty maps
+				Map<Integer, Double> deliveryRequestDetailMap = deliveryRequest.getDetailList().stream()
+						.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumberId, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+				Map<Integer, Double> stockRowExistingMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(deliveryRequest.getId());
+				Map<Integer, Double> stockRowNewMap = deliveryRequest.getStockRowList().stream().filter(i -> i.getId() == null)
+						.collect(Collectors.groupingBy(StockRow::getPartNumberId, Collectors.summingDouble(StockRow::getQuantity)));
+
+				for (Integer partNumberId : deliveryRequestDetailMap.keySet()) {
+					Double detailQuantity = deliveryRequestDetailMap.get(partNumberId);
+					Double existingQuantity = stockRowExistingMap.getOrDefault(partNumberId, 0.0);
+					Double newQuantity = stockRowNewMap.getOrDefault(partNumberId, 0.0);
+					if (detailQuantity < existingQuantity + newQuantity) {
+						FacesContextMessages.ErrorMessages("Remaining quantity error, probably concurrent access, please to reload this page");
+						return null;
+					}
+				}
+			}
 
 			deliveryRequest.setStatus(deliveryRequest.getIsPartial() ? DeliveryRequestStatus.PARTIALLY_DELIVRED : DeliveryRequestStatus.DELIVRED);
 			deliveryRequest.setDate4(new Date());

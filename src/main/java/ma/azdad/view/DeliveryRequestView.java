@@ -570,7 +570,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 //				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
 
 			if (deliveryRequest.getPo() != null) {
-				// poService.updateBoqStatus(deliveryRequest.getPo().getId());
+				// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
@@ -695,7 +695,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
 			if (deliveryRequest.getPo() != null) {
-				// poService.updateBoqStatus(deliveryRequest.getPo().getId());
+				// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
@@ -1159,7 +1159,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
-			poService.updateBoqStatus(poId);
+			poService.updateIlogisticsStatus(poId);
 
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
@@ -1236,7 +1236,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		appLinkService.deleteByDeliveryRequest(deliveryRequest.getId());
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		if (poId != null)
-			poService.updateBoqStatus(poId);
+			poService.updateIlogisticsStatus(poId);
 
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 
@@ -1962,7 +1962,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			service.delete(deliveryRequest);
 			boqService.updateTotalUsedQuantity(boqListToUpdate);
 			if (poId != null)
-				poService.updateBoqStatus(poId);
+				poService.updateIlogisticsStatus(poId);
 		} catch (Exception e) {
 			FacesContextMessages.ErrorMessages(e.getMessage());
 			return null;

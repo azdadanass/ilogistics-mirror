@@ -2,15 +2,15 @@ package ma.azdad.model;
 
 import ma.azdad.utils.Color;
 
-public enum PoBoqStatus {
+public enum PoIlogisticsStatus {
 	PENDING("Pending", Color.ORANGE),
 	IN_PROGRESS("In Progress", Color.BLUE),
-	MAPPED("Mapped", Color.GREEN),;
+	COMPLETED("Completed", Color.GREEN),;
 
 	private final String value;
 	private final Color color;
 
-	private PoBoqStatus(String value, Color color) {
+	private PoIlogisticsStatus(String value, Color color) {
 		this.value = value;
 		this.color = color;
 	}

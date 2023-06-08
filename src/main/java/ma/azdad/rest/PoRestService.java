@@ -16,9 +16,9 @@ public class PoRestService {
 	@Autowired
 	PoService poService;
 
-	@RequestMapping("/rest/poService/updateBoqStatus/{poId}")
-	public void updateBoqStatus(@PathVariable Integer poId) {
-		poService.updateBoqStatus(poId);
+	@RequestMapping("/rest/poService/updateIlogisticsStatus/{poId}")
+	public void updateIlogisticsStatus(@PathVariable Integer poId) {
+		poService.updateIlogisticsStatus(poId);
 	}
 
 }

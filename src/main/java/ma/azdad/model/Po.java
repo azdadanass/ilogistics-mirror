@@ -41,7 +41,7 @@ public class Po extends GenericModel<Integer> {
 	private Currency currency;
 	private Supplier supplier;
 	private Project project;
-	private PoBoqStatus boqStatus;
+	private PoIlogisticsStatus ilogisticsStatus;
 	private PoDeliveryStatus deliveryStatus;
 
 	private Company company;
@@ -59,7 +59,7 @@ public class Po extends GenericModel<Integer> {
 	}
 
 	// c2
-	public Po(Integer id, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoBoqStatus boqStatus, PoDeliveryStatus deliveryStatus, //
+	public Po(Integer id, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoIlogisticsStatus ilogisticsStatus, PoDeliveryStatus deliveryStatus, //
 			String currencyName, String projectName, String supplierOrCustomerName) {
 		super();
 		this.id = id;
@@ -68,7 +68,7 @@ public class Po extends GenericModel<Integer> {
 		this.date = date;
 		this.amountHt = amountHt;
 		this.status = status;
-		this.boqStatus = boqStatus;
+		this.ilogisticsStatus = ilogisticsStatus;
 		this.deliveryStatus = deliveryStatus != null ? deliveryStatus : PoDeliveryStatus.PENDING;
 		this.setCurrencyName(currencyName);
 		this.setProjectName(projectName);
@@ -259,12 +259,12 @@ public class Po extends GenericModel<Integer> {
 	}
 
 	@Enumerated(EnumType.STRING)
-	public PoBoqStatus getBoqStatus() {
-		return boqStatus;
+	public PoIlogisticsStatus getIlogisticsStatus() {
+		return ilogisticsStatus;
 	}
 
-	public void setBoqStatus(PoBoqStatus boqStatus) {
-		this.boqStatus = boqStatus;
+	public void setIlogisticsStatus(PoIlogisticsStatus ilogisticsStatus) {
+		this.ilogisticsStatus = ilogisticsStatus;
 	}
 
 	public Boolean getIbuy() {

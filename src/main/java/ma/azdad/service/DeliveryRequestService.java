@@ -1293,7 +1293,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		boqService.updateTotalUsedQuantity(boqListToUpdate);
 		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
 		if (deliveryRequest.getPo() != null) {
-			poService.updateBoqStatus(deliveryRequest.getPo().getId());
+			poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 			poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
 		}
 

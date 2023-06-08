@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.CostType;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Po;
-import ma.azdad.model.PoBoqStatus;
+import ma.azdad.model.PoIlogisticsStatus;
 import ma.azdad.model.PoDeliveryStatus;
 import ma.azdad.model.PoFile;
 import ma.azdad.model.PoStatus;
@@ -52,46 +52,46 @@ public class PoService {
 	}
 
 	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {
-		return repos.findByTypeAndProjectAndNotBoqStatus(type, projectId, PoBoqStatus.MAPPED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
+		return repos.findByTypeAndProjectAndNotIlogisticsStatus(type, projectId, PoIlogisticsStatus.COMPLETED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
-	public void updateBoqStatus(Integer poId) {
-		System.out.println("updateBoqStatus poId: " + poId);
-		PoBoqStatus boqStatus = null;
+	public void updateIlogisticsStatus(Integer poId) {
+		System.out.println("updateIlogisticsStatus poId: " + poId);
+		PoIlogisticsStatus ilogisticsStatus = null;
 		if (boqService.countByPo(poId) == 0)
-			boqStatus = null;
+			ilogisticsStatus = null;
 		else if (boqMappingService.countByPo(poId) == 0 && boqService.countByPo(poId) > 0)
-			boqStatus = PoBoqStatus.PENDING;
+			ilogisticsStatus = PoIlogisticsStatus.PENDING;
 		else {
 			List<Podetails> podetailsList = podetailsRepos.findByPoAndHavingBoq(poId);
 			Boolean ibuy = repos.getIbuy(poId);
 			if (!ibuy)
 				if (podetailsList.stream().filter(i -> RevenueType.GOODS_SUPPLY.equals(i.getRevenueType())
 						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
-					boqStatus = PoBoqStatus.IN_PROGRESS;
+					ilogisticsStatus = PoIlogisticsStatus.IN_PROGRESS;
 				else
-					boqStatus = PoBoqStatus.MAPPED;
+					ilogisticsStatus = PoIlogisticsStatus.COMPLETED;
 			else {
 				if (podetailsList.stream().filter(i -> CostType.PROJECT_GOODS_PURCHASE.equals(i.getCostType())
 						&& (!i.getIsBoqMapped() || boqService.countByPodetailsAndTotalQuantityGreatherThanTotalUsedQuantity(i.getIdpoDetails()) > 0)).count() > 0)
-					boqStatus = PoBoqStatus.IN_PROGRESS;
+					ilogisticsStatus = PoIlogisticsStatus.IN_PROGRESS;
 				else
-					boqStatus = PoBoqStatus.MAPPED;
+					ilogisticsStatus = PoIlogisticsStatus.COMPLETED;
 			}
 
 		}
-		repos.updateBoqStatus(poId, boqStatus);
+		repos.updateIlogisticsStatus(poId, ilogisticsStatus);
 		cacheService.evictCache("poService");
 		cacheService.evictCacheOthers("poService");
 	}
 
-	public void updateAllBoqStatusAndDeliveryStatusScript() {
+	public void updateAllIlogisticsStatusAndDeliveryStatusScript() {
 		Set<Integer> sourceList = new HashSet<>();
 		sourceList.addAll(repos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
 		sourceList.addAll(repos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 
 		for (Integer poId : sourceList) {
-			updateBoqStatus(poId);
+			updateIlogisticsStatus(poId);
 			updateDeliveryStatus(poId);
 		}
 
@@ -99,15 +99,15 @@ public class PoService {
 
 	public void updateDeliveryStatus(Integer poId) {
 		PoDeliveryStatus deliveryStatus = null;
-		PoBoqStatus boqStatus = repos.getBoqStatus(poId);
-		if (PoBoqStatus.MAPPED.equals(boqStatus)) {
+		PoIlogisticsStatus ilogisticsStatus = repos.getIlogisticsStatus(poId);
+		if (PoIlogisticsStatus.COMPLETED.equals(ilogisticsStatus)) {
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, // means all dn are DELIVRED
 					Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) == 0)
 				deliveryStatus = PoDeliveryStatus.DELIVRED;
 			else if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
 				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
-		} else if (PoBoqStatus.IN_PROGRESS.equals(boqStatus))
+		} else if (PoIlogisticsStatus.IN_PROGRESS.equals(ilogisticsStatus))
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
 				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;

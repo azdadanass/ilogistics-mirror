@@ -42,7 +42,7 @@ public class Po extends GenericModel<Integer> {
 	private Supplier supplier;
 	private Project project;
 	private PoIlogisticsStatus ilogisticsStatus;
-	private PoDeliveryStatus deliveryStatus;
+	private GoodsDeliveryStatus goodsDeliveryStatus;
 
 	private Company company;
 
@@ -59,7 +59,7 @@ public class Po extends GenericModel<Integer> {
 	}
 
 	// c2
-	public Po(Integer id, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoIlogisticsStatus ilogisticsStatus, PoDeliveryStatus deliveryStatus, //
+	public Po(Integer id, Boolean ibuy, String numero, Date date, Double amountHt, PoStatus status, PoIlogisticsStatus ilogisticsStatus, GoodsDeliveryStatus goodsDeliveryStatus, //
 			String currencyName, String projectName, String supplierOrCustomerName) {
 		super();
 		this.id = id;
@@ -69,7 +69,7 @@ public class Po extends GenericModel<Integer> {
 		this.amountHt = amountHt;
 		this.status = status;
 		this.ilogisticsStatus = ilogisticsStatus;
-		this.deliveryStatus = deliveryStatus != null ? deliveryStatus : PoDeliveryStatus.PENDING;
+		this.goodsDeliveryStatus = goodsDeliveryStatus != null ? goodsDeliveryStatus : GoodsDeliveryStatus.PENDING;
 		this.setCurrencyName(currencyName);
 		this.setProjectName(projectName);
 		if (ibuy)
@@ -276,12 +276,12 @@ public class Po extends GenericModel<Integer> {
 	}
 
 	@Enumerated(EnumType.STRING)
-	public PoDeliveryStatus getDeliveryStatus() {
-		return deliveryStatus;
+	public GoodsDeliveryStatus getGoodsDeliveryStatus() {
+		return goodsDeliveryStatus;
 	}
 
-	public void setDeliveryStatus(PoDeliveryStatus deliveryStatus) {
-		this.deliveryStatus = deliveryStatus;
+	public void setGoodsDeliveryStatus(GoodsDeliveryStatus goodsDeliveryStatus) {
+		this.goodsDeliveryStatus = goodsDeliveryStatus;
 	}
 
 	@Temporal(TemporalType.DATE)

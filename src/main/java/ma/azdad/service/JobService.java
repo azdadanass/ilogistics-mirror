@@ -74,8 +74,8 @@ public class JobService {
 	}
 
 	@Scheduled(cron = "0 45 04 * * *")
-	public void updateAllIlogisticsStatusAndDeliveryStatusScript() {
-		poService.updateAllIlogisticsStatusAndDeliveryStatusScript();
+	public void updateAllIlogisticsStatusAndGoodsDeliveryStatusScript() {
+		poService.updateAllIlogisticsStatusAndGoodsDeliveryStatusScript();
 	}
 
 	@Scheduled(cron = "00 40 00 * * *")

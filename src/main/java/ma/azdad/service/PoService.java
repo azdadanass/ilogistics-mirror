@@ -14,7 +14,7 @@ import ma.azdad.model.CostType;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoIlogisticsStatus;
-import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.GoodsDeliveryStatus;
 import ma.azdad.model.PoFile;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.Podetails;
@@ -85,51 +85,51 @@ public class PoService {
 		cacheService.evictCacheOthers("poService");
 	}
 
-	public void updateAllIlogisticsStatusAndDeliveryStatusScript() {
+	public void updateAllIlogisticsStatusAndGoodsDeliveryStatusScript() {
 		Set<Integer> sourceList = new HashSet<>();
 		sourceList.addAll(repos.findPoIdListContainingGoodsSupply(RevenueType.GOODS_SUPPLY));
 		sourceList.addAll(repos.findPoIdListContainingProjectGoodsPurchase(CostType.PROJECT_GOODS_PURCHASE));
 
 		for (Integer poId : sourceList) {
 			updateIlogisticsStatus(poId);
-			updateDeliveryStatus(poId);
+			updateGoodsDeliveryStatus(poId);
 		}
 
 	}
 
-	public void updateDeliveryStatus(Integer poId) {
-		PoDeliveryStatus deliveryStatus = null;
+	public void updateGoodsDeliveryStatus(Integer poId) {
+		GoodsDeliveryStatus goodsDeliveryStatus = null;
 		PoIlogisticsStatus ilogisticsStatus = repos.getIlogisticsStatus(poId);
 		if (PoIlogisticsStatus.COMPLETED.equals(ilogisticsStatus)) {
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndNotInStatus(poId, // means all dn are DELIVRED
 					Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) == 0)
-				deliveryStatus = PoDeliveryStatus.DELIVRED;
+				goodsDeliveryStatus = GoodsDeliveryStatus.DELIVRED;
 			else if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
-				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
+				goodsDeliveryStatus = GoodsDeliveryStatus.PARTIALLY_DELIVRED;
 		} else if (PoIlogisticsStatus.IN_PROGRESS.equals(ilogisticsStatus))
 			if (boqMappingService.countDeliveryRequestsByRelatedToPoAndInStatus(poId, // at least one dn DELIVRED or PARTIALLY_DELIVRED
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED)) > 0)
-				deliveryStatus = PoDeliveryStatus.PARTIALLY_DELIVRED;
-		repos.updateDeliveryStatus(poId, deliveryStatus);
+				goodsDeliveryStatus = GoodsDeliveryStatus.PARTIALLY_DELIVRED;
+		repos.updateGoodsDeliveryStatus(poId, goodsDeliveryStatus);
 		cacheService.evictCache("poService");
 		cacheService.evictCacheOthers("poService");
 	}
 
-	public List<Po> find(Boolean ibuy, Integer companyId, String username, List<Integer> assignedProjectList, PoDeliveryStatus deliveryStatus) {
+	public List<Po> find(Boolean ibuy, Integer companyId, String username, List<Integer> assignedProjectList, GoodsDeliveryStatus goodsDeliveryStatus) {
 		if (ibuy)
-			if (deliveryStatus == null)
+			if (goodsDeliveryStatus == null)
 				return repos.findSupplierPoList(companyId, username, assignedProjectList);
-			else if (PoDeliveryStatus.PENDING.equals(deliveryStatus))
-				return repos.findSupplierPoListByDeliveryStatusNull(companyId, username, assignedProjectList);
+			else if (GoodsDeliveryStatus.PENDING.equals(goodsDeliveryStatus))
+				return repos.findSupplierPoListByGoodsDeliveryStatusNull(companyId, username, assignedProjectList);
 			else
-				return repos.findSupplierPoListByDeliveryStatus(companyId, username, assignedProjectList, deliveryStatus);
-		else if (deliveryStatus == null)
+				return repos.findSupplierPoListByGoodsDeliveryStatus(companyId, username, assignedProjectList, goodsDeliveryStatus);
+		else if (goodsDeliveryStatus == null)
 			return repos.findCustomerPoList(companyId, username, assignedProjectList);
-		else if (PoDeliveryStatus.PENDING.equals(deliveryStatus))
-			return repos.findCustomerPoListByDeliveryStatusNull(companyId, username, assignedProjectList);
+		else if (GoodsDeliveryStatus.PENDING.equals(goodsDeliveryStatus))
+			return repos.findCustomerPoListByGoodsDeliveryStatusNull(companyId, username, assignedProjectList);
 		else
-			return repos.findCustomerPoListByDeliveryStatus(companyId, username, assignedProjectList, deliveryStatus);
+			return repos.findCustomerPoListByGoodsDeliveryStatus(companyId, username, assignedProjectList, goodsDeliveryStatus);
 	}
 	
 	public List<PoFile> findFileList(Integer id){

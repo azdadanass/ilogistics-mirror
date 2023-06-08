@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import ma.azdad.model.CostType;
 import ma.azdad.model.Po;
 import ma.azdad.model.PoIlogisticsStatus;
-import ma.azdad.model.PoDeliveryStatus;
+import ma.azdad.model.GoodsDeliveryStatus;
 import ma.azdad.model.PoFile;
 import ma.azdad.model.PoStatus;
 import ma.azdad.model.RevenueType;
@@ -37,8 +37,8 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	public void updateIlogisticsStatus(Integer poId, PoIlogisticsStatus ilogisticsStatus);
 
 	@Modifying
-	@Query("update Po set deliveryStatus = ?2 where id = ?1 ")
-	public void updateDeliveryStatus(Integer poId, PoDeliveryStatus deliveryStatus);
+	@Query("update Po set goodsDeliveryStatus = ?2 where id = ?1 ")
+	public void updateGoodsDeliveryStatus(Integer poId, GoodsDeliveryStatus goodsDeliveryStatus);
 
 	@Query("select distinct a.po.id  from Podetails a where a.revenueType  =?1 ")
 	public Set<Integer> findPoIdListContainingGoodsSupply(RevenueType revenueTypeGoodsSupply);
@@ -51,22 +51,22 @@ public interface PoRepos extends JpaRepository<Po, Integer> {
 	List<PoFile> findFileList(Integer id);
 	
 	// c1
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
 	List<Po> findSupplierPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 	
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.deliveryStatus = ?4 order by date desc")
-	List<Po> findSupplierPoListByDeliveryStatus(Integer companyId,String username,List<Integer> assignedProjectList,PoDeliveryStatus poDeliveryStatus);
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.goodsDeliveryStatus = ?4 order by date desc")
+	List<Po> findSupplierPoListByGoodsDeliveryStatus(Integer companyId,String username,List<Integer> assignedProjectList,GoodsDeliveryStatus goodsDeliveryStatus);
 	
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.deliveryStatus is null order by date desc")
-	List<Po> findSupplierPoListByDeliveryStatusNull(Integer companyId,String username,List<Integer> assignedProjectList);
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.supplier.name) from Po a where a.ibuy is true and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.goodsDeliveryStatus is null order by date desc")
+	List<Po> findSupplierPoListByGoodsDeliveryStatusNull(Integer companyId,String username,List<Integer> assignedProjectList);
 	
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) order by date desc")
 	List<Po> findCustomerPoList(Integer companyId,String username,List<Integer> assignedProjectList);
 	
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.deliveryStatus = ?4 order by date desc")
-	List<Po> findCustomerPoListByDeliveryStatus(Integer companyId,String username,List<Integer> assignedProjectList,PoDeliveryStatus poDeliveryStatus);
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.goodsDeliveryStatus = ?4 order by date desc")
+	List<Po> findCustomerPoListByGoodsDeliveryStatus(Integer companyId,String username,List<Integer> assignedProjectList,GoodsDeliveryStatus goodsDeliveryStatus);
 	
-	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.deliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.deliveryStatus is null order by date desc")
-	List<Po> findCustomerPoListByDeliveryStatusNull(Integer companyId,String username,List<Integer> assignedProjectList);
+	@Query("select distinct new Po(a.id,a.ibuy,a.numero,a.date,a.amountHt,a.status,a.ilogisticsStatus,a.goodsDeliveryStatus,a.currency.name,a.project.name,a.project.customer.name) from Po a where a.ibuy is false and a.ilogisticsStatus is not null and a.company.id = ?1 and (a.project.manager.username = ?2 or a.project.costcenter.lob.manager.username = ?2 or a.project.customer.manager.username = ?2 or a.project.id in (?3)) and a.goodsDeliveryStatus is null order by date desc")
+	List<Po> findCustomerPoListByGoodsDeliveryStatusNull(Integer companyId,String username,List<Integer> assignedProjectList);
 
 }

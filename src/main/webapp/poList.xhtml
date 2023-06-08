@@ -24,7 +24,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-		<p:importEnum type="ma.azdad.model.PoDeliveryStatus" var="PoDeliveryStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.GoodsDeliveryStatus" var="GoodsDeliveryStatus" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -90,25 +90,25 @@
 									<td>
 										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-warning" title="Pending">
 											<div class="aa-icon-pending" />
-											<f:setPropertyActionListener value="#{PoDeliveryStatus.PENDING}" target="#{poView.deliveryStatus}" />
+											<f:setPropertyActionListener value="#{GoodsDeliveryStatus.PENDING}" target="#{poView.goodsDeliveryStatus}" />
 										</p:commandLink>
 									</td>
 									<td>
 										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-info" title="Partially Delivered">
 											<div class="aa-icon-paid" />
-											<f:setPropertyActionListener value="#{PoDeliveryStatus.PARTIALLY_DELIVRED}" target="#{poView.deliveryStatus}" />
+											<f:setPropertyActionListener value="#{GoodsDeliveryStatus.PARTIALLY_DELIVRED}" target="#{poView.goodsDeliveryStatus}" />
 										</p:commandLink>
 									</td>
 									<td>
 										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-success" title="Delivred">
 											<div class="icon-a-green" />
-											<f:setPropertyActionListener value="#{PoDeliveryStatus.DELIVRED}" target="#{poView.deliveryStatus}" />
+											<f:setPropertyActionListener value="#{GoodsDeliveryStatus.DELIVRED}" target="#{poView.goodsDeliveryStatus}" />
 										</p:commandLink>
 									</td>
 									<td>
 										<p:commandLink action="#{poView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip" title="All">
 											<div class="aa-icon-all" />
-											<f:setPropertyActionListener value="#{null}" target="#{poView.deliveryStatus}" />
+											<f:setPropertyActionListener value="#{null}" target="#{poView.goodsDeliveryStatus}" />
 										</p:commandLink>
 									</td>
 								</tr>
@@ -166,7 +166,7 @@
 								<h:outputText value="#{item.ilogisticsStatus.value}" styleClass="#{item.ilogisticsStatus.color.name}" />
 							</p:column>
 							<p:column headerText="Delivery Status" width="130">
-								<h:outputText value="#{item.deliveryStatus.value}" styleClass="#{item.deliveryStatus.color.badge}" />
+								<h:outputText value="#{item.goodsDeliveryStatus.value}" styleClass="#{item.goodsDeliveryStatus.color.badge}" />
 							</p:column>
 							<p:column headerText="Actions" width="80">
 								<div class="action-buttons center">

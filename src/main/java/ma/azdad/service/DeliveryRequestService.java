@@ -1294,7 +1294,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequestDetailService.clearPurchaseCostByDeliveryRequest(deliveryRequest.getId());
 		if (deliveryRequest.getPo() != null) {
 			poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
-			poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
+			poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
 		}
 
 	}

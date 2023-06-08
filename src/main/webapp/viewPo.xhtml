@@ -456,13 +456,13 @@
 										<div class="action-buttons center">
 											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="deliveryStatus" fileName="deliveryStatus" postProcessor="#{utilsView.excelExportation}" />
+												<p:dataExporter type="xls" target="goodsDeliveryStatus" fileName="goodsDeliveryStatus" postProcessor="#{utilsView.excelExportation}" />
 											</h:commandLink>
 										</div>
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="deliveryStatus" value="#{boqView.list1}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+									<p:dataTable id="goodsDeliveryStatus" value="#{boqView.list1}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Po Detail" width="80">
 											<h:outputText value="#{item.poDetailReference}" />

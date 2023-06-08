@@ -2,7 +2,7 @@ package ma.azdad.model;
 
 import ma.azdad.utils.Color;
 
-public enum PoDeliveryStatus {
+public enum GoodsDeliveryStatus {
 	PENDING("Pending", Color.ORANGE),
 	PARTIALLY_DELIVRED("Partially Delivered", Color.BLUE),
 	DELIVRED("Delivred", Color.GREEN),;
@@ -10,7 +10,7 @@ public enum PoDeliveryStatus {
 	private final String value;
 	private final Color color;
 
-	private PoDeliveryStatus(String value, Color color) {
+	private GoodsDeliveryStatus(String value, Color color) {
 		this.value = value;
 		this.color = color;
 	}

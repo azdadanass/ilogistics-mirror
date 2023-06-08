@@ -101,10 +101,10 @@ public class ScriptView {
 		partNumberEquivalenceService.updateInverseFormula();
 	}
 
-	public void updateAllIlogisticsStatusAndDeliveryStatusScript() {
+	public void updateAllIlogisticsStatusAndGoodsDeliveryStatusScript() {
 		if (!canExecute)
 			return;
-		poService.updateAllIlogisticsStatusAndDeliveryStatusScript();
+		poService.updateAllIlogisticsStatusAndGoodsDeliveryStatusScript();
 	}
 
 //	public void updateIsStockEmptyScript() {

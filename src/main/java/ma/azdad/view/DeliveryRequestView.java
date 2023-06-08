@@ -571,7 +571,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getPo() != null) {
 				// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
+				poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
 			// update field missing sn
@@ -696,7 +696,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getPo() != null) {
 				// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
-				poService.updateDeliveryStatus(deliveryRequest.getPo().getId());
+				poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
 			}
 
 			if (deliveryRequest.getIsSnRequired())

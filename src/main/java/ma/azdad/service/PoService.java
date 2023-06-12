@@ -52,7 +52,7 @@ public class PoService {
 	}
 
 	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {
-		return repos.findByTypeAndProjectAndNotIlogisticsStatus(type, projectId, PoIlogisticsStatus.COMPLETED, Arrays.asList(PoStatus.REJECTED, PoStatus.CLOSED));
+		return repos.findByTypeAndProjectAndNotIlogisticsStatus(type, projectId, PoIlogisticsStatus.COMPLETED, Arrays.asList(PoStatus.CANCELED,PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
 	public void updateIlogisticsStatus(Integer poId) {

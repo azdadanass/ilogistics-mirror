@@ -51,8 +51,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 	private DeliveryRequestService deliveryRequestService;
 
 	@Autowired
-	private StockRowService  stockRowService;
-	
+	private StockRowService stockRowService;
 
 	@Autowired
 	private PartNumberService partNumberService;
@@ -102,7 +101,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		if (Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus()))
 			return;
 
-		partNumberQuantityMap = deliveryRequest.getDetailList().stream().collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+		partNumberQuantityMap = deliveryRequest.getDetailList().stream()
+				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
 
 		// remove returned quantities
 //		Map<PartNumber, Double> returnedQuantityMap = deliveryRequestDetailService.findReturnedQuantityMap(deliveryRequest.getId());
@@ -115,15 +115,21 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		if (deliveryRequest.getBoqMappingList().isEmpty()) {
 			partNumberQuantityMap.forEach((x, y) -> bmiList.add(new BoqMappingInverse(x, y, y)));
 			autoFillBoq();
+			// auto save boq
+			if (!bmiList.stream().anyMatch(i -> i.getBoq() == null)) 
+				save();
+
 		} else {
 			for (BoqMapping bm : deliveryRequest.getBoqMappingList()) {
 				if (bm.getPartNumberEquivalence() == null)
 					bmiList.add(new BoqMappingInverse(bm.getBoq().getPartNumber(), bm.getQuantity(), bm.getBoq(), null, null));
 				else {
 					if (bm.getDirectEquivalence())
-						bm.getPartNumberEquivalence().getDetailList().forEach(i -> bmiList.add(new BoqMappingInverse(i.getPartNumber(), bm.getQuantity() * i.getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence())));
+						bm.getPartNumberEquivalence().getDetailList().forEach(
+								i -> bmiList.add(new BoqMappingInverse(i.getPartNumber(), bm.getQuantity() * i.getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence())));
 					else
-						bmiList.add(new BoqMappingInverse(bm.getPartNumberEquivalence().getPartNumber(), bm.getQuantity() / bm.getPartNumberEquivalence().getDetailList().get(0).getQuantity(), bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence()));
+						bmiList.add(new BoqMappingInverse(bm.getPartNumberEquivalence().getPartNumber(), bm.getQuantity() / bm.getPartNumberEquivalence().getDetailList().get(0).getQuantity(),
+								bm.getBoq(), bm.getPartNumberEquivalence(), bm.getDirectEquivalence()));
 				}
 			}
 
@@ -203,7 +209,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 
 	private List<Boq> findNonDirectBoqList(Integer partNumberId) {
 		PartNumber partNumber = partNumberService.findOne(partNumberId);
-		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getId(), partNumber.getEquivalenceList().stream().filter(i -> i.getActive() && i.getDetailList().size() == 1).map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
+		List<Boq> result = boqService.findByPoAndPartNumber(deliveryRequest.getPo().getId(), partNumber.getEquivalenceList().stream().filter(i -> i.getActive() && i.getDetailList().size() == 1)
+				.map(i -> i.getDetailList().get(0).getPartNumber().getId()).collect(Collectors.toList()));
 
 		result.forEach(i -> i.setDirectEquivalence(false));
 		return result;
@@ -227,7 +234,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 	}
 
 	public Boolean canSave() {
-		return (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester())) && deliveryRequest.getBoqMappingList().isEmpty() && !Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus());
+		return (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
+				&& deliveryRequest.getBoqMappingList().isEmpty() && !Arrays.asList(DeliveryRequestStatus.CANCELED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus());
 	}
 
 	public Boolean validate() {
@@ -253,7 +261,8 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			Double boqQuantity = bmi.getBoqQuantity();
 
 			for (PartNumberEquivalenceDetail pned : bmi.getPartNumberEquivalence().getDetailList())
-				if (bmiList.stream().filter(i -> i.getBoq().equals(bmi.getBoq()) && i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().equals(bmi.getPartNumberEquivalence()) && i.getPartNumber().equals(pned.getPartNumber()) && i.getBoqQuantity().equals(boqQuantity)).count() != 1)
+				if (bmiList.stream().filter(i -> i.getBoq().equals(bmi.getBoq()) && i.getPartNumberEquivalence() != null && i.getPartNumberEquivalence().equals(bmi.getPartNumberEquivalence())
+						&& i.getPartNumber().equals(pned.getPartNumber()) && i.getBoqQuantity().equals(boqQuantity)).count() != 1)
 					return FacesContextMessages.ErrorMessages("Formula not respected : " + bmi.getPartNumberEquivalence().getFormula());
 		}
 
@@ -302,7 +311,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		deliveryRequestService.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId()));
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());
-		if(deliveryRequest.getIsInbound())
+		if (deliveryRequest.getIsInbound())
 			deliveryRequestService.updateDetailListPurchaseCostFromBoqMapping(deliveryRequest.getId());
 		poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 		poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());

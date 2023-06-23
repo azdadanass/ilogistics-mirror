@@ -2146,44 +2146,44 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		projectCrossService.deleteAndReCreateCrossCharge(deliveryRequest);
 	}
 
-	// FILES MANAGEMENT
-	private String deliveryRequestFileType;
-	private Integer deliveryRequestFileId;
+	// files
+	private DeliveryRequestFile file;
+	private String fileType;
+
+	public Boolean canAddFile() {
+		return true;
+	}
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
+		if (!canAddFile())
+			return;
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
-		deliveryRequestFileService.save(deliveryRequestFile);
+		DeliveryRequestFile modelFile = new DeliveryRequestFile(file, fileType, event.getFile().getFileName(), sessionView.getUser());
+		deliveryRequest.addFile(modelFile);
 		synchronized (DeliveryRequestView.class) {
-			refreshDeliveryRequest();
-			if ("Outbound Delivery Note".equals(deliveryRequestFile.getType())) {
-				deliveryRequest.calculateMissingOutboundDeliveryNote();
-				service.save(deliveryRequest);
-				refreshDeliveryRequest();
-			}
-
+			deliveryRequest.calculateMissingOutboundDeliveryNote();
+			deliveryRequest.calculateCountFiles();
+			deliveryRequest = service.saveAndRefresh(deliveryRequest);
 		}
 	}
 
 	public void handleFileUpload2(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, deliveryRequestFileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
+		DeliveryRequestFile deliveryRequestFile = new DeliveryRequestFile(file, fileType, event.getFile().getFileName(), sessionView.getUser(), deliveryRequest);
 		deliveryRequest.getFileList().add(deliveryRequestFile);
 		deliveryRequest.calculateMissingOutboundDeliveryNote();
 	}
 
-	public Boolean canDeleteFile(User user) {
-		return sessionView.getInternal() && sessionView.isTheConnectedUser(user);
+	public Boolean canDeleteFile(DeliveryRequestFile file) {
+		return sessionView.getInternal() && sessionView.isTheConnectedUser(file.getUser());
 	}
 
-	public void deleteDeliveryRequestFile() {
-		try {
-			deliveryRequestFileService.delete(deliveryRequestFileId);
-			refreshDeliveryRequest();
-		} catch (Exception e) {
-			FacesContextMessages.ErrorMessages(e.getMessage());
-		}
-
+	public void deleteFile() {
+		if (!canDeleteFile(file))
+			return;
+		model.removeFile(file);
+		model.calculateMissingOutboundDeliveryNote();
+		model = service.saveAndRefresh(model);
 	}
 
 	// UNIT COST
@@ -2730,19 +2730,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public String getDeliveryRequestFileType() {
-		return deliveryRequestFileType;
+		return fileType;
 	}
 
-	public void setDeliveryRequestFileType(String deliveryRequestFileType) {
-		this.deliveryRequestFileType = deliveryRequestFileType;
-	}
-
-	public Integer getDeliveryRequestFileId() {
-		return deliveryRequestFileId;
-	}
-
-	public void setDeliveryRequestFileId(Integer deliveryRequestFileId) {
-		this.deliveryRequestFileId = deliveryRequestFileId;
+	public void setDeliveryRequestFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 	public DeliveryRequestFile getDeliveryRequestFile() {
@@ -3101,6 +3093,22 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void setWarningMessage(String warningMessage) {
 		this.warningMessage = warningMessage;
+	}
+
+	public DeliveryRequestFile getFile() {
+		return file;
+	}
+
+	public void setFile(DeliveryRequestFile file) {
+		this.file = file;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 }

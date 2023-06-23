@@ -395,7 +395,7 @@
 								<h:outputText value="Doc Type" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px">
+								<h:selectOneMenu value="#{deliveryRequestView.fileType}" style="width:178px">
 									<f:selectItem noSelectionOption="true" itemLabel="---" />
 									<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
 									<p:ajax update="fileUploadPanel" />
@@ -408,7 +408,7 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/"
-							styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}" style="margin: auto;width: 80%">
+							styleClass="#{deliveryRequestView.fileType==null?'hide':''}" style="margin: auto;width: 80%">
 							<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
 						</p:fileUpload>
 						<p:growl id="messages" showDetail="true" />

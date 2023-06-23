@@ -97,7 +97,8 @@
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Delivered" />
 						</p:commandLink>
-						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadDeliveryRequestFileDlg').show()">
+						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadFileDlg').show()"
+							rendered="#{deliveryRequestView.canAddFile()}">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
@@ -1143,8 +1144,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="fileList" value="#{deliveryRequestView.deliveryRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -1173,10 +1174,9 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteDeliveryRequestFileDlg').show()" styleClass="aa-tooltip"
-													rendered="#{deliveryRequestView.canDeleteFile(item.user)}">
+												<p:commandLink title="Delete File" oncomplete="PF('deleteFileDlg').show()" styleClass="aa-tooltip" rendered="#{deliveryRequestView.canDeleteFile(item)}">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFileId}" value="#{item.id}" />
+													<f:setPropertyActionListener target="#{deliveryRequestView.file}" value="#{item}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
 													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
@@ -1185,7 +1185,6 @@
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
-													<f:setPropertyActionListener target="#{deliveryRequestView.deliveryRequestFile}" value="#{item}" />
 												</p:commandLink>
 											</div>
 										</p:column>

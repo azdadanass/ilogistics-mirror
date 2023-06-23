@@ -604,9 +604,9 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="deleteDeliveryRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
-		<p:dialog widgetVar="deleteDeliveryRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
-			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDeliveryRequestFileDlg').hide()">
+	<h:form id="deleteFileForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="deleteFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteFileDlg').hide()">
 				<h:outputText value="x" />
 			</button>
 			<div class="modal-header">
@@ -619,15 +619,14 @@
 				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
 			</div>
 			<div class="modal-footer">
-				<p:commandButton onclick="PF('deleteDeliveryRequestFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{deliveryRequestView.deleteDeliveryRequestFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteDeliveryRequestFileDlg').hide()"
-					update=":main_form:files_table" />
+				<p:commandButton onclick="PF('deleteFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.deleteFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteFileDlg').hide()" update=":main_form:fileList" />
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="addDeliveryRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
-		<p:dialog widgetVar="uploadDeliveryRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
-			<button type="button" class="bootbox-close-button close" onclick="PF('uploadDeliveryRequestFileDlg').hide()">
+	<h:form id="addFileForm">
+		<p:dialog widgetVar="uploadFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadFileDlg').hide()">
 				<h:outputText value="x" />
 			</button>
 			<div class="modal-header" style="margin-bottom: 20px">
@@ -640,17 +639,17 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-deliveryRequestname">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
 								<h:outputText value="Doc Type" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px"
+								<h:selectOneMenu value="#{deliveryRequestView.fileType}" style="width:178px"
 									rendered="#{deliveryRequestView.deliveryRequest.isInbound or deliveryRequestView.deliveryRequest.isXbound}">
 									<f:selectItem noSelectionOption="true" itemLabel="---" />
 									<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2,1)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
 									<p:ajax update="fileUploadPanel" />
 								</h:selectOneMenu>
-								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequestFileType}" style="width:178px"
+								<h:selectOneMenu value="#{deliveryRequestView.fileType}" style="width:178px"
 									rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
 									<f:selectItem noSelectionOption="true" itemLabel="---" />
 									<f:selectItems value="#{docTypeView.findByType(deliveryRequestView.className2,2)}" var="item" itemLabel="#{item}" itemValue="#{item}" />
@@ -664,10 +663,11 @@
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
 						<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
-							update="messages,:main_form:files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/"
-							styleClass="#{deliveryRequestView.deliveryRequestFileType==null?'hide':''}" style="margin: auto;width: 80%">
-							<f:attribute name="beanName" value="#{deliveryRequestView.className2}" />
-						</p:fileUpload>
+							update="messages,:main_form:fileList" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/"
+							styleClass="#{deliveryRequestView.fileType==null?'hide':''}" style="margin: auto;width: 80%" rendered="#{deliveryRequestView.isViewPage}" />
+						<p:fileUpload fileUploadListener="#{deliveryRequestView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml)$/" styleClass="#{deliveryRequestView.fileType==null?'hide':''}"
+							style="margin: auto;width: 80%" rendered="#{!deliveryRequestView.isViewPage}" />
 						<p:growl id="messages" showDetail="true" />
 					</h:panelGroup>
 				</div>
@@ -675,7 +675,7 @@
 			<br />
 			<br />
 			<div class="modal-footer">
-				<p:commandButton onclick="PF('uploadDeliveryRequestFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton onclick="PF('uploadFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
 			</div>
 		</p:dialog>
 	</h:form>
@@ -735,9 +735,11 @@
 					<h:panelGroup id="fileUploadPanel">
 						<p:messages id="messages" closable="true" />
 						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
-							update="messages,main_form:serialNumberList" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" rendered="#{deliveryRequestView.deliveryRequest.isInbound}"/>
+							update="messages,main_form:serialNumberList" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%"
+							rendered="#{deliveryRequestView.deliveryRequest.isInbound}" />
 						<p:fileUpload fileUploadListener="#{deliveryRequestSerialNumberView.uploadExcelFile}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
-							update="messages,main_form:serialNumberList,:addOutboundSerialNumberForm" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" oncomplete="PF('addOutboundSerialNumberDlg').show()" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}"/>
+							update="messages,main_form:serialNumberList,:addOutboundSerialNumberForm" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%"
+							oncomplete="PF('addOutboundSerialNumberDlg').show()" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
 					</h:panelGroup>
 				</div>
 			</div>
@@ -1076,9 +1078,12 @@
 							<p:dataTable value="#{deliveryRequestSerialNumberView.inboundList2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
 								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowKey="#{item.id}"
 								selection="#{deliveryRequestSerialNumberView.inboundList3}" rowSelectMode="checkbox">
-								<p:ajax event="rowSelectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/>
-								<p:ajax event="rowUnselectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/>
-								<p:ajax event="toggleSelect" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}" update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save"/> 
+								<p:ajax event="rowSelectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}"
+									update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save" />
+								<p:ajax event="rowUnselectCheckbox" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}"
+									update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save" />
+								<p:ajax event="toggleSelect" listener="#{deliveryRequestSerialNumberView.validateInboundSelectinList()}"
+									update=":addOutboundSerialNumberForm:messages,:addOutboundSerialNumberForm:save" />
 								<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" exportable="false" />
 								<p:column headerText="Inbound DN">
 									<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
@@ -1108,8 +1113,9 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addOutboundSerialNumberDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton value="Upload from Excel File" onclick="PF('addOutboundSerialNumberDlg').hide();PF('addSerialNumberFromExcelDlg').show();" styleClass="btn btn-info"  />
-				<p:commandButton id="save" disabled="#{!deliveryRequestSerialNumberView.validateInboundSelectinList}" action="#{deliveryRequestSerialNumberView.outboundSave()}"  value="Save" update=":main_form" styleClass="btn btn-success" oncomplete="PF('addOutboundSerialNumberDlg').hide()" />
+				<p:commandButton value="Upload from Excel File" onclick="PF('addOutboundSerialNumberDlg').hide();PF('addSerialNumberFromExcelDlg').show();" styleClass="btn btn-info" />
+				<p:commandButton id="save" disabled="#{!deliveryRequestSerialNumberView.validateInboundSelectinList}" action="#{deliveryRequestSerialNumberView.outboundSave()}" value="Save"
+					update=":main_form" styleClass="btn btn-success" oncomplete="PF('addOutboundSerialNumberDlg').hide()" />
 			</div>
 		</p:dialog>
 	</h:form>

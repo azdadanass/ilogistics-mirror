@@ -64,6 +64,9 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;
+	
+	@Autowired
+	private DeliveryRequestView deliveryRequestView;
 
 	private BoqMapping boqMapping = new BoqMapping();
 
@@ -116,9 +119,10 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			partNumberQuantityMap.forEach((x, y) -> bmiList.add(new BoqMappingInverse(x, y, y)));
 			autoFillBoq();
 			// auto save boq
-			if (!bmiList.stream().anyMatch(i -> i.getBoq() == null)) 
+			if (!bmiList.stream().anyMatch(i -> i.getBoq() == null)) {
 				save();
-
+				deliveryRequestView.refreshDeliveryRequest();
+			}
 		} else {
 			for (BoqMapping bm : deliveryRequest.getBoqMappingList()) {
 				if (bm.getPartNumberEquivalence() == null)
@@ -315,6 +319,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			deliveryRequestService.updateDetailListPurchaseCostFromBoqMapping(deliveryRequest.getId());
 		poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 		poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
+		
 		return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

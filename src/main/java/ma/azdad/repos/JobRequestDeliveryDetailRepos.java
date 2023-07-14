@@ -26,6 +26,9 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
+	
+	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.installedQuantity > 0")
+	List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequest);
 
 //	@Query(c1
 //			+ "from JobRequestDeliveryDetail a left join a.deliveryRequest.company as company1 left join a.deliveryRequest.inboundDeliveryRequest.company as company2 " //

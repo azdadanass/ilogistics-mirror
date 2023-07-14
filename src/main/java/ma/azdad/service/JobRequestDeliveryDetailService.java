@@ -52,6 +52,21 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			}
 		return result;
 	}
+	
+	public List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequestId) {
+		List<JobRequestDeliveryDetail> result = new ArrayList<>();
+		List<JobRequestDeliveryDetail> data = repos.findInstalledByDeliveryRequest(deliveryRequestId);
+		for (JobRequestDeliveryDetail jrdd : data)
+			if (!jrdd.getIsSerialNumberRequired())
+				result.add(jrdd);
+			else {
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
+				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
+			}
+		return result;
+	}
 
 	public List<JobRequestDeliveryDetail> findInstalled(Integer companyId, Integer customerId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();

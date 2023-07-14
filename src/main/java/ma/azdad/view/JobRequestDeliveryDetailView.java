@@ -43,6 +43,8 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = service.findAll();
+		if(isPage("viewDeliveryRequest"))
+			initLists(service.findInstalledByDeliveryRequest(id));
 	}
 
 	public void refreshListByProject(Integer projectId) {

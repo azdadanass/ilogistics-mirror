@@ -22,13 +22,10 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ecs.xhtml.map;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import com.sun.faces.el.FacesCompositeELResolver;
 
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.DeliverToType;

@@ -1965,7 +1965,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		}
 
-		return addParameters(listPage, "faces-redirect=true");
+		return addParameters(listPage,"state=0", "faces-redirect=true");
 	}
 
 	// DETAILS MANAGEMENT

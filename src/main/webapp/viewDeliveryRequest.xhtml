@@ -1731,6 +1731,7 @@
 								</div>
 							</div>
 						</div>
+						<p:remoteCommand action="#{boqMappingView.autoSave()}" autoRun="true"  rendered="#{boqMappingView.canAutoSave()}"/>
 					</div>
 					<div id="tab10" class="tab-pane">
 						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">

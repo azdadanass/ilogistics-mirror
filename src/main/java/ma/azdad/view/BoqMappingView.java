@@ -30,7 +30,6 @@ import ma.azdad.model.PartNumberEquivalenceDetail;
 import ma.azdad.repos.BoqMappingRepos;
 import ma.azdad.service.BoqMappingService;
 import ma.azdad.service.BoqService;
-import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
@@ -64,7 +63,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 
 	@Autowired
 	private PartNumberEquivalenceService partNumberEquivalenceService;
-	
+
 	@Autowired
 	private DeliveryRequestView deliveryRequestView;
 
@@ -85,11 +84,10 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 	@PostConstruct
 	public void init() {
 		super.init();
-		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
-			deliveryRequest = deliveryRequestService.findOne(id);
+		if (deliveryRequestView.getIsViewPage()) {
+			deliveryRequest = deliveryRequestView.getDeliveryRequest();
 			if (deliveryRequest.getPo() == null)
 				return;
-
 			initBmiList();
 		}
 
@@ -114,15 +112,9 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			partNumberQuantityMap.forEach((k, v) -> partNumberQuantityMap.put(k, v - returnedQuantityMap.getOrDefault(k, 0.0)));
 			partNumberQuantityMap.values().removeIf(v -> v.equals(0.0));
 		}
-
 		if (deliveryRequest.getBoqMappingList().isEmpty()) {
 			partNumberQuantityMap.forEach((x, y) -> bmiList.add(new BoqMappingInverse(x, y, y)));
 			autoFillBoq();
-			// auto save boq
-			if (!bmiList.stream().anyMatch(i -> i.getBoq() == null)) {
-				save();
-				deliveryRequestView.refreshDeliveryRequest();
-			}
 		} else {
 			for (BoqMapping bm : deliveryRequest.getBoqMappingList()) {
 				if (bm.getPartNumberEquivalence() == null)
@@ -147,8 +139,24 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			}
 		}
 	}
+	
+	public Boolean canAutoSave() {
+		return deliveryRequest.getBoqMappingList().isEmpty() && !bmiList.stream().anyMatch(i -> i.getBoq() == null);
+	}
+
+	public String autoSave() {
+		if (!canAutoSave())
+			return null;
+		log.info("autoSaveBoq");
+		save();
+		deliveryRequestView.refreshDeliveryRequest();
+		deliveryRequestView.setDeliveryRequest(deliveryRequestService.findOne(deliveryRequestView.getDeliveryRequest().getId()));
+		deliveryRequestView.getDeliveryRequest().init();
+		return addParameters(deliveryRequestView.getViewPage(), "faces-redirect=true", "id=" + deliveryRequest.getId());
+	}
 
 	private void autoFillBoq() {
+		log.info("autoFillBoq");
 		for (BoqMappingInverse bmi : bmiList) {
 			refreshBoqList(bmi);
 			if (boqList.size() == 1) {
@@ -319,7 +327,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			deliveryRequestService.updateDetailListPurchaseCostFromBoqMapping(deliveryRequest.getId());
 		poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
 		poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
-		
+
 		return addParameters("/viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

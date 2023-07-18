@@ -148,7 +148,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		if (!canAutoSave())
 			return null;
 		log.info("autoSaveBoq");
-		save();
+		save(true);
 		deliveryRequestView.refreshDeliveryRequest();
 		deliveryRequestView.setDeliveryRequest(deliveryRequestService.findOne(deliveryRequestView.getDeliveryRequest().getId()));
 		deliveryRequestView.getDeliveryRequest().init();
@@ -307,7 +307,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 		return true;
 	}
 
-	public String save() {
+	public String save(Boolean autoBoqMapped) {
 		if (!canSave())
 			return null;
 		if (!validate())
@@ -320,6 +320,7 @@ public class BoqMappingView extends GenericView<Integer, BoqMapping, BoqMappingR
 			deliveryRequest.getBoqMappingList().add(new BoqMapping(bmi.getBoqQuantity(), deliveryRequest, bmi.getBoq(), bmi.getPartNumberEquivalence(), bmi.getDirectEquivalence()));
 		}
 		deliveryRequest.setContainsBoqMapping(true);
+		deliveryRequest.setAutoBoqMapped(autoBoqMapped);
 		deliveryRequestService.save(deliveryRequest);
 		boqService.updateTotalUsedQuantity(boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId()));
 		deliveryRequestService.updateDetailListUnitPriceFromBoqMapping(deliveryRequest.getId());

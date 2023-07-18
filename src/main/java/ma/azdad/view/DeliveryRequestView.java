@@ -1176,7 +1176,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// CLEAR BOQ MAAPING
 	public Boolean canClearBoqMapping() {
-		return (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
+		return Boolean.FALSE.equals(deliveryRequest.getAutoBoqMapped()) //
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || sessionView.isTheConnectedUser(deliveryRequest.getRequester())) //
 				&& !deliveryRequest.getBoqMappingList().isEmpty();
 	}
 
@@ -1965,7 +1966,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		}
 
-		return addParameters(listPage,"state=0", "faces-redirect=true");
+		return addParameters(listPage, "state=0", "faces-redirect=true");
 	}
 
 	// DETAILS MANAGEMENT

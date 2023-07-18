@@ -1698,7 +1698,7 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save" action="#{boqMappingView.save()}" update="boq_mapping,:main_form:messages" partialSubmit="true"
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save" action="#{boqMappingView.save(false)}" update="boq_mapping,:main_form:messages" partialSubmit="true"
 													process="boq_mapping" rendered="#{boqMappingView.canSave()}">
 													<i class="fa fa-save green" />
 												</p:commandLink>

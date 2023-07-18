@@ -61,6 +61,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Boolean containsBoqMapping = null;
 	private Boolean missingPo = null;
 	private Boolean missingOutboundDeliveryNote = false;
+	private Boolean autoBoqMapped = false;
 	private Integer countFiles = 0;
 
 	private DeliveryRequestType type;
@@ -2135,6 +2136,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setCountFiles(Integer countFiles) {
 		this.countFiles = countFiles;
+	}
+
+	public Boolean getAutoBoqMapped() {
+		return autoBoqMapped;
+	}
+
+	public void setAutoBoqMapped(Boolean autoBoqMapped) {
+		this.autoBoqMapped = autoBoqMapped;
 	}
 
 }

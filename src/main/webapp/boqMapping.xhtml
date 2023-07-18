@@ -2,20 +2,15 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,10 +24,8 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
-
 			<div class="page-header hidden-xs">
 				<h1>
 					<h:outputText value="Add New Action" />
@@ -45,18 +38,15 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
-						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" action="#{boqMappingView.save()}" update="messages" title="Save">
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" action="#{boqMappingView.save(false)}" update="messages" title="Save">
 							<i class="ace-icon fa fa-save bigger-230"></i>
 							<h:outputText value="Save" />
 						</p:commandLink>
@@ -79,7 +69,6 @@
 					<div class="tab-content profile-edit-tab-content">
 						<div class="tab-pane in active">
 							<p:messages id="messages" closable="true" />
-
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
@@ -89,41 +78,31 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="main_tab" value="#{boqMappingView.list1}" rowKey="#{item.key}" selection="#{boqMappingView.list4}" var="item" styleClass="table table-striped table-hover center"
-											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar"
-											rowSelectMode="checkbox">
-
-
+										<p:dataTable id="main_tab" value="#{boqMappingView.list1}" rowKey="#{item.key}" selection="#{boqMappingView.list4}" var="item"
+											styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+											paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar" rowSelectMode="checkbox">
 											<p:ajax event="rowSelect" process="@this" update="main_tab" />
 											<p:ajax event="rowUnselect" process="@this" update="main_tab" />
 											<p:ajax event="rowSelectCheckbox" process="@this" update="main_tab" />
 											<p:ajax event="rowUnselectCheckbox" process="@this" update="main_tab" />
 											<p:ajax event="toggleSelect" process="@this" update="main_tab" />
-
 											<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" />
-
-
 											<p:column headerText="Boq">
 												<h:outputText value="#{item.boq.id}" />
 											</p:column>
-
 											<p:column headerText="Boq PN">
 												<h:outputText value="#{item.boq.partNumber.name}" styleClass="bolder green" />
 											</p:column>
-
 											<p:column headerText="Remaining Quantity">
 												<h:outputText value="#{item.remainingQuantity}" styleClass="bolder orange" />
 											</p:column>
-
 											<p:column headerText="Quantity">
 												<h:outputText value="#{item.quantity}" rendered="#{boqMappingView.list4.contains(item)}" />
 											</p:column>
-
 											<p:column headerText="DN PN">
 												<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
 												<h:outputText value="#{item.partNumberEquivalence.formula}" styleClass="bolder purple" />
 											</p:column>
-
 											<p:column headerText="Actions" styleClass="center" width="100">
 												<div class="action-buttons center">
 													<p:commandLink title="Map" action="#{boqMappingView.initMap()}" update=":mapForm" partialSubmit="true" process="main_tab" oncomplete="PF('mapDlg').show()"
@@ -133,22 +112,17 @@
 													</p:commandLink>
 												</div>
 											</p:column>
-
 										</p:dataTable>
 									</div>
-
-
 								</div>
 							</div>
 						</div>
-
 						<div class="space-16" />
 					</div>
 					<div class="row"></div>
 				</div>
 			</div>
 		</h:form>
-
 		<h:form id="mapForm">
 			<p:dialog widgetVar="mapDlg" modal="true" closable="false" resizable="false" showHeader="false">
 				<button type="button" class="bootbox-close-button close" onclick="PF('mapDlg').hide()">
@@ -198,7 +172,8 @@
 											<h:outputText value="Formula " />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{boqMappingView.partNumberEquivalence}" converter="#{genericSecuredConverter}" required="true" requiredMessage="Equivalence Formula should not be null">
+											<h:selectOneMenu value="#{boqMappingView.partNumberEquivalence}" converter="#{genericSecuredConverter}" required="true"
+												requiredMessage="Equivalence Formula should not be null">
 												<f:selectItems value="#{boqMappingView.partNumberEquivalenceList}" var="item" itemLabel="#{item.formula}" itemValue="#{item}" />
 											</h:selectOneMenu>
 										</div>
@@ -215,6 +190,5 @@
 				</div>
 			</p:dialog>
 		</h:form>
-
 	</ui:define>
 </ui:composition>

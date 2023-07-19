@@ -331,182 +331,173 @@
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 4}">
 						<f:subview rendered="#{(sessionView.internal and (sessionView.isPM or sessionView.isWM or sessionView.isAdmin or sessionView.isUser)) or sessionView.isWM}">
-							<li class="open">
-								<a href="#" class="dropdown-toggle">
-									<i class="menu-icon fa fa-cubes"></i>
-									<span class="menu-text">
-										<h:outputText value="Inventory" />
-									</span>
-									<b class="arrow fa fa-angle-down"></b>
-								</a>
-								<b class="arrow"></b>
-								<ul class="submenu">
-									<li>
-										<h:outputLink value="stockRowList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 green" style="margin-right: 10px" />
-											<h:outputText value="Part Number" />
-											<f:param name="pageIndex" value="1" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="projectReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
-											<h:outputText value="#{stockRowView.companyId!=null?'Cost Center':'Project'} Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="warehouseReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 blue" style="margin-right: 10px" />
-											<h:outputText value="Warehouse Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</ul>
-							</li>
-							<li class="open">
-								<a href="#" class="dropdown-toggle">
-									<i class="menu-icon fa fa-cubes"></i>
-									<span class="menu-text">
-										<h:outputText value="Delivery" />
-									</span>
-									<b class="arrow fa fa-angle-down"></b>
-								</a>
-								<b class="arrow"></b>
-								<ul class="submenu">
-									<li>
-										<h:outputLink value="deliveryReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-											<h:outputText value="Delivery Reports" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="sdmDeliveryReporting.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="SDM Report" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</ul>
-							</li>
-							<li class="open">
-								<a href="#" class="dropdown-toggle">
-									<i class="menu-icon fa fa-cubes"></i>
-									<span class="menu-text">
-										<h:outputText value="Logistic Analysis" />
-									</span>
-									<b class="arrow fa fa-angle-down"></b>
-								</a>
-								<b class="arrow"></b>
-								<ul class="submenu">
-									<li>
-										<h:outputLink value="stockRowList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 red" style="margin-right: 10px" />
-											<h:outputText value="Warehousing Overdue" />
-											<f:param name="pageIndex" value="2" />
-											<f:param name="companyId" value="#{stockRowView.companyId}" />
-											<f:param name="customerId" value="#{stockRowView.customerId}" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<f:subview rendered="#{stockRowView.companyId!=null}">
-										<li>
-											<h:outputLink value="maxMinThreshold.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Stock Thresholds" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-										<li>
-											<h:outputLink value="stockRowList.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list-ol bigger-130 green" style="margin-right: 10px" />
-												<h:outputText value="Fast Moving Items" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
-												<f:param name="pageIndex" value="3" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-										<li>
-											<h:outputLink value="#">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-cubes bigger-130 pink" style="margin-right: 10px" />
-												<h:outputText value="Space Usage" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</f:subview>
-								</ul>
-							</li>
-							<f:subview rendered="#{stockRowView.companyId!=null}">
+							<f:subview rendered="#{menuView.menu=='INVENTORY'}">
 								<li class="open">
 									<a href="#" class="dropdown-toggle">
 										<i class="menu-icon fa fa-cubes"></i>
 										<span class="menu-text">
-											<h:outputText value="Financial  Report" />
+											<h:outputText value="Inventory" />
 										</span>
 										<b class="arrow fa fa-angle-down"></b>
 									</a>
 									<b class="arrow"></b>
 									<ul class="submenu">
 										<li>
-											<h:outputLink value="companyFinancial.xhtml">
+											<h:outputLink value="stockRowList.xhtml">
 												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list-alt bigger-130 orange" style="margin-right: 10px" />
-												<h:outputText value="Company Financial" />
-												<f:param name="id" value="#{stockRowView.companyId}" />
+												<i class="ace-icon fa fa-list bigger-130 green" style="margin-right: 10px" />
+												<h:outputText value="Part Number" />
+												<f:param name="pageIndex" value="1" />
 											</h:outputLink>
 											<b class="arrow"></b>
 										</li>
 										<li>
-											<h:outputLink value="projectFinancial.xhtml">
+											<h:outputLink value="projectReporting.xhtml">
 												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list-alt bigger-130 blue" style="margin-right: 10px" />
-												<h:outputText value="Cost center Financial" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
+												<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
+												<h:outputText value="#{menuView.companyId!=null?'Cost Center':'Project'} Report" />
 											</h:outputLink>
 											<b class="arrow"></b>
 										</li>
 										<li>
-											<h:outputLink value="deliveryRequestfinancialReporting.xhtml">
+											<h:outputLink value="warehouseReporting.xhtml">
 												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list-alt bigger-130 green" style="margin-right: 10px" />
-												<h:outputText value="DN Financial" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-										<li>
-											<h:outputLink value="poList.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
-												<h:outputText value="Purchase Order" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
+												<i class="ace-icon fa fa-list bigger-130 blue" style="margin-right: 10px" />
+												<h:outputText value="Warehouse Report" />
 											</h:outputLink>
 											<b class="arrow"></b>
 										</li>
 									</ul>
 								</li>
+							</f:subview>
+							<f:subview rendered="#{menuView.menu=='DELIVERY'}">
+								<li class="open">
+									<a href="#" class="dropdown-toggle">
+										<i class="menu-icon fa fa-cubes"></i>
+										<span class="menu-text">
+											<h:outputText value="Delivery" />
+										</span>
+										<b class="arrow fa fa-angle-down"></b>
+									</a>
+									<b class="arrow"></b>
+									<ul class="submenu">
+										<li>
+											<h:outputLink value="deliveryReporting.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
+												<h:outputText value="Delivery Reports" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+										<li>
+											<h:outputLink value="sdmDeliveryReporting.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+												<h:outputText value="SDM Report" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</ul>
+								</li>
+							</f:subview>
+							<f:subview rendered="#{menuView.menu=='LOGISTIC_ANALYSIS'}">
+								<li class="open">
+									<a href="#" class="dropdown-toggle">
+										<i class="menu-icon fa fa-cubes"></i>
+										<span class="menu-text">
+											<h:outputText value="Logistic Analysis" />
+										</span>
+										<b class="arrow fa fa-angle-down"></b>
+									</a>
+									<b class="arrow"></b>
+									<ul class="submenu">
+										<li>
+											<h:outputLink value="stockRowList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-list bigger-130 red" style="margin-right: 10px" />
+												<h:outputText value="Warehousing Overdue" />
+												<f:param name="pageIndex" value="2" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+										<f:subview rendered="#{menuView.companyId!=null}">
+											<li>
+												<h:outputLink value="maxMinThreshold.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
+													<h:outputText value="Stock Thresholds" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+											<li>
+												<h:outputLink value="stockRowList.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list-ol bigger-130 green" style="margin-right: 10px" />
+													<h:outputText value="Fast Moving Items" />
+													<f:param name="pageIndex" value="3" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+											<li>
+												<h:outputLink value="#">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-cubes bigger-130 pink" style="margin-right: 10px" />
+													<h:outputText value="Space Usage" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+										</f:subview>
+									</ul>
+								</li>
+							</f:subview>
+							<f:subview rendered="#{menuView.companyId!=null}">
+								<f:subview rendered="#{menuView.menu=='FINANCIAL_REPORT'}">
+									<li class="open">
+										<a href="#" class="dropdown-toggle">
+											<i class="menu-icon fa fa-cubes"></i>
+											<span class="menu-text">
+												<h:outputText value="Financial  Report" />
+											</span>
+											<b class="arrow fa fa-angle-down"></b>
+										</a>
+										<b class="arrow"></b>
+										<ul class="submenu">
+											<li>
+												<h:outputLink value="companyFinancial.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list-alt bigger-130 orange" style="margin-right: 10px" />
+													<h:outputText value="Company Financial" />
+													<f:param name="id" value="#{menuView.companyId}" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+											<li>
+												<h:outputLink value="projectFinancial.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" style="margin-right: 10px" />
+													<h:outputText value="Cost center Financial" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestfinancialReporting.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list-alt bigger-130 green" style="margin-right: 10px" />
+													<h:outputText value="DN Financial" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+											<li>
+												<h:outputLink value="poList.xhtml">
+													<i class="menu-icon fa fa-caret-right"></i>
+													<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+													<h:outputText value="Purchase Order" />
+												</h:outputLink>
+												<b class="arrow"></b>
+											</li>
+										</ul>
+									</li>
+								</f:subview>
 							</f:subview>
 						</f:subview>
 						<f:subview rendered="#{sessionView.isExternalPm}">
@@ -533,7 +524,7 @@
 										<h:outputLink value="projectReporting.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130 pink" style="margin-right: 10px" />
-											<h:outputText value="#{stockRowView.companyId!=null?'Cost Center':'Project'} Report" />
+											<h:outputText value="#{menuView.companyId!=null?'Cost Center':'Project'} Report" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>

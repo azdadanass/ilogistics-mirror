@@ -267,13 +267,13 @@
 												<img src="/resources/img/xls.png" width="20" height="20" />
 												<p:dataExporter type="xls" target="tab2" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
 											</h:commandLink>
-											<!-- <f:subview rendered="#{stockRowView.companyId!=null}">
+											<!-- <f:subview rendered="#{menuView.companyId!=null}">
 										<li>
 											<h:outputLink value="destinationCustomerReporting.xhtml">
 												<i class="menu-icon fa fa-caret-right"></i>
 												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
 												<h:outputText value="Customer Report" />
-												<f:param name="companyId" value="#{stockRowView.companyId}" />
+												<f:param name="companyId" value="#{menuView.companyId}" />
 											</h:outputLink>
 											<b class="arrow"></b>
 										</li>

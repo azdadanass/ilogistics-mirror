@@ -525,7 +525,7 @@
 							<h:outputText value=" Issue List" />
 						</a>
 					</li>
-					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm}">
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm and deliveryRequestView.deliveryRequest.isOutbound}">
 						<li>
 							<a data-toggle="tab" href="#tab14">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
@@ -1731,7 +1731,7 @@
 								</div>
 							</div>
 						</div>
-						<p:remoteCommand action="#{boqMappingView.autoSave()}" autoRun="true"  rendered="#{boqMappingView.canAutoSave()}"/>
+						<p:remoteCommand action="#{boqMappingView.autoSave()}" autoRun="true" rendered="#{boqMappingView.canAutoSave()}" />
 					</div>
 					<div id="tab10" class="tab-pane">
 						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
@@ -2026,146 +2026,148 @@
 							</div>
 						</div>
 					</div>
-					<div id="tab14" class="tab-pane">
-						<h4 class="header blue bolder smaller">
-							<h:outputText value=" Install Base" />
-						</h4>
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-7 hidden-xs">
-										<i class="fa fa-list" />
-										<h:outputText value=" Install Base" />
-									</div>
-									<div class="col-sm-2">
-										<div class="action-buttons center">
-											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="installBase" fileName="installBase" postProcessor="#{utilsView.excelExportation}" />
-											</h:commandLink>
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm and deliveryRequestView.deliveryRequest.isOutbound}">
+						<div id="tab14" class="tab-pane">
+							<h4 class="header blue bolder smaller">
+								<h:outputText value=" Install Base" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Install Base" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="installBase" fileName="installBase" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{jobRequestDeliveryDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="installBase" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
 										</div>
 									</div>
-									<div class="col-sm-2 col-xs-4">
-										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{jobRequestDeliveryDetailView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="installBase" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
-											</span>
-										</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Photo" width="100">
+												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+													<f:param name="fileName" value="#{item.partNumberImage}" />
+												</p:graphicImage>
+											</p:column>
+											<p:column headerText="Part Number" exportable="false">
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Quantity" width="70">
+												<h:outputText value="#{item.installedQuantity}" styleClass=" bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="JR" width="70">
+												<h:outputLink value="viewJobRequest.xhtml" target="blank">
+													<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
+													<f:param name="id" value="#{item.jobRequestId}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Site">
+												<h:outputText value="#{item.siteName}" />
+											</p:column>
+											<p:column headerText="SN">
+												<h:outputText value="#{item.tmpSerialNumber}" styleClass="badge badge-success" />
+											</p:column>
+											<p:column headerText="Team">
+												<h:outputText value="#{item.teamName}" />
+											</p:column>
+										</p:dataTable>
 									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Photo" width="100">
-											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-												<f:param name="fileName" value="#{item.partNumberImage}" />
-											</p:graphicImage>
-										</p:column>
-										<p:column headerText="Part Number" exportable="false">
-											<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
-										</p:column>
-										<p:column headerText="Description">
-											<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
-										</p:column>
-										<p:column headerText="Quantity" width="70">
-											<h:outputText value="#{item.installedQuantity}" styleClass=" bolder green">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="JR" width="70">
-											<h:outputLink value="viewJobRequest.xhtml" target="blank">
-												<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
-												<f:param name="id" value="#{item.jobRequestId}" />
-											</h:outputLink>
-										</p:column>
-										<p:column headerText="Site">
-											<h:outputText value="#{item.siteName}" />
-										</p:column>
-										<p:column headerText="SN">
-											<h:outputText value="#{item.tmpSerialNumber}" styleClass="badge badge-success" />
-										</p:column>
-										<p:column headerText="Team">
-											<h:outputText value="#{item.teamName}" />
-										</p:column>
-									</p:dataTable>
 								</div>
 							</div>
-						</div>
-						<h4 class="header blue bolder smaller">
-							<h:outputText value=" Team Running Inventory" />
-						</h4>
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-7 hidden-xs">
-										<i class="fa fa-list" />
-										<h:outputText value=" Summary" />
-									</div>
-									<div class="col-sm-2">
-										<div class="action-buttons center">
-											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="summary" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
-											</h:commandLink>
+							<h4 class="header blue bolder smaller">
+								<h:outputText value=" Team Running Inventory" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Summary" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="summary" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="summary" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
 										</div>
 									</div>
-									<div class="col-sm-2 col-xs-4">
-										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="summary" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="summary" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Photo" width="100">
-											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-												<f:param name="fileName" value="#{item.partNumberImage}" />
-											</p:graphicImage>
-										</p:column>
-										<p:column headerText="Part Number" exportable="false">
-											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="summary" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Photo" width="100">
+												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+													<f:param name="fileName" value="#{item.partNumberImage}" />
+												</p:graphicImage>
+											</p:column>
+											<p:column headerText="Part Number" exportable="false">
+												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
+													<h:outputText value="#{item.partNumber.name}" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Part Number" styleClass="hide">
 												<h:outputText value="#{item.partNumber.name}" />
-												<f:param name="id" value="#{item.partNumber.id}" />
-											</h:outputLink>
-										</p:column>
-										<p:column headerText="Part Number" styleClass="hide">
-											<h:outputText value="#{item.partNumber.name}" />
-										</p:column>
-										<p:column headerText="Description">
-											<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
-										</p:column>
-										<p:column headerText="Delivred Qantity" width="90" exportable="false">
-											<h:outputText value="#{-item.quantity}" styleClass="bolder blue">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Delivred Qantity" styleClass="hide">
-											<h:outputText value="#{-item.quantity}" />
-										</p:column>
-										<p:column headerText="Installed Qantity">
-											<h:outputText value="#{item.installedQuantity}" styleClass="bolder green">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Running Stock">
-											<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-									</p:dataTable>
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Delivred Qantity" width="90" exportable="false">
+												<h:outputText value="#{-item.quantity}" styleClass="bolder blue">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Delivred Qantity" styleClass="hide">
+												<h:outputText value="#{-item.quantity}" />
+											</p:column>
+											<p:column headerText="Installed Qantity">
+												<h:outputText value="#{item.installedQuantity}" styleClass="bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Running Stock">
+												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</f:subview>
 				</div>
 			</div>
 		</h:form>

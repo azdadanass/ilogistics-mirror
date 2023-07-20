@@ -136,6 +136,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	@PostConstruct
 	public void init() {
 		companyId = menuView.getCompanyId();
+		customerId = menuView.getCustomerId();
 		super.init();
 		initParameters();
 		refreshList();
@@ -151,7 +152,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		super.initParameters();
 		id = UtilsFunctions.getIntegerParameter("id");
 		viewAll = UtilsFunctions.getBooleanParameter("viewAll");
-		customerId = UtilsFunctions.getIntegerParameter("customerId");
 		maxThreshold = UtilsFunctions.getBooleanParameter("maxThreshold");
 
 	}

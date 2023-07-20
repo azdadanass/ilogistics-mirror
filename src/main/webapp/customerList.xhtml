@@ -53,32 +53,36 @@
 						</div>
 					</div>
 				</f:subview>
-				<!-- <div class="row">
-					<p:dataGrid id="categoryList" var="item" value="#{customerView.categoryList}" columns="5" paginator="false" paginatorPosition="bottom" paginatorTemplate="{PageLinks}"
-						styleClass="center" rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory==null}">
-						<div class="itemdiv memberdiv">
-							<div class="inline position-relative">
-								<div class="user">
-									<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
-										<p:graphicImage value="#{item.image}" styleClass="grid_images" />
-										<f:setPropertyActionListener value="#{item.category}" target="#{stockRowView.customerCategory}" />
-									</p:commandLink>
-								</div>
-								<div class="body">
-									<div class="name">
-										<p:commandLink action="#{stockRowView.refreshCustomerList()}" update=":main_form">
-											<h:outputText value=" #{item.category}" styleClass="blue" />
-											<f:setPropertyActionListener value="#{item.category}" target="#{stockRowView.customerCategory}" />
-										</p:commandLink>
-									</div>
+				<div class="space-32" />
+				<h:panelGroup id="customerList">
+					<div class="row">
+						<div class="col-sm-offset-1 col-sm-10">
+							<div class="col-sm-12">
+								<div class="row">
+									<ui:repeat var="customer" value="#{stockRowView.customerList}">
+										<div class="col-sm-3">
+											<div class="center">
+												<p:commandLink action="#{menuView.redirect('reporting2.xhtml','faces-redirect=true')}" styleClass="img1">
+													<span class="rotate_section">
+														<img src="#{customer.photo}" alt="" class="no_resize" width="100" height="50" />
+													</span>
+													<f:setPropertyActionListener value="#{customer.id}" target="#{menuView.customerId}" />
+												</p:commandLink>
+												<h3>
+													<i class="ace-icon fa fa-circle #{customer.isNonEmptyStock?'light-green':'light-orange'} "></i>
+													<h:outputText value=" #{customer.name}" style="font-size:14px" />
+												</h3>
+											</div>
+										</div>
+									</ui:repeat>
 								</div>
 							</div>
 						</div>
-					</p:dataGrid>
-				</div> -->
-				<div class="row">
+					</div>
+				</h:panelGroup>
+				<!-- <div class="row">
 					<div class="space-32" />
-					<p:dataGrid id="customerList" var="item" value="#{stockRowView.customerList}" columns="5" rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom"
+					<p:dataGrid var="item" value="#{stockRowView.customerList}" columns="5" rows="20" paginator="true" paginatorAlwaysVisible="false" paginatorPosition="bottom"
 						paginatorTemplate="{PageLinks}" styleClass="center" rowIndexVar="rowIndex" rendered="#{stockRowView.customerCategory!=null}">
 						<div class="itemdiv memberdiv">
 							<div class="inline position-relative">
@@ -102,7 +106,7 @@
 							</div>
 						</div>
 					</p:dataGrid>
-				</div>
+				</div> -->
 			</div>
 		</h:form>
 	</ui:define>

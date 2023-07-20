@@ -187,6 +187,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	IndexView indexView;
+	
+	@Autowired
+	MenuView menuView;
 
 	@Autowired
 	ProjectAssignmentService projectAssignmentService;
@@ -244,6 +247,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	@Override
 	@PostConstruct
 	public void init() {
+		companyId = menuView.getCompanyId();
+		
 		super.init();
 		isStoragePage = ("/" + storagePage).equals(currentPath);
 		isPreparationPage = ("/" + preparationPage).equals(currentPath);
@@ -347,7 +352,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			templateId = null;
 		}
 
-		companyId = UtilsFunctions.getIntegerParameter("companyId");
+		
 
 		outboundDeliveryRequestId = UtilsFunctions.getIntegerParameter("outboundDeliveryRequestId");
 

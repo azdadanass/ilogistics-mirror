@@ -668,7 +668,7 @@
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
 														<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.toUser}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-															converter="#{genericSecuredConverter}" var="r">
+															converter="#{genericSecuredConverter}" var="r" required="true" requiredMessage="Internal Resource should not be null">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{userView.findLightActive(true)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item}" />
 															<p:column>
@@ -708,7 +708,7 @@
 												</div>
 												<div class="col-xs-12 col-sm-9">
 													<div class="clearfix">
-														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6">
+														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToCompanyType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="External Company Type should not be null">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
 															<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
@@ -749,7 +749,8 @@
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
 																<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
-																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.CUSTOMER==deliveryRequestView.deliveryRequest.deliverToCompanyType}"
+																	required="true" requiredMessage="External Resource should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{userView.findActiveByCustomer(deliveryRequestView.deliveryRequest.deliverToCustomerId)}" var="item" itemLabel="#{item.fullName}"
 																		itemValue="#{item}" />
@@ -776,7 +777,7 @@
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
 																<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.deliverToSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains"
-																	required="true" requiredMessage="External Customer should not be null">
+																	required="true" requiredMessage="External Supplier should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{supplierView.findByHavingActiveProjectAssignment(deliveryRequestView.deliveryRequest.destinationProjectId)}" var="item"
 																		itemLabel="#{item.name}" itemValue="#{item.id}" />
@@ -796,7 +797,8 @@
 														<div class="col-xs-12 col-sm-9">
 															<div class="clearfix">
 																<p:selectOneMenu id="toUser" value="#{deliveryRequestView.deliveryRequest.toUser}" filter="true" filterMatchMode="contains" styleClass="col-xs-12 col-sm-6"
-																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}">
+																	converter="#{genericSecuredConverter}" var="r" rendered="#{CompanyType.SUPPLIER==deliveryRequestView.deliveryRequest.deliverToCompanyType}"
+																	required="true" requiredMessage="External Resource should not be null">
 																	<f:selectItem itemLabel="---" noSelectionOption="true" />
 																	<f:selectItems value="#{userView.findActiveBySupplier(deliveryRequestView.deliveryRequest.deliverToSupplierId)}" var="item" itemLabel="#{item.fullName}"
 																		itemValue="#{item}" />

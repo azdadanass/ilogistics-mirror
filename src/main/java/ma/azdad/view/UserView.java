@@ -11,11 +11,13 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CompanyType;
+import ma.azdad.model.Conversation;
 import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
@@ -165,6 +167,29 @@ public class UserView {
 			}
 		return true;
 	}
+	
+	//for chat
+	public List<User> findLightByInternalAndActive2(String username) {
+		
+		return userService.findLightByInternalAndActive2(username);
+	}
+	
+	public List<Conversation> findOnlineUserConversations(String username) {
+
+		List<User> users = userService.findLightByInternalAndActive2(username);
+		List<Conversation> conversations = new ArrayList<>();
+		for (User user1 : users) {
+
+			if(sessionView.getOnlineUsers().contains(user1))
+			conversations.add(new Conversation(user1, null, null, null));
+
+		}
+
+		return conversations;
+	}
+	
+	//
+
 
 	public void formatFirstName() {
 		user.setFirstName(UtilsFunctions.formatName(user.getFirstName()));

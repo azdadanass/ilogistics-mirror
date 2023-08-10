@@ -5,6 +5,38 @@
 	<div id="sidebar" class="sidebar responsive">
 		<h:form id="sider_form">
 			<h:panelGroup id="sider-panel">
+			<ul class="nav nav-list">
+				<f:subview rendered="#{chatView.isPage()}">
+						<li class="open">
+							<a href="#" class="dropdown-toggle">
+								<i class="menu-icon fa fa-user"></i>
+								<span class="menu-text">
+									<h:outputText value="CHAT" />
+								</span>
+								<b class="arrow fa fa-angle-down"></b>
+							</a>
+							<b class="arrow"></b>
+							<ul class="submenu">
+							<li>
+									<h:outputLink value="conversations.xhtml">
+										<i class="menu-icon fa fa-caret-right"></i>
+										<i class="ace-icon fa fa-comments bigger-130 blue" style="margin-right: 10px" />
+										<h:outputText value="Conversations" />
+									
+									
+									</h:outputLink>
+									<b class="arrow"></b>
+									
+								</li>
+							
+									
+								
+							</ul>
+						</li>
+						
+						
+						</f:subview>
+				</ul>
 				<ul class="nav nav-list">
 					<f:subview rendered="#{indexView.selectedMenu == 1}">
 						<li class="open">

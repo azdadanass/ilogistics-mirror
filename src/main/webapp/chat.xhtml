@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="template/template2.xhtml">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider2.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home" /> <a href="#"> <h:outputText
+						value="Main Menu" />
+			</a></li>
+			<li class="active"><h:outputText value=" Chat" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<h:form id="main_form">
+			<div id="rusername-page">
+				<div class="rusername-page-container">
+
+					<form id="rusernameForm" name="rusernameForm">
+
+						<h2>
+							<i class="ace-icon fa fa-user"></i> List of Users
+						</h2>
+						<!-- Title: List of Users -->
+						<div class="rsearch-container">
+							<input type="text" id="rsearchInput"
+								placeholder="Search users..." />
+						</div>
+					</form>
+					<br />
+					<div id="ruser-list">
+						<ul>
+							<ui:repeat value="#{chatView.conversations}" var="conversation">
+							<h:outputLink value="chat2.xhtml">
+								<li class="ruser-item"
+									 onclick="#{chatView.updateSeen()}" >
+										
+										<p:graphicImage
+											value="#{cacheView.getPhoto(conversation.sender.username)}"
+											width="40" height="40" styleClass="ruser-avatar" />
+										<div class="ruser-details">
+											<span class="ruser-fullname">#{conversation.sender.fullName}</span>
+											<span class="rstatus-indicator"></span>
+										</div>
+										<!-- Status indicator -->
+										<div class="rmessage-content"></div>
+										<f:param name="username"
+											value="#{conversation.sender.username}" />
+										<f:param name="check" value="1" />
+									</li></h:outputLink>
+							</ui:repeat>
+						</ul>
+					</div>
+
+				</div>
+			</div>
+
+
+
+			<div id="rchat-page" class="rhidden">
+				<div class="rchat-container">
+					<i class="fas fa-arrow-left rback-button" onclick="refreshPage()"></i>
+					<div class="rchat-header">
+						<img id="ruserAvatar" src="" />
+						<h2 id="rchatHeaderPlaceholder"></h2>
+					</div>
+					<div class="rconnecting">Connecting...</div>
+					<ul id="rmessageArea">
+
+					</ul>
+					
+					<form id="rmessageForm" name="rmessageForm" nameForm="rmessageForm">
+						<div class="rform-group">
+							<div class="rinput-group rclearfix">
+								<input type="text" id="rmessage" placeholder="Type a message..."
+									autocomplete="off" class="rform-control" />
+								<button type="submit" class="rprimary">
+									<i class="fas fa-paper-plane"></i> Send
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<h:outputScript escape="false">
+        #{sessionView.javascriptUsername}
+    </h:outputScript>
+			<h:outputScript escape="false">
+        #{sessionView.javascriptOnlineUsernames}
+    </h:outputScript>
+
+			<h:outputScript library="js" name="main.js?v=14" />
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+			<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+			<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+			<script
+				src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+		</h:form>
+	</ui:define>
+</ui:composition>

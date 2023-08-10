@@ -44,6 +44,18 @@ public class UserService {
 	public User findOneLight(String username) {
 		return repos.findById(username).get();
 	}
+	
+	public User findByUsername(String username) {
+		return repos.findByUsername(username);
+	}
+	
+	public User findByFullName(String fullName) {
+		return repos.findByFullName(fullName);
+	}
+	
+	public List<User> findLightByInternalAndActive() {
+		return findLight(true, true);
+	}
 
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return repos.findLightByCompany(companyId, active);
@@ -67,6 +79,15 @@ public class UserService {
 
 	public void updatePassword(String username, String password) {
 		repos.updatePassword(username, password);
+	}
+	
+	@Cacheable("userService.findLight2")
+	public List<User> findLight2(Boolean internal, Boolean active,String username) {
+		return repos.findLight2(internal, active,username);
+	}
+	
+	public List<User> findLightByInternalAndActive2(String username) {
+		return findLight2(true, true,username);
 	}
 
 	public List<User> findLight() {

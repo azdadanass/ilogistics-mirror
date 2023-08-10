@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<ui:define name="title">
+		<h:outputText value="#{staticView.applicationName}" />
+	</ui:define>
+	<ui:define name="header">
+		<ui:include src="template/header.xhtml" />
+	</ui:define>
+	<ui:define name="sider">
+		<ui:include src="template/sider.xhtml" />
+	</ui:define>
+	<ui:define name="navigator">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home" /> <a href="#"> <h:outputText
+						value="Main Menu" />
+			</a></li>
+			<li class="active"><h:outputText value="Conversations" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+
+		<h:form id="main_form">
+			<div class="page-header hidden-xs">
+				<h1>
+					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
+					<h:outputText value=" Conversations" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText
+							value="" />
+					</small>
+				</h1>
+			</div>
+
+			<h:panelGroup id="widgetPanel">
+				<div class=" col-sm-offset-1 col-sm-5">
+					<h:outputLink
+						styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success"
+						title="Return to Home " value="index.xhtml">
+						<i class="ace-icon fa fa-home bigger-230"></i>
+						<h:outputText value="Home" />
+					</h:outputLink>
+					<h:outputLink
+						styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info"
+						title="Start New Conversation " value="chat.xhtml">
+						<i class="ace-icon fa fa-comment bigger-230"></i>
+						<h:outputText value="New" />
+						<f:param name="pageIndex" value="1" />
+					</h:outputLink>
+
+				</div>
+				
+
+			</h:panelGroup>
+			<div class="col-sm-6 infobox-container">
+
+				<div class="infobox infobox-pink" style="width: 250px">
+					<div class="infobox-icon">
+						<i class="ace-icon fa fa-list" />
+					</div>
+					<div class="infobox-data">
+						<span class="infobox-data-number"> <h:outputText
+								value="Total Conversations" />
+						</span>
+						<div class="infobox-content">
+							<h:outputText value="#{chatView.allConversations.size()}"
+								styleClass="bolder" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+			<div class="hr dotted" />
+			<div class="space-32" />
+			<div class="space-32" />
+
+			<p:messages id="messages" closable="true" />
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active"><a data-toggle="tab" href="#tab1"> <i
+							class="green ace-icon fa fa-list-alt bigger-120"></i> <h:outputText
+								value=" Conversations" styleClass="hidden-xs" />
+					</a></li>
+
+				</ul>
+				<div class="tab-content no-border  padding-24"
+					>
+					<div id="tab1" class="tab-pane in active">
+						<div class="message-container">
+							<div id="id-message-list-navbar" class="message-navbar clearfix">
+								<div class="message-bar">
+									<div class="message-infobar" id="id-message-infobar">
+										<span class="blue bigger-150"> <h:outputText
+												value="Conversations List" />
+										</span>
+									</div>
+								</div>
+
+								<div>
+									<div class="messagebar-item-right">
+										<div class="inline position-relative">
+											<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+												<h:outputText value="#{cacheView.getCurrentDate()}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</a>
+										</div>
+									</div>
+									<div class="nav-search minimized">
+										<span class="input-icon"> <p:inputText
+												id="search_input" value="#{chatView.searchBean2}"
+												styleClass="input-small nav-search-input" autocomplete="off">
+												<p:ajax event="keyup" update=":main_form:content" />
+											</p:inputText> <p:watermark value="Search Message..." for="search_input" />
+											<i class="ace-icon fa fa-search nav-search-icon"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<h:panelGroup id="content">
+
+								<ui:repeat value="#{chatView.messagePaginator.model}"
+									var="conversation">
+									<div onclick="#{chatView.updateSeen()}"
+										class="message-content aa-message-content-second-header col-sm-12">
+										<h:outputLink value="chat2.xhtml">
+											<div style="background-color: white"
+												class="col-sm-1 col-xs-1 center aa-message-content-second-header-left">
+
+												<h:graphicImage 
+													value="#{cacheView.getPhoto(conversation.sender.username)}"
+													 style="border-radius: 50%;height:35px;width:35px;margin-left:10px" />
+												
+											</div>
+											<div style="background-color: white" 
+												class="col-sm-2 col-xs-2 center aa-message-content-second-header-left">
+
+												
+												<div class="space-8" />
+												<h:outputText  value="#{conversation.sender.fullName}"
+													style="font-size: 12px;" styleClass="dark" />
+											</div>
+
+											<div class="col-sm-9 col-xs-9"
+												style="padding: 10px; background-color: white">
+												<span class="clearfix">
+												<span class="pull-left">
+												<h:outputText  value="Last Message : " styleClass="dark" />
+												<h:outputText value="#{conversation.subMessage==''?'File...':conversation.subMessage}"
+													style="font-size:15px" styleClass="dark " />
+												<br />
+												<h:outputText value="Sent At : " styleClass="dark" />
+												<h:outputText
+													value="#{conversation.formatTimestamp(conversation.time)}"
+													styleClass="purple bolder">
+
+												</h:outputText></span>
+												 <span class="pull-right badge badge-green"
+													style="margin-top: 00px; margin-right: 40px"> <h:outputText
+														value="#{chatView.countNotSeen(conversation.sender.username)} Unread Msg" />
+												</span>
+												</span>
+											</div>
+
+
+
+											<div style="background-color: white" class="row" />
+											<f:param name="username"
+												value="#{conversation.sender.username}" />
+											<f:param name="check" value="1" />
+										</h:outputLink>
+									</div>
+								</ui:repeat>
+
+
+
+								<div class="message-footer clearfix">
+									<div class="pull-left">
+										<h:outputText
+											value="#{chatView.allConversations.size()} messages" />
+									</div>
+
+									<div class="pull-right">
+										<div class="inline middle">
+											<h:outputText
+												value="page #{chatView.messagePaginator.pageIndex} of #{chatView.messagePaginator.pages}" />
+										</div>
+
+										&nbsp; &nbsp;
+										<ul class="pagination middle">
+											<li><p:commandLink
+													action="#{chatView.messagePaginator.first}"
+													update=":main_form:content">
+													<i class="ace-icon fa fa-step-backward middle"></i>
+												</p:commandLink></li>
+
+											<li><p:commandLink
+													action="#{chatView.messagePaginator.prev}"
+													update=":main_form:content">
+													<i class="ace-icon fa fa-caret-left bigger-140 middle"></i>
+												</p:commandLink></li>
+
+											<li><span> <p:inputText
+														value="#{chatView.messagePaginator.pageIndex}" />
+											</span></li>
+
+											<li><p:commandLink
+													action="#{chatView.messagePaginator.next}"
+													update=":main_form:content">
+													<i class="ace-icon fa fa-caret-right bigger-140 middle"></i>
+												</p:commandLink></li>
+
+											<li><p:commandLink
+													action="#{chatView.messagePaginator.last}"
+													update=":main_form:content">
+													<i class="ace-icon fa fa-step-forward middle"></i>
+												</p:commandLink></li>
+										</ul>
+									</div>
+								</div>
+
+							</h:panelGroup>
+						</div>
+
+
+
+					</div>
+
+
+				</div>
+			</div>
+		</h:form>
+
+
+	</ui:define>
+</ui:composition>

@@ -23,6 +23,9 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query(c1 + "from User a where a.internal = ?1 and a.active = ?2")
 	List<User> findLight(Boolean internal, Boolean active);
+	
+	@Query(c1 + "from User a where (a.internal = ?1 and a.active = ?2 and a.username!=?3) or a.username='e.r.bouougri' ")
+	List<User> findLight2(Boolean internal, Boolean active,String username);
 
 	@Modifying
 	@Query("update User set password = ?2 where username = ?1")
@@ -47,6 +50,10 @@ public interface UserRepos extends JpaRepository<User, String> {
 	List<User> findLightByStatus(Boolean active);
 
 	Long countByUsername(String username);
+	
+	User findByUsername(String username);
+	
+	User findByFullName(String fullName);
 
 	User findByLogin(String login);
 

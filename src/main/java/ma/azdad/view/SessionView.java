@@ -36,7 +36,7 @@ public class SessionView implements Serializable {
 
 	@Autowired
 	private CompanyProfileService companyProfileService;
-
+	private static List<User> onlineUsers = new ArrayList<>();
 	private String login;
 	private String serverName;
 	private User user;
@@ -54,6 +54,36 @@ public class SessionView implements Serializable {
 		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");
 		System.out.println("serverName : " + serverName);
 		System.out.println("**********************************");
+	}
+
+	// for chat javascript
+
+	public String getJavascriptUsername() {
+
+		return "var username = '" + user.getUsername() + "';";
+	}
+
+	public String getJavascriptUsername2() {
+
+		return "var username2 = '" + user.getUsername() + "';";
+	}
+
+	public String getJavascriptOnlineUsernames() {
+		List<String> fullNames = new ArrayList<>();
+		for (User user : onlineUsers) {
+			fullNames.add(user.getFullName());
+		}
+		return "var onlineUsers = '" + fullNames + "';";
+	}
+
+	//
+
+	public void addUser(User user) {
+		onlineUsers.add(user);
+	}
+
+	public void removeUser(User user) {
+		onlineUsers.remove(user);
 	}
 
 	public Boolean getInternal() {
@@ -105,7 +135,7 @@ public class SessionView implements Serializable {
 	public Boolean getIsCustomerUser() {
 		return user.getIsCustomerUser();
 	}
-	
+
 	public Integer getCustomerId() {
 		return getIsCustomerUser() ? user.getCustomerId() : null;
 	}
@@ -233,5 +263,15 @@ public class SessionView implements Serializable {
 	public void setCompanyCfoIdList(List<Integer> companyCfoIdList) {
 		this.companyCfoIdList = companyCfoIdList;
 	}
+
+	public List<User> getOnlineUsers() {
+		return onlineUsers;
+	}
+
+	public void setOnlineUsers(List<User> onlineUsers) {
+		this.onlineUsers = onlineUsers;
+	}
+	
+	
 
 }

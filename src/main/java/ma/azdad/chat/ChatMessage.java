@@ -27,14 +27,15 @@ public class ChatMessage extends GenericModel<Integer> {
 	private String sender;
 	private String receiver;
 	private Boolean seen = false;
+	private Boolean mailed = false;
 	private User userSender;
 	private User userReceiver;
 	private String photo;
-	
+	private String app;
     private ChatFile file;
 	
-
-	private LocalDateTime timestamp = LocalDateTime.now();;
+    
+	private LocalDateTime timestamp = LocalDateTime.now();
 	private MessageType type;
 
 	public enum MessageType {
@@ -143,7 +144,7 @@ public class ChatMessage extends GenericModel<Integer> {
 		this.photo = photo;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL) // Example relationship, adjust as needed
+	@OneToOne(cascade = CascadeType.ALL) 
 	public ChatFile getFile() {
 		return file;
 	}
@@ -151,6 +152,24 @@ public class ChatMessage extends GenericModel<Integer> {
 	public void setFile(ChatFile file) {
 		this.file = file;
 	}
+
+	public Boolean getMailed() {
+		return mailed;
+	}
+
+	public void setMailed(Boolean mailed) {
+		this.mailed = mailed;
+	}
+
+	public String getApp() {
+		return app;
+	}
+
+	public void setApp(String app) {
+		this.app = app;
+	}
+	
+	
 
 
 	

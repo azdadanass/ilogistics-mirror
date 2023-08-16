@@ -1,7 +1,6 @@
 package ma.azdad.chat;
 
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +11,7 @@ import javax.transaction.Transactional;
 
 import org.joda.time.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,6 +46,9 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	UserRepos userRepos;
 	@Autowired
 	ChatMessageRepos chatRepos;
+	
+	 @Value("${application}")
+	 private String application;
 
 	String username;
 	Integer check = 0;
@@ -64,7 +67,7 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	public void init() {
 		super.init();
 		time();
-		totalMNotSeen = chatRepos.countByUserReceiverUsernameAndSeen(sessionView.getUsername(), false);
+		totalMNotSeen = chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false,application);
 	}
 
 	@Override
@@ -143,8 +146,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 
-			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(username, user.getUsername()); 
-			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(user.getUsername(),username );
+			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
+			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application);
 			 
 			if( messageReceived!=null && messageSent!=null ) 	
 			conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
@@ -169,8 +172,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 
-			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(username, user.getUsername()); 
-			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(user.getUsername(),username );
+			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
+			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application );
 			 
 			if( messageReceived!=null && messageSent!=null ) 	
 			conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
@@ -208,8 +211,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		for (User user : users) {
 
 			ChatMessage messageReceived = chatRepos
-					.findTopByUserReceiverUsernameAndUserSenderUsernameAndSeenOrderByTimestampDesc(
-							sessionView.getUsername(), user.getUsername(), false);
+					.findTopByUserReceiverUsernameAndUserSenderUsernameAndSeenAndAppOrderByTimestampDesc(
+							sessionView.getUsername(), user.getUsername(), false,application);
 			if (messageReceived != null)
 				conversations.add(new Conversation(user, null, null, null));
 
@@ -220,22 +223,22 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 
 	public Long countTotalNotSeen() {
 
-		return chatRepos.countByUserReceiverUsernameAndSeen(sessionView.getUsername(), false);
+		return chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false,application);
 
 	}
 
 	public Long countNotSeen(String user) {
 
-		return chatRepos.countByUserReceiverUsernameAndUserSenderUsernameAndSeen(sessionView.getUsername(), user,
-				false);
+		return chatRepos.countByUserReceiverUsernameAndUserSenderUsernameAndSeenAndApp(sessionView.getUsername(), user,
+				false,application);
 
 	}
 
 	public void updateSeen() {
 		if (check == 1) {
 			User user = userRepos.findByUsername(username);
-			List<ChatMessage> list = chatRepos.findByUserReceiverUsernameAndUserSenderUsernameAndSeen(
-					sessionView.getUsername(), user.getUsername(), false);
+			List<ChatMessage> list = chatRepos.findByUserReceiverUsernameAndUserSenderUsernameAndSeenAndApp(
+					sessionView.getUsername(), user.getUsername(), false,application);
 			for (ChatMessage chatMessage : list) {
 				chatMessage.setseen(true);
 				chatRepos.save(chatMessage);

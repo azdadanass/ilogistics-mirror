@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import ma.azdad.model.User;
 import ma.azdad.repos.ChatMessageRepos;
 import ma.azdad.service.UserService;
+import ma.azdad.utils.App;
 import ma.azdad.view.SessionView;
 
 @Controller
@@ -26,6 +28,9 @@ public class ChatController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Value("${application}")
+	private String application;
 
 	@MessageMapping("/chat.register")
 	@SendTo("/topic/public")
@@ -42,6 +47,7 @@ public class ChatController {
 		User userReceiver = userService.findByUsername(chatMessage.getReceiver());
 		chatMessage.setUserSender(userSender);
 		chatMessage.setUserReceiver(userReceiver);
+		chatMessage.setApp(application);
 		chatMessageRepos.save(chatMessage);
 		return chatMessage;
 	}

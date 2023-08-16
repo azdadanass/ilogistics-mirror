@@ -227,17 +227,42 @@ function onMessageReceived(payload) {
 				photoElement.src = photoUrl;
 				messageContentElement.appendChild(photoElement);
 			}
-			 if (message.file) {
-                // Handle the received file
-                var fileUrl = message.file.data;
-                var fileLink = document.createElement('a');
-                // Set file link styling ...
-                fileLink.href = fileUrl;
-                fileLink.target = '_blank'; // Open link in a new tab
-                fileLink.textContent =  message.file.filename;
-                fileLink.download = message.file.filename
-                messageContentElement.appendChild(fileLink);
-            }
+			if (message.file) {
+				var messageFileElement = document.createElement('div');
+				var fileUrl = message.file.data;
+				var fileLink = document.createElement('a');
+				var icon = document.createElement('i');
+				fileLink.href = fileUrl;
+				fileLink.target = '_blank'; // Open link in a new tab
+
+				if (message.file.filename.endsWith('.pdf')) {
+
+
+					icon.classList.add('fas', 'fa-file-pdf', 'bigger-230');
+
+				}
+
+				if (message.file.filename.endsWith('.docx')) {
+
+					icon.classList.add('fas', 'fa-file-word', 'bigger-230');
+
+				}
+				if (message.file.filename.endsWith('.xlsx')) {
+
+
+					icon.classList.add('fas', 'fa-file-excel', 'bigger-230');
+
+				}
+				fileLink.textContent = message.file.filename;
+				fileLink.download = message.file.filename;
+				fileLink.appendChild(icon);
+				// Display file name if it's not a PDF
+
+
+
+				messageFileElement.appendChild(fileLink);
+				messageContentElement.appendChild(messageFileElement);
+			}
 
 			var timeElement = document.createElement('p');
 			timeElement.style['font-size'] = '12px';
@@ -365,16 +390,41 @@ function displayMessage(sender, content, timestamp, seen, photo,file) {
 	}
 	
 	 if (file) {
-                // Handle the received file
-                var fileUrl = file.data;
-                var fileLink = document.createElement('a');
-                // Set file link styling ...
-                fileLink.href = fileUrl;
-                fileLink.target = '_blank'; // Open link in a new tab
-                fileLink.textContent =  file.filename;
-                fileLink.download = file.filename
-                messageContentElement.appendChild(fileLink);
-            }
+		var messageFileElement = document.createElement('div');
+		var fileUrl = file.data;
+		var fileLink = document.createElement('a');
+		var icon = document.createElement('i');
+		fileLink.href = fileUrl;
+		fileLink.target = '_blank'; // Open link in a new tab
+
+		if (file.filename.endsWith('.pdf')) {
+
+
+			icon.classList.add('fas', 'fa-file-pdf', 'bigger-230');
+
+		}
+
+		if (file.filename.endsWith('.docx')) {
+
+			icon.classList.add('fas', 'fa-file-word', 'bigger-230');
+
+		}
+		if (file.filename.endsWith('.xlsx')) {
+
+
+			icon.classList.add('fas', 'fa-file-excel', 'bigger-230');
+
+		}
+		fileLink.textContent = file.filename;
+		fileLink.download = file.filename;
+		fileLink.appendChild(icon);
+		// Display file name if it's not a PDF
+
+
+
+		messageFileElement.appendChild(fileLink);
+		messageContentElement.appendChild(messageFileElement);
+	}
 
 	var timeElement = document.createElement('p');
 	timeElement.style['font-size'] = '12px';

@@ -19,12 +19,13 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Conversation;
 import ma.azdad.model.Currency;
-
+import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.repos.ChatMessageRepos;
 import ma.azdad.repos.CurrencyRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.service.CurrencyService;
+import ma.azdad.service.UserRoleService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.FacesContextMessages;
@@ -46,6 +47,9 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	UserRepos userRepos;
 	@Autowired
 	ChatMessageRepos chatRepos;
+	
+	@Autowired
+	UserRoleService useRoleService;
 	
 	 @Value("${application}")
 	 private String application;
@@ -105,17 +109,15 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	
 	public List<Conversation> findUserConversations(String username) {
 
-		List<User> users = userView.findLightByInternalAndActive2(username);
+		List<User> users = userView.findLightByActive(username);
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 
-		//	ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(username, user.getUsername()); 
-			/*ChatMessage messageSent = chatRepos.
-			 * findTopByUserReceiverUsernameAndUserSenderUsernameOrderByTimestampDesc(user.
-			 * getUsername(),username );
-			 */
-		
+			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
+			
 			conversations.add(new Conversation(user, null, null, null));
+			
+		}
 
 		}
 
@@ -140,54 +142,64 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	        return latestTime.equals(message1Time) ? message1 : message2;
 	    }
 	
-	public List<Conversation> findTop10UserConversations(String username) {
+	 public List<Conversation> findTop10UserConversations(String username) {
 
-		List<User> users = userView.findLightByInternalAndActive2(username);
-		List<Conversation> conversations = new ArrayList<>();
-		for (User user : users) {
+			List<User> users = userView.findLightByActive(username);
+			List<Conversation> conversations = new ArrayList<>();
+			for (User user : users) {
+				
+				if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 
-			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
-			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application);
-			 
-			if( messageReceived!=null && messageSent!=null ) 	
-			conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
-			else if( messageReceived!=null && messageSent==null ) 	
-				conversations.add(new Conversation(user, messageReceived.getContent(), messageReceived.getTimestamp(), null));
-			else if( messageReceived==null && messageSent!=null ) 	
-				conversations.add(new Conversation(user, messageSent.getContent(), messageSent.getTimestamp(), null));
+				ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
+				ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application);
+				 
+				if( messageReceived!=null && messageSent!=null ) 	
+				conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
+				else if( messageReceived!=null && messageSent==null ) 	
+					conversations.add(new Conversation(user, messageReceived.getContent(), messageReceived.getTimestamp(), null));
+				else if( messageReceived==null && messageSent!=null ) 	
+					conversations.add(new Conversation(user, messageSent.getContent(), messageSent.getTimestamp(), null));
+				
+				}
 
+			}
+				
+				
+			Collections.sort(conversations);
+			
+
+			if(conversations.size()>=10)
+				return conversations.subList(0, 10);
+			else
+				return conversations;
 		}
-		Collections.sort(conversations);
-		
-
-		if(conversations.size()>=10)
-			return conversations.subList(0, 10);
-		else
-			return conversations;
-	}
 	
-	public List<Conversation> findAllUserConversations(String username) {
+	
+	 public List<Conversation> findAllUserConversations(String username) {
 
-		List<User> users = userView.findLightByInternalAndActive2(username);
-		List<Conversation> conversations = new ArrayList<>();
-		for (User user : users) {
+			List<User> users = userView.findLightByActive(username);
+			List<Conversation> conversations = new ArrayList<>();
+			for (User user : users) {
 
-			ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
-			ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application );
-			 
-			if( messageReceived!=null && messageSent!=null ) 	
-			conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
-			else if( messageReceived!=null && messageSent==null ) 	
-				conversations.add(new Conversation(user, messageReceived.getContent(), messageReceived.getTimestamp(), null));
-			else if( messageReceived==null && messageSent!=null ) 	
-				conversations.add(new Conversation(user, messageSent.getContent(), messageSent.getTimestamp(), null));
+				if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
+				ChatMessage messageReceived = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
+				ChatMessage messageSent = chatRepos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application );
+				 
+				if( messageReceived!=null && messageSent!=null ) 	
+				conversations.add(new Conversation(user, getLastMessage(messageReceived, messageSent).getContent(), getLargerDateTime(messageReceived.getTimestamp(),messageSent.getTimestamp()), null));
+				else if( messageReceived!=null && messageSent==null ) 	
+					conversations.add(new Conversation(user, messageReceived.getContent(), messageReceived.getTimestamp(), null));
+				else if( messageReceived==null && messageSent!=null ) 	
+					conversations.add(new Conversation(user, messageSent.getContent(), messageSent.getTimestamp(), null));
+				
+				}
 
+			}
+			Collections.sort(conversations);
+			
+
+				return conversations;
 		}
-		Collections.sort(conversations);
-		
-
-			return conversations;
-	}
 
 	public String getJavascriptUsername() {
 
@@ -206,9 +218,11 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 
 	public List<Conversation> findMessagesNotSeen() {
 
-		List<User> users = userView.findLightByInternalAndActive2(sessionView.getUsername());
+		List<User> users = userView.findLightByActive(sessionView.getUsername());
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
+			
+			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 
 			ChatMessage messageReceived = chatRepos
 					.findTopByUserReceiverUsernameAndUserSenderUsernameAndSeenAndAppOrderByTimestampDesc(
@@ -216,6 +230,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 			if (messageReceived != null)
 				conversations.add(new Conversation(user, null, null, null));
 
+		}
+			
 		}
 		return conversations;
 

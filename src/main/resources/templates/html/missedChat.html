@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:remove="all">Template for HTML email with inline image</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  </head>
+  <body>
+    <p th:text="${dearUser}">
+      Hello, Peter Static!
+    </p>
+    
+    <p>
+      Seems you have missed to read this chat on Ilogistics with <span style=' color: #336199;' th:text="${sender}" ></span> 
+    </p>
+    <p>Your missed messages :</p>
+    <ul th:remove="all-but-first">
+      <p th:each="msg : ${msgList}" >
+		  <span style=' color: #336199;' th:text="${message}" > </span>  <span th:text="${msg.content != '' ? msg.content : 'attachement...'}"></span><br/>
+		  
+		  <span style=' color: #336199;' th:text="${date}" ></span>  <span th:text="${msg.timestamp}"> </span> 
+		   
+		   </p><br/>
+		   <br/>
+		  
+      
+    </ul>
+    
+    <p>
+      Regards, <br />
+      <em>3GCOM</em>
+    </p>
+  </body>
+</html>

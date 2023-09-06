@@ -81,13 +81,13 @@ public class UserService {
 		repos.updatePassword(username, password);
 	}
 	
-	@Cacheable("userService.findLight2")
-	public List<User> findLight2(Boolean internal, Boolean active,String username) {
-		return repos.findLight2(internal, active,username);
+	public List<User> findLightByActive(String username) {
+		return findLight2( true,username);
 	}
 	
-	public List<User> findLightByInternalAndActive2(String username) {
-		return findLight2(true, true,username);
+	@Cacheable("userService.findLight2")
+	public List<User> findLight2( Boolean active,String username) {
+		return repos.findLight2(active,username);
 	}
 
 	public List<User> findLight() {

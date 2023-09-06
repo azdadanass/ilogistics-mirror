@@ -40,10 +40,21 @@ public interface ChatMessageRepos extends JpaRepository<ChatMessage, Integer> {
 	@Query(value = "SELECT * FROM chat_message cm " +
 		       "WHERE cm.seen = false " +
 		       "AND TIMESTAMPDIFF(HOUR, cm.timestamp, NOW()) >= 1 " +
-		       "AND cm.user_receiver_username = ?1 " +
-		       "AND cm.mailed = false",
+		       "AND cm.user_receiver_username = ?1 AND cm.user_sender_username = ?2 " +
+		       "AND cm.mailed = false "+
+		       "AND cm.app = ?3",
 		nativeQuery = true)
-		List<ChatMessage> findUnseenMessagesByTimestampDifference(User receiver);
+		List<ChatMessage> findUnseenMessagesByTimestampDifference2(User receiver,User sender,String app);
+	
+	@Query(value = "SELECT * FROM chat_message cm " +
+		       "WHERE cm.seen = false " +
+		       "AND TIMESTAMPDIFF(HOUR, cm.timestamp, NOW()) >= 1 " +
+		       "AND cm.user_receiver_username = ?1 " +
+		       "AND cm.mailed = false "+
+		       "AND cm.app = ?2",
+		nativeQuery = true)
+		List<ChatMessage> findUnseenMessagesByTimestampDifference(User receiver,String app);
+
 
 
 

@@ -169,14 +169,15 @@ public class UserView {
 	}
 	
 	//for chat
-	public List<User> findLightByInternalAndActive2(String username) {
+	@Cacheable("userView.findLightByActive")
+	public List<User> findLightByActive(String username) {
 		
-		return userService.findLightByInternalAndActive2(username);
+		return userService.findLightByActive(username);
 	}
 	
 	public List<Conversation> findOnlineUserConversations(String username) {
 
-		List<User> users = userService.findLightByInternalAndActive2(username);
+		List<User> users = userService.findLightByActive(username);
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user1 : users) {
 

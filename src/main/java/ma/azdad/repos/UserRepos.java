@@ -18,6 +18,12 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query("select new User(username,fullName,photo,email,job,phone,cin) from User ")
 	List<User> find();
+	
+	@Query(c1 + "from User a where a.active = ?1")
+	List<User> find(Boolean active);
+	
+	@Query(c1 + "from User a where  a.active = ?1 and a.username!=?2  ")
+	List<User> findLight2( Boolean active,String username);
 
 	List<User> findByInternal(Boolean internal);
 

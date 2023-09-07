@@ -91,6 +91,13 @@ public class User extends GenericModel<String> {
 		this.username = username;
 		this.fullName = fullName;
 	}
+	
+	public User(String username, String fullName,String email,Boolean internal) {
+		this.username = username;
+		this.fullName = fullName;
+		this.email = email;
+		this.internal = internal;
+	}
 
 	public User(String username, String fullName, String photo, String email, String job) {
 		super();

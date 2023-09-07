@@ -9,6 +9,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import javax.persistence.Transient;
+
 import ma.azdad.service.UtilsFunctions;
 
 public class Conversation implements Comparable<Conversation>{
@@ -70,6 +72,14 @@ public class Conversation implements Comparable<Conversation>{
         return null;
         }
     }
+	
+	@Transient
+	public String getInternal() {
+		if (!sender.getInternal())
+			return "(External)";
+		else
+			return "";
+	}
 	
 	public String getFullName() {
 		

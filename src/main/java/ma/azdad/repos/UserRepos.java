@@ -15,14 +15,15 @@ import ma.azdad.model.User;
 public interface UserRepos extends JpaRepository<User, String> {
 
 	String c1 = "select new User(a.username,a.fullName) ";
+	String c3 = "select new User(a.username,a.fullName,a.email,a.internal) ";
 
 	@Query("select new User(username,fullName,photo,email,job,phone,cin) from User ")
 	List<User> find();
 	
-	@Query(c1 + "from User a where a.active = ?1")
+	@Query(c3 + "from User a where a.active = ?1")
 	List<User> find(Boolean active);
 	
-	@Query(c1 + "from User a where  a.active = ?1 and a.username!=?2  ")
+	@Query(c3 + "from User a where  a.active = ?1 and a.username!=?2 order by a.internal desc")
 	List<User> findLight2( Boolean active,String username);
 
 	List<User> findByInternal(Boolean internal);

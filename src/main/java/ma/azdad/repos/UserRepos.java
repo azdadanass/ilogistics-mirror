@@ -23,7 +23,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query(c3 + "from User a where a.active = ?1")
 	List<User> find(Boolean active);
 	
-	@Query(c3 + "from User a where  a.active = ?1 and a.username!=?2 order by a.internal desc")
+	@Query(c3 + "from User a where  a.active = ?1 and a.username!=?2 order by a.internal desc,a.fullName asc")
 	List<User> findLight2( Boolean active,String username);
 
 	List<User> findByInternal(Boolean internal);

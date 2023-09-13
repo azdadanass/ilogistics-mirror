@@ -143,8 +143,8 @@ public class EmailService {
 		send(mail);
 	}
 	
-	@Async
-	@Scheduled(fixedRate = 600000)
+	
+	//@Scheduled(fixedRate = 600000)
 	public void sendUnreadMsgNotification() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		LocalDateTime today = LocalDateTime.now();

@@ -38,7 +38,7 @@ function connect() {
 		/*usernamePage.classList.add('rhidden');
 		chatPage.classList.remove('rhidden');*/
 
-		var socket = new SockJS('/ilogistics');
+		var socket = new SockJS('/ilogistics-endPoint');
 		stompClient = Stomp.over(socket);
 
 		stompClient.connect({}, function() {

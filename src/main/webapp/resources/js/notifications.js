@@ -18,7 +18,7 @@ function connect2() {
 	if (username2) {
 
 
-		var socket = new SockJS('/ilogistics');
+		var socket = new SockJS('/ilogistics-endPoint');
 		stompClient2 = Stomp.over(socket);
 
 		stompClient2.connect({}, function() {

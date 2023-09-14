@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import ma.azdad.model.User;
 import ma.azdad.repos.ChatMessageRepos;
+import ma.azdad.service.ChatMessageService;
 import ma.azdad.service.UserService;
 import ma.azdad.utils.App;
 import ma.azdad.view.SessionView;
@@ -28,6 +29,9 @@ public class ChatController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	ChatMessageService chatMessageService;
 	
 	@Value("${application}")
 	private String application;
@@ -48,7 +52,8 @@ public class ChatController {
 		chatMessage.setUserSender(userSender);
 		chatMessage.setUserReceiver(userReceiver);
 		chatMessage.setApp(application);
-		chatMessageRepos.save(chatMessage);
+		chatMessageService.save(chatMessage);
+		chatMessageService.evictCache();
 		return chatMessage;
 	}
 

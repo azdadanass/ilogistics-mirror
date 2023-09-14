@@ -218,6 +218,7 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 			for (ChatMessage chatMessage : list) {
 				chatMessage.setseen(true);
 				chatRepos.save(chatMessage);
+				chatMessageService.evictCache();
 			}
 
 		}

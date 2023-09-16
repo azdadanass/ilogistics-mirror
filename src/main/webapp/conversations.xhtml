@@ -151,8 +151,16 @@
 												<h:outputText  value="#{conversation.sender.fullName}"
 													style="font-size: 12px;" styleClass="dark" />
 											</div>
+											<div style="background-color: white" 
+												class="col-sm-2 col-xs-2 center aa-message-content-second-header-left">
 
-											<div class="col-sm-9 col-xs-9"
+												
+												<div class="space-8" />
+												<h:outputText  value="#{chatView.getCompanyName(conversation.sender.username)}"
+													style="font-size: 12px;" styleClass="dark" />
+											</div>
+
+											<div class="col-sm-7 col-xs-7"
 												style="padding: 10px; background-color: white">
 												<span class="clearfix">
 												<span class="pull-left">

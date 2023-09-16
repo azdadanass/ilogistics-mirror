@@ -46,6 +46,9 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	private UserView userView;
 	@Autowired
 	UserRepos userRepos;
+	
+	@Autowired
+	private UserService userService;
 	@Autowired
 	ChatMessageRepos chatRepos;
 	
@@ -126,6 +129,33 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		}
 
 		return conversations;
+	}
+	
+	public String getCompanyName(String username) {
+		try {
+			User user = userService.findByUsername(username);
+			if (user.getInternal()) {
+				
+				return user.getCompany().getName();
+				
+			} else {
+				switch (user.getCompanyType()) {
+				case CUSTOMER:
+					return user.getCustomer().getName();
+				case SUPPLIER:
+					return user.getSupplier().getName();
+				case CONSULTANT:
+					return user.getCompany().getName();
+				case OTHER:
+					return "other";
+				default:
+					return "other";
+				}
+			}
+
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	 public  LocalDateTime getLargerDateTime(LocalDateTime dateTime1, LocalDateTime dateTime2) {

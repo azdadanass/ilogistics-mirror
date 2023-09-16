@@ -546,6 +546,7 @@ function startChat(selectedUser) {
 		success: function(data) {
 			privateReceiver = data; // Assuming the API returns the full name directly
 			fetchUserAvatar(privateReceiver);
+			fetchCompanyAvatar(privateReceiver);
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
 			console.error('Error fetching user data:', errorThrown);
@@ -564,6 +565,32 @@ function fetchUserAvatar(selectedUser) {
 		success: function(photoUrl) {
 			// Set the photo URL as the src attribute of the img element
 			$('#ruserAvatar').attr('src', photoUrl);
+		},
+		error: function(xhr, status, error) {
+			console.error('Error fetching user avatar:', error);
+		}
+	});
+}
+
+function fetchCompanyAvatar(selectedUser) {
+	$.ajax({
+		url: '/chat/companyphoto/' + selectedUser,
+		type: 'GET',
+		success: function(photoUrl) {
+			// Set the photo URL as the src attribute of the img element
+			$('#rcompanyAvatar').attr('src', photoUrl);
+
+			$('#rcompanyAvatar').css({
+				'width': '40px',
+				'height': '40px',
+				'border-radius': '50%',
+				'position' : 'absolute',
+				'top' : '20px',
+				'right' : '20px',
+				'cursor' : 'pointer',
+				
+				
+			});
 		},
 		error: function(xhr, status, error) {
 			console.error('Error fetching user avatar:', error);

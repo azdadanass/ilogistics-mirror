@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.model.User;
 import ma.azdad.repos.ChatMessageRepos;
+import ma.azdad.repos.UserRepos;
+import ma.azdad.service.ChatMessageService;
 import ma.azdad.service.UserService;
 import ma.azdad.view.SessionView;
 
@@ -24,6 +26,12 @@ public class ChatRest {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UserRepos userRepos;
+	
+	@Autowired
+	ChatMessageService chatMessageService;
 
 	@Value("${application}")
 	private String application;
@@ -88,6 +96,39 @@ public class ChatRest {
 		User user = userService.findByUsername(selecteduser);
 		return user.getPhoto();
 	}
+	
+	public String getCompanyPhoto(String username) {
+		try {
+			User user = userRepos.findByUsername(username);
+			if (user.getInternal()) {
+				return user.getCompany().getLogo();
+			} else {
+				switch (user.getCompanyType()) {
+				case CUSTOMER:
+					return user.getCustomer().getPhoto();
+				case SUPPLIER:
+					return user.getSupplier().getPhoto();
+				case CONSULTANT:
+					return user.getCompany().getLogo();
+				case OTHER:
+					return "files/no-image.png";
+				default:
+					return "files/no-image.png";
+				}
+			}
+
+			
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@GetMapping("/chat/companyphoto/{selecteduser}")
+	public String getCompanyPhotoUrl(@PathVariable String selecteduser) {
+
+		
+		return getCompanyPhoto(selecteduser);
+	}
 
 	@PutMapping("/chat/putSeen/{selecteduser}/{concteduser}")
 	public void putSeen(@PathVariable String selecteduser, @PathVariable String concteduser) {
@@ -98,6 +139,7 @@ public class ChatRest {
 		for (ChatMessage chatMessage : list) {
 			chatMessage.setseen(true);
 			chatMessageRepos.save(chatMessage);
+			chatMessageService.evictCache();
 		}
 	}
 

@@ -46,7 +46,16 @@ public class UserService {
 	}
 	
 	public User findByUsername(String username) {
-		return repos.findByUsername(username);
+		User us = repos.findByUsername(username);
+		
+			if (us.getCompany() != null)
+				Hibernate.initialize(us.getCompany());
+			if (us.getCustomer() != null)
+				Hibernate.initialize(us.getCustomer());
+			if (us.getSupplier() != null)
+				Hibernate.initialize(us.getSupplier());
+
+		return us;
 	}
 	
 	public User findByFullName(String fullName) {

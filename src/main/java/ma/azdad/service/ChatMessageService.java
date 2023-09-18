@@ -60,7 +60,7 @@ public class ChatMessageService extends GenericService<Integer, ChatMessage, Cha
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 			
-			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_CRM)) {
+			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 
 			ChatMessage messageReceived = repos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
 			ChatMessage messageSent = repos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application);
@@ -93,7 +93,7 @@ public class ChatMessageService extends GenericService<Integer, ChatMessage, Cha
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 
-			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_CRM)) {
+			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 			ChatMessage messageReceived = repos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(username, user.getUsername(),application); 
 			ChatMessage messageSent = repos.findTopByUserReceiverUsernameAndUserSenderUsernameAndAppOrderByTimestampDesc(user.getUsername(),username,application );
 			 

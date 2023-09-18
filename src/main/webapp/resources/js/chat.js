@@ -677,6 +677,11 @@ function back() {
   window.location.href = 'conversations.xhtml';
 }
 
+function home() {
+	// Replace 'conversations.xhtml' with the actual URL of the 'conversations' page
+	window.location.href = 'index.xhtml';
+}
+
 
 
 const photoInput = document.getElementById("rphoto");

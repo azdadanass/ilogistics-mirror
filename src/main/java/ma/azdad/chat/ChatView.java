@@ -46,25 +46,25 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	private UserView userView;
 	@Autowired
 	UserRepos userRepos;
-	
+
 	@Autowired
 	private UserService userService;
 	@Autowired
 	ChatMessageRepos chatRepos;
-	
+
 	@Autowired
 	UserRoleService useRoleService;
-	
+
 	@Autowired
 	ChatMessageService chatMessageService;
-	
-	 @Value("${application}")
-	 private String application;
+
+	@Value("${application}")
+	private String application;
 
 	String username;
 	Integer check = 0;
 	Long totalMNotSeen;
-	
+
 	private String searchBean2 = "";
 	private RepeatPaginator messagePaginator;
 
@@ -78,7 +78,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	public void init() {
 		super.init();
 		time();
-		totalMNotSeen = chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false,application);
+		totalMNotSeen = chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false,
+				application);
 	}
 
 	@Override
@@ -89,8 +90,8 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 
 		if (getParameter("check") != null)
 			check = getIntegerParameter("check");
-		top10Conversations=findTop10UserConversations(sessionView.getUsername());
-		allConversations=filterallConversations=findAllUserConversations(sessionView.getUsername());
+		top10Conversations = findTop10UserConversations(sessionView.getUsername());
+		allConversations = filterallConversations = findAllUserConversations(sessionView.getUsername());
 		messagePaginator = new RepeatPaginator(allConversations);
 
 	}
@@ -113,31 +114,31 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		}
 
 	}
-	
+
 	public List<Conversation> findUserConversations(String username) {
 
 		List<User> users = userView.findLightByActive(username);
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
 
-			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
-			
-			conversations.add(new Conversation(user, null, null, null));
-			
-		}
+			if (useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
+
+				conversations.add(new Conversation(user, null, null, null));
+
+			}
 
 		}
 
 		return conversations;
 	}
-	
+
 	public String getCompanyName(String username) {
 		try {
 			User user = userService.findByUsername(username);
 			if (user.getInternal()) {
-				
+
 				return user.getCompany().getName();
-				
+
 			} else {
 				switch (user.getCompanyType()) {
 				case CUSTOMER:
@@ -157,38 +158,33 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 			return null;
 		}
 	}
-	
-	 public  LocalDateTime getLargerDateTime(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-	        return dateTime1.compareTo(dateTime2) >= 0 ? dateTime1 : dateTime2;
-	 }
-	 
-	 public  LocalDateTime getLatestDateTime(LocalDateTime dateTime1, LocalDateTime dateTime2) {
-	        return dateTime1.isAfter(dateTime2) ? dateTime1 : dateTime2;
-	    }
-	 
-	 public ChatMessage getLastMessage(ChatMessage message1, ChatMessage message2) {
-	        LocalDateTime message1Time = message1.getTimestamp();
-	        LocalDateTime message2Time = message2.getTimestamp();
 
-	        LocalDateTime latestTime = getLatestDateTime(message1Time, message2Time);
-
-	        // Return the ChatMessage with the latest timestamp
-	        return latestTime.equals(message1Time) ? message1 : message2;
-	    }
-	
-	 public List<Conversation> findTop10UserConversations(String username) {
-
-			
-			
-			
-			return chatMessageService.findTop10UserConversations(username);
+	public LocalDateTime getLargerDateTime(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+		return dateTime1.compareTo(dateTime2) >= 0 ? dateTime1 : dateTime2;
 	}
-	
-	
-	 public List<Conversation> findAllUserConversations(String username) {
 
-			
-			return chatMessageService.findAllUserConversations(username);
+	public LocalDateTime getLatestDateTime(LocalDateTime dateTime1, LocalDateTime dateTime2) {
+		return dateTime1.isAfter(dateTime2) ? dateTime1 : dateTime2;
+	}
+
+	public ChatMessage getLastMessage(ChatMessage message1, ChatMessage message2) {
+		LocalDateTime message1Time = message1.getTimestamp();
+		LocalDateTime message2Time = message2.getTimestamp();
+
+		LocalDateTime latestTime = getLatestDateTime(message1Time, message2Time);
+
+		// Return the ChatMessage with the latest timestamp
+		return latestTime.equals(message1Time) ? message1 : message2;
+	}
+
+	public List<Conversation> findTop10UserConversations(String username) {
+
+		return chatMessageService.findTop10UserConversations(username);
+	}
+
+	public List<Conversation> findAllUserConversations(String username) {
+
+		return chatMessageService.findAllUserConversations(username);
 	}
 
 	public String getJavascriptUsername() {
@@ -211,17 +207,17 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		List<User> users = userView.findLightByActive(sessionView.getUsername());
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user : users) {
-			
-			if(useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 
-			ChatMessage messageReceived = chatRepos
-					.findTopByUserReceiverUsernameAndUserSenderUsernameAndSeenAndAppOrderByTimestampDesc(
-							sessionView.getUsername(), user.getUsername(), false,application);
-			if (messageReceived != null)
-				conversations.add(new Conversation(user, null, null, null));
+			if (useRoleService.isHavingRole(user.getUsername(), Role.ROLE_ILOGISTICS)) {
 
-		}
-			
+				ChatMessage messageReceived = chatRepos
+						.findTopByUserReceiverUsernameAndUserSenderUsernameAndSeenAndAppOrderByTimestampDesc(
+								sessionView.getUsername(), user.getUsername(), false, application);
+				if (messageReceived != null)
+					conversations.add(new Conversation(user, null, null, null));
+
+			}
+
 		}
 		return conversations;
 
@@ -229,14 +225,14 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 
 	public Long countTotalNotSeen() {
 
-		return chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false,application);
+		return chatRepos.countByUserReceiverUsernameAndSeenAndApp(sessionView.getUsername(), false, application);
 
 	}
 
 	public Long countNotSeen(String user) {
 
 		return chatRepos.countByUserReceiverUsernameAndUserSenderUsernameAndSeenAndApp(sessionView.getUsername(), user,
-				false,application);
+				false, application);
 
 	}
 
@@ -244,7 +240,7 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		if (check == 1) {
 			User user = userRepos.findByUsername(username);
 			List<ChatMessage> list = chatRepos.findByUserReceiverUsernameAndUserSenderUsernameAndSeenAndApp(
-					sessionView.getUsername(), user.getUsername(), false,application);
+					sessionView.getUsername(), user.getUsername(), false, application);
 			for (ChatMessage chatMessage : list) {
 				chatMessage.setseen(true);
 				chatRepos.save(chatMessage);
@@ -254,9 +250,9 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		}
 
 	}
-	
+
 	public void filterBean2(String query) {
-		
+
 		List<Conversation> list = new ArrayList<Conversation>();
 		query = query.toLowerCase().trim();
 		for (Conversation bean : filterallConversations) {
@@ -267,7 +263,14 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		messagePaginator = new RepeatPaginator(allConversations);
 	}
 
-	
+	public Boolean isOnline(User user) {
+
+		List<String> usernames = new ArrayList<>();
+		for (User us : sessionView.getOnlineUsers()) {
+			usernames.add(us.getUsername());
+		}
+		return usernames.contains(user.getUsername());
+	}
 
 	// save
 	public Boolean canSave() {
@@ -357,7 +360,7 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	public void setAllConversations(List<Conversation> allConversations) {
 		this.allConversations = allConversations;
 	}
-	
+
 	public String getSearchBean2() {
 		return searchBean2;
 	}
@@ -366,7 +369,7 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 		this.searchBean2 = searchBean2;
 		filterBean2(searchBean2);
 	}
-	
+
 	public RepeatPaginator getMessagePaginator() {
 		return messagePaginator;
 	}
@@ -374,8 +377,5 @@ public class ChatView extends GenericView<Integer, ChatMessage, ChatMessageRepos
 	public void setMessagePaginator(RepeatPaginator messagePaginator) {
 		this.messagePaginator = messagePaginator;
 	}
-	
-	
-	
 
 }

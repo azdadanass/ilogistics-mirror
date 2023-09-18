@@ -55,7 +55,7 @@
 					</h:outputLink>
 
 				</div>
-				
+
 
 			</h:panelGroup>
 			<div class="col-sm-6 infobox-container">
@@ -93,8 +93,7 @@
 					</a></li>
 
 				</ul>
-				<div class="tab-content no-border  padding-24"
-					>
+				<div class="tab-content no-border  padding-24">
 					<div id="tab1" class="tab-pane in active">
 						<div class="message-container">
 							<div id="id-message-list-navbar" class="message-navbar clearfix">
@@ -138,45 +137,46 @@
 											<div style="background-color: white"
 												class="col-sm-1 col-xs-1 center aa-message-content-second-header-left">
 
-												<h:graphicImage 
+												<h:graphicImage
 													value="#{cacheView.getPhoto(conversation.sender.username)}"
-													 style="border-radius: 50%;height:35px;width:35px;margin-left:10px" />
-												
+													style="border-radius: 50%;height:35px;width:35px;margin-left:10px" />
+
 											</div>
-											<div style="background-color: white" 
+											<div style="background-color: white"
 												class="col-sm-2 col-xs-2 center aa-message-content-second-header-left">
 
-												
+
 												<div class="space-8" />
-												<h:outputText  value="#{conversation.sender.fullName}"
+												<h:outputText value="#{conversation.sender.fullName}"
 													style="font-size: 12px;" styleClass="dark" />
+												<i
+													class="ace-icon fa fa-circle #{chatView.isOnline(conversation.sender)?'green':'red'} "></i>
 											</div>
-											<div style="background-color: white" 
+											<div style="background-color: white"
 												class="col-sm-2 col-xs-2 center aa-message-content-second-header-left">
 
-												
+
 												<div class="space-8" />
-												<h:outputText  value="#{chatView.getCompanyName(conversation.sender.username)}"
+												<h:outputText
+													value="#{chatView.getCompanyName(conversation.sender.username)}"
 													style="font-size: 12px;" styleClass="dark" />
 											</div>
 
 											<div class="col-sm-7 col-xs-7"
 												style="padding: 10px; background-color: white">
-												<span class="clearfix">
-												<span class="pull-left">
-												<h:outputText  value="Last Message : " styleClass="dark" />
-												<h:outputText value="#{conversation.subMessage==''?'File...':conversation.subMessage}"
-													style="font-size:15px" styleClass="dark " />
-												<br />
-												<h:outputText value="Sent At : " styleClass="dark" />
-												<h:outputText
-													value="#{conversation.formatTimestamp(conversation.time)}"
-													styleClass="purple bolder">
+												<span class="clearfix"> <span class="pull-left">
+														<h:outputText value="Last Message : " styleClass="dark" />
+														<h:outputText
+															value="#{conversation.subMessage==''?'File...':conversation.subMessage}"
+															style="font-size:15px" styleClass="dark " /> <br /> <h:outputText
+															value="Sent At : " styleClass="dark" /> <h:outputText
+															value="#{conversation.formatTimestamp(conversation.time)}"
+															styleClass="purple bolder">
 
-												</h:outputText></span>
-												 <span class="pull-right badge badge-green"
+														</h:outputText>
+												</span> <span class="pull-right badge badge-green"
 													style="margin-top: 00px; margin-right: 40px"> <h:outputText
-														value="#{chatView.countNotSeen(conversation.sender.username)} Unread Msg" />
+															value="#{chatView.countNotSeen(conversation.sender.username)} Unread Msg" />
 												</span>
 												</span>
 											</div>

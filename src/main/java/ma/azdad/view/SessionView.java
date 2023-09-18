@@ -49,6 +49,7 @@ public class SessionView implements Serializable {
 		serverName = UtilsFunctions.getServerName();
 		login = auth.getName().toLowerCase().trim();
 		user = userService.findByLogin(login);
+		addUser(user);
 		companyCfoIdList.addAll(companyProfileService.findCompanyIdList(user.getUsername(), Profile.CFO));
 		System.out.println("**********************************");
 		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");

@@ -6,8 +6,9 @@ import java.util.List;
 public enum RevenueType {
 	GOODS_SUPPLY("Goods Supply"),
 	SERVICE_SUPPLY("Service Supply"),
+	GOODS_AND_SERVICE_SUPPLY("Goods And Service Supply"),
+	FREIGHT_AND_TRANSIT("Customs, Freight & Transit");
 
-	;
 
 	public static List<RevenueType> MAPPABLE_LIST;
 	static {

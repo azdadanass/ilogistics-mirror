@@ -30,6 +30,9 @@ public class PoView {
 
 	@Autowired
 	private CacheView cacheView;
+	
+	@Autowired
+	private MenuView menuView;
 
 	private String currentPath;
 	private Integer id;
@@ -48,7 +51,7 @@ public class PoView {
 	public void init() {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		id = UtilsFunctions.getIntegerParameter("id");
-		companyId = UtilsFunctions.getIntegerParameter("companyId");
+		companyId = menuView.getCompanyId();
 		switch (currentPath) {
 		case "/poList.xhtml":
 			refreshList();

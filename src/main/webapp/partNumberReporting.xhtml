@@ -487,6 +487,11 @@
 												<f:param name="id" value="#{item.deliveryRequest.id}" />
 											</h:outputLink>
 										</p:column>
+										<p:column headerText="DN Delivery Date">
+											<h:outputText value="#{item.deliveryRequest.date4}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
 										<p:column headerText="Inbound DN" width="100" sortBy="#{item.inboundDeliveryRequest.reference}" exportable="false">
 											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
 												<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="#{item.inboundDeliveryRequest.type.color} bolder" />
@@ -855,7 +860,7 @@
 										<tbody>
 											<tr>
 												<td>
-													<h:outputText value="Inventory" styleClass="purple"/>
+													<h:outputText value="Inventory" styleClass="purple" />
 												</td>
 												<td>
 													<h:outputText value="#{stockInventory}" styleClass="purple">
@@ -875,7 +880,7 @@
 											</tr>
 											<tr>
 												<td>
-													<h:outputText value="Available"   styleClass="blue"/>
+													<h:outputText value="Available" styleClass="blue" />
 												</td>
 												<td>
 													<h:outputText value="#{availableStock}" styleClass="blue">
@@ -895,7 +900,7 @@
 											</tr>
 											<tr>
 												<td>
-													<h:outputText value="Forecast Quantity" styleClass="#{pendingInbound-pendingOutbound ge 0?'green':'red'}"/>
+													<h:outputText value="Forecast Quantity" styleClass="#{pendingInbound-pendingOutbound ge 0?'green':'red'}" />
 												</td>
 												<td>
 													<h:outputText value="#{pendingStockInbound-pendingStockOutbound}" styleClass="#{pendingStockInbound-pendingStockOutbound ge 0?'green':'red'}">

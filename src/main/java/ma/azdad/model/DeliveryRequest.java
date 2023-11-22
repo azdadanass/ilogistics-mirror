@@ -2065,6 +2065,16 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			destination = new Site();
 		destination.setName(destinationName);
 	}
+	
+	@Transient
+	public Boolean getProjectSdm() {
+		return project != null ? project.getSdm() : null;
+	}
+	
+	@Transient
+	public Boolean getProjectIsm() {
+		return project != null ? project.getIsm() : null;
+	}
 
 	@Transient
 	public Boolean getDestinationProjectSdm() {

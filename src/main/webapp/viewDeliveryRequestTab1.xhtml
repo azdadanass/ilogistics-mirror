@@ -304,7 +304,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound and deliveryRequestView.deliveryRequest.projectSdm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="SDM" />
@@ -325,6 +325,8 @@
 							&nbsp;
 						</div>
 					</div>
+				</f:subview>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound and deliveryRequestView.deliveryRequest.projectIsm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="ISM" />
@@ -684,7 +686,7 @@
 					</p:column>
 					<p:column headerText="Status" rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type}" width="70"
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
-						<h:outputText value="#{item.status.value}" styleClass="bolder #{item.status.color.badge}"/>
+						<h:outputText value="#{item.status.value}" styleClass="bolder #{item.status.color.badge}" />
 					</p:column>
 					<p:column headerText="Unit / Kit" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.partNumber.unit?'Unit':'Kit'}" styleClass="bolder #{item.partNumber.unit?'green':'blue'}" />

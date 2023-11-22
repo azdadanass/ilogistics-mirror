@@ -980,6 +980,19 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return;
 		service.save(deliveryRequest);
 	}
+	
+	public Boolean canEditIsm() {
+		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && deliveryRequest.getDestinationProjectIsm() != null
+				&& deliveryRequest.getDestinationProjectIsm();
+	}
+
+	public void editIsm() {
+		if (!canEditIsm())
+			return;
+		service.save(deliveryRequest);
+	}
 
 	public Boolean canEditIsSnRequired() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
@@ -2150,6 +2163,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
 		deliveryRequest.setSdm(Boolean.TRUE.equals(sdm));
+		
+		Boolean ism = deliveryRequest.getDestinationProjectIsm();
+		deliveryRequest.setIsm(Boolean.TRUE.equals(ism));
 
 	}
 

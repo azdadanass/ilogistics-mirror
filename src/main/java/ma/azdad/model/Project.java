@@ -48,6 +48,7 @@ public class Project implements Serializable {
 	private Boolean customerStockManagement = false;
 
 	private Boolean sdm = false;
+	private Boolean ism = false;
 
 	private List<ProjectManager> managerList = new ArrayList<>();
 
@@ -370,6 +371,14 @@ public class Project implements Serializable {
 	@Transient
 	public void setHasStock(Boolean hasStock) {
 		this.hasStock = hasStock;
+	}
+
+	public Boolean getIsm() {
+		return ism;
+	}
+
+	public void setIsm(Boolean ism) {
+		this.ism = ism;
 	}
 
 }

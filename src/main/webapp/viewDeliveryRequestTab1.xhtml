@@ -325,6 +325,26 @@
 							&nbsp;
 						</div>
 					</div>
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="ISM" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.ism?'Yes':'No'}" styleClass="bolder #{deliveryRequestView.deliveryRequest.ism?'green':'orange'}"
+								rendered="#{!deliveryRequestView.canEditIsm()}" />
+							<p:inplace editor="true" styleClass="editable-click green " saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+								rendered="#{deliveryRequestView.canEditIsm()}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.ism?'Yes':'No'}" />
+								<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ism}">
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+									<f:selectItem itemLabel="No" itemValue="false" />
+								</h:selectOneMenu>
+								<p:ajax event="save" listener="#{deliveryRequestView.editIsm()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
+							&nbsp;
+						</div>
+					</div>
 				</f:subview>
 				<f:subview rendered="#{deliveryRequestView.deliveryRequest.transportationNeeded}">
 					<div class="profile-info-row">

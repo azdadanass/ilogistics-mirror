@@ -304,7 +304,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound and deliveryRequestView.deliveryRequest.projectSdm}">
+				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound) and deliveryRequestView.deliveryRequest.projectSdm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="SDM" />
@@ -326,7 +326,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound and deliveryRequestView.deliveryRequest.projectIsm}">
+				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound or deliveryRequestView.deliveryRequest.isXbound) and deliveryRequestView.deliveryRequest.projectIsm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="ISM" />

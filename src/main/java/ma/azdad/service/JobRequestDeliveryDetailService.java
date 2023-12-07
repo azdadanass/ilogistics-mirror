@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,14 +46,16 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
-				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(),
+						jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
-							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
+							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(),
+							jrdd.getTeamName()));
 			}
 		return result;
 	}
-	
+
 	public List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequestId) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();
 		List<JobRequestDeliveryDetail> data = repos.findInstalledByDeliveryRequest(deliveryRequestId);
@@ -60,10 +63,12 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
-				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(),
+						jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
-							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
+							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(),
+							jrdd.getTeamName()));
 			}
 		return result;
 	}
@@ -81,16 +86,18 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			if (!jrdd.getIsSerialNumberRequired())
 				result.add(jrdd);
 			else {
-				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
+				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(),
+						jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
-							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(),
+							jrdd.getPartNumberDescription(), jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(),
+							jrdd.getTeamName()));
 			}
 		return result;
 	}
 
 	public Long countByDeliveryRequest(Integer deliveryRequestId) {
-		return repos.countByDeliveryRequest(deliveryRequestId);
+		return ObjectUtils.firstNonNull(repos.countByDeliveryRequest(deliveryRequestId), 0l);
 	}
 
 	public void deleteByDeliveryRequest(Integer deliveryRequestId) {
@@ -108,8 +115,8 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 
 		jobRequestIdList.stream().distinct().forEach(i -> {
 			JobRequest jobRequest = jobRequestService.findOneLight(i);
-			jobRequestHistoryService.save(new JobRequestHistory("Edited", connectedUser, "DN Mapping Cleared for outbond DN " + OutboundDeliveryRequestReturn.getReference() + " after return DN "
-					+ inboundDeliveryRequest.getReference() + " delivered / partially delivered to the warehouse", jobRequest));
+			jobRequestHistoryService.save(new JobRequestHistory("Edited", connectedUser, "DN Mapping Cleared for outbond DN " + OutboundDeliveryRequestReturn.getReference()
+					+ " after return DN " + inboundDeliveryRequest.getReference() + " delivered / partially delivered to the warehouse", jobRequest));
 		});
 
 		evictCache("deliveryRequestService");

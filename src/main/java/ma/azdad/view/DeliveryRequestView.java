@@ -980,7 +980,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return;
 		service.save(deliveryRequest);
 	}
-	
+
 	public Boolean canEditIsm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
@@ -1143,6 +1143,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public String rejectDeliveryRequest(DeliveryRequest deliveryRequest) {
 		if (!canRejectDeliveryRequest(deliveryRequest))
 			return null;
+
+		if (deliveryRequest.getIsInbound() && jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) > 0) {
+			FacesContextMessages.ErrorMessages(deliveryRequest.getReference() + " could not be cancelled as it’s alredy mapped with JR, Please clear the JR mapping First");
+			return null;
+		}
 
 		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
 
@@ -2163,7 +2168,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
 		deliveryRequest.setSdm(Boolean.TRUE.equals(sdm));
-		
+
 		Boolean ism = deliveryRequest.getDestinationProjectIsm();
 		deliveryRequest.setIsm(Boolean.TRUE.equals(ism));
 

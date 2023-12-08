@@ -1153,4 +1153,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDeliverToOther(deliverToOther);
 	}
+
+	
+	
 }

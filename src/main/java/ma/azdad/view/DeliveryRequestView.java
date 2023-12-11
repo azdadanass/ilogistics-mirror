@@ -723,6 +723,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
+			
+			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
+				service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -1112,7 +1115,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
+		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
+			service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
 		emailService.deliveryRequestNotification(deliveryRequest);
+		
 	}
 
 //	public void approveHm() {

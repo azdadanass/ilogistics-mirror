@@ -15,14 +15,13 @@ import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.Po;
-import ma.azdad.model.PoStatus;
 import ma.azdad.model.User;
 
 @Repository
 public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Integer> {
 
-	String destinationProjectCustomerName= "(select b.customer.name from Project b where a.destinationProject.id = b.id)";
-	String endCustomerName= "(select b.name from Customer b where a.endCustomer.id = b.id)";
+	String destinationProjectCustomerName = "(select b.customer.name from Project b where a.destinationProject.id = b.id)";
+	String endCustomerName = "(select b.name from Customer b where a.endCustomer.id = b.id)";
 	String poNumero = "(select b.numero from Po b where a.po.id = b.id)";
 	String deliverToCompanyName = "(select b.name from Company b where a.deliverToCompany.id = b.id)";
 	String deliverToCustomerName = "(select b.name from Customer b where a.deliverToCustomer.id = b.id)";
@@ -39,10 +38,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.sdm," //
-			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName+","+destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse + ","
-			+ destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
-			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName
-			+ "," + deliverToSupplierName + "," + toUserFullName + ","+endCustomerName+",a.project.customer.name,"+destinationProjectCustomerName+") ";
+			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse
+			+ "," + destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
+			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + ","
+			+ deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + "," + endCustomerName + ",a.project.customer.name," + destinationProjectCustomerName + ") ";
 
 	String c2 = "select new DeliveryRequest(a.id,a.reference,a.type,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
 			+ "a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";
@@ -142,15 +141,13 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.requester.username = ?1 or a.toUser.username = ?1) ")
 	Long countToAcknowledgeInternal(String username);
 
-	@Query(c1
-			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
+	@Query(c1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
 	List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList);
 
 	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
 	Long countToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList);
 
-	@Query(c1
-			+ "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToCustomer.id = ?2 and a.destinationProject.id in (?3)))")
+	@Query(c1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToCustomer.id = ?2 and a.destinationProject.id in (?3)))")
 	List<DeliveryRequest> findToAcknowledgeExternalCustomerUser(String username, Integer customerId, List<Integer> projectIdList);
 
 	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToCustomer.id = ?2 and a.destinationProject.id in (?3)))")
@@ -161,12 +158,11 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query(c1
 			+ " from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id and b.status not in ('REJECTED','CANCELED')) and a.status in (?4)")
-	public List<DeliveryRequest> findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username,
-			List<Integer> assignedProjectList, List<DeliveryRequestStatus> status);
+	public List<DeliveryRequest> findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username, List<Integer> assignedProjectList,
+			List<DeliveryRequestStatus> status);
 
 	@Query("select count(*)  from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id) and a.status in (?4) ")
-	public long countByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username, List<Integer> assignedProjectList,
-			List<DeliveryRequestStatus> status);
+	public long countByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username, List<Integer> assignedProjectList, List<DeliveryRequestStatus> status);
 
 	@Query(c1 + " from DeliveryRequest a where a.type = ?1 and a.isForReturn = true and a.isFullyReturned = false and a.requester.username = ?2 and a.status in (?3)")
 	public List<DeliveryRequest> findLightByIsForReturnAndNotFullyReturned(DeliveryRequestType type, String username, List<DeliveryRequestStatus> status);
@@ -205,8 +201,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select count(*) from DeliveryRequest a where (a.project.manager.username = ?1) and a.status = ?2 order by a.neededDeliveryDate desc")
 	public Long countToApprovePm(String username, DeliveryRequestStatus requested);
 
-	@Query(c1
-			+ " from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
+	@Query(c1 + " from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightToApproveHm(String username, DeliveryRequestStatus approved1);
 
 	@Query("select count(*) from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
@@ -255,8 +250,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<Integer> findByNotHavingCrossCharge(DeliveryRequestType type, List<DeliveryRequestStatus> status, String projectType);
 
 	@Query("select new DeliveryRequest(a.id," + totalCostCoalesce + "," + totalCrossChargeCoalesce + "," + crossChargeId
-			+ ") from DeliveryRequest a where a.type = ?1 and a.status in (?2)  and a.destinationProject is not null and a.project.id != a.destinationProject.id and  "
-			+ totalCostCoalesce + "!= " + totalCrossChargeCoalesce)
+			+ ") from DeliveryRequest a where a.type = ?1 and a.status in (?2)  and a.destinationProject is not null and a.project.id != a.destinationProject.id and  " + totalCostCoalesce + "!= "
+			+ totalCrossChargeCoalesce)
 	public List<DeliveryRequest> findToUpdateCrossCharge(DeliveryRequestType outbound, List<DeliveryRequestStatus> status);
 
 	@Query("select new DeliveryRequest(a.id," + totalCostCoalesce + "," + totalCrossChargeCoalesce + "," + crossChargeId
@@ -280,20 +275,19 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String associatedCostIbuy = " (select sum(b.amount*b.acceptance.oldInvoiceTerm.po.madConversionRate) from AppLink b where b.costType is not null and b.deliveryRequest.id = a.id) ";
 	String associatedCostIexpense = " (select sum(b.amount*b.expensepayment.budgetdetail.budget.madConversionRate) from AppLink b where b.costType is not null and b.deliveryRequest.id = a.id) ";
 	String crossChargeId = " (select b.idprojectcross from ProjectCross b where b.deliveryRequest.id = a.id) ";
-	String select3 = "select new DeliveryRequest(a.id,a.reference,a.referenceNumber,a.type,a.status,a.project,a.destinationProject,a.destinationProject.customer.name,a.date4, "
-			+ totalCost + "," + totalRevenue + ", " + totalCrossCharge + ",(select b.numeroInvoice from Po b where a.po.id = b.id)) ";
-	String select4 = "select new DeliveryRequest(a.id,a.reference,a.referenceNumber,a.type,a.status,a.project,a.date4, " + totalCost + ", " + associatedCostIbuy + ","
-			+ associatedCostIexpense + ",a.inboundType)";
+	String select3 = "select new DeliveryRequest(a.id,a.reference,a.referenceNumber,a.type,a.status,a.project,a.destinationProject,a.destinationProject.customer.name,a.date4, " + totalCost + ","
+			+ totalRevenue + ", " + totalCrossCharge + ",(select b.numeroInvoice from Po b where a.po.id = b.id)) ";
+	String select4 = "select new DeliveryRequest(a.id,a.reference,a.referenceNumber,a.type,a.status,a.project,a.date4, " + totalCost + ", " + associatedCostIbuy + "," + associatedCostIexpense
+			+ ",a.inboundType)";
 
-	@Query(select3 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition
-			+ " and a.type = ?6 and a.status not in (?7) order by date4 desc")
-	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-			String projectTypeStock, DeliveryRequestType outbound, List<DeliveryRequestStatus> excludeStatusList);
+	@Query(select3 + from1 + " where " + usernameCondition + " and " + companyCondition + " and " + projectCondition + " and a.type = ?6 and a.status not in (?7) order by date4 desc")
+	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, String projectTypeStock,
+			DeliveryRequestType outbound, List<DeliveryRequestStatus> excludeStatusList);
 
 	@Query(select4 + from1 + " where " + usernameCondition
 			+ " and a.company.id = ?4 and a.type = ?5 and a.inboundType = ?6 and a.status in (?7) and (select count(*) from AppLink b where b.deliveryRequest.id = a.id) > 0 order by date4 desc")
-	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-			DeliveryRequestType inbound, InboundType inboundType, List<DeliveryRequestStatus> statusList);
+	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, DeliveryRequestType inbound,
+			InboundType inboundType, List<DeliveryRequestStatus> statusList);
 
 	@Query("from DeliveryRequest a where a.outboundDeliveryRequestReturn.id = ?1 ")
 	public List<DeliveryRequest> findByOutboundDeliveryRequestReturn(Integer outboundDeliveryRequestId);
@@ -400,7 +394,11 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select distinct deliveryRequest.id from BoqMapping where deliveryRequest.type = ?1")
 	List<Integer> findIdByTypeAndHavingBoqMapping(DeliveryRequestType type);
 
-	
 	@Query("select status from DeliveryRequest where id = ?1")
 	DeliveryRequestStatus findStatusById(Integer id);
+
+	@Modifying
+	@Query("update DeliveryRequest a set hardwareSwapInboundStatus = ?2 where id = ?1")
+	void updateHardwareSwapInboundStatus(Integer id, DeliveryRequestStatus status);
+
 }

@@ -103,6 +103,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private DeliveryRequest outboundDeliveryRequestReturn;
 	private DeliveryRequest outboundDeliveryRequestTransfer;
 
+	private DeliveryRequestStatus hardwareSwapInboundStatus;
+
 	private Po po;
 
 	private Date requestDate;
@@ -150,7 +152,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Integer originId;
 	private Integer destinationId;
 	private Integer transporterId;
-	private Integer outboundDeliveryRequestReturnId;
 	private Integer outboundDeliveryRequestTransferId;
 	private Integer poId;
 
@@ -315,8 +316,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			destinationId = destination.getId();
 		if (transporterId != null)
 			transporterId = transporter.getId();
-		if (outboundDeliveryRequestReturn != null)
-			outboundDeliveryRequestReturnId = outboundDeliveryRequestReturn.getId();
+//		if (outboundDeliveryRequestReturn != null)
+//			outboundDeliveryRequestReturnId = outboundDeliveryRequestReturn.getId();
 		if (outboundDeliveryRequestTransfer != null)
 			outboundDeliveryRequestTransferId = outboundDeliveryRequestTransfer.getId();
 		if (po != null)
@@ -677,7 +678,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Boolean getIsInboundReturnFromOutboundHardwareSwap() {
-		return getIsInboundReturn() &&  outboundDeliveryRequestReturn.getIsOutboundHardwareSwap();
+		return getIsInboundReturn() && outboundDeliveryRequestReturn.getIsOutboundHardwareSwap();
 	}
 
 	@Transient
@@ -852,6 +853,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setStatus(DeliveryRequestStatus status) {
 		this.status = status;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public DeliveryRequestStatus getHardwareSwapInboundStatus() {
+		return hardwareSwapInboundStatus;
+	}
+
+	public void setHardwareSwapInboundStatus(DeliveryRequestStatus hardwareSwapInboundStatus) {
+		this.hardwareSwapInboundStatus = hardwareSwapInboundStatus;
 	}
 
 	public Boolean getIsSnRequired() {
@@ -1751,12 +1761,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Integer getOutboundDeliveryRequestReturnId() {
-		return outboundDeliveryRequestReturnId;
+		return outboundDeliveryRequestReturn != null ? outboundDeliveryRequestReturn.getId() : null;
 	}
 
 	@Transient
 	public void setOutboundDeliveryRequestReturnId(Integer outboundDeliveryRequestReturnId) {
-		this.outboundDeliveryRequestReturnId = outboundDeliveryRequestReturnId;
+		if (outboundDeliveryRequestReturn == null || !outboundDeliveryRequestReturnId.equals(outboundDeliveryRequestReturn.getId()))
+			outboundDeliveryRequestReturn = new DeliveryRequest();
+		outboundDeliveryRequestReturn.setId(outboundDeliveryRequestReturnId);
 	}
 
 	@Transient

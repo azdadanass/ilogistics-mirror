@@ -1264,6 +1264,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			poService.updateIlogisticsStatus(poId);
 
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
+		
+		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
+			service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}

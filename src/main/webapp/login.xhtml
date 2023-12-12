@@ -81,7 +81,7 @@
 										<h:outputText value="#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}" styleClass="bolder red" />
 										<div class="space"></div>
 										<div class="clearfix">
-											<f:subview rendered="#{erpView.gcom}">
+											<f:subview rendered="#{erpView.gcom or erpView.test}">
 												<button type="submit" class="width-35 pull-right btn btn-sm btn-primary" onclick="login();;">
 													<span class="ui-button-text">
 														<i class="ace-icon fa fa-key"></i>

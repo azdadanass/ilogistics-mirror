@@ -25,6 +25,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 //	private Double unitPrice;
 	private Date creationDate;
 
+	private StockRowState state = StockRowState.NORMAL;
 	private StockRowStatus status = StockRowStatus.NORMAL;
 	private String originNumber;
 
@@ -670,6 +671,16 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public void setInitial(Boolean initial) {
 		this.initial = initial;
+	}
+	
+	
+	@Enumerated(EnumType.STRING)
+	public StockRowState getState() {
+		return state;
+	}
+
+	public void setState(StockRowState state) {
+		this.state = state;
 	}
 
 	@Column(nullable = true)

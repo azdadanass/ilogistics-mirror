@@ -27,6 +27,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.StockRowStatus" var="StockRowStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.StockRowState" var="StockRowState" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="widget-box">
 				<div class="widget-header widget-header-blue widget-header-flat">
@@ -260,9 +261,16 @@
 														</h:panelGroup>
 													</span>
 												</p:column>
+												<p:column headerText="State">
+													<h:selectOneMenu value="#{item.state}" disabled="#{item.id!=null}">
+														<f:selectItems value="#{StockRowState.ALL_ENUM_VALUES}" />
+														<p:ajax update="status"/>
+													</h:selectOneMenu>
+												</p:column>
+												
 												<p:column headerText="Status">
-													<h:selectOneMenu value="#{item.status}" disabled="#{item.id!=null}">
-														<f:selectItems value="#{StockRowStatus.ALL_ENUM_VALUES}" />
+													<h:selectOneMenu id="status" value="#{item.status}" disabled="#{item.id!=null}">
+														<f:selectItems value="#{item.state.statusList}" />
 													</h:selectOneMenu>
 												</p:column>
 												<p:column headerText="Packing">

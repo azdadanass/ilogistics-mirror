@@ -706,6 +706,9 @@
 											<p:column headerText="Warehouse">
 												<h:outputText value="#{item.deliveryRequest.warehouse.name}" />
 											</p:column>
+											<p:column headerText="State">
+												<h:outputText value="#{item.state.value}" styleClass="#{item.state.color}" />
+											</p:column>
 											<p:column headerText="Status">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 											</p:column>

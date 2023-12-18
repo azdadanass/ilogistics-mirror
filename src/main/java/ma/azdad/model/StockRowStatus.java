@@ -4,6 +4,8 @@ import ma.azdad.utils.Color;
 
 public enum StockRowStatus {
 	NORMAL("Normal", Color.GREEN),
+	BRAND_NEW("Brand New", Color.GREEN),
+	USED("Used", Color.GREEN),
 	FAULTY("Faulty", Color.RED),
 	WATER_DAMAGE("Water damage", Color.PURPLE),
 	PHYSICAL_DAMAGE("Physical damage", Color.GREY),

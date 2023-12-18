@@ -103,6 +103,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private DeliveryRequest outboundDeliveryRequestReturn;
 	private DeliveryRequest outboundDeliveryRequestTransfer;
 
+	private Integer hardwareSwapInboundId;
 	private DeliveryRequestStatus hardwareSwapInboundStatus;
 
 	private Po po;
@@ -2191,5 +2192,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setAutoBoqMapped(Boolean autoBoqMapped) {
 		this.autoBoqMapped = autoBoqMapped;
 	}
+
+	public Integer getHardwareSwapInboundId() {
+		return hardwareSwapInboundId;
+	}
+
+	public void setHardwareSwapInboundId(Integer hardwareSwapInboundId) {
+		this.hardwareSwapInboundId = hardwareSwapInboundId;
+	}
+	
+	
 
 }

@@ -725,7 +725,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
 			
 			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-				service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
+				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -1116,7 +1116,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-			service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
+			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
 		emailService.deliveryRequestNotification(deliveryRequest);
 		
 	}
@@ -1231,6 +1231,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			FacesContextMessages.ErrorMessages("can not cancel DN --> associated TR status is : " + deliveryRequest.getTransportationRequest().getStatus().getValue());
 			return null;
 		}
+		
+		if (deliveryRequest.getIsInbound() && jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) > 0) {
+			FacesContextMessages.ErrorMessages(deliveryRequest.getReference() + " could not be cancelled as it’s alredy mapped with JR, Please clear the JR mapping First");
+			return null;
+		}
 
 		Set<Integer> boqListToUpdate = boqService.getAssociatedBoqIdListWithDeliveryRequest(deliveryRequest.getId());
 
@@ -1266,7 +1271,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
 		
 		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-			service.updateHardwareSwapInboundStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getStatus());
+			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}

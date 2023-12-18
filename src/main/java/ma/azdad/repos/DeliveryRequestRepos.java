@@ -398,7 +398,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	DeliveryRequestStatus findStatusById(Integer id);
 
 	@Modifying
-	@Query("update DeliveryRequest a set hardwareSwapInboundStatus = ?2 where id = ?1")
-	void updateHardwareSwapInboundStatus(Integer id, DeliveryRequestStatus status);
+	@Query("update DeliveryRequest a set hardwareSwapInboundId = ?2,hardwareSwapInboundStatus = ?3 where id = ?1")
+	void updateHardwareSwapInboundIdAndStatus(Integer outboundId,Integer inboundId,DeliveryRequestStatus inboundStatus);
 
 }

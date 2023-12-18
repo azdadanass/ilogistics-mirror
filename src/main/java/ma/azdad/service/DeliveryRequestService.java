@@ -1291,9 +1291,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return repos.findStatusById(id);
 	}
 
-	public void updateHardwareSwapInboundStatus(Integer id, DeliveryRequestStatus status) {
+	public void updateHardwareSwapInboundIdAndStatus(Integer outboundId,Integer inboundId,DeliveryRequestStatus inboundStatus) {
 		evictCache();
-		repos.updateHardwareSwapInboundStatus(id, status);
+		repos.updateHardwareSwapInboundIdAndStatus(outboundId,inboundId, inboundStatus);
 	}
 
 }

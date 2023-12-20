@@ -29,6 +29,11 @@ public class RestService {
 
 	@Value("${appPath}")
 	private String path;
+	
+	@GetMapping("/rest/status")
+	public String getStatus() {
+		return "Up";
+	}
 
 	@RequestMapping("/rest/test")
 	public void test(@RequestParam(value = "message") String message) {

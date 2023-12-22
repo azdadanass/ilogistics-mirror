@@ -1,5 +1,8 @@
 package ma.azdad.view;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -10,7 +13,10 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
 import ma.azdad.repos.LocationRepos;
+import ma.azdad.service.CompanyService;
+import ma.azdad.service.CustomerService;
 import ma.azdad.service.LocationService;
+import ma.azdad.service.SupplierService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -20,6 +26,15 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	@Autowired
 	protected LocationService locationService;
+
+	@Autowired
+	protected CompanyService companyService;
+
+	@Autowired
+	protected CustomerService customerService;
+
+	@Autowired
+	protected SupplierService supplierService;
 
 	private Location location = new Location();
 
@@ -47,6 +62,10 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		location = locationService.findOne(location.getId());
 	}
 
+	public void refreshLocation(Integer id) {
+		location = service.findOne(id);
+	}
+
 	// SAVE LOCATION
 	public Boolean canSaveLocation() {
 		return true;
@@ -61,8 +80,10 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	// details
+	private Boolean editDetailList = false;
+	
 	public Boolean canAddDetail() {
-		return canSaveLocation();
+		return editDetailList && canSaveLocation();
 	}
 
 	public void addDetail() {
@@ -71,12 +92,65 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	public Boolean canDeleteDetail() {
-		return canSaveLocation();
+		return canAddDetail();
 	}
 
 	public void deleteDetail(LocationDetail detail) {
-		if (canDeleteDetail())
+		if (canDeleteDetail()) 
 			location.removeDetail(detail);
+			
+	}
+	
+	public Boolean canSaveDetailList() {
+		return editDetailList && canSaveLocation();
+	}
+
+	public Boolean validateDetailList() {
+		Set<String> keySet = new HashSet<String>();
+		for (LocationDetail detail : location.getDetailList()) {
+			if (detail.getOwnerType() == null)
+				return FacesContextMessages.ErrorMessages("Owner Type should not be null");
+			if (detail.getOwnerId() == null)
+				return FacesContextMessages.ErrorMessages("Owner shoud not be null");
+			if (!keySet.add(detail.getOwnerType() + ";" + detail.getOwnerId()))
+				return FacesContextMessages.ErrorMessages("Duplicate row !");
+		}
+		
+		return true;
+	}
+
+	public void saveDetailList() {
+		if(!canSaveDetailList())
+			return;
+		if (!validateDetailList())
+			return;
+
+		for (LocationDetail detail : location.getDetailList()) {
+			switch (detail.getOwnerType()) {
+			case COMPANY:
+				detail.setCompany(companyService.findOne(detail.getCompanyId()));
+				detail.setCustomer(null);
+				detail.setSupplier(null);
+				break;
+			case CUSTOMER:
+				detail.setCustomer(customerService.findOne(detail.getCustomerId()));
+				detail.setCompany(null);
+				detail.setSupplier(null);
+				break;
+			case SUPPLIER:
+				detail.setSupplier(supplierService.findOne(detail.getSupplierId()));
+				detail.setCompany(null);
+				detail.setCustomer(null);
+				break;
+			default:
+				break;
+			}
+		}
+
+		service.save(location);
+		location = service.findOne(location.getId());
+		editDetailList = false;
+
 	}
 
 	// DELETE LOCATION
@@ -113,5 +187,15 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public void setLocation(Location location) {
 		this.location = location;
 	}
+
+	public Boolean getEditDetailList() {
+		return editDetailList;
+	}
+
+	public void setEditDetailList(Boolean editDetailList) {
+		this.editDetailList = editDetailList;
+	}
+	
+	
 
 }

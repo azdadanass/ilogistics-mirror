@@ -1,7 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	<h:form id="deleteForm">
 		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
@@ -22,7 +21,6 @@
 			</div>
 		</p:dialog>
 	</h:form>
-
 	<h:form id="deleteLocationForm">
 		<p:dialog widgetVar="deleteLocationDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteLocationDlg').hide()">
@@ -39,11 +37,11 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('deleteLocationDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{warehouseView.deleteLocation()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteLocationDlg').hide()" update=":main_form:locations_table" />
+				<p:commandButton action="#{warehouseView.deleteLocation()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteLocationDlg').hide()"
+					update=":main_form:locations_table" />
 			</div>
 		</p:dialog>
 	</h:form>
-
 	<h:form id="deleteWarehouseFileForm">
 		<p:dialog widgetVar="deleteWarehouseFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteWarehouseFileDlg').hide()">
@@ -60,11 +58,11 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('deleteWarehouseFileDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{warehouseView.deleteWarehouseFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteWarehouseFileDlg').hide()" update=":main_form:files_table" />
+				<p:commandButton action="#{warehouseView.deleteWarehouseFile()}" value="Delete" styleClass="btn btn-danger" oncomplete="PF('deleteWarehouseFileDlg').hide()"
+					update=":main_form:files_table" />
 			</div>
 		</p:dialog>
 	</h:form>
-
 	<h:form id="addEditLocationForm">
 		<p:dialog widgetVar="addEditLocationDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('addEditLocationDlg').hide()">
@@ -113,17 +111,125 @@
 						</div>
 					</div>
 				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-warehousename">
+								<h:outputText value="Status Category" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{warehouseView.location.statusCategory}" required="true" requiredMessage="Status Category should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="Normal" itemValue="Normal" />
+									<f:selectItem itemLabel="Faulty" itemValue="Faulty" />
+									<f:selectItem itemLabel="Both" itemValue="Both" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="space-16" />
 			</div>
 			<br />
 			<br />
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addEditLocationDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{warehouseView.saveLocation()}" value="#{warehouseView.location.id==null?'Add':'Edit'}" styleClass="btn btn-success" update=":main_form:locations_table,messages" />
+				<p:commandButton action="#{warehouseView.saveLocation()}" value="#{warehouseView.location.id==null?'Add':'Edit'}" styleClass="btn btn-success"
+					update=":main_form:locations_table,messages" />
 			</div>
 		</p:dialog>
 	</h:form>
-
+	<h:form id="locationDetailListForm">
+		<p:dialog widgetVar="locationDetailListDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('locationDetailListDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Owner List" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-9 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Details" />
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="detailList" value="#{locationView.location.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+								<p:column headerText="Owner Type" width="100">
+									<h:outputText value="#{item.ownerType.value}" styleClass="#{item.ownerType.color.name}" rendered="#{!locationView.editDetailList}" />
+									<h:selectOneMenu value="#{item.ownerType}" rendered="#{locationView.editDetailList}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+										<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+										<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+										<p:ajax update="owner" />
+									</h:selectOneMenu>
+								</p:column>
+								<p:column headerText="Owner">
+									<h:outputText value="#{item.ownerName}" rendered="#{!locationView.editDetailList}" />
+									<h:panelGroup id="owner">
+										<f:subview rendered="#{locationView.editDetailList}">
+											<p:selectOneMenu value="#{item.companyId}" rendered="#{CompanyType.COMPANY==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{companyView.findLight()}" var="company" itemLabel="#{company.name}" itemValue="#{company.id}" />
+											</p:selectOneMenu>
+											<p:selectOneMenu value="#{item.customerId}" rendered="#{CompanyType.CUSTOMER==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{customerView.findLight()}" var="customer" itemLabel="#{customer.name}" itemValue="#{customer.id}" />
+											</p:selectOneMenu>
+											<p:selectOneMenu value="#{item.supplierId}" rendered="#{CompanyType.SUPPLIER==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{supplierView.findLight()}" var="supplier" itemLabel="#{supplier.name}" itemValue="#{supplier.id}" />
+											</p:selectOneMenu>
+										</f:subview>
+									</h:panelGroup>
+								</p:column>
+								<p:column headerText="Actions" styleClass="center" width="100">
+									<div class="action-buttons center">
+										<p:commandLink title="Remove row" action="#{locationView.deleteDetail(item)}" update="detailList" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canDeleteDetail()}">
+											<i class="ace-icon fa fa-remove bigger-130 red" />
+										</p:commandLink>
+									</div>
+								</p:column>
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSaveLocation() and !locationView.editDetailList}">
+											<i class="fa fa-edit orange" />
+											<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
+										</p:commandLink>
+										<p:commandLink title="Add New Item" action="#{locationView.addDetail()}" update="detailList" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canAddDetail()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+										<p:commandLink title="Save" action="#{locationView.saveDetailList()}" update="detailList,:locationDetailListForm:messages" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canSaveDetailList()}">
+											<i class="fa fa-save green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('locationDetailListDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
 	<h:form id="addWarehouseFileForm">
 		<p:dialog widgetVar="uploadWarehouseFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('uploadWarehouseFileDlg').hide()">
@@ -155,7 +261,8 @@
 				<div class="space-16" />
 				<div class="row">
 					<h:panelGroup id="fileUploadPanel">
-						<p:fileUpload fileUploadListener="#{warehouseView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/"
+						<p:fileUpload fileUploadListener="#{warehouseView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
+							update="messages,:main_form:files_table" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/"
 							styleClass="#{warehouseView.warehouseFileType==null?'hide':''}" style="margin: auto;width: 80%">
 							<f:attribute name="beanName" value="#{warehouseView.className2}" />
 						</p:fileUpload>
@@ -163,7 +270,6 @@
 					</h:panelGroup>
 				</div>
 			</div>
-
 			<br />
 			<br />
 			<div class="modal-footer">
@@ -171,9 +277,4 @@
 			</div>
 		</p:dialog>
 	</h:form>
-
-
-	
-
-
 </ui:composition>

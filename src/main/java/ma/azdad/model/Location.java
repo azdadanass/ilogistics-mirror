@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
 
 @Entity
 
@@ -36,15 +38,31 @@ public class Location extends GenericModel<Integer> implements Serializable {
 		this.warehouse = warehouse;
 	}
 
+	public String getStatusCategory() {
+		if (Boolean.TRUE.equals(normal) && Boolean.TRUE.equals(faulty))
+			return "Both";
+		if (Boolean.TRUE.equals(normal))
+			return "Normal";
+		if (Boolean.TRUE.equals(faulty))
+			return "Faulty";
+		return null;
+	}
+
+	public void setStatusCategory(String statusCategory) {
+		normal = Arrays.asList("Both","Normal").contains(statusCategory);
+		faulty = Arrays.asList("Both","Faulty").contains(statusCategory);
+	}
+
 	@Override
 	public boolean filter(String query) {
 		return contains(query, name);
 	}
-	
+
 	public void addDetail(LocationDetail detail) {
 		detail.setLocation(this);
 		detailList.add(detail);
 	}
+
 	public void removeDetail(LocationDetail detail) {
 		detail.setLocation(null);
 		detailList.remove(detail);
@@ -108,7 +126,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public void setFaulty(Boolean faulty) {
 		this.faulty = faulty;
 	}
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<LocationDetail> getDetailList() {
 		return detailList;

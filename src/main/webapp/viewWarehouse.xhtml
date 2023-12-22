@@ -26,6 +26,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<p:growl id="growl" />
 			<div class="page-header hidden-xs">
@@ -293,11 +294,19 @@
 											<sup> <h:outputText value="3" />
 											</sup>
 										</p:column>
+										<p:column headerText="Status Category">
+											<h:outputText value="#{item.statusCategory}" styleClass="green" rendered="#{item.statusCategory=='Normal'}" />
+											<h:outputText value="#{item.statusCategory}" styleClass="red" rendered="#{item.statusCategory=='Faulty'}" />
+											<h:outputText value="#{item.statusCategory}" styleClass="blue" rendered="#{item.statusCategory=='Both'}" />
+										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
 												<p:commandLink title="Edit" update=":addEditLocationForm" oncomplete="PF('addEditLocationDlg').show()">
 													<i class="ace-icon fa fa-edit bigger-130 blue" />
 													<f:setPropertyActionListener value="#{item}" target="#{warehouseView.location}" />
+												</p:commandLink>
+												<p:commandLink title="Owner List" action="#{locationView.refreshLocation(item.id)}" update=":locationDetailListForm" oncomplete="PF('locationDetailListDlg').show()">
+													<i class="ace-icon fa fa-list bigger-130 green" />
 												</p:commandLink>
 												<p:commandLink title="Delete" update=":deleteLocationForm" oncomplete="PF('deleteLocationDlg').show()">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
@@ -431,7 +440,7 @@
 										<h:outputText value="#{appLinkView.totalAmount2}" styleClass="bolder">
 											<f:convertNumber type="number" maxFractionDigits="2" />
 										</h:outputText>
-										<h:outputText value=" MAD" styleClass="bolder"/>
+										<h:outputText value=" MAD" styleClass="bolder" />
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">

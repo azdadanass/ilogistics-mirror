@@ -1,13 +1,17 @@
 package ma.azdad.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 
@@ -17,7 +21,11 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private Double surface;
 	private Double volume;
 
+	private Boolean normal = true;
+	private Boolean faulty = true;
+
 	private Warehouse warehouse;
+	private List<LocationDetail> detailList = new ArrayList<>();
 
 	public Location() {
 		super();
@@ -30,10 +38,16 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && name != null)
-			result = name.toLowerCase().contains(query);
-		return result;
+		return contains(query, name);
+	}
+	
+	public void addDetail(LocationDetail detail) {
+		detail.setLocation(this);
+		detailList.add(detail);
+	}
+	public void removeDetail(LocationDetail detail) {
+		detail.setLocation(null);
+		detailList.remove(detail);
 	}
 
 	public String getName() {
@@ -78,4 +92,30 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public Boolean getNormal() {
+		return normal;
+	}
+
+	public void setNormal(Boolean normal) {
+		this.normal = normal;
+	}
+
+	public Boolean getFaulty() {
+		return faulty;
+	}
+
+	public void setFaulty(Boolean faulty) {
+		this.faulty = faulty;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<LocationDetail> getDetailList() {
+		return detailList;
+	}
+
+	public void setDetailList(List<LocationDetail> detailList) {
+		this.detailList = detailList;
+	}
+
 }

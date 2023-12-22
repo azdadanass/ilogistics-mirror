@@ -15,6 +15,7 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 	@Override
 	public Location findOne(Integer id) {
 		Location location = super.findOne(id);
+		initialize(location.getDetailList());
 		return location;
 	}
 

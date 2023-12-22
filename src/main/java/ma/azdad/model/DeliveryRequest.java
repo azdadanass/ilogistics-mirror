@@ -155,6 +155,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Integer transporterId;
 	private Integer outboundDeliveryRequestTransferId;
 	private Integer poId;
+	
+	private StockRowState stockRowState;
 
 	private String tmpExternalRequesterUsername;
 
@@ -2200,7 +2202,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setHardwareSwapInboundId(Integer hardwareSwapInboundId) {
 		this.hardwareSwapInboundId = hardwareSwapInboundId;
 	}
+
+	@Transient
+	public StockRowState getStockRowState() {
+		return stockRowState;
+	}
+
+	@Transient
+	public void setStockRowState(StockRowState stockRowState) {
+		this.stockRowState = stockRowState;
+	}
 	
 	
 
+	
 }

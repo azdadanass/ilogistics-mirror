@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.Location;
+import ma.azdad.model.LocationDetail;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.LocationService;
 import ma.azdad.utils.FacesContextMessages;
@@ -59,6 +60,25 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return listPage;
 	}
 
+	// details
+	public Boolean canAddDetail() {
+		return canSaveLocation();
+	}
+
+	public void addDetail() {
+		if (canAddDetail())
+			location.addDetail(new LocationDetail());
+	}
+
+	public Boolean canDeleteDetail() {
+		return canSaveLocation();
+	}
+
+	public void deleteDetail(LocationDetail detail) {
+		if (canDeleteDetail())
+			location.removeDetail(detail);
+	}
+
 	// DELETE LOCATION
 	public Boolean canDeleteLocation() {
 		return true;
@@ -77,9 +97,6 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public LocationService getLocationService() {
 		return locationService;

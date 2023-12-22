@@ -640,28 +640,31 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				FacesContextMessages.ErrorMessages("Count is NOK, please put the correct values for quantites ");
 				break;
 			}
-			// TODO steps 3 and 4
-			step = 5;
+			step++;
 			initStockRowList();
 			break;
-		case 5:
-			System.out.println("step5");
-			if (!validateStorageStep5())
+		case 3:
+			System.out.println("step3");
+			step++;
+			break;
+		case 4:
+			System.out.println("step4");
+			if (!validateStorageStep4())
 				break;
 			for (StockRow row : deliveryRequest.getStockRowList())
 				row.setInitial(true);
 			step++;
 			break;
-		case 6:
-			System.out.println("step6");
-			if (!validateStorageStep6())
+		case 5:
+			System.out.println("step5");
+			if (!validateStorageStep5())
 				break;
 			step++;
 			break;
-		case 7:
+		case 6:
 			step++;
 			break;
-		case 8:
+		case 7:
 			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
@@ -771,7 +774,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return true;
 	}
 
-	private Boolean validateStorageStep5() {
+	private Boolean validateStorageStep4() {
 		HashSet<String> set = new HashSet<>();
 
 		int newItemsListSize = 0;
@@ -799,7 +802,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return true;
 	}
 
-	private Boolean validateStorageStep6() {
+	private Boolean validateStorageStep5() {
 		HashSet<String> set = new HashSet<>();
 
 		int newItemsListSize = 0;
@@ -2399,6 +2402,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setWarehouse(deliveryRequest.getOutboundDeliveryRequestReturn().getWarehouse());
 		if (deliveryRequest.getOutboundDeliveryRequestReturn().getDestination() != null)
 			deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestReturn().getDestination());
+		if(deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()){
+			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
+			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
+		}
+			
 		// set owner
 		List<LabelValue> ownerList = deliveryRequestDetailService.findOwnerList(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 		if (ownerList.size() == 1)

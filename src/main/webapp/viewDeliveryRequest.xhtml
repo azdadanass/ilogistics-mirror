@@ -525,11 +525,14 @@
 							<h:outputText value=" Issue List" />
 						</a>
 					</li>
-					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm and deliveryRequestView.deliveryRequest.isOutbound}">
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.ism}">
 						<li>
 							<a data-toggle="tab" href="#tab14">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
-								<h:outputText value=" SDM Install base" styleClass="hidden-xs" />
+								<h:outputText value=" SDM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.sdm}" />
+								<h:outputText value=" ISM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.ism}" />
+								<h:outputText value=" SDM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.sdm}" />
+								<h:outputText value=" ISM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.ism}" />
 							</a>
 						</li>
 					</f:subview>
@@ -2029,17 +2032,19 @@
 							</div>
 						</div>
 					</div>
-					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm and deliveryRequestView.deliveryRequest.isOutbound}">
+					<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.ism}">
 						<div id="tab14" class="tab-pane">
 							<h4 class="header blue bolder smaller">
-								<h:outputText value=" Install Base" />
+								<h:outputText value=" Install Base" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
+								<h:outputText value=" Dismantle Stage" rendered="#{deliveryRequestView.deliveryRequest.isInbound}" />
 							</h4>
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-7 hidden-xs">
 											<i class="fa fa-list" />
-											<h:outputText value=" Install Base" />
+											<h:outputText value=" Install Base" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
+											<h:outputText value=" Dismantle Stage" rendered="#{deliveryRequestView.deliveryRequest.isInbound}" />
 										</div>
 										<div class="col-sm-2">
 											<div class="action-buttons center">
@@ -2152,16 +2157,24 @@
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Delivred Qantity" styleClass="hide">
+											<p:column headerText="Dismantled Qantity" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+												<h:outputText value="#{item.installedQuantity}" styleClass="bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Delivered Qantity" styleClass="hide">
 												<h:outputText value="#{-item.quantity}" />
 											</p:column>
-											<p:column headerText="Installed Qantity">
+											<p:column headerText="Installed Qantity" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 												<h:outputText value="#{item.installedQuantity}" styleClass="bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Running Stock">
-												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}">
+												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value="#{item.installedQuantity -(-item.quantity)}" styleClass="bolder #{item.installedQuantity -(-item.quantity)==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>

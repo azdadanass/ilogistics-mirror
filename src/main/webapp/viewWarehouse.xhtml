@@ -27,6 +27,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.StockRowState" var="StockRowState" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<p:growl id="growl" />
 			<div class="page-header hidden-xs">
@@ -295,9 +296,8 @@
 											</sup>
 										</p:column>
 										<p:column headerText="Status Category">
-											<h:outputText value="#{item.statusCategory}" styleClass="green" rendered="#{item.statusCategory=='Normal'}" />
-											<h:outputText value="#{item.statusCategory}" styleClass="red" rendered="#{item.statusCategory=='Faulty'}" />
-											<h:outputText value="#{item.statusCategory}" styleClass="blue" rendered="#{item.statusCategory=='Both'}" />
+											<h:outputText value="#{item.stockRowState.value}" styleClass="#{item.stockRowState.color.name}" />
+											<h:outputText value="Normal &amp; Faulty" rendered="#{item.stockRowState==null}" styleClass="blue" />
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">

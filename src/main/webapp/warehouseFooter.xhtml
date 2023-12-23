@@ -119,11 +119,9 @@
 								<h:outputText value="Status Category" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<h:selectOneMenu value="#{warehouseView.location.statusCategory}" required="true" requiredMessage="Status Category should not be null">
-									<f:selectItem itemLabel="---" noSelectionOption="true" />
-									<f:selectItem itemLabel="Normal" itemValue="Normal" />
-									<f:selectItem itemLabel="Faulty" itemValue="Faulty" />
-									<f:selectItem itemLabel="Both" itemValue="Both" />
+								<h:selectOneMenu value="#{warehouseView.location.stockRowState}" >
+									<f:selectItem itemLabel="Normal &amp; Faulty" itemValue="#{null}" />
+									<f:selectItems value="#{StockRowState.ALL_ENUM_VALUES}" />
 								</h:selectOneMenu>
 							</div>
 						</div>

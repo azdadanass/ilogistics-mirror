@@ -155,7 +155,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Integer transporterId;
 	private Integer outboundDeliveryRequestTransferId;
 	private Integer poId;
-	
+
 	private StockRowState stockRowState;
 
 	private String tmpExternalRequesterUsername;
@@ -184,8 +184,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.crossChargeId = crossChargeId;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4, Double qTotalCost,
-			Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4,
+			Double qTotalCost, Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -199,8 +199,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Project destinationProject,
-			String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project,
+			Project destinationProject, String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -223,10 +223,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	// c1
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, //
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
-			Date neededDeliveryDate, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName, Warehouse warehouse, //
+			Date neededDeliveryDate, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName,
+			Warehouse warehouse, //
 			String destinationProjectName, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
 			Boolean containsBoqMapping, Boolean missingPo, Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, //
-			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName, String destinationProjectCustomerName) {
+			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName,
+			String destinationProjectCustomerName) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -396,7 +398,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public boolean filter(String query) {
 		return contains(query, getReference(), smsRef, description, originNumber, ownerName, //
 				getProjectName(), getDestinationProjectName(), getRequesterFullName(), getSubType(), getWarehouseName(), //
-				deliverToCompanyType != null ? deliverToCompanyType.getValue() : null, getDeliverToCompanyName(), getDeliverToSupplierName(), getDeliverToCustomerName(), getToUserFullName());
+				deliverToCompanyType != null ? deliverToCompanyType.getValue() : null, getDeliverToCompanyName(), getDeliverToSupplierName(), getDeliverToCustomerName(),
+				getToUserFullName());
 	}
 
 	public void copyFromTemplate(DeliveryRequest template) {
@@ -562,6 +565,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 				return "Planned return";
 
 		return null;
+	}
+
+	@Transient
+	public Integer getWarehouseId(){
+		return warehouse!=null?warehouse.getId():null;
+	}
+
+	@Transient
+	public void setWarehouseId(Integer warehouseId){
+		if(warehouse==null || !warehouseId.equals(warehouse.getId()))
+			warehouse=new Warehouse();
+		warehouse.setId(warehouseId);
 	}
 
 	@Transient
@@ -2212,8 +2227,5 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setStockRowState(StockRowState stockRowState) {
 		this.stockRowState = stockRowState;
 	}
-	
-	
 
-	
 }

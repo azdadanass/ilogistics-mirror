@@ -1,6 +1,7 @@
 package ma.azdad.view;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
 import ma.azdad.repos.LocationRepos;
@@ -81,7 +83,7 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	// details
 	private Boolean editDetailList = false;
-	
+
 	public Boolean canAddDetail() {
 		return editDetailList && canSaveLocation();
 	}
@@ -96,11 +98,11 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	public void deleteDetail(LocationDetail detail) {
-		if (canDeleteDetail()) 
+		if (canDeleteDetail())
 			location.removeDetail(detail);
-			
+
 	}
-	
+
 	public Boolean canSaveDetailList() {
 		return editDetailList && canSaveLocation();
 	}
@@ -115,12 +117,12 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 			if (!keySet.add(detail.getOwnerType() + ";" + detail.getOwnerId()))
 				return FacesContextMessages.ErrorMessages("Duplicate row !");
 		}
-		
+
 		return true;
 	}
 
 	public void saveDetailList() {
-		if(!canSaveDetailList())
+		if (!canSaveDetailList())
 			return;
 		if (!validateDetailList())
 			return;
@@ -170,6 +172,11 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return listPage;
 	}
 
+	// generic
+	public List<Location> findByWarehouseAndStockRowStateAndOwner(DeliveryRequest deliveryRequest) {
+		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
+	}
+
 	// GETTERS & SETTERS
 
 	public LocationService getLocationService() {
@@ -195,7 +202,5 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public void setEditDetailList(Boolean editDetailList) {
 		this.editDetailList = editDetailList;
 	}
-	
-	
 
 }

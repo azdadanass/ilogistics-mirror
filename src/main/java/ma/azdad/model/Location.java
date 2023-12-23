@@ -2,7 +2,6 @@ package ma.azdad.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
 @Entity
 
 public class Location extends GenericModel<Integer> implements Serializable {
@@ -23,8 +21,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private Double surface;
 	private Double volume;
 
-	private Boolean normal = true;
-	private Boolean faulty = true;
+	private StockRowState stockRowState; // null = normal & faulty
 
 	private Warehouse warehouse;
 	private List<LocationDetail> detailList = new ArrayList<>();
@@ -38,19 +35,12 @@ public class Location extends GenericModel<Integer> implements Serializable {
 		this.warehouse = warehouse;
 	}
 
-	public String getStatusCategory() {
-		if (Boolean.TRUE.equals(normal) && Boolean.TRUE.equals(faulty))
-			return "Both";
-		if (Boolean.TRUE.equals(normal))
-			return "Normal";
-		if (Boolean.TRUE.equals(faulty))
-			return "Faulty";
-		return null;
+	public StockRowState getStockRowState() {
+		return stockRowState;
 	}
 
-	public void setStatusCategory(String statusCategory) {
-		normal = Arrays.asList("Both","Normal").contains(statusCategory);
-		faulty = Arrays.asList("Both","Faulty").contains(statusCategory);
+	public void setStockRowState(StockRowState stockRowState) {
+		this.stockRowState = stockRowState;
 	}
 
 	@Override
@@ -109,22 +99,6 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Boolean getNormal() {
-		return normal;
-	}
-
-	public void setNormal(Boolean normal) {
-		this.normal = normal;
-	}
-
-	public Boolean getFaulty() {
-		return faulty;
-	}
-
-	public void setFaulty(Boolean faulty) {
-		this.faulty = faulty;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -2177,7 +2177,7 @@
 												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value="#{item.installedQuantity-item.quantity)}" styleClass="bolder #{item.installedQuantity-item.quantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+												<h:outputText value="#{item.installedQuantity-item.quantity}" styleClass="bolder #{item.installedQuantity-item.quantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>

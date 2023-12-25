@@ -57,8 +57,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private String qrKey;
 	private String returnReason;
 	private Boolean isFullyReturned = false;
-	private Boolean sdm = true;
-	private Boolean ism = true;
+	private Boolean sdm = false;
+	private Boolean ism = false;
 	private Boolean containsBoqMapping = null;
 	private Boolean missingPo = null;
 	private Boolean missingOutboundDeliveryNote = false;

@@ -2153,7 +2153,10 @@
 												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="Delivred Qantity" width="90" exportable="false">
-												<h:outputText value="#{-item.quantity}" styleClass="bolder blue">
+												<h:outputText value="#{-item.quantity}" styleClass="bolder blue" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value="#{item.quantity}" styleClass="bolder blue" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
@@ -2174,7 +2177,7 @@
 												<h:outputText value="#{-item.quantity-item.installedQuantity}" styleClass="bolder #{-item.quantity-item.installedQuantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
-												<h:outputText value="#{item.installedQuantity -(-item.quantity)}" styleClass="bolder #{item.installedQuantity -(-item.quantity)==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+												<h:outputText value="#{item.installedQuantity-item.quantity)}" styleClass="bolder #{item.installedQuantity-item.quantity==0?'green':'orange'}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>

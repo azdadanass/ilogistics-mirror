@@ -345,7 +345,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			kindly = "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval";
 			break;
 		case APPROVED2:
-			kindly = "Kindly be informed that the delivery request below has been <b style='color:green'>Approved</b> for deliveryl";
+			kindly = "Kindly be informed that the delivery request below has been <b style='color:green'>Approved</b> for delivery";
 			break;
 		case DELIVRED:
 			kindly = "Kindly be informed that the delivery request below has been delivred "

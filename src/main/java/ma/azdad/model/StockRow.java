@@ -26,7 +26,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private Date creationDate;
 
 	private StockRowState state = StockRowState.NORMAL;
-	private StockRowStatus status = StockRowStatus.NORMAL;
+	private StockRowStatus status = StockRowStatus.BRAND_NEW;
 	private String originNumber;
 
 	private DeliveryRequest deliveryRequest;

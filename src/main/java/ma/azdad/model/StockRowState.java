@@ -6,8 +6,8 @@ import java.util.List;
 import ma.azdad.utils.Color;
 
 public enum StockRowState {
-	NORMAL("Normal", Color.GREEN, Arrays.asList(StockRowStatus.NORMAL, StockRowStatus.BRAND_NEW, StockRowStatus.USED)),
-	FAULTY("Faulty", Color.RED, Arrays.asList(StockRowStatus.FAULTY, StockRowStatus.WATER_DAMAGE, StockRowStatus.PHYSICAL_DAMAGE, StockRowStatus.FIRE_DAMAGE)),;
+	NORMAL("Normal", Color.GREEN, Arrays.asList(StockRowStatus.BRAND_NEW, StockRowStatus.USED)),
+	FAULTY("Faulty", Color.RED, Arrays.asList(StockRowStatus.HARDWARE_FAULT, StockRowStatus.WATER_DAMAGE, StockRowStatus.PHYSICAL_DAMAGE, StockRowStatus.FIRE_DAMAGE, StockRowStatus.OTHER)),;
 
 	private final String value;
 	private final Color color;

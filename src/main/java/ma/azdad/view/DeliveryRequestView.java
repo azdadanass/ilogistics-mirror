@@ -1879,7 +1879,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				return FacesContextMessages.ErrorMessages("All the selected items should belong to the same Owner");
 
 			Set<StockRowStatus> stockRowStatusList = deliveryRequest.getDetailList().stream().map(i -> i.getStatus()).distinct().collect(Collectors.toSet());
-			if (!ignoreMultipleStatusWarning && stockRowStatusList.contains(StockRowStatus.NORMAL) && stockRowStatusList.size() > 1) {
+			if (!ignoreMultipleStatusWarning && stockRowStatusList.contains(StockRowStatus.BRAND_NEW) && stockRowStatusList.size() > 1) {
 				ignoreMultipleStatusWarning = true;
 				warningMessage = "Part Number with different status are included in the DN, are you sure ?";
 				execJavascript("PF('warningDlg').show();");

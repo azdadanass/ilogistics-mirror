@@ -726,9 +726,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
-			
+
 			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
+				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -971,8 +971,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public Boolean canEditSdm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && deliveryRequest.getDestinationProjectSdm() != null
-				&& deliveryRequest.getDestinationProjectSdm();
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && Boolean.TRUE.equals(deliveryRequest.getDestinationProjectSdm());
 	}
 
 	public void editSdm() {
@@ -984,8 +983,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public Boolean canEditIsm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && deliveryRequest.getDestinationProjectIsm() != null
-				&& deliveryRequest.getDestinationProjectIsm();
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && Boolean.TRUE.equals(deliveryRequest.getProjectIsm());
 	}
 
 	public void editIsm() {
@@ -1119,9 +1117,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		service.save(deliveryRequest);
 		deliveryRequest = service.findOne(deliveryRequest.getId());
 		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
+			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
 		emailService.deliveryRequestNotification(deliveryRequest);
-		
+
 	}
 
 //	public void approveHm() {
@@ -1234,7 +1232,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			FacesContextMessages.ErrorMessages("can not cancel DN --> associated TR status is : " + deliveryRequest.getTransportationRequest().getStatus().getValue());
 			return null;
 		}
-		
+
 		if (deliveryRequest.getIsInbound() && jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) > 0) {
 			FacesContextMessages.ErrorMessages(deliveryRequest.getReference() + " could not be cancelled as it’s alredy mapped with JR, Please clear the JR mapping First");
 			return null;
@@ -1272,9 +1270,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			poService.updateIlogisticsStatus(poId);
 
 		jobRequestDeliveryDetailService.deleteByDeliveryRequest(deliveryRequest.getId());
-		
+
 		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
-			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),deliveryRequest.getId(), deliveryRequest.getStatus());
+			service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
@@ -2171,9 +2169,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
 		deliveryRequest.setSdm(Boolean.TRUE.equals(sdm));
 
-		Boolean ism = deliveryRequest.getDestinationProjectIsm();
-		deliveryRequest.setIsm(Boolean.TRUE.equals(ism));
-
 	}
 
 	public Boolean canEditDestinationProject() {
@@ -2278,6 +2273,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
 		initOwnerType();
+		
+		Boolean ism = deliveryRequest.getProjectIsm();
+		deliveryRequest.setIsm(Boolean.TRUE.equals(ism));
 	}
 
 	public Boolean canFillOwnerType() {
@@ -2402,11 +2400,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setWarehouse(deliveryRequest.getOutboundDeliveryRequestReturn().getWarehouse());
 		if (deliveryRequest.getOutboundDeliveryRequestReturn().getDestination() != null)
 			deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestReturn().getDestination());
-		if(deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()){
+		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()) {
 			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
 			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
 		}
-			
+
 		// set owner
 		List<LabelValue> ownerList = deliveryRequestDetailService.findOwnerList(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 		if (ownerList.size() == 1)

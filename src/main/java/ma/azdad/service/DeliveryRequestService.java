@@ -339,13 +339,30 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Body body = new Body();
 		body.setStyle("padding-top: 40px; background-color: #fff; font-family: 'Arial';font-size: 12px;");
 
-		String kindly = (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus())
-				? "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval"
-				: "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>" + deliveryRequest.getStatus().getValue())
-				+ (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus())
-						? deliveryRequest.getIsInbound() ? " to warehouse" : deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"
-						: "")
-				+ "</b> <br/><br/>";
+		String kindly;
+		switch (deliveryRequest.getStatus()) {
+		case REQUESTED:
+			kindly = "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval";
+			break;
+		case APPROVED2:
+			kindly = "Kindly be informed that the delivery request below has been <b style='color:green'>Approved</b> for deliveryl";
+			break;
+		case DELIVRED:
+			kindly = "Kindly be informed that the delivery request below has been delivred "
+					+ (deliveryRequest.getIsInbound() ? " to warehouse" : (deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"));
+		default:
+			kindly = "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>" + deliveryRequest.getStatus().getValue();
+			break;
+		}
+		kindly += "</b> <br/><br/>";
+
+//		String kindly = (DeliveryRequestStatus.REQUESTED.equals(deliveryRequest.getStatus())
+//				? "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval"
+//				: "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>" + deliveryRequest.getStatus().getValue())
+//				+ (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus())
+//						? deliveryRequest.getIsInbound() ? " to warehouse" : deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"
+//						: "")
+//				+ "</b> <br/><br/>";
 
 		Div div = (Div) new Div("Dear " + dearFullName + ",<br/> " + kindly).setStyle("width: 90%; margin: auto;font-family: 'Arial';  font-size: 12px;clear: right;");
 		if (showMessage) {
@@ -1291,9 +1308,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return repos.findStatusById(id);
 	}
 
-	public void updateHardwareSwapInboundIdAndStatus(Integer outboundId,Integer inboundId,DeliveryRequestStatus inboundStatus) {
+	public void updateHardwareSwapInboundIdAndStatus(Integer outboundId, Integer inboundId, DeliveryRequestStatus inboundStatus) {
 		evictCache();
-		repos.updateHardwareSwapInboundIdAndStatus(outboundId,inboundId, inboundStatus);
+		repos.updateHardwareSwapInboundIdAndStatus(outboundId, inboundId, inboundStatus);
 	}
 
 }

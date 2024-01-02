@@ -17,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -1443,7 +1442,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "external_company_type")
+//	@Column(name = "external_company_type")
 	public CompanyType getDeliverToCompanyType() {
 		return deliverToCompanyType;
 	}
@@ -1453,7 +1452,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "external_company_customer_idcustomer")
+//	@JoinColumn(name = "external_company_customer_idcustomer")
 	public Customer getDeliverToCustomer() {
 		return deliverToCustomer;
 	}
@@ -1463,7 +1462,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "external_company_supplier_idsupplier")
+//	@JoinColumn(name = "external_company_supplier_idsupplier")
 	public Supplier getDeliverToSupplier() {
 		return deliverToSupplier;
 	}
@@ -1472,7 +1471,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.deliverToSupplier = deliverToSupplier;
 	}
 
-	@Column(name = "external_company")
+//	@Column(name = "external_company")
 	public String getDeliverToOther() {
 		return deliverToOther;
 	}
@@ -1879,7 +1878,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "internal_company_idcompany")
+//	@JoinColumn(name = "internal_company_idcompany")
 	public Company getDeliverToCompany() {
 		return deliverToCompany;
 	}

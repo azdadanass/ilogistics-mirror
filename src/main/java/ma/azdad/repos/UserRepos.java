@@ -70,6 +70,9 @@ public interface UserRepos extends JpaRepository<User, String> {
 	String select1 = "select new User(a.id,a.photo,a.fullName,a.cin,a.job, a.email, a.phone,a.active,a.companyType, " + companyName + ", " + customerName + ", " + supplierName
 			+ ") ";
 
+	@Query(select1 + "from User a where a.company.id = ?1 and a.active is true")
+	List<User> findActiveByCompany(Integer companyId);
+	
 	@Query(select1 + "from User a where a.customer.id = ?1 and a.active is true")
 	List<User> findActiveByCustomer(Integer customerId);
 

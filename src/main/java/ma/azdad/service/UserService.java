@@ -151,6 +151,10 @@ public class UserService {
 		return new ArrayList<User>();
 	}
 
+	public List<User> findActiveByCompany(Integer companyId) {
+		return repos.findActiveByCompany(companyId);
+	}
+	
 	public List<User> findActiveByCustomer(Integer customerId) {
 		return repos.findActiveByCustomer(customerId);
 	}

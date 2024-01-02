@@ -304,6 +304,10 @@ public class UserView {
 		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
 	
+	public List<User> findActiveByCOmpany(Integer companyId) {
+		return userService.findActiveByCompany(companyId);
+	}
+	
 	public List<User> findActiveByCustomer(Integer customerId) {
 		return userService.findActiveByCustomer(customerId);
 	}

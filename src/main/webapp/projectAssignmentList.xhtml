@@ -150,6 +150,9 @@
 							<p:column headerText="User" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
 								<h:outputText value="#{item.userFullName}" styleClass="#{item.type.color.name} bolder" />
 							</p:column>
+							<p:column headerText="User Status" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
+								<h:outputText value="#{item.userActive?'Active':'Inactive'}" styleClass="#{item.userActive?'green':'red'}" />
+							</p:column>
 							<p:column headerText="Role SDM" rendered="#{ProjectAssignmentType.INTERNAL==projectAssignmentView.type}">
 								<i class="ace-icon fa #{userView.hasRoleSdm(item.userUsername)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>

@@ -23,6 +23,6 @@ public interface LocationRepos extends JpaRepository<Location, Integer> {
 			+ "a.location.warehouse.id = ?1 "//
 			+ "and (a.location.stockRowState is null or a.location.stockRowState = ?2) "//
 			+ "and a.ownerType = ?3 "//
-			+ "and (a.company.id = ?4 or a.customer.id = ?4 and a.supplier.id = ?4)")
+			+ "and (a.company.id = ?4 or a.customer.id = ?4 or a.supplier.id = ?4)")
 	List<Location> findByWarehouseAndStockRowStateAndOwner(Integer warehouseId, StockRowState stockRowState, CompanyType ownerType, Integer ownerId);
 }

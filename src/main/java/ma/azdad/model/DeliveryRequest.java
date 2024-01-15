@@ -73,6 +73,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Project destinationProject;
 
 	private Warehouse warehouse;
+	
+	private Acceptance acceptance;
 
 	private CompanyType ownerType;
 	private Company company;// Owner
@@ -2221,6 +2223,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public void setStockRowState(StockRowState stockRowState) {
 		this.stockRowState = stockRowState;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Acceptance getAcceptance() {
+		return acceptance;
+	}
+
+	public void setAcceptance(Acceptance acceptance) {
+		this.acceptance = acceptance;
 	}
 
 }

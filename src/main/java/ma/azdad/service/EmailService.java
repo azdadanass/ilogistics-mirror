@@ -3,13 +3,8 @@ package ma.azdad.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -23,14 +18,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ma.azdad.chat.ChatMessage;
 import ma.azdad.model.Issue;
 import ma.azdad.model.User;
-import ma.azdad.repos.ChatMessageRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.App;
 import ma.azdad.utils.Mail;
@@ -52,16 +44,13 @@ public class EmailService {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
-	
-	@Autowired
-	ChatMessageRepos chatMessageRepos;
 
 	@Autowired
 	UserRepos userRepos;
 
 	@Value("${applicationName}")
 	private String applicationName;
-	
+
 	@Value("${application}")
 	private String application;
 
@@ -142,62 +131,6 @@ public class EmailService {
 
 		send(mail);
 	}
-	
-	
-	//@Scheduled(fixedRate = 800000)
-	public void sendUnreadMsgNotification() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-		LocalDateTime today = LocalDateTime.now();
-		List<User> userList = userRepos.find(true);
-		
-		for (User receiver : userList) {
-
-				List<ChatMessage> msgList = chatMessageRepos.findUnseenMessagesByTimestampDifference(receiver,application);
-				Set<String> senders = new HashSet<>();
-				for (ChatMessage msg : msgList) {
-				    User currentUser = msg.getUserSender();
-
-				    // Check if the user has already been processed
-				    if (!senders.contains(currentUser.getUsername())) {
-				       
-
-				        // Mark the user as processed
-				    	senders.add(currentUser.getUsername());
-				    }
-				}
-				
-				for (String s : senders) {
-					
-					User sender = userRepos.findByUsername(s);
-					
-					List<ChatMessage> msgList2 = chatMessageRepos.findUnseenMessagesByTimestampDifference2(receiver,sender,application);
-
-				if (msgList2.size() > 0) {
-					
-					String to = receiver.getEmail();
-					String subject = "Missed Chat on " + application.toUpperCase() + " at " + today.format(formatter);
-					Mail mail = new Mail(to, subject, "missedChat.html", TemplateType.HTML);
-					mail.addParameter("msgList", msgList2);
-					mail.addParameter("message", "Message : ");
-					mail.addParameter("date", "Date : ");
-					mail.addParameter("sender", sender.getFullName());
-					mail.addParameter("dearUser", "Dear " + receiver.getFullName());
-
-					mail.generateMessageFromTemplate(thymeLeafService);
-					send(mail);
-
-					for (ChatMessage msg : msgList2) {
-						msg.setMailed(true);
-						chatMessageRepos.save(msg);
-					}
-
-				}
-
-			}
-		}
-
-	}
-	
 
 	private void send(final Mail mail) {
 		if (!UtilsFunctions.validateEmail(mail.getTo()))

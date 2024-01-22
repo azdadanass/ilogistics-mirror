@@ -970,6 +970,64 @@
 											</div>
 										</div>
 									</div>
+									<div class="space-8" />
+								</f:subview>
+								<f:subview rendered="#{DeliveryRequestType.OUTBOUND==deliveryRequestView.deliveryRequest.type and deliveryRequestView.deliveryRequest.poId==null}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Filter " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:commandLink id="filter" update="filter,filterPanel" partialSubmit="true" process="@this">
+													<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.filter?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+													<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.filter}" target="#{deliveryRequestView.deliveryRequest.filter}" />
+												</p:commandLink>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<h:panelGroup id="filterPanel">
+										<f:subview rendered="#{deliveryRequestView.deliveryRequest.filter}">
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Filter Type " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.filterType}" styleClass="col-xs-12 col-sm-6" required="true"
+															requiredMessage="Filter Type should not be null">
+															<f:selectItem itemLabel="---" noSelectionOption="true" />
+															<f:selectItem itemLabel="Inbound DN" itemValue="Inbound DN" />
+															<f:selectItem itemLabel="Origin DN Number" itemValue="Origin DN Number" />
+														</h:selectOneMenu>
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+											<div class="row">
+												<div class="col-xs-12 col-sm-3">
+													<label class="control-label pull-right">
+														<h:outputText value="Filter Value " />
+													</label>
+												</div>
+												<div class="col-xs-12 col-sm-9">
+													<div class="clearfix">
+														<p:inputText value="#{deliveryRequestView.deliveryRequest.filterValue}" styleClass="col-xs-12 col-sm-6" required="true"
+															requiredMessage="Filter Type should not be null" />
+														<br />
+													</div>
+												</div>
+											</div>
+											<div class="space-8" />
+										</f:subview>
+									</h:panelGroup>
 								</f:subview>
 							</f:subview>
 							<f:subview id="step3" rendered="#{deliveryRequestView.step==3}">

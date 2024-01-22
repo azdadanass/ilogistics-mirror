@@ -1798,8 +1798,22 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailService.findRemainingByProjectAndWarehouse(deliveryRequest.getProjectId(),
 					deliveryRequest.getWarehouse().getId(), deliveryRequest);
 
-			// add second filter by Po.boqlist
-			// dont use in edit case
+			// second filter
+			if (deliveryRequest.getFilter())
+				switch (deliveryRequest.getFilterType()) {
+				case "Inbound DN":
+					deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream()
+							.filter(i -> i.getInboundDeliveryRequestReference().equals(deliveryRequest.getFilterValue())).collect(Collectors.toList());
+					break;
+				case "Origin DN Number":
+					deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream().filter(i -> i.getOriginNumber().equals(deliveryRequest.getFilterValue()))
+							.collect(Collectors.toList());
+					break;
+				default:
+					break;
+				}
+
+			// third filter by Po.boqlist (dont use in edit case)
 			if (getIsPoNeeded() && deliveryRequest.getPoId() != null) {
 				Set<Integer> boqSet = boqService.findPartNumberIdListByPoAndHavingRemainingQuantity(deliveryRequest.getPoId());
 				Set<Integer> equivalenceSet = partNumberEquivalenceService.findPartNumberIdListByEquivalence(boqSet);

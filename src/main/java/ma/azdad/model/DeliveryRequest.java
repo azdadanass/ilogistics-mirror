@@ -162,6 +162,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	private Double totalCost;
 	private Double totalPrice;
+	
+	private Boolean filter = false;
+	private String filterType;
+	private String filterValue;
 
 	// PERFORMANCE
 	private String ownerName;
@@ -2238,5 +2242,39 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setAcceptance(Acceptance acceptance) {
 		this.acceptance = acceptance;
 	}
+
+	@Transient
+	public Boolean getFilter() {
+		return filter;
+	}
+
+	@Transient
+	public void setFilter(Boolean filter) {
+		this.filter = filter;
+	}
+
+	@Transient
+	public String getFilterType() {
+		return filterType;
+	}
+
+	@Transient
+	public void setFilterType(String filterType) {
+		this.filterType = filterType;
+	}
+
+	@Transient
+	public String getFilterValue() {
+		return filterValue;
+	}
+
+	@Transient
+	public void setFilterValue(String filterValue) {
+		this.filterValue = filterValue;
+	}
+	
+	
+	
+	
 
 }

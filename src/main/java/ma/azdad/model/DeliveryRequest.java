@@ -2119,6 +2119,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public Boolean getDestinationProjectSdm() {
 		return destinationProject != null ? destinationProject.getSdm() : null;
 	}
+	
+	@Transient
+	public Boolean getDestinationProjectIsm() {
+		return destinationProject != null ? destinationProject.getIsm() : null;
+	}
 
 	public Long getCountIssues1() {
 		return countIssues1;

@@ -970,7 +970,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public Boolean canEditSdm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && Boolean.TRUE.equals(deliveryRequest.getDestinationProjectSdm());
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
+				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectSdm() : deliveryRequest.getProjectSdm());
 	}
 
 	public void editSdm() {
@@ -982,7 +983,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public Boolean canEditIsm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 && Boolean.TRUE.equals(deliveryRequest.getProjectIsm());
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
+				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectIsm() : deliveryRequest.getProjectIsm());
 	}
 
 	public void editIsm() {

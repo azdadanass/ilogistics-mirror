@@ -149,10 +149,12 @@ public class OldEmailService {
 	public void deliveryRequestNotification(DeliveryRequest deliveryRequest) {
 		switch (deliveryRequest.getStatus()) {
 		case REQUESTED:
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())), deliveryRequest.getProject().getManager().getFullName());
+			deliveryRequestNotification(deliveryRequest, deliveryRequest.getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getRequester().getEmail())),
+					deliveryRequest.getProject().getManager().getFullName());
 			break;
 		case REJECTED:
-			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())), deliveryRequest.getRequester().getFullName());
+			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), new HashSet<>(Arrays.asList(deliveryRequest.getProject().getManager().getEmail())),
+					deliveryRequest.getRequester().getFullName());
 			break;
 		case APPROVED2:
 		case PARTIALLY_DELIVRED:
@@ -168,7 +170,8 @@ public class OldEmailService {
 
 				// add external deliver to supplier pms
 				if (deliveryRequest.getDeliverToSupplierId() != null && deliveryRequest.getDestinationProject() != null && deliveryRequest.getDestinationProject().getId() != null) {
-					List<User> userList = userService.findActiveByProjectAssignmentAndUserRoleAndSupplier(deliveryRequest.getDestinationProject().getId(), Role.ROLE_ILOGISTICS_PM, deliveryRequest.getDeliverToSupplierId());
+					List<User> userList = userService.findActiveByProjectAssignmentAndUserRoleAndSupplier(deliveryRequest.getDestinationProject().getId(), Role.ROLE_ILOGISTICS_PM,
+							deliveryRequest.getDeliverToSupplierId());
 					cc.addAll(userList.stream().map(u -> u.getEmail()).collect(Collectors.toList()));
 				}
 
@@ -178,7 +181,9 @@ public class OldEmailService {
 			}
 
 			deliveryRequestNotification(deliveryRequest, deliveryRequest.getRequester().getEmail(), cc, deliveryRequest.getRequester().getFullName());
-			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal() && (cc ==null || !cc.contains(item.getEmail()))  ).map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet()).forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
+			deliveryRequest.getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal() && (cc == null || !cc.contains(item.getEmail())))
+					.map(item -> new To(item.getFullName(), item.getEmail())).collect(Collectors.toSet())
+					.forEach(to -> deliveryRequestNotification(deliveryRequest, to.getEmail(), null, to.getFullName()));
 		default:
 			break;
 		}
@@ -188,7 +193,16 @@ public class OldEmailService {
 		if (!validateEmail(to))
 			return;
 		try {
-			String object = deliveryRequest.getType().getValue() + " " + deliveryRequest.getReference() + ", " + deliveryRequest.getStatus();
+			String object = null;
+			switch (deliveryRequest.getStatus()) {
+			case APPROVED2:
+				object = deliveryRequest.getType().getValue() + " " + deliveryRequest.getReference() + ", Approved";
+				break;
+			default:
+				object = deliveryRequest.getType().getValue() + " " + deliveryRequest.getReference() + ", " + deliveryRequest.getStatus();
+				break;
+			}
+
 			send(erectMail(to, cc, object, deliveryRequestService.generateEmailNotification(deliveryRequest, dearFullName, true)));
 		} catch (Exception e) {
 			System.out.println("deliveryRequestNotification error : " + e.getMessage());
@@ -236,16 +250,23 @@ public class OldEmailService {
 	@Async
 	public void transportationRequestNotification(TransportationRequest transportationRequest) {
 		if (TransportationRequestStatus.REQUESTED.equals(transportationRequest.getStatus()))
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getProject().getManager().getEmail(), new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getRequester().getEmail())), transportationRequest.getDeliveryRequest().getProject().getManager().getFullName());
+			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getProject().getManager().getEmail(),
+					new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getRequester().getEmail())),
+					transportationRequest.getDeliveryRequest().getProject().getManager().getFullName());
 		else if (TransportationRequestStatus.APPROVED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.ASSIGNED.equals(transportationRequest.getStatus()))
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail())), transportationRequest.getDeliveryRequest().getRequester().getFullName());
+			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(),
+					new HashSet<>(Arrays.asList(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail())),
+					transportationRequest.getDeliveryRequest().getRequester().getFullName());
 		else if (TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) || TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus())) {
-			Set<String> cc = transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail()).collect(Collectors.toSet());
+			Set<String> cc = transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> item.getInternalResource().getInternal()).map(item -> item.getEmail())
+					.collect(Collectors.toSet());
 			cc.add(transportationRequest.getDeliveryRequest().getProject().getManager().getEmail());
 
-			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), cc, transportationRequest.getDeliveryRequest().getRequester().getFullName());
+			transportationRequestNotification(transportationRequest, transportationRequest.getDeliveryRequest().getRequester().getEmail(), cc,
+					transportationRequest.getDeliveryRequest().getRequester().getFullName());
 			if (TransportationRequestStatus.PICKEDUP.equals(transportationRequest.getStatus()))
-				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail())).forEach(item -> transportationRequestNotification(transportationRequest, item.getEmail(), null, item.getFullName()));
+				transportationRequest.getDeliveryRequest().getToNotifyList().stream().filter(item -> !item.getInternalResource().getInternal()).map(item -> new To(item.getFullName(), item.getEmail()))
+						.forEach(item -> transportationRequestNotification(transportationRequest, item.getEmail(), null, item.getFullName()));
 		}
 	}
 

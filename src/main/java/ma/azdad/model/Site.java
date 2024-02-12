@@ -147,12 +147,12 @@ public class Site extends GenericPlace implements Serializable {
 
 	@Transient
 	public String getPublicGeographicFileUrl() {
-		return "https://sdm.orange.telodigital.com/rest/file?link=" + geographicFile;
+		return "https://sdm.orange.int/rest/file?link=" + geographicFile;
 	}
 
 	@Transient
 	public String getPublicGeographicFilePreviewUrl() {
-		return "https://sdm.orange.telodigital.com/rest/file/txt?link=" + geographicFile;
+		return "https://sdm.orange.int/rest/file/txt?link=" + geographicFile;
 	}
 
 	@Transient

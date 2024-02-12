@@ -55,7 +55,7 @@ public class MapView {
 	}
 
 	public String getFilePublicUrl() {
-		return "https://sdm.orange.telodigital.com/file/" + fileName;
+		return "https://sdm.orange.int/file/" + fileName;
 	}
 
 	public void refreshMapModel() {

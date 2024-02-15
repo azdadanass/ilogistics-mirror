@@ -644,6 +644,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 3:
 			System.out.println("step3");
+			deliveryRequest.getStockRowList().forEach(i->i.setState(deliveryRequest.getStockRowState()));
 			step++;
 			break;
 		case 4:

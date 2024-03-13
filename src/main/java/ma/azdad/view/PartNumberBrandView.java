@@ -122,6 +122,8 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 		if (!validateBrand())
 			return null;
 
+		System.out.println("saveBrand");
+		
 		Set<Integer> existingSupplierIdSet = brand.getSupplierList().stream().map(i -> i.getId()).collect(Collectors.toSet());
 		supplierDualList.getTarget().stream().filter(i -> !existingSupplierIdSet.contains(i.getId())).forEach(i -> brand.getSupplierList().add(supplierService.findOne(i.getId())));
 

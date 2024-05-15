@@ -7,13 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.IssueCategory;
-import ma.azdad.utils.App;
+import ma.azdad.model.IssueParentType;
 
 @Repository
 public interface IssueCategoryRepos extends JpaRepository<IssueCategory, Integer> {
-	
-	@Query("from IssueCategory where app = ?1")
-	List<IssueCategory> findByApp(App app);
+
+	@Query("from IssueCategory where project.id = ?1 and parentType = ?2")
+	List<IssueCategory> findByProjectAndParenType(Integer projectId, IssueParentType parentType);
+
+	@Query("from IssueCategory where project.id = ?1 and parentType in (?2)")
+	List<IssueCategory> findByProjectAndParenType(Integer projectId, List<IssueParentType> parentTypeList);
 
 }
-

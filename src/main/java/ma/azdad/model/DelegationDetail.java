@@ -19,6 +19,7 @@ public class DelegationDetail implements Serializable {
 
 	private Delegation delegation;
 	private Project project;
+	private Lob lob;
 	private User resource;
 
 	public DelegationDetail() {
@@ -72,6 +73,15 @@ public class DelegationDetail implements Serializable {
 
 	public void setResource(User resource) {
 		this.resource = resource;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Lob getLob() {
+		return lob;
+	}
+
+	public void setLob(Lob lob) {
+		this.lob = lob;
 	}
 
 }

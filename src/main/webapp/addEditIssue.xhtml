@@ -2,20 +2,16 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
+		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -29,145 +25,493 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.Severity" var="Severity" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.Priority" var="Priority" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.IssueStatus" var="IssueStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
-			<div class="page-header hidden-xs">
-				<h1>
-					<i class="ace-icon fa #{issueView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{issueView.id == null?'Add New':'Edit'} Issue" />
-				</h1>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-6">
-						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
-							<i class="ace-icon fa fa-refresh bigger-230"></i>
-							<h:outputText value="Reload" />
-						</h:outputLink>
-
-						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
-							<i class="ace-icon fa fa-undo bigger-230"></i>
-							<h:outputText value="Back" />
-						</h:outputLink>
-
-						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{issueView.save()}" update="messages" title="Save">
-							<i class="ace-icon fa fa-save bigger-230"></i>
-							<h:outputText value="Save" />
-						</p:commandLink>
-					</div>
+			<div class="widget-box">
+				<div class="widget-header widget-header-blue widget-header-flat">
+					<h4 class="widget-title lighter">
+						<i class="ace-icon fa #{issueView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+						<h:outputText value=" #{issueView.id == null?'Add New':'Edit'} SR" />
+					</h4>
 				</div>
-			</div>
-			<div class="hr dotted" />
-			<div class="space-16" />
-			<div class="row">
-				<div class="col-sm-offset-1 col-sm-10">
-					<div class="tab-content profile-edit-tab-content">
-						<div class="tab-pane in active">
-							<p:messages id="messages" closable="true" />
-							<h4 class="header blue bolder smaller">
-								<h:outputText value="General informations" />
-							</h4>
-							<div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Delivery Request" />
+				<div class="widget-body">
+					<div class="widget-main">
+						<h:panelGroup id="nav-wizard">
+							<ul class="nav nav-wizard">
+								<li class="#{issueView.step==1?'active':''}">
+									<a href="#">
+										<h:outputText value="General Informations" />
+									</a>
+								</li>
+								<li class="#{issueView.step==2?'active':''}">
+									<a href="#">
+										<h:outputText value="Confirmation &amp; assignement" />
+									</a>
+								</li>
+								<li class="#{issueView.step==3?'active':''}">
+									<a href="#">
+										<h:outputText value="Notification List" />
+									</a>
+								</li>
+								<li class="#{issueView.step==4?'active':''}">
+									<a href="#">
+										<h:outputText value="Comments" />
+									</a>
+								</li>
+							</ul>
+						</h:panelGroup>
+						<hr />
+						<p:messages id="messages" closable="true" />
+						<h:panelGroup id="steps">
+							<f:subview id="step1" rendered="#{issueView.step==1}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" General informations" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="#{issueView.issue.parentType.value}" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:inputText value="#{issueView.model.deliveryRequest.reference}" readonly="true" />
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{issueView.issue.jobRequest.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{issueView.issue.isJrIssue}" />
+											<p:inputText value="#{issueView.issue.ticket.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{issueView.issue.isTicketIssue}" />
+											<br />
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="#{issueView.issue.parentType.value} Status" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{issueView.issue.jobRequest.status.value}" styleClass="col-xs-12 col-sm-6 #{issueView.issue.jobRequest.status.color.name}" readonly="true"
+												rendered="#{issueView.issue.isJrIssue}" />
+											<p:inputText value="#{issueView.issue.ticket.status.value}" styleClass="col-xs-12 col-sm-6 #{issueView.issue.ticket.status.color.name}" readonly="true"
+												rendered="#{issueView.issue.isTicketIssue}" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Site" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{issueView.issue.jobRequest.site.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isJrIssue}" />
+											<p:inputText value="#{issueView.issue.ticket.site.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isTicketIssue}" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Project" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{issueView.issue.jobRequest.project.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isJrIssue}" />
+											<p:inputText value="#{issueView.issue.ticket.project.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isTicketIssue}" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
 											<h:outputText value="Severity" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{issueView.model.severity}" required="true" requiredMessage="Severity should not be null">
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.severity}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Severity should not be null">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{Severity.ALL_ENUM_VALUES}" />
 											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-							</div>
-							<hr />
-							<div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
 											<h:outputText value="Category" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{issueView.model.category}" required="true" requiredMessage="Category should not be null" converter="#{genericSecuredConverter}">
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.category}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Category should not be null"
+												converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{issueCategoryView.findByApp()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												<f:selectItems value="#{issueCategoryView.findByProjectAndParenType(issueView.issue)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 												<p:ajax update="type" />
 											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
 											<h:outputText value="Type" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu id="type" value="#{issueView.model.type}" required="true" requiredMessage="Type should not be null" converter="#{genericSecuredConverter}">
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu id="type" value="#{issueView.issue.type}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Type should not be null"
+												converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
-												<f:selectItems value="#{issueTypeView.findByCategory(issueView.model.category.id)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												<f:selectItems value="#{issueTypeView.findByCategory(issueView.issue.category.id)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="space-4" />
-							<div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
 											<h:outputText value="Blocking" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{issueView.model.blocking}" required="true" requiredMessage="Blocking filed should not be null">
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.blocking}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Blocking filed should not be null">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItem itemLabel="Yes" itemValue="true" />
 												<f:selectItem itemLabel="No" itemValue="false" />
 											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
 											<h:outputText value="Temporary/Permanent" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu value="#{issueView.model.permanent}" required="true" requiredMessage="Temporary/Permanent filed should not be null">
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.permanent}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Temporary/Permanent filed should not be null">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItem itemLabel="Permanent" itemValue="true" />
 												<f:selectItem itemLabel="Temporary" itemValue="false" />
 											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="space-4" />
-							<h4 class="header blue bolder smaller">
-								<h:outputText value="Description" />
-							</h4>
-							<div class="row center">
-								<p:inputTextarea value="#{issueView.model.description}" style="width: 90%" />
-							</div>
-							<div class="space-16" />
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Description" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputTextarea value="#{issueView.issue.description}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Description should not be null" />
+											<br />
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step2" rendered="#{issueView.step==2}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" Confirmation &amp; assignement" />
+								</h3>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Confirmator Ownership Type" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.confirmatorCompanyType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Confirmator should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+												<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+												<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+												<p:ajax update="confirmatorPanel" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<h:panelGroup id="confirmatorPanel">
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value=" Confirmator Ownership" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true"
+													rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}" styleClass="col-xs-12 col-sm-6" />
+												<p:inputText value="#{issueView.issue.project.customer.name}" readonly="true" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}"
+													styleClass="col-xs-12 col-sm-6" />
+												<p:selectOneMenu value="#{issueView.issue.confirmatorSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+													requiredMessage="Confirmator Supplier should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.confirmatorCompanyType}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax update="confirmator" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Confirmator " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:panelGroup id="confirmator">
+													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Confirmator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndCompany(issueView.issue.project.id,companyView.findLightByProject(issueView.issue.project.id).id)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Confirmator should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.project.customer.id)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Confirmator should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.confirmatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.confirmatorSupplierId)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+												</h:panelGroup>
+												<br />
+											</div>
+										</div>
+									</div>
+								</h:panelGroup>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Assignator Ownership Type" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{issueView.issue.assignatorCompanyType}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Assignator should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+												<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+												<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+												<p:ajax update="assignatorPanel" />
+											</h:selectOneMenu>
+											<br />
+										</div>
+									</div>
+								</div>
+								<h:panelGroup id="assignatorPanel">
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value=" Assignator Ownership" />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true"
+													rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}" styleClass="col-xs-12 col-sm-6" />
+												<p:inputText value="#{issueView.issue.project.customer.name}" readonly="true" rendered="#{CompanyType.CUSTOMER==issueView.issue.assignatorCompanyType}"
+													styleClass="col-xs-12 col-sm-6" />
+												<p:selectOneMenu value="#{issueView.issue.assignatorSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+													requiredMessage="Assignator Supplier should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.assignatorCompanyType}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax update="assignator" />
+												</p:selectOneMenu>
+												<br />
+											</div>
+										</div>
+									</div>
+									<div class="space-8" />
+									<div class="row">
+										<div class="col-xs-12 col-sm-3">
+											<label class="control-label pull-right">
+												<h:outputText value="Assignator " />
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-9">
+											<div class="clearfix">
+												<h:panelGroup id="assignator">
+													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Assignator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndCompany(issueView.issue.project.id,companyView.findLightByProject(issueView.issue.project.id).id)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Assignator should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.assignatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.project.customer.id)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Assignator should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.assignatorCompanyType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.assignatorSupplierId)}" var="item"
+															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+												</h:panelGroup>
+												<br />
+											</div>
+										</div>
+									</div>
+								</h:panelGroup>
+								<div class="space-8" />
+								
+							</f:subview>
+							<f:subview id="step3" rendered="#{issueView.step==3}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-envelope" />
+									<h:outputText value=" My Notification List" />
+								</h3>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<i class="fa fa-list" />
+											<h:outputText value=" Notification List" />
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="notification_tab" value="#{issueView.issue.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+													<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+														<f:param name="fileName" value="#{item.photo}" />
+													</p:graphicImage>
+												</p:column>
+												<p:column headerText="Full Name">
+													<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+												</p:column>
+												<p:column headerText="Type" width="100">
+													<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+												</p:column>
+												<p:column headerText="Entity">
+													<h:outputText value="#{userView.findCompanyType(item.internalResource.username).value}"
+														styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
+													<h:outputText value=" / " />
+													<h:outputText value="#{userView.findEntityName(item.internalResource)}" styleClass="bolder #{userView.findCompanyType(item.internalResource.username).color.name}" />
+												</p:column>
+												<p:column headerText="Email">
+													<h:outputText value="#{item.email}" styleClass="light-blue" />
+												</p:column>
+												<p:column headerText="Phone">
+													<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+												</p:column>
+												<p:column headerText="Notify By Email ?">
+													<p:commandLink id="notifyByEmail" update="notifyByEmail" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyByEmail}" target="#{item.notifyByEmail}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Notify By SMS ?">
+													<p:commandLink id="notifyBySms" update="notifyBySms" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyBySms}" target="#{item.notifyBySms}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Actions" styleClass="center" width="100">
+													<div class="action-buttons center">
+														<p:commandLink title="Remove row" action="#{issueView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true" process="notification_tab">
+															<i class="ace-icon fa fa-remove bigger-130 red" />
+														</p:commandLink>
+													</div>
+												</p:column>
+												<f:facet name="footer">
+													<div class="action-buttons center">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()"
+															partialSubmit="true" process="notification_tab">
+															<i class="fa fa-plus green" />
+														</p:commandLink>
+													</div>
+												</f:facet>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step4" rendered="#{issueView.step==4}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-envelope" />
+									<h:outputText value=" Comments" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Comment " />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputTextarea value="#{issueView.comment.content}" styleClass="col-xs-12 col-sm-6" />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+							</f:subview>
+						</h:panelGroup>
+						<hr />
+						<div class="wizard-actions">
+							<p:commandButton value="Back" action="#{issueView.savePreviousStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-prev" icon="fa fa-arrow-left" />
+							<p:commandButton id="next" widgetVar="nextButton" value="#{issueView.step==4?'Finish':'Next'}" action="#{issueView.saveNextStep()}" update="messages,nav-wizard,steps,next"
+								styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
+							<p:ajaxStatus>
+								<f:facet name="start">
+									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />
+								</f:facet>
+								<f:facet name="complete">
+									<h:outputText value="" />
+								</f:facet>
+							</p:ajaxStatus>
 						</div>
-						<div class="row"></div>
+						<div class="space-16" />
 					</div>
 				</div>
 			</div>
 		</h:form>
+		<f:event type="preRenderView" listener="#{issueView.redirect()}" />
+		<ui:include src="issueFooter.xhtml" />
 	</ui:define>
 </ui:composition>

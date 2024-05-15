@@ -25,6 +25,8 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.IssueStatus" var="IssueStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -32,7 +34,7 @@
 					<h:outputText value=" View Issue" />
 					<small>
 						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value="#{issueView.model.identifierName}" />
+						<h:outputText value=" #{issueView.issue.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -43,10 +45,10 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-						<p:commandLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page" action="#{issueView.evictCache()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
-						</p:commandLink>
+						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
@@ -56,53 +58,176 @@
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{issueView.id}" />
 						</h:outputLink>
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{issueView.canDelete()}">
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
+							rendered="#{issueView.canDeleteIssue()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadFileDlg').show()"
-							rendered="#{issueView.canAddFile()}">
+						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadIssueFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-						<p:commandLink title="Add Comment" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" onclick="PF('addCommentDlg').show()"
-							rendered="#{issueView.canAddComment()}">
-							<i class="ace-icon fa fa-comment bigger-230"></i>
-							<h:outputText value="Comment" />
+						<p:commandLink title="Submit" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" onclick="PF('submitDlg').show()" rendered="#{issueView.canSubmit()}">
+							<i class="ace-icon fa fa-paper-plane bigger-230"></i>
+							<h:outputText value="Submit" />
 						</p:commandLink>
-						<p:commandLink title="Confirm" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" onclick="PF('confirmDlg').show()" rendered="#{issueView.canConfirm()}">
+						<h:outputLink value="confirmIssue.xhtml" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" rendered="#{issueView.canConfirm()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Confirm" />
-						</p:commandLink>
-						<p:commandLink title="Reject" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip " onclick="PF('rejectDlg').show()" rendered="#{issueView.canConfirm()}">
-							<i class="ace-icon fa fa-remove bigger-230"></i>
-							<h:outputText value="Reject" />
-						</p:commandLink>
+							<f:param name="id" value="#{issueView.id}" />
+						</h:outputLink>
+						<h:outputLink value="resolveIssue.xhtml" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-info" rendered="#{issueView.canResolve()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Resolve" />
+							<f:param name="id" value="#{issueView.id}" />
+						</h:outputLink>
 						<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-info" onclick="PF('assignDlg').show()" rendered="#{issueView.canAssign()}">
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
-						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-info" onclick="PF('unassignDlg').show()" rendered="#{issueView.canUnassign()}">
+						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-info" onclick="PF('unassignDlg').show()"
+							rendered="#{issueView.canUnassign()}">
 							<i class="ace-icon fa fa-chain-broken bigger-230"></i>
 							<h:outputText value="Unassign" />
 						</p:commandLink>
-						<p:commandLink title="Resolve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('resolveDlg').show()" rendered="#{issueView.canResolve()}">
-							<i class="ace-icon fa fa-check bigger-230"></i>
-							<h:outputText value="Resolve" />
-						</p:commandLink>
-						<p:commandLink title="Not Resolve" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('notResolveDlg').show()" rendered="#{issueView.canResolve()}">
+						<!-- <p:commandLink title="Not Resolve" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('notResolveDlg').show()"
+							rendered="#{issueView.canResolve()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Not Resolve" styleClass="smaller-90" />
-						</p:commandLink>
-						<p:commandLink title="Acknowledge" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-success" onclick="PF('acknowledgeDlg').show()" rendered="#{issueView.canAcknowledge()}">
+						</p:commandLink> -->
+						<p:commandLink title="Acknowledge" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-success" onclick="PF('acknowledgeDlg').show()"
+							rendered="#{issueView.canAcknowledge()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Ack" />
+						</p:commandLink>
+						<p:commandLink title="Re-open" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-success" onclick="PF('openDlg').show()" rendered="#{issueView.canOpen()}">
+							<i class="ace-icon fa fa-circle bigger-230"></i>
+							<h:outputText value="Re-open" />
+						</p:commandLink>
+						<p:commandLink title="Add Comment" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('addCommentDlg').show()"
+							rendered="#{issueView.canAddComment()}">
+							<i class="ace-icon fa fa-comment bigger-230"></i>
+							<h:outputText value="Add" />
 						</p:commandLink>
 					</div>
 				</div>
 			</div>
 			<div class="hr dotted" />
-			
+			<div class="row">
+				<h:panelGroup id="timeline">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="widget-box transparent">
+							<div class="widget-header widget-header-flat">
+								<h4 class="lighter">
+									<i class="ace-icon fa fa-clock-o orange"></i>
+									<h:outputText value=" Time Line" />
+								</h4>
+							</div>
+							<div class="widget-body">
+								<ul class="steps">
+									<li class="complete">
+										<span class="step">
+											<h:outputText value="1" />
+										</span>
+										<span class="title">
+											<h:outputText id="step1" value="#{IssueStatus.RAISED.value}" />
+										</span>
+										<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date1,issueView.issue.user1.username)}" />
+										</p:overlayPanel>
+									</li>
+									<f:subview rendered="#{issueView.issue.date7==null}">
+										<li class="#{issueView.issue.date8!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step8" value="#{IssueStatus.SUBMITTED.value}" />
+											</span>
+											<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date8,issueView.issue.user8.username,issueView.issue.user1.username)}" />
+											</p:overlayPanel>
+										</li>
+										<li class="#{issueView.issue.date2!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step2" value="#{IssueStatus.CONFIRMED.value}" />
+											</span>
+											<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date2,issueView.issue.user2.username,issueView.issue.confirmator.username)}" />
+											</p:overlayPanel>
+										</li>
+										<li class="#{issueView.issue.date3!=null?'complete':''}">
+											<span class="step">
+												<i class="ace-icon fa fa-spinner fa-spin grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step3" value="#{IssueStatus.ASSIGNED.value}" />
+											</span>
+											<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date3,issueView.issue.user3.username,issueView.issue.assignator.username)}" />
+											</p:overlayPanel>
+										</li>
+										<f:subview rendered="#{issueView.issue.date6==null}">
+											<li class="#{issueView.issue.date4!=null?'complete':''}">
+												<span class="step">
+													<i class="ace-icon fa fa-spinner fa-spin grey" />
+												</span>
+												<span class="title">
+													<h:outputText id="step4" value="#{IssueStatus.RESOLVED.value}" />
+												</span>
+												<p:overlayPanel for="step4" style="text-align: left;width:450px" showEvent="mouseover" hideEvent="mouseout" rendered="#{issueView.issue.ownershipUser!=null}">
+													<h:outputText escape="false"
+														value="#{htmlView.generateOverlayPanelContent(issueView.issue.date4,issueView.issue.user4.username,issueView.issue.ownershipUser.username)}" />
+												</p:overlayPanel>
+											</li>
+											<li class="#{issueView.issue.date5!=null?'complete':''}">
+												<span class="step">
+													<i class="ace-icon fa fa-spinner fa-spin grey" />
+												</span>
+												<span class="title">
+													<h:outputText id="step5" value="#{IssueStatus.ACKNOWLEDGED.value}" />
+												</span>
+												<p:overlayPanel for="step5" style="text-align: left;width:550px" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date5,issueView.issue.user5.username,issueView.issue.user3.username)}" />
+												</p:overlayPanel>
+											</li>
+										</f:subview>
+										<f:subview rendered="#{issueView.issue.date6!=null}">
+											<li class="error">
+												<span class="step">
+													<i class="ace-icon fa fa-spinner fa-spin grey" />
+												</span>
+												<span class="title">
+													<h:outputText id="step6" value="#{IssueStatus.NOT_RESOLVED.value}" />
+												</span>
+												<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date6,issueView.issue.user6.username)}" />
+												</p:overlayPanel>
+											</li>
+										</f:subview>
+									</f:subview>
+									<f:subview rendered="#{issueView.issue.date7!=null}">
+										<li>
+											<span class="step">
+												<i class="ace-icon fa fa-remove  grey" />
+											</span>
+											<span class="title">
+												<h:outputText id="step7" value="#{IssueStatus.CLOSED.value}" />
+											</span>
+											<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(issueView.issue.date7,issueView.issue.user7.username)}" />
+											</p:overlayPanel>
+										</li>
+									</f:subview>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</h:panelGroup>
+			</div>
 			<div class="space-16" />
 			<p:messages id="messages" closable="true" />
 			<div class="tabbable">
@@ -113,21 +238,20 @@
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
-					
 					<li>
-						<a data-toggle="tab" href="#tab3">
+						<a data-toggle="tab" href="#tab2">
 							<i class="blue ace-icon fa fa-file bigger-120"></i>
 							<h:outputText value=" Attachements" />
 						</a>
 					</li>
 					<li>
-						<a data-toggle="tab" href="#tab4">
+						<a data-toggle="tab" href="#tab3">
 							<i class="orange ace-icon fa fa-clock-o bigger-120"></i>
 							<h:outputText value=" History" />
 						</a>
 					</li>
 					<li>
-						<a data-toggle="tab" href="#tab5">
+						<a data-toggle="tab" href="#tab4">
 							<i class="red ace-icon fa fa-comment-o bigger-120"></i>
 							<h:outputText value=" Comments" />
 						</a>
@@ -135,18 +259,73 @@
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="General Informations" />
+						</h4>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
+									<f:subview rendered="#{issueView.issue.isJrIssue}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Job Request" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputLink value="viewJobRequest.xhtml" target="blank">
+													<h:outputText value="#{issueView.issue.jobRequest.reference}" styleClass="bolder orange" />
+													<f:param name="id" value="#{issueView.issue.jobRequest.id}" />
+												</h:outputLink>
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="JR REF" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.jobRequest.smsRef}" styleClass="orange bolder" />
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="End Customer" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.jobRequest.endCustomer.name}" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
+									<f:subview rendered="#{issueView.issue.isTicketIssue}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Ticket" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputLink value="viewTicket.xhtml" target="blank">
+													<h:outputText value="#{issueView.issue.ticket.numero}" styleClass="bolder orange" />
+													<f:param name="id" value="#{issueView.issue.ticket.id}" />
+												</h:outputLink>
+												&nbsp;
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Ticket REF" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.ticket.reference}" styleClass="orange bolder" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Delivery Request" />
+											<h:outputText value="Severity" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputLink value="viewJobRequest.xhtml" target="blank">
-												<h:outputText value="#{issueView.model.deliveryRequest.reference}" styleClass="bolder orange" />
-												<f:param name="id" value="#{issueView.model.deliveryRequest.id}" />
-											</h:outputLink>
+											<h:outputText value="#{issueView.issue.severity.value}" styleClass="#{issueView.issue.severity.color}" />
 											&nbsp;
 										</div>
 									</div>
@@ -155,7 +334,7 @@
 											<h:outputText value="Cateogry" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.category.name}" styleClass="bolder blue" />
+											<h:outputText value="#{issueView.issue.category.name}" styleClass="bolder blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -164,7 +343,7 @@
 											<h:outputText value="Blocking" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.blocking?'Yes':'No'}" styleClass="bolder badge  #{issueView.model.blocking?'badge-danger':'badge-success'}" />
+											<h:outputText value="#{issueView.issue.blocking?'Yes':'No'}" styleClass="bolder badge  #{issueView.issue.blocking?'badge-danger':'badge-success'}" />
 											&nbsp;
 										</div>
 									</div>
@@ -173,7 +352,16 @@
 											<h:outputText value="Ownership" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.ownership}" />
+											<h:outputText value="#{issueView.issue.ownership}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Resolution Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{issueView.issue.resolutionType}" />
 											&nbsp;
 										</div>
 									</div>
@@ -181,39 +369,82 @@
 							</div>
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DN Status" />
+									<f:subview rendered="#{issueView.issue.isJrIssue}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="JR Status" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.jobRequest.status.value}" styleClass="#{issueView.issue.jobRequest.status.color.name}" />
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.deliveryRequest.status.value}" styleClass="#{issueView.model.deliveryRequest.status.color}" />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Site" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.jobRequest.siteName}" styleClass="pink" />
+												&nbsp;
+											</div>
 										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Project" />
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Master Plan" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputLink value="viewPlan.xhtml" target="blank">
+													<h:outputText value="#{issueView.issue.jobRequest.plan.reference}" styleClass="purple" />
+													<f:param name="id" value="#{issueView.issue.jobRequest.plan.id}" />
+												</h:outputLink>
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.deliveryRequest.project.name}" styleClass="light-blue"  />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.jobRequest.project.name}" styleClass="light-blue" />
+												&nbsp;
+											</div>
 										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Severity" />
+									</f:subview>
+									<f:subview rendered="#{issueView.issue.isTicketIssue}">
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Ticket Status" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.ticket.status.value}" styleClass="#{issueView.issue.ticket.status.color.name}" />
+												&nbsp;
+											</div>
 										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.severity.value}" styleClass="#{issueView.model.severity.color}" />
-											&nbsp;
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Site" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.ticket.siteName}" styleClass="pink" />
+												&nbsp;
+											</div>
 										</div>
-									</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">
+												<h:outputText value="Project" />
+											</div>
+											<div class="profile-info-value">
+												<h:outputText value="#{issueView.issue.ticket.project.name}" styleClass="light-blue" />
+												&nbsp;
+											</div>
+										</div>
+									</f:subview>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
 											<h:outputText value="Type" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.type.name}" styleClass="red" />
+											<h:outputText value="#{issueView.issue.type.name}" styleClass="red" />
 											&nbsp;
 										</div>
 									</div>
@@ -222,7 +453,7 @@
 											<h:outputText value="Temporary/Permanent" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.permanent?'Permanent':'Temporary'}" styleClass="#{issueView.model.permanent?'red':'blue'}" />
+											<h:outputText value="#{issueView.issue.permanent?'Permanent':'Temporary'}" styleClass="#{issueView.issue.permanent?'red':'blue'}" />
 											&nbsp;
 										</div>
 									</div>
@@ -231,10 +462,114 @@
 											<h:outputText value="Ownership Resource" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.model.ownershipUserFullName}, #{issueView.model.ownershipUserEmail}, #{issueView.model.ownershipUserPhone}" />
+											<h:outputText value="#{issueView.issue.ownershipUserFullName}, #{issueView.issue.ownershipUserEmail}, #{issueView.issue.ownershipUserPhone}" />
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Resolution Date" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{issueView.issue.resolutionDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Issue Management" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Issue Management" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{issueView.issue.userList}" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.user.photo}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Full Name">
+											<h:outputText value="#{item.user.fullName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Type">
+											<h:outputText value="#{item.user.internal?'Internal':'External'}" styleClass="#{item.user.internal?'green':'orange'}" />
+										</p:column>
+										<p:column headerText="Role">
+											<h:outputText value="#{item.description}" styleClass="#{item.styleClass}" />
+										</p:column>
+										<p:column headerText="Email">
+											<h:outputText value="#{item.user.email}" styleClass="light-blue" />
+										</p:column>
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.user.phone}" styleClass="orange bolder" />
+										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.user.active?'Active':'Inactive'}" styleClass="#{item.user.active?'green':'red'} bolder" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false" rendered="#{issueView.canEditAssignator() or issueView.canEditConfirmator()}">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" styleClass="aa-tooltip-warning" rendered="#{item.description=='Confirmator' and issueView.canEditConfirmator()}"
+													onclick="PF('editConfirmatorDlg').show()">
+													<i class="ace-icon fa fa-edit bigger-130 orange" />
+												</p:commandLink>
+												<p:commandLink title="Edit" styleClass="aa-tooltip-warning" rendered="#{item.description=='Assignator' and issueView.canEditAssignator()}"
+													onclick="PF('editAssignatorDlg').show()">
+													<i class="ace-icon fa fa-edit bigger-130 orange" />
+												</p:commandLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="To Notify List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" To Notify List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{issueView.issue.toNotifyList}" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.photo}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Full Name">
+											<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Type" width="100">
+											<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+										</p:column>
+										<p:column headerText="Entity">
+											<h:outputText value="#{item.internalResource.entityName}" styleClass="#{item.internalResource.companyType.color.name}" />
+										</p:column>
+										<p:column headerText="Email">
+											<h:outputText value="#{item.email}" styleClass="light-blue" />
+										</p:column>
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+										</p:column>
+										<p:column headerText="Notify By Email ?">
+											<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Notify By SMS ?">
+											<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+									</p:dataTable>
 								</div>
 							</div>
 						</div>
@@ -244,12 +579,11 @@
 								<h4 class="green smaller lighter">
 									<h:outputText value="Description" />
 								</h4>
-								<h:outputText value="#{issueView.model.description}" styleClass="preformatted" />
+								<h:outputText value="#{issueView.issue.description}" styleClass="preformatted" />
 							</div>
 						</div>
 					</div>
-					
-					<div id="tab3" class="tab-pane">
+					<div id="tab2" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -259,8 +593,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="fileList" value="#{issueView.model.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="files_table" value="#{issueView.issue.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -289,9 +623,9 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteFileDlg').show()" styleClass="aa-tooltip" rendered="#{issueView.canDeleteFile()}">
+												<p:commandLink title="Delete File" oncomplete="PF('deleteIssueFileDlg').show()" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener target="#{issueView.file}" value="#{item}" />
+													<f:setPropertyActionListener target="#{issueView.issueFileId}" value="#{item.id}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
 													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
@@ -300,6 +634,7 @@
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
+													<f:setPropertyActionListener target="#{issueView.issueFile}" value="#{item}" />
 												</p:commandLink>
 											</div>
 										</p:column>
@@ -308,7 +643,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="tab4" class="tab-pane">
+					<div id="tab3" class="tab-pane">
 						<div class="space-8" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
@@ -319,7 +654,7 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="historyList" value="#{issueView.model.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+									<p:dataTable id="issuehistoryList" value="#{issueView.issue.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
@@ -348,15 +683,16 @@
 							</div>
 						</div>
 					</div>
-					<div id="tab5" class="tab-pane">
+					<div id="tab4" class="tab-pane">
 						<h:panelGroup id="commentPanel">
 							<div class="row">
 								<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 									<div class="timeline-container timeline-style2">
-										<ui:repeat var="commentGroup" value="#{issueView.model.commentGroupList}" varStatus="varStatus">
+										<ui:repeat var="commentGroup" value="#{issueView.issue.commentGroupList}" varStatus="varStatus">
 											<div class="timeline-label">
 												<span class="label label-purple arrowed-in-right label-lg">
-													<b> <h:outputText value="#{commentGroup.date}">
+													<b>
+														<h:outputText value="#{commentGroup.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
 														</h:outputText>
 													</b>

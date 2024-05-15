@@ -8,21 +8,22 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.model.IssueParentType;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.IssueCategoryService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	DeliveryRequestService drs;
+	IssueCategoryService ics;
 
 	
 	@Test
 	@Transactional
 	public void test() throws Exception {
 		
-		System.out.println(drs.findByMissingOutboundDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)).size());
-		System.out.println(drs.countByMissingOutboundDeliveryNoteFile("k.jabrane", Arrays.asList(-1), Arrays.asList(-1)));
+	System.out.println(ics.findByProjectAndParenType(552, IssueParentType.DN));
 
 	}
 

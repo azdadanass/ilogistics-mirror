@@ -208,7 +208,7 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 
 	@Cacheable("issueCategoryView.findByProjectAndParenType")
 	public List<IssueCategory> findByProjectAndParenType(Issue issue) {
-		return service.findByProjectAndParenType(issue.getDeliveryRequest().getProjectId(), IssueParentType.DN);
+		return service.findByProjectAndParenType(issue.getDeliveryRequest().getProject().getId(), IssueParentType.DN);
 	}
 
 	// getters & setters

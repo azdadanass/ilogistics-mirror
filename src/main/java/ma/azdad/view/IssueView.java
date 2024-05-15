@@ -171,10 +171,10 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return sessionView.isTheConnectedUser(deliveryRequestView.getDeliveryRequest().getRequester(), deliveryRequestView.getDeliveryRequest().getProject().getManager()) //
 					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(deliveryRequestView.getDeliveryRequest().getProject().getId()));
 		else if (isAddPage)
-			return sessionView.isTheConnectedUser(model.getDeliveryRequest().getRequester(), model.getDeliveryRequest().getProject().getManager()) //
-					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(model.getDeliveryRequest().getProject().getId()));
+			return sessionView.isTheConnectedUser(issue.getDeliveryRequest().getRequester(), issue.getDeliveryRequest().getProject().getManager()) //
+					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(issue.getDeliveryRequest().getProject().getId()));
 		else if (isViewPage || isEditPage)
-			return IssueStatus.RAISED.equals(model.getStatus()) && model.getUser1() != null && sessionView.isTheConnectedUser(model.getUser1());
+			return IssueStatus.RAISED.equals(issue.getStatus()) && issue.getUser1() != null && sessionView.isTheConnectedUser(issue.getUser1());
 		return false;
 	}
 

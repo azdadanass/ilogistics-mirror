@@ -22,4 +22,11 @@ public class DelegationService {
 		result.addAll(delegationRepos.findDelegatedProjects(username, "Active", "PM"));
 		return result;
 	}
+	
+	public List<Integer> findDelegatedLobs(String username) {
+		List<Integer> result = new ArrayList<Integer>();
+		result.add(0);
+		result.addAll(delegationRepos.findDelegatedLobs(username));
+		return result;
+	}
 }

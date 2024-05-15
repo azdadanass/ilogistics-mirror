@@ -63,6 +63,7 @@ public class CacheView implements Serializable {
 	private Set<Integer> allProjectList = new HashSet<Integer>();
 	private List<Integer> warehouseList = new ArrayList<Integer>(Arrays.asList(-1));
 	private List<Integer> userProjectList; // PM AND SDM DELEGATION
+	private List<Integer> delegatedLobIdList;
 
 	@PostConstruct
 	public void init() {
@@ -78,6 +79,8 @@ public class CacheView implements Serializable {
 
 		hmProjectList = projectService.findIdListByManagerType(sessionView.getUsername(), ProjectManagerType.HARDWARE_MANAGER);
 		warehouseList.addAll(warehouseService.findIdListByManager(sessionView.getUsername()));
+
+		delegatedLobIdList = delegationService.findDelegatedLobs(sessionView.getUsername());
 	}
 
 	public Boolean hasDelegation(Integer projectId) {
@@ -93,7 +96,7 @@ public class CacheView implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Date getCurrentDate() {
 		return new Date();
 	}
@@ -200,6 +203,14 @@ public class CacheView implements Serializable {
 
 	public void setUserProjectList(List<Integer> userProjectList) {
 		this.userProjectList = userProjectList;
+	}
+
+	public List<Integer> getDelegatedLobIdList() {
+		return delegatedLobIdList;
+	}
+
+	public void setDelegatedLobIdList(List<Integer> delegatedLobIdList) {
+		this.delegatedLobIdList = delegatedLobIdList;
 	}
 
 }

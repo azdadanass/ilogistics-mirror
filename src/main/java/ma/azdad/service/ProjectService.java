@@ -215,8 +215,8 @@ public class ProjectService {
 		return repos.findIdListByDelegation(username);
 	}
 
-	public List<Project> findProjectListHavingIssues(Collection<Integer> userProjectIdList) {
-		List<Integer> idList = issueRepos.findProjectIdList(userProjectIdList);
+	public List<Project> findProjectListHavingIssues(String username,Collection<Integer> userProjectIdList,Collection<Integer> lobIdList) {
+		List<Integer> idList = issueRepos.findProjectIdList(username,userProjectIdList,lobIdList);
 		if (!idList.isEmpty())
 			return repos.findLight(idList);
 		return new ArrayList<Project>();

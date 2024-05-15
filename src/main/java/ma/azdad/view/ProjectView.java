@@ -174,7 +174,7 @@ public class ProjectView {
 	}
 
 	public List<Project> findProjectListHavingIssues() {
-		return projectService.findProjectListHavingIssues(cacheView.getAllProjectList());
+		return projectService.findProjectListHavingIssues(sessionView.getUsername(),cacheView.getAllProjectList(),cacheView.getDelegatedLobIdList());
 	}
 	
 	public Boolean getSdm(Integer id) {

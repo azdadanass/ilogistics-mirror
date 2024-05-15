@@ -14,5 +14,8 @@ public interface DelegationRepos extends JpaRepository<Delegation, Integer> {
 
 	@Query("select a.project.id  from DelegationDetail a,Delegation b where a.delegation.id = b.id and b.delegate.username = :username and b.status = :delegationStatus and a.type = :delegationDetailType group by a.project.id")
 	public List<Integer> findDelegatedProjects(@Param("username") String username, @Param("delegationStatus") String delegationStatus, @Param("delegationDetailType") String delegationDetailType);
+	
+	@Query("select distinct a.lob.id  from DelegationDetail a where a.delegation.delegate.username = ?1 and a.delegation.status = 'Active' and a.type = 'LOB'")
+	public List<Integer> findDelegatedLobs( String username);
 
 }

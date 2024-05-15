@@ -20,6 +20,7 @@ public class ToNotify extends GenericModel<Integer> implements Serializable {
 
 	private User user;
 	private DeliveryRequest deliveryRequest;
+	private Issue issue;
 
 	private String internalResourceUsername;
 
@@ -29,6 +30,12 @@ public class ToNotify extends GenericModel<Integer> implements Serializable {
 
 	public ToNotify(User internalResource) {
 		this.internalResource = internalResource;
+	}
+	
+	public ToNotify(User internalResource, Issue issue) {
+		super();
+		this.internalResource = internalResource;
+		this.issue = issue;
 	}
 
 	public ToNotify(User internalResource, DeliveryRequest deliveryRequest) {
@@ -138,5 +145,14 @@ public class ToNotify extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Issue getIssue() {
+		return issue;
+	}
+
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 }

@@ -2,35 +2,50 @@
 <body style="padding-top: 40px; background-color: #fff; font-family: 'Arial'; font-size: 12px;">
 	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
 		Dear
-		<span th:text="${user.name}"></span>
-		,
-		<br />
-		Kindly be informed that the issue below has been assigned to you </span>
+		<span th:text="${toUser.fullName}"></span>
+		, <br /> Kindly be informed that the issue below has been  <span th:text="${issue.status.value}"></span> 
+		</span>
 		<br />
 	</div>
 	<br />
 	<hr style='margin-top: 20px; margin-bottom: 20px; border: 0; border-top: 1px solid #eee;'>
 	<table style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
 		<tr>
-			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Delivery Request</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: blue' th:text="${issue.deliveryRequest.reference}"></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;' th:text="${issue.parentType.value}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: blue' th:text="${issue.parentNumero}"></td>
 			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;' th:text="${issue.parentType.value+' Status'}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff851d' th:text="${issue.parentStatus}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>REF</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: blue' th:text="${issue.parentReference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Site</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff851d' th:text="${issue.siteName}"></td>
+		</tr>
+		<tr>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Severity</td>
 			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff851d' th:text="${issue.severity.value}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Project</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #c6699f' th:text="${issue.projectName}"></td>
 		</tr>
 		<tr>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Cateogry</td>
 			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #e8b110' th:text="${issue.category.name}"></td>
 			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Type</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #c6699f' th:text="${issue.type.name}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #e8b110' th:text="${issue.type.name}"></td>
 		</tr>
 		<tr>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Blocking</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff851d' th:text="${issue.blocking} ? 'Yes' : 'No'"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff851d'
+				th:text="${issue.blocking} ? 'Yes' : 'No'"></td>
 			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Temporary/Permanent</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3' th:text="${issue.permanent} ? 'Permanent' : 'Temporary'"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3'
+				th:text="${issue.permanent} ? 'Permanent' : 'Temporary'"></td>
 		</tr>
 		<tr>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Ownership</td>
@@ -44,5 +59,3 @@
 	<br />
 </body>
 </html>
-
-

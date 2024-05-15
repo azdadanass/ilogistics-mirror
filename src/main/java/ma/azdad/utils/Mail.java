@@ -1,8 +1,10 @@
 package ma.azdad.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.internet.AddressException;
@@ -15,7 +17,7 @@ import ma.azdad.service.UtilsFunctions;
 public class Mail {
 
 	private String to;
-	private String[] cc;
+	private List<String> cc;
 	private String subject;
 	private String message;
 	private TemplateType templateType;
@@ -33,7 +35,8 @@ public class Mail {
 		this.subject = subject;
 		this.template = template;
 		this.templateType = templateType;
-		this.cc = cc;
+		if (cc != null)
+			this.cc = new ArrayList<String>(Arrays.asList(cc));
 	}
 
 	public Mail(String to, String subject, String message) {
@@ -41,6 +44,12 @@ public class Mail {
 		this.to = to;
 		this.subject = subject;
 		this.message = message;
+	}
+
+	public void addCc(String mail) {
+		if (cc == null)
+			cc = new ArrayList<String>();
+		cc.add(mail);
 	}
 
 	public void generateMessageFromTemplate(ThymeLeafService thymeLeafService) {
@@ -76,9 +85,10 @@ public class Mail {
 	}
 
 	public InternetAddress[] getCc() {
-		if (cc == null || cc.length == 0)
+		if (cc == null || cc.size() == 0)
 			return null;
-		return Arrays.stream(cc).filter(i -> i != null && UtilsFunctions.validateEmail(i)).map(i -> generateInternetAddress(i)).toArray(InternetAddress[]::new);
+
+		return cc.stream().filter(i -> i != null && UtilsFunctions.validateEmail(i)).map(i -> generateInternetAddress(i)).distinct().toArray(InternetAddress[]::new);
 
 //		List<String> l = new ArrayList<>(Arrays.asList(cc)) ;
 //

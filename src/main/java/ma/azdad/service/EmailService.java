@@ -53,6 +53,32 @@ public class EmailService {
 
 	@Value("${application}")
 	private String application;
+	
+	@Async
+	public void sendIssueNotification(Issue issue) {
+		User toUser = null;
+
+		switch (issue.getStatus()) {
+		case SUBMITTED:
+			toUser = issue.getConfirmator();
+			break;
+		case CONFIRMED:
+			toUser = issue.getUser1();
+			break;
+		case ASSIGNED:
+			toUser = issue.getOwnershipUser();
+			break;
+		default:
+			return;
+		}
+
+		String subject = "Issue " + issue.getStatus().getValue();
+		Mail mail = new Mail(toUser.getEmail(), subject, "issue.html", TemplateType.HTML);
+		issue.getToNotifyList().stream().filter(i -> i.getNotifyByEmail()).map(i -> i.getEmail()).forEach(i -> mail.addCc(i));
+		mail.addParameter("issue", issue);
+		mail.addParameter("toUser", toUser);
+		send(mail);
+	}
 
 	@Async
 	public void sendPasswordResetNotification(User user, String code) throws IOException {

@@ -116,7 +116,11 @@
 										<i class="ace-icon fa fa-edit bigger-130 orange" />
 										<f:setPropertyActionListener value="#{item}" target="#{projectView.project}" />
 									</p:commandLink>
-									<h:outputLink value="partNumberThresholdList.xhtml" title="Part Number Threshold List" styleClass="aa-tooltip tooltip-info">
+									<!-- <h:outputLink value="partNumberThresholdList.xhtml" title="Part Number Threshold List" styleClass="aa-tooltip tooltip-info">
+										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+										<f:param name="id" value="#{item.id}" />
+									</h:outputLink> -->
+									<h:outputLink value="viewProject.xhtml" title="Part Number Threshold List" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 										<f:param name="id" value="#{item.id}" />
 									</h:outputLink>

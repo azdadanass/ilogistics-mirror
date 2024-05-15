@@ -26,7 +26,7 @@ public class IssueCategoryService extends GenericService<Integer, IssueCategory,
 	}
 
 	public List<IssueCategory> findByProject(Integer projectId) {
-		return repos.findByProjectAndParenType(projectId, Arrays.asList(IssueParentType.JR, IssueParentType.TICKET));
+		return repos.findByProjectAndParenType(projectId, Arrays.asList(IssueParentType.DN));
 	}
 
 	public List<IssueCategory> findByProjectAndParenType(Integer projectId, IssueParentType parentType) {

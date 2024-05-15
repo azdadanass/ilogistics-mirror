@@ -1,72 +1,131 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-
-	<h:form id="editForm">
-			<p:dialog widgetVar="editDlg" modal="true" closable="false" resizable="false" showHeader="false">
-				<button type="button" class="bootbox-close-button close" onclick="PF('editDlg').hide()">
-					<h:outputText value="x" />
-				</button>
-				<div class="modal-header">
-					<h4 class="modal-title">
-						<i class="ace-icon fa fa-edit orange" />
-						<h:outputText value=" Edit Fields" />
-					</h4>
-				</div>
-				<div class="modal-body">
-					<p:messages id="messages" />
-					<div class="row">
-						<div class="col-xs-12 col-sm-6">
-							<div class="form-group">
-								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
-									<h:outputText value="Warehousing " />
-								</label>
-								<div class="col-xs-9 col-sm-9">
-									<h:selectOneMenu value="#{projectView.project.customerWarehousing}" >
-										<f:selectItem itemLabel="No" itemValue="false"/>
-										<f:selectItem itemLabel="Yes" itemValue="true"/>
-									</h:selectOneMenu>
-								</div>
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6">
-							<div class="form-group">
-								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
-									<h:outputText value="Stock Management " />
-								</label>
-								<div class="col-xs-9 col-sm-9">
-									<h:selectOneMenu value="#{projectView.project.customerStockManagement}" >
-										<f:selectItem itemLabel="No" itemValue="false"/>
-										<f:selectItem itemLabel="Yes" itemValue="true"/>
-									</h:selectOneMenu>
-								</div>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	<h:form id="editForm" rendered="#{projectView.currentPath=='/viewProject.xhtml'}">
+		<p:dialog widgetVar="editDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('editDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-edit orange" />
+					<h:outputText value=" Edit Fields" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p:messages id="messages" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
+								<h:outputText value="Warehousing " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{projectView.project.customerWarehousing}">
+									<f:selectItem itemLabel="No" itemValue="false" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+								</h:selectOneMenu>
 							</div>
 						</div>
 					</div>
-					<div class="space-4" />
-					<div class="row">
-						<div class="col-xs-12 col-sm-6">
-							<div class="form-group">
-								<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
-									<h:outputText value="SDM " />
-								</label>
-								<div class="col-xs-9 col-sm-9">
-									<h:selectOneMenu value="#{projectView.project.sdm}" >
-										<f:selectItem itemLabel="No" itemValue="false"/>
-										<f:selectItem itemLabel="Yes" itemValue="true"/>
-									</h:selectOneMenu>
-								</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
+								<h:outputText value="Stock Management " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{projectView.project.customerStockManagement}">
+									<f:selectItem itemLabel="No" itemValue="false" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+								</h:selectOneMenu>
 							</div>
 						</div>
 					</div>
-					<div class="space-4" />
 				</div>
-				<div class="modal-footer">
-					<p:commandButton onclick="PF('editDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-					<p:commandButton action="#{projectView.edit()}" value="Set" styleClass="btn btn-success" update="messages,:main_form:main_tab" oncomplete="PF('editDlg').hide()" />
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-actionname">
+								<h:outputText value="SDM " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{projectView.project.sdm}">
+									<f:selectItem itemLabel="No" itemValue="false" />
+									<f:selectItem itemLabel="Yes" itemValue="true" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
 				</div>
-			</p:dialog>
-		</h:form>
-
-
+				<div class="space-4" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('editDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{projectView.edit()}" value="Set" styleClass="btn btn-success" update="messages,:main_form:tab2:partNumberThresholdList"
+					oncomplete="PF('editDlg').hide()" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addIssueTypeForm">
+		<p:dialog widgetVar="addIssueTypeDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000" position="top">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addIssueTypeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check green" />
+					<h:outputText value=" Add Type" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-5 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" Type List" />
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="issueTypeList" value="#{issueCategoryView.model.typeList}" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+								<p:column headerText="Type">
+									<h:outputText value="#{item.name}" styleClass="blue" rendered="#{!issueCategoryView.editIssueTypeList}" />
+									<p:inputText value="#{item.name}" rendered="#{issueCategoryView.editIssueTypeList}" style="width:90%" />
+								</p:column>
+								<p:column headerText="Actions" width="100">
+									<div class="action-buttons center">
+										<p:commandLink title="Delete " action="#{issueCategoryView.deleteIssueType(item)}" update="issueTypeList" rendered="#{issueCategoryView.editIssueTypeList}">
+											<i class="ace-icon fa fa-trash-o bigger-130 red" />
+										</p:commandLink>
+									</div>
+								</p:column>
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink title="Add New" styleClass="aa-tooltip" action="#{issueCategoryView.addIssueType()}" update="issueTypeList"
+											rendered="#{issueCategoryView.canAddIssueType()}">
+											<i class="ace-icon fa fa-plus bigger-130 green" />
+										</p:commandLink>
+										<p:commandLink title="Save" styleClass="aa-tooltip" action="#{issueCategoryView.saveIssueTypeList()}" update="issueTypeList,:addIssueTypeForm:messages"
+											rendered="#{issueCategoryView.canSaveIssueTypeList()}">
+											<i class="ace-icon fa fa-save bigger-130 blue" />
+										</p:commandLink>
+										<p:commandLink title="Edit" styleClass="aa-tooltip" update="issueTypeList" rendered="#{issueCategoryView.canEditIssueTypeList()}">
+											<i class="ace-icon fa fa-edit  bigger-130 orange" />
+											<f:setPropertyActionListener value="true" target="#{issueCategoryView.editIssueTypeList}" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addIssueTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

@@ -31,12 +31,15 @@ public class Project implements Serializable {
 	private String type;
 	private String subType;
 	private Costcenter costcenter;
+	private Contract contract;
+	private Currency currency;
 	private User manager;
 	private Customer customer;
 	private Date startDate;
 	private Date endDate;
 	private String duration;
 	private ProjectCustomerType customerType;
+	private String category;
 
 	private Boolean companyWarehousing = true;
 	private Boolean companyStockManagement = true;
@@ -379,6 +382,33 @@ public class Project implements Serializable {
 
 	public void setIsm(Boolean ism) {
 		this.ism = ism;
+	}
+	
+	@Column(name = "type", length = 45)
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Contract getContract() {
+		return contract;
+	}
+
+	public void setContract(Contract contract) {
+		this.contract = contract;
 	}
 
 }

@@ -18,6 +18,7 @@ import javax.persistence.Table;
 public class Costcenter implements Serializable {
 
 	private Integer idcostcenter;
+	private Integer year;
 	private Lob lob;
 
 	public Costcenter() {
@@ -46,6 +47,14 @@ public class Costcenter implements Serializable {
 
 	public void setLob(Lob lob) {
 		this.lob = lob;
+	}
+	
+	public Integer getYear() {
+		return year;
+	}
+
+	public void setYear(Integer year) {
+		this.year = year;
 	}
 
 }

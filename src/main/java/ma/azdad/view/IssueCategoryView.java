@@ -100,11 +100,11 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	public Boolean editIssueCategoryList = false;
 
 	public Boolean canEditIssueCategoryList() {
-		return sessionView.getIsAdmin() && !editIssueCategoryList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && !editIssueCategoryList;
 	}
 
 	public Boolean canAddIssueCategory() {
-		return sessionView.getIsAdmin() && editIssueCategoryList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && editIssueCategoryList;
 	}
 
 	public void addIssueCategory() {
@@ -114,7 +114,7 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	}
 
 	public Boolean canSaveIssueCategoryList() {
-		return sessionView.getIsAdmin() && editIssueCategoryList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && editIssueCategoryList;
 	}
 
 	public Boolean validateSaveIssueCategoryList() {
@@ -140,7 +140,7 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	}
 
 	public Boolean canDeleteIssueCategory() {
-		return sessionView.getIsAdmin() && sessionView.getInternal();
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && sessionView.getInternal();
 	}
 
 	public void deleteIssueCategory(IssueCategory issueCategory) throws DataIntegrityViolationException, Exception {
@@ -155,11 +155,11 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	private Boolean editIssueTypeList = false;
 
 	public Boolean canEditIssueTypeList() {
-		return sessionView.getIsAdmin() && !editIssueTypeList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && !editIssueTypeList;
 	}
 
 	public Boolean canAddIssueType() {
-		return sessionView.getIsAdmin() && editIssueTypeList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && editIssueTypeList;
 	}
 
 	public void addIssueType() {
@@ -169,7 +169,7 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	}
 
 	public Boolean canSaveIssueTypeList() {
-		return sessionView.getIsAdmin() && editIssueTypeList;
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && editIssueTypeList;
 	}
 
 	public Boolean validateSaveIssueTypeList() {
@@ -191,7 +191,7 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 	}
 
 	public Boolean canDeleteIssueType() {
-		return sessionView.getIsAdmin() && sessionView.getInternal();
+		return sessionView.isTheConnectedUser(projectView.getProject().getManager()) && sessionView.getInternal();
 	}
 
 	public void deleteIssueType(IssueType issueType) {

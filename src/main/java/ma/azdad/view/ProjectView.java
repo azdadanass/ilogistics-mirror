@@ -61,7 +61,7 @@ public class ProjectView {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		id = UtilsFunctions.getIntegerParameter("id");
 		refreshList();
-		if ("/partNumberThresholdList.xhtml".equals(currentPath))
+		if ("/viewProject.xhtml".equals(currentPath) )
 			project = projectService.findOne(id);
 	}
 

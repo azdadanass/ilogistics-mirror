@@ -229,7 +229,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					list2 = list1 = stockRowService.getFinancialSituation(companyId);
 				else
 					list2 = list1 = stockRowService.getFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-				generateTotalCostChart();
+//				generateTotalCostChart();
 				break;
 			case "/viewPo.xhtml":
 				initLists(service.findByPo(id));

@@ -506,6 +506,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(c23 + from2
 			+ "  where  (company1.id = ?1 or company2.id = ?1 ) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.deliveryRequestDetail.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
 	public List<StockRow> getFinancialSituation(Integer companyId);
+	
+	
+	@Query(c23 + "from StockRow a "
+			+ "  where  (a.deliveryRequest.company.id = ?1 or a.inboundDeliveryRequest.company.id = ?1) group by a.partNumber,a.status,a.deliveryRequest.project.id,a.deliveryRequestDetail.unitCost,a.inboundDeliveryRequest.date4 having sum(a.quantity) > 0")
+	public List<StockRow> getFinancialSituation2(Integer companyId);
 
 	// fast moving items
 

@@ -138,8 +138,8 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		companyId = menuView.getCompanyId();
 		customerId = menuView.getCustomerId();
 		super.init();
-		initParameters();
-		refreshList();
+//		initParameters();
+//		refreshList();
 		if (isEditPage)
 			stockRow = stockRowService.findOne(id);
 		else if (isViewPage)
@@ -225,11 +225,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				break;
 			case "/companyFinancial.xhtml":
 				this.companyId = this.id;
+				long before = System.currentTimeMillis();
 				if (sessionView.getIsCfo(companyId))
 					list2 = list1 = stockRowService.getFinancialSituation(companyId);
 				else
 					list2 = list1 = stockRowService.getFinancialSituation(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
-//				generateTotalCostChart();
+				generateTotalCostChart();
+				System.out.println("\n\nTemps: " + Long.toString(System.currentTimeMillis() - before) + " ms");
 				break;
 			case "/viewPo.xhtml":
 				initLists(service.findByPo(id));

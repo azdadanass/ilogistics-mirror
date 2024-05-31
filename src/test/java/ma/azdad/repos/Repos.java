@@ -6,21 +6,23 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.service.StockRowService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
 	StockRowRepos srr;
+	
+	@Autowired
+	StockRowService srs;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 
 		srr.count();
-		start();
-
-		System.out.println(srr.getFinancialSituation2(1));
+		
 		
 	}
 

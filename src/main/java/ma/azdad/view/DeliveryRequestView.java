@@ -567,6 +567,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			smsService.sendSms(deliveryRequest);
 
 			projectCrossService.addCrossCharge(deliveryRequest);
+			stockRowService.updateOwnerId(deliveryRequest.getId());
+			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
 
 //			if (deliveryRequest.getCustomer() != null)
 //				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
@@ -697,6 +699,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
+			
+			stockRowService.updateOwnerId(deliveryRequest.getId());
+			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 

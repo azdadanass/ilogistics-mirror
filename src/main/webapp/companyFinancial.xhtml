@@ -387,6 +387,52 @@
 								</p:tab>
 							</p:tabView>
 						</h:panelGroup>
+						
+						<div id="s"></div>
+						<script type="text/javascript">
+	Highcharts.chart('s', {
+		chart : {
+			plotBackgroundColor : null,
+			plotBorderWidth : null,
+			plotShadow : false,
+			type : 'pie'
+		},
+		title : {
+			text : 'a'
+		},
+		tooltip : {
+			pointFormat : 'Total : <b>{point.y}</b><br/>Percentage : <b>{point.percentage:.1f}%</b><br/>',
+			useHTML : true
+		},
+		legend : {
+			/* labelFormatter : function() {
+				return this.name.substr(this.name
+						.indexOf(";") + 1,
+						this.name.length);
+			}, */
+			itemWidth : 150,
+			layout : 'vertical',
+			align : 'right',
+			verticalAlign : 'top',
+			x : 30,
+			y : 40,
+			borderWidth : 0,
+			floating : false
+		},
+		plotOptions : {
+			pie : {
+				allowPointSelect : true,
+				cursor : 'pointer',
+				dataLabels : {
+					enabled : false
+				},
+				showInLegend : true
+			}
+		},
+		series : [{name:'aaa',color:'red',data:[1.0,2.0]}]
+	});
+</script>
+						
 					</div>
 				</div>
 			</div>

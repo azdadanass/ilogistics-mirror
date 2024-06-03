@@ -26,6 +26,10 @@ public class HighchartsService {
 		ColumnChart chart = new ColumnChart(id, title, subtitle, categories, series);
 		return chart.generateChart();
 	}
+	
+	public String generatePieChart(String id, String title, Series[] series) {
+		return new PieChart(id, title, series).generateChart();
+	}
 
 	class LineBasic extends GenericChart {
 		Series[] series;
@@ -65,6 +69,23 @@ public class HighchartsService {
 			map.put("categories", UtilsFunctions.formatTab(categories));
 			map.put("series", Arrays.toString(series));
 			return fileReaderService.readFile("classpath:hs/cc.htm", map);
+		}
+	}
+
+	class PieChart extends GenericChart {
+		Series[] series;
+
+		public PieChart(String id, String title, Series[] series) {
+			super(id, title);
+			this.series = series;
+		}
+
+		public String generateChart() {
+			Map<String, String> map = new HashMap<>();
+			map.put("id", id);
+			map.put("title", title);
+			map.put("series", Arrays.toString(series));
+			return fileReaderService.readFile("classpath:hs/pie.htm", map);
 		}
 	}
 

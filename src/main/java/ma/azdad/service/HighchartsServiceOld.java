@@ -13,7 +13,7 @@ import ma.azdad.utils.Series;
 
 @Component
 @Transactional
-public class HighchartsService {
+public class HighchartsServiceOld {
 
 	@Autowired
 	private FileReaderService fileReaderService;

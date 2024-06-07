@@ -8,7 +8,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +18,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import groovy.time.BaseDuration.From;
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Customer;
 import ma.azdad.model.DeliveryRequest;
@@ -42,7 +40,9 @@ import ma.azdad.repos.SiteRepos;
 import ma.azdad.repos.StockRowRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.ChartContainer;
-import ma.azdad.utils.Series;
+import ma.azdad.utils.ChartData;
+import ma.azdad.utils.Color;
+import ma.azdad.utils.Serie;
 
 @Component
 public class StockRowService extends GenericService<Integer, StockRow, StockRowRepos> {
@@ -906,9 +906,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				yearData[month - 1] = data.stream().filter(i -> (int) i[0] < y || ((int) i[0] == y && (int) i[1] <= m))
 						.mapToDouble(i -> (double) i[2]).sum();
 			}
-			Series[] series = { new Series("Cost Trend", "blue", yearData) };
-			result.add(new ChartContainer("" + year, "container_" + year, highchartsService
-					.generateLineBasic("container_" + year, "Sotck Cost Center Trend", "" + year, "MAD", series)));
+//			Series[] series = { new Series("Cost Trend", "blue", yearData) };
+
+			List<Serie<Double>> series = new ArrayList<Serie<Double>>();
+			series.add(new Serie<Double>("Cost Trend", Arrays.asList(yearData), Color.BLUE));
+			result.add(new ChartContainer("" + year, "container_" + year, highchartsService.generateBasicLineChart(
+					"container_" + year, "Sotck Cost Center Trend", "" + year, Arrays.asList("MAD"), series)));
+
 		}
 
 		return result;
@@ -936,6 +940,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		List<Object[]> data = repos.getTotalCostPerYearAndMonth(companyId);
 		return generateTotalCostChart(data);
 	}
+	
+	
 
 	public List<ChartContainer> generateTotalCostChart(String username, List<Integer> warehouseList,
 			List<Integer> assignedProjectList, Integer companyId) {
@@ -1027,10 +1033,18 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				if (j != 11)
 					c.add(Calendar.MONTH, 1);
 			}
-			Series[] series = { new Series("Cost Trend", "blue", data) };
-			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR),
-					highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend",
-							"" + c.get(Calendar.YEAR), "MAD", series)));
+//			Series[] series = { new Series("Cost Trend", "blue", data) };
+//			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR),
+//					highchartsService.generateLineBasic("container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend",
+//							"" + c.get(Calendar.YEAR), "MAD", series)));
+			
+			
+			List<Serie<Double>> series = new ArrayList<Serie<Double>>();
+			series.add(new Serie<Double>("Cost Trend", Arrays.asList(data), Color.BLUE));
+			result.add(new ChartContainer("" + c.get(Calendar.YEAR), "container_" + c.get(Calendar.YEAR), highchartsService.generateBasicLineChart(
+					"container_" + c.get(Calendar.YEAR), "Sotck Cost Center Trend", "" + c.get(Calendar.YEAR), Arrays.asList("MAD"), series)));
+			
+			
 			c.add(Calendar.YEAR, -1);
 		}
 		return result;

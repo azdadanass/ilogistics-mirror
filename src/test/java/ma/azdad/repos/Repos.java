@@ -23,7 +23,7 @@ public class Repos extends GenericTest {
 		Series[] s = {new Series("aaa","red", a)};
 		
 		
-		System.out.println(highchartsService.generatePieChart("s", "a",s));
+//		System.out.println(highchartsService.generatePieChart("s", "a",s));
 		
 	}
 

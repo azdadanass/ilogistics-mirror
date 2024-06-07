@@ -1,5 +1,5 @@
 <script type="text/javascript">
-	Highcharts.chart('${id}', {
+	Highcharts.chart('[( ${id} )]', {
 		chart : {
 			plotBackgroundColor : null,
 			plotBorderWidth : null,
@@ -7,7 +7,7 @@
 			type : 'pie'
 		},
 		title : {
-			text : '${title}'
+			text : '[( ${title} )]'
 		},
 		tooltip : {
 			pointFormat : 'Total : <b>{point.y}</b><br/>Percentage : <b>{point.percentage:.1f}%</b><br/>',
@@ -38,6 +38,6 @@
 				showInLegend : true
 			}
 		},
-		series : ${series}
+		series : [( ${series} )]
 	});
 </script>

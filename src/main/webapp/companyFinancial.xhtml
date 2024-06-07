@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
@@ -31,16 +32,15 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" Company Financial" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{companyView.model.name}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{companyView.model.name}" />
 					</small>
 				</h1>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div class=" col-sm-offset-1 col-sm-8">
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="/index.xhtml">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home "
+							value="/index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
@@ -48,7 +48,8 @@
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page"
+							value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
@@ -292,14 +293,16 @@
 											<div class="action-buttons center">
 												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 													<img src="/resources/img/xls.png" width="20" height="20" />
-													<p:dataExporter type="xls" target="stockRowList" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
+													<p:dataExporter type="xls" target="stockRowList" fileName="stockRowList"
+														postProcessor="#{utilsView.excelExportation}" />
 												</h:commandLink>
 											</div>
 										</div>
 										<div class="col-sm-2 col-xs-4">
 											<div class="nav-search minimized">
 												<span class="input-icon">
-													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input"
+														autocomplete="off">
 														<p:ajax event="keyup" update="stockRowList,qTotalCost" />
 													</p:inputText>
 													<i class="ace-icon fa fa-search nav-search-icon" />
@@ -308,7 +311,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="stockRowList" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										<p:dataTable id="stockRowList" value="#{stockRowView.list2}" var="item" rows="20"
+											styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false" width="120">
 												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
@@ -338,7 +342,8 @@
 												<h:outputText value="#{item.projectName}" styleClass="light-blue" />
 											</p:column>
 											<p:column headerText="Stock" width="70" exportable="false">
-												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
+												<h:outputText value="#{item.quantity}"
+													styleClass="bolder #{item.quantity==0?'blue':item.quantity lt 0 ?'red':'green'}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
@@ -358,7 +363,7 @@
 												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" />
 											</p:column>
 											<p:column headerText="Unit Cost" width="120" styleClass="hide">
-												<h:outputText value="#{item.unitCost}"/>
+												<h:outputText value="#{item.unitCost}" />
 											</p:column>
 											<p:column headerText="Total Cost" width="120" exportable="false">
 												<h:outputText value="#{item.qTotalCost}">
@@ -387,52 +392,38 @@
 								</p:tab>
 							</p:tabView>
 						</h:panelGroup>
-						
-						<div id="s"></div>
-						<script type="text/javascript">
-	Highcharts.chart('s', {
-		chart : {
-			plotBackgroundColor : null,
-			plotBorderWidth : null,
-			plotShadow : false,
-			type : 'pie'
-		},
-		title : {
-			text : 'a'
-		},
-		tooltip : {
-			pointFormat : 'Total : <b>{point.y}</b><br/>Percentage : <b>{point.percentage:.1f}%</b><br/>',
-			useHTML : true
-		},
-		legend : {
-			/* labelFormatter : function() {
-				return this.name.substr(this.name
-						.indexOf(";") + 1,
-						this.name.length);
-			}, */
-			itemWidth : 150,
-			layout : 'vertical',
-			align : 'right',
-			verticalAlign : 'top',
-			x : 30,
-			y : 40,
-			borderWidth : 0,
-			floating : false
-		},
-		plotOptions : {
-			pie : {
-				allowPointSelect : true,
-				cursor : 'pointer',
-				dataLabels : {
-					enabled : false
-				},
-				showInLegend : true
-			}
-		},
-		series : [{name:'aaa',color:'red',data:[1.0,2.0]}]
-	});
-</script>
-						
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerBrand" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerBrandChart()}" escape="false" />
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerCategory" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerCategoryChart()}" escape="false" />
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerIndustry" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerIndustryChart()}" escape="false" />
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerType" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerTypeChart()}" escape="false" />
+							</div>
+						</div>
+						<hr />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerStatus" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerStatusChart()}" escape="false" />
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div id="InventoryPerInStockDate" style="width: 450px; height: 300px; margin: 0 auto" />
+								<h:outputText value="#{stockRowView.getInventoryPerInStockDateChart()}" escape="false" />
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

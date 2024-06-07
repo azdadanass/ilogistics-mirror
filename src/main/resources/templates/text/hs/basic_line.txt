@@ -1,17 +1,17 @@
 <script type="text/javascript">
-	Highcharts.chart('${id}', {
+	Highcharts.chart('[( ${id} )]', {
 
 		title : {
-			text : '${title}'
+			text : '[( ${title} )]'
 		},
 
 		subtitle : {
-			text : '${subtitle}'
+			text : '[( ${subtitle} )]'
 		},
 
 		yAxis : {
 			title : {
-				text : '${yAxisTitle}'
+				text : '[( ${yAxisTitle} )]'
 			}
 		},
 		legend : {
@@ -28,7 +28,7 @@
 				pointStart : 1
 			}
 		},
-		series : ${series},
+		series : [( ${series} )],
 		responsive : {
 			rules : [ {
 				condition : {

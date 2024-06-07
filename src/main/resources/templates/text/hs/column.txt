@@ -1,19 +1,20 @@
 <script type="text/javascript">
-	$(function() {
-		Highcharts.chart('${id}', {
+		Highcharts.chart('__id__', {
 			chart : {
 				type : 'column'
 			},
 			title : {
-				text : '${title}'
+				text : '__title__'
+			},
+			subtitle: {
+				text: '__subtitle__'
 			},
 			xAxis : {
-				categories : ${categories}
+				categories : __categories__
 			},
 			credits : {
 				enabled : false
 			},
-			series : ${series}
+			series : __series__
 		});
-	});
 </script>

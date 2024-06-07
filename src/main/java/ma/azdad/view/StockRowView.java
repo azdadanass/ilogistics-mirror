@@ -1,6 +1,7 @@
 package ma.azdad.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -9,10 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -33,11 +36,14 @@ import ma.azdad.repos.StockRowRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
+import ma.azdad.service.HighchartsService;
 import ma.azdad.service.JobRequestDeliveryDetailService;
 import ma.azdad.service.StockRowService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.ChartContainer;
+import ma.azdad.utils.ChartData;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.Serie;
 
 @ManagedBean
 @Component
@@ -55,6 +61,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	@Autowired
 	public CustomerService customerService;
+
+	@Autowired
+	public HighchartsService highchartsService;
 
 	@Autowired
 	public DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
@@ -988,8 +997,73 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		default:
 			break;
 		}
-
 	}
+
+	public String test() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		data.add(new ChartData<Long>("New", 5l));
+		data.add(new ChartData<Long>("Pending Approval", 10l));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("test2024", "Totals", "", Arrays.asList(serie));
+	}
+
+	public String getInventoryPerBrandChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberBrandName())).collect(Collectors.groupingBy(StockRow::getPartNumberBrandName, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerBrand", "Inventory Per Brand", "", Arrays.asList(serie));
+	}
+	
+	public String getInventoryPerCategoryChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberCategoryName())).collect(Collectors.groupingBy(StockRow::getPartNumberCategoryName, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerCategory", "Inventory Per Category", "", Arrays.asList(serie));
+	}
+
+	public String getInventoryPerIndustryChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberIndustryName()))
+				.collect(Collectors.groupingBy(StockRow::getPartNumberIndustryName, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerIndustry", "Inventory Per Industry", "", Arrays.asList(serie));
+	}
+
+	public String getInventoryPerTypeChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberTypeName())).collect(Collectors.groupingBy(StockRow::getPartNumberTypeName, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerType", "Inventory Per Type", "", Arrays.asList(serie));
+	}
+
+	public String getInventoryPerStatusChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getStatusValue())).collect(Collectors.groupingBy(StockRow::getStatusValue, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerStatus", "Inventory Per Status", "", Arrays.asList(serie));
+	}
+
+	public String getInventoryPerInStockDateChart() {
+		List<ChartData<Long>> data = new ArrayList<ChartData<Long>>();
+
+		Map<String, Long> map = list1.stream().filter(i -> StringUtils.isNotBlank(i.getInStockeDateLabel())).collect(Collectors.groupingBy(StockRow::getInStockeDateLabel, Collectors.counting()));
+		Stream<Map.Entry<String, Long>> sorted = map.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue()));
+		sorted.limit(10).forEach(i -> data.add(new ChartData<Long>(i.getKey(), i.getValue())));
+		Serie<ChartData<Long>> serie = new Serie<ChartData<Long>>("Chart", data);
+		return highchartsService.generatePieChart("InventoryPerInStockDate", "Inventory Per In Stock Date", "", Arrays.asList(serie));
+	}
+
+	
 
 	// pn quantities
 	public Double getPhysicalInventoryByPartNumber() {

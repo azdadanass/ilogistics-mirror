@@ -148,7 +148,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	// TMP
 	private LabelValue owner;
-	private Integer projectId;
+//	private Integer projectId;
 	private Integer destinationProjectId;
 	private Integer originId;
 	private Integer destinationId;
@@ -309,8 +309,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	public void init() {
-		if (project != null)
-			projectId = project.getId();
+//		if (project != null)
+//			projectId = project.getId();
 		if (destinationProject != null)
 			destinationProjectId = destinationProject.getId();
 		if (customer != null)
@@ -1135,15 +1135,27 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setWarehouse(Warehouse warehouse) {
 		this.warehouse = warehouse;
 	}
-
+//
+//	@Transient
+//	public Integer getProjectId() {
+//		return projectId;
+//	}
+//
+//	@Transient
+//	public void setProjectId(Integer projectId) {
+//		this.projectId = projectId;
+//	}
+	
 	@Transient
-	public Integer getProjectId() {
-		return projectId;
+	public Integer getProjectId(){
+		return project!=null?project.getId():null;
 	}
 
 	@Transient
-	public void setProjectId(Integer projectId) {
-		this.projectId = projectId;
+	public void setProjectId(Integer projectId){
+		if(project==null || !projectId.equals(project.getId()))
+			project=new Project();
+		project.setId(projectId);
 	}
 
 	@Transient
@@ -1676,6 +1688,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (destinationProject == null)
 			destinationProject = new Project();
 		destinationProject.setCustomerName(destinationProjectCustomerName);
+	}
+	
+	@Transient
+	public Integer getDestinationProjectCustomerId() {
+		return destinationProject != null ? destinationProject.getCustomerId() : null;
+	}
+
+	@Transient
+	public void setDestinationProjectCustomerId(Integer destinationProjectCustomerId) {
+		if (destinationProject == null)
+			destinationProject = new Project();
+		destinationProject.setCustomerId(destinationProjectCustomerId);
 	}
 
 	@Transient

@@ -1,30 +1,29 @@
 package ma.azdad.repos;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.HighchartsService;
-import ma.azdad.utils.Series;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	
 	@Autowired
-	HighchartsService highchartsService;
+	StockRowRepos stockRowRepos;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		Double[] a = {1.0,2.0};
-		Series[] s = {new Series("aaa","red", a)};
+		stockRowRepos.count();
 		
+		start();
 		
-//		System.out.println(highchartsService.generatePieChart("s", "a",s));
-		
+		stockRowRepos.findByCompanyOwnerGroupbyPartNumberAndDeliveryRequest("m.bougri", Arrays.asList(1), Arrays.asList(1), 1);
 	}
 
 }

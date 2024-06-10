@@ -180,33 +180,33 @@
 								</div>
 							</p:column>
 							<p:column headerText="Project" width="190" rendered="#{stockRowView.pageIndex==2}">
-								<h:outputText value="#{item.inboundDeliveryRequest.project.name}" styleClass="purple" />
+								<h:outputText value="#{item.inboundProjectName}" styleClass="purple" />
 							</p:column>
 							<p:column headerText="DN" width="100" rendered="#{stockRowView.pageIndex==2}" exportable="false">
 								<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
-									<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="#{item.inboundDeliveryRequest.type.color}" />
-									<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
+									<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="#{item.inboundDeliveryRequestType.color}" />
+									<f:param name="id" value="#{item.inboundDeliveryRequestId}" />
 								</h:outputLink>
 							</p:column>
 							<p:column headerText="Warehouse" width="150" rendered="#{stockRowView.pageIndex==2}">
-								<h:outputText value="#{item.inboundDeliveryRequest.warehouse.name}" />
+								<h:outputText value="#{item.inboundWarehouseName}" />
 							</p:column>
 							<p:column headerText="DN" styleClass="hide">
-								<h:outputText value="#{item.inboundDeliveryRequest.reference}" />
+								<h:outputText value="#{item.inboundDeliveryRequestReference}" />
 							</p:column>
 							<p:column headerText="DN Deliver Date" width="100" rendered="#{stockRowView.pageIndex==2}">
-								<h:outputText value="#{item.inboundDeliveryRequest.date4}">
+								<h:outputText value="#{item.inboundDeliveryRequestDate4}">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>
 							</p:column>
 							<p:column headerText="DN Storage Period" width="100" rendered="#{stockRowView.pageIndex==2}">
-								<h:outputText value="#{item.inboundDeliveryRequest.approximativeStoragePeriod}" />
+								<h:outputText value="#{item.inboundDeliveryRequestApproximativeStoragePeriod}" />
 							</p:column>
 							<p:column headerText="Overdue" width="100" sortBy="#{item.overdue}" rendered="#{stockRowView.pageIndex==2}">
 								<h:outputText value="#{item.overdue}" styleClass="bolder red" />
 							</p:column>
 							<p:column headerText="Total Storage Period" width="100" sortBy="#{item.overdue}" rendered="#{stockRowView.pageIndex==2}">
-								<h:outputText value="#{item.inboundDeliveryRequest.approximativeStoragePeriod+item.overdue}" />
+								<h:outputText value="#{item.inboundDeliveryRequestApproximativeStoragePeriod+item.overdue}" />
 							</p:column>
 							<p:column headerText="Inbound Qty" width="90" rendered="#{stockRowView.pageIndex==3}">
 								<h:outputText value="#{item.inboundQuantity}" styleClass="green">

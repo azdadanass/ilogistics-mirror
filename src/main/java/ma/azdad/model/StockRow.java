@@ -154,7 +154,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.outboundQuantity = outboundQuantity;
 	}
 
-	// c5 & c13
+	// c5
 	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
 			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
@@ -229,9 +229,30 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c10
-	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, //
+//	public StockRow(Double quantity, DeliveryRequest inboundDeliveryRequest, //
+//			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+//			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription) {
+//		super();
+//		this.quantity = quantity;
+//		this.setPartNumberId(partNumberId);
+//		this.setPartNumberName(partNumberName);
+//		this.setPartNumberImage(partNumberImage);
+//		this.setPartNumberDescription(partNumberDescription);
+//		this.setPartNumberIndustryName(partNumberIndustryName);
+//		this.setPartNumberCategoryName(partNumberCategoryName);
+//		this.setPartNumberTypeName(partNumberTypeName);
+//		this.setPartNumberBrandName(partNumberBrandName);
+//		this.setInternalPartNumberName(internalPartNumberName);
+//		this.setInternalPartNumberDescription(internalPartNumberDescription);
+//		this.inboundDeliveryRequest = inboundDeliveryRequest;
+//	}
+
+	public StockRow(Double quantity, //
 			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
-			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription) {
+			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, //
+			Integer inboundDeliveryRequestId, String inboundDeliveryRequestReference, DeliveryRequestType inboundDeliveryRequestType, Date inboundDeliveryRequestDate4,
+			Integer inboundDeliveryRequestApproximativeStoragePeriod, //
+			String inboundDeliveryRequestProjectName, String inboundDeliveryRequestWarehouseName) {
 		super();
 		this.quantity = quantity;
 		this.setPartNumberId(partNumberId);
@@ -244,7 +265,13 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setPartNumberBrandName(partNumberBrandName);
 		this.setInternalPartNumberName(internalPartNumberName);
 		this.setInternalPartNumberDescription(internalPartNumberDescription);
-		this.inboundDeliveryRequest = inboundDeliveryRequest;
+		this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+		this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+		this.setInboundDeliveryRequestType(inboundDeliveryRequestType);
+		this.setInboundDeliveryRequestDate4(inboundDeliveryRequestDate4);
+		this.setInboundDeliveryRequestApproximativeStoragePeriod(inboundDeliveryRequestApproximativeStoragePeriod);
+		this.setInboundProjectName(inboundDeliveryRequestProjectName);
+		this.setInboundWarehouseName(inboundDeliveryRequestWarehouseName);
 	}
 
 	// c12
@@ -268,6 +295,28 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setUnitCost(unitCost);
 		this.setCostCurrencyId(costCurrencyId);
 		this.qTotalCost = qTotalCost;
+	}
+
+	// c13
+	public StockRow(Double quantity, Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberIndustryName, String partNumberCategoryName, String partNumberTypeName,
+			String partNumberBrandName, String internalPartNumberName, String internalPartNumberDescription, Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, Integer projectId,
+			String projectName, Integer destinationProjectCustomerId) {
+		super();
+		this.quantity = quantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberIndustryName(partNumberIndustryName);
+		this.setPartNumberCategoryName(partNumberCategoryName);
+		this.setPartNumberTypeName(partNumberTypeName);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.setInternalPartNumberName(internalPartNumberName);
+		this.setInternalPartNumberDescription(internalPartNumberDescription);
+		this.setDeliveryRequestId(deliveryRequestId);
+		this.setDeliveryRequestType(deliveryRequestType);
+		this.setProjectId(projectId);
+		this.setProjectName(projectName);
+		this.setDestinationProjectCustomerId(destinationProjectCustomerId);
 	}
 
 	// c15
@@ -599,7 +648,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public Long getInStockDays() {
 		return UtilsFunctions.getDateDifference(new Date(), inboundDeliveryRequestDeliveryDate);
 	}
-	
+
 	@Transient
 	public String getInStockeDateLabel() {
 		Long inStockDays = getInStockDays();
@@ -916,6 +965,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
+	public Integer getDestinationProjectCustomerId() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getDestinationProjectCustomerId();
+	}
+
+	@Transient
+	public void setDestinationProjectCustomerId(Integer destinationProjectCustomerId) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDestinationProjectCustomerId(destinationProjectCustomerId);
+	}
+
+	@Transient
 	public String getDestinationProjectCustomerName() {
 		if (deliveryRequest == null)
 			return null;
@@ -927,6 +990,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDestinationProjectCustomerName(destinationProjectCustomerName);
+	}
+
+	@Transient
+	public Integer getProjectId() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getProjectId();
+	}
+
+	@Transient
+	public void setProjectId(Integer ProjectId) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setProjectId(ProjectId);
 	}
 
 	@Transient
@@ -1108,6 +1185,30 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
+	public String getInboundProjectName() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getProjectName() : null;
+	}
+
+	@Transient
+	public void setInboundProjectName(String inboundProjectName) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setProjectName(inboundProjectName);
+	}
+	
+	@Transient
+	public String getInboundWarehouseName() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getWarehouseName() : null;
+	}
+
+	@Transient
+	public void setInboundWarehouseName(String inboundWarehouseName) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setWarehouseName(inboundWarehouseName);
+	}
+
+	@Transient
 	public String getInboundDeliveryRequestReference() {
 		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getReference() : null;
 	}
@@ -1117,6 +1218,42 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (inboundDeliveryRequest == null)
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setReference(inboundDeliveryRequestReference);
+	}
+
+	@Transient
+	public Integer getInboundDeliveryRequestApproximativeStoragePeriod() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getApproximativeStoragePeriod() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestApproximativeStoragePeriod(Integer inboundDeliveryRequestApproximativeStoragePeriod) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setApproximativeStoragePeriod(inboundDeliveryRequestApproximativeStoragePeriod);
+	}
+
+	@Transient
+	public DeliveryRequestType getInboundDeliveryRequestType() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getType() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestType(DeliveryRequestType inboundDeliveryRequestType) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setType(inboundDeliveryRequestType);
+	}
+
+	@Transient
+	public Date getInboundDeliveryRequestDate4() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getDate4() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestDate4(Date inboundDeliveryRequestDate4) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setDate4(inboundDeliveryRequestDate4);
 	}
 
 	@Transient

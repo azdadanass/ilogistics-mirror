@@ -21,6 +21,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 @Entity
 
 public class Project implements Serializable {
@@ -100,8 +102,7 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing,
-			Boolean customerStockManagement, Boolean sdm) {
+	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -133,6 +134,18 @@ public class Project implements Serializable {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	@Transient
+	public Integer getCustomerId() {
+		return customer != null ? customer.getId() : null;
+	}
+
+	@Transient
+	public void setCustomerId(Integer customerId) {
+		if (customer == null || ObjectUtils.notEqual(customerId, customer.getId()))
+			customer = new Customer();
+		customer.setId(customerId);
 	}
 
 	@Transient
@@ -383,7 +396,7 @@ public class Project implements Serializable {
 	public void setIsm(Boolean ism) {
 		this.ism = ism;
 	}
-	
+
 	@Column(name = "type", length = 45)
 	public String getCategory() {
 		return category;
@@ -392,7 +405,7 @@ public class Project implements Serializable {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Currency getCurrency() {
 		return currency;
@@ -401,7 +414,7 @@ public class Project implements Serializable {
 	public void setCurrency(Currency currency) {
 		this.currency = currency;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Contract getContract() {
 		return contract;

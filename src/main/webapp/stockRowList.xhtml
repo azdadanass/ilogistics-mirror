@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
@@ -74,13 +75,15 @@
 										<h:outputText value="Filter by : " />
 									</td>
 									<td>
-										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-success" title="In Stock">
+										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel"
+											styleClass="aa-tooltip tooltip-success" title="In Stock">
 											<div class="aa-icon-inbound" />
 											<f:setPropertyActionListener value="true" target="#{stockRowView.inStock}" />
 										</p:commandLink>
 									</td>
 									<td>
-										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel" styleClass="aa-tooltip tooltip-error" title="Out Of Stock">
+										<p:commandLink action="#{stockRowView.refreshList()}" update="main_tab,widgetPanel"
+											styleClass="aa-tooltip tooltip-error" title="Out Of Stock">
 											<div class="aa-icon-outbound" />
 											<f:setPropertyActionListener value="false" target="#{stockRowView.inStock}" />
 										</p:commandLink>
@@ -99,7 +102,8 @@
 						<div class="col-sm-2 col-xs-4">
 							<div class="nav-search minimized">
 								<span class="input-icon">
-									<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+									<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input"
+										autocomplete="off">
 										<p:ajax event="keyup" update="main_tab,widgetPanel" />
 									</p:inputText>
 									<i class="ace-icon fa fa-search nav-search-icon" />
@@ -108,10 +112,11 @@
 						</div>
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
-						<p:dataTable value="#{stockRowView.list2}" filteredValue="#{stockRowView.list3}" rowKey="#{item.id}" selection="#{stockRowView.list4}" id="main_tab" widgetVar="main_tab"
-							var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-							<p:column headerText="Photo" width="80">
+						<p:dataTable value="#{stockRowView.list2}" filteredValue="#{stockRowView.list3}" rowKey="#{item.id}"
+							selection="#{stockRowView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="50"
+							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+							paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+							<p:column headerText="Photo" width="80" exportable="false">
 								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 									<f:param name="fileName" value="#{item.partNumberImage}" />
 								</p:graphicImage>
@@ -125,11 +130,15 @@
 							<p:column headerText="Part Number" styleClass="hide">
 								<h:outputText value="#{item.partNumber.name}" />
 							</p:column>
-							<p:column headerText="Internal Part Number">
+							<p:column headerText="Internal Part Number" exportable="false">
 								<h:outputText id="internalPartNumberName" value="#{item.partNumber.internalPartNumberName}" styleClass="bolder purple" />
-								<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+								<p:overlayPanel for="internalPartNumberName" style="text-align: left;width:350px" showEvent="mouseover"
+									hideEvent="mouseout">
 									<h:outputText value="#{item.partNumber.internalPartNumberDescription}" />
 								</p:overlayPanel>
+							</p:column>
+							<p:column headerText="InternalPart Number" styleClass="hide">
+								<h:outputText value="#{item.partNumber.internalPartNumberName}" />
 							</p:column>
 							<p:column headerText="Cost Center" width="190" rendered="#{stockRowView.pageIndex==3}">
 								<h:outputText value="#{item.tmpProjectName}" styleClass="bolder green" />
@@ -223,10 +232,12 @@
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="N.of Deliveries" width="90" rendered="#{stockRowView.pageIndex==3}" sortBy="#{item.tmpNumberOfOutbounds}">
+							<p:column headerText="N.of Deliveries" width="90" rendered="#{stockRowView.pageIndex==3}"
+								sortBy="#{item.tmpNumberOfOutbounds}">
 								<h:outputText value="#{item.tmpNumberOfOutbounds}" styleClass="bolder purple" />
 							</p:column>
-							<p:column headerText="N.of Customers" width="90" rendered="#{stockRowView.pageIndex==3}" sortBy="#{item.tmpNumberOfCustomers}">
+							<p:column headerText="N.of Customers" width="90" rendered="#{stockRowView.pageIndex==3}"
+								sortBy="#{item.tmpNumberOfCustomers}">
 								<h:outputText value="#{item.tmpNumberOfCustomers}" />
 							</p:column>
 							<!-- <p:column headerText="Related Request" rendered="#{stockRowView.viewDetails}">

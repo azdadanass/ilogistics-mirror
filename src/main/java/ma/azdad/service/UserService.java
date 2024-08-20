@@ -377,5 +377,17 @@ public class UserService {
 	public List<User> findLightByCustomerAndHasRole(Integer customerId, Role role) {
 		return repos.findLightByCustomerAndHasRole(customerId, role);
 	}
+	
+	public ma.azdad.mobile.model.User findOneMobile(String username){
+		return repos.findOneMobile(username);
+	}
+	
+	public List<Role> findRoleList(String username){
+		try {
+			return findOne(username).getRoleList().stream().map(i->i.getRole()).collect(Collectors.toList());
+		} catch (Exception e) {
+			return new ArrayList<Role>();
+		}
+	}
 
 }

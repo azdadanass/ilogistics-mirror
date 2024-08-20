@@ -48,6 +48,7 @@ public class Main extends SpringBootServletInitializer {
 		FilterRegistrationBean<FileUploadFilter> registration = new FilterRegistrationBean<>();
 		registration.setFilter(new FileUploadFilter());
 		registration.setName("PrimeFaces FileUpload Filter");
+		registration.addUrlPatterns("*.xhtml");
 		return registration;
 	}
 

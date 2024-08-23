@@ -17,10 +17,7 @@ public class TokenService {
 	UserService userService;
 	
 	@Autowired
-	TeamService teamService;
-	
-	@Autowired
-	ProjectService projectService;
+	WarehouseService warehouseService;
 
 	private Map<String, Token> userTokenMap = new HashMap<String, Token>();
 
@@ -35,8 +32,7 @@ public class TokenService {
 		token.setKey(key);
 		token.setUser(userService.findOneMobile(username));
 		token.setRoleList(userService.findRoleList(username));
-		token.setTeamList(teamService.findIdListByTeamLeader(username));
-		token.setUserProjectList(projectService.findAllProjectIdListByResource(username));
+		token.setWarehouseList(warehouseService.findIdListByManager(username));
 		token.updateExpirationTime();
 		userTokenMap.put(username, token);
 		System.out.println(userTokenMap);

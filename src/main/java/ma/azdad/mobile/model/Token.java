@@ -15,8 +15,7 @@ public class Token {
 
 	private User user;
 	private List<Role> roleList = new ArrayList<Role>();
-	private List<Integer> teamList = new ArrayList<Integer>();
-	private List<Integer> userProjectList = new ArrayList<Integer>();
+	private List<Integer> warehouseList = new ArrayList<Integer>();
 
 	public void updateExpirationTime() {
 		expirationTime = UtilsFunctions.addMinutesToDate(new Date(), 5);
@@ -58,20 +57,12 @@ public class Token {
 		this.username = username;
 	}
 
-	public List<Integer> getTeamList() {
-		return teamList;
+	public List<Integer> getWarehouseList() {
+		return warehouseList;
 	}
 
-	public void setTeamList(List<Integer> teamList) {
-		this.teamList = teamList;
-	}
-
-	public List<Integer> getUserProjectList() {
-		return userProjectList;
-	}
-
-	public void setUserProjectList(List<Integer> userProjectList) {
-		this.userProjectList = userProjectList;
+	public void setWarehouseList(List<Integer> warehouseList) {
+		this.warehouseList = warehouseList;
 	}
 
 	public List<Role> getRoleList() {
@@ -84,7 +75,8 @@ public class Token {
 
 	@Override
 	public String toString() {
-		return "Token [username=" + username + ", key=" + key + ", expirationTime=" + expirationTime + ", isActive()=" + isActive() + "]\n";
+		return "Token [username=" + username + ", key=" + key + ", expirationTime=" + expirationTime + ", isActive()="
+				+ isActive() + "]\n";
 	}
 
 }

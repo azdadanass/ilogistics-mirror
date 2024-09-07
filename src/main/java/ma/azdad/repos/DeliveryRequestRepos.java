@@ -402,6 +402,18 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	void updateHardwareSwapInboundIdAndStatus(Integer outboundId,Integer inboundId,DeliveryRequestStatus inboundStatus);
 	
 	
+	// mobile
 	
+	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(a.id,a.reference,a.type,a.neededDeliveryDate,"//
+			+ "a.inboundType,a.status,a.isForReturn,a.isForTransfer,a.requester.fullName,a.project.id,a.project.name,"//
+			+ "a.destinationProject.id,(select b.name from Project b where b.id = a.destinationProject.id),"//
+			+ "a.warehouse.id,a.warehouse.name,"//
+			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
+			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id))";
+	
+	
+	
+	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status = ?2 and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, DeliveryRequestStatus status, DeliveryRequestType xbound);
 
 }

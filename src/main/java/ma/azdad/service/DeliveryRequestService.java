@@ -310,8 +310,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightByWarehouseList")
-	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList, DeliveryRequestStatus status) {
-		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, status, DeliveryRequestType.XBOUND);
+	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList) {
+		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, DeliveryRequestStatus.APPROVED2, DeliveryRequestType.XBOUND);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countByWarehouseList")
@@ -1311,5 +1311,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		evictCache();
 		repos.updateHardwareSwapInboundIdAndStatus(outboundId, inboundId, inboundStatus);
 	}
+	
+	
+	// mobile
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
+		if(warehouseList.isEmpty())
+			return new ArrayList<>();
+		return deliveryRequestRepos.findLightByWarehouseListMobile(warehouseList, DeliveryRequestStatus.APPROVED2, DeliveryRequestType.XBOUND);
+	}
+	
+	
+	
 
 }

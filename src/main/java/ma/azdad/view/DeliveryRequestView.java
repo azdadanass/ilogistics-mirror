@@ -393,7 +393,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					list2 = list1 = service.findLightToApprove(sessionView.getUsername());
 				break;
 			case 4:
-				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList());
 				break;
 			case 5:
 				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);

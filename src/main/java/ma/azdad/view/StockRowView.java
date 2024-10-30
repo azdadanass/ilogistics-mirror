@@ -201,6 +201,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 						.find(stockRowService.findCompanyOwnerList(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList()));
 				break;
 			case "/deliveryReporting.xhtml":
+			case "/deliveryReporting2.xhtml":
 			case "/sdmDeliveryReporting.xhtml":
 				initDeliveryLists();
 				refreshDeliveryLists();
@@ -376,6 +377,16 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
 			}
 			break;
+		case "/deliveryReporting2.xhtml":
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					deliveryList1 = stockRowService.findDeliveryListsByCompanyOwner2(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							companyId);
+				if (customerId != null)
+					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner2(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+							customerId);
+			} 
+			break;
 		case "/sdmDeliveryReporting.xhtml":
 			if (sessionView.getInternal() || sessionView.getIsWM()) {
 				if (companyId != null)
@@ -421,6 +432,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			break;
 		case "Purchase Order":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getPoNumero() != null).map(i -> i.getPoNumero()).distinct().collect(Collectors.toList());
+			break;
+		case "Inbound Purchase Order":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
 			break;
 		case "Destination Project":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationProjectName() != null).map(i -> i.getDestinationProjectName()).distinct()
@@ -478,6 +492,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			break;
 		case "Purchase Order":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getPoNumero())).collect(Collectors.toList()));
+			break;
+		case "Inbound Purchase Order":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getInboundPoNumero())).collect(Collectors.toList()));
 			break;
 		case "Destination Project":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationProjectName())).collect(Collectors.toList()));

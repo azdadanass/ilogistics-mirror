@@ -19,11 +19,9 @@ public class Repos extends GenericTest {
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		stockRowRepos.count();
 		
-		start();
+		System.out.println(stockRowRepos.findDeliveryListsByCompanyOwner2("m.bougri", Arrays.asList(-1),  Arrays.asList(-1), 1));
 		
-		stockRowRepos.findByCompanyOwnerGroupbyPartNumberAndDeliveryRequest("m.bougri", Arrays.asList(1), Arrays.asList(1), 1);
 	}
 
 }

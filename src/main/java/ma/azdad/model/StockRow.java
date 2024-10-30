@@ -490,6 +490,49 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.qTotalCost = qTotalCost;
 		this.setProjectName(projectName);
 	}
+	
+	// c24 --> deliveryReporting 2
+		public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
+				Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
+				Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
+				Date deliveryRequestDate4, Boolean deliveryRequestSdm,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
+				CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
+				String poNumero,String inboundPoNumero, String endCustomerName) {
+			this.quantity = quantity;
+			this.status = status;
+			this.setUnitCost(unitCost);
+			this.setCostCurrencyId(costCurrencyId);
+			this.setUnitPrice(unitPrice);
+			this.setPriceCurrencyId(priceCurrencyId);
+			this.setDeliveryRequestId(deliveryRequestId);
+			this.setProjectName(projectName);
+			this.setWarehouseName(warehouseName);
+			this.setPartNumberId(partNumberId);
+			this.setPartNumberName(partNumberName);
+			this.setPartNumberImage(partNumberImage);
+			this.setPartNumberDescription(partNumberDescription);
+			this.setPartNumberBrandName(partNumberBrandName);
+			this.setDeliveryRequestType(deliveryRequestType);
+			this.setDeliveryRequestInboundType(deliveryRequestInboundType);
+			this.setDeliveryRequestReference(deliveryRequestReference);
+			this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
+			this.setDeliveryRequestDate4(deliveryRequestDate4);
+			this.setDeliveryRequestSdm(deliveryRequestSdm);
+			this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+			this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+			this.setDestinationProjectCustomerName(destinationProjectCustomerName);
+			this.setDestinationName(destinationName);
+			this.setOriginName(originName);
+			this.setDestinationProjectName(destinationProjectName);
+			this.setDeliverToCompanyType(deliverToCompanyType);
+			this.setDeliverToCompanyName(deliverToCompanyName);
+			this.setDeliverToCustomerName(deliverToCustomerName);
+			this.setDeliverToSupplierName(deliverToSupplierName);
+			this.setDeliverToOther(deliverToOther);
+			this.setPoNumero(poNumero);
+			this.setInboundPoNumero(inboundPoNumero);
+			this.setEndCustomerName(endCustomerName);
+		}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1158,6 +1201,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setPoNumero(poNumero);
+	}
+	
+	@Transient
+	public String getInboundPoNumero() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getPoNumero() : null;
+	}
+
+	@Transient
+	public void setInboundPoNumero(String inboundPoNumero) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setPoNumero(inboundPoNumero);
 	}
 
 	@Transient

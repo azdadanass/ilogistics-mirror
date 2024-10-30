@@ -83,7 +83,7 @@
 												<f:selectItem itemValue="Customer" itemLabel="Customer" />
 												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<f:selectItem itemValue="Destination Site" itemLabel="Destination Site" />
-												<f:selectItem itemValue="Purchase Order" itemLabel="Purchase Order" />
+												<!-- <f:selectItem itemValue="Purchase Order" itemLabel="Purchase Order" /> -->
 												<f:selectItem itemValue="Inbound Purchase Order" itemLabel="Inbound Purchase Order" />
 												<f:selectItem itemValue="Destination Project" itemLabel="Destination Project" />
 												<f:selectItem itemValue="Yearly" itemLabel="Yearly" />
@@ -232,9 +232,9 @@
 										<p:column headerText="Origin Site" styleClass="hide">
 											<h:outputText value="#{item.originName}" />
 										</p:column>
-										<p:column headerText="PO" width="100">
+										<!-- <p:column headerText="PO" width="100">
 											<h:outputText value="#{item.poNumero}" />
-										</p:column>
+										</p:column> -->
 										<p:column headerText="Inbound PO" width="100">
 											<h:outputText value="#{item.inboundPoNumero}" />
 										</p:column>

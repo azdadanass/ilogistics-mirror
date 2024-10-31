@@ -53,11 +53,11 @@
 			</div>
 			<div class="hr dotted" />
 			<div class="row">
-				<div class="col-sm-offset-3 col-sm-8">
+				<div class="col-sm-offset-1 col-sm-11">
 					<div class="tab-content">
 						<div class="tab-pane in active">
 							<div class="row">
-								<div class="col-sm-4">
+								<div class="col-sm-3">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
 											<h:outputText value="Project " />
@@ -66,12 +66,26 @@
 											<p:selectOneMenu value="#{stockRowView.projectName}" filter="true" filterMatchMode="contains">
 												<f:selectItem itemLabel="All" itemValue="All" />
 												<f:selectItems value="#{stockRowView.projectStrList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-												<p:ajax listener="#{stockRowView.changeProjectNameListener()}" update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeProjectNameListener()}" update="inboundPo,reportType,reportTypeValue,:main_form:list1,:main_form:list1Size" />
 											</p:selectOneMenu>
 										</div>
 									</div>
 								</div>
-								<div class="col-sm-4">
+								<div class="col-sm-3">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
+											<h:outputText value="Inbound PO " />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:selectOneMenu id="inboundPo" value="#{stockRowView.inboundPo}" filter="true" filterMatchMode="contains" styleClass="col-xs-3 col-sm-3">
+												<f:selectItem itemLabel="All" itemValue="All" />
+												<f:selectItems value="#{stockRowView.inboundPoList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
+												<p:ajax listener="#{stockRowView.changeInboundPoListener()}" update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size" />
+											</p:selectOneMenu>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
 											<h:outputText value="Report Type " />
@@ -84,21 +98,20 @@
 												<f:selectItem itemValue="End Customer" itemLabel="End Customer" />
 												<f:selectItem itemValue="Destination Site" itemLabel="Destination Site" />
 												<!-- <f:selectItem itemValue="Purchase Order" itemLabel="Purchase Order" /> -->
-												<f:selectItem itemValue="Inbound Purchase Order" itemLabel="Inbound Purchase Order" />
 												<f:selectItem itemValue="Destination Project" itemLabel="Destination Project" />
 												<f:selectItem itemValue="Yearly" itemLabel="Yearly" />
 												<f:selectItem itemValue="Monthly" itemLabel="Monthly" />
 												<f:selectItem itemValue="Part Number" itemLabel="Part Number" />
 												<f:selectItem itemValue="Brand" itemLabel="Brand" />
 												<f:selectItem itemValue="Warehouse" itemLabel="Warehouse" />
-												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size" />
 											</h:selectOneMenu>
 										</div>
 									</div>
 								</div>
 								<h:panelGroup id="reportTypeValue">
 									<f:subview rendered="#{stockRowView.reportType!='All'}">
-										<div class="col-sm-4">
+										<div class="col-sm-3">
 											<div class="form-group">
 												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-username">
 													<h:outputText value="#{stockRowView.reportType}" />
@@ -107,7 +120,7 @@
 													<p:selectOneMenu value="#{stockRowView.reportTypeValue}" filter="true" filterMatchMode="contains">
 														<f:selectItem itemLabel="---" noSelectionOption="true"></f:selectItem>
 														<f:selectItems value="#{stockRowView.reportTypeValueList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size" />
 													</p:selectOneMenu>
 												</div>
 											</div>
@@ -126,18 +139,6 @@
 						<a data-toggle="tab" href="#tab1" onclick="tab1()">
 							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Detailed Delivery" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab2" onclick="tab2()">
-							<i class="blue ace-icon fa fa-list-alt bigger-120"></i>
-							<h:outputText value=" BoQ Summary" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab3" onclick="tab3()">
-							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
-							<h:outputText value=" Financial Summary" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -172,8 +173,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list1" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="list1" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -261,271 +262,6 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					<div id="tab2" class="tab-pane">
-						<p:remoteCommand name="tab2" action="#{stockRowView.setSummary(true)}" update="tab2" />
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-7 hidden-xs">
-										<i class="fa fa-list" />
-										<h:outputText value=" Summary" />
-									</div>
-									<div class="col-sm-2">
-										<div class="action-buttons center">
-											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="tab2" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
-											</h:commandLink>
-											<!-- <f:subview rendered="#{menuView.companyId!=null}">
-										<li>
-											<h:outputLink value="destinationCustomerReporting.xhtml">
-												<i class="menu-icon fa fa-caret-right"></i>
-												<i class="ace-icon fa fa-list bigger-130 purple" style="margin-right: 10px" />
-												<h:outputText value="Customer Report" />
-												<f:param name="companyId" value="#{menuView.companyId}" />
-											</h:outputLink>
-											<b class="arrow"></b>
-										</li>
-									</f:subview> -->
-										</div>
-									</div>
-									<div class="col-sm-2 col-xs-4">
-										<div class="nav-search minimized">
-											<span class="input-icon">
-												<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-													<p:ajax event="keyup" update="tab2" />
-												</p:inputText>
-												<i class="ace-icon fa fa-search nav-search-icon" />
-											</span>
-										</div>
-									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="tab2" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Photo" width="100">
-											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-												<f:param name="fileName" value="#{item.partNumberImage}" />
-											</p:graphicImage>
-										</p:column>
-										<p:column headerText="Part Number" exportable="false">
-											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
-												<h:outputText value="#{item.partNumber.name}" />
-												<f:param name="id" value="#{item.partNumber.id}" />
-											</h:outputLink>
-										</p:column>
-										<p:column headerText="Part Number" styleClass="hide">
-											<h:outputText value="#{item.partNumber.name}" />
-										</p:column>
-										<p:column headerText="Description">
-											<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
-										</p:column>
-										<p:column headerText="Delivred Qantity" width="90" exportable="false">
-											<h:outputText value="#{-item.quantity}" styleClass="bolder">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Delivred Qantity" styleClass="hide">
-											<h:outputText value="#{-item.quantity}" />
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="tab3" class="tab-pane">
-						<p:remoteCommand name="tab3" action="#{stockRowView.setSummary(false)}" update="tab3" />
-						<h:panelGroup id="tab3">
-							<div class="space-8" />
-							<div class="row">
-								<div class="col-sm-offset-3 col-sm-6">
-									<h:panelGroup id="summary">
-										<table class="table table-bordered">
-											<tbody>
-												<tr>
-													<th colspan="4" style="background: #86b558; color: white">
-														<h:outputText value="Summary" styleClass="bolder" />
-													</th>
-												</tr>
-												<tr>
-													<td>
-														<i class="ace-icon fa fa-minus bigger-230 red" style="margin-right: 20px"></i>
-														<h:outputText value="Total Cost" />
-													</td>
-													<td class="center purple bolder">
-														<h:outputText value="#{-stockRowView.list2TotalCost}">
-															<f:convertNumber type="number" maxFractionDigits="2" />
-														</h:outputText>
-														<h:outputText value=" MAD" />
-													</td>
-													<td rowspan="4" class="center" style="vertical-align: middle">
-														<c:set var="margin" value="#{(-stockRowView.list2TotalPrice+stockRowView.list2TotalCost)/-stockRowView.list2TotalPrice}" />
-														<div class="easy-pie-chart percentage" data-percent="#{margin*100.0}" data-color="#{margin lt 0?'#d3413b':(margin lt 0.2?'#478FCA':'#87B87F')}">
-															<span class="percent">
-																<h:outputText value="#{margin}">
-																	<f:convertNumber type="percent" maxFractionDigits="0" />
-																</h:outputText>
-															</span>
-														</div>
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<i class="ace-icon fa fa-plus bigger-230 green" style="margin-right: 20px"></i>
-														<h:outputText value="Total Price" />
-													</td>
-													<td class="center purple bolder">
-														<h:outputText value="#{-stockRowView.list2TotalPrice}">
-															<f:convertNumber type="number" maxFractionDigits="2" />
-														</h:outputText>
-														<h:outputText value=" MAD" />
-													</td>
-												</tr>
-												<tr>
-													<td>
-														<i class="ace-icon fa fa-table bigger-230 blue" style="margin-right: 20px"></i>
-														<h:outputText value="Margin" />
-													</td>
-													<td class="center green bolder">
-														<h:outputText value="#{-stockRowView.list2TotalPrice+stockRowView.list2TotalCost}">
-															<f:convertNumber type="number" maxFractionDigits="2" />
-														</h:outputText>
-														<h:outputText value=" MAD" />
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<script src="/resources/ace_template/assets/js/jquery.easypiechart.js" />
-										<h:panelGroup id="easy-pie-chart-script">
-											<script>
-												var oldie = /msie\s*(8|7|6)/
-														.test(navigator.userAgent
-																.toLowerCase());
-												$('.easy-pie-chart.percentage')
-														.each(
-																function() {
-																	$(this)
-																			.easyPieChart(
-																					{
-																						barColor : $(
-																								this)
-																								.data(
-																										'color'),
-																						trackColor : '#EEEEEE',
-																						scaleColor : false,
-																						lineCap : 'butt',
-																						lineWidth : 8,
-																						animate : oldie ? false
-																								: 1000,
-																						size : 75
-																					})
-																			.css(
-																					'color',
-																					$(
-																							this)
-																							.data(
-																									'color'));
-																});
-											</script>
-										</h:panelGroup>
-									</h:panelGroup>
-								</div>
-							</div>
-							<div class="space-8" />
-							<div class="row">
-								<div class="col-sm-offset-1 col-sm-10">
-									<div class="table-header col-sm-12 col-xs-12">
-										<div class="col-sm-7 hidden-xs">
-											<i class="fa fa-list" />
-											<h:outputText value=" Summary" />
-										</div>
-										<div class="col-sm-2">
-											<div class="action-buttons center">
-												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-													<img src="/resources/img/xls.png" width="20" height="20" />
-													<p:dataExporter type="xls" target="datatable" fileName="stockRowList" postProcessor="#{utilsView.excelExportation}" />
-												</h:commandLink>
-											</div>
-										</div>
-										<div class="col-sm-2 col-xs-4">
-											<div class="nav-search minimized">
-												<span class="input-icon">
-													<p:inputText value="#{stockRowView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-														<p:ajax event="keyup" update="datatable,summary" />
-													</p:inputText>
-													<i class="ace-icon fa fa-search nav-search-icon" />
-												</span>
-											</div>
-										</div>
-									</div>
-									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="datatable" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-											<p:column headerText="Part Number" exportable="false" width="200">
-												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
-													<h:outputText value="#{item.partNumber.name}" />
-													<f:param name="id" value="#{item.partNumber.id}" />
-												</h:outputLink>
-											</p:column>
-											<p:column headerText="Part Number" styleClass="hide" width="200">
-												<h:outputText value="#{item.partNumber.name}" />
-											</p:column>
-											<p:column headerText="Description">
-												<h:outputText value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
-											</p:column>
-											<p:column headerText="DN" width="70" sortBy="#{item.deliveryRequest.reference}" exportable="false">
-												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
-													<h:outputText value="#{item.deliveryRequest.reference}" styleClass="#{item.deliveryRequest.type.color} bolder" />
-													<f:param name="id" value="#{item.deliveryRequest.id}" />
-												</h:outputLink>
-											</p:column>
-											<p:column headerText="DN" styleClass="hide">
-												<h:outputText value="#{item.deliveryRequest.reference}" />
-											</p:column>
-											<p:column headerText="Delivred Qantity" exportable="false">
-												<h:outputText value="#{-item.quantity}" styleClass="bolder">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-											</p:column>
-											<p:column headerText="Delivered Qantity" styleClass="hide">
-												<h:outputText value="#{-item.quantity}" />
-											</p:column>
-											<p:column headerText="Unit Cost" exportable="false">
-												<h:outputText value="#{item.unitCost}" styleClass="orange">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" styleClass="orange" />
-											</p:column>
-											<p:column headerText="Total Cost" exportable="false">
-												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" styleClass="bolder orange">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-												<h:outputText value=" #{currencyView.findName(item.costCurrencyId)}" styleClass="bolder orange" />
-											</p:column>
-											<p:column headerText="Total Cost" styleClass="hide">
-												<h:outputText value="#{item.totalCost == 0?0:-item.totalCost}" />
-											</p:column>
-											<p:column headerText="Unit Price" exportable="false">
-												<h:outputText value="#{item.unitPrice}" styleClass="green">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="green" />
-											</p:column>
-											<p:column headerText="Total Price" exportable="false">
-												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" styleClass="bolder #{item.totalPrice lt 0?'green':'red'}">
-													<f:convertNumber type="number" maxFractionDigits="2" />
-												</h:outputText>
-												<h:outputText value=" #{currencyView.findName(item.priceCurrencyId)}" styleClass="bolder green" />
-											</p:column>
-											<p:column headerText="Total Price" styleClass="hide">
-												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" />
-											</p:column>
-										</p:dataTable>
-									</div>
-								</div>
-							</div>
-						</h:panelGroup>
 					</div>
 				</div>
 			</div>

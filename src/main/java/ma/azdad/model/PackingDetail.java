@@ -17,6 +17,7 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	private String type;
 	private Integer quantity = 1;
 	private Boolean hasSerialnumber = false;
+	private String snType;
 	private Double grossWeight;
 	private Double netWeight;
 	private Double volume;
@@ -223,4 +224,13 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public String getSnType() {
+		return snType;
+	}
+
+	public void setSnType(String snType) {
+		this.snType = snType;
+	}
+
 }

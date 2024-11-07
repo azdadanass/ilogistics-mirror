@@ -81,6 +81,15 @@
 										<f:setPropertyActionListener value="#{!item.hasSerialnumber}" target="#{item.hasSerialnumber}" />
 									</p:commandLink>
 								</p:column>
+								<p:column headerText="SN Type" width="50">
+									<h:outputText value="#{item.snType}" rendered="#{!packingView.editMode}" />
+									<h:selectOneMenu value="#{item.snType}" style="width:90px" rendered="#{packingView.editMode}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="Numeric" itemValue="Numeric" />
+										<f:selectItem itemLabel="Bar Code" itemValue="Bar Code" />
+										<f:selectItem itemLabel="Bar Code" itemValue="Bar Code" />
+									</h:selectOneMenu>
+								</p:column>
 								<p:column headerText="Gross Weight" width="70">
 									<h:outputText value="#{item.grossWeight} KG" rendered="#{!packingView.editMode}" />
 									<p:inputText value="#{item.grossWeight}" placeholder="(KG)" style="width: 60px" rendered="#{packingView.editMode}" />
@@ -148,7 +157,7 @@
 										<p:column footerText="#{packingView.packing.grossWeight} Kg" />
 										<p:column footerText="" />
 										<p:column footerText="#{packingView.packing.volume} m3" />
-										<p:column colspan="8" footerText="" />
+										<p:column colspan="9" footerText="" />
 									</p:row>
 								</p:columnGroup>
 								<f:facet name="footer">

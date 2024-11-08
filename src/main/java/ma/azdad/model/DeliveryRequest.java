@@ -1271,6 +1271,54 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			toUser = new User();
 		toUser.setFullName(name);
 	}
+	
+	@Transient
+	@JsonIgnore
+	public String getToUserEmail() {
+		if (toUser != null)
+			return toUser.getEmail();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setToUserEmail(String name) {
+		if (toUser == null)
+			toUser = new User();
+		toUser.setEmail(name);
+	}
+	
+	@Transient
+	@JsonIgnore
+	public String getToUserPhone() {
+		if (toUser != null)
+			return toUser.getPhone();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setToUserPhone(String name) {
+		if (toUser == null)
+			toUser = new User();
+		toUser.setPhone(name);
+	}
+	
+	@Transient
+	@JsonIgnore
+	public String getToUserCin() {
+		if (toUser != null)
+			return toUser.getCin();
+		return null;
+	}
+
+	@Transient
+	@JsonIgnore
+	public void setToUserCin(String name) {
+		if (toUser == null)
+			toUser = new User();
+		toUser.setCin(name);
+	}
 
 	@Transient
 	public Integer getOriginId() {

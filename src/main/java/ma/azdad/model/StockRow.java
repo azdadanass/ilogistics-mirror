@@ -497,7 +497,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 				Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
 				Date deliveryRequestDate4, Boolean deliveryRequestSdm,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 				CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
-				String poNumero,String inboundPoNumero, String endCustomerName) {
+				String toUserFullName,String toUserEmail,String toUserPhone,String toUserCin, //
+				String poNumero,Integer inboundPoId,String inboundPoNumero, String endCustomerName) {
 			this.quantity = quantity;
 			this.status = status;
 			this.setUnitCost(unitCost);
@@ -529,7 +530,12 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			this.setDeliverToCustomerName(deliverToCustomerName);
 			this.setDeliverToSupplierName(deliverToSupplierName);
 			this.setDeliverToOther(deliverToOther);
+			this.setToUserFullName(toUserFullName);
+			this.setToUserEmail(toUserEmail);
+			this.setToUserPhone(toUserPhone);
+			this.setToUserCin(toUserCin);
 			this.setPoNumero(poNumero);
+			this.setInboundPoId(inboundPoId);
 			this.setInboundPoNumero(inboundPoNumero);
 			this.setEndCustomerName(endCustomerName);
 		}
@@ -673,6 +679,62 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (getDeliveryRequestDate4() == null)
 			return null;
 		return String.valueOf(UtilsFunctions.getMonth(getDeliveryRequestDate4()) + "/" + UtilsFunctions.getYear(getDeliveryRequestDate4()));
+	}
+	
+	@Transient
+	public String getToUserFullName() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getToUserFullName();
+	}
+
+	@Transient
+	public void setToUserFullName(String toUserFullName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setToUserFullName(toUserFullName);
+	}
+	
+	@Transient
+	public String getToUserEmail() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getToUserEmail();
+	}
+
+	@Transient
+	public void setToUserEmail(String toUserEmail) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setToUserEmail(toUserEmail);
+	}
+	
+	@Transient
+	public String getToUserPhone() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getToUserPhone();
+	}
+
+	@Transient
+	public void setToUserPhone(String toUserPhone) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setToUserPhone(toUserPhone);
+	}
+	
+	@Transient
+	public String getToUserCin() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getToUserCin();
+	}
+
+	@Transient
+	public void setToUserCin(String toUserCin) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setToUserCin(toUserCin);
 	}
 
 	@Transient
@@ -1201,6 +1263,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setPoNumero(poNumero);
+	}
+	
+	@Transient
+	public Integer getInboundPoId() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getPoId() : null;
+	}
+
+	@Transient
+	public void setInboundPoId(Integer inboundPoId) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setPoId(inboundPoId);
 	}
 	
 	@Transient

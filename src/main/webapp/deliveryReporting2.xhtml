@@ -243,7 +243,10 @@
 											<h:outputText value="#{item.poNumero}" />
 										</p:column> -->
 										<p:column headerText="Inbound PO" width="100">
-											<h:outputText value="#{item.inboundPoNumero}" />
+											<h:outputLink value="viewPo.xhtml" target="blank" title="Show Inbound PO" styleClass="aa-tooltip tooltip-info">
+												<h:outputText value="#{item.inboundPoNumero}" />
+												<f:param name="id" value="#{item.inboundPoId}" />
+											</h:outputLink>
 										</p:column>
 										<p:column headerText="Customer">
 											<h:outputText value="#{item.destinationProjectCustomerName}" />
@@ -263,14 +266,6 @@
 										</p:column>
 										<p:column headerText="Delivred Qantity" styleClass="hide">
 											<h:outputText value="#{-item.quantity}" />
-										</p:column>
-										<p:column headerText="Actions" width="80" styleClass="hidden-xs" exportable="false">
-											<div class="action-buttons center">
-												<h:outputLink value="viewPo.xhtml" target="blank" title="Show Inbound PO" styleClass="aa-tooltip tooltip-info">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:param name="id" value="#{item.inboundPoId}" />
-												</h:outputLink>
-											</div>
 										</p:column>
 									</p:dataTable>
 								</div>

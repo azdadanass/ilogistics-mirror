@@ -495,7 +495,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
 				Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 				Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
-				Date deliveryRequestDate4, Boolean deliveryRequestSdm,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
+				Date deliveryRequestDate4, Boolean deliveryRequestSdm,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference,String inboundDeliveryRequestOriginNumber, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 				CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
 				String toUserFullName,String toUserEmail,String toUserPhone,String toUserCin, //
 				String poNumero,Integer inboundPoId,String inboundPoNumero, String endCustomerName) {
@@ -521,6 +521,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			this.setDeliveryRequestSdm(deliveryRequestSdm);
 			this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
 			this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+			this.setInboundDeliveryRequestOriginNumber(inboundDeliveryRequestOriginNumber);
 			this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 			this.setDestinationName(destinationName);
 			this.setOriginName(originName);
@@ -1347,6 +1348,18 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (inboundDeliveryRequest == null)
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setReference(inboundDeliveryRequestReference);
+	}
+	
+	@Transient
+	public String getInboundDeliveryRequestOriginNumber() {
+		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getOriginNumber() : null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestOriginNumber(String inboundDeliveryRequestOriginNumber) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setOriginNumber(inboundDeliveryRequestOriginNumber);
 	}
 
 	@Transient

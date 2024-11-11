@@ -72,7 +72,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ "a.deliveryRequestDetail.unitPrice,a.deliveryRequestDetail.priceCurrency.id,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,"//
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description," + brandName
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,"//
-			+ "a.deliveryRequest.sdm,a.inboundDeliveryRequest.id,a.inboundDeliveryRequest.reference," + destinationProjectCustomerName + "," + destinationName + "," + originName + ","
+			+ "a.deliveryRequest.sdm,a.inboundDeliveryRequest.id,a.inboundDeliveryRequest.reference,a.inboundDeliveryRequest.originNumber," + destinationProjectCustomerName + "," + destinationName + "," + originName + ","
 			+ destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
 			+ ",a.deliveryRequest.deliverToOther,"+toUserFullName+","+toUserEmail+","+toUserPhone+","+toUserCin+"," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero + "," + endCustomerName + ") ";
 

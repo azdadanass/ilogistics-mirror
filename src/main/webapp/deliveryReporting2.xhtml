@@ -211,6 +211,9 @@
 												<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
 											</h:outputLink>
 										</p:column>
+										<p:column headerText="Inbound Origin Number" width="70" sortBy="#{item.inboundDeliveryRequest.reference}" exportable="false">
+												<h:outputText value="#{item.inboundDeliveryRequestOriginNumber}" styleClass="green bolder" />
+										</p:column>
 										<p:column headerText="DN" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.reference}" />
 										</p:column>

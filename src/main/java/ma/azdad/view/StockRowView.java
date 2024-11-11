@@ -209,6 +209,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			case "/deliveryReporting2.xhtml":
 				initDeliveryLists();
 				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
+				changeProjectNameListener();
 				break;
 			case "/destinationReporting.xhtml":
 				if (companyId != null)
@@ -409,10 +410,12 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	public void refreshInboundPoList() {
-		if (!"All".equals(projectName))
-			inboundPoList = deliveryList3.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
-		else
-			inboundPoList = new ArrayList<String>();
+//		if (!"All".equals(projectName))
+//			inboundPoList = deliveryList3.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
+//		else
+//			inboundPoList = new ArrayList<String>();
+		
+		inboundPoList = deliveryList3.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
 	}
 
 	public void changeInboundPoListener() {

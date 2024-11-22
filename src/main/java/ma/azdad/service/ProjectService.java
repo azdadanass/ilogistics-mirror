@@ -41,6 +41,12 @@ public class ProjectService {
 		Hibernate.initialize(p.getCostcenter().getLob());
 		Hibernate.initialize(p.getCostcenter().getLob().getManager());
 		Hibernate.initialize(p.getCurrency());
+		Hibernate.initialize(p.getContract());
+		return p;
+	}
+	
+	public Project findOneLight(Integer id) {
+		Project p = repos.findById(id).get();
 		return p;
 	}
 
@@ -64,6 +70,10 @@ public class ProjectService {
 //		Hibernate.initialize(p.getPartNumberThresholdList());
 //		return p;
 //	}
+	
+	public List<Project> findByCompanyWarehousing(){
+		return repos.findByCompanyWarehousing();
+	}
 
 	public List<Project> findLightByManager(String managerUsername) {
 		return repos.findLightByManager(managerUsername);

@@ -14,6 +14,7 @@ import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.EmailService;
+import ma.azdad.service.IssueCategoryService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberEquivalenceService;
 import ma.azdad.service.PartNumberService;
@@ -38,6 +39,9 @@ public class ScriptView {
 
 	@Autowired
 	public SessionView sessionView;
+	
+	@Autowired
+	public IssueCategoryService issueCategoryService;
 
 	@Autowired
 	PartNumberEquivalenceService partNumberEquivalenceService;
@@ -143,6 +147,10 @@ public class ScriptView {
 	
 	public void updateDetailListPurchaseCostFromBoqMappingScript() {
 		deliveryRequestService.updateDetailListPurchaseCostFromBoqMappingScript();
+	}
+	
+	public void addDefaultIssueCategoryScript() {
+		issueCategoryService.addDefaultIssueCategoryScript();
 	}
 
 	// GETTERS & SETTERS

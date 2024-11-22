@@ -17,5 +17,8 @@ public interface IssueCategoryRepos extends JpaRepository<IssueCategory, Integer
 
 	@Query("from IssueCategory where project.id = ?1 and parentType in (?2)")
 	List<IssueCategory> findByProjectAndParenType(Integer projectId, List<IssueParentType> parentTypeList);
+	
+	@Query("select count(*) from IssueCategory where project.id = ?1 and parentType = ?2")
+	Long countByProject(Integer projectId,IssueParentType parentType);
 
 }

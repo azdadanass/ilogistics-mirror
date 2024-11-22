@@ -20,6 +20,9 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();
+	
+	@Query("from Project where companyWarehousing is true")
+	List<Project> findByCompanyWarehousing();
 
 //	@Query("select new Project(id,name) from Project where id in (?1)")
 //	public List<Project> findLight(List<Integer> idList);

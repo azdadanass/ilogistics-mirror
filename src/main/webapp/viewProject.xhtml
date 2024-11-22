@@ -373,6 +373,10 @@
 													<i class="ace-icon fa fa-edit  bigger-130 orange" />
 													<f:setPropertyActionListener value="true" target="#{issueCategoryView.editIssueCategoryList}" />
 												</p:commandLink>
+												<p:commandLink title="Init with default template" styleClass="aa-tooltip" action="#{issueCategoryView.initDefaultTemplate()}" update=":main_form:issueCategoryList"
+													rendered="#{issueCategoryView.canInitDefaultTemplate()}">
+													<i class="ace-icon fa fa-bars bigger-130 blue" />
+												</p:commandLink>
 											</div>
 										</f:facet>
 									</p:dataTable>

@@ -73,6 +73,18 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 		return true;
 	}
 
+	// init default template
+	public Boolean canInitDefaultTemplate() {
+		return sessionView.getIsAdmin() && list1.isEmpty();
+	}
+
+	public void initDefaultTemplate() {
+		if (!canInitDefaultTemplate())
+			return;
+		service.addDefaultIssueCategory(id);
+		refreshList();
+	}
+
 	// delete
 	public Boolean canDelete() {
 		return true;

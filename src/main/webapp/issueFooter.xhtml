@@ -228,6 +228,132 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="handoverForm">
+		<p:dialog widgetVar="handoverDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000" position="top">
+			<button type="button" class="bootbox-close-button close" onclick="PF('handoverDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-link light-blue" />
+					<h:outputText value=" Handover" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Ownership type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{issueView.issue.ownershipType}" required="true" requiredMessage="Ownership type should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+									<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+									<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+									<p:ajax update="ownershipType,userList" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<h:panelGroup id="ownershipType">
+						<f:subview rendered="#{CompanyType.COMPANY==issueView.issue.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Company" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.issue.companyId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Company should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{companyView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,issueView.issue.companyId,null,null))}"
+												update=":handoverForm:userList" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{CompanyType.CUSTOMER==issueView.issue.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Customer" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.issue.customerId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Customer should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,issueView.issue.customerId,null))}"
+												update=":handoverForm:userList" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+						<f:subview rendered="#{CompanyType.SUPPLIER==issueView.issue.ownershipType}">
+							<div class="col-xs-12 col-sm-6">
+								<div class="form-group">
+									<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+										<h:outputText value="Supplier" />
+									</label>
+									<div class="col-xs-9 col-sm-9">
+										<p:selectOneMenu value="#{issueView.issue.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
+											<f:selectItem itemLabel="---" noSelectionOption="true" />
+											<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,null,issueView.issue.supplierId))}"
+												update=":handoverForm:userList" />
+										</p:selectOneMenu>
+									</div>
+								</div>
+							</div>
+						</f:subview>
+					</h:panelGroup>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-10 hidden-xs">
+								<i class="fa fa-list" />
+								<h:outputText value=" User List" />
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{userView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="userList" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="userList" widgetVar="userList" value="#{userView.list2}" rowKey="#{item.username}" selection="#{issueView.newOwnershipUser}" var="item" rows="10"
+								styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+								<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
+								<p:column headerText="Photo" width="80" exportable="false" styleClass="hidden-xs">
+									<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+										<f:param name="fileName" value="#{item.photo}" />
+									</p:graphicImage>
+								</p:column>
+								<p:column headerText="Full Name">
+									<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('handoverDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{issueView.handover()}" value="Handover" styleClass="btn btn-info" oncomplete="PF('handoverDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 	<h:form id="unassignForm">
 		<p:dialog widgetVar="unassignDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('unassignDlg').hide()">

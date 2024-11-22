@@ -85,6 +85,10 @@
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
+						<p:commandLink title="Handover" styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-info" onclick="PF('handoverDlg').show()" rendered="#{issueView.canHandover()}">
+							<i class="ace-icon fa fa-hand-o-right bigger-230"></i>
+							<h:outputText value="Handover" />
+						</p:commandLink>
 						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-info" onclick="PF('unassignDlg').show()"
 							rendered="#{issueView.canUnassign()}">
 							<i class="ace-icon fa fa-chain-broken bigger-230"></i>

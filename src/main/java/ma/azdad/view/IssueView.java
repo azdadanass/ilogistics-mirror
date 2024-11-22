@@ -562,6 +562,42 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		refreshIssue();
 	}
 
+	// handover
+	private User newOwnershipUser;
+
+	public Boolean canHandover() {
+		return IssueStatus.ASSIGNED.equals(issue.getStatus()) && sessionView.isTheConnectedUser(issue.getOwnershipUser());
+	}
+
+	public void handover() {
+		if (!canHandover())
+			return;
+		String oldOwnershipFullName = issue.getOwnershipUserFullName();
+		issue.setOwnershipUser(userService.findOneLight(newOwnershipUser.getUsername()));
+		issue.addHistory(sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
+		switch (issue.getOwnershipType()) {
+		case COMPANY:
+			issue.setCompany(companyService.findOne(issue.getCompanyId()));
+			issue.setCustomer(null);
+			issue.setSupplier(null);
+			break;
+		case CUSTOMER:
+			issue.setCustomer(customerService.findOne(issue.getCustomerId()));
+			issue.setCompany(null);
+			issue.setSupplier(null);
+			break;
+		case SUPPLIER:
+			issue.setSupplier(supplierService.findOne(issue.getSupplierId()));
+			issue.setCompany(null);
+			issue.setCustomer(null);
+			break;
+		default:
+			break;
+		}
+		issueService.save(issue);
+		refreshIssue();
+	}
+
 	// DELETE ISSUE
 	public Boolean canDeleteIssue() {
 		return IssueStatus.RAISED.equals(issue.getStatus()) && issue.getUser1() != null && sessionView.isTheConnectedUser(issue.getUser1());
@@ -737,6 +773,14 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	public void setToNotifyUserUsername(String toNotifyUserUsername) {
 		this.toNotifyUserUsername = toNotifyUserUsername;
+	}
+
+	public User getNewOwnershipUser() {
+		return newOwnershipUser;
+	}
+
+	public void setNewOwnershipUser(User newOwnershipUser) {
+		this.newOwnershipUser = newOwnershipUser;
 	}
 
 }

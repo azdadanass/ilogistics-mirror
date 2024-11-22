@@ -337,13 +337,12 @@
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
 									<p:dataTable id="issueCategoryList" value="#{issueCategoryView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center"
 										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Object">
+										<!-- <p:column headerText="Object">
 											<h:outputText value="#{item.parentType.value}" styleClass="#{item.parentType.badge}" rendered="#{!issueCategoryView.editIssueCategoryList}" />
 											<h:selectOneMenu value="#{item.parentType}" rendered="#{issueCategoryView.editIssueCategoryList}">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItem itemLabel="#{IssueParentType.DN.value}" itemValue="#{IssueParentType.DN}" />
 											</h:selectOneMenu>
-										</p:column>
+										</p:column> -->
 										<p:column headerText="Category">
 											<h:outputText value="#{item.name}" styleClass="bolder green" rendered="#{!issueCategoryView.editIssueCategoryList}" />
 											<p:inputText value="#{item.name}" rendered="#{issueCategoryView.editIssueCategoryList}" style="width:90%" />

@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 public class IssueCategory extends GenericModel<Integer> {
 
 	private String name;
-	private IssueParentType parentType;
+	private IssueParentType parentType = IssueParentType.DN;
 
 	private Project project;
 

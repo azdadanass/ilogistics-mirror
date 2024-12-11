@@ -1659,7 +1659,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.clearTimeLine();
 			deliveryRequest.setStatus(DeliveryRequestStatus.EDITED);
 			deliveryRequest.setDate1(new Date());
-//			deliveryRequest.setProject(projectService.findOne(deliveryRequest.getProjectId()));
 
 			if (getIsPoNeeded() && deliveryRequest.getPoId() != null) {
 				deliveryRequest.setPo(poService.findOne(deliveryRequest.getPoId()));
@@ -1670,16 +1669,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (getIsCustomerRequesterDataNeeded())
 				if (!StringUtils.isBlank(deliveryRequest.getTmpExternalRequesterUsername()))
 					deliveryRequest.setExternalRequester(userService.findOne(deliveryRequest.getTmpExternalRequesterUsername()));
-
-			// if (deliveryRequest.getOriginId() != null &&
-			// (DeliveryRequestType.INBOUND.equals(deliveryRequest.getType()) ||
-			// DeliveryRequestType.XBOUND.equals(deliveryRequest.getType())))
-			// deliveryRequest.setOrigin(siteService.findOne(deliveryRequest.getOriginId()));
-			//
-			// if (deliveryRequest.getDestinationId() != null &&
-			// (DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) ||
-			// DeliveryRequestType.XBOUND.equals(deliveryRequest.getType())))
-			// deliveryRequest.setDestination(siteService.findOne(deliveryRequest.getDestinationId()));
 
 			if (deliveryRequest.getIsOutbound() || deliveryRequest.getIsXbound()) {
 				deliveryRequest.setEndCustomer(customerService.findOne(deliveryRequest.getEndCustomerId()));
@@ -1780,6 +1769,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				default:
 					break;
 				}
+
+			if (deliveryRequest.getIsOutbound())
+				service.updateOutboundInboundPo(deliveryRequest.getId());
 
 			for (Integer detailId : toDeleteDetailList)
 				deliveryRequestDetailService.delete(detailId);
@@ -2017,6 +2009,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		if (deliveryRequest.getIsInboundTransfer())
 			service.updateIsForTransfer(deliveryRequest.getOutboundDeliveryRequestTransfer().getId(), true);
+
+		if (deliveryRequest.getIsOutbound())
+			service.updateOutboundInboundPo(deliveryRequest.getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}

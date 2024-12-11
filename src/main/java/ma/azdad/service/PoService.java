@@ -41,6 +41,10 @@ public class PoService {
 	@Autowired
 	private CacheService cacheService;
 
+	public Po findOneLight(Integer id) {
+		return repos.findById(id).get();
+	}
+
 	public Po findOne(Integer id) {
 		Po po = repos.findById(id).get();
 		Hibernate.initialize(po.getProject().getCustomer());
@@ -52,7 +56,7 @@ public class PoService {
 	}
 
 	public List<Po> findByTypeAndProjectAndNotMapped(String type, Integer projectId) {
-		return repos.findByTypeAndProjectAndNotIlogisticsStatus(type, projectId, PoIlogisticsStatus.COMPLETED, Arrays.asList(PoStatus.CANCELED,PoStatus.REJECTED, PoStatus.CLOSED));
+		return repos.findByTypeAndProjectAndNotIlogisticsStatus(type, projectId, PoIlogisticsStatus.COMPLETED, Arrays.asList(PoStatus.CANCELED, PoStatus.REJECTED, PoStatus.CLOSED));
 	}
 
 	public void updateIlogisticsStatus(Integer poId) {
@@ -131,8 +135,8 @@ public class PoService {
 		else
 			return repos.findCustomerPoListByGoodsDeliveryStatus(companyId, username, assignedProjectList, goodsDeliveryStatus);
 	}
-	
-	public List<PoFile> findFileList(Integer id){
+
+	public List<PoFile> findFileList(Integer id) {
 		return repos.findFileList(id);
 	}
 

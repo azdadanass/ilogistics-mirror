@@ -54,6 +54,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ " order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLight(String username, List<Integer> warehouseList, List<Integer> projectList);
 
+	@Query("select id from DeliveryRequest a where a.type = 'OUTBOUND' and a.inboundPo.id is null")
+	List<Integer> findByOutboundWithoutInboundPoId();
+
 	@Query(c1 + " from DeliveryRequest a"
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4"
 			+ " order by a.neededDeliveryDate desc")
@@ -399,20 +402,17 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Modifying
 	@Query("update DeliveryRequest a set hardwareSwapInboundId = ?2,hardwareSwapInboundStatus = ?3 where id = ?1")
-	void updateHardwareSwapInboundIdAndStatus(Integer outboundId,Integer inboundId,DeliveryRequestStatus inboundStatus);
-	
-	
+	void updateHardwareSwapInboundIdAndStatus(Integer outboundId, Integer inboundId, DeliveryRequestStatus inboundStatus);
+
 	// mobile
-	
+
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(a.id,a.reference,a.type,a.neededDeliveryDate,"//
 			+ "a.inboundType,a.status,a.isForReturn,a.isForTransfer,a.requester.fullName,a.project.id,a.project.name,"//
 			+ "a.destinationProject.id,(select b.name from Project b where b.id = a.destinationProject.id),"//
 			+ "a.warehouse.id,a.warehouse.name,"//
 			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
 			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id))";
-	
-	
-	
+
 	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status = ?2 and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, DeliveryRequestStatus status, DeliveryRequestType xbound);
 

@@ -1316,4 +1316,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		repos.save(deliveryRequest);
 	}
 
+	public void updateOutboundInboundPoScript() {
+		repos.findByOutboundWithoutInboundPoId().forEach(id -> updateOutboundInboundPo(id));
+	}
+
 }

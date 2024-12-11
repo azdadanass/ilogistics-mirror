@@ -152,6 +152,12 @@ public class ScriptView {
 	public void addDefaultIssueCategoryScript() {
 		issueCategoryService.addDefaultIssueCategoryScript();
 	}
+	
+	public void updateOutboundInboundPoScript() {
+		log.info("start updateOutboundInboundPoScript");
+		deliveryRequestService.updateOutboundInboundPoScript();
+		log.info("end updateOutboundInboundPoScript");
+	}
 
 	// GETTERS & SETTERS
 	public Integer getInboundDeliveryRequestId() {

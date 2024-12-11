@@ -1914,7 +1914,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	public Po getPo() {
 		return po;
 	}

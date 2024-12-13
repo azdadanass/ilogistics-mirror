@@ -433,7 +433,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
 			Date deliveryRequestDate4, Boolean deliveryRequestSdm, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
-			String poNumero, String endCustomerName) {
+			String poNumero,String inboundPoNumero, String endCustomerName) {
 		this.quantity = quantity;
 		this.status = status;
 		this.setUnitCost(unitCost);
@@ -464,6 +464,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setDeliverToSupplierName(deliverToSupplierName);
 		this.setDeliverToOther(deliverToOther);
 		this.setPoNumero(poNumero);
+		this.setInboundPoNumero(inboundPoNumero);
 		this.setEndCustomerName(endCustomerName);
 	}
 

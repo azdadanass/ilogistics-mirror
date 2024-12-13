@@ -38,7 +38,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String toUserCin = "(select b.cin from User b where b.username = a.deliveryRequest.toUser.username)";
 
 	String poNumero = "(select concat(b.numeroInvoice,'-',(select c.project.customer.abbreviation from Po c where c.id = a.deliveryRequest.po.id)) from Po b where b.id = a.deliveryRequest.po.id)";
-	String inboundPoNumero = "(select concat(b.numeroInvoice,'-',(select c.supplier.name from Po c where c.id = a.inboundDeliveryRequest.po.id)) from Po b where b.id = a.inboundDeliveryRequest.po.id)";
+	String inboundPoNumero1 = "(select concat(b.numero,'-',(select c.supplier.name from Po c where c.id = a.deliveryRequest.inboundPo.id)) from Po b where b.id = a.deliveryRequest.inboundPo.id)";
+	String inboundPoNumero2 = "(select concat(b.numero,'-',(select c.supplier.name from Po c where c.id = a.inboundDeliveryRequest.po.id)) from Po b where b.id = a.inboundDeliveryRequest.po.id)";
 	String endCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.endCustomer.id)";
 
 	String c1 = "select new StockRow(a.id,a.quantity,a.status,a.partNumber,a.inboundDeliveryRequest,a.location) ";
@@ -65,7 +66,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ brandName
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,a.deliveryRequest.sdm,"
 			+ destinationProjectCustomerName + "," + destinationName + "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ,"
-			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + endCustomerName + ") ";
+			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + ","+ inboundPoNumero1 + "," + endCustomerName + ") ";
 	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.project.name)";
 
 	String c24 = "select new StockRow(sum(a.quantity),a.status,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id," //
@@ -74,7 +75,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,"//
 			+ "a.deliveryRequest.sdm,a.inboundDeliveryRequest.id,a.inboundDeliveryRequest.reference,a.inboundDeliveryRequest.originNumber," + destinationProjectCustomerName + "," + destinationName + "," + originName + ","
 			+ destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
-			+ ",a.deliveryRequest.deliverToOther,"+toUserFullName+","+toUserEmail+","+toUserPhone+","+toUserCin+"," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero + "," + endCustomerName + ") ";
+			+ ",a.deliveryRequest.deliverToOther,"+toUserFullName+","+toUserEmail+","+toUserPhone+","+toUserCin+"," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero2 + "," + endCustomerName + ") ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);

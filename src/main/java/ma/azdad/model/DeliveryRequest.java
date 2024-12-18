@@ -2012,6 +2012,19 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			po = new Po();
 		po.setNumeroInvoice(poNumero);
 	}
+	
+	@Transient
+	public String getPoSupplierName() {
+		return po != null ? po.getSupplierName() : null;
+	}
+
+	@Transient
+	public void setPoSupplierName(String poSupplierName) {
+		if (po == null)
+			po = new Po();
+		po.setSupplierName(poSupplierName);
+	}
+	
 
 	@Transient
 	public String getOutboundDeliveryRequestTransferPoNumero() {

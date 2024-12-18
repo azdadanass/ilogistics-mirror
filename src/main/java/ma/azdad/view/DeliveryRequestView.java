@@ -1539,7 +1539,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case "Part Number":
 				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberName())).map(i -> i.getPartNumberName()).distinct().collect(Collectors.toList());
 			case "Purchase PO":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero())).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero())).map(i -> i.getInboundPoNumero()+"-"+i.getInboundPoSupplierName()).distinct().collect(Collectors.toList());
 			case "Inbound DN":
 				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundDeliveryRequestReference())).map(i -> i.getInboundDeliveryRequestReference()).distinct()
 						.collect(Collectors.toList());
@@ -1573,7 +1573,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberName())).collect(Collectors.toList());
 				break;
 			case "Purchase PO":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero()+"-"+i.getInboundPoSupplierName())).collect(Collectors.toList());
 				break;
 			case "Inbound DN":
 				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundDeliveryRequestReference()))

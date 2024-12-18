@@ -496,7 +496,21 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setPoNumero(inboundPoNumero);
 	}
-	
+
+	@Transient
+	public String getInboundPoSupplierName() {
+		if (inboundDeliveryRequest == null)
+			return null;
+		return inboundDeliveryRequest.getPoSupplierName();
+	}
+
+	@Transient
+	public void setInboundPoSupplierName(String poSupplierName) {
+		if (inboundDeliveryRequest == null)
+			inboundDeliveryRequest = new DeliveryRequest();
+		inboundDeliveryRequest.setPoSupplierName(poSupplierName);
+	}
+
 	@Transient
 	public Integer getInboundPoId() {
 		if (inboundDeliveryRequest == null)

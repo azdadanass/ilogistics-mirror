@@ -51,7 +51,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 			Integer tmpPartNumberId, String tmpPartNumberName, String tmpPartNumberImage, //
 			String tmpPartNumberDescription, Integer tmpDeliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, //
 			Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName, //
-			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName) {
+			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName,String inboundPoNumero) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
@@ -72,6 +72,8 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.setDeliverToCustomerName(deliverToCustomerName);
 		this.setDeliverToSupplierName(deliverToSupplierName);
 		this.setToUserFullName(toUserFullName);
+		
+		this.setInboundPoNumero(inboundPoNumero);
 	}
 
 	public JobRequestDeliveryDetail(Double quantity, Boolean isSerialNumberRequired, JobRequest jobRequest, DeliveryRequest deliveryRequest, PartNumber partNumber) {
@@ -127,6 +129,18 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
+	}
+	
+	@Transient
+	public String getInboundPoNumero() {
+		return deliveryRequest != null ? deliveryRequest.getInboundPoNumero() : null;
+	}
+
+	@Transient
+	public void setInboundPoNumero(String inboundPoNumero) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setInboundPoNumero(inboundPoNumero);
 	}
 
 	@Transient

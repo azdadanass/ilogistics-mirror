@@ -16,13 +16,14 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	String deliverToCustomerName = "(select b.name from Customer b where b.id = a.deliveryRequest.deliverToCustomer.id)";
 	String deliverToSupplierName = "(select b.name from Supplier b where b.id = a.deliveryRequest.deliverToSupplier.id)";
 	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequest.toUser.username)";
+	String inboundPoNumero = "(select b.numero from Po b where b.id = a.deliveryRequest.inboundPo.id)";
 
 	String c1 = "select new JobRequestDeliveryDetail(a.installedQuantity,a.isSerialNumberRequired," //
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description,"//
 			+ "a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,"//
 			+ "a.jobRequest.id,a.jobRequest.reference,a.jobRequest.site.name,a.jobRequest.team.name,"//
 			+ "a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + ","
-			+ toUserFullName + ") ";
+			+ toUserFullName +","+inboundPoNumero+ ") ";
 
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);

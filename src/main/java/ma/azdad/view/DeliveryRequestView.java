@@ -1772,6 +1772,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getIsOutbound())
 				service.updateOutboundInboundPo(deliveryRequest.getId());
+			
+			
+			if(deliveryRequest.getIsInboundReturn() && deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo()!=null)
+				deliveryRequest.setPo(deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo());
+				
+			
+			
 
 			for (Integer detailId : toDeleteDetailList)
 				deliveryRequestDetailService.delete(detailId);

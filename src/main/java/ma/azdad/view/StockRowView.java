@@ -543,7 +543,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			List<StockRow> result = new ArrayList<>();
 
 			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
-				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestSdm())).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestSdm()) || Boolean.TRUE.equals(i.getDeliveryRequestIsm())).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
 						.forEach((x, y) -> result.add(new StockRow(y, x)));
 			else
 				list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity))).forEach((x, y) -> result.add(new StockRow(y, x)));

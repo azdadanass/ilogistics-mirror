@@ -431,7 +431,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
 			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
-			Date deliveryRequestDate4, Boolean deliveryRequestSdm, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
+			Date deliveryRequestDate4, Boolean deliveryRequestSdm, Boolean deliveryRequestIsm,Boolean deliveryRequestIsForReturn,String deliveryRequestReturnReason, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
 			String poNumero,String inboundPoNumero, String endCustomerName) {
 		this.quantity = quantity;
@@ -454,6 +454,9 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
 		this.setDeliveryRequestDate4(deliveryRequestDate4);
 		this.setDeliveryRequestSdm(deliveryRequestSdm);
+		this.setDeliveryRequestIsm(deliveryRequestIsm);
+		this.setDeliveryRequestIsForReturn(deliveryRequestIsForReturn);
+		this.setDeliveryRequestReturnReason(deliveryRequestReturnReason);
 		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
 		this.setDestinationName(destinationName);
 		this.setOriginName(originName);
@@ -626,6 +629,35 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
+	
+	@Transient
+	public Boolean getDeliveryRequestIsForReturn() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getIsForReturn();
+	}
+
+	@Transient
+	public void setDeliveryRequestIsForReturn(Boolean deliveryRequestIsForReturn) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setIsForReturn(deliveryRequestIsForReturn);
+	}
+	
+	@Transient
+	public String getDeliveryRequestReturnReason() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getReturnReason();
+	}
+
+	@Transient
+	public void setDeliveryRequestReturnReason(String deliveryRequestReturnReason) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setReturnReason(deliveryRequestReturnReason);
+	}
+	
 
 	@Transient
 	public Boolean getDeliveryRequestSdm() {
@@ -639,6 +671,20 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		if (deliveryRequest == null)
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setSdm(deliveryRequestSdm);
+	}
+	
+	@Transient
+	public Boolean getDeliveryRequestIsm() {
+		if (deliveryRequest == null)
+			return null;
+		return deliveryRequest.getIsm();
+	}
+
+	@Transient
+	public void setDeliveryRequestIsm(Boolean deliveryRequestIsm) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setIsm(deliveryRequestIsm);
 	}
 
 	@Transient

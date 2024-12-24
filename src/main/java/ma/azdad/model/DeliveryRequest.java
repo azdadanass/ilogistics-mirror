@@ -563,7 +563,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			if (isForTransfer)
 				return "Transfer to Inbound";
 			else if (isForReturn)
-				return "Planned return";
+				return "Planned return ("+returnReason+")";
 
 		return null;
 	}

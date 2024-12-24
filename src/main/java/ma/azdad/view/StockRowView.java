@@ -526,8 +526,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		}
 
 		// add related return from outbound
-		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
+//		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
+		List<Integer> dnIdList = list1.stream().filter(i->!i.getDeliveryRequest().getIsOutboundHardwareSwap()).map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
 		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
+		
+		
 		if (!dnIdList.isEmpty() && !partNumberIdList.isEmpty())
 			if (companyId != null)
 				list1.addAll(stockRowService.findStockHistoryByCompanyOwnerAndOutboundDeliveryRequestReturn(companyId, dnIdList, partNumberIdList));

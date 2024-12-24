@@ -203,8 +203,11 @@
 												<f:param name="id" value="#{item.deliveryRequest.id}" />
 											</h:outputLink>
 										</p:column>
-										<p:column headerText="SDM" width="70">
+										<p:column headerText="SDM" width="70" >
 											<h:outputText value="#{item.deliveryRequest.sdm?'Yes':'No'}" styleClass="bolder #{item.deliveryRequest.sdm?'green':'red'}" />
+										</p:column>
+										<p:column headerText="ISM" width="70">
+											<h:outputText value="#{item.deliveryRequest.ism?'Yes':'No'}" styleClass="bolder #{item.deliveryRequest.ism?'green':'red'}" />
 										</p:column>
 										<p:column headerText="DN" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.reference}" />

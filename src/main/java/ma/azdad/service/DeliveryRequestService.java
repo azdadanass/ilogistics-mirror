@@ -961,7 +961,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
-		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded() && connectedUser.equals(deliveryRequest.getRequester().getUsername())
+		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded() && (connectedUser.equals(deliveryRequest.getRequester().getUsername()) || connectedUser.equals(deliveryRequest.getProject().getManager())) 
 				&& deliveryRequest.getTransportationRequest() == null && !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
 	}
 

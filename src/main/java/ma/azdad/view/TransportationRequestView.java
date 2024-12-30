@@ -211,9 +211,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	// SAVE TRANSPORTATIONREQUEST
 	public Boolean canSaveTransportationRequest() {
 		if (isListPage || isAddPage)
-			return sessionView.isUser();
+			return sessionView.isUser() || sessionView.getIsPm();
 		else if (isViewPage || isEditPage)
-			return sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
+			return ( sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester()) || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager())  ) 
 					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)
 							.contains(transportationRequest.getStatus());
 		return false;

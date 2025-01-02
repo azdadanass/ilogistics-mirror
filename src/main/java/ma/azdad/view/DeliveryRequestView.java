@@ -2472,7 +2472,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setWarehouse(deliveryRequest.getOutboundDeliveryRequestReturn().getWarehouse());
 		if (deliveryRequest.getOutboundDeliveryRequestReturn().getDestination() != null)
 			deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestReturn().getDestination());
-		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()) {
+//		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()) {
+//			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
+//			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
+//		}
+		if(deliveryRequest.getIsInboundReturn()) {
 			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
 			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
 		}

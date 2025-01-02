@@ -21,7 +21,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="SDM Reporting" />
+				<h:outputText value="ISM Reporting" />
 			</li>
 		</ul>
 	</ui:define>
@@ -30,7 +30,7 @@
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
-					<h:outputText value=" SDM Reporting" />
+					<h:outputText value=" ISM Reporting" />
 				</h1>
 			</div>
 			<div class="row">
@@ -130,7 +130,7 @@
 					<li>
 						<a data-toggle="tab" href="#tab2">
 							<i class="green ace-icon fa fa-check bigger-120"></i>
-							<h:outputText value=" SDM Install base" styleClass="hidden-xs" />
+							<h:outputText value=" ISM Install base" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
@@ -203,8 +203,8 @@
 												<f:param name="id" value="#{item.deliveryRequest.id}" />
 											</h:outputLink>
 										</p:column>
-										<p:column headerText="SDM" width="70" >
-											<h:outputText value="#{item.deliveryRequest.sdm?'Yes':'No'}" styleClass="bolder #{item.deliveryRequest.sdm?'green':'red'}" />
+										<p:column headerText="ISM" width="70">
+											<h:outputText value="#{item.deliveryRequest.ism?'Yes':'No'}" styleClass="bolder #{item.deliveryRequest.ism?'green':'red'}" />
 										</p:column>
 										<p:column headerText="DN" styleClass="hide">
 											<h:outputText value="#{item.deliveryRequest.reference}" />

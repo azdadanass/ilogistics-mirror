@@ -979,11 +979,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
 		return repos.findDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
 	}
-	
+
 	public List<StockRow> findDeliveryListsByCompanyOwner2(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		return repos.findDeliveryListsByCompanyOwner2(username, warehouseList, assignedProjectList, companyId);
 	}
-	
+
 	public List<StockRow> findDeliveryListsByCustomerOwner2(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
 		return repos.findDeliveryListsByCustomerOwner2(username, warehouseList, assignedProjectList, companyId);
 	}
@@ -1006,6 +1006,22 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	public List<StockRow> findSdmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> assignedProjectList) {
 		return repos.findSdmDeliveryListsByDeliverToSupplier(supplierId, assignedProjectList);
+	}
+
+	public List<StockRow> findIsmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		return repos.findIsmDeliveryListsByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
+	}
+
+	public List<StockRow> findIsmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
+		return repos.findIsmDeliveryListsByCustomerOwner(username, warehouseList, assignedProjectList, customerId);
+	}
+
+	public List<StockRow> findIsmDeliveryListsByCustomerOwner(Integer customerId, List<Integer> assignedProjectList) {
+		return repos.findIsmDeliveryListsByCustomerOwner(customerId, assignedProjectList);
+	}
+
+	public List<StockRow> findIsmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> assignedProjectList) {
+		return repos.findIsmDeliveryListsByDeliverToSupplier(supplierId, assignedProjectList);
 	}
 
 	public List<StockRow> findDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList) {

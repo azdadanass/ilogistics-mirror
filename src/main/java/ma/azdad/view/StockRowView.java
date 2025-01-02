@@ -202,6 +202,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				break;
 			case "/deliveryReporting.xhtml":
 			case "/sdmDeliveryReporting.xhtml":
+			case "/ismDeliveryReporting.xhtml":
 				initDeliveryLists();
 				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
 				refreshDeliveryLists();
@@ -272,6 +273,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			switch (currentPath) {
 			case "/deliveryReporting.xhtml":
 			case "/sdmDeliveryReporting.xhtml":
+			case "/ismDeliveryReporting.xhtml":
 				initDeliveryLists();
 				refreshDeliveryLists();
 				projectStrList = deliveryList1.stream().map(i -> i.getProjectName()).distinct().collect(Collectors.toList());
@@ -385,6 +387,19 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					deliveryList1 = stockRowService.findSdmDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
 			}
 			break;
+		case "/ismDeliveryReporting.xhtml":
+			if (sessionView.getInternal() || sessionView.getIsWM()) {
+				if (companyId != null)
+					deliveryList1 = stockRowService.findIsmDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+				if (customerId != null)
+					deliveryList1 = stockRowService.findIsmDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
+			} else if (sessionView.getIsExternalPm()) {
+				if (sessionView.getIsSupplierUser())
+					deliveryList1 = stockRowService.findIsmDeliveryListsByDeliverToSupplier(sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
+				else if (sessionView.getIsCustomerUser())
+					deliveryList1 = stockRowService.findIsmDeliveryListsByCustomerOwner(sessionView.getUser().getCustomerId(), cacheView.getAssignedProjectList());
+			}
+			break;
 		}
 		changeProjectNameListener();
 	}
@@ -414,7 +429,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 //			inboundPoList = deliveryList3.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
 //		else
 //			inboundPoList = new ArrayList<String>();
-		
+
 		inboundPoList = deliveryList3.stream().filter(i -> i.getInboundPoNumero() != null).map(i -> i.getInboundPoNumero()).distinct().collect(Collectors.toList());
 	}
 
@@ -527,10 +542,9 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 		// add related return from outbound
 //		List<Integer> dnIdList = list1.stream().map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
-		List<Integer> dnIdList = list1.stream().filter(i->!i.getDeliveryRequest().getIsOutboundHardwareSwap()).map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
+		List<Integer> dnIdList = list1.stream().filter(i -> !i.getDeliveryRequest().getIsOutboundHardwareSwap()).map(i -> i.getDeliveryRequest().getId()).collect(Collectors.toList());
 		List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumber().getId()).collect(Collectors.toList());
-		
-		
+
 		if (!dnIdList.isEmpty() && !partNumberIdList.isEmpty())
 			if (companyId != null)
 				list1.addAll(stockRowService.findStockHistoryByCompanyOwnerAndOutboundDeliveryRequestReturn(companyId, dnIdList, partNumberIdList));
@@ -543,7 +557,10 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			List<StockRow> result = new ArrayList<>();
 
 			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
-				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestSdm()) || Boolean.TRUE.equals(i.getDeliveryRequestIsm())).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestSdm())).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
+						.forEach((x, y) -> result.add(new StockRow(y, x)));
+			else if ("/ismDeliveryReporting.xhtml".equals(currentPath))
+				list1.stream().filter(i -> Boolean.TRUE.equals(i.getDeliveryRequestIsm())).collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
 						.forEach((x, y) -> result.add(new StockRow(y, x)));
 			else
 				list1.stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity))).forEach((x, y) -> result.add(new StockRow(y, x)));
@@ -554,7 +571,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			});
 			initLists(result);
 
-			if ("/sdmDeliveryReporting.xhtml".equals(currentPath))
+			if ("/sdmDeliveryReporting.xhtml".equals(currentPath) || "/ismDeliveryReporting.xhtml".equals(currentPath))
 				list1.forEach(sr -> {
 					sr.setInstalledQuantity(
 							jobRequestDeliveryDetailView.getList1().stream().filter(i -> i.getPartNumberId().equals(sr.getPartNumberId())).mapToDouble(i -> i.getInstalledQuantity()).sum());
@@ -574,7 +591,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	}
 
 	private void refreshJobRequestDeliveryDetailList() {
-		if ("/sdmDeliveryReporting.xhtml".equals(currentPath)) {
+		if ("/sdmDeliveryReporting.xhtml".equals(currentPath) || "/ismDeliveryReporting.xhtml".equals(currentPath) ) {
 			List<Integer> deliveryRequestIdList = list1.stream().map(i -> i.getDeliveryRequestId()).distinct().collect(Collectors.toList());
 			List<Integer> partNumberIdList = list1.stream().map(i -> i.getPartNumberId()).distinct().collect(Collectors.toList());
 			if (companyId != null)

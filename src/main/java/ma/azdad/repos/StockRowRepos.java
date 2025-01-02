@@ -66,16 +66,17 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ brandName
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,a.deliveryRequest.sdm,a.deliveryRequest.ism,a.deliveryRequest.isForReturn,a.deliveryRequest.returnReason,"
 			+ destinationProjectCustomerName + "," + destinationName + "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ,"
-			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + ","+ inboundPoNumero1 + "," + endCustomerName + ") ";
+			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + inboundPoNumero1 + "," + endCustomerName + ") ";
 	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.project.name)";
 
 	String c24 = "select new StockRow(sum(a.quantity),a.status,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id," //
 			+ "a.deliveryRequestDetail.unitPrice,a.deliveryRequestDetail.priceCurrency.id,a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,"//
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description," + brandName
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,"//
-			+ "a.deliveryRequest.sdm,a.inboundDeliveryRequest.id,a.inboundDeliveryRequest.reference,a.inboundDeliveryRequest.originNumber," + destinationProjectCustomerName + "," + destinationName + "," + originName + ","
-			+ destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
-			+ ",a.deliveryRequest.deliverToOther,"+toUserFullName+","+toUserEmail+","+toUserPhone+","+toUserCin+"," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero2 + "," + endCustomerName + ") ";
+			+ "a.deliveryRequest.sdm,a.inboundDeliveryRequest.id,a.inboundDeliveryRequest.reference,a.inboundDeliveryRequest.originNumber," + destinationProjectCustomerName + "," + destinationName
+			+ "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
+			+ ",a.deliveryRequest.deliverToOther," + toUserFullName + "," + toUserEmail + "," + toUserPhone + "," + toUserCin + "," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero2
+			+ "," + endCustomerName + ") ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -634,24 +635,40 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	List<StockRow> findDeliveryListsByCustomerOwner(Integer customerId, List<Integer> projectIdList);
 
 	@Query(c22 + from2 + "where" + usernameCondition + " and " + companyCondition
-			+ "and a.deliveryRequest.project.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+			+ "and a.deliveryRequest.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findSdmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 	@Query(c22 + from3 + "where" + usernameCondition + " and " + customerCondition
-			+ "and a.deliveryRequest.project.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+			+ "and a.deliveryRequest.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findSdmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
 
 	@Query(c22 + from3
-			+ "where (customer1.id = ?1 or customer2.id = ?2) and a.deliveryRequest.project.id in (?2) and a.deliveryRequest.project.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+			+ "where (customer1.id = ?1 or customer2.id = ?2) and a.deliveryRequest.project.id in (?2) and a.deliveryRequest.sdm is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findSdmDeliveryListsByCustomerOwner(Integer customerId, List<Integer> projectIdList);
+
+	@Query(c22
+			+ "from StockRow a where a.deliveryRequest.sdm is true and a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findSdmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList);
+
+	@Query(c22 + from2 + "where" + usernameCondition + " and " + companyCondition
+			+ "and a.deliveryRequest.ism is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findIsmDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+
+	@Query(c22 + from3 + "where" + usernameCondition + " and " + customerCondition
+			+ "and a.deliveryRequest.ism is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findIsmDeliveryListsByCustomerOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId);
+
+	@Query(c22 + from3
+			+ "where (customer1.id = ?1 or customer2.id = ?2) and a.deliveryRequest.project.id in (?2) and a.deliveryRequest.ism is true and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findIsmDeliveryListsByCustomerOwner(Integer customerId, List<Integer> projectIdList);
+
+	@Query(c22
+			+ "from StockRow a where a.deliveryRequest.ism is true and a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
+	List<StockRow> findIsmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList);
 
 	@Query(c22
 			+ "from StockRow a where a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList);
-
-	@Query(c22
-			+ "from StockRow a where a.deliveryRequest.project.sdm is true and a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.project.id in (?2) and a.quantity < 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
-	List<StockRow> findSdmDeliveryListsByDeliverToSupplier(Integer supplierId, List<Integer> projectIdList);
 
 	@Query(c22 + "from StockRow a where a.deliveryRequest.po.id = ?1 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findByPo(Integer poId);

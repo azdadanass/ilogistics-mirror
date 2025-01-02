@@ -273,7 +273,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	 */
 	public Boolean canRequestTransportationRequest() {
 		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) //
-				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester()) //
+				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester()) || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager())) //
 				&& Arrays.asList(DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.DELIVRED,
 						DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getDeliveryRequest().getStatus());
 	}

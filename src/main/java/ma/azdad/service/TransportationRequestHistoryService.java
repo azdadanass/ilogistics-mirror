@@ -10,9 +10,9 @@ import ma.azdad.repos.TransportationRequestHistoryRepos;
 @Component
 public class TransportationRequestHistoryService extends GenericService<Integer, TransportationRequestHistory, TransportationRequestHistoryRepos> {
 
-	public void created(TransportationRequest transportationRequest) {
+	public void created(TransportationRequest transportationRequest,User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Created", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Created",user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (created) : " + e.getMessage());
@@ -20,10 +20,10 @@ public class TransportationRequestHistoryService extends GenericService<Integer,
 		}
 	}
 
-	public void edited(TransportationRequest transportationRequest) {
+	public void edited(TransportationRequest transportationRequest,User user) {
 		try {
 			// TODO fill Description
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Edited", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Edited", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (edited) : " + e.getMessage());
@@ -31,13 +31,13 @@ public class TransportationRequestHistoryService extends GenericService<Integer,
 		}
 	}
 
-	public void requestedNew(TransportationRequest transportationRequest) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Requested", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest));
+	public void requestedNew(TransportationRequest transportationRequest,User user) {
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Requested", user, null, transportationRequest));
 	}
 
-	public void requested(TransportationRequest transportationRequest) {
+	public void requested(TransportationRequest transportationRequest,User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Requested", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Requested", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (requested) : " + e.getMessage());
@@ -119,9 +119,9 @@ public class TransportationRequestHistoryService extends GenericService<Integer,
 		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Acknowledged", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest));
 	}
 
-	public void acknowledged(TransportationRequest transportationRequest) {
+	public void acknowledged(TransportationRequest transportationRequest,User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Acknowledged", transportationRequest.getDeliveryRequest().getRequester(), null, transportationRequest);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Acknowledged", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (acknowledged) : " + e.getMessage());

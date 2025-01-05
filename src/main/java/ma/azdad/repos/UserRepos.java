@@ -193,6 +193,6 @@ public interface UserRepos extends JpaRepository<User, String> {
 	ma.azdad.mobile.model.User findOneMobile(String username);
 	
 	
-	@Query("select distinct a.user from UserRole a where a.role = ?1")
+	@Query("select distinct a.user from UserRole a where a.user.active is true and a.role = ?1")
 	List<User> findByRole(Role role);
 }

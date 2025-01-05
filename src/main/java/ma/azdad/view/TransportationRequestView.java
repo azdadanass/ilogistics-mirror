@@ -252,9 +252,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequest = transportationRequestService.save(transportationRequest);
 
 		if (!isEditPage)
-			transportationRequestHistoryService.created(transportationRequest);
+			transportationRequestHistoryService.created(transportationRequest,sessionView.getUser());
 		else
-			transportationRequestHistoryService.edited(transportationRequest);
+			transportationRequestHistoryService.edited(transportationRequest,sessionView.getUser());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationRequest.getId());
 	}
@@ -284,7 +284,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		transportationRequest.setStatus(TransportationRequestStatus.REQUESTED);
 		transportationRequest.setDate2(new Date());
-		transportationRequestHistoryService.requestedNew(transportationRequest);
+		transportationRequestHistoryService.requestedNew(transportationRequest,sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
 

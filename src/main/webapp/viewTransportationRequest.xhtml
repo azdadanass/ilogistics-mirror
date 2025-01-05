@@ -170,7 +170,7 @@
 												<h:outputText id="step4" value="#{TransportationRequestStatus.ASSIGNED.value}" />
 												<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,userView.findFirstByRoleTM())}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -184,7 +184,7 @@
 												<h:outputText id="step5" value="#{TransportationRequestStatus.PICKEDUP.value}" />
 												<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,userView.findFirstByRoleTM())}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -198,7 +198,7 @@
 												<h:outputText id="step6" value="#{TransportationRequestStatus.DELIVERED.value}" />
 												<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,userView.findFirstByRoleTM())}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
 											</span>
 										</li>

@@ -389,5 +389,16 @@ public class UserService {
 			return new ArrayList<Role>();
 		}
 	}
+	
+	public List<User> findByRole(Role role){
+		return repos.findByRole(role);
+	}
+	
+	public User findFirstByRoleTM(){
+		List<User> list = findByRole(Role.ROLE_ILOGISTICS_TM);
+		if(list.isEmpty())
+			return null;
+		return list.get(0);
+	}
 
 }

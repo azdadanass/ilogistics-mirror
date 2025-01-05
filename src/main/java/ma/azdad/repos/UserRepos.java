@@ -191,4 +191,8 @@ public interface UserRepos extends JpaRepository<User, String> {
 	
 	@Query("select new ma.azdad.mobile.model.User(a.username,a.firstName,a.lastName,a.login) from User a where username = ?1")
 	ma.azdad.mobile.model.User findOneMobile(String username);
+	
+	
+	@Query("select distinct a.user from UserRole a where a.role = ?1")
+	List<User> findByRole(Role role);
 }

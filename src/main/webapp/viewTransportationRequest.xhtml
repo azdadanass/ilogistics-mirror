@@ -129,7 +129,7 @@
 									</span>
 									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 										<h:outputText escape="false"
-											value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date1,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
+											value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date1,transportationRequestView.transportationRequest.user1.username,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 									</p:overlayPanel>
 								</li>
 								<f:subview rendered="#{transportationRequestView.transportationRequest.date2!=null || transportationRequestView.transportationRequest.date9==null}">
@@ -142,7 +142,7 @@
 										</span>
 										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date2,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
+												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date2,transportationRequestView.transportationRequest.user2.username,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
@@ -170,7 +170,7 @@
 												<h:outputText id="step4" value="#{TransportationRequestStatus.ASSIGNED.value}" />
 												<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,'y.bouassem')}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,userView.findFirstByRoleTM())}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -184,7 +184,7 @@
 												<h:outputText id="step5" value="#{TransportationRequestStatus.PICKEDUP.value}" />
 												<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,'y.bouassem')}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,userView.findFirstByRoleTM())}" />
 												</p:overlayPanel>
 											</span>
 										</li>
@@ -198,7 +198,7 @@
 												<h:outputText id="step6" value="#{TransportationRequestStatus.DELIVERED.value}" />
 												<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
-														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,'y.bouassem')}" />
+														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,userView.findFirstByRoleTM())}" />
 												</p:overlayPanel>
 											</span>
 										</li>

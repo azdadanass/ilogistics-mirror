@@ -391,6 +391,10 @@ public class UserView {
 	public Boolean hasRolePm(String username) {
 		return hasRole(username, Role.ROLE_ILOGISTICS_PM);
 	}
+	
+	public User findFirstByRoleTM() {
+		return userService.findFirstByRoleTM();
+	}
 
 	// getters & setters
 

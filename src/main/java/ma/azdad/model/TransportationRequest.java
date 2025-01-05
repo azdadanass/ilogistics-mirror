@@ -68,6 +68,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private Date date8; // Rejected
 	private Date date9; // Canceled
 
+	
+	private User user1;
+	private User user2;
 	private User user3;
 	private User user4;
 	private User user5;
@@ -658,6 +661,26 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setDate9(Date date9) {
 		this.date9 = date9;
+	}
+	
+	
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public User getUser1() {
+		return user1;
+	}
+
+	public void setUser1(User user1) {
+		this.user1 = user1;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public User getUser2() {
+		return user2;
+	}
+
+	public void setUser2(User user2) {
+		this.user2 = user2;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

@@ -309,7 +309,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.projectSdm}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.destinationProjectSdm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="SDM" />
@@ -330,7 +330,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.projectIsm}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.ism or deliveryRequestView.deliveryRequest.destinationProjectIsm}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="ISM" />

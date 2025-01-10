@@ -2476,10 +2476,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 //			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
 //			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
 //		}
-		if(deliveryRequest.getIsInboundReturn()) {
-			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
-			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
-		}
+//		if(deliveryRequest.getIsInboundReturn()) {
+//			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
+//			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
+//		}
 
 		// set owner
 		List<LabelValue> ownerList = deliveryRequestDetailService.findOwnerList(deliveryRequest.getOutboundDeliveryRequestReturn().getId());

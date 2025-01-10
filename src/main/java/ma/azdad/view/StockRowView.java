@@ -474,8 +474,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 
 	public void changeReportTypeListener() {
 		switch (reportType) {
-		case "Deliver To":
+		case "Deliver To Entity":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDeliverTo() != null).map(i -> i.getDeliverTo()).distinct().collect(Collectors.toList());
+			break;
+		case "Deliver To User":
+			reportTypeValueList = deliveryList2.stream().filter(i -> i.getToUserFullName() != null).map(i -> i.getToUserFullName()).distinct().collect(Collectors.toList());
 			break;
 		case "Customer":
 			reportTypeValueList = deliveryList2.stream().filter(i -> i.getDestinationProjectCustomerName() != null).map(i -> i.getDestinationProjectCustomerName()).distinct()
@@ -532,8 +535,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 		case "All":
 			initLists(new ArrayList<StockRow>(deliveryList2));
 			break;
-		case "Deliver To":
+		case "Deliver To Entity":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDeliverTo())).collect(Collectors.toList()));
+			break;
+		case "Deliver To User":
+			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getToUserFullName())).collect(Collectors.toList()));
 			break;
 		case "Customer":
 			initLists(deliveryList2.stream().filter(i -> reportTypeValue.equals(i.getDestinationProjectCustomerName())).collect(Collectors.toList()));

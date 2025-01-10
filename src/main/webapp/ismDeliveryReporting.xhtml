@@ -219,8 +219,11 @@
 										<p:column headerText="Status" width="70">
 											<h:outputText value="#{item.status.value}" />
 										</p:column>
-										<p:column headerText="Deliver To">
+										<p:column headerText="Deliver To Entity">
 											<h:outputText value="#{item.deliverTo}" />
+										</p:column>
+										<p:column headerText="Deliver To User">
+											<h:outputText value="#{item.toUserFullName}" />
 										</p:column>
 										<p:column headerText="Destination Site">
 											<h:outputText value="#{item.destinationName}" />

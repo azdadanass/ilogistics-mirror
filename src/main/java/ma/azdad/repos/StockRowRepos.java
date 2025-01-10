@@ -66,7 +66,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ brandName
 			+ ",a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.inboundType,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.date4,a.deliveryRequest.sdm,a.deliveryRequest.ism,a.deliveryRequest.isForReturn,a.deliveryRequest.returnReason,"
 			+ destinationProjectCustomerName + "," + destinationName + "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ,"
-			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther," + poNumero + "," + inboundPoNumero1 + "," + endCustomerName + ") ";
+			+ deliverToCustomerName + "," + deliverToSupplierName + ",a.deliveryRequest.deliverToOther,"+toUserFullName+"," + poNumero + "," + inboundPoNumero1 + "," + endCustomerName + ") ";
 	String c23 = "select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.status,a.inboundDeliveryRequest.date4,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.project.name)";
 
 	String c24 = "select new StockRow(sum(a.quantity),a.status,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id," //

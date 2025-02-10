@@ -228,7 +228,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	// c1
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, //
 			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
-			Date neededDeliveryDate, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName, Warehouse warehouse, //
+			Date neededDeliveryDate,String returnReason, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName, Warehouse warehouse, //
 			String destinationProjectName, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
 			Boolean containsBoqMapping, Boolean missingPo, Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, //
 			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName, String destinationProjectCustomerName) {
@@ -248,6 +248,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.originNumber = originNumber;
 		this.date4 = date4;
 		this.neededDeliveryDate = neededDeliveryDate;
+		this.returnReason = returnReason;	
 		this.setOriginName(originName);
 		this.setDestinationName(destinationName);
 		this.setOwnerType(ownerType);

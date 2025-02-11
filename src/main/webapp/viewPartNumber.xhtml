@@ -928,6 +928,9 @@
 											<p:column headerText="SN" width="40">
 												<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 											</p:column>
+											<p:column headerText="SN Type" width="70">
+												<h:outputText value="#{item.snType}" />
+											</p:column>
 											<p:column headerText="Gross Weight" width="70">
 												<h:outputText value="#{item.grossWeight} KG" />
 											</p:column>

@@ -216,8 +216,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query(c1 + " from DeliveryRequest a where a.type = ?1 and a.warehouse.id in (?2) order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightByWarehouseList(DeliveryRequestType type, List<Integer> warehouseList);
 
-	@Query(c1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status = ?2 and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
-	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList, DeliveryRequestStatus status, DeliveryRequestType xbound);
+	@Query(c1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
+	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList, List<DeliveryRequestStatus > statusList, DeliveryRequestType xbound);
 
 	@Query("select count(*)  from DeliveryRequest a where a.warehouse.id in (?1) and a.status = ?2 and a.type != ?3")
 	public Long countByWarehouseList(List<Integer> warehouseList, DeliveryRequestStatus status, DeliveryRequestType xbound);

@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -393,6 +394,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 4:
 				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList());
+				Collections.sort(list2,new Comparator<DeliveryRequest>() {
+					@Override
+					public int compare(DeliveryRequest o1, DeliveryRequest o2) {
+						return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
+					}
+				});
 				break;
 			case 5:
 				list2 = list1 = service.findByMissingPo(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);

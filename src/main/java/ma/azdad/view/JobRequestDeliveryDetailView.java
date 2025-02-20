@@ -21,6 +21,10 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	private CacheView cacheView;
 
 	private JobRequestDeliveryDetail jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
+	
+	
+	private DatatableList<JobRequestDeliveryDetail> datatable1;
+	private DatatableList<JobRequestDeliveryDetail> datatable2;
 
 	@Override
 	@PostConstruct
@@ -32,6 +36,11 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 			jobRequestDeliveryDetail = service.findOne(id);
 		else if (isViewPage)
 			jobRequestDeliveryDetail = service.findOne(id);
+		else if(isPage("viewDeliveryRequest")) {
+			datatable1 = new DatatableList<JobRequestDeliveryDetail>(service.findByDeliveryRequest(id));
+			datatable2 = new DatatableList<JobRequestDeliveryDetail>(service.findSummaryByDeliveryRequest(id));
+		}
+			
 	}
 
 	@Override
@@ -120,5 +129,24 @@ public class JobRequestDeliveryDetailView extends GenericView<Integer, JobReques
 	public void setJobRequestDeliveryDetail(JobRequestDeliveryDetail jobRequestDeliveryDetail) {
 		this.jobRequestDeliveryDetail = jobRequestDeliveryDetail;
 	}
+
+	public DatatableList<JobRequestDeliveryDetail> getDatatable1() {
+		return datatable1;
+	}
+
+	public void setDatatable1(DatatableList<JobRequestDeliveryDetail> datatable1) {
+		this.datatable1 = datatable1;
+	}
+
+	public DatatableList<JobRequestDeliveryDetail> getDatatable2() {
+		return datatable2;
+	}
+
+	public void setDatatable2(DatatableList<JobRequestDeliveryDetail> datatable2) {
+		this.datatable2 = datatable2;
+	}
+	
+	
+	
 
 }

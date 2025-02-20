@@ -237,7 +237,7 @@
 								rendered="#{(DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type) and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originName}" />
 							</p:column>
-							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=5 and deliveryRequestView.pageIndex!=15}">
+							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=4 and deliveryRequestView.pageIndex!=5 and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originNumber}" styleClass="bolder" />
 							</p:column>
 							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex==5}">
@@ -258,7 +258,7 @@
 							<p:column headerText="SDM" styleClass="hide" rendered="#{deliveryRequestView.isOutbound}">
 								<h:outputText value="#{item.sdm?'Yes':'No'}" />
 							</p:column>
-							<p:column headerText="Exp Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}" rendered="#{DeliveryRequestState.WAITING==deliveryRequestView.state}">
+							<p:column headerText="Exp Delivery Date" width="125" sortBy="#{item.neededDeliveryDate}" rendered="#{DeliveryRequestState.WAITING==deliveryRequestView.state or deliveryRequestView.pageIndex==4}">
 								<h:outputText value="#{item.neededDeliveryDateStr}" styleClass="#{item.neededDeliveryDateColor.name} bolder" />
 							</p:column>
 							<p:column headerText="Transportation Request" styleClass="hide" rendered="#{deliveryRequestView.list2.size()>0}">

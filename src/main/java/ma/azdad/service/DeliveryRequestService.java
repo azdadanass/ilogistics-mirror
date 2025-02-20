@@ -310,7 +310,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Cacheable(value = "deliveryRequestService.findLightByWarehouseList")
 	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList) {
-		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, DeliveryRequestStatus.APPROVED2, DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2,DeliveryRequestStatus.PARTIALLY_DELIVRED) , DeliveryRequestType.XBOUND);
 	}
 	
 	

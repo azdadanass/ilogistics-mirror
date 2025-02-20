@@ -2063,7 +2063,7 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="datatable1" value="#{jobRequestDeliveryDetailView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										<p:dataTable id="datatable1" value="#{jobRequestDeliveryDetailView.datatable1.value}" var="item" rows="10" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -2077,7 +2077,10 @@
 												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
 											<p:column headerText="Quantity" width="70">
-												<h:outputText value="#{item.quantity}" styleClass=" bolder green">
+												<h:outputText value="#{item.quantity}" styleClass=" bolder green" rendered="#{jobRequestStatus.jobRequestStatus!= JobRequestStatus.COMPLETED and jobRequestStatus.jobRequestStatus!= JobRequestStatus.VALIDATED}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value="#{item.installedQuantity}" styleClass=" bolder green" rendered="#{jobRequestStatus.jobRequestStatus== JobRequestStatus.COMPLETED or jobRequestStatus.jobRequestStatus== JobRequestStatus.VALIDATED}">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
@@ -2085,10 +2088,7 @@
 												<i class="ace-icon fa #{item.isSerialNumberRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 											</p:column>
 											<p:column headerText="JR" width="70">
-												<h:outputLink value="viewJobRequest.xhtml" target="blank">
-													<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
-													<f:param name="id" value="#{item.jobRequestId}" />
-												</h:outputLink>
+												<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
 											</p:column>
 											<p:column headerText="JR Status" width="70">
 												<h:outputText value="#{item.jobRequestStatus.value}" styleClass="#{item.jobRequestStatus.color.name}" />
@@ -2133,7 +2133,7 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="datatable2" value="#{jobRequestDeliveryDetailView.datatable2.value}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										<p:dataTable id="datatable2" value="#{jobRequestDeliveryDetailView.datatable2.value}" var="item" rows="10" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -2195,7 +2195,7 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="10" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -2262,7 +2262,7 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="summary" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										<p:dataTable id="summary" value="#{stockRowView.list2}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">

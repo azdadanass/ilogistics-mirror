@@ -56,6 +56,14 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		return result;
 	}
 
+	public List<JobRequestDeliveryDetail> findByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findByDeliveryRequest(deliveryRequestId);
+	}
+	
+	public List<JobRequestDeliveryDetail> findSummaryByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findSummaryByDeliveryRequest(deliveryRequestId);
+	}
+
 	public List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequestId) {
 		List<JobRequestDeliveryDetail> result = new ArrayList<>();
 		List<JobRequestDeliveryDetail> data = repos.findInstalledByDeliveryRequest(deliveryRequestId);

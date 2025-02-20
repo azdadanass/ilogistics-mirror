@@ -27,6 +27,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 
 	// TMP
 	private String tmpSerialNumber;
+	private Double dnQuantity;
 
 	public JobRequestDeliveryDetail() {
 		super();
@@ -47,12 +48,14 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	}
 
 	// c1
-	public JobRequestDeliveryDetail(Double installedQuantity, Boolean isSerialNumberRequired, //
+	public JobRequestDeliveryDetail(Double quantity, Double installedQuantity, Boolean isSerialNumberRequired, //
 			Integer tmpPartNumberId, String tmpPartNumberName, String tmpPartNumberImage, //
 			String tmpPartNumberDescription, Integer tmpDeliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, //
-			Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName, //
-			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName,String inboundPoNumero) {
+			Integer tmpJobRequestId, String tmpJobRequestReference, JobRequestStatus jobRequestStatus, String tmpSiteName, String tmpTeamName, //
+			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String toUserFullName,
+			String inboundPoNumero) {
 		super();
+		this.quantity = quantity;
 		this.installedQuantity = installedQuantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
 
@@ -64,6 +67,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.setDeliveryRequestReference(deliveryRequestReference);
 		this.setJobRequestId(tmpJobRequestId);
 		this.setJobRequestReference(tmpJobRequestReference);
+		this.setJobRequestStatus(jobRequestStatus);
 		this.setSiteName(tmpSiteName);
 		this.setTeamName(tmpTeamName);
 
@@ -72,8 +76,22 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.setDeliverToCustomerName(deliverToCustomerName);
 		this.setDeliverToSupplierName(deliverToSupplierName);
 		this.setToUserFullName(toUserFullName);
-		
+
 		this.setInboundPoNumero(inboundPoNumero);
+	}
+
+	// c2
+
+	public JobRequestDeliveryDetail(Double quantity,Double dnQuantity, //
+			Integer partNumberId,String partNumberName,String partNumberDescription,String partNumberImage
+			) {
+		
+		this.quantity = quantity;
+		this.dnQuantity = dnQuantity;
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
 	}
 
 	public JobRequestDeliveryDetail(Double quantity, Boolean isSerialNumberRequired, JobRequest jobRequest, DeliveryRequest deliveryRequest, PartNumber partNumber) {
@@ -130,7 +148,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
-	
+
 	@Transient
 	public String getInboundPoNumero() {
 		return deliveryRequest != null ? deliveryRequest.getInboundPoNumero() : null;
@@ -347,6 +365,18 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	}
 
 	@Transient
+	public JobRequestStatus getJobRequestStatus() {
+		return jobRequest != null ? jobRequest.getStatus() : null;
+	}
+
+	@Transient
+	public void setJobRequestStatus(JobRequestStatus jobRequestStatus) {
+		if (jobRequest == null)
+			jobRequest = new JobRequest();
+		jobRequest.setStatus(jobRequestStatus);
+	}
+
+	@Transient
 	public String getSiteName() {
 		return jobRequest != null ? jobRequest.getSiteName() : null;
 	}
@@ -368,6 +398,16 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		if (jobRequest == null)
 			jobRequest = new JobRequest();
 		jobRequest.setTeamName(teamName);
+	}
+
+	@Transient
+	public Double getDnQuantity() {
+		return dnQuantity;
+	}
+
+	@Transient
+	public void setDnQuantity(Double dnQuantity) {
+		this.dnQuantity = dnQuantity;
 	}
 
 }

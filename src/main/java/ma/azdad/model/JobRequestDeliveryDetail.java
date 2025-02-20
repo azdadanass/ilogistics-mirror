@@ -80,20 +80,6 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.setInboundPoNumero(inboundPoNumero);
 	}
 
-	// c2
-
-	public JobRequestDeliveryDetail(Double quantity,Double dnQuantity, //
-			Integer partNumberId,String partNumberName,String partNumberDescription,String partNumberImage
-			) {
-		
-		this.quantity = quantity;
-		this.dnQuantity = dnQuantity;
-		this.setPartNumberId(partNumberId);
-		this.setPartNumberName(partNumberName);
-		this.setPartNumberDescription(partNumberDescription);
-		this.setPartNumberImage(partNumberImage);
-	}
-
 	public JobRequestDeliveryDetail(Double quantity, Boolean isSerialNumberRequired, JobRequest jobRequest, DeliveryRequest deliveryRequest, PartNumber partNumber) {
 		super();
 		this.quantity = quantity;

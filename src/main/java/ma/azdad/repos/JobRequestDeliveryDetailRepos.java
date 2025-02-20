@@ -25,16 +25,11 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 			+ "a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ","
 			+ inboundPoNumero + ") ";
 
-	String c2 = "select new JobRequestDeliveryDetail(sum(a.quantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.id = a.deliveryRequest.id and b.partNumber.id = a.partNumber.id),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
-
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
 
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.jobRequest.status not in ('REJECTED','CANCELED')")
 	List<JobRequestDeliveryDetail> findByDeliveryRequest(Integer deliveryRequestId);
-
-	@Query(c2 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.jobRequest.status not in ('REJECTED','CANCELED') group by a.partNumber.id")
-	List<JobRequestDeliveryDetail> findSummaryByDeliveryRequest(Integer deliveryRequestId);
 
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequest);

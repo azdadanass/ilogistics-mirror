@@ -1063,7 +1063,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
 		return findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId).stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)));
 	}
-
+	
 	public Map<Integer, Double> findQuantityPartNumberMapByDeliveryRequest(Integer deliveryRequest) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findQuantityByDeliveryRequestGroupByPartNumber(deliveryRequest);

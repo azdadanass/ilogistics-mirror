@@ -702,6 +702,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query("select a.partNumber.id,sum(a.quantity) from StockRow a where a.deliveryRequest.id = ?1 group by a.partNumber.id")
 	List<Object[]> findQuantityByDeliveryRequestGroupByPartNumber(Integer deliveryRequest);
+	
+	@Query("select sum(a.quantity) from StockRow a where a.deliveryRequest.id = ?1 and a.partNumber.id = 2")
+	Double findQuantityByDeliveryRequestAndPartNumber(Integer deliveryRequest,Integer partNumberId);
 
 	@Modifying
 	@Query("update StockRow a set a.companyId = (select b.company.id from DeliveryRequest b where a.deliveryRequest.id = b.id),a.customerId = (select b.customer.id from DeliveryRequest b where a.deliveryRequest.id = b.id),a.supplierId = (select b.supplier.id from DeliveryRequest b where a.deliveryRequest.id = b.id)  where a.deliveryRequest.id = ?1")

@@ -1,8 +1,11 @@
 package ma.azdad.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.JobRequest;
 import ma.azdad.model.JobRequestDeliveryDetail;
 import ma.azdad.model.JobRequestHistory;
+import ma.azdad.model.JobRequestStatus;
 import ma.azdad.model.SerialNumber;
 import ma.azdad.model.User;
 import ma.azdad.repos.JobRequestDeliveryDetailRepos;
@@ -31,6 +35,9 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 
 	@Autowired
 	JobRequestHistoryService jobRequestHistoryService;
+	
+	@Autowired
+	StockRowService stockRowService;
 
 	@Override
 	public JobRequestDeliveryDetail findOne(Integer id) {
@@ -59,9 +66,31 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 	public List<JobRequestDeliveryDetail> findByDeliveryRequest(Integer deliveryRequestId) {
 		return repos.findByDeliveryRequest(deliveryRequestId);
 	}
-	
+
 	public List<JobRequestDeliveryDetail> findSummaryByDeliveryRequest(Integer deliveryRequestId) {
-		return repos.findSummaryByDeliveryRequest(deliveryRequestId);
+		List<JobRequestDeliveryDetail> data = repos.findByDeliveryRequest(deliveryRequestId);
+		
+		Map<Integer,Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(deliveryRequestId);
+		
+		Map<Integer, JobRequestDeliveryDetail> map = new HashMap<Integer, JobRequestDeliveryDetail>();
+		for (JobRequestDeliveryDetail jrdd : data) {
+			JobRequestDeliveryDetail jobRequestDeliveryDetail;
+			if (!map.containsKey(jrdd.getPartNumberId())) {
+				jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
+				jobRequestDeliveryDetail.setPartNumberName(jrdd.getPartNumberName());
+				jobRequestDeliveryDetail.setPartNumberId(jrdd.getPartNumberId());
+				jobRequestDeliveryDetail.setPartNumberDescription(jrdd.getPartNumberDescription());
+				jobRequestDeliveryDetail.setPartNumberImage(jrdd.getPartNumberImage());
+				map.put(jrdd.getPartNumberId(), jobRequestDeliveryDetail);
+			}
+			jobRequestDeliveryDetail = map.get(jrdd.getPartNumberId());
+			if (Arrays.asList(JobRequestStatus.COMPLETED, JobRequestStatus.VALIDATED).contains(jrdd.getJobRequestStatus()))
+				jobRequestDeliveryDetail.setQuantity(jobRequestDeliveryDetail.getQuantity()+ jrdd.getInstalledQuantity());
+			else
+				jobRequestDeliveryDetail.setQuantity(jobRequestDeliveryDetail.getQuantity()+jrdd.getQuantity());
+			jobRequestDeliveryDetail.setDnQuantity(dnQtyMap.get(jrdd.getPartNumberId()));
+		}
+		return new ArrayList<JobRequestDeliveryDetail>(map.values());
 	}
 
 	public List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequestId) {

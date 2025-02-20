@@ -312,6 +312,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList) {
 		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, DeliveryRequestStatus.APPROVED2, DeliveryRequestType.XBOUND);
 	}
+	
+	
 
 	@Cacheable(value = "deliveryRequestService.countByWarehouseList")
 	public Long countByWarehouseList(List<Integer> warehouseList, DeliveryRequestStatus status) {
@@ -1305,9 +1307,41 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
-		return deliveryRequestRepos.findLightByWarehouseListMobile(warehouseList, DeliveryRequestStatus.APPROVED2, DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightByWarehouseListMobile(warehouseList,Arrays.asList(DeliveryRequestStatus.APPROVED2,DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightNewByWarehouseListMobile(List<Integer> warehouseList) {
+		if (warehouseList.isEmpty())
+			return new ArrayList<>();
+		return deliveryRequestRepos.findLightNewByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED1,DeliveryRequestStatus.REQUESTED
+				,DeliveryRequestStatus.EDITED), DeliveryRequestType.XBOUND);
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList) {
+		if (warehouseList.isEmpty())
+			return new ArrayList<>();
+		return deliveryRequestRepos.findLightDeliveredByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.DELIVRED), DeliveryRequestType.XBOUND);
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList) {
+		if (warehouseList.isEmpty())
+			return new ArrayList<>();
+		return deliveryRequestRepos.findLightByMissingSerialNumberMobile(warehouseList);
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingExpiryMobile(List<Integer> warehouseList) {
+		if (warehouseList.isEmpty())
+			return new ArrayList<>();
+		return deliveryRequestRepos.findLightByMissingExpiryMobile(warehouseList);
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequest> findByMissingOutboundDeliveryNoteFilemobile(String username, Collection<Integer> warehouseList) {
+		List<Integer> projectIdList = projectService.findAssignedProjectIdListByResource(username);
+		return repos.findByMissingOutboundDeliveryNoteFileMobile(username, warehouseList, projectIdList);
 	}
 
+	
+	
 	public void updateOutboundInboundPo(Integer outboundId) {
 		DeliveryRequest deliveryRequest = findOne(outboundId);
 		if (deliveryRequest.getDetailList().stream().filter(i -> i.getInboundDeliveryRequest().getPo() == null).count() == 0 //

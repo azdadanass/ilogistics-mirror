@@ -18,7 +18,7 @@ public class Token {
 	private List<Integer> warehouseList = new ArrayList<Integer>();
 
 	public void updateExpirationTime() {
-		expirationTime = UtilsFunctions.addMinutesToDate(new Date(), 5);
+		expirationTime = UtilsFunctions.addMinutesToDate(new Date(), 120);
 	}
 
 	public Boolean isActive() {

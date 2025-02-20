@@ -1,5 +1,7 @@
 package ma.azdad.mobile.model;
 
+import ma.azdad.utils.Public;
+
 /**
  * Data class that captures user information for logged in users retrieved from
  * LoginRepository
@@ -11,6 +13,8 @@ public class User {
 	private String password;
 	private String firstName;
 	private String lastName;
+	private String photo;
+	private String email;
 
 	public User() {
 		super();
@@ -21,11 +25,13 @@ public class User {
 		this.password = password;
 	}
 
-	public User(String username, String firstName, String lastName, String login) {
+	public User(String username, String firstName, String lastName, String login,String photo,String email) {
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.login = login;
+		this.photo = Public.getPublicUrl(photo);
+		this.email = email;
 	}
 
 	public String getFullName() {
@@ -70,5 +76,21 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

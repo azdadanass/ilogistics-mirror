@@ -403,6 +403,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest a set hardwareSwapInboundId = ?2,hardwareSwapInboundStatus = ?3 where id = ?1")
 	void updateHardwareSwapInboundIdAndStatus(Integer outboundId, Integer inboundId, DeliveryRequestStatus inboundStatus);
+	
+	@Query("select count(*) from DeliveryRequest a where a.hardwareSwapInboundId = ?1")
+	Long countByHardwareSwapInboundId(Integer inboundId);
+	
 
 	// mobile
 

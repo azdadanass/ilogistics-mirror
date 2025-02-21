@@ -183,6 +183,7 @@
 						</f:subview>
 						<h:outputText value="#{deliveryRequestView.deliveryRequest.type.value}" />
 						<h:outputText value=", #{deliveryRequestView.deliveryRequest.subType}" rendered="#{deliveryRequestView.deliveryRequest.subType!=null}" />
+						<h:outputText value=", Hardware Swap" rendered="#{deliveryRequestView.isHardwareSwapInbound}" />
 						<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditSubType()}" onclick="PF('subTypeDlg').show()" styleClass="pull-right">
 							<i class="ace-icon fa fa-edit bigger-130 orange" />
 						</p:commandLink>

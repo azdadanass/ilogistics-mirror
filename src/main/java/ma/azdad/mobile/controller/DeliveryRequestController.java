@@ -32,6 +32,13 @@ public class DeliveryRequestController {
 
 	@Autowired
 	ProjectService projectService;
+	
+	@GetMapping("/mobile/dn/findone/{key}/{id}")
+	public DeliveryRequest findOneLightMobile(@PathVariable String key,@PathVariable Integer id) {
+		System.out.println("/mobile/dn/findone/{key}/{id}");
+		Token token = tokenService.getBykey(key);
+		return service.findOneLightMobile(id);
+	}
 
 	@GetMapping("/mobile/dn/{key}")
 	public List<DeliveryRequest> findLightByWarehouseListMobile(@PathVariable String key) {

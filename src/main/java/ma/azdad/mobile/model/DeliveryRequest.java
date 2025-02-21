@@ -5,6 +5,7 @@ import java.util.Date;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
+import ma.azdad.utils.Public;
 
 public class DeliveryRequest {
 
@@ -12,12 +13,15 @@ public class DeliveryRequest {
 	private String reference;
 	private DeliveryRequestType type;
 	private Date neededDeliveryDate;
+	private Date deliveryDate;
 	private InboundType inboundType;
 	private DeliveryRequestStatus status;
 	private Boolean isForReturn = false;
 	private Boolean isForTransfer = false;
 
+
 	private String requesterFullName;
+	private String requesterPhoto;
 	private Integer projectId;
 	private String projectName;
 	private Integer destinationProjectId;
@@ -29,13 +33,29 @@ public class DeliveryRequest {
 	private Integer originId;
 	private String originName;
 
+	// TIMELINE
+		
+			private User user1; // Edited
+			private User user2; // Requested
+			private User user3; // Approved PM
+			private User user8; // Approved HM
+			private User user4; // Delivered
+			private User user5; // Acknowledged
+			
+			private Date date1; // Edited
+			private Date date2; // Requested
+			private Date date3; // Approved PM
+			private Date date8; // Approved HM
+			private Date date4; // Delivered
+			private Date date5; // Acknowledged
 	public DeliveryRequest() {
 		super();
 	}
 
 	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, InboundType inboundType, DeliveryRequestStatus status,
 			Boolean isForReturn, Boolean isForTransfer, String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
-			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName) {
+			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName,
+			String requesterPhoto,Date deliveryDate) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -56,7 +76,14 @@ public class DeliveryRequest {
 		this.destinationName = destinationName;
 		this.originId = originId;
 		this.originName = originName;
+		this.requesterPhoto = Public.getPublicUrl(requesterPhoto);
+		this.deliveryDate = deliveryDate;
 	}
+
+	
+	
+
+
 
 	public Integer getId() {
 		return id;
@@ -209,5 +236,123 @@ public class DeliveryRequest {
 	public void setOriginName(String originName) {
 		this.originName = originName;
 	}
+
+	public String getRequesterPhoto() {
+		return requesterPhoto;
+	}
+
+	public void setRequesterPhoto(String requesterPhoto) {
+		this.requesterPhoto = requesterPhoto;
+	}
+
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public Date getDate1() {
+		return date1;
+	}
+
+	public void setDate1(Date date1) {
+		this.date1 = date1;
+	}
+
+	public Date getDate2() {
+		return date2;
+	}
+
+	public void setDate2(Date date2) {
+		this.date2 = date2;
+	}
+
+	public Date getDate3() {
+		return date3;
+	}
+
+	public void setDate3(Date date3) {
+		this.date3 = date3;
+	}
+
+	public Date getDate8() {
+		return date8;
+	}
+
+	public void setDate8(Date date8) {
+		this.date8 = date8;
+	}
+
+	public Date getDate4() {
+		return date4;
+	}
+
+	public void setDate4(Date date4) {
+		this.date4 = date4;
+	}
+
+	public Date getDate5() {
+		return date5;
+	}
+
+	public void setDate5(Date date5) {
+		this.date5 = date5;
+	}
+
+	public User getUser1() {
+		return user1;
+	}
+
+	public void setUser1(User user1) {
+		this.user1 = user1;
+	}
+
+	public User getUser2() {
+		return user2;
+	}
+
+	public void setUser2(User user2) {
+		this.user2 = user2;
+	}
+
+	public User getUser3() {
+		return user3;
+	}
+
+	public void setUser3(User user3) {
+		this.user3 = user3;
+	}
+
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
+	}
+
+	public User getUser4() {
+		return user4;
+	}
+
+	public void setUser4(User user4) {
+		this.user4 = user4;
+	}
+
+	public User getUser5() {
+		return user5;
+	}
+
+	public void setUser5(User user5) {
+		this.user5 = user5;
+	}
+	
+	
+	
+	
+	
+	
 
 }

@@ -47,6 +47,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import ma.azdad.mobile.model.Dashboard;
 import ma.azdad.model.BoqMapping;
 import ma.azdad.model.Currency;
 import ma.azdad.model.DeliveryRequest;
@@ -1304,6 +1305,42 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	// mobile
+	
+	public ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id){
+		
+		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
+		DeliveryRequest dn = repos.findById(id).get();
+		if(dn.getRequester() != null) {
+			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), 
+					dn.getRequester().getLogin(), dn.getRequester().getPhoto(), dn.getRequester().getEmail()) );
+			dnm.setDate1(dn.getDate1());
+			dnm.setUser2(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), 
+					dn.getRequester().getLogin(), dn.getRequester().getPhoto(), dn.getRequester().getEmail()) );
+			if(dn.getDate2() != null)
+				dnm.setDate2(dn.getDate2());
+		}
+		if(dn.getUser3() != null)
+			dnm.setUser3(new ma.azdad.mobile.model.User(dn.getUser3().getUsername(), dn.getUser3().getFirstName(), dn.getUser3().getLastName(), 
+					dn.getUser3().getLogin(), dn.getUser3().getPhoto(), dn.getUser3().getEmail()) );
+		if(dn.getDate3() != null)
+			dnm.setDate3(dn.getDate3());
+		if(dn.getUser4() != null)
+			dnm.setUser4(new ma.azdad.mobile.model.User(dn.getUser4().getUsername(), dn.getUser4().getFirstName(), dn.getUser4().getLastName(), 
+					dn.getUser4().getLogin(), dn.getUser4().getPhoto(), dn.getUser4().getEmail()) );
+		if(dn.getDate4() != null)
+			dnm.setDate4(dn.getDate4());
+		if(dn.getUser5() != null)
+			dnm.setUser5(new ma.azdad.mobile.model.User(dn.getUser5().getUsername(), dn.getUser5().getFirstName(), dn.getUser5().getLastName(), 
+					dn.getUser5().getLogin(), dn.getUser5().getPhoto(), dn.getUser5().getEmail()) );
+		if(dn.getDate5() != null)
+			dnm.setDate5(dn.getDate5());
+		if(dn.getUser8() != null)
+			dnm.setUser8(new ma.azdad.mobile.model.User(dn.getUser8().getUsername(), dn.getUser8().getFirstName(), dn.getUser8().getLastName(), 
+					dn.getUser8().getLogin(), dn.getUser8().getPhoto(), dn.getUser8().getEmail()) );
+		if(dn.getDate8() != null)
+			dnm.setDate8(dn.getDate8());
+		return dnm;
+	}
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
@@ -1339,9 +1376,31 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<Integer> projectIdList = projectService.findAssignedProjectIdListByResource(username);
 		return repos.findByMissingOutboundDeliveryNoteFileMobile(username, warehouseList, projectIdList);
 	}
+	
 
+	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList) {
+		return deliveryRequestRepos.countByMissingSerialNumberMobile(warehouseList);
+	}
+
+	public Long countByMissingExpiryMobile(List<Integer> warehouseList) {
+		return deliveryRequestRepos.countByMissingExpiryMobile(warehouseList);
+	}
+
+	public Long countByMissingOutboundDeliveryNoteFileMobile(String username, Collection<Integer> warehouseList) {
+		List<Integer> projectIdList = projectService.findAssignedProjectIdListByResource(username);
+		return deliveryRequestRepos.countByMissingOutboundDeliveryNoteFileMobile(username, warehouseList,projectIdList);
+	}
 	
-	
+	public Dashboard getDashboard(String username, List<Integer> warehouseList) {
+		
+		Dashboard dashboard = new Dashboard();
+		dashboard.setMissingSn(countByMissingSerialNumberMobile(warehouseList));
+		dashboard.setMissingExpiry(countByMissingExpiryMobile(warehouseList));
+		dashboard.setMissingBl(countByMissingOutboundDeliveryNoteFileMobile(username,warehouseList));
+		return dashboard;
+		
+	}
+
 	public void updateOutboundInboundPo(Integer outboundId) {
 		DeliveryRequest deliveryRequest = findOne(outboundId);
 		if (deliveryRequest.getDetailList().stream().filter(i -> i.getInboundDeliveryRequest().getPo() == null).count() == 0 //

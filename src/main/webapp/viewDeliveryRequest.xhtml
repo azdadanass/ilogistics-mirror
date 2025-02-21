@@ -2151,13 +2151,18 @@
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
+											<p:column headerText="Return Quantity" width="70">
+												<h:outputText value="#{item.returnedQuantity}" styleClass=" bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
 											<p:column headerText="Mapped Quantity" width="70">
 												<h:outputText value="#{item.quantity}" styleClass=" bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Remaining QTY">
-												<h:outputText value="#{-item.dnQuantity - item.quantity}" />
+												<h:outputText value="#{-item.dnQuantity -item.returnedQuantity - item.quantity}" />
 											</p:column>
 										</p:dataTable>
 									</div>

@@ -28,6 +28,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	// TMP
 	private String tmpSerialNumber;
 	private Double dnQuantity;
+	private Double returnedQuantity;
 
 	public JobRequestDeliveryDetail() {
 		super();
@@ -395,5 +396,17 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	public void setDnQuantity(Double dnQuantity) {
 		this.dnQuantity = dnQuantity;
 	}
+
+	@Transient
+	public Double getReturnedQuantity() {
+		return returnedQuantity;
+	}
+
+	@Transient
+	public void setReturnedQuantity(Double returnedQuantity) {
+		this.returnedQuantity = returnedQuantity;
+	}
+	
+	
 
 }

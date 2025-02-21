@@ -71,14 +71,17 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		List<JobRequestDeliveryDetail> data = repos.findByDeliveryRequest(deliveryRequestId);
 		
 		Map<Integer,Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(deliveryRequestId);
+		Map<Integer,Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(deliveryRequestId);
+		
+		System.out.println("returnQtyMap : "+returnQtyMap);
 		
 		Map<Integer, JobRequestDeliveryDetail> map = new HashMap<Integer, JobRequestDeliveryDetail>();
 		for (JobRequestDeliveryDetail jrdd : data) {
 			JobRequestDeliveryDetail jobRequestDeliveryDetail;
 			if (!map.containsKey(jrdd.getPartNumberId())) {
 				jobRequestDeliveryDetail = new JobRequestDeliveryDetail();
-				jobRequestDeliveryDetail.setPartNumberName(jrdd.getPartNumberName());
 				jobRequestDeliveryDetail.setPartNumberId(jrdd.getPartNumberId());
+				jobRequestDeliveryDetail.setPartNumberName(jrdd.getPartNumberName());
 				jobRequestDeliveryDetail.setPartNumberDescription(jrdd.getPartNumberDescription());
 				jobRequestDeliveryDetail.setPartNumberImage(jrdd.getPartNumberImage());
 				map.put(jrdd.getPartNumberId(), jobRequestDeliveryDetail);
@@ -88,7 +91,8 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 				jobRequestDeliveryDetail.setQuantity(jobRequestDeliveryDetail.getQuantity()+ jrdd.getInstalledQuantity());
 			else
 				jobRequestDeliveryDetail.setQuantity(jobRequestDeliveryDetail.getQuantity()+jrdd.getQuantity());
-			jobRequestDeliveryDetail.setDnQuantity(dnQtyMap.get(jrdd.getPartNumberId()));
+			jobRequestDeliveryDetail.setDnQuantity(dnQtyMap.getOrDefault(jrdd.getPartNumberId(), 0.0));
+			jobRequestDeliveryDetail.setReturnedQuantity(returnQtyMap.getOrDefault(jrdd.getPartNumberId(), 0.0));
 		}
 		return new ArrayList<JobRequestDeliveryDetail>(map.values());
 	}

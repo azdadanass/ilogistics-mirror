@@ -22,24 +22,15 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description,"//
 			+ "a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,"//
 			+ "a.jobRequest.id,a.jobRequest.reference,a.jobRequest.status,a.jobRequest.site.name,a.jobRequest.team.name,"//
-			+ "a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + ","
-			+ toUserFullName +","+inboundPoNumero+ ") ";
-	
-	
-	String c2 = "select new JobRequestDeliveryDetail(sum(a.quantity),(select sum(b.quantity) from StockRow b where b.deliveryRequest.id = a.deliveryRequest.id and b.partNumber.id = a.partNumber.id),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.image) ";
+			+ "a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ","
+			+ inboundPoNumero + ") ";
 
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.jobRequest.project.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByProject(Integer projectId);
-	
-	
-	
-	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1")
+
+	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.jobRequest.status not in ('REJECTED','CANCELED')")
 	List<JobRequestDeliveryDetail> findByDeliveryRequest(Integer deliveryRequestId);
-	
-	@Query(c2 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 group by a.partNumber.id")
-	List<JobRequestDeliveryDetail> findSummaryByDeliveryRequest(Integer deliveryRequestId);
-	
-	
+
 	@Query(c1 + "from JobRequestDeliveryDetail a where a.deliveryRequest.id = ?1 and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByDeliveryRequest(Integer deliveryRequest);
 
@@ -50,17 +41,15 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 //			+ "and a.partNumber.id in (?3) " //
 //			+ "and a.installedQuantity > 0")
 //	List<JobRequestDeliveryDetail> findInstalledByCompanyOwner(Integer companyId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList);
-	
-	@Query(c1
-			+ "from JobRequestDeliveryDetail a " //
+
+	@Query(c1 + "from JobRequestDeliveryDetail a " //
 			+ "where a.deliveryRequest.company.id = ?1 "//
 			+ "and a.deliveryRequest.id in (?2) " //
 			+ "and a.partNumber.id in (?3) " //
 			+ "and a.installedQuantity > 0")
 	List<JobRequestDeliveryDetail> findInstalledByCompanyOwner(Integer companyId, Collection<Integer> deliveryRequestIdList, Collection<Integer> partNumberIdList);
 
-	@Query(c1
-			+ "from JobRequestDeliveryDetail a " //
+	@Query(c1 + "from JobRequestDeliveryDetail a " //
 			+ "where a.deliveryRequest.customer.id = ?1 "//
 			+ "and a.deliveryRequest.id in (?2) " //
 			+ "and a.partNumber.id in (?3) " //
@@ -69,15 +58,15 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 
 	@Query("select count(*) from JobRequestDeliveryDetail where deliveryRequest.id = ?1")
 	Long countByDeliveryRequest(Integer deliveryRequestId);
-	
+
 	@Modifying
 	@Query("delete from JobRequestDeliveryDetail where deliveryRequest.id = ?1")
 	void deleteByDeliveryRequest(Integer deliveryRequestId);
-	
+
 	@Query("select distinct a.jobRequest.id from JobRequestDeliveryDetail a where a.jobRequest.date6 is null and a.deliveryRequest.id = ?1")
 	List<Integer> findNotStartedJobRequestIdListByDeliveryRequest(Integer deliveryRequest);
-	
+
 	@Modifying
 	@Query("delete from JobRequestDeliveryDetail where deliveryRequest.id = ?1 and jobRequest.id in (?2)")
-	void deleteByDeliveryRequestAndJobRequestList(Integer deliveryRequestId,List<Integer> jobRequestList);
+	void deleteByDeliveryRequestAndJobRequestList(Integer deliveryRequestId, List<Integer> jobRequestList);
 }

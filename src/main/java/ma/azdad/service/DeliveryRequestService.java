@@ -311,7 +311,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Cacheable(value = "deliveryRequestService.findLightByWarehouseList")
 	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList) {
-		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2,DeliveryRequestStatus.PARTIALLY_DELIVRED) , DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
 	}
 	
 	
@@ -964,7 +964,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
-		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded() && (connectedUser.equals(deliveryRequest.getRequester().getUsername()) || connectedUser.equals(deliveryRequest.getProject().getManager().getUsername())) 
+		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded()
+				&& (connectedUser.equals(deliveryRequest.getRequester().getUsername()) || connectedUser.equals(deliveryRequest.getProject().getManager().getUsername()))
 				&& deliveryRequest.getTransportationRequest() == null && !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
 	}
 
@@ -1302,6 +1303,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void updateHardwareSwapInboundIdAndStatus(Integer outboundId, Integer inboundId, DeliveryRequestStatus inboundStatus) {
 		evictCache();
 		repos.updateHardwareSwapInboundIdAndStatus(outboundId, inboundId, inboundStatus);
+	}
+
+	public Long countByHardwareSwapInboundId(Integer inboundId) {
+		return repos.countByHardwareSwapInboundId(inboundId);
 	}
 
 	// mobile

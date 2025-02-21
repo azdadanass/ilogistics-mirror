@@ -1588,6 +1588,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 		if (getIsInboundNew())
 			result += ", New";
+		else if(getIsInboundDismantle())
+			result += ", Dismantle";
 		else if (getIsInboundReturn())
 			result += ", Return From Outbound, " + outboundDeliveryRequestReturn.getReference();
 		else if (getIsInboundTransfer())
@@ -1602,6 +1604,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 		if (getIsInboundNew())
 			result += ", New";
+		else if (getIsInboundDismantle())
+			result += ", Dismantle";
 		else if (getIsInboundReturn())
 			result += ", Return From Outbound, " + outboundDeliveryRequestReturn.getReference();
 		else if (getIsInboundTransfer())
@@ -1793,6 +1797,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public Boolean getIsInboundNew() {
 		return getIsInbound() && InboundType.NEW.equals(inboundType);
+	}
+	
+	@Transient
+	public Boolean getIsInboundDismantle() {
+		return getIsInbound() && InboundType.DISMANTLE.equals(inboundType);
 	}
 
 	@Transient

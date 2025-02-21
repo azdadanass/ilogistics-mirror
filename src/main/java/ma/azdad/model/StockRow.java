@@ -66,6 +66,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private Double forecastQuantity;
 
 	private Double installedQuantity;
+	private Double returnedQuantity;
 
 	// c0
 	public StockRow(Double quantity, PartNumber partNumber) {
@@ -431,9 +432,10 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
 			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
-			Date deliveryRequestDate4, Boolean deliveryRequestSdm, Boolean deliveryRequestIsm,Boolean deliveryRequestIsForReturn,String deliveryRequestReturnReason, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
+			Date deliveryRequestDate4, Boolean deliveryRequestSdm, Boolean deliveryRequestIsm, Boolean deliveryRequestIsForReturn, String deliveryRequestReturnReason,
+			String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
 			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
-			String toUserFullName,String poNumero,String inboundPoNumero, String endCustomerName) {
+			String toUserFullName, String poNumero, String inboundPoNumero, String endCustomerName) {
 		this.quantity = quantity;
 		this.status = status;
 		this.setUnitCost(unitCost);
@@ -466,7 +468,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setDeliverToCustomerName(deliverToCustomerName);
 		this.setDeliverToSupplierName(deliverToSupplierName);
 		this.setDeliverToOther(deliverToOther);
-		this.setToUserFullName(toUserFullName);	
+		this.setToUserFullName(toUserFullName);
 		this.setPoNumero(poNumero);
 		this.setInboundPoNumero(inboundPoNumero);
 		this.setEndCustomerName(endCustomerName);
@@ -495,56 +497,57 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.qTotalCost = qTotalCost;
 		this.setProjectName(projectName);
 	}
-	
+
 	// c24 --> deliveryReporting 2
-		public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
-				Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
-				Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
-				Date deliveryRequestDate4, Boolean deliveryRequestSdm,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference,String inboundDeliveryRequestOriginNumber, String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
-				CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
-				String toUserFullName,String toUserEmail,String toUserPhone,String toUserCin, //
-				String poNumero,Integer inboundPoId,String inboundPoNumero, String endCustomerName) {
-			this.quantity = quantity;
-			this.status = status;
-			this.setUnitCost(unitCost);
-			this.setCostCurrencyId(costCurrencyId);
-			this.setUnitPrice(unitPrice);
-			this.setPriceCurrencyId(priceCurrencyId);
-			this.setDeliveryRequestId(deliveryRequestId);
-			this.setProjectName(projectName);
-			this.setWarehouseName(warehouseName);
-			this.setPartNumberId(partNumberId);
-			this.setPartNumberName(partNumberName);
-			this.setPartNumberImage(partNumberImage);
-			this.setPartNumberDescription(partNumberDescription);
-			this.setPartNumberBrandName(partNumberBrandName);
-			this.setDeliveryRequestType(deliveryRequestType);
-			this.setDeliveryRequestInboundType(deliveryRequestInboundType);
-			this.setDeliveryRequestReference(deliveryRequestReference);
-			this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
-			this.setDeliveryRequestDate4(deliveryRequestDate4);
-			this.setDeliveryRequestSdm(deliveryRequestSdm);
-			this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
-			this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
-			this.setInboundDeliveryRequestOriginNumber(inboundDeliveryRequestOriginNumber);
-			this.setDestinationProjectCustomerName(destinationProjectCustomerName);
-			this.setDestinationName(destinationName);
-			this.setOriginName(originName);
-			this.setDestinationProjectName(destinationProjectName);
-			this.setDeliverToCompanyType(deliverToCompanyType);
-			this.setDeliverToCompanyName(deliverToCompanyName);
-			this.setDeliverToCustomerName(deliverToCustomerName);
-			this.setDeliverToSupplierName(deliverToSupplierName);
-			this.setDeliverToOther(deliverToOther);
-			this.setToUserFullName(toUserFullName);
-			this.setToUserEmail(toUserEmail);
-			this.setToUserPhone(toUserPhone);
-			this.setToUserCin(toUserCin);
-			this.setPoNumero(poNumero);
-			this.setInboundPoId(inboundPoId);
-			this.setInboundPoNumero(inboundPoNumero);
-			this.setEndCustomerName(endCustomerName);
-		}
+	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, Integer priceCurrencyId, String projectName, String warehouseName, //
+			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
+			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
+			Date deliveryRequestDate4, Boolean deliveryRequestSdm, Integer inboundDeliveryRequestId, String inboundDeliveryRequestReference, String inboundDeliveryRequestOriginNumber,
+			String destinationProjectCustomerName, String destinationName, String originName, String destinationProjectName, //
+			CompanyType deliverToCompanyType, String deliverToCompanyName, String deliverToCustomerName, String deliverToSupplierName, String deliverToOther, //
+			String toUserFullName, String toUserEmail, String toUserPhone, String toUserCin, //
+			String poNumero, Integer inboundPoId, String inboundPoNumero, String endCustomerName) {
+		this.quantity = quantity;
+		this.status = status;
+		this.setUnitCost(unitCost);
+		this.setCostCurrencyId(costCurrencyId);
+		this.setUnitPrice(unitPrice);
+		this.setPriceCurrencyId(priceCurrencyId);
+		this.setDeliveryRequestId(deliveryRequestId);
+		this.setProjectName(projectName);
+		this.setWarehouseName(warehouseName);
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberImage(partNumberImage);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberBrandName(partNumberBrandName);
+		this.setDeliveryRequestType(deliveryRequestType);
+		this.setDeliveryRequestInboundType(deliveryRequestInboundType);
+		this.setDeliveryRequestReference(deliveryRequestReference);
+		this.setDeliveryRequestSmsRef(deliveryRequestSmsRef);
+		this.setDeliveryRequestDate4(deliveryRequestDate4);
+		this.setDeliveryRequestSdm(deliveryRequestSdm);
+		this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+		this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+		this.setInboundDeliveryRequestOriginNumber(inboundDeliveryRequestOriginNumber);
+		this.setDestinationProjectCustomerName(destinationProjectCustomerName);
+		this.setDestinationName(destinationName);
+		this.setOriginName(originName);
+		this.setDestinationProjectName(destinationProjectName);
+		this.setDeliverToCompanyType(deliverToCompanyType);
+		this.setDeliverToCompanyName(deliverToCompanyName);
+		this.setDeliverToCustomerName(deliverToCustomerName);
+		this.setDeliverToSupplierName(deliverToSupplierName);
+		this.setDeliverToOther(deliverToOther);
+		this.setToUserFullName(toUserFullName);
+		this.setToUserEmail(toUserEmail);
+		this.setToUserPhone(toUserPhone);
+		this.setToUserCin(toUserCin);
+		this.setPoNumero(poNumero);
+		this.setInboundPoId(inboundPoId);
+		this.setInboundPoNumero(inboundPoNumero);
+		this.setEndCustomerName(endCustomerName);
+	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -630,7 +633,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReference(deliveryRequestReference);
 	}
-	
+
 	@Transient
 	public Boolean getDeliveryRequestIsForReturn() {
 		if (deliveryRequest == null)
@@ -644,7 +647,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setIsForReturn(deliveryRequestIsForReturn);
 	}
-	
+
 	@Transient
 	public String getDeliveryRequestReturnReason() {
 		if (deliveryRequest == null)
@@ -658,7 +661,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setReturnReason(deliveryRequestReturnReason);
 	}
-	
 
 	@Transient
 	public Boolean getDeliveryRequestSdm() {
@@ -673,7 +675,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setSdm(deliveryRequestSdm);
 	}
-	
+
 	@Transient
 	public Boolean getDeliveryRequestIsm() {
 		if (deliveryRequest == null)
@@ -729,7 +731,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			return null;
 		return String.valueOf(UtilsFunctions.getMonth(getDeliveryRequestDate4()) + "/" + UtilsFunctions.getYear(getDeliveryRequestDate4()));
 	}
-	
+
 	@Transient
 	public String getToUserFullName() {
 		if (deliveryRequest == null)
@@ -743,7 +745,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setToUserFullName(toUserFullName);
 	}
-	
+
 	@Transient
 	public String getToUserEmail() {
 		if (deliveryRequest == null)
@@ -757,7 +759,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setToUserEmail(toUserEmail);
 	}
-	
+
 	@Transient
 	public String getToUserPhone() {
 		if (deliveryRequest == null)
@@ -771,7 +773,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setToUserPhone(toUserPhone);
 	}
-	
+
 	@Transient
 	public String getToUserCin() {
 		if (deliveryRequest == null)
@@ -1313,7 +1315,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setPoNumero(poNumero);
 	}
-	
+
 	@Transient
 	public Integer getInboundPoId() {
 		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getPoId() : null;
@@ -1325,7 +1327,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setPoId(inboundPoId);
 	}
-	
+
 	@Transient
 	public String getInboundPoNumero() {
 		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getPoNumero() : null;
@@ -1373,7 +1375,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setProjectName(inboundProjectName);
 	}
-	
+
 	@Transient
 	public String getInboundWarehouseName() {
 		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getWarehouseName() : null;
@@ -1397,7 +1399,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 			inboundDeliveryRequest = new DeliveryRequest();
 		inboundDeliveryRequest.setReference(inboundDeliveryRequestReference);
 	}
-	
+
 	@Transient
 	public String getInboundDeliveryRequestOriginNumber() {
 		return inboundDeliveryRequest != null ? inboundDeliveryRequest.getOriginNumber() : null;
@@ -1733,6 +1735,16 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	public void setInboundSupplierId(Integer inboundSupplierId) {
 		this.inboundSupplierId = inboundSupplierId;
+	}
+
+	@Transient
+	public Double getReturnedQuantity() {
+		return returnedQuantity;
+	}
+
+	@Transient
+	public void setReturnedQuantity(Double returnedQuantity) {
+		this.returnedQuantity = returnedQuantity;
 	}
 
 }

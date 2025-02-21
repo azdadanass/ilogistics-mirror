@@ -28,6 +28,7 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	// TMP
 	private String tmpSerialNumber;
 	private Double dnQuantity;
+	private Double returnedQuantity;
 
 	public JobRequestDeliveryDetail() {
 		super();
@@ -78,20 +79,6 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		this.setToUserFullName(toUserFullName);
 
 		this.setInboundPoNumero(inboundPoNumero);
-	}
-
-	// c2
-
-	public JobRequestDeliveryDetail(Double quantity,Double dnQuantity, //
-			Integer partNumberId,String partNumberName,String partNumberDescription,String partNumberImage
-			) {
-		
-		this.quantity = quantity;
-		this.dnQuantity = dnQuantity;
-		this.setPartNumberId(partNumberId);
-		this.setPartNumberName(partNumberName);
-		this.setPartNumberDescription(partNumberDescription);
-		this.setPartNumberImage(partNumberImage);
 	}
 
 	public JobRequestDeliveryDetail(Double quantity, Boolean isSerialNumberRequired, JobRequest jobRequest, DeliveryRequest deliveryRequest, PartNumber partNumber) {
@@ -409,5 +396,17 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 	public void setDnQuantity(Double dnQuantity) {
 		this.dnQuantity = dnQuantity;
 	}
+
+	@Transient
+	public Double getReturnedQuantity() {
+		return returnedQuantity;
+	}
+
+	@Transient
+	public void setReturnedQuantity(Double returnedQuantity) {
+		this.returnedQuantity = returnedQuantity;
+	}
+	
+	
 
 }

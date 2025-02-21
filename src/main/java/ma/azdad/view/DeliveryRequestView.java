@@ -2688,6 +2688,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 //	}
 
 	// generic
+	public Boolean getisHardwareSwapInbound() {
+		return service.countByHardwareSwapInboundId(id)>0;
+	}
 
 	public List<DeliveryRequest> findByCanBeTransported() {
 		return service.findByCanBeTransported(sessionView.getUsername());

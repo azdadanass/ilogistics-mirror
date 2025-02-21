@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 public enum InboundType {
 	NEW("New", "green", "#69aa46"),
+	DISMANTLE("Dismantle", "orange", "#e8b110"),
 	RETURN("Return From Outbound", "red", "#dd5a43"),
 	TRANSFER("Transfer from Outbound", "blue", "#ff851d"),;
 

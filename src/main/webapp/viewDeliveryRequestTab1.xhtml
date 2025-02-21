@@ -183,6 +183,7 @@
 						</f:subview>
 						<h:outputText value="#{deliveryRequestView.deliveryRequest.type.value}" />
 						<h:outputText value=", #{deliveryRequestView.deliveryRequest.subType}" rendered="#{deliveryRequestView.deliveryRequest.subType!=null}" />
+						<h:outputText value=", Hardware Swap" rendered="#{deliveryRequestView.isHardwareSwapInbound}" />
 						<p:commandLink title="Edit" rendered="#{deliveryRequestView.canEditSubType()}" onclick="PF('subTypeDlg').show()" styleClass="pull-right">
 							<i class="ace-icon fa fa-edit bigger-130 orange" />
 						</p:commandLink>
@@ -309,7 +310,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.destinationProjectSdm}">
+				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound and (deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.destinationProjectSdm)) or deliveryRequestView.deliveryRequest.isInboundDismantle}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="SDM" />
@@ -330,7 +331,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.ism or deliveryRequestView.deliveryRequest.destinationProjectIsm}">
+				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound and (deliveryRequestView.deliveryRequest.ism or deliveryRequestView.deliveryRequest.destinationProjectIsm)) or deliveryRequestView.isHardwareSwapInbound}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="ISM" />
@@ -408,7 +409,7 @@
 							<h:outputText value="Origin DN N°" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" rendered="#{deliveryRequestView.deliveryRequest.isInboundNew}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isInboundDismantle}" />
 							<h:outputLink value="viewDeliveryRequest.xhtml" target="_blank" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" />
 								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.id}" />

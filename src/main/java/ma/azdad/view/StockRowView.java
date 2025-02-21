@@ -266,6 +266,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 				break;
 			case "/viewDeliveryRequest.xhtml":
 				if (Boolean.TRUE.equals(deliveryRequestView.getDeliveryRequest().getSdm()) || Boolean.TRUE.equals(deliveryRequestView.getDeliveryRequest().getIsm())) {
+					Map<Integer,Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
 					List<StockRow> result = new ArrayList<>();
 					deliveryRequestView.getDeliveryRequest().getStockRowList().stream()
 							.collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)))
@@ -274,6 +275,7 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 					list1.forEach(sr -> {
 						sr.setInstalledQuantity(jobRequestDeliveryDetailView.getList1().stream().filter(i -> i.getPartNumberId().equals(sr.getPartNumberId()))
 								.mapToDouble(i -> i.getInstalledQuantity()).sum());
+						sr.setReturnedQuantity(returnQtyMap.getOrDefault(sr.getPartNumberId(), 0.0));
 					});
 				}
 				break;

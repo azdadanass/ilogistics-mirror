@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
@@ -415,7 +414,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ "a.destinationProject.id,(select b.name from Project b where b.id = a.destinationProject.id),"//
 			+ "a.warehouse.id,a.warehouse.name,"//
 			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
-			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate)";
+			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate,a.transportationNeeded)";
 	
 	@Query(cm1 + " from DeliveryRequest a where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);
@@ -446,4 +445,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select count(*) from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
 	public Long countByMissingOutboundDeliveryNoteFileMobile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
+	
+	@Query("select new ma.azdad.mobile.model.DeliveryRequestHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from DeliveryRequestHistory a left join a.user as u where a.parent.id = ?1")
+	List<ma.azdad.mobile.model.DeliveryRequestHistory> findHistoryListMobile(Integer id);
 }

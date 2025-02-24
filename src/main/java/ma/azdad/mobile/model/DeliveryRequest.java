@@ -1,10 +1,21 @@
 package ma.azdad.mobile.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.Transient;
+
+import ma.azdad.model.Company;
+import ma.azdad.model.CompanyType;
+import ma.azdad.model.Customer;
+import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestFile;
+import ma.azdad.model.DeliveryRequestHistory;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
+import ma.azdad.model.Supplier;
 import ma.azdad.utils.Public;
 
 public class DeliveryRequest {
@@ -19,7 +30,9 @@ public class DeliveryRequest {
 	private Boolean isForReturn = false;
 	private Boolean isForTransfer = false;
 
-
+	
+	private String ownerName;
+	private Boolean transportationNeeded = false;
 	private String requesterFullName;
 	private String requesterPhoto;
 	private Integer projectId;
@@ -32,30 +45,37 @@ public class DeliveryRequest {
 	private String destinationName;
 	private Integer originId;
 	private String originName;
+	
+	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
+	private List<DeliveryRequestFile> fileList = new ArrayList<>();
+	private List<ma.azdad.mobile.model.DeliveryRequestHistory> historyList = new ArrayList<>();
 
 	// TIMELINE
-		
-			private User user1; // Edited
-			private User user2; // Requested
-			private User user3; // Approved PM
-			private User user8; // Approved HM
-			private User user4; // Delivered
-			private User user5; // Acknowledged
-			
-			private Date date1; // Edited
-			private Date date2; // Requested
-			private Date date3; // Approved PM
-			private Date date8; // Approved HM
-			private Date date4; // Delivered
-			private Date date5; // Acknowledged
+
+	private User user1; // Edited
+	private User user2; // Requested
+	private User user3; // Approved PM
+	private User user8; // Approved HM
+	private User user4; // Delivered
+	private User user5; // Acknowledged
+
+	private Date date1; // Edited
+	private Date date2; // Requested
+	private Date date3; // Approved PM
+	private Date date8; // Approved HM
+	private Date date4; // Delivered
+	private Date date5; // Acknowledged
+
 	public DeliveryRequest() {
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, InboundType inboundType, DeliveryRequestStatus status,
-			Boolean isForReturn, Boolean isForTransfer, String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
-			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName,
-			String requesterPhoto,Date deliveryDate) {
+	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate,
+			InboundType inboundType, DeliveryRequestStatus status, Boolean isForReturn, Boolean isForTransfer,
+			String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
+			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
+			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
+			Boolean transportationNeeded) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -78,12 +98,9 @@ public class DeliveryRequest {
 		this.originName = originName;
 		this.requesterPhoto = Public.getPublicUrl(requesterPhoto);
 		this.deliveryDate = deliveryDate;
+		this.transportationNeeded = transportationNeeded;
+
 	}
-
-	
-	
-
-
 
 	public Integer getId() {
 		return id;
@@ -348,10 +365,47 @@ public class DeliveryRequest {
 	public void setUser5(User user5) {
 		this.user5 = user5;
 	}
-	
-	
-	
-	
+
+	public Boolean getTransportationNeeded() {
+		return transportationNeeded;
+	}
+
+	public void setTransportationNeeded(Boolean transportationNeeded) {
+		this.transportationNeeded = transportationNeeded;
+	}
+
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
+	public List<ma.azdad.mobile.model.DeliveryRequestDetail> getDetailList() {
+		return detailList;
+	}
+
+	public void setDetailList(List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList) {
+		this.detailList = detailList;
+	}
+
+	public List<DeliveryRequestFile> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<DeliveryRequestFile> fileList) {
+		this.fileList = fileList;
+	}
+
+	public List<ma.azdad.mobile.model.DeliveryRequestHistory> getHistoryList() {
+		return historyList;
+	}
+
+	public void setHistoryList(List<ma.azdad.mobile.model.DeliveryRequestHistory> historyList) {
+		this.historyList = historyList;
+	}
 	
 	
 

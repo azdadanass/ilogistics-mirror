@@ -76,6 +76,14 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Query("select a.id from DeliveryRequestDetail a where a.partNumber.id =?1 and a.deliveryRequest.outboundDeliveryRequestTransfer.id = (select b.deliveryRequest.id from DeliveryRequestDetail b where b.id = ?2)")
 	public List<Integer> findIdListByPartNumberAndOutboundDeliveryRequestTransfer(Integer partNumberId, Integer outboundDeliveryRequestDetailId);
 
+	
+	String cm2 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
+			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image) ";
+
+	@Query(cm2 + "from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
+	List<ma.azdad.mobile.model.DeliveryRequestDetail> findByDeliveryRequestMobile(Integer id);
+	
+	
 	// UPDATE UNIT COST
 	@Modifying
 	@Query("update DeliveryRequestDetail set unitCost = ?2 where id = ?1 ")

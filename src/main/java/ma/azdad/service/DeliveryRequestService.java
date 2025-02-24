@@ -49,6 +49,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Dashboard;
 import ma.azdad.model.BoqMapping;
+import ma.azdad.model.CompanyType;
 import ma.azdad.model.Currency;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
@@ -1311,10 +1312,32 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	// mobile
 	
+	public String getOwnerName(String company,String customer,String supplier,CompanyType type) {
+		if (type == null)
+			return null;
+		switch (type) {
+		case COMPANY:
+			return company;
+			
+		case CUSTOMER:
+			return customer;
+			
+		case SUPPLIER:
+			return supplier;
+		default:
+			return null;
+		}
+	}
+	
+	
 	public ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id){
 		
 		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
 		DeliveryRequest dn = repos.findById(id).get();
+		dnm.setOwnerName(getOwnerName(dn.getCompanyName(),dn.getCustomerName(),dn.getSupplierName(),dn.getOwnerType()));
+		dnm.setHistoryList(repos.findHistoryListMobile(id));
+		//dnm.setFileList(dn.getFileList());
+		dnm.setDetailList(deliveryRequestDetailRepos.findByDeliveryRequestMobile(id));
 		if(dn.getRequester() != null) {
 			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), 
 					dn.getRequester().getLogin(), dn.getRequester().getPhoto(), dn.getRequester().getEmail()) );
@@ -1346,6 +1369,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setDate8(dn.getDate8());
 		return dnm;
 	}
+	
+	
+	
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();

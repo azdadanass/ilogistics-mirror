@@ -58,6 +58,7 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
@@ -1336,6 +1337,13 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		DeliveryRequest dn = repos.findById(id).get();
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(),dn.getCustomerName(),dn.getSupplierName(),dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
+		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
+		for (PackingDetail packingDetail : packingList) {
+			dnm.getPackingDetailList().add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(),
+					packingDetail.getLength(), packingDetail.getWidth(), packingDetail.getHeight(), packingDetail.getQuantity(),
+					packingDetail.getVolume(), packingDetail.getGrossWeight()));
+		}
+		
 		//dnm.setFileList(dn.getFileList());
 		dnm.setDetailList(deliveryRequestDetailRepos.findByDeliveryRequestMobile(id));
 		if(dn.getRequester() != null) {

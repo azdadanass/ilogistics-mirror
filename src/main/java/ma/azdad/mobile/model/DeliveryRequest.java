@@ -46,6 +46,7 @@ public class DeliveryRequest {
 	private Integer originId;
 	private String originName;
 	
+	private List<ma.azdad.mobile.model.PackingDetail> packingDetailList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
 	private List<DeliveryRequestFile> fileList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestHistory> historyList = new ArrayList<>();
@@ -406,6 +407,16 @@ public class DeliveryRequest {
 	public void setHistoryList(List<ma.azdad.mobile.model.DeliveryRequestHistory> historyList) {
 		this.historyList = historyList;
 	}
+
+	public List<ma.azdad.mobile.model.PackingDetail> getPackingDetailList() {
+		return packingDetailList;
+	}
+
+	public void setPackingDetailList(List<ma.azdad.mobile.model.PackingDetail> packingDetailList) {
+		this.packingDetailList = packingDetailList;
+	}
+	
+	
 	
 	
 

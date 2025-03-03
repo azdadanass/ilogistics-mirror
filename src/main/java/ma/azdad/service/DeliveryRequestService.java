@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1383,7 +1385,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
-		return deliveryRequestRepos.findLightByWarehouseListMobile(warehouseList,Arrays.asList(DeliveryRequestStatus.APPROVED2,DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
+		List<ma.azdad.mobile.model.DeliveryRequest> list= deliveryRequestRepos.findLightByWarehouseListMobile(
+				warehouseList,Arrays.asList(DeliveryRequestStatus.APPROVED2,DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
+		Collections.sort(list,new Comparator<ma.azdad.mobile.model.DeliveryRequest>() {
+			@Override
+			public int compare(ma.azdad.mobile.model.DeliveryRequest o1, ma.azdad.mobile.model.DeliveryRequest o2) {
+				return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
+			}
+		});
+		return list ;
 	}
 	
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightNewByWarehouseListMobile(List<Integer> warehouseList) {

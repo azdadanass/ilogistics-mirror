@@ -13,6 +13,13 @@ public class DeliveryRequestDetail {
 	private Integer deliveryRequestId;
 	private String partNumberName;
 	private String partNumberImage;
+	private Double remainingQuantity;
+
+	// TMP
+	private Double tmpQuantity;
+	
+	public DeliveryRequestDetail() {
+    }
 
 
 	// c2
@@ -26,6 +33,21 @@ public class DeliveryRequestDetail {
 		this.packingQuantity = packingQuantity;
 		this.partNumberName = partNumberName;
 		this.partNumberImage = Public.getPublicUrl(partNumberImage);
+	}
+	
+	// c1
+	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,
+			String packingName, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity) {
+		super();
+		this.id = id;
+		this.quantity = quantity;
+		this.isSerialNumberRequired = isSerialNumberRequired;
+		this.packingName = packingName;
+		this.packingQuantity = packingQuantity;
+		this.partNumberName = partNumberName;
+		this.partNumberImage = Public.getPublicUrl(partNumberImage);
+		this.remainingQuantity = remainingQuantity;
+		this.tmpQuantity = remainingQuantity;
 	}
 
 	public Integer getId() {
@@ -94,6 +116,24 @@ public class DeliveryRequestDetail {
 
 	public void setPackingQuantity(Double packingQuantity) {
 		this.packingQuantity = packingQuantity;
+	}
+	
+	
+
+	public Double getRemainingQuantity() {
+		return remainingQuantity;
+	}
+
+	public void setRemainingQuantity(Double remainingQuantity) {
+		this.remainingQuantity = remainingQuantity;
+	}
+
+	public Double getTmpQuantity() {
+		return tmpQuantity;
+	}
+
+	public void setTmpQuantity(Double tmpQuantity) {
+		this.tmpQuantity = tmpQuantity;
 	}
 
 	@Override

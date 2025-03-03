@@ -50,6 +50,7 @@ public class DeliveryRequest {
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
 	private List<DeliveryRequestFile> fileList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestHistory> historyList = new ArrayList<>();
+	private List<ma.azdad.mobile.model.HardwareStatusData> stockRowList = new ArrayList<>();
 
 	// TIMELINE
 
@@ -415,6 +416,16 @@ public class DeliveryRequest {
 	public void setPackingDetailList(List<ma.azdad.mobile.model.PackingDetail> packingDetailList) {
 		this.packingDetailList = packingDetailList;
 	}
+
+	public List<ma.azdad.mobile.model.HardwareStatusData> getStockRowList() {
+		return stockRowList;
+	}
+
+	public void setStockRowList(List<ma.azdad.mobile.model.HardwareStatusData> stockRowList) {
+		this.stockRowList = stockRowList;
+	}
+	
+	
 	
 	
 	

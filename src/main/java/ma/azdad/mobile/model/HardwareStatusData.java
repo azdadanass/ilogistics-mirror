@@ -12,18 +12,22 @@ public class HardwareStatusData {
 	private Double quantity;
 	private String status;
 	private String packing;
+	private Integer packingId;
+	private Integer detailId;
 	private Double packingQty;
 	private Boolean isAdded;
-	private String location;
+	private Location location;
 	
 	
 	public HardwareStatusData(Integer id, String partNumber, Double quantity, String packing,
-			Double packingQty) {
+			Double packingQty,Integer packingId,Integer detailId) {
 		super();
 		this.id = id;
 		this.partNumber = partNumber;
 		this.quantity = quantity;
 		this.packing = packing;
+		this.packingId = packingId;
+		this.detailId = detailId;
 		this.packingQty = packingQty;
 	
 	}
@@ -69,12 +73,28 @@ public class HardwareStatusData {
 	public void setIsAdded(Boolean isAdded) {
 		this.isAdded = isAdded;
 	}
-	public String getLocation() {
+	public Location getLocation() {
 		return location;
 	}
-	public void setLocation(String location) {
+	public void setLocation(Location location) {
 		this.location = location;
 	}
+	public Integer getPackingId() {
+		return packingId;
+	}
+	public void setPackingId(Integer packingId) {
+		this.packingId = packingId;
+	}
+	public Integer getDetailId() {
+		return detailId;
+	}
+	public void setDetailId(Integer detailId) {
+		this.detailId = detailId;
+	}
+	
+	
+	
+	
 	
 	
 	

@@ -1,5 +1,6 @@
 package ma.azdad.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 
 	@Autowired
 	private LocationRepos locationRepos;
+	@Autowired
+	private DeliveryRequestService deliveryRequestService;
 
 	@Override
 	public Location findOne(Integer id) {
@@ -43,6 +46,25 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 	
 	public List<Location> findByWarehouseAndStockRowStateAndOwner(DeliveryRequest deliveryRequest){
 		return findByWarehouseAndStockRowStateAndOwner(deliveryRequest.getWarehouseId(),deliveryRequest.getStockRowState(),deliveryRequest.getOwnerType(),deliveryRequest.getOwnerId());
+	}
+	
+	//mobile
+	@SuppressWarnings("null")
+	public List<ma.azdad.mobile.model.Location> findByWarehouseAndStockRowStateAndOwnerMobile(Integer id,String state){
+		DeliveryRequest deliveryRequest =deliveryRequestService.findOne(id);
+		if(state.equals("Normal")) {
+			deliveryRequest.setStockRowState(StockRowState.NORMAL);
+		} else {
+			deliveryRequest.setStockRowState(StockRowState.FAULTY);
+		}
+		List<Location> list =  findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
+		
+		List<ma.azdad.mobile.model.Location> mobileList = new ArrayList<>() ;
+		for (Location location : list) {
+			mobileList.add(new ma.azdad.mobile.model.Location(location.getId(), location.getName()));
+		}
+		System.out.print("lcation size :"+mobileList.size());
+		 return mobileList;
 	}
 
 }

@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
+import ma.azdad.mobile.model.HardwareStatusList;
 import ma.azdad.mobile.model.Token;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ProjectService;
@@ -45,6 +48,13 @@ public class DeliveryRequestController {
 		System.out.println("/mobile/dn/{key}");
 		Token token = tokenService.getBykey(key);
 		return service.findLightByWarehouseListMobile(token.getWarehouseList());
+	}
+	
+	@PostMapping("/mobile/dn/handle-in/{key}/{id}/{category}")
+	public void handle(@PathVariable String key,@PathVariable Integer id,@RequestBody HardwareStatusList list,@PathVariable String category) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/dn/handle-in/{key}");
+		service.handleIn(list.getHardwareStatusDataList(), id,category,token.getUsername());
 	}
 	
 	@GetMapping("/mobile/dn/new/{key}")

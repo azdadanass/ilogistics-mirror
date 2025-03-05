@@ -8,6 +8,7 @@ public class DeliveryRequestDetail {
 	private Integer id;
 	private Double quantity = 0.0;
 	private Boolean isSerialNumberRequired = false;
+	private Integer packingId;
 	private String packingName;
 	private Double packingQuantity = 0.0;
 	private Integer deliveryRequestId;
@@ -37,13 +38,14 @@ public class DeliveryRequestDetail {
 	
 	// c1
 	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,
-			String packingName, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity) {
+			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.packingName = packingName;
-		this.packingQuantity = packingQuantity;
+		this.packingId =packingId;
+		this.packingQuantity = remainingQuantity;
 		this.partNumberName = partNumberName;
 		this.partNumberImage = Public.getPublicUrl(partNumberImage);
 		this.remainingQuantity = remainingQuantity;
@@ -135,6 +137,18 @@ public class DeliveryRequestDetail {
 	public void setTmpQuantity(Double tmpQuantity) {
 		this.tmpQuantity = tmpQuantity;
 	}
+	
+	
+
+	public Integer getPackingId() {
+		return packingId;
+	}
+
+
+	public void setPackingId(Integer packingId) {
+		this.packingId = packingId;
+	}
+
 
 	@Override
 	public String toString() {

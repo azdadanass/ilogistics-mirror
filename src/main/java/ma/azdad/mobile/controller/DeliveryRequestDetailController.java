@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
 import ma.azdad.mobile.model.HardwareStatusData;
+import ma.azdad.mobile.model.Location;
 import ma.azdad.mobile.model.Token;
 import ma.azdad.model.StockRowState;
 import ma.azdad.model.StockRowStatus;
 import ma.azdad.service.DeliveryRequestDetailService;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.LocationService;
 import ma.azdad.service.TokenService;
 
 @RestController
@@ -23,6 +25,9 @@ public class DeliveryRequestDetailController {
 	
 	@Autowired
 	TokenService tokenService;
+	
+	@Autowired
+	LocationService locationService;
 	
 	@Autowired
 	DeliveryRequestDetailService service;
@@ -33,6 +38,13 @@ public class DeliveryRequestDetailController {
 		Token token = tokenService.getBykey(key);
 		return service.initStockRowList(request,countOk);
 
+	}
+	
+	@GetMapping("/mobile/dnd/location/{key}/{id}/{state}")
+	public List<Location> findLocations(@PathVariable String key,@PathVariable Integer id,@PathVariable String state){
+		System.out.println("/mobile/dnd/location/{key}/{id}");
+		Token token = tokenService.getBykey(key);
+		return locationService.findByWarehouseAndStockRowStateAndOwnerMobile(id,state);
 	}
 	
 	

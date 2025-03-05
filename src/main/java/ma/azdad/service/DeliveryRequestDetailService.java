@@ -799,13 +799,13 @@ public class DeliveryRequestDetailService
 				if (countOk.equals("Yes"))
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
-									detail.getPartNumberName(), detail.getQuantity(), detail.getPackingName(),
-									detail.getPackingQuantity()));
+									detail.getPartNumberName(), detail.getRemainingQuantity(), detail.getPackingName(),
+									detail.getPackingQuantity(),detail.getPackingId(),detail.getId()));
 				else
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
 									detail.getPartNumberName(), detail.getTmpQuantity(), detail.getPackingName(),
-									detail.getTmpQuantity()));
+									detail.getTmpQuantity(),detail.getPackingId(),detail.getId()));
 
 			}
 		System.out.println("stocks size : " + deliveryRequest.getStockRowList().get(0).getQuantity());

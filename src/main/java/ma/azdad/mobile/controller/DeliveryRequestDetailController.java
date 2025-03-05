@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
+import ma.azdad.mobile.model.DnMaterials;
 import ma.azdad.mobile.model.HardwareStatusData;
 import ma.azdad.mobile.model.Location;
 import ma.azdad.mobile.model.Token;
@@ -33,10 +34,18 @@ public class DeliveryRequestDetailController {
 	DeliveryRequestDetailService service;
 	
 	@PostMapping("/mobile/dnd/init-sr/{key}/{countOk}")
-	public List<HardwareStatusData> initNormalSr(@PathVariable String key,@RequestBody DeliveryRequest request,@PathVariable String countOk) {
+	public List<HardwareStatusData> initSr(@PathVariable String key,@RequestBody DeliveryRequest request,@PathVariable String countOk) {
 		System.out.println("/mobile/init-sr/{key}/"+countOk);
 		Token token = tokenService.getBykey(key);
 		return service.initStockRowList(request,countOk);
+
+	}
+	
+	@PostMapping("/mobile/dnd/init-sr2/{key}")
+	public List<DnMaterials> initSr2(@PathVariable String key,@RequestBody DeliveryRequest request) {
+		System.out.println("/mobile/init-sr2/{key}/");
+		Token token = tokenService.getBykey(key);
+		return service.initStockRowList(request);
 
 	}
 	

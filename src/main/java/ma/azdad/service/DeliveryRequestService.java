@@ -1369,6 +1369,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		
 		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
 		DeliveryRequest dn = repos.findById(id).get();
+		if(dn.getToUserUsername() != null) {
+		dn.setToUser(userService.findOne(dn.getToUserUsername()));
+		dnm.setToUser(dn.getToUserFullName());
+		dnm.setToUserInternal(dn.getToUser().getInternal());
+		}
+		if(dn.getDeliverToEntityName() != null)
+		dnm.setToCompany(dn.getDeliverToEntityName());
+		
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(),dn.getCustomerName(),dn.getSupplierName(),dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
@@ -1479,6 +1487,45 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		dashboard.setMissingExpiry(countByMissingExpiryMobile(warehouseList));
 		dashboard.setMissingBl(countByMissingOutboundDeliveryNoteFileMobile(username,warehouseList));
 		return dashboard;
+		
+	}
+	
+	public void handleOut(Integer id,String username) {
+		DeliveryRequest deliveryRequest = findOne(id);
+		deliveryRequest.setStockRowList(stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest));
+		deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
+		if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "DN already Delivered !");
+		}
+		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
+		deliveryRequest.setDate4(new Date());
+		User user = userService.findByUsername(username);
+		deliveryRequest.setUser4(user);
+		deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), user));
+		deliveryRequest = save(deliveryRequest);
+		emailService.deliveryRequestNotification(deliveryRequest);
+		smsService.sendSms(deliveryRequest);
+
+		projectCrossService.addCrossCharge(deliveryRequest);
+		stockRowService.updateOwnerId(deliveryRequest.getId());
+		stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+
+//		if (deliveryRequest.getCustomer() != null)
+//			customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
+
+		if (deliveryRequest.getPo() != null) {
+			// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
+			poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
+		}
+
+		// update field missing sn
+		deliveryRequest = findOne(deliveryRequest.getId());
+		if (deliveryRequest.getStockRowList().stream()
+				.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getId(), i.getInboundDeliveryRequest().getId()) > 0).count() > 0)
+			updateMissingSerialNumber(deliveryRequest.getId(), true);
+		// update is missing expiry
+		if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
+			updateMissingExpiry(deliveryRequest.getId(), true);
 		
 	}
 	

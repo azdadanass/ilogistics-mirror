@@ -57,6 +57,13 @@ public class DeliveryRequestController {
 		service.handleIn(list.getHardwareStatusDataList(), id,category,token.getUsername());
 	}
 	
+	@GetMapping("/mobile/dn/handle-out/{key}/{id}")
+	public void handle(@PathVariable String key,@PathVariable Integer id) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/dn/handle-out/{key}");
+		service.handleOut(id,token.getUsername());
+	}
+	
 	@GetMapping("/mobile/dn/new/{key}")
 	public List<DeliveryRequest> findLightNewByWarehouseListMobile(@PathVariable String key) {
 		System.out.println("/mobile/dn/new/{key}");

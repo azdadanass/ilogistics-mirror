@@ -48,6 +48,7 @@ public class DeliveryRequest {
 	private String toUser;
 	private Boolean toUserInternal;
 	private String toCompany;
+	private String toCompanyLogo;
 	
 	private List<ma.azdad.mobile.model.PackingDetail> packingDetailList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
@@ -452,6 +453,16 @@ public class DeliveryRequest {
 	public void setToCompany(String toCompany) {
 		this.toCompany = toCompany;
 	}
+
+	public String getToCompanyLogo() {
+		return toCompanyLogo;
+	}
+
+	public void setToCompanyLogo(String toCompanyLogo) {
+		this.toCompanyLogo = toCompanyLogo;
+	}
+	
+	
 	
 	
 	

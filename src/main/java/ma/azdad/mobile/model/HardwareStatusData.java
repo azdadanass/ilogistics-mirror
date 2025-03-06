@@ -4,11 +4,13 @@ import java.util.List;
 
 import ma.azdad.model.StockRowState;
 import ma.azdad.model.StockRowStatus;
+import ma.azdad.utils.Public;
 
 public class HardwareStatusData {
 	
 	private Integer id;
 	private String partNumber;
+	private String partNumberImage;
 	private Double quantity;
 	private String status;
 	private String packing;
@@ -20,10 +22,11 @@ public class HardwareStatusData {
 	
 	
 	public HardwareStatusData(Integer id, String partNumber, Double quantity, String packing,
-			Double packingQty,Integer packingId,Integer detailId) {
+			Double packingQty,Integer packingId,Integer detailId,String partNumberImage) {
 		super();
 		this.id = id;
 		this.partNumber = partNumber;
+		this.partNumberImage = Public.getPublicUrl(partNumberImage);
 		this.quantity = quantity;
 		this.packing = packing;
 		this.packingId = packingId;
@@ -91,6 +94,14 @@ public class HardwareStatusData {
 	public void setDetailId(Integer detailId) {
 		this.detailId = detailId;
 	}
+	public String getPartNumberImage() {
+		return partNumberImage;
+	}
+	public void setPartNumberImage(String partNumberImage) {
+		this.partNumberImage = partNumberImage;
+	}
+	
+	
 	
 	
 	

@@ -1,8 +1,11 @@
 package ma.azdad.mobile.model;
 
+import ma.azdad.utils.Public;
+
 public class DnMaterials {
     private int id;
     private String partNumber;
+    private String partNumberImage;
     private String status;
     private String origin;
     private String inboundRequest;
@@ -11,9 +14,10 @@ public class DnMaterials {
 
     // Constructor
     public DnMaterials(int id, String partNumber, String status, String location, 
-                       String origin, double quantity, String inboundRequest) {
+                       String origin, double quantity, String inboundRequest,String partNumberImage) {
         this.id = id;
         this.partNumber = partNumber;
+        this.partNumberImage = Public.getPublicUrl(partNumberImage);
         this.status = status;
         this.location = location;
         this.origin = origin;
@@ -79,7 +83,17 @@ public class DnMaterials {
 		this.quantity = quantity;
 	}
 	
-	 @Override
+	
+	
+	 public String getPartNumberImage() {
+		return partNumberImage;
+	}
+
+	public void setPartNumberImage(String partNumberImage) {
+		this.partNumberImage = partNumberImage;
+	}
+
+	@Override
 	    public String toString() {
 	        return "DnMaterials{" +
 	                "id=" + id +

@@ -805,12 +805,12 @@ public class DeliveryRequestDetailService
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
 									detail.getPartNumberName(), detail.getRemainingQuantity(), detail.getPackingName(),
-									detail.getPackingQuantity(),detail.getPackingId(),detail.getId()));
+									detail.getPackingQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
 				else
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
 									detail.getPartNumberName(), detail.getTmpQuantity(), detail.getPackingName(),
-									detail.getTmpQuantity(),detail.getPackingId(),detail.getId()));
+									detail.getTmpQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
 
 			}
 		System.out.println("stocks size : " + deliveryRequest.getStockRowList().get(0).getQuantity());
@@ -823,7 +823,7 @@ public class DeliveryRequestDetailService
 		List<ma.azdad.mobile.model.DnMaterials> list = new ArrayList<>();
 		for (StockRow row : rows) {
 			list.add(new DnMaterials(0, row.getPartNumber().getName(), row.getStatus().getValue(), row.getLocation().getName()
-					, row.getOriginNumber(), -row.getQuantity(), row.getInboundDeliveryRequest().getReference()));
+					, row.getOriginNumber(), -row.getQuantity(), row.getInboundDeliveryRequest().getReference(),row.getPartNumber().getImage()));
 		}
 		return list;
 	}

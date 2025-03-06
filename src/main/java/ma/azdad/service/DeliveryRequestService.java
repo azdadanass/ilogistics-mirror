@@ -1374,8 +1374,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		dnm.setToUser(dn.getToUserFullName());
 		dnm.setToUserInternal(dn.getToUser().getInternal());
 		}
-		if(dn.getDeliverToEntityName() != null)
+		if(dn.getDeliverToEntityName() != null) {
 		dnm.setToCompany(dn.getDeliverToEntityName());
+		dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
+		}
 		
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(),dn.getCustomerName(),dn.getSupplierName(),dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));

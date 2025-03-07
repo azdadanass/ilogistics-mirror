@@ -1,6 +1,8 @@
 package ma.azdad.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -787,6 +789,96 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 
 		return downloadPath;
+	}
+	
+	public byte[] generateStampMobile(DeliveryRequest deliveryRequest) {
+	    try {
+	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	        Document document = new Document(new RectangleReadOnly(284, 171), 5, 5, 5, 5);
+	        PdfWriter.getInstance(document, outputStream);
+
+	        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 15);
+	        Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
+	        Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9);
+	        float[] pointColumnWidths = {158F, 300F};
+	        PdfPTable table1 = new PdfPTable(pointColumnWidths);
+	        table1.setTotalWidth(290);
+	        table1.setLockedWidth(true);
+	        PdfPCell cell1, cell2;
+	        Phrase phrase;
+	        Paragraph paragraph;
+	        PdfPTable table2 = new PdfPTable(2);
+
+	        document.open();
+
+	        paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " +
+	                (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""), titleFont);
+	        paragraph.setAlignment(Element.ALIGN_CENTER);
+	        paragraph.setSpacingAfter(10f);
+	        document.add(paragraph);
+
+	        BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
+	        Image qrcodeImage = barcodeQrcode.getImage();
+	        qrcodeImage.scaleToFit(95, 95);
+
+	        Image logo = null;
+	        InetAddress inetAddress = InetAddress.getLocalHost();
+	        if ("gcom".equals(erp))
+	            logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/gcom.png");
+	        else if ("orange".equals(erp))
+	            logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/orange.png");
+	        logo.scaleToFit(50, 60);
+	        logo.setAlignment(Element.ALIGN_CENTER);
+	        
+	        cell1 = new PdfPCell();
+	        cell1.setBorder(Rectangle.NO_BORDER);
+	        cell1.addElement(qrcodeImage);
+	        cell1.addElement(logo);
+	        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	        table1.addCell(cell1);
+
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("# Of Items : " + deliveryRequest.getNumberOfItems(), boldFont));
+	        phrase.add(new Chunk("\nOwner : ", boldFont));
+	        phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
+	        phrase.add(new Chunk("\nProject : ", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.cutText(deliveryRequest.getProject().getName(), 25), normalFont));
+	        phrase.add(new Chunk("\nRef : ", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.cutText(deliveryRequest.getSmsRef(), 25), normalFont));
+	        
+	        cell1 = new PdfPCell();
+	        cell1.setPadding(3f);
+	        cell1.setLeading(0, 1f);
+	        cell1.addElement(phrase);
+
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("Gross Weight\n", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", boldFont));
+	        cell2 = new PdfPCell();
+	        cell2.setBorder(0);
+	        cell2.addElement(phrase);
+	        table2.addCell(cell2);
+	        
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("Volume\n", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getVolume()) + " m3", boldFont));
+	        cell2 = new PdfPCell();
+	        cell2.setBorder(0);
+	        cell2.addElement(phrase);
+	        table2.addCell(cell2);
+	        
+	        cell1.addElement(table2);
+	        cell1.setBorder(Rectangle.LEFT);
+	        table1.addCell(cell1);
+	        document.add(table1);
+
+	        document.close();
+
+	        return outputStream.toByteArray();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 
 	public static class DeliveryRequestPdfGenerator {

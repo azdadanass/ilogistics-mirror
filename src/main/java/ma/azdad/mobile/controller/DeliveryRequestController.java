@@ -3,6 +3,9 @@ package ma.azdad.mobile.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -98,6 +101,29 @@ public class DeliveryRequestController {
 		Token token = tokenService.getBykey(key);
 		return service.findByMissingOutboundDeliveryNoteFilemobile(token.getUsername(),token.getWarehouseList());
 	}
+	
+	@GetMapping("/mobile/dn/generate-stamp/{key}/{id}")
+    public ResponseEntity<byte[]> generateStampMobile(@PathVariable String key,@PathVariable Integer id) {
+        try {
+        	System.out.println("/mobile/dn/generate-stamp/{key}/{id}");
+        	Token token = tokenService.getBykey(key);
+        	ma.azdad.model.DeliveryRequest deliveryRequest = service.findOne(id);
+            byte[] pdfBytes = service.generateStampMobile(deliveryRequest);
+            System.out.println("Generated PDF size: " + pdfBytes.length);
+            if (pdfBytes.length == 0) {
+                System.out.println("PDF generation failed.");
+            }
+            // Prepare response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=stamp_" + deliveryRequest.getId() + ".pdf");
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 	
 	
 	

@@ -12,6 +12,12 @@ public class DeliveryRequestHistory {
 	private String description;
 	private String userFullName;
 	private String userPhoto;
+	
+	
+
+	public DeliveryRequestHistory() {
+		super();
+	}
 
 	public DeliveryRequestHistory(Integer id,Date date, String status, String description, String userFullName, String userPhoto) {
 		super();

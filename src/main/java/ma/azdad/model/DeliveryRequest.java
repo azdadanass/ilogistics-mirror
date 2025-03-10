@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.Color;
 import ma.azdad.utils.LabelValue;
+import ma.azdad.utils.Public;
 
 @Entity
 
@@ -654,10 +655,35 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return "";
 		}
 	}
+	
+	@Transient
+	public String getDeliverToEntityLogo() {
+		try {
+			switch (deliverToCompanyType) {
+			case COMPANY:
+				return Public.getPublicUrl(getDeliverToCompanyLogo());
+			case CUSTOMER:
+				return Public.getPublicUrl(getDeliverToCustomerLogo());
+			case SUPPLIER:
+				return  Public.getPublicUrl(getDeliverToSupplierLogo());
+			case OTHER:
+				return  "";
+			default:
+				return "";
+			}
+		} catch (Exception e) {
+			return "";
+		}
+	}
 
 	@Transient
 	public String getDeliverToCompanyName() {
 		return deliverToCompany != null ? deliverToCompany.getName() : null;
+	}
+	
+	@Transient
+	public String getDeliverToCompanyLogo() {
+		return deliverToCompany != null ? deliverToCompany.getLogo() : null;
 	}
 
 	@Transient
@@ -671,6 +697,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getDeliverToCustomerName() {
 		return deliverToCustomer != null ? deliverToCustomer.getName() : null;
 	}
+	
+	@Transient
+	public String getDeliverToCustomerLogo() {
+		return deliverToCustomer != null ? deliverToCustomer.getPhoto() : null;
+	}
 
 	@Transient
 	public void setDeliverToCustomerName(String deliverToCustomerName) {
@@ -682,6 +713,11 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public String getDeliverToSupplierName() {
 		return deliverToSupplier != null ? deliverToSupplier.getName() : null;
+	}
+	
+	@Transient
+	public String getDeliverToSupplierLogo() {
+		return deliverToSupplier != null ? deliverToSupplier.getPhoto() : null;
 	}
 
 	@Transient

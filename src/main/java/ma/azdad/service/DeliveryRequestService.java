@@ -1,6 +1,8 @@
 package ma.azdad.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ecs.html.A;
@@ -31,7 +34,9 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -50,11 +55,14 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Dashboard;
+import ma.azdad.mobile.model.HardwareStatusData;
 import ma.azdad.model.BoqMapping;
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Currency;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestHistory;
+import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.DeliveryRequestState;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
@@ -65,6 +73,9 @@ import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
 import ma.azdad.model.ProjectTypes;
+import ma.azdad.model.StockRow;
+import ma.azdad.model.StockRowState;
+import ma.azdad.model.StockRowStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.AppLinkRepos;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
@@ -72,6 +83,7 @@ import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 import ma.azdad.repos.StockRowRepos;
 import ma.azdad.utils.App;
+import ma.azdad.utils.FacesContextMessages;
 
 @Component
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
@@ -96,12 +108,34 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	StockRowRepos stockRowRepos;
+	
+	@Autowired
+    StockRowService stockRowService;
+	
+	@Autowired
+	ProjectCrossService projectCrossService;
+	@Autowired
+	OldEmailService emailService;
+	@Autowired
+	SmsService smsService;
+	
+	@Autowired
+	LocationService locationService;
+	
+	@Autowired
+	protected DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+	
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	DeliveryRequestDetailService deliveryRequestDetailService;
 
 	@Autowired
 	DeliveryRequestSerialNumberRepos deliveryRequestSerialNumberRepos;
+	
+	@Autowired
+	JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
@@ -756,6 +790,96 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		return downloadPath;
 	}
+	
+	public byte[] generateStampMobile(DeliveryRequest deliveryRequest) {
+	    try {
+	        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	        Document document = new Document(new RectangleReadOnly(284, 171), 5, 5, 5, 5);
+	        PdfWriter.getInstance(document, outputStream);
+
+	        Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 15);
+	        Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
+	        Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9);
+	        float[] pointColumnWidths = {158F, 300F};
+	        PdfPTable table1 = new PdfPTable(pointColumnWidths);
+	        table1.setTotalWidth(290);
+	        table1.setLockedWidth(true);
+	        PdfPCell cell1, cell2;
+	        Phrase phrase;
+	        Paragraph paragraph;
+	        PdfPTable table2 = new PdfPTable(2);
+
+	        document.open();
+
+	        paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " +
+	                (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""), titleFont);
+	        paragraph.setAlignment(Element.ALIGN_CENTER);
+	        paragraph.setSpacingAfter(10f);
+	        document.add(paragraph);
+
+	        BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
+	        Image qrcodeImage = barcodeQrcode.getImage();
+	        qrcodeImage.scaleToFit(95, 95);
+
+	        Image logo = null;
+	        InetAddress inetAddress = InetAddress.getLocalHost();
+	        if ("gcom".equals(erp))
+	            logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/gcom.png");
+	        else if ("orange".equals(erp))
+	            logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/orange.png");
+	        logo.scaleToFit(50, 60);
+	        logo.setAlignment(Element.ALIGN_CENTER);
+	        
+	        cell1 = new PdfPCell();
+	        cell1.setBorder(Rectangle.NO_BORDER);
+	        cell1.addElement(qrcodeImage);
+	        cell1.addElement(logo);
+	        cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	        table1.addCell(cell1);
+
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("# Of Items : " + deliveryRequest.getNumberOfItems(), boldFont));
+	        phrase.add(new Chunk("\nOwner : ", boldFont));
+	        phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
+	        phrase.add(new Chunk("\nProject : ", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.cutText(deliveryRequest.getProject().getName(), 25), normalFont));
+	        phrase.add(new Chunk("\nRef : ", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.cutText(deliveryRequest.getSmsRef(), 25), normalFont));
+	        
+	        cell1 = new PdfPCell();
+	        cell1.setPadding(3f);
+	        cell1.setLeading(0, 1f);
+	        cell1.addElement(phrase);
+
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("Gross Weight\n", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", boldFont));
+	        cell2 = new PdfPCell();
+	        cell2.setBorder(0);
+	        cell2.addElement(phrase);
+	        table2.addCell(cell2);
+	        
+	        phrase = new Phrase();
+	        phrase.add(new Chunk("Volume\n", boldFont));
+	        phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getVolume()) + " m3", boldFont));
+	        cell2 = new PdfPCell();
+	        cell2.setBorder(0);
+	        cell2.addElement(phrase);
+	        table2.addCell(cell2);
+	        
+	        cell1.addElement(table2);
+	        cell1.setBorder(Rectangle.LEFT);
+	        table1.addCell(cell1);
+	        document.add(table1);
+
+	        document.close();
+
+	        return outputStream.toByteArray();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
 
 	public static class DeliveryRequestPdfGenerator {
 
@@ -1337,6 +1461,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		
 		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
 		DeliveryRequest dn = repos.findById(id).get();
+		if(dn.getToUserUsername() != null) {
+		dn.setToUser(userService.findOne(dn.getToUserUsername()));
+		dnm.setToUser(dn.getToUserFullName());
+		dnm.setToUserInternal(dn.getToUser().getInternal());
+		}
+		if(dn.getDeliverToEntityName() != null) {
+		dnm.setToCompany(dn.getDeliverToEntityName());
+		dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
+		}
+		
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(),dn.getCustomerName(),dn.getSupplierName(),dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
@@ -1449,6 +1583,176 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return dashboard;
 		
 	}
+	
+	public void handleOut(Integer id,String username) {
+		DeliveryRequest deliveryRequest = findOne(id);
+		deliveryRequest.setStockRowList(stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest));
+		deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
+		if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "DN already Delivered !");
+		}
+		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
+		deliveryRequest.setDate4(new Date());
+		User user = userService.findByUsername(username);
+		deliveryRequest.setUser4(user);
+		deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), user));
+		deliveryRequest = save(deliveryRequest);
+		emailService.deliveryRequestNotification(deliveryRequest);
+		smsService.sendSms(deliveryRequest);
+
+		projectCrossService.addCrossCharge(deliveryRequest);
+		stockRowService.updateOwnerId(deliveryRequest.getId());
+		stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+
+//		if (deliveryRequest.getCustomer() != null)
+//			customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
+
+		if (deliveryRequest.getPo() != null) {
+			// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
+			poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
+		}
+
+		// update field missing sn
+		deliveryRequest = findOne(deliveryRequest.getId());
+		if (deliveryRequest.getStockRowList().stream()
+				.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getId(), i.getInboundDeliveryRequest().getId()) > 0).count() > 0)
+			updateMissingSerialNumber(deliveryRequest.getId(), true);
+		// update is missing expiry
+		if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
+			updateMissingExpiry(deliveryRequest.getId(), true);
+		
+	}
+	
+	
+	public Boolean checkDatabaseStatus(Integer id, DeliveryRequestStatus status) {
+		return status.equals(findStatusById(id));
+	}
+	
+	
+	public void handleIn(List<HardwareStatusData> list ,Integer id,String category,String username) {
+		DeliveryRequest deliveryRequest = findOne(id);
+		if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED))
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "DN already Delivered !");
+		
+		for (HardwareStatusData hardwareStatusData : list) {
+			DeliveryRequestDetail detail = deliveryRequestDetailService.findOne(hardwareStatusData.getDetailId());
+			detail.setRemainingQuantity(detail.getRemainingQuantity()-hardwareStatusData.getQuantity());
+			detail = deliveryRequestDetailService.save(detail);
+			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
+			StockRow row = new StockRow(detail, hardwareStatusData.getQuantity(), hardwareStatusData.getQuantity(), detail.getPartNumber(), deliveryRequest, true,
+					deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, new Date(), detail.getPacking());
+			if(category.equals("Normal")) {
+				row.setState(StockRowState.NORMAL);
+			} else {
+				row.setState(StockRowState.FAULTY);
+			}
+			row.setStatus(StockRowStatus.getByValue(hardwareStatusData.getStatus()));
+			row.setLocation(locationService.findOne(hardwareStatusData.getLocation().getId()));
+			deliveryRequest.getStockRowList().add(row);
+		}
+		
+		if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.PARTIALLY_DELIVRED)) {
+			// Part Number / Qty maps
+			Map<Integer, Double> deliveryRequestDetailMap = deliveryRequest.getDetailList().stream()
+					.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumberId, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+			Map<Integer, Double> stockRowExistingMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(deliveryRequest.getId());
+			Map<Integer, Double> stockRowNewMap = deliveryRequest.getStockRowList().stream().filter(i -> i.getId() == null)
+					.collect(Collectors.groupingBy(StockRow::getPartNumberId, Collectors.summingDouble(StockRow::getQuantity)));
+
+			for (Integer partNumberId : deliveryRequestDetailMap.keySet()) {
+				Double detailQuantity = deliveryRequestDetailMap.get(partNumberId);
+				Double existingQuantity = stockRowExistingMap.getOrDefault(partNumberId, 0.0);
+				Double newQuantity = stockRowNewMap.getOrDefault(partNumberId, 0.0);
+				if (detailQuantity < existingQuantity + newQuantity) {
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Remaining quantity error, probably concurrent access, please to reload this page");
+					
+				}
+			}
+		}
+		
+		deliveryRequest = findOne(id);
+		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
+		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
+			if (detail.getRemainingQuantity() > 0) {
+				deliveryRequest.setStatus(DeliveryRequestStatus.PARTIALLY_DELIVRED);
+				break;
+			}
+		}
+		
+		deliveryRequest.setDate4(new Date());
+		User user = userService.findByUsername(username);
+		deliveryRequest.setUser4(user);
+		deliveryRequest.addHistory(new DeliveryRequestHistory(deliveryRequest.getStatus().getValue(), user));
+		save(deliveryRequest);
+
+		stockRowService.updateOwnerId(deliveryRequest.getId());
+		stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+
+		deliveryRequest = findOne(deliveryRequest.getId());
+
+		if (deliveryRequest.getPo() != null) {
+			// poService.updateIlogisticsStatus(deliveryRequest.getPo().getId());
+			poService.updateGoodsDeliveryStatus(deliveryRequest.getPo().getId());
+		}
+
+		if (deliveryRequest.getIsSnRequired())
+			generateSerialNumberList(deliveryRequest);
+
+		if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
+			projectCrossService.addCrossChargeForReturnFromOutbound(deliveryRequest);
+
+		if (deliveryRequest.getIsInboundReturn()) {
+			updateIsFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn().getId(),
+					deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(deliveryRequest.getOutboundDeliveryRequestReturn()));
+			updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
+			DeliveryRequest outboundDeliveryRequestReturn = findOne(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
+			clearBoqMapping(outboundDeliveryRequestReturn);
+			jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn(), deliveryRequest, user);
+		}
+
+		emailService.deliveryRequestNotification(deliveryRequest);
+		smsService.sendSms(deliveryRequest);
+
+
+		if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
+			updateMissingExpiry(deliveryRequest.getId(), true);
+
+		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
+			updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
+		
+		System.out.println("im here");
+
+		
+	}
+	
+	
+	private void generateSerialNumberList(DeliveryRequest deliveryRequest) {
+		Map<String, Integer> map = new HashMap<>();
+
+		for (Integer stockRowId : deliveryRequest.getStockRowList().stream().map(i -> i.getId()).collect(Collectors.toList())) {
+			StockRow inboundStockRow = stockRowService.findOne(stockRowId);
+			for (PackingDetail packingDetail : inboundStockRow.getPacking().getDetailList()) {
+				if (!packingDetail.getHasSerialnumber())
+					continue;
+
+				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), 0);
+
+				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
+				int n = packingDetail.getQuantity();
+				for (int i = 0; i < packingQuantity; i++) {
+					int packingNumero = map.get(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId()) + 1;
+					map.put(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), packingNumero);
+					for (int j = 0; j < n; j++)
+						deliveryRequestSerialNumberService.save(new DeliveryRequestSerialNumber(packingNumero, packingDetail, inboundStockRow));
+				}
+			}
+		}
+
+		if (!map.isEmpty())
+			updateMissingSerialNumber(deliveryRequest.getId(), true);
+
+	}
+	
 
 	public void updateOutboundInboundPo(Integer outboundId) {
 		DeliveryRequest deliveryRequest = findOne(outboundId);

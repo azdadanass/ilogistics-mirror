@@ -77,7 +77,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	public List<Integer> findIdListByPartNumberAndOutboundDeliveryRequestTransfer(Integer partNumberId, Integer outboundDeliveryRequestDetailId);
 
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
-			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity) ";
+			+ "a.packing.name,a.packing.id,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity) ";
 	
 	String cm2 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
 			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image) ";

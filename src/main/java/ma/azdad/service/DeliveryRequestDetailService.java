@@ -20,6 +20,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.mobile.model.DnMaterials;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
@@ -49,9 +50,13 @@ public class DeliveryRequestDetailService
 
 	@Autowired
 	StockRowRepos stockRowRepos;
+	@Autowired
+	StockRowService stockRowService;
 
 	@Autowired
 	DeliveryRequestRepos deliveryRequestRepos;
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
 
 	// reporting
 	public List<DeliveryRequestDetail> teamInventory(Integer projectId) {
@@ -799,16 +804,27 @@ public class DeliveryRequestDetailService
 				if (countOk.equals("Yes"))
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
-									detail.getPartNumberName(), detail.getQuantity(), detail.getPackingName(),
-									detail.getPackingQuantity()));
+									detail.getPartNumberName(), detail.getRemainingQuantity(), detail.getPackingName(),
+									detail.getPackingQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
 				else
 					deliveryRequest.getStockRowList()
 							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
 									detail.getPartNumberName(), detail.getTmpQuantity(), detail.getPackingName(),
-									detail.getTmpQuantity()));
+									detail.getTmpQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
 
 			}
 		System.out.println("stocks size : " + deliveryRequest.getStockRowList().get(0).getQuantity());
 		return deliveryRequest.getStockRowList();
+	}
+	
+	public List<ma.azdad.mobile.model.DnMaterials> initStockRowList(ma.azdad.mobile.model.DeliveryRequest deliveryRequest){
+		DeliveryRequest dn = deliveryRequestService.findOne(deliveryRequest.getId());
+		List<StockRow> rows = stockRowService.generateStockRowFromOutboundDeliveryRequest(dn);
+		List<ma.azdad.mobile.model.DnMaterials> list = new ArrayList<>();
+		for (StockRow row : rows) {
+			list.add(new DnMaterials(0, row.getPartNumber().getName(), row.getStatus().getValue(), row.getLocation().getName()
+					, row.getOriginNumber(), -row.getQuantity(), row.getInboundDeliveryRequest().getReference(),row.getPartNumber().getImage()));
+		}
+		return list;
 	}
 }

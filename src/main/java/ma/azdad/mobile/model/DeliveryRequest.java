@@ -45,6 +45,10 @@ public class DeliveryRequest {
 	private String destinationName;
 	private Integer originId;
 	private String originName;
+	private String toUser;
+	private Boolean toUserInternal;
+	private String toCompany;
+	private String toCompanyLogo;
 	
 	private List<ma.azdad.mobile.model.PackingDetail> packingDetailList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
@@ -101,6 +105,7 @@ public class DeliveryRequest {
 		this.requesterPhoto = Public.getPublicUrl(requesterPhoto);
 		this.deliveryDate = deliveryDate;
 		this.transportationNeeded = transportationNeeded;
+		
 
 	}
 
@@ -424,6 +429,40 @@ public class DeliveryRequest {
 	public void setStockRowList(List<ma.azdad.mobile.model.HardwareStatusData> stockRowList) {
 		this.stockRowList = stockRowList;
 	}
+
+	public String getToUser() {
+		return toUser;
+	}
+
+	public void setToUser(String toUser) {
+		this.toUser = toUser;
+	}
+
+	public Boolean getToUserInternal() {
+		return toUserInternal;
+	}
+
+	public void setToUserInternal(Boolean toUserInternal) {
+		this.toUserInternal = toUserInternal;
+	}
+
+	public String getToCompany() {
+		return toCompany;
+	}
+
+	public void setToCompany(String toCompany) {
+		this.toCompany = toCompany;
+	}
+
+	public String getToCompanyLogo() {
+		return toCompanyLogo;
+	}
+
+	public void setToCompanyLogo(String toCompanyLogo) {
+		this.toCompanyLogo = toCompanyLogo;
+	}
+	
+	
 	
 	
 	

@@ -124,6 +124,28 @@ public class DeliveryRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
+    @GetMapping("/mobile/dn/generate-pdf/{key}/{id}")
+    public ResponseEntity<byte[]> generatePdfMobile(@PathVariable String key,@PathVariable Integer id) {
+        try {
+        	System.out.println("/mobile/dn/generate-pdf/{key}/{id}");
+        	Token token = tokenService.getBykey(key);
+        	ma.azdad.model.DeliveryRequest deliveryRequest = service.findOne(id);
+            byte[] pdfBytes = service.generatePdf2(deliveryRequest);
+            if (pdfBytes.length == 0) {
+                System.out.println("PDF generation failed.");
+            }
+            // Prepare response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=dn_" + deliveryRequest.getId() + ".pdf");
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/pdf");
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 	
 	
 	

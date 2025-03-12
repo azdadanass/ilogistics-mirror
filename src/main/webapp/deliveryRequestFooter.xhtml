@@ -351,6 +351,29 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="printForm2">
+		<p:dialog widgetVar="printDlg2" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('printDlg2').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-stamp blue" />
+					<h:outputText value=" Pdf" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to print this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('printDlg2').hide()" value="Hide" styleClass="btn btn-warning" />
+				<h:outputLink styleClass="btn btn-info" value="#{deliveryRequestView.downloadPath}" style="margin-left: 20px" target="blank">
+					<h:outputText value="Print" />
+				</h:outputLink>
+				
+			</div>
+		</p:dialog>
+	</h:form>
 	<h:form id="requestForm">
 		<p:dialog widgetVar="requestDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('requestDlg').hide()">

@@ -2146,6 +2146,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void generatePdf() {
 		downloadPath = service.generatePdf(deliveryRequest);
 	}
+	
+	public void generatePdf2() {
+		downloadPath= service.generatePdfLink(deliveryRequest);
+	}
 
 	public void generateStamp() {
 		downloadPath = service.generateStamp(deliveryRequest);

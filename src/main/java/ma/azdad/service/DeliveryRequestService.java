@@ -3,6 +3,7 @@ package ma.azdad.service;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -16,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ecs.html.A;
@@ -796,6 +801,26 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public String generatePdf(DeliveryRequest deliveryRequest) {
 		return DeliveryRequestPdfGenerator.generatePdf(deliveryRequest);
 	}
+	
+	public String generatePdfLink(DeliveryRequest deliveryRequest) {
+	    try {
+	        byte[] pdfData = generatePdf2(deliveryRequest);
+	        if (pdfData == null) {
+	            return null;
+	        }
+	        String downloadPath = "temp/" + deliveryRequest.getReference() + ".pdf";
+	        String fullPath = UtilsFunctions.path() + downloadPath;
+
+	        FileOutputStream fos = new FileOutputStream(fullPath);
+	        fos.write(pdfData);
+	        fos.close();
+	        return "/"+ downloadPath;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
 
 	public byte[] generatePdf2(DeliveryRequest deliveryRequest) {
 		try {

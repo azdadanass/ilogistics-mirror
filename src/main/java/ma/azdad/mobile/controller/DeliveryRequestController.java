@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
+import ma.azdad.mobile.model.DeliveryRequestFile;
 import ma.azdad.mobile.model.HardwareStatusList;
 import ma.azdad.mobile.model.Token;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.DocTypeService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.TokenService;
 import ma.azdad.service.UserService;
@@ -26,6 +28,9 @@ public class DeliveryRequestController {
 
 	@Autowired
 	DeliveryRequestService service;
+	
+	@Autowired
+	DocTypeService docTypeService;
 
 	@Autowired
 	UserService userService;
@@ -146,8 +151,23 @@ public class DeliveryRequestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+    
+    @GetMapping("/mobile/dn/find-doc-type/{key}/{id}")
+    public List<String> findDocByType(@PathVariable String key,@PathVariable Integer id) {
+    	Token token = tokenService.getBykey(key);
+    	return docTypeService.findByTypeMobile("deliveryRequest", id);
+    }
+    
+    @GetMapping("/mobile/dn/find-doc/{key}/{id}")
+    public List<DeliveryRequestFile> findDnAttachments(@PathVariable String key,@PathVariable Integer id) {
+    	System.out.println("/mobile/dn/find-doc/{key}/{id}");
+    	Token token = tokenService.getBykey(key);
+    	
+    	return service.findDnAttachments(id);
+    }
 	
 	
+  
 	
 	
 	

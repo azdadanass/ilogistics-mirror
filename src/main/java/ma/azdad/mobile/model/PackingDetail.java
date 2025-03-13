@@ -18,7 +18,7 @@ public class PackingDetail {
 			Double volume, Double grossWeight) {
 		super();
 		this.id = id;
-		this.typeImage = Public.getPublicUrl(typeImage);
+		this.typeImage = "http://ilogistics.3gcominside.com"+typeImage;
 		this.length = length;
 		this.width = width;
 		this.height = height;

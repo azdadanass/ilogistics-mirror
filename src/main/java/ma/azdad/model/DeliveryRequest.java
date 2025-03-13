@@ -180,6 +180,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Double qTotalCrossCharge = 0.0;
 	private Double qAssociatedCost = 0.0;
 	private Integer crossChargeId;
+	
+	//PDF number of items
+	private static Integer countItems = null;
+	private static Integer countSummary = 0;
 
 	private List<CommentGroup<DeliveryRequestComment>> commentGroupList;
 
@@ -498,18 +502,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public List<PackingDetail> getPackingDetailSummaryList() {
 		List<PackingDetail> result = new ArrayList<PackingDetail>();
 		Map<PackingDetail, Integer> map = new HashMap<PackingDetail, Integer>();
-
+		
 		detailList.forEach(i -> {
 			i.getPacking().getDetailList().forEach(j -> {
 				map.putIfAbsent(j, 0);
 				map.put(j, map.get(j) + (int) (j.getQuantity() * i.getQuantity() / i.getPacking().getQuantity()));
 			});
 		});
+		
 
 		map.forEach((x, y) -> {
 			x.setQuantity(y);
 			result.add(x);
+			
 		});
+		
+		
 
 		return result;
 	}
@@ -743,15 +751,28 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return null;
 		return ProjectTypes.STOCK.getValue().equals(project.getType());
 	}
+	
+	
 
 	@Transient
 	public Integer getNumberOfItems() {
-		Integer result = 0;
-		for (DeliveryRequestDetail deliveryRequestDetail : detailList)
-			result += deliveryRequestDetail.getPacking().getDetailList().stream()
-					.mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity())).sum();
-		return result;
+	    if (countItems == null) { // Compute only if not already set
+	        int result = 0;
+	        for (DeliveryRequestDetail deliveryRequestDetail : detailList) {
+	            result += deliveryRequestDetail.getPacking().getDetailList().stream()
+	                    .mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity()))
+	                    .sum();
+	        }
+	        countItems = result;
+	        System.out.println("Static count computed: " + countItems);
+	    } else {
+	        System.out.println("Static count reused: " + countItems);
+	    }
+	    return countItems;
 	}
+
+	
+
 
 	@Transient
 	public Double getNetWeight() {
@@ -2421,5 +2442,26 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void setInboundPo(Po inboundPo) {
 		this.inboundPo = inboundPo;
 	}
+
+
+	public static Integer getCountSummary() {
+		return countSummary;
+	}
+
+	public static void setCountSummary(Integer countSummary) {
+		DeliveryRequest.countSummary = countSummary;
+	}
+
+	public static Integer getCountItems() {
+		return countItems;
+	}
+
+	public static void setCountItems(Integer countItems) {
+		DeliveryRequest.countItems = countItems;
+	}
+	
+	
+	
+	
 
 }

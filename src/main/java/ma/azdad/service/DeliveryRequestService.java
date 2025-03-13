@@ -1,6 +1,7 @@
 package ma.azdad.service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,6 +38,7 @@ import org.apache.ecs.html.Table;
 import org.apache.ecs.wml.Img;
 import org.apache.ecs.xhtml.br;
 import org.hibernate.Hibernate;
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -72,6 +74,7 @@ import ma.azdad.model.CompanyType;
 import ma.azdad.model.Currency;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestFile;
 import ma.azdad.model.DeliveryRequestHistory;
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.DeliveryRequestState;
@@ -98,6 +101,7 @@ import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.ImageUtil;
 import ma.azdad.utils.PdfHelper;
 import ma.azdad.utils.Public;
+import ma.azdad.view.DeliveryRequestView;
 
 @Component
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
@@ -113,6 +117,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	ProjectService projectService;
+	
+	@Autowired
+	FileUploadService fileUploadService;
 
 	@Autowired
 	PoService poService;
@@ -831,11 +838,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	        // Load images
 	        Image logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/gcom.png");
-	        logo.scaleToFit(90, 90);
+	        logo.scaleToFit(70, 70);
 
 	        String qrImageLink = App.QR.getLink() + "//img/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey();
 	        Image qrImage = Image.getInstance(qrImageLink);
-	        qrImage.scaleToFit(90, 90);
+	        qrImage.scaleToFit(70, 70);
 	        PdfPTable headerTable = createHeaderTable(logo, qrImage, deliveryRequest.getReference());
 	        writer.setPageEvent(new PdfHelper(headerTable));
 	        document.open();
@@ -858,15 +865,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	    // Add logo
 	    PdfPCell logoCell = new PdfPCell(logo);
 	    logoCell.setBorder(Rectangle.NO_BORDER);
+	    logoCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 	    logoCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 	    headerTable.addCell(logoCell);
 
 	    // Add title
-	    Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD | Font.UNDERLINE);
+	    Font titleFont = new Font(Font.FontFamily.HELVETICA, 15, Font.BOLD | Font.UNDERLINE);
 	    Paragraph title = new Paragraph(reference, titleFont);
 	    title.setAlignment(Element.ALIGN_CENTER);
 	    PdfPCell titleCell = new PdfPCell(title);
 	    titleCell.setBorder(Rectangle.NO_BORDER);
+	    titleCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 	    titleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    headerTable.addCell(titleCell);
 
@@ -883,14 +892,23 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	private void addMainContent(Document document, DeliveryRequest deliveryRequest)
 			throws DocumentException, IOException {
 
-		PdfPTable widgetTable = new PdfPTable(4); // 4 columns
-		widgetTable.setWidthPercentage(100); // Make the table width 100% of the page width
+		PdfPTable widgetTable = new PdfPTable(5);
+		widgetTable.setWidthPercentage(100); 
 		widgetTable.setHorizontalAlignment(Element.ALIGN_CENTER);
 		widgetTable.setSpacingBefore(0);
+		float[] columnWidths = {0.5f, 1f, 1f, 1f, 1f}; 
+		widgetTable.setWidths(columnWidths);
 
 		Font widgetFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
-		// Column 1 - Number of Items
+
+		// First column - empty cell
 		PdfPCell cell = new PdfPCell();
+		cell.setBorder(Rectangle.NO_BORDER);
+		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+		widgetTable.addCell(cell); 
+
+		// Column 2 - Number of Items
+		cell = new PdfPCell();
 		cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		Image image1 = ImageUtil.getImageFromUrl("http://www.3gcom.ma/erp/ilogistics/widgets/1.png");
@@ -900,7 +918,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		cell.addElement(new Phrase(String.valueOf(deliveryRequest.getNumberOfItems()), widgetFont));
 		widgetTable.addCell(cell);
 
-		// Column 2 - Net Weight
+		// Column 3 - Net Weight
 		cell = new PdfPCell();
 		cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -911,7 +929,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		cell.addElement(new Phrase(UtilsFunctions.formatDouble(deliveryRequest.getNetWeight()) + " Kg", widgetFont));
 		widgetTable.addCell(cell);
 
-		// Column 3 - Gross Weight
+		// Column 4 - Gross Weight
 		cell = new PdfPCell();
 		cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -922,7 +940,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		cell.addElement(new Phrase(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", widgetFont));
 		widgetTable.addCell(cell);
 
-		// Column 4 - Volume
+		// Column 5 - Volume
 		cell = new PdfPCell();
 		cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -934,6 +952,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		widgetTable.addCell(cell);
 
 		document.add(widgetTable);
+
 		document.add(new Paragraph("\n"));
 
 		Image timelineImage = ImageUtil.getImageFromUrl(getTimeLineImage(deliveryRequest));
@@ -941,12 +960,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		timelineImage.setAlignment(Image.ALIGN_CENTER);
 		document.add(timelineImage);
 
-		Font titleFontBlue = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD, new BaseColor(10, 128, 191));
+		Font titleFontBlue = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, new BaseColor(10, 128, 191));
 		Paragraph infoTitle = new Paragraph("General Informations", titleFontBlue);
 		infoTitle.setAlignment(Element.ALIGN_LEFT);
 		infoTitle.setSpacingBefore(10f);
 		document.add(infoTitle);
-		;
+		
 
 		PdfPTable table1 = new PdfPTable(2);
 		table1.setWidthPercentage(100);
@@ -954,59 +973,21 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		table1.setSpacingAfter(10f);
 		table1.setWidths(new float[] { 1f, 2f });
 
-		addTableRow(table1, "Reference", safeValue(deliveryRequest.getFullType()));
+		addTableRow(table1, "DN Number", safeValue(deliveryRequest.getReference()));
+		addTableRow(table1, "Type",safeValue(deliveryRequest.getType() != null ? deliveryRequest.getType().getValue() : null));
+		addTableRow(table1, "REF", safeValue(deliveryRequest.getSmsRef()));
 		addTableRow(table1, "Project", safeValue(deliveryRequest.getProjectName()));
-		addTableRow(table1, "Pref Storage Location",
-				safeValue(
-						deliveryRequest.getPreferedLocation() != null ? deliveryRequest.getPreferedLocation().getName()
-								: null));
-		addTableRow(table1, "Is SN Required",
-				deliveryRequest.getIsSnRequired() != null ? (deliveryRequest.getIsSnRequired() ? "Yes" : "No") : "");
-		addTableRow(table1, "Requester", safeValue(deliveryRequest.getRequesterFullName()));
-		addTableRow(table1, "Transportation Needed",
-				deliveryRequest.getTransportationNeeded() != null
-						? (deliveryRequest.getTransportationNeeded() ? "Yes" : "No")
-						: "");
-		addTableRow(table1, "Transportation Request",
-				safeValue(deliveryRequest.getTransportationRequest() != null
-						? deliveryRequest.getTransportationRequest().getReference()
-						: null));
-		addTableRow(table1, "Priority",
-				safeValue(deliveryRequest.getPriority() != null ? deliveryRequest.getPriority().getValue() : null));
-		addTableRow(table1, "Important",
-				deliveryRequest.getImportant() != null ? (deliveryRequest.getImportant() ? "Yes" : "No") : "");
-
-		document.add(table1);
-
-		PdfPTable table2 = new PdfPTable(2);
-		table2.setWidthPercentage(100);
-		table2.setSpacingBefore(10f);
-		table2.setSpacingAfter(10f);
-		table2.setWidths(new float[] { 1f, 2f });
-
-		addTableRow(table2, "Type",
-				safeValue(deliveryRequest.getType() != null ? deliveryRequest.getType().getValue() : null));
-		addTableRow(table2, "Warehouse", safeValue(deliveryRequest.getWarehouseName()));
-		addTableRow(table2, "Appr Storage Period",
+		addTableRow(table1, "Owner", deliveryRequest.getOrigin() != null ? deliveryRequest.getOwnerName() : "");
+		addTableRow(table1, "Warehouse", safeValue(deliveryRequest.getWarehouseName()));
+		addTableRow(table1, "Appr Storage Period",
 				deliveryRequest.getApproximativeStoragePeriod() != null
 						? String.valueOf(deliveryRequest.getApproximativeStoragePeriod())
 						: "");
-		addTableRow(table2, "Important",
-				deliveryRequest.getImportant() != null ? (deliveryRequest.getImportant() ? "Yes" : "No") : "");
-		addTableRow(table2, "Is Packing List Required",
-				deliveryRequest.getIsPackingListRequired() != null
-						? (deliveryRequest.getIsPackingListRequired() ? "Yes" : "No")
-						: "");
-		addTableRow(table2, "REF", safeValue(deliveryRequest.getSmsRef()));
-		addTableRow(table2, "Transporter", safeValue(deliveryRequest.getTransporterName()));
-		addTableRow(table2, "TR Status",
-				safeValue(deliveryRequest.getTransportationRequest() != null
-						? (deliveryRequest.getTransportationRequest().getStatus() != null
-								? deliveryRequest.getTransportationRequest().getStatus().getValue()
-								: null)
-						: null));
+		addTableRow(table1, "Requester", safeValue(deliveryRequest.getRequesterFullName()));
+		addTableRow(table1, "Priority",safeValue(deliveryRequest.getPriority() != null ? deliveryRequest.getPriority().getValue() : null));
+		addTableRow(table1, "Is SN Required",deliveryRequest.getIsSnRequired() != null ? (deliveryRequest.getIsSnRequired() ? "Yes" : "No") : "");
 
-		document.add(table2);
+		document.add(table1);
 
 		Paragraph deliveryTitle = new Paragraph("Delivery Details", titleFontBlue);
 		deliveryTitle.setAlignment(Element.ALIGN_LEFT);
@@ -1018,51 +999,38 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		table3.setSpacingBefore(10f);
 		table3.setSpacingAfter(10f);
 		table3.setWidths(new float[] { 1f, 2f });
-		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) {
-			addTableRow(table3, "Owner", deliveryRequest.getOrigin() != null ? deliveryRequest.getOwnerName() : "");
+		
+			
 			addTableRow(table3, "Needed Delivery Date",
 					deliveryRequest.getNeededDeliveryDate() != null
 							? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate())
 							: "");
-			addTableRow(table3, "Origin DN N°", safeValue(deliveryRequest.getOriginNumber()));
 			addTableRow(table3, "Delivery Date",
 					deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getDate4())
 							: "");
 			addTableRow(table3, "Origin Site", safeValue(deliveryRequest.getOriginName()));
-			addTableRow(table3, "Address", safeValue(
+			addTableRow(table3, "Origin Site Address", safeValue(
 					deliveryRequest.getOrigin() != null ? deliveryRequest.getOrigin().getGoogleAddress() : ""));
+			addTableRow(table3, "Transportation required",deliveryRequest.getTransportationNeeded() != null ? (deliveryRequest.getTransportationNeeded() ? "Yes" : "No") : "");
+			addTableRow(table3, "TR Number", safeValue(deliveryRequest.getTransportationRequest() != null ?deliveryRequest.getTransportationRequest().getReference():""));
 
-		}
-		if (deliveryRequest.getIsOutbound() || deliveryRequest.getIsXbound()) {
-			addTableRow(table3, "End Customer", safeValue(
-					deliveryRequest.getEndCustomer() != null ? deliveryRequest.getEndCustomer().getName() : ""));
-			addTableRow(table3, "Needed Delivery Date",
-					deliveryRequest.getNeededDeliveryDate() != null
-							? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate())
-							: "");
-			addTableRow(table3, "Destination Site", safeValue(deliveryRequest.getDestination().getName()));
-			addTableRow(table3, "Destination Address",
-					deliveryRequest.getDestination() != null ? deliveryRequest.getDestination().getGoogleAddress()
-							: "");
-			addTableRow(table3, "Deliver To", safeValue(deliveryRequest.getDeliverToEntityName()));
-			addTableRow(table3, "Deliver To",
-					deliveryRequest.getToUser() != null
-							? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail()
-									+ ", " + deliveryRequest.getToUser().getPhone()
-							: "");
-
-		}
-		table3.setSpacingAfter(50);
+	
+		table3.setSpacingAfter(40);
 		document.add(table3);
+		
+		Paragraph eqDetails = new Paragraph("Equipements Details", titleFontBlue);
+		infoTitle.setAlignment(Element.ALIGN_LEFT);
+		infoTitle.setSpacingBefore(10f);
+		document.add(eqDetails);
 
 		PdfPTable detailsTable = new PdfPTable(5);
 		detailsTable.setWidthPercentage(100); // Full width
 		detailsTable.setSpacingBefore(15f); // Space before the table
-		detailsTable.setWidths(new float[] { 1f, 2f, 5f, 1f, 1f }); // Adjust column widths
+		detailsTable.setWidths(new float[] { 1f, 2f, 3f, 2f, 2f }); // Adjust column widths
 		Font headerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
 		BaseColor headerBgColor = new BaseColor(50, 130, 200); // Light blue color for headers
 		Font bodyFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL, BaseColor.BLACK);
-		String[] detailHeaders = { "PN", "Description", "Unit/Kit", "Qty", "Image" };
+		String[] detailHeaders = {"Image","PN", "Description", "Unit/Kit", "Qty" };
 		for (String header : detailHeaders) {
 			PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
 			headerCell.setBackgroundColor(headerBgColor); // Light blue background
@@ -1095,20 +1063,20 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			detailsTable.addCell(createTableCell(detail.getPartNumber().getUnit() ? "Unit" : "Kit", bodyFont));
 			detailsTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getQuantity())), bodyFont));
 		}
+		detailsTable.setSpacingAfter(30);
 
 		document.add(detailsTable);
 		
-		Paragraph packingTitle = new Paragraph("Packing Details", titleFontBlue);
+		Paragraph packingTitle = new Paragraph("Packing List", titleFontBlue);
 		packingTitle.setAlignment(Element.ALIGN_LEFT);
-		packingTitle.setSpacingBefore(10f);
 		document.add(packingTitle);
 		
 		PdfPTable packingTable = new PdfPTable(5);
 		packingTable.setWidthPercentage(100); // Full width
 		packingTable.setSpacingBefore(15f); // Space before the table
-		packingTable.setWidths(new float[] { 1f, 2f, 5f, 1f, 1f }); // Adjust column widths
+		packingTable.setWidths(new float[] { 1f, 3f, 2f, 2f, 2f });// Adjust column widths
 	
-		String[] packingHeaders = { "Type", "Dimension", "GW", "Volume", "Quantity" };
+		String[] packingHeaders = { "Type", "Dimension", "GW", "Volume", "Qty" };
 		for (String header : packingHeaders) {
 			PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
 			headerCell.setBackgroundColor(headerBgColor); // Light blue background
@@ -1121,7 +1089,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			try {
 				String imageUrl = detail.getTypeImage(); // Get image URL
 				if (imageUrl != null && !imageUrl.isEmpty()) {
-					Image partImage = ImageUtil.getImageFromUrl(Public.getPublicUrl(imageUrl));
+					Image partImage = ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com"+imageUrl);
 					partImage.scaleToFit(40, 25); // Scale image size
 					PdfPCell imageCell = new PdfPCell(partImage);
 					imageCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -1135,9 +1103,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			} catch (Exception e) {
 				packingTable.addCell(createTableCell("Error Loading Image", bodyFont));
 			}
-			packingTable.addCell(createTableCell(detail.getLength()+" m / "+detail.getWidth() +" m / " + detail.getHeight() + " m", bodyFont));
-			packingTable.addCell(createTableCell(detail.getGrossWeight()+" Kg", bodyFont));
-			packingTable.addCell(createTableCell(detail.getVolume()+" m3", bodyFont));
+			packingTable.addCell(createTableCell(safeValue(detail.getLength()) +" m / "+safeValue(detail.getWidth()) +" m / " + 
+			safeValue(detail.getHeight()) + " m", bodyFont));
+			packingTable.addCell(createTableCell(safeValue(detail.getGrossWeight())+" Kg", bodyFont));
+			packingTable.addCell(createTableCell(safeValue(detail.getVolume())+" m3", bodyFont));
 			packingTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getQuantity())), bodyFont));
 		}
 
@@ -1146,6 +1115,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	private String safeValue(String value) {
 		return value != null ? value : "";
+	}
+	
+	private String safeValue(Double value) {
+		return value != null ? String.valueOf(value) : "";
 	}
 
 	private static PdfPCell createTableCell(String text, Font font) {
@@ -1157,18 +1130,21 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	private void addTableRow(PdfPTable table, String key, String value) {
-		PdfPCell cell1 = new PdfPCell(new Phrase(key, new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL)));
-		cell1.setBackgroundColor(new BaseColor(162, 213, 242));
+		BaseColor lightGrey = new BaseColor(200, 200, 200);
+		float borderWidth = 0.5f;
+		PdfPCell cell1 = new PdfPCell(new Phrase(key, new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL,new BaseColor(16, 65, 117))));
+		cell1.setBackgroundColor(new BaseColor(222, 248, 252));
+		cell1.setBorderColor(lightGrey);
+		cell1.setBorderWidth(borderWidth);
 		table.addCell(cell1);
 
-		PdfPCell cell2 = new PdfPCell(new Phrase(value));
+		PdfPCell cell2 = new PdfPCell(new Phrase(value,new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL,new BaseColor(70, 73, 74))));
+		cell2.setBorderColor(lightGrey);
+		cell2.setBorderWidth(borderWidth);
 		table.addCell(cell2);
 	}
 
-	private String formatDouble(Double value) {
-		DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
-		return decimalFormat.format(value);
-	}
+	
 
 	public String generateStamp(DeliveryRequest deliveryRequest) {
 		String downloadPath = "temp/stamp_" + deliveryRequest.getReference() + ".pdf";
@@ -2257,9 +2233,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(),
 					deliveryRequest.getId(), deliveryRequest.getStatus());
 
-		System.out.println("im here");
+		
 
 	}
+	
+	
 
 	private void generateSerialNumberList(DeliveryRequest deliveryRequest) {
 		Map<String, Integer> map = new HashMap<>();
@@ -2304,6 +2282,32 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void updateOutboundInboundPoScript() {
 		repos.findByOutboundWithoutInboundPoId().forEach(id -> updateOutboundInboundPo(id));
+	}
+	
+	//mobile
+	
+	public void handleFileUpload(FileUploadEvent event,User user,Integer id,String fileType) throws IOException {
+		DeliveryRequest deliveryRequest = findOne(id);
+		
+		File file = fileUploadService.handleFileUploadMobile(event,"deliveryRequest");
+		DeliveryRequestFile modelFile = new DeliveryRequestFile(file, fileType, event.getFile().getFileName(), user);
+		
+		deliveryRequest.addFile(modelFile);
+	    deliveryRequest.calculateMissingOutboundDeliveryNote();
+		deliveryRequest.calculateCountFiles();
+		deliveryRequest = saveAndRefresh(deliveryRequest);
+		
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequestFile> findDnAttachments(Integer id){
+		DeliveryRequest deliveryRequest = findOne(id);
+		List<ma.azdad.mobile.model.DeliveryRequestFile> list = new ArrayList<>();
+		for (DeliveryRequestFile dnFile : deliveryRequest.getFileList()) {
+			list.add(new ma.azdad.mobile.model.DeliveryRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(),
+					dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
+			
+		}
+		return list;
 	}
 
 }

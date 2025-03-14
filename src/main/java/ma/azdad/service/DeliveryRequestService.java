@@ -2,8 +2,11 @@ package ma.azdad.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.text.DecimalFormat;
@@ -39,6 +42,8 @@ import org.apache.ecs.wml.Img;
 import org.apache.ecs.xhtml.br;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -833,7 +838,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	        Document document = new Document();
-	        document.setMargins(36, 36, 120, 36); 
+	        document.setMargins(36, 36, 100, 36); 
 	        PdfWriter writer = PdfWriter.getInstance(document, outputStream);
 
 	        // Load images
@@ -870,7 +875,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	    headerTable.addCell(logoCell);
 
 	    // Add title
-	    Font titleFont = new Font(Font.FontFamily.HELVETICA, 15, Font.BOLD | Font.UNDERLINE);
+	    Font titleFont = new Font(Font.FontFamily.HELVETICA, 15, Font.NORMAL | Font.UNDERLINE,new BaseColor(70, 73, 74));
 	    Paragraph title = new Paragraph(reference, titleFont);
 	    title.setAlignment(Element.ALIGN_CENTER);
 	    PdfPCell titleCell = new PdfPCell(title);
@@ -960,7 +965,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		timelineImage.setAlignment(Image.ALIGN_CENTER);
 		document.add(timelineImage);
 
-		Font titleFontBlue = new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, new BaseColor(10, 128, 191));
+		Font titleFontBlue = new Font(Font.FontFamily.HELVETICA, 13, Font.BOLD, new BaseColor(10, 128, 191));
 		Paragraph infoTitle = new Paragraph("General Informations", titleFontBlue);
 		infoTitle.setAlignment(Element.ALIGN_LEFT);
 		infoTitle.setSpacingBefore(10f);
@@ -1023,16 +1028,20 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		infoTitle.setSpacingBefore(10f);
 		document.add(eqDetails);
 
-		PdfPTable detailsTable = new PdfPTable(5);
+		PdfPTable detailsTable = new PdfPTable(4);
 		detailsTable.setWidthPercentage(100); // Full width
 		detailsTable.setSpacingBefore(15f); // Space before the table
-		detailsTable.setWidths(new float[] { 1f, 2f, 3f, 2f, 2f }); // Adjust column widths
-		Font headerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+		detailsTable.setWidths(new float[] { 1f, 3f, 5f, 1f }); // Adjust column widths
+		Font headerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.WHITE);
 		BaseColor headerBgColor = new BaseColor(50, 130, 200); // Light blue color for headers
-		Font bodyFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL, BaseColor.BLACK);
-		String[] detailHeaders = {"Image","PN", "Description", "Unit/Kit", "Qty" };
+		Font bodyFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL, new BaseColor(70, 73, 74));
+		BaseColor headerColor = new BaseColor(200, 200, 200);
+		float headerBorderWidth = 0.5f;
+		String[] detailHeaders = {"Image","PN", "Description", "Qty" };
 		for (String header : detailHeaders) {
 			PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
+			headerCell.setBorderColor(headerColor);
+			headerCell.setBorderWidth(headerBorderWidth);
 			headerCell.setBackgroundColor(headerBgColor); // Light blue background
 			headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			headerCell.setPadding(8);
@@ -1060,7 +1069,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			}
 			detailsTable.addCell(createTableCell(detail.getPartNumber().getName(), bodyFont));
 			detailsTable.addCell(createTableCell(detail.getPartNumber().getDescription(), bodyFont));
-			detailsTable.addCell(createTableCell(detail.getPartNumber().getUnit() ? "Unit" : "Kit", bodyFont));
 			detailsTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getQuantity())), bodyFont));
 		}
 		detailsTable.setSpacingAfter(30);
@@ -1074,13 +1082,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		PdfPTable packingTable = new PdfPTable(5);
 		packingTable.setWidthPercentage(100); // Full width
 		packingTable.setSpacingBefore(15f); // Space before the table
-		packingTable.setWidths(new float[] { 1f, 3f, 2f, 2f, 2f });// Adjust column widths
+		packingTable.setWidths(new float[] { 1f, 4f, 2f, 2f, 1f });// Adjust column widths
 	
 		String[] packingHeaders = { "Type", "Dimension", "GW", "Volume", "Qty" };
 		for (String header : packingHeaders) {
 			PdfPCell headerCell = new PdfPCell(new Phrase(header, headerFont));
 			headerCell.setBackgroundColor(headerBgColor); // Light blue background
 			headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			headerCell.setBorderColor(headerColor);
+			headerCell.setBorderWidth(headerBorderWidth);
 			headerCell.setPadding(8);
 			packingTable.addCell(headerCell);
 		}
@@ -1111,6 +1121,29 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 
 		document.add(packingTable);
+		
+		
+		// Create a small signature box table with one cell
+		PdfPTable signatureTable = new PdfPTable(1);
+		signatureTable.setTotalWidth(100); 
+		signatureTable.setSpacingBefore(20);// Set fixed width for a small box
+		signatureTable.setLockedWidth(true); // Lock the width to prevent stretching
+
+		// Create an empty cell to represent the signature box
+		PdfPCell signatureCell= new PdfPCell(new Phrase("Signature", bodyFont));
+		signatureCell.setFixedHeight(50); // Set height for the signature box
+		signatureCell.setBorder(Rectangle.BOX); // Add border
+		signatureCell.setPadding(5); // Add some padding
+
+		signatureTable.addCell(signatureCell);
+
+		// Position the signature box to the right
+		signatureTable.setHorizontalAlignment(Element.ALIGN_RIGHT);
+
+		// Add the table to the document
+		document.add(signatureTable);
+
+
 	}
 
 	private String safeValue(String value) {
@@ -1122,8 +1155,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	private static PdfPCell createTableCell(String text, Font font) {
+		BaseColor lightGrey = new BaseColor(200, 200, 200);
+		float borderWidth = 0.5f;
 		PdfPCell cell = new PdfPCell(new Phrase(text, font));
 		cell.setPadding(6);
+		cell.setBorderWidth(borderWidth);
+		cell.setBorderColor(lightGrey);
 		cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		return cell;
@@ -1132,13 +1169,37 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	private void addTableRow(PdfPTable table, String key, String value) {
 		BaseColor lightGrey = new BaseColor(200, 200, 200);
 		float borderWidth = 0.5f;
-		PdfPCell cell1 = new PdfPCell(new Phrase(key, new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL,new BaseColor(16, 65, 117))));
+		PdfPCell cell1 = new PdfPCell(new Phrase(key, new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL,new BaseColor(16, 65, 117))));
 		cell1.setBackgroundColor(new BaseColor(222, 248, 252));
 		cell1.setBorderColor(lightGrey);
 		cell1.setBorderWidth(borderWidth);
 		table.addCell(cell1);
+		 Font valueFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL, new BaseColor(70, 73, 74));
+		 BaseColor bgColor = BaseColor.WHITE; // Default background color
+		    if (key.equals("Is SN Required")) {
+		        bgColor = "Yes".equalsIgnoreCase(value) ? new BaseColor(46, 204, 113) 
+		                : new BaseColor(231, 76, 60); 
+		        valueFont.setColor(BaseColor.WHITE); 
+		    } 
+		    else if (key.equals("Requester")) {
+		        bgColor = new BaseColor(243, 156, 18); // Orange for missing owner
+		        valueFont.setColor(BaseColor.WHITE);
+		       
+		    }
+		    else if (key.equals("Type")) {
+		    	 bgColor = "Inbound".equalsIgnoreCase(value) ? new BaseColor(46, 204, 113) 
+			                : new BaseColor(231, 76, 60); 
+			        valueFont.setColor(BaseColor.WHITE); 
+		    }
+		    if (key.equals("Transportation required")) {
+		        bgColor = "Yes".equalsIgnoreCase(value) ? new BaseColor(46, 204, 113) 
+		                : new BaseColor(231, 76, 60); 
+		        valueFont.setColor(BaseColor.WHITE); 
+		    } 
+		    
 
-		PdfPCell cell2 = new PdfPCell(new Phrase(value,new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL,new BaseColor(70, 73, 74))));
+		PdfPCell cell2 = new PdfPCell(new Phrase(value,valueFont));
+		cell2.setBackgroundColor(bgColor);
 		cell2.setBorderColor(lightGrey);
 		cell2.setBorderWidth(borderWidth);
 		table.addCell(cell2);
@@ -2298,6 +2359,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequest = saveAndRefresh(deliveryRequest);
 		
 	}
+	
 	
 	public List<ma.azdad.mobile.model.DeliveryRequestFile> findDnAttachments(Integer id){
 		DeliveryRequest deliveryRequest = findOne(id);

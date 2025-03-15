@@ -1,5 +1,6 @@
 package ma.azdad.utils;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
@@ -42,15 +43,17 @@ public class PdfHelper  extends PdfPageEventHelper {
             headerTable.setTotalWidth(document.right() - document.left());
             float headerY = document.getPageSize().getTop() - 20;  
             headerTable.writeSelectedRows(0, -1, document.left(), headerY, canvas);
-            float marginBottom = 20;
-            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(" "), 36, headerY - marginBottom, 0);
+           
 	        int currentPage = writer.getPageNumber();
 	        float x = (document.right() + document.left()) / 2;
 	        float y = document.bottom() - 20;
 	        ColumnText.showTextAligned(canvas, Element.ALIGN_CENTER, 
-	            new Phrase("Page " + currentPage + "/ ", new Font(Font.FontFamily.HELVETICA, 10)), x, y, 0);
+	            new Phrase("Page " + currentPage + "/ ", new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL,new BaseColor(70, 73, 74))), x, y, 0);
 	        
+	        canvas.setColorFill(new BaseColor(70, 73, 74)); // Set fill color to gray
 	        canvas.addTemplate(totalPageTemplate, x + 18, y);
+	        canvas.setColorFill(BaseColor.BLACK); // Reset color to default after drawing
+
 	    }
 
 	    @Override

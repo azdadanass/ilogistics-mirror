@@ -181,9 +181,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Double qAssociatedCost = 0.0;
 	private Integer crossChargeId;
 	
-	//PDF number of items
-	private static Integer countItems = null;
-	private static Integer countSummary = 0;
+	
 
 	private List<CommentGroup<DeliveryRequestComment>> commentGroupList;
 
@@ -756,19 +754,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Integer getNumberOfItems() {
-	    if (countItems == null) { // Compute only if not already set
 	        int result = 0;
 	        for (DeliveryRequestDetail deliveryRequestDetail : detailList) {
 	            result += deliveryRequestDetail.getPacking().getDetailList().stream()
 	                    .mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity()))
 	                    .sum();
 	        }
-	        countItems = result;
-	        System.out.println("Static count computed: " + countItems);
-	    } else {
-	        System.out.println("Static count reused: " + countItems);
-	    }
-	    return countItems;
+	       
+	    return result;
 	}
 
 	
@@ -2444,22 +2437,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 
-	public static Integer getCountSummary() {
-		return countSummary;
-	}
-
-	public static void setCountSummary(Integer countSummary) {
-		DeliveryRequest.countSummary = countSummary;
-	}
-
-	public static Integer getCountItems() {
-		return countItems;
-	}
-
-	public static void setCountItems(Integer countItems) {
-		DeliveryRequest.countItems = countItems;
-	}
-	
 	
 	
 	

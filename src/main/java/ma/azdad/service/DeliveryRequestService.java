@@ -896,7 +896,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	private void addMainContent(Document document, DeliveryRequest deliveryRequest)
 			throws DocumentException, IOException {
-
 		PdfPTable widgetTable = new PdfPTable(5);
 		widgetTable.setWidthPercentage(100); 
 		widgetTable.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -2012,7 +2011,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id) {
-
 		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
 		DeliveryRequest dn = repos.findById(id).get();
 		if (dn.getToUserUsername() != null) {

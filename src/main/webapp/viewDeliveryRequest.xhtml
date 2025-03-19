@@ -575,6 +575,94 @@
 					</div>
 					<div id="tab2" class="tab-pane">
 						<f:subview id="tab2" rendered="#{DeliveryRequestType.INBOUND==deliveryRequestView.deliveryRequest.type}">
+							<f:subview rendered="#{DeliveryRequestStatus.PARTIALLY_DELIVRED==deliveryRequestView.deliveryRequest.status}">
+								<div class="row">
+									<h4 class="header blue bolder smaller">
+										<i class="fa fa-list blue" />
+										<h:outputText value=" Delivered Situation" />
+									</h4>
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<div class="col-sm-9 hidden-xs">
+												<i class="fa fa-list" />
+												<h:outputText value=" Delivered Situation" />
+											</div>
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable value="#{deliveryRequestView.deliveryRequest.detailList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+												<p:column headerText="Part Number">
+													<h:outputLink id="pn" value="viewPartNumber.xhtml" target="blank">
+														<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+														<f:param name="id" value="#{item.partNumber.id}" />
+													</h:outputLink>
+													<p:overlayPanel for="pn" style="text-align: left;width:600px" showEvent="mouseover" hideEvent="mouseout">
+														<div class="col-xs-4 center">
+															<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
+																<f:param name="fileName" value="#{item.partNumber.image}" />
+															</p:graphicImage>
+															<br />
+															<span class="bolder green smaller-80">
+																<h:outputText value="#{item.partNumber.name}" />
+															</span>
+														</div>
+														<div class="col-xs-8">
+															<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+															<span class="bolder blue">
+																<h:outputText value="Industry : #{item.partNumber.industryName}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+															<span class="pink">
+																<h:outputText value="Category : #{item.partNumber.categoryName}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+															<span class="green">
+																<h:outputText value="Type : #{item.partNumber.typeName}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+															<span class="orange">
+																<h:outputText value="Brand : #{item.partNumber.brandName}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
+															<span class="light-blue">
+																<h:outputText value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
+															<span class="purple">
+																<h:outputText value="Description : #{item.partNumber.description}" />
+															</span>
+															<hr />
+														</div>
+													</p:overlayPanel>
+												</p:column>
+												<p:column headerText="Description">
+													<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
+												</p:column>
+												<p:column headerText="Quantity">
+													<h:outputText value="#{item.quantity}" styleClass="bolder blue">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Delivered Quantity">
+													<h:outputText value="#{item.tmpDeliveredQuantity}" styleClass="bolder green">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Remainder">
+													<h:outputText value="#{item.quantity-item.tmpDeliveredQuantity}" styleClass="#{item.quantity-item.tmpDeliveredQuantity gt 0 ?'bolder red':''}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+							</f:subview>
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-list-alt green" />

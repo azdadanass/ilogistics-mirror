@@ -1090,4 +1090,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public void updateInboundOwnerId(Integer deliveryRequestId) {
 		repos.updateInboundOwnerId(deliveryRequestId);
 	}
+	
+	public Double findQuantityByDeliveryRequestDetail(Integer deliveryRequestDetail) {
+		return ObjectUtils.firstNonNull(repos.findQuantityByDeliveryRequestDetail(deliveryRequestDetail),0.0) ;
+	}
 }

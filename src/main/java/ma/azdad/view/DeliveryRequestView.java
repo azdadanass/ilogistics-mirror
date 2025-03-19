@@ -297,6 +297,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		} else if (isViewPage) {
 			deliveryRequest = service.findOne(id);
 			deliveryRequest.init();
+			if(deliveryRequest.getIsInbound() && DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus())) 
+				deliveryRequest.getDetailList().forEach(i->i.setTmpDeliveredQuantity(stockRowService.findQuantityByDeliveryRequestDetail(i.getId())));
+			
 //			initCommentsVariables();
 			projectCross = projectCrossService.findByDeliveryRequest(id);
 		} else if (isLightViewPage || isPrintPage) {

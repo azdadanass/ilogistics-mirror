@@ -304,13 +304,13 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return deliveryRequestRepos.findLightByRequester(type, username, status);
 	}
 
-	public List<DeliveryRequest> findToAcknowledgeInternal(String username) {
-		return deliveryRequestRepos.findToAcknowledgeInternal(username);
+	public List<DeliveryRequest> findToAcknowledgeInternal(String username,List<Integer> warehouseList) {
+		return deliveryRequestRepos.findToAcknowledgeInternal(username,warehouseList);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countToAcknowledgeInternal")
-	public Long countToAcknowledgeInternal(String username) {
-		return deliveryRequestRepos.countToAcknowledgeInternal(username);
+	public Long countToAcknowledgeInternal(String username,List<Integer> warehouseList) {
+		return deliveryRequestRepos.countToAcknowledgeInternal(username,warehouseList);
 	}
 
 	public List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId,
@@ -381,16 +381,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLightToApprove")
-	public List<DeliveryRequest> findLightToApprove(String username) {
+	public List<DeliveryRequest> findLightToApprove(String username,List<Integer> delegatedProjectList) {
 		List<DeliveryRequest> result = new ArrayList<DeliveryRequest>();
-		result.addAll(deliveryRequestRepos.findLightToApprovePm(username, DeliveryRequestStatus.REQUESTED));
+		result.addAll(deliveryRequestRepos.findLightToApprovePm(username,delegatedProjectList, DeliveryRequestStatus.REQUESTED));
 		result.addAll(deliveryRequestRepos.findLightToApproveHm(username, DeliveryRequestStatus.APPROVED1));
 		return result;
 	}
 
 	@Cacheable(value = "deliveryRequestService.countToApprove")
-	public Long countToApprove(String username) {
-		return deliveryRequestRepos.countToApprovePm(username, DeliveryRequestStatus.REQUESTED)
+	public Long countToApprove(String username,List<Integer> delegatedProjectList) {
+		return deliveryRequestRepos.countToApprovePm(username,delegatedProjectList, DeliveryRequestStatus.REQUESTED)
 				+ deliveryRequestRepos.countToApproveHm(username, DeliveryRequestStatus.APPROVED1);
 	}
 
@@ -402,8 +402,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	@Cacheable(value = "deliveryRequestService.countByWarehouseList")
-	public Long countByWarehouseList(List<Integer> warehouseList, DeliveryRequestStatus status) {
-		return deliveryRequestRepos.countByWarehouseList(warehouseList, status, DeliveryRequestType.XBOUND);
+	public Long countByWarehouseList(List<Integer> warehouseList,  List<DeliveryRequestStatus > statusList) {
+		return deliveryRequestRepos.countByWarehouseList(warehouseList, statusList, DeliveryRequestType.XBOUND);
 	}
 
 	public Integer getMaxReferenceNumber(DeliveryRequestType type) {

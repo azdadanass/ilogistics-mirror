@@ -226,7 +226,7 @@
 						</f:subview>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 3}">
-						<f:subview rendered="#{sessionView.isPM or sessionView.isTM  or sessionView.isUser}">
+						<f:subview rendered="#{sessionView.isPM or cacheView.isPmByDelegation or sessionView.isTM  or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-truck"></i>

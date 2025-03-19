@@ -103,20 +103,20 @@ public class ProjectService {
 	// return repos.findLightByResource(username);
 	// }
 
-	public List<Project> findLightByResource(String username) {
-		return repos.findByResourceAndStatus(username, "Open");
+	public List<Project> findLightByResource(String username,List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatus(username,delegatedProjectList, "Open");
 	}
 
-	public List<Project> findInboundProjectList(String username) {
-		return repos.findByResourceAndStatusAndHavingWarehousing(username, "Open");
+	public List<Project> findInboundProjectList(String username,List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatusAndHavingWarehousing(username,delegatedProjectList, "Open");
 	}
 
-	public List<Project> findXboundProjectList(String username) {
-		return repos.findByResourceAndStatusAndNotType(username, "Open", ProjectTypes.STOCK.getValue());
+	public List<Project> findXboundProjectList(String username,List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatusAndNotType(username,delegatedProjectList, "Open", ProjectTypes.STOCK.getValue());
 	}
 
-	public List<Project> findOutboundProjectList(String username) {
-		return repos.findByResourceAndInProjectList(username, findNonEmptyProjectList());
+	public List<Project> findOutboundProjectList(String username,List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndInProjectList(username,delegatedProjectList, findNonEmptyProjectList());
 	}
 
 	public Set<Integer> findNonEmptyProjectList() {
@@ -237,10 +237,10 @@ public class ProjectService {
 		return repos.findLightByIdListAndCustomer(idList, customerId);
 	}
 
-	public List<Integer> findAllProjectIdListByResource(String username) {
+	public List<Integer> findAllProjectIdListByResource(String username,List<Integer> delegatedProjectList) {
 		List<Integer> result = new ArrayList<>();
 		result.add(-1);
-		result.addAll(repos.findAllProjectIdListByResource(username));
+		result.addAll(repos.findAllProjectIdListByResource(username,delegatedProjectList));
 		return result;
 	}
 }

@@ -369,7 +369,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case 1:
 				if (sessionView.getInternal() || sessionView.getIsCustomerUser())
 					list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(),
-							Stream.concat(cacheView.getAssignedProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
+							Stream.concat(cacheView.getUserProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
 				else if (sessionView.getIsSupplierUser())
 					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList());
 
@@ -379,7 +379,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 2:
 				if (sessionView.getInternal())
-					initLists(service.findToAcknowledgeInternal(sessionView.getUsername()));
+					initLists(service.findToAcknowledgeInternal(sessionView.getUsername(),cacheView.getWarehouseList()));
 				else if (sessionView.getIsExternalPm()) {
 					if (sessionView.getIsSupplierUser())
 						initLists(service.findToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
@@ -390,7 +390,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 3:
 				if (sessionView.getInternal())
-					list2 = list1 = service.findLightToApprove(sessionView.getUsername());
+					list2 = list1 = service.findLightToApprove(sessionView.getUsername(),cacheView.getDelegatedProjectList());
 				break;
 			case 4:
 				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList());
@@ -2752,7 +2752,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Long countToAcknowledgeRequests() {
 		if (sessionView.getInternal())
-			return service.countToAcknowledgeInternal(sessionView.getUsername());
+			return service.countToAcknowledgeInternal(sessionView.getUsername(),cacheView.getWarehouseList());
 		else if (sessionView.getIsExternalPm()) {
 			if (sessionView.getIsSupplierUser())
 				return service.countToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
@@ -2764,13 +2764,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Long countToApproveRequests() {
 		if (sessionView.getIsInternalPM())
-			return service.countToApprove(sessionView.getUsername());
+			return service.countToApprove(sessionView.getUsername(),cacheView.getDelegatedProjectList());
 		return 0l;
 	}
 
 	public Long countToDeliverRequests() {
 		if (sessionView.getIsWM())
-			return service.countByWarehouseList(cacheView.getWarehouseList(), DeliveryRequestStatus.APPROVED2);
+			return service.countByWarehouseList(cacheView.getWarehouseList(), Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED));
 		return 0l;
 	}
 

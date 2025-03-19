@@ -72,7 +72,7 @@ public class CacheView implements Serializable {
 		assignedProjectList = projectService.findAssignedProjectIdListByResource(sessionView.getUsername());
 		delegatedProjectList = delegationService.findDelegatedProjects(sessionView.getUsername());
 
-		userProjectList = projectService.findAllProjectIdListByResource(sessionView.getUsername());
+		userProjectList = projectService.findAllProjectIdListByResource(sessionView.getUsername(),delegatedProjectList);
 
 		allProjectList.addAll(assignedProjectList);
 		allProjectList.addAll(delegatedProjectList);

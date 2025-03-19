@@ -272,7 +272,5 @@ public class SessionView implements Serializable {
 	public void setOnlineUsers(List<User> onlineUsers) {
 		this.onlineUsers = onlineUsers;
 	}
-	
-	
 
 }

@@ -455,6 +455,7 @@
 													</h:outputLink>
 												</li>
 											</f:subview>
+											<f:subview rendered="#{sessionView.isUser()}">
 											<li>
 												<h:outputLink value="deliveryRequestList.xhtml">
 													<span class="clearfix">
@@ -470,6 +471,7 @@
 													<f:param name="pageIndex" value="2" />
 												</h:outputLink>
 											</li>
+											</f:subview>
 											<f:subview rendered="#{sessionView.internal or sessionView.isExternalPm}">
 												<li>
 													<h:outputLink value="deliveryRequestList.xhtml">

@@ -42,19 +42,19 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query(select1 + "from Project where manager.username = ?1 and status = ?2")
 	public List<Project> findLightByManagerAndStatus(String managerUsername, String status);
 
-	String cond1 = " (manager.username = ?1 or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate)) ";
+	String cond1 = " (manager.username = ?1 or id in (?2) or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate)) ";
 
-	@Query(select1 + " from Project where " + cond1 + " and status = ?2")
-	public List<Project> findByResourceAndStatus(String username, String status);
+	@Query(select1 + " from Project where " + cond1 + " and status = ?3")
+	public List<Project> findByResourceAndStatus(String username,List<Integer> delegatedProjectList, String status);
 
-	@Query(select1 + " from Project where " + cond1 + " and status = ?2 and (companyWarehousing is true or customerWarehousing is true or supplierWarehousing is true)")
-	public List<Project> findByResourceAndStatusAndHavingWarehousing(String username, String status);
+	@Query(select1 + " from Project where " + cond1 + " and status = ?3 and (companyWarehousing is true or customerWarehousing is true or supplierWarehousing is true)")
+	public List<Project> findByResourceAndStatusAndHavingWarehousing(String username,List<Integer> delegatedProjectList, String status);
 
-	@Query(select1 + " from Project where " + cond1 + " and status = ?2 and type != ?3")
-	public List<Project> findByResourceAndStatusAndNotType(String username, String status, String type);
+	@Query(select1 + " from Project where " + cond1 + " and status = ?3 and type != ?4")
+	public List<Project> findByResourceAndStatusAndNotType(String username,List<Integer> delegatedProjectList, String status, String type);
 
-	@Query(select1 + " from Project where " + cond1 + " and id in (?2) ")
-	public List<Project> findByResourceAndInProjectList(String username, Set<Integer> projectList);
+	@Query(select1 + " from Project where " + cond1 + " and id in (?3) ")
+	public List<Project> findByResourceAndInProjectList(String username,List<Integer> delegatedProjectList, Set<Integer> projectList);
 
 	@Query("select a.inboundDeliveryRequest.project.id from StockRow a where a.inboundDeliveryRequest is not null group by a.partNumber.id,a.inboundDeliveryRequest.project.id having sum(a.quantity) > 0 ")
 	public List<Integer> findNonEmptyProjectList();
@@ -101,7 +101,7 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select distinct a.project.id  from DelegationDetail a where a.delegation.delegate.username = ?1 and a.delegation.status = 'Active' and a.type = 'PM'")
 	List<Integer> findIdListByDelegation(String username);
 
-	@Query("select id from Project where (companyWarehousing is true or supplierWarehousing is true or customerWarehousing is true) and status = 'Open' and (manager.username = ?1 or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
-	public List<Integer> findAllProjectIdListByResource(String username);
+	@Query("select id from Project where (companyWarehousing is true or supplierWarehousing is true or customerWarehousing is true) and status = 'Open' and (manager.username = ?1 or id in (?2) or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
+	public List<Integer> findAllProjectIdListByResource(String username,List<Integer> delegatedProjectList);
 
 }

@@ -508,9 +508,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			});
 		});
 		
-
 		map.forEach((x, y) -> {
-			x.setQuantity(y);
+			x.setTmpQuantity(y);
 			result.add(x);
 			
 		});

@@ -72,7 +72,7 @@ public class ProjectView {
 
 	public void refreshList() {
 		if ("/viewUser.xhtml".equals(currentPath)) {
-			List<Project> list = projectService.findLightByResource(sessionView.getUsername());
+			List<Project> list = projectService.findLightByResource(sessionView.getUsername(),cacheView.getDelegatedProjectList());
 			Integer customerId = userService.findCustomerId(id);
 			if (customerId == null)
 				list2 = list1 = list;
@@ -151,11 +151,11 @@ public class ProjectView {
 			return null;
 		switch (deliveryRequestType) {
 		case INBOUND:
-			return projectService.findInboundProjectList(username);
+			return projectService.findInboundProjectList(username,cacheView.getDelegatedProjectList());
 		case XBOUND:
-			return projectService.findXboundProjectList(username);
+			return projectService.findXboundProjectList(username,cacheView.getDelegatedProjectList());
 		case OUTBOUND:
-			return projectService.findOutboundProjectList(username);
+			return projectService.findOutboundProjectList(username,cacheView.getDelegatedProjectList());
 		default:
 			return null;
 		}

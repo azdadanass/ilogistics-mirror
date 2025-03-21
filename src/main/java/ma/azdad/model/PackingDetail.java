@@ -33,6 +33,9 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	private Integer storageHumidity;
 
 	private Packing parent;
+	
+	//tmp
+	private Integer tmpQuantity;
 
 	public PackingDetail() {
 	}
@@ -232,5 +235,17 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	public void setSnType(String snType) {
 		this.snType = snType;
 	}
+
+	@Transient
+	public Integer getTmpQuantity() {
+		return tmpQuantity;
+	}
+
+	@Transient
+	public void setTmpQuantity(Integer tmpQuantity) {
+		this.tmpQuantity = tmpQuantity;
+	}
+	
+	
 
 }

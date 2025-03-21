@@ -20,14 +20,16 @@ public class IndexView implements Serializable {
 	@Autowired
 	private SessionView sessionView;
 
+	@Autowired
+	private CacheView cacheView;
+
 	private Integer selectedMenu = 2;
-	
 
 	@PostConstruct
 	public void init() {
-		
+
 	}
-	
+
 	public void changeMenuByCurrentPath() {
 		String currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		switch (currentPath) {
@@ -108,7 +110,7 @@ public class IndexView implements Serializable {
 				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 		case 4:
 			if (canAccessMenu(4))
-				return addParameters(sessionView.getInternal() || sessionView.getIsWM()?"reporting.xhtml":"deliveryReporting.xhtml", "faces-redirect=true");
+				return addParameters(sessionView.getInternal() || sessionView.getIsWM() ? "reporting.xhtml" : "deliveryReporting.xhtml", "faces-redirect=true");
 		default:
 			return null;
 		}

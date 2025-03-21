@@ -63,6 +63,7 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private Integer tmpCompanyId;
 	private Integer tmpCustomerId;
 	private Integer tmpSupplierId;
+	private Double tmpDeliveredQuantity;
 
 	private Double tmpQuantity1;
 	private Double tmpQuantity2;
@@ -1190,5 +1191,17 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setDeliverToOther(deliverToOther);
 	}
+
+	@Transient
+	public Double getTmpDeliveredQuantity() {
+		return tmpDeliveredQuantity;
+	}
+
+	@Transient
+	public void setTmpDeliveredQuantity(Double tmpDeliveredQuantity) {
+		this.tmpDeliveredQuantity = tmpDeliveredQuantity;
+	}
+	
+	
 
 }

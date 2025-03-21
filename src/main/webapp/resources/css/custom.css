@@ -886,6 +886,10 @@ label {
 	z-index: 2070 !important;
 }
 
+.ui-autocomplete-panel{
+	z-index: 2070 !important;
+}
+
 /* Fin Dialog CSS */
 
 /* Datatable General */

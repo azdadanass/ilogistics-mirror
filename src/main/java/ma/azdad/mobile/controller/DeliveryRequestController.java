@@ -9,10 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
+import ma.azdad.mobile.model.DeliveryRequestExpiryDate;
 import ma.azdad.mobile.model.DeliveryRequestFile;
 import ma.azdad.mobile.model.HardwareStatusList;
 import ma.azdad.mobile.model.Token;
@@ -64,6 +66,7 @@ public class DeliveryRequestController {
 		System.out.println("/mobile/dn/handle-in/{key}");
 		service.handleIn(list.getHardwareStatusDataList(), id,category,token.getUsername());
 	}
+	
 	
 	@GetMapping("/mobile/dn/handle-out/{key}/{id}")
 	public void handle(@PathVariable String key,@PathVariable Integer id) {
@@ -164,6 +167,26 @@ public class DeliveryRequestController {
     	Token token = tokenService.getBykey(key);
     	
     	return service.findDnAttachments(id);
+    }
+    
+    @GetMapping("/mobile/dn/expiry-list/{key}/{id}")
+    public List<DeliveryRequestExpiryDate> findDnExpiry(@PathVariable String key,@PathVariable Integer id) {
+    	System.out.println("/mobile/dn/expiry-list/{key}/{id}");
+    	Token token = tokenService.getBykey(key);
+    	
+    	return service.findDnExpiry(id);
+    }
+    
+    @PutMapping("/mobile/dn/update-expiry/{key}")
+    public void updateDnExpiryById(@PathVariable String key,@RequestBody DeliveryRequestExpiryDate expiry) {
+    	Token token = tokenService.getBykey(key);
+    	service.updateDnExpiryById(expiry);
+    }
+    
+    @PostMapping("/mobile/dn/create-expiry/{key}")
+    public void createDnExpiryById(@PathVariable String key,@RequestBody DeliveryRequestExpiryDate expiry) {
+    	Token token = tokenService.getBykey(key);
+    	service.createDnExpiryById(expiry);
     }
 	
 	

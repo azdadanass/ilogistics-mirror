@@ -3,7 +3,10 @@ package ma.azdad.mobile.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
@@ -19,16 +22,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import ma.azdad.mobile.model.HardwareStatusList;
 import ma.azdad.mobile.model.Token;
 import ma.azdad.model.User;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.TokenService;
 import ma.azdad.service.UserService;
 import ma.azdad.utils.PrimeFacesUploadedFile;
+import ma.azdad.utils.Public;
 
 @RestController
 public class DeliveryRequestFileController {
@@ -39,6 +46,14 @@ public class DeliveryRequestFileController {
 	    private TokenService tokenService;
 	    @Autowired
 	    UserService userService;
+	    
+	    
+	    @GetMapping("/mobile/dn-file/delete-file/{key}/{idDn}/{idFile}")
+		public void deleteFile(@PathVariable String key,@PathVariable Integer idDn,@PathVariable Integer idFile) {
+			Token token = tokenService.getBykey(key);
+			System.out.println("/mobile/dn-file/delete-file/{key}");
+			deliveryRequestService.deleteFile(idDn, idFile);
+		}
 
 	    @PostMapping("/mobile/dn-file/upload-file/{key}/{id}/{fileType}")
 	    public ResponseEntity<?> handleFileUpload(@RequestParam("file") MultipartFile file,@PathVariable String key,@PathVariable Integer id,@PathVariable String fileType) {
@@ -61,24 +76,25 @@ public class DeliveryRequestFileController {
 	   
 
 	    @GetMapping("/mobile/dn-file/download/{key}")
-	    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String key,@RequestParam String fileName) throws FileNotFoundException {
-	    	System.out.println("/mobile/dn-file/download/{key}");
-    		Token token = tokenService.getBykey(key);
-	        File file = new File("http://ilogistics.3gcominside.com/" + fileName);
+	    public ResponseEntity<InputStreamResource> downloadFile(@PathVariable String key, @RequestParam String fileName) throws IOException {
+	        System.out.println("/mobile/dn-file/download/{key}");
+	        Token token = tokenService.getBykey(key);
+	        String fileUrl = Public.getPublicUrl(fileName);
+	        // Open connection to the remote file
+	        URL url = new URL(fileUrl);
+	        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	        connection.setRequestMethod("GET");
 
-	        if (!file.exists()) {
-	            throw new FileNotFoundException("File not found: " + fileName);
+	        int responseCode = connection.getResponseCode();
+	        if (responseCode != HttpURLConnection.HTTP_OK) {
+	            throw new FileNotFoundException("File not found at URL: " + fileUrl);
 	        }
-
-	        InputStream inputStream = new FileInputStream(file);
-
-	        String contentType = "application/octet-stream";  // Default to binary file
-	        long contentLength = file.length();
+	        InputStream inputStream = connection.getInputStream();
 
 	        HttpHeaders headers = new HttpHeaders();
-	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
-	        headers.add(HttpHeaders.CONTENT_TYPE, contentType);
-	        headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(contentLength));
+	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
+	        headers.add(HttpHeaders.CONTENT_TYPE, connection.getContentType());
+	        headers.add(HttpHeaders.CONTENT_LENGTH, String.valueOf(connection.getContentLengthLong()));
 
 	        return ResponseEntity.ok()
 	                .headers(headers)

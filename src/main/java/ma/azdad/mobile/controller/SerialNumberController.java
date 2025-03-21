@@ -1,0 +1,88 @@
+package ma.azdad.mobile.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import ma.azdad.mobile.model.Token;
+import ma.azdad.model.DeliveryRequestSerialNumber;
+import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
+import ma.azdad.service.DeliveryRequestSerialNumberService;
+import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.TokenService;
+
+@RestController
+public class SerialNumberController {
+
+	@Autowired
+	DeliveryRequestSerialNumberRepos deliveryRequestSerialNumberRepos;
+	@Autowired
+	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
+	@Autowired
+	TokenService tokenService;
+
+	@GetMapping("/mobile/sn/scan/{key}/{id}/{serial}")
+	public void updateSerialNumber(@PathVariable Integer id, @PathVariable String serial, @PathVariable String key) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/scan/" + id + "/"+serial+"/" + token.getKey());
+		DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id).get();
+		sn.setSerialNumber(serial);
+		sn = deliveryRequestSerialNumberRepos.save(sn);
+
+	}
+	
+	@GetMapping("/mobile/sn/scanOutbound/{key}/{id}/{serial}")
+	public ResponseEntity<String> scanOutboundSnMobile( @PathVariable String key,@PathVariable Integer id, @PathVariable String serial) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/scanOutbound/");
+	    return deliveryRequestSerialNumberService.scanOutboundSnMobile(id, serial);
+	}
+
+	
+	
+
+	@GetMapping("/mobile/sn/findone/{key}/{id}")
+	public ma.azdad.mobile.model.DeliveryRequestSerialNumber findone(@PathVariable Integer id, @PathVariable String key) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/findone/" + id + "/" + token.getKey());
+		DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id).get();
+		
+		return new ma.azdad.mobile.model.DeliveryRequestSerialNumber(id, sn.getPackingDetail().getParent().getName(), sn.getPackingDetail().getParent().getPartNumber().getName(),
+				sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),  sn.getPackingDetail().getSnType(),
+				sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue(),sn.getInboundStockRow().getLocation().getName());
+		
+
+	}
+	
+	@GetMapping("/mobile/sn/clear/{id}/{key}")
+	public void clearSerialNumber(@PathVariable Integer id,  @PathVariable String key) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/clear/" + id + "/" + token.getKey());
+		DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id).get();
+		sn.setSerialNumber(null);
+		deliveryRequestSerialNumberRepos.save(sn);
+
+	}
+	
+	@GetMapping("/mobile/sn/list/{key}/{id}")
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnByDnId(@PathVariable Integer id, @PathVariable String key) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/list/" + id + "/" + token.getKey());
+		
+		return deliveryRequestService.findSnByDnId(id);
+	
+	}
+	
+	
+	
+
+}

@@ -414,7 +414,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ "a.destinationProject.id,(select b.name from Project b where b.id = a.destinationProject.id),"//
 			+ "a.warehouse.id,a.warehouse.name,"//
 			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
-			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate,a.transportationNeeded)";
+			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate,a.transportationNeeded,a.isSnRequired)";
 	
 	@Query(cm1 + " from DeliveryRequest a where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);

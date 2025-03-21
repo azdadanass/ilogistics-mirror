@@ -7,8 +7,12 @@ import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.StockRow;
@@ -22,6 +26,9 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 
 	@Autowired
 	DeliveryRequestSerialNumberRepos repos;
+	
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
 
 	@Override
 	public DeliveryRequestSerialNumber findOne(Integer id) {
@@ -85,6 +92,21 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	
 	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId){
 		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
+	}
+	
+	///////////////// Mobile
+	public ResponseEntity<String> scanOutboundSnMobile(Integer id, String serialNumber) {
+	    DeliveryRequest dn = deliveryRequestService.findOne(id);
+	    List<DeliveryRequestSerialNumber> list = repos.findRemainingOutboundMobile(id, serialNumber);
+	    
+	    if (!list.isEmpty()) {
+	        for (DeliveryRequestSerialNumber dns : list) {
+	            dns.setOutboundDeliveryRequest(dn);
+	        }
+	        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body("SN scanned successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.TEXT_PLAIN).body("The SN does not exist");
+	    }
 	}
 
 }

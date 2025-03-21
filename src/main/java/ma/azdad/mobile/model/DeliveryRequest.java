@@ -29,6 +29,8 @@ public class DeliveryRequest {
 	private DeliveryRequestStatus status;
 	private Boolean isForReturn = false;
 	private Boolean isForTransfer = false;
+	private Boolean isSnRequired = false;
+	private Boolean showExpiryData = false;
 
 	
 	private String ownerName;
@@ -81,7 +83,7 @@ public class DeliveryRequest {
 			String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
 			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
 			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
-			Boolean transportationNeeded) {
+			Boolean transportationNeeded,Boolean isSnRequired) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -105,6 +107,7 @@ public class DeliveryRequest {
 		this.requesterPhoto = Public.getPublicUrl(requesterPhoto);
 		this.deliveryDate = deliveryDate;
 		this.transportationNeeded = transportationNeeded;
+		this.isSnRequired = isSnRequired;
 		
 
 	}
@@ -461,6 +464,24 @@ public class DeliveryRequest {
 	public void setToCompanyLogo(String toCompanyLogo) {
 		this.toCompanyLogo = toCompanyLogo;
 	}
+
+	public Boolean getIsSnRequired() {
+		return isSnRequired;
+	}
+
+	public void setIsSnRequired(Boolean isSnRequired) {
+		this.isSnRequired = isSnRequired;
+	}
+
+	public Boolean getShowExpiryData() {
+		return showExpiryData;
+	}
+
+	public void setShowExpiryData(Boolean showExpiryData) {
+		this.showExpiryData = showExpiryData;
+	}
+	
+	
 	
 	
 	

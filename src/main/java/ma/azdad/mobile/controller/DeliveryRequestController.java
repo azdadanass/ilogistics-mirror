@@ -1,5 +1,6 @@
 package ma.azdad.mobile.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,6 +176,13 @@ public class DeliveryRequestController {
     	Token token = tokenService.getBykey(key);
     	
     	return service.findDnExpiry(id);
+    }
+    
+    @GetMapping("/mobile/dn/expiry-date/{key}/{id}")
+    public List<Date> findExpiryDate(@PathVariable String key,@PathVariable Integer id) {
+    	System.out.println("/mobile/dn/expiry-date/{key}/{id}");
+    	Token token = tokenService.getBykey(key);
+    	return service.findRemainingExpiryDateList(id);
     }
     
     @PutMapping("/mobile/dn/update-expiry/{key}")

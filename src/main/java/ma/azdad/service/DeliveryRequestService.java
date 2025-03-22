@@ -2400,14 +2400,35 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> findDnExpiry(Integer id) {
 		List<DeliveryRequestExpiryDate> list = deliveryRequestExpiryDateService.findByDeliveryRequest(id);
+		System.out.println("expiry1 size :"+list.size());
+		DeliveryRequest dn = findOne(id);
+		if (list.isEmpty() && dn.getIsInbound()) {
+			dn.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).forEach(i -> list.add(new DeliveryRequestExpiryDate(i, true)));
+			list.stream().forEach(i -> deliveryRequestExpiryDateService.save(i));
+			updateMissingExpiry(dn.getId(), false);
+		}
+		if (dn.getIsOutbound()) {
+			Map<Integer, Double> map = list.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getStockRowId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+			dn.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable() && -i.getQuantity() > map.getOrDefault(i.getId(), 0.0)).forEach(i -> list.add(new DeliveryRequestExpiryDate(i, true, deliveryRequestExpiryDateService.findOneExpiryDate(i))));
+			list.stream().filter(i -> i.getId() == null).forEach(i -> deliveryRequestExpiryDateService.save(i));
+			if (list.size() == list.stream().filter(i -> i.getExpiryDate() != null).count())
+				updateMissingExpiry(dn.getId(), false);
+		}
+		List<DeliveryRequestExpiryDate> list2 = deliveryRequestExpiryDateService.findByDeliveryRequest(id);
+		System.out.println("expiry2 size :"+list2.size());
 		List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> mobileList = new ArrayList<>();
-		for (DeliveryRequestExpiryDate e : list) {
+		for (DeliveryRequestExpiryDate e : list2) {
 			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestExpiryDate(e.getId(), e.getStockRowId(),
 					e.getStockRow().getPartNumberImage(), e.getStockRow().getPartNumberName(),
 					e.getStockRow().getLocation().getName(), e.getQuantity(), e.getExpiryDate(),
 					e.getStockRow().getStatusValue()));
 		}
 		return mobileList;
+	}
+	
+	public List<Date> findRemainingExpiryDateList(Integer id) {
+		StockRow outboundStockRow = stockRowService.findOne(id);
+		return deliveryRequestExpiryDateService.findRemainingExpiryDateList(outboundStockRow);
 	}
 
 	public void updateDnExpiryById(ma.azdad.mobile.model.DeliveryRequestExpiryDate expiry) {

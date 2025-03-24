@@ -185,10 +185,10 @@ public class DeliveryRequestController {
     	return service.findRemainingExpiryDateList(id);
     }
     
-    @PutMapping("/mobile/dn/update-expiry/{key}")
-    public void updateDnExpiryById(@PathVariable String key,@RequestBody DeliveryRequestExpiryDate expiry) {
+    @PutMapping("/mobile/dn/update-expiry/{key}/{id}")
+    public void updateDnExpiryById(@PathVariable String key,@PathVariable Integer id,@RequestBody DeliveryRequestExpiryDate expiry) {
     	Token token = tokenService.getBykey(key);
-    	service.updateDnExpiryById(expiry);
+    	service.updateDnExpiryById(expiry,id);
     }
     
     @PostMapping("/mobile/dn/create-expiry/{key}")

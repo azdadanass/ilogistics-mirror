@@ -38,6 +38,8 @@ public class LoginController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login not found");
 		if (!StringUtils.equals(dbUser.getPassword(), UtilsFunctions.stringToMD5(user.getPassword())))
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad password");
+		if(!dbUser.getIsWM())
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied !");
 		Token token = tokenService.generateToken(dbUser.getUsername());
 		return token;
 	}

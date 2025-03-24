@@ -2431,8 +2431,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return deliveryRequestExpiryDateService.findRemainingExpiryDateList(outboundStockRow);
 	}
 
-	public void updateDnExpiryById(ma.azdad.mobile.model.DeliveryRequestExpiryDate expiry) {
-
+	public void updateDnExpiryById(ma.azdad.mobile.model.DeliveryRequestExpiryDate expiry,Integer id) {
+		if(expiry.getExpiryDate() == null)
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Expiry date could not be null");
+		if(deliveryRequestExpiryDateService.countByDeliveryRequestAndDate(id, expiry.getExpiryDate()) >0)
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Date already exist in the same stock row");
 		DeliveryRequestExpiryDate exp = deliveryRequestExpiryDateService.findOne(expiry.getId());
 		exp.setQuantity(expiry.getQuantity());
 		exp.setExpiryDate(expiry.getExpiryDate());
@@ -2441,7 +2444,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public void createDnExpiryById(ma.azdad.mobile.model.DeliveryRequestExpiryDate expiry) {
-
+		
 		DeliveryRequestExpiryDate exp = new DeliveryRequestExpiryDate();
 		StockRow sr = stockRowService.findOne(expiry.getStockRowId());
 		exp.setQuantity(expiry.getQuantity());

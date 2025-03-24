@@ -43,6 +43,11 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 
 		return result;
 	}
+	
+	public Long countByDeliveryRequestAndDate(Integer deliveryRequestId,Date expiryDate) {
+		
+		return repos.countByDeliveryRequestAndDate(deliveryRequestId,expiryDate);
+			}
 
 	public List<Date> findRemainingExpiryDateList(Integer partNumberId, Integer inboundDeliveryRequestId, StockRowStatus stockRowStatus, Integer locationId) {
 		return repos.findRemainingExpiryDateList(partNumberId, inboundDeliveryRequestId, DeliveryRequestType.OUTBOUND, stockRowStatus, locationId);

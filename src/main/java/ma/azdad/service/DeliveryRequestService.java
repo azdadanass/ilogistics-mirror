@@ -1215,7 +1215,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Font valueFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL, BaseColor.BLACK); // Default black text
 		BaseColor bgColor = BaseColor.WHITE; //
 
-		if (key.equals("DN Number") || key.equals("Requester") || key.equals("Type")
+		if (key.equals("DN Number") || key.equals("Type")
 				|| key.equals("Transportation required") || key.equals("Is SN Required")
 				|| key.equals(" Needed Delivery Date")) {
 			bgColor = extraGray;

@@ -77,6 +77,11 @@
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Acknowledge" styleClass="smaller-80" />
 						</p:commandLink>
+						<p:commandLink title="Adjust Quantity" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('adjustQuantityDlg').show()"
+							rendered="#{deliveryRequestView.canAdjustQuantity()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Adjust" styleClass="smaller-80" />
+						</p:commandLink>
 						<p:commandLink title="Reject" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('rejectDlg').show()"
 							rendered="#{deliveryRequestView.canRejectDeliveryRequest()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>
@@ -654,7 +659,7 @@
 													</h:outputText>
 												</p:column>
 												<p:column headerText="Remainder">
-													<h:outputText value="#{item.quantity-item.tmpDeliveredQuantity}" styleClass="#{item.quantity-item.tmpDeliveredQuantity gt 0 ?'bolder red':''}">
+													<h:outputText value="#{item.remainingQuantity}" styleClass="#{item.quantity-item.tmpDeliveredQuantity gt 0 ?'bolder red':''}">
 														<f:convertNumber type="number" maxFractionDigits="2" />
 													</h:outputText>
 												</p:column>

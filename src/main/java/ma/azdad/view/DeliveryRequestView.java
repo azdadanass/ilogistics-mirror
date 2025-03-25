@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -297,9 +298,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		} else if (isViewPage) {
 			deliveryRequest = service.findOne(id);
 			deliveryRequest.init();
-			if(deliveryRequest.getIsInbound() && DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus())) 
-				deliveryRequest.getDetailList().forEach(i->i.setTmpDeliveredQuantity(stockRowService.findQuantityByDeliveryRequestDetail(i.getId())));
-			
+			if (deliveryRequest.getIsInbound() && DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()))
+				deliveryRequest.getDetailList().forEach(i -> i.setTmpDeliveredQuantity(stockRowService.findQuantityByDeliveryRequestDetail(i.getId())));
+
 //			initCommentsVariables();
 			projectCross = projectCrossService.findByDeliveryRequest(id);
 		} else if (isLightViewPage || isPrintPage) {
@@ -382,7 +383,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 2:
 				if (sessionView.getInternal())
-					initLists(service.findToAcknowledgeInternal(sessionView.getUsername(),cacheView.getWarehouseList()));
+					initLists(service.findToAcknowledgeInternal(sessionView.getUsername(), cacheView.getWarehouseList()));
 				else if (sessionView.getIsExternalPm()) {
 					if (sessionView.getIsSupplierUser())
 						initLists(service.findToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList()));
@@ -393,11 +394,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				break;
 			case 3:
 				if (sessionView.getInternal())
-					list2 = list1 = service.findLightToApprove(sessionView.getUsername(),cacheView.getDelegatedProjectList());
+					list2 = list1 = service.findLightToApprove(sessionView.getUsername(), cacheView.getDelegatedProjectList());
 				break;
 			case 4:
 				list2 = list1 = service.findLightByWarehouseList(cacheView.getWarehouseList());
-				Collections.sort(list2,new Comparator<DeliveryRequest>() {
+				Collections.sort(list2, new Comparator<DeliveryRequest>() {
 					@Override
 					public int compare(DeliveryRequest o1, DeliveryRequest o2) {
 						return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
@@ -1549,7 +1550,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case "Part Number":
 				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberName())).map(i -> i.getPartNumberName()).distinct().collect(Collectors.toList());
 			case "Purchase PO":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero())).map(i -> i.getInboundPoNumero()+"-"+i.getInboundPoSupplierName()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero())).map(i -> i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName()).distinct()
+						.collect(Collectors.toList());
 			case "Inbound DN":
 				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundDeliveryRequestReference())).map(i -> i.getInboundDeliveryRequestReference()).distinct()
 						.collect(Collectors.toList());
@@ -1583,7 +1585,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberName())).collect(Collectors.toList());
 				break;
 			case "Purchase PO":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero()+"-"+i.getInboundPoSupplierName())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName()))
+						.collect(Collectors.toList());
 				break;
 			case "Inbound DN":
 				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundDeliveryRequestReference()))
@@ -1782,13 +1785,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getIsOutbound())
 				service.updateOutboundInboundPo(deliveryRequest.getId());
-			
-			
-			if(deliveryRequest.getIsInboundReturn() && deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo()!=null)
+
+			if (deliveryRequest.getIsInboundReturn() && deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo() != null)
 				deliveryRequest.setPo(deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo());
-				
-			
-			
 
 			for (Integer detailId : toDeleteDetailList)
 				deliveryRequestDetailService.delete(detailId);
@@ -2149,9 +2148,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void generatePdf() {
 		downloadPath = service.generatePdf(deliveryRequest);
 	}
-	
+
 	public void generatePdf2() {
-		downloadPath= service.generatePdfLink(deliveryRequest);
+		downloadPath = service.generatePdfLink(deliveryRequest);
 	}
 
 	public void generateStamp() {
@@ -2694,9 +2693,41 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 //		return stockRowService.findTransferredStockRowList(deliveryRequest.getId());
 //	}
 
+	// adjust quantity
+	public Boolean canAdjustQuantity() {
+		return DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()) //
+				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+				&& deliveryRequest.getBoqMappingList().isEmpty() //
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
+
+	}
+
+	public String adjustQuantity() {
+		if (!canAdjustQuantity())
+			return null;
+
+		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
+		while (it.hasNext()) {
+			DeliveryRequestDetail detail = it.next();
+			Double srQuantity = deliveryRequest.getStockRowList().stream().filter(i -> i.getDeliveryRequestDetail().getId().equals(detail.getId())).mapToDouble(i -> i.getQuantity()).sum();
+			detail.setQuantity(srQuantity);
+			detail.setRemainingQuantity(0.0);
+			if(srQuantity.equals(0.0)) {
+				detail.setDeliveryRequest(null);
+				it.remove();
+			}
+		}
+		deliveryRequest.setIsPartial(false);
+		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
+		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", sessionView.getUser()));
+		service.save(deliveryRequest);
+		
+		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
+	}
+
 	// generic
 	public Boolean getisHardwareSwapInbound() {
-		return service.countByHardwareSwapInboundId(id)>0;
+		return service.countByHardwareSwapInboundId(id) > 0;
 	}
 
 	public List<DeliveryRequest> findByCanBeTransported() {
@@ -2755,7 +2786,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Long countToAcknowledgeRequests() {
 		if (sessionView.getInternal())
-			return service.countToAcknowledgeInternal(sessionView.getUsername(),cacheView.getWarehouseList());
+			return service.countToAcknowledgeInternal(sessionView.getUsername(), cacheView.getWarehouseList());
 		else if (sessionView.getIsExternalPm()) {
 			if (sessionView.getIsSupplierUser())
 				return service.countToAcknowledgeExternalSupplierUser(sessionView.getUsername(), sessionView.getUser().getSupplierId(), cacheView.getUserProjectList());
@@ -2767,7 +2798,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Long countToApproveRequests() {
 		if (sessionView.getIsInternalPM())
-			return service.countToApprove(sessionView.getUsername(),cacheView.getDelegatedProjectList());
+			return service.countToApprove(sessionView.getUsername(), cacheView.getDelegatedProjectList());
 		return 0l;
 	}
 

@@ -986,7 +986,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@NotFound(action = NotFoundAction.IGNORE)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL,orphanRemoval = true)
 	public List<DeliveryRequestDetail> getDetailList() {
 		return detailList;
 	}

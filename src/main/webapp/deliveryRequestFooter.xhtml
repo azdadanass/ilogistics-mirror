@@ -542,6 +542,27 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="adjustQuantityForm">
+		<p:dialog widgetVar="adjustQuantityDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('adjustQuantityDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check purple" />
+					<h:outputText value=" Adjust Quantity" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to adjustQuantity this item(s) ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('adjustQuantityDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.adjustQuantity()}" value="Adjust Quantity" styleClass="btn btn-purple" oncomplete="PF('adjustQuantityDlg').hide()"
+					update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 	<h:form id="deliverForm">
 		<p:dialog widgetVar="deliverDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deliverDlg').hide()">

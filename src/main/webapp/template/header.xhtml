@@ -12,10 +12,8 @@
 				</button>
 				<div class="navbar-header pull-left">
 					<a href="index.xhtml" class="navbar-brand">
-						<small>
-							<i>
-								<h:graphicImage value="/resources/img/logo-#{erpView.erp}.png" width="200" height="200"
-									style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
+						<small> <i>
+								<h:graphicImage value="/resources/img/logo-#{erpView.erp}.png" width="200" height="200" style="float : left; height: auto; vertical-align: middle; display: block; padding: 0px 0px 0px 0px;" />
 							</i>
 						</small>
 					</a>
@@ -72,7 +70,8 @@
 								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 									<i class="ace-icon fa fa-tasks"></i>
 									<span class="badge badge-grey">
-										<h:outputText value="#{deliveryRequestView.countByMissingCustomerPo() + deliveryRequestView.countByMissingCustomerBoqMapping()}" />
+										<h:outputText
+											value="#{deliveryRequestView.countByMissingCustomerPo() + deliveryRequestView.countByMissingCustomerBoqMapping()+deliveryRequestView.countByMissingSupplierPo() + deliveryRequestView.countByMissingSupplierBoqMapping()}" />
 									</span>
 								</a>
 								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
@@ -114,16 +113,6 @@
 											</li>
 										</ul>
 									</li>
-								</ul>
-							</li>
-							<li class="purple">
-								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-									<i class="ace-icon fa fa-tasks"></i>
-									<span class="badge badge-grey">
-										<h:outputText value="#{deliveryRequestView.countByMissingSupplierPo() + deliveryRequestView.countByMissingSupplierBoqMapping()}" />
-									</span>
-								</a>
-								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-check"></i>
 										<h:outputText value="Supplier PO &amp; BOQ" />
@@ -165,6 +154,39 @@
 								</ul>
 							</li>
 						</f:subview>
+						<li class="purple">
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+								<i class="ace-icon fa fa-tasks"></i>
+								<span class="badge badge-grey">
+									<h:outputText value="123" />
+								</span>
+							</a>
+							<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+								<li class="dropdown-header">
+									<i class="ace-icon fa fa-check"></i>
+									<h:outputText value="Pending Mapping" />
+								</li>
+								<li class="dropdown-content">
+									<ul class="dropdown-menu dropdown-navbar">
+										<li>
+											<h:outputLink value="issueList.xhtml">
+												<span class="clearfix">
+													<span class="pull-left">
+														<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+														&nbsp;&nbsp;
+														<h:outputText value=" SDM Outbond " />
+													</span>
+													<span class="pull-right badge badge-info">
+														<h:outputText value="#{issueView.countToConfirm()}" />
+													</span>
+												</span>
+												<f:param name="pageIndex" value="1" />
+											</h:outputLink>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
 						<li class="grey">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-tasks"></i>
@@ -456,21 +478,21 @@
 												</li>
 											</f:subview>
 											<f:subview rendered="#{sessionView.isUser()}">
-											<li>
-												<h:outputLink value="deliveryRequestList.xhtml">
-													<span class="clearfix">
-														<span class="pull-left">
-															<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
-															&nbsp;&nbsp;
-															<h:outputText value=" To Acknowledge " />
+												<li>
+													<h:outputLink value="deliveryRequestList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Acknowledge " />
+															</span>
+															<span class="pull-right badge badge-purple">
+																<h:outputText value="#{deliveryRequestView.countToAcknowledgeRequests()}" />
+															</span>
 														</span>
-														<span class="pull-right badge badge-purple">
-															<h:outputText value="#{deliveryRequestView.countToAcknowledgeRequests()}" />
-														</span>
-													</span>
-													<f:param name="pageIndex" value="2" />
-												</h:outputLink>
-											</li>
+														<f:param name="pageIndex" value="2" />
+													</h:outputLink>
+												</li>
 											</f:subview>
 											<f:subview rendered="#{sessionView.internal or sessionView.isExternalPm}">
 												<li>
@@ -540,8 +562,7 @@
 									<f:param name="fileName" value="#{sessionView.user.photo}" />
 								</p:graphicImage>
 								<span class="user-info hidden-xs">
-									<small>
-										<h:outputText value="Welcome," />
+									<small> <h:outputText value="Welcome," />
 									</small>
 									<h:outputText value="#{sessionView.user.fullName}" />
 								</span>

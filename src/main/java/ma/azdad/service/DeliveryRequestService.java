@@ -2181,6 +2181,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void adjustQuantity(DeliveryRequest deliveryRequest, User connectedUser) {
 		if(!canAdjustQuantity(deliveryRequest, connectedUser))
 			return;
+		
+		System.out.println(deliveryRequest.getReference());
+		System.out.println(deliveryRequest.getId());
+		System.out.println(jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()));
+		System.out.println("---------------------------------");
+		
 		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
 		while (it.hasNext()) {
 			DeliveryRequestDetail detail = it.next();

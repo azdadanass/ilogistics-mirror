@@ -17,11 +17,12 @@ public interface JobRequestDeliveryDetailRepos extends JpaRepository<JobRequestD
 	String deliverToSupplierName = "(select b.name from Supplier b where b.id = a.deliveryRequest.deliverToSupplier.id)";
 	String toUserFullName = "(select b.fullName from User b where b.username = a.deliveryRequest.toUser.username)";
 	String inboundPoNumero = "(select b.numero from Po b where b.id = a.deliveryRequest.inboundPo.id)";
+	String teamName = "(select b.name from Team b where b.id = a.jobRequest.team.id)";
 
 	String c1 = "select new JobRequestDeliveryDetail(a.quantity,a.installedQuantity,a.isSerialNumberRequired," //
 			+ "a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description,"//
 			+ "a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,"//
-			+ "a.jobRequest.id,a.jobRequest.reference,a.jobRequest.status,a.jobRequest.site.name,a.jobRequest.team.name,"//
+			+ "a.jobRequest.id,a.jobRequest.reference,a.jobRequest.status,a.jobRequest.site.name,"+teamName+","//
 			+ "a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ","
 			+ inboundPoNumero + ") ";
 

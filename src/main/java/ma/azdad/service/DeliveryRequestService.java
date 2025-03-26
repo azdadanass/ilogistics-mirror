@@ -2210,6 +2210,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", connectedUser));
 		save(deliveryRequest);
+		
+		// update pendingJrMapping
+		calculatePendingJrMapping(deliveryRequest.getId());
 	}
 
 	public void updatePendingJrMapping(Integer id, Boolean pendingJrMapping) {

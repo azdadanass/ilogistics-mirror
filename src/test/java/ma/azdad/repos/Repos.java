@@ -1,26 +1,25 @@
 package ma.azdad.repos;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.service.DeliveryRequestService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	
 	@Autowired
-	StockRowRepos stockRowRepos;
+	DeliveryRequestService deliveryRequestService;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
 		
-		stockRowRepos.findReturnedQuantityByOutboundDeliveryRequestGroupByPartNumber(20170);
+		deliveryRequestService.calculatePendingJrMappingScript();
 		
 	}
 

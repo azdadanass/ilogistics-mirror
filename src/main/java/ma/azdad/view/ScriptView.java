@@ -159,6 +159,12 @@ public class ScriptView {
 		deliveryRequestService.adjustQuantityScript();
 	}
 	
+	public  void calculatePendingJrMappingScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculatePendingJrMappingScript();
+	}
+	
 	public void updateOutboundInboundPoScript() {
 		log.info("start updateOutboundInboundPoScript");
 		deliveryRequestService.updateOutboundInboundPoScript();

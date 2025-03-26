@@ -87,5 +87,11 @@ public class JobService {
 	public void updatePartNumberPricingQuantities() {
 		partNumberPricingService.updateQuantities();
 	}
+	
+	
+	@Scheduled(cron = "00 10 05 * * *")
+	public  void calculatePendingJrMappingScript() {
+		deliveryRequestService.calculatePendingJrMappingScript();
+	}
 
 }

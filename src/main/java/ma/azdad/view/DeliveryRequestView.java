@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -449,6 +448,21 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						initLists(service.findByMissingOutboundDeliveryNoteFileAndDeliverToCustomer(sessionView.getUser().getCustomerId(), cacheView.getUserProjectList()));
 				}
 				break;
+			case 16:
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false));
+				break;
+			case 17:
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false));
+				break;
+			case 18:
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true));
+				break;
+			case 19:
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
+				break;
+				
+				
+				
 			default:
 				break;
 			}
@@ -2765,6 +2779,22 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		}
 
 		return result;
+	}
+	
+	public Long countPendingJrMapping1() {
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false);
+	}
+	
+	public Long countPendingJrMapping2() {
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false);
+	}
+	
+	public Long countPendingJrMapping3() {
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true);
+	}
+	
+	public Long countPendingJrMapping4() {
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND,false, true);
 	}
 
 	public Long countToTransfer() {

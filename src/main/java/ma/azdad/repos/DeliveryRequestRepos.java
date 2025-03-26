@@ -37,8 +37,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.sdm," //
-			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate,a.returnReason," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName + "," + warehouse
-			+ "," + destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
+			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate,a.returnReason," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName
+			+ "," + warehouse + "," + destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + ","
 			+ deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + "," + endCustomerName + ",a.project.customer.name," + destinationProjectCustomerName + ") ";
 
@@ -47,8 +47,14 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select id from DeliveryRequest")
 	List<Integer> findIdList();
-	
+
 	List<DeliveryRequest> findByStatus(DeliveryRequestStatus status);
+
+	@Query("select id from DeliveryRequest where sdm is true or ism is true")
+	List<Integer> findBySdmOrIsmIdlist();
+
+	@Query("select type from DeliveryRequest where id = ?1")
+	DeliveryRequestType findType(Integer id);
 
 	@Query(c1 + " from DeliveryRequest a"
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))"
@@ -71,6 +77,17 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ " from DeliveryRequest a where ((a.deliverToSupplier.id = ?1 and a.destinationProject.id in (?2) and (a.type = ?3 or ?3 is null)) or a.warehouse.id in (?4)) and a.status in (?5)  order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightBySupplierUser(Integer deliverToSupplierId, List<Integer> projectList, DeliveryRequestType type, List<Integer> warehouseList,
 			List<DeliveryRequestStatus> statusList);
+
+	@Query(c1 + " from DeliveryRequest a"
+			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4 and a.sdm = ?5 and a.ism = ?6"
+			+ " order by a.neededDeliveryDate desc")
+	public List<DeliveryRequest> findPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
+	
+	
+	@Query("select count(*) from DeliveryRequest a"
+			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4 and a.sdm = ?5 and a.ism = ?6"
+			+ " order by a.neededDeliveryDate desc")
+	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
 
 	@Query(c1
 			+ " from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  and a.type = ?4 and a.missingPo is true and a.status not in ('REJECTED','CANCELED') ")
@@ -140,10 +157,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightByRequester(DeliveryRequestType type, String username, DeliveryRequestStatus status);
 
 	@Query(c1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.requester.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2)) ")
-	List<DeliveryRequest> findToAcknowledgeInternal(String username,List<Integer> warehouseList);
+	List<DeliveryRequest> findToAcknowledgeInternal(String username, List<Integer> warehouseList);
 
 	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.requester.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2)) ")
-	Long countToAcknowledgeInternal(String username,List<Integer> warehouseList);
+	Long countToAcknowledgeInternal(String username, List<Integer> warehouseList);
 
 	@Query(c1 + "from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and (a.toUser.username = ?1 or (a.deliverToSupplier.id = ?2 and a.destinationProject.id in (?3)))")
 	List<DeliveryRequest> findToAcknowledgeExternalSupplierUser(String username, Integer supplierId, List<Integer> projectIdList);
@@ -200,10 +217,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightByProjectManager(DeliveryRequestType type, String username);
 
 	@Query(c1 + " from DeliveryRequest a where (a.project.manager.username = ?1 or a.project.id in (?2)) and a.status = ?3 order by a.neededDeliveryDate desc")
-	public List<DeliveryRequest> findLightToApprovePm(String username,List<Integer> delegatedProjectList, DeliveryRequestStatus requested);
+	public List<DeliveryRequest> findLightToApprovePm(String username, List<Integer> delegatedProjectList, DeliveryRequestStatus requested);
 
 	@Query("select count(*) from DeliveryRequest a where (a.project.manager.username = ?1 or a.project.id in (?2)) and a.status = ?3 order by a.neededDeliveryDate desc")
-	public Long countToApprovePm(String username,List<Integer> delegatedProjectList, DeliveryRequestStatus requested);
+	public Long countToApprovePm(String username, List<Integer> delegatedProjectList, DeliveryRequestStatus requested);
 
 	@Query(c1 + " from DeliveryRequest a where a.status = ?2 and  a.project.id in (select b.project.id from ProjectManager b where b.user.username = ?1) order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightToApproveHm(String username, DeliveryRequestStatus approved1);
@@ -218,10 +235,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightByWarehouseList(DeliveryRequestType type, List<Integer> warehouseList);
 
 	@Query(c1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
-	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList, List<DeliveryRequestStatus > statusList, DeliveryRequestType xbound);
+	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList, List<DeliveryRequestStatus> statusList, DeliveryRequestType xbound);
 
 	@Query("select count(*)  from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3")
-	public Long countByWarehouseList(List<Integer> warehouseList,  List<DeliveryRequestStatus > statusList, DeliveryRequestType xbound);
+	public Long countByWarehouseList(List<Integer> warehouseList, List<DeliveryRequestStatus> statusList, DeliveryRequestType xbound);
 
 	@Query(c1 + " from DeliveryRequest a where a.type = ?1 and a.warehouse.id in (?2) and a.status in (?3) order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findLightByWarehouseList(DeliveryRequestType type, List<Integer> warehouseList, List<DeliveryRequestStatus> status);
@@ -404,10 +421,13 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest a set hardwareSwapInboundId = ?2,hardwareSwapInboundStatus = ?3 where id = ?1")
 	void updateHardwareSwapInboundIdAndStatus(Integer outboundId, Integer inboundId, DeliveryRequestStatus inboundStatus);
-	
+
 	@Query("select count(*) from DeliveryRequest a where a.hardwareSwapInboundId = ?1")
 	Long countByHardwareSwapInboundId(Integer inboundId);
-	
+
+	@Modifying
+	@Query("update DeliveryRequest a set pendingJrMapping = ?2 where id  = ?1")
+	void updatePendingJrMapping(Integer id, Boolean pendingJrMapping);
 
 	// mobile
 
@@ -417,37 +437,38 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ "a.warehouse.id,a.warehouse.name,"//
 			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
 			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate,a.transportationNeeded,a.isSnRequired)";
-	
+
 	@Query(cm1 + " from DeliveryRequest a where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);
 
 	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
-	
+
 	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightNewByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
-	
+
 	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
-	
+
 	@Query(cm1 + "from DeliveryRequest a where a.missingSerialNumber = true and a.warehouse.id in (?1)")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList);
-	
+
 	@Query("select count(*) from DeliveryRequest a where a.missingSerialNumber = true and a.warehouse.id in (?1)")
 	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList);
-	
+
 	@Query(cm1 + "from DeliveryRequest a where a.missingExpiry = true and a.warehouse.id in (?1)")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingExpiryMobile(List<Integer> warehouseList);
-	
+
 	@Query("select count(*) from DeliveryRequest a where a.missingExpiry = true and a.warehouse.id in (?1)")
 	public Long countByMissingExpiryMobile(List<Integer> warehouseList);
-	
-	@Query(cm1+ "from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
+
+	@Query(cm1
+			+ "from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findByMissingOutboundDeliveryNoteFileMobile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
 	@Query("select count(*) from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
 	public Long countByMissingOutboundDeliveryNoteFileMobile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
-	
+
 	@Query("select new ma.azdad.mobile.model.DeliveryRequestHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from DeliveryRequestHistory a left join a.user as u where a.parent.id = ?1")
 	List<ma.azdad.mobile.model.DeliveryRequestHistory> findHistoryListMobile(Integer id);
 }

@@ -77,8 +77,7 @@
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Acknowledge" styleClass="smaller-80" />
 						</p:commandLink>
-						<p:commandLink title="Adjust Quantity" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('adjustQuantityDlg').show()"
-							rendered="#{deliveryRequestView.canAdjustQuantity()}">
+						<p:commandLink title="Adjust Quantity" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('adjustQuantityDlg').show()" rendered="#{deliveryRequestView.canAdjustQuantity()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Adjust" styleClass="smaller-80" />
 						</p:commandLink>
@@ -2220,23 +2219,32 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
-											<p:column headerText="DN Quantity" width="80">
-												<h:outputText value="#{-item.dnQuantity}" styleClass=" bolder blue">
+											<p:column headerText="Mapped Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+												<h:outputText value="#{item.quantity}" styleClass=" bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Return Quantity" width="80">
+											<p:column headerText="DN Quantity" width="80">
+												<h:outputText value="#{item.dnQuantity}" styleClass=" bolder blue" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<h:outputText value="#{-item.dnQuantity}" styleClass=" bolder blue" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Return Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 												<h:outputText value="#{item.returnedQuantity}" styleClass=" #{item.returnedQuantity gt 0?'bolder':''} orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Mapped Quantity" width="80">
+											<p:column headerText="Mapped Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 												<h:outputText value="#{item.quantity}" styleClass=" bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Remaining QTY" width="80">
-												<h:outputText value="#{-item.dnQuantity -item.returnedQuantity - item.quantity}" />
+												<h:outputText value="#{item.quantity - item.dnQuantity}" rendered="#{deliveryRequestView.deliveryRequest.isInbound}" />
+												<h:outputText value="#{-item.dnQuantity -item.returnedQuantity  -item.quantity}" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
 											</p:column>
 										</p:dataTable>
 									</div>

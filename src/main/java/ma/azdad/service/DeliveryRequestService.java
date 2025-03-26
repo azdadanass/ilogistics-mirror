@@ -34,7 +34,6 @@ import org.apache.ecs.wml.Img;
 import org.apache.ecs.xhtml.br;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -55,7 +54,6 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.RectangleReadOnly;
 import com.itextpdf.text.pdf.BarcodeQRCode;
-
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -214,6 +212,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (deliveryRequest.getWarehouse() != null)
 			Hibernate.initialize(deliveryRequest.getWarehouse().getManagerList());
 		return deliveryRequest;
+	}
+	
+	@Cacheable(value = "deliveryRequestService.findPendingJrMapping")
+	public List<DeliveryRequest> findPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+		return repos.findPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countPendingJrMapping")
+	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+		return repos.countPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLight")
@@ -2179,14 +2187,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public void adjustQuantity(DeliveryRequest deliveryRequest, User connectedUser) {
-		if(!canAdjustQuantity(deliveryRequest, connectedUser))
+		if (!canAdjustQuantity(deliveryRequest, connectedUser))
 			return;
-		
+
 		System.out.println(deliveryRequest.getReference());
 		System.out.println(deliveryRequest.getId());
 		System.out.println(jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()));
 		System.out.println("---------------------------------");
-		
+
 		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
 		while (it.hasNext()) {
 			DeliveryRequestDetail detail = it.next();
@@ -2202,6 +2210,56 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", connectedUser));
 		save(deliveryRequest);
+	}
+
+	public void updatePendingJrMapping(Integer id, Boolean pendingJrMapping) {
+		repos.updatePendingJrMapping(id, pendingJrMapping);
+		evictCache();
+	}
+	
+	public void calculatePendingJrMappingScript() {
+		repos.findBySdmOrIsmIdlist().forEach(id->calculatePendingJrMapping(id));
+	}
+
+	public void calculatePendingJrMapping(Integer id) {
+		Map<Integer, Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(id);
+		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
+		Map<Integer, Double> mappedQtyMap = jobRequestDeliveryDetailService.findMappedQuantityMap(id);
+		DeliveryRequestType dnType = repos.findType(id);
+		Boolean pendingJrMapping = false;
+		switch (dnType) {
+		case OUTBOUND:
+			for (Integer key : dnQtyMap.keySet()) {
+				Double dnQty = dnQtyMap.get(key);
+				Double returnQty = returnQtyMap.getOrDefault(key, 0.0);
+				Double mappedQty = mappedQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = -dnQty - returnQty - mappedQty;
+				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
+					System.out.println("remainingQty : " + remainingQty);
+					pendingJrMapping = true;
+					break;
+				}
+			}
+			break;
+		case INBOUND:
+			for (Integer key : mappedQtyMap.keySet()) {
+				Double mappedQty = mappedQtyMap.get(key);
+				Double dnQty = dnQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = mappedQty - dnQty;
+				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
+					System.out.println("remainingQty : " + remainingQty);
+					pendingJrMapping = true;
+					break;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		System.out.println(id);
+		System.out.println(pendingJrMapping);
+		System.out.println("-----------------------------------------------------");
+		updatePendingJrMapping(id, pendingJrMapping);
 	}
 
 	// mobile

@@ -2695,33 +2695,34 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// adjust quantity
 	public Boolean canAdjustQuantity() {
-		return DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()) //
-				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
-				&& deliveryRequest.getBoqMappingList().isEmpty() //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
+		return service.canAdjustQuantity(deliveryRequest, sessionView.getUser());
+//		return DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()) //
+//				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
+//				&& deliveryRequest.getBoqMappingList().isEmpty() //
+//				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
 
 	}
 
 	public String adjustQuantity() {
 		if (!canAdjustQuantity())
 			return null;
+		service.adjustQuantity(deliveryRequest, sessionView.getUser());
+//		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
+//		while (it.hasNext()) {
+//			DeliveryRequestDetail detail = it.next();
+//			Double srQuantity = deliveryRequest.getStockRowList().stream().filter(i -> i.getDeliveryRequestDetail().getId().equals(detail.getId())).mapToDouble(i -> i.getQuantity()).sum();
+//			detail.setQuantity(srQuantity);
+//			detail.setRemainingQuantity(0.0);
+//			if(srQuantity.equals(0.0)) {
+//				detail.setDeliveryRequest(null);
+//				it.remove();
+//			}
+//		}
+//		deliveryRequest.setIsPartial(false);
+//		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
+//		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", sessionView.getUser()));
+//		service.save(deliveryRequest);
 
-		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
-		while (it.hasNext()) {
-			DeliveryRequestDetail detail = it.next();
-			Double srQuantity = deliveryRequest.getStockRowList().stream().filter(i -> i.getDeliveryRequestDetail().getId().equals(detail.getId())).mapToDouble(i -> i.getQuantity()).sum();
-			detail.setQuantity(srQuantity);
-			detail.setRemainingQuantity(0.0);
-			if(srQuantity.equals(0.0)) {
-				detail.setDeliveryRequest(null);
-				it.remove();
-			}
-		}
-		deliveryRequest.setIsPartial(false);
-		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
-		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", sessionView.getUser()));
-		service.save(deliveryRequest);
-		
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
 

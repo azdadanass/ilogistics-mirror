@@ -47,6 +47,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select id from DeliveryRequest")
 	List<Integer> findIdList();
+	
+	List<DeliveryRequest> findByStatus(DeliveryRequestStatus status);
 
 	@Query(c1 + " from DeliveryRequest a"
 			+ " where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))"

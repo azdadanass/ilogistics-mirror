@@ -153,6 +153,12 @@ public class ScriptView {
 		issueCategoryService.addDefaultIssueCategoryScript();
 	}
 	
+	public void adjustQuantityScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.adjustQuantityScript();
+	}
+	
 	public void updateOutboundInboundPoScript() {
 		log.info("start updateOutboundInboundPoScript");
 		deliveryRequestService.updateOutboundInboundPoScript();

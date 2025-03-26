@@ -2179,7 +2179,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public void adjustQuantity(DeliveryRequest deliveryRequest, User connectedUser) {
-		if(canAdjustQuantity(deliveryRequest, connectedUser))
+		if(!canAdjustQuantity(deliveryRequest, connectedUser))
 			return;
 		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
 		while (it.hasNext()) {

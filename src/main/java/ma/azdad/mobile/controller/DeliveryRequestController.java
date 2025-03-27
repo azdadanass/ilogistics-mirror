@@ -1,18 +1,25 @@
 package ma.azdad.mobile.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import ma.azdad.mobile.model.DeliveryRequest;
 import ma.azdad.mobile.model.DeliveryRequestExpiryDate;
@@ -154,6 +161,22 @@ public class DeliveryRequestController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+    
+    @GetMapping(value = "/mobile/dn/local-image/{key}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getLocalImage(@PathVariable String key,@RequestParam String url) throws IOException {
+    	Token token = tokenService.getBykey(key);
+
+        RestTemplate restTemplate = new RestTemplate();
+        byte[] imageBytes = restTemplate.getForObject(url, byte[].class);
+        if (imageBytes == null || imageBytes.length == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        String contentType = service.getContentTypeFromUrl(url);
+        
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.parseMediaType(contentType))
+                .body(imageBytes);
     }
     
     @GetMapping("/mobile/dn/find-doc-type/{key}/{id}")

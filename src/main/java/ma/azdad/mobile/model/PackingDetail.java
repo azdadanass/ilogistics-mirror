@@ -12,6 +12,7 @@ public class PackingDetail {
 	private Integer quantity;
 	private Double volume;
 	private Double grossWeight;
+
 	
 	
 	public PackingDetail(Integer id, String typeImage, Double length, Double width, Double height, Integer quantity,
@@ -76,6 +77,9 @@ public class PackingDetail {
 	public void setGrossWeight(Double grossWeight) {
 		this.grossWeight = grossWeight;
 	}
+	
+	
+	
 	
 	
 

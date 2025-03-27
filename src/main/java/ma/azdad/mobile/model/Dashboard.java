@@ -5,6 +5,7 @@ public class Dashboard {
 	private Long missingSn;
 	private Long missingExpiry;
 	private Long missingBl;
+	private Long toDeliver;
 	
 	public Long getMissingSn() {
 		return missingSn;
@@ -24,6 +25,14 @@ public class Dashboard {
 	public void setMissingBl(Long missingBl) {
 		this.missingBl = missingBl;
 	}
+	public Long getToDeliver() {
+		return toDeliver;
+	}
+	public void setToDeliver(Long toDeliver) {
+		this.toDeliver = toDeliver;
+	}
+	
+	
 	
 
 	

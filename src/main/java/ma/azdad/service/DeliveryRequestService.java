@@ -1019,7 +1019,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			packingTable.addCell(createTableCell(safeValue(detail.getLength()) + " m / " + safeValue(detail.getWidth()) + " m / " + safeValue(detail.getHeight()) + " m", bodyFont));
 			packingTable.addCell(createTableCell(safeValue(detail.getGrossWeight()) + " Kg", bodyFont));
 			packingTable.addCell(createTableCell(safeValue(detail.getVolume()) + " m3", bodyFont));
-			packingTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getQuantity())), bodyFont));
+			packingTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getTmpQuantity())), bodyFont));
 		}
 
 		document.add(packingTable);
@@ -1897,10 +1897,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList().add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(), packingDetail.getLength(), packingDetail.getWidth(),
-					packingDetail.getHeight(), packingDetail.getQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight()));
+					packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight()));
 		}
 
-		// dnm.setFileList(dn.getFileList());
 		dnm.setDetailList(deliveryRequestDetailRepos.findByDeliveryRequestMobile(id));
 		if (dn.getRequester() != null) {
 			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), dn.getRequester().getLogin(),
@@ -1942,7 +1941,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Collections.sort(list, new Comparator<ma.azdad.mobile.model.DeliveryRequest>() {
 			@Override
 			public int compare(ma.azdad.mobile.model.DeliveryRequest o1, ma.azdad.mobile.model.DeliveryRequest o2) {
-				return o1.getNeededDeliveryDate().compareTo(o2.getNeededDeliveryDate());
+				return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
 			}
 		});
 		return list;
@@ -1958,7 +1957,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
-		return deliveryRequestRepos.findLightDeliveredByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.DELIVRED), DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightDeliveredByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.DELIVRED,DeliveryRequestStatus.ACKNOWLEDGED), DeliveryRequestType.XBOUND);
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList) {
@@ -1977,6 +1976,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<Integer> projectIdList = projectService.findAssignedProjectIdListByResource(username);
 		return repos.findByMissingOutboundDeliveryNoteFileMobile(username, warehouseList, projectIdList);
 	}
+	
+	public Long countByWarehouseListMobile(List<Integer> warehouseList) {
+		return deliveryRequestRepos.countByWarehouseListMobile(warehouseList,
+				Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
+	}
 
 	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList) {
 		return deliveryRequestRepos.countByMissingSerialNumberMobile(warehouseList);
@@ -1994,6 +1998,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Dashboard getDashboard(String username, List<Integer> warehouseList) {
 
 		Dashboard dashboard = new Dashboard();
+		dashboard.setToDeliver(countByWarehouseListMobile(warehouseList));
 		dashboard.setMissingSn(countByMissingSerialNumberMobile(warehouseList));
 		dashboard.setMissingExpiry(countByMissingExpiryMobile(warehouseList));
 		dashboard.setMissingBl(countByMissingOutboundDeliveryNoteFileMobile(username, warehouseList));
@@ -2123,6 +2128,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			DeliveryRequest outboundDeliveryRequestReturn = findOne(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 			clearBoqMapping(outboundDeliveryRequestReturn);
 			jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn(), deliveryRequest, user);
+			calculatePendingJrMapping(outboundDeliveryRequestReturn.getId());
+
 		}
 
 		emailService.deliveryRequestNotification(deliveryRequest);
@@ -2297,6 +2304,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		}
 		return list;
+	}
+	
+	public String getContentTypeFromUrl(String url) {
+	    // You can enhance this with more comprehensive detection
+	    url = url.toLowerCase();
+	    if (url.contains(".png")) return "image/png";
+	    if (url.contains(".gif")) return "image/gif";
+	    if (url.contains(".webp")) return "image/webp";
+	    return "image/jpeg"; // default
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> findDnExpiry(Integer id) {

@@ -12,11 +12,19 @@ public class PackingDetail {
 	private Integer quantity;
 	private Double volume;
 	private Double grossWeight;
+	private Boolean fragile;
+	private Boolean stackable;
+	private Boolean flammable;
 
 	
 	
+	
+	
+	
+	
+	
 	public PackingDetail(Integer id, String typeImage, Double length, Double width, Double height, Integer quantity,
-			Double volume, Double grossWeight) {
+			Double volume, Double grossWeight, Boolean fragile, Boolean stackable, Boolean flammable) {
 		super();
 		this.id = id;
 		this.typeImage = "http://ilogistics.3gcominside.com"+typeImage;
@@ -26,9 +34,20 @@ public class PackingDetail {
 		this.quantity = quantity;
 		this.volume = volume;
 		this.grossWeight = grossWeight;
+		this.fragile = fragile;
+		this.stackable = stackable;
+		this.flammable = flammable;
 	}
+
+
+
+
 	
-	
+
+
+
+
+
 	public Integer getId() {
 		return id;
 	}
@@ -77,6 +96,28 @@ public class PackingDetail {
 	public void setGrossWeight(Double grossWeight) {
 		this.grossWeight = grossWeight;
 	}
+	public Boolean getFragile() {
+		return fragile;
+	}
+
+	public void setFragile(Boolean fragile) {
+		this.fragile = fragile;
+	}
+	public Boolean getStackable() {
+		return stackable;
+	}
+	public void setStackable(Boolean stackable) {
+		this.stackable = stackable;
+	}
+
+	public Boolean getFlammable() {
+		return flammable;
+	}
+
+	public void setFlammable(Boolean flammable) {
+		this.flammable = flammable;
+	}
+
 	
 	
 	

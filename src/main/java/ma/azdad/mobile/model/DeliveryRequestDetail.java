@@ -8,6 +8,7 @@ public class DeliveryRequestDetail {
 	private Integer id;
 	private Double quantity = 0.0;
 	private Boolean isSerialNumberRequired = false;
+	private Boolean expirable = false;
 	private Integer packingId;
 	private String packingName;
 	private Double packingQuantity = 0.0;
@@ -30,6 +31,7 @@ public class DeliveryRequestDetail {
 		this.id = id;
 		this.quantity = quantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
+		
 		this.packingName = packingName;
 		this.packingQuantity = packingQuantity;
 		this.partNumberName = partNumberName;
@@ -37,12 +39,13 @@ public class DeliveryRequestDetail {
 	}
 	
 	// c1
-	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,
+	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,Boolean expirable,
 			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
+		this.expirable = expirable;
 		this.packingName = packingName;
 		this.packingId =packingId;
 		this.packingQuantity = remainingQuantity;
@@ -147,6 +150,18 @@ public class DeliveryRequestDetail {
 
 	public void setPackingId(Integer packingId) {
 		this.packingId = packingId;
+	}
+	
+	
+
+
+	public Boolean getExpirable() {
+		return expirable;
+	}
+
+
+	public void setExpirable(Boolean expirable) {
+		this.expirable = expirable;
 	}
 
 

@@ -1045,11 +1045,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		titleCell.setPadding(5);
 		titleCell.setBorder(Rectangle.NO_BORDER);
 		infoTable.addCell(titleCell);
+		if(deliveryRequest.getType() == DeliveryRequestType.OUTBOUND) {
 		infoTable.addCell(createMixedCell("Company: ", deliveryRequest.getDeliverToEntityName(), labelFont, companyFont));
 		infoTable.addCell(createMixedCell("Ressource: ", safeValue(deliveryRequest.getToUserFullName()), labelFont, resourceFont));
 		infoTable.addCell(createMixedCell("Email: ", safeValue(deliveryRequest.getToUserEmail()), labelFont, emailFont));
 		infoTable.addCell(createMixedCell("Tel: ", safeValue(deliveryRequest.getToUserPhone()), labelFont, phoneFont));
 		infoTable.addCell(createMixedCell("CIN: ", safeValue(deliveryRequest.getToUserCin()), labelFont, cinFont));
+		} else {
+		infoTable.addCell(createMixedCell("WR Manager: ", deliveryRequest.getUser4().getFullName(), labelFont, companyFont));
+
+		}
 
 		PdfPCell infoCell = new PdfPCell(infoTable);
 		infoCell.setBackgroundColor(new BaseColor(222, 248, 252));
@@ -1891,13 +1896,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
 		}
 		dnm.setShowExpiryData(dn.showExpiryData());
-
+		
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(), dn.getCustomerName(), dn.getSupplierName(), dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList().add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(), packingDetail.getLength(), packingDetail.getWidth(),
-					packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight()));
+					packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(),packingDetail.getFragile(),packingDetail.getStackable(),
+					packingDetail.getFlammable()));
 		}
 
 		dnm.setDetailList(deliveryRequestDetailRepos.findByDeliveryRequestMobile(id));

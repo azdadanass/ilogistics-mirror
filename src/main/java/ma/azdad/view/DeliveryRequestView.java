@@ -755,6 +755,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				service.clearBoqMapping(outboundDeliveryRequestReturn);
 				jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn(), deliveryRequest, sessionView.getUser());
 				service.calculatePendingJrMapping(outboundDeliveryRequestReturn.getId());
+				service.calculateHavingRunningStock(outboundDeliveryRequestReturn.getId());
 			}
 
 			emailService.deliveryRequestNotification(deliveryRequest);

@@ -88,6 +88,22 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4 and a.sdm = ?5 and a.ism = ?6"
 			+ " order by a.neededDeliveryDate desc")
 	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
+	
+	
+	
+	
+	@Query(c1 + " from DeliveryRequest a"
+			+ " where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4 and a.sdm = ?5 and a.ism = ?6"
+			+ " order by a.neededDeliveryDate desc")
+	public List<DeliveryRequest> findHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
+	
+	
+	@Query("select count(*) from DeliveryRequest a"
+			+ " where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) and a.type = ?4 and a.sdm = ?5 and a.ism = ?6"
+			+ " order by a.neededDeliveryDate desc")
+	public Long countHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
+	
+	
 
 	@Query(c1
 			+ " from DeliveryRequest a where (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  and a.type = ?4 and a.missingPo is true and a.status not in ('REJECTED','CANCELED') ")
@@ -428,6 +444,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest a set pendingJrMapping = ?2 where id  = ?1")
 	void updatePendingJrMapping(Integer id, Boolean pendingJrMapping);
+	
+	@Modifying
+	@Query("update DeliveryRequest a set havingRunningStock = ?2 where id  = ?1")
+	void updateHavingRunningStock(Integer id, Boolean havingRunningStock);
 
 	// mobile
 

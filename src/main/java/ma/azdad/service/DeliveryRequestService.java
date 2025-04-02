@@ -223,6 +223,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
 		return repos.countPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
 	}
+	
+	@Cacheable(value = "deliveryRequestService.findHavingRunningStock")
+	public List<DeliveryRequest> findHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+		return repos.findHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
+	}
+	
+	@Cacheable(value = "deliveryRequestService.countHavingRunningStock")
+	public Long countHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+		return repos.countHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
+	}
 
 	@Cacheable(value = "deliveryRequestService.findLight")
 	public List<DeliveryRequest> findLight(String username, DeliveryRequestType type, DeliveryRequestState state, List<Integer> warehouseList, List<Integer> projectList) {
@@ -2227,6 +2237,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		evictCache();
 	}
 	
+	public void updateHavingRunningStock(Integer id, Boolean pendingJrMapping) {
+		repos.updateHavingRunningStock(id, pendingJrMapping);
+		evictCache();
+	}
+	
 	public void calculatePendingJrMappingScript() {
 		repos.findBySdmOrIsmIdlist().forEach(id->calculatePendingJrMapping(id));
 	}
@@ -2270,6 +2285,52 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println(pendingJrMapping);
 		System.out.println("-----------------------------------------------------");
 		updatePendingJrMapping(id, pendingJrMapping);
+	}
+	
+	public void calculateHavingRunningStockScript() {
+		repos.findBySdmOrIsmIdlist().forEach(id->calculateHavingRunningStock(id));
+	}
+	
+	public void calculateHavingRunningStock(Integer id) {
+		Map<Integer, Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(id);
+		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
+		Map<Integer, Double> installedQtyMap = jobRequestDeliveryDetailService.findInstalledQuantityMap(id);
+		DeliveryRequestType dnType = repos.findType(id);
+		Boolean havingRunningStock = false;
+		switch (dnType) {
+		case OUTBOUND:
+			for (Integer key : dnQtyMap.keySet()) {
+				Double dnQty = dnQtyMap.get(key);
+				Double returnQty = returnQtyMap.getOrDefault(key, 0.0);
+				Double installedQty = installedQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = -dnQty - returnQty - installedQty;
+				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
+					System.out.println("remainingQty : " + remainingQty);
+					havingRunningStock = true;
+					break;
+				}
+			}
+			break;
+		case INBOUND:
+			for (Integer key : installedQtyMap.keySet()) {
+				Double installedQty = installedQtyMap.get(key);
+				Double dnQty = dnQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = installedQty - dnQty;
+				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
+					System.out.println("remainingQty : " + remainingQty);
+					havingRunningStock = true;
+					break;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		System.out.println(id);
+		System.out.println(havingRunningStock);
+		System.out.println("-----------------------------------------------------");
+		updateHavingRunningStock(id, havingRunningStock);
+		
 	}
 
 	// mobile

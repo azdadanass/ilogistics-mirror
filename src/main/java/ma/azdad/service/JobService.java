@@ -93,5 +93,10 @@ public class JobService {
 	public  void calculatePendingJrMappingScript() {
 		deliveryRequestService.calculatePendingJrMappingScript();
 	}
+	
+	@Scheduled(cron = "00 20 05 * * *")
+	public  void calculateHavingRunningStockScript() {
+		deliveryRequestService.calculateHavingRunningStockScript();
+	}
 
 }

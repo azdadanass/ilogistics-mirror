@@ -34,11 +34,12 @@ public class JobRequestDeliveryDetail extends GenericModel<Integer> implements S
 		super();
 	}
 
-	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference,
+	public JobRequestDeliveryDetail(Double installedQuantity, String tmpSerialNumber,Integer partNumberId, String tmpPartNumberName, String tmpPartNumberDescription, String tmpDeliveryRequestReference,
 			Integer tmpJobRequestId, String tmpJobRequestReference, String tmpSiteName, String tmpTeamName) {
 		super();
 		this.installedQuantity = installedQuantity;
 		this.tmpSerialNumber = tmpSerialNumber;
+		this.setPartNumberId(partNumberId);
 		this.setPartNumberName(tmpPartNumberName);
 		this.setPartNumberDescription(tmpPartNumberDescription);
 		this.setDeliveryRequestReference(tmpDeliveryRequestReference);

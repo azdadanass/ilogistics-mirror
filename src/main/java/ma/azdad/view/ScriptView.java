@@ -165,6 +165,12 @@ public class ScriptView {
 		deliveryRequestService.calculatePendingJrMappingScript();
 	}
 	
+	public  void calculateHavingRunningStockScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculateHavingRunningStockScript();
+	}
+	
 	public void updateOutboundInboundPoScript() {
 		log.info("start updateOutboundInboundPoScript");
 		deliveryRequestService.updateOutboundInboundPoScript();

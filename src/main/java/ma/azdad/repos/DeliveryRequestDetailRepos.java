@@ -26,8 +26,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	String c1 = "select new DeliveryRequestDetail(sum(a.quantity), a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.unitCost,a.costCurrency.id) ";
 	String c2 = "select new DeliveryRequestDetail(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.unitCost,a.costCurrency.id) ";
 	String c3 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.image,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.deliveryRequest.date1,a.quantity, "
-			+ usedQuantity3 + ",a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName
-			+ ")";
+			+ usedQuantity3 + ",a.deliveryRequest.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";
 	String c4 = "select new DeliveryRequestDetail(a.id,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.reference,a.unitCost,a.costCurrency.id,a.purchaseCost,a.purchaseCurrency.id,a.deliveryRequest.date4,a.deliveryRequest.project.name,(select b.numeroIbuy from Po b where b.id = a.deliveryRequest.po.id),(select b.date from Po b where b.id = a.deliveryRequest.po.id),(select b.currency.name from Po b where b.id = a.deliveryRequest.po.id),(select b.supplier.name from Po b where b.id = a.deliveryRequest.po.id)) ";
 
 	String c8 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.neededDeliveryDate,a.deliveryRequest.project.name,a.deliveryRequest.project.subType,a.deliveryRequest.warehouse.name)";
@@ -36,13 +35,11 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query(c1
 			+ " from DeliveryRequestDetail a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and  a.deliveryRequest.type = ?3 and a.deliveryRequest.status in (?4) group by a.status, a.originNumber, a.partNumber.id, a.inboundDeliveryRequest.id")
-	public List<DeliveryRequestDetail> findByProjectAndWarehouseAndTypeAndStatus(Integer projectId, Integer warehouseId, DeliveryRequestType outbound,
-			List<DeliveryRequestStatus> status);
+	public List<DeliveryRequestDetail> findByProjectAndWarehouseAndTypeAndStatus(Integer projectId, Integer warehouseId, DeliveryRequestType outbound, List<DeliveryRequestStatus> status);
 
 	@Query(c1
 			+ " from DeliveryRequestDetail a where a.deliveryRequest.id != ?5 and a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and  a.deliveryRequest.type = ?3 and a.deliveryRequest.status in (?4) group by a.status, a.originNumber, a.partNumber.id, a.inboundDeliveryRequest.id")
-	public List<DeliveryRequestDetail> findByProjectAndWarehouseAndTypeAndStatus(Integer projectId, Integer warehouseId, DeliveryRequestType outbound,
-			List<DeliveryRequestStatus> status, Integer id);
+	public List<DeliveryRequestDetail> findByProjectAndWarehouseAndTypeAndStatus(Integer projectId, Integer warehouseId, DeliveryRequestType outbound, List<DeliveryRequestStatus> status, Integer id);
 
 	@Query(c1
 			+ " from DeliveryRequestDetail a where a.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and a.deliveryRequest.status in (?2) and a.deliveryRequest.id != ?3  group by a.status, a.originNumber, a.partNumber.id, a.inboundDeliveryRequest.id")
@@ -78,14 +75,16 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
 			+ "a.packing.name,a.packing.id,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity) ";
-	
+
 	String cm2 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
 			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image) ";
 
 	@Query(cm1 + "from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
 	List<ma.azdad.mobile.model.DeliveryRequestDetail> findByDeliveryRequestMobile(Integer id);
-	
-	
+
+	@Query("select sum(quantity) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.partNumber.expirable is true")
+	Double findTotalExpirableItems(Integer deliveryRequestId);
+
 	// UPDATE UNIT COST
 	@Modifying
 	@Query("update DeliveryRequestDetail set unitCost = ?2 where id = ?1 ")
@@ -124,11 +123,10 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 //	String select3 = "select new DeliveryRequestDetail(a.id,a.partNumber.name,a.partNumber.description,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.referenceNumber,a.quantity, " + usedQuantity3 + "," + toUserFullName + ")";
 
-	@Query(c3
-			+ "from DeliveryRequestDetail a where a.deliveryRequest.destinationProject.id = ?1 and a.deliveryRequest.type in (?2) and a.deliveryRequest.status in (?3) and a.quantity > "
+	@Query(c3 + "from DeliveryRequestDetail a where a.deliveryRequest.destinationProject.id = ?1 and a.deliveryRequest.type in (?2) and a.deliveryRequest.status in (?3) and a.quantity > "
 			+ usedQuantity3)
-	public List<DeliveryRequestDetail> findByDestinationProjectAndTypeAndStatus(Integer destinationProjectId, List<DeliveryRequestType> typeList,
-			List<DeliveryRequestStatus> statusList, List<JobRequestStatus> notInJobRequestStatusList);
+	public List<DeliveryRequestDetail> findByDestinationProjectAndTypeAndStatus(Integer destinationProjectId, List<DeliveryRequestType> typeList, List<DeliveryRequestStatus> statusList,
+			List<JobRequestStatus> notInJobRequestStatusList);
 
 	@Query("select a.inboundDeliveryRequest.customer.id from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.inboundDeliveryRequest.customer is not null group by a.inboundDeliveryRequest.customer")
 	public List<Integer> findOwnerCustomerList(Integer outboundDeliveryRequestId);
@@ -141,8 +139,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query(c4
 			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.inboundType = ?3 and a.deliveryRequest.company.id = ?4 and a.deliveryRequest.status in (?5) order by a.deliveryRequest.date4 desc")
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType,
-			Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType, Integer companyId,
+			List<DeliveryRequestStatus> deliveryRequestStatus);
 
 	@Query("select new DeliveryRequestDetail(0.0,sum(a.totalQuantity-a.totalUsedQuantity),a.partNumber) from Boq a where a.podetails.po.id = ?1 and a.totalQuantity > a.totalUsedQuantity group by a.partNumber")
 	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId);
@@ -163,8 +161,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select a.partNumber.id,sum(a.quantity) " + from1 + " where  " + usernameCondition + " and " + companyCondition
 			+ " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) and a.deliveryRequest.project.subType = 'Stock' group by a.partNumber.id")
-	public List<Object[]> findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
-			Integer companyId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	public List<Object[]> findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select a.partNumber.id,sum(a.quantity) " + from2 + " where  " + usernameCondition + " and " + customerCondition
 			+ " and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6) group by a.partNumber.id")
@@ -183,13 +181,13 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select sum(a.quantity) " + from1 + " where  a.deliveryRequest.project.id = ?6 and " + usernameCondition + " and " + companyCondition
 			+ "  and a.partNumber.id = ?5 and  a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
-	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-			Integer partNumberId, Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+			Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from2 + " where  a.deliveryRequest.project.id = ?6 and " + usernameCondition + " and " + customerCondition
 			+ "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-			Integer partNumberId, Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+			Integer projectId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from2
 			+ " where (customer1.id = ?1 or customer2.id = ?2) and a.deliveryRequest.project.id = ?3 and a.partNumber.id = ?2 and a.deliveryRequest.type = ?4 and a.deliveryRequest.status in (?5)")
@@ -203,13 +201,13 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select sum(a.quantity) " + from1 + " where  a.deliveryRequest.warehouse.id = ?6 and " + usernameCondition + " and " + companyCondition
 			+ "  and a.partNumber.id = ?5 and  a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
-	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
-			Integer partNumberId, Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+			Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from2 + " where  a.deliveryRequest.warehouse.id = ?6 and " + usernameCondition + " and " + customerCondition
 			+ "  and a.partNumber.id = ?5 and a.deliveryRequest.type = ?7 and a.deliveryRequest.status in (?8)")
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId,
-			Integer partNumberId, Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+			Integer warehouseId, DeliveryRequestType deliveryRequestType, List<DeliveryRequestStatus> statusList);
 
 	@Query("select sum(a.quantity) " + from2
 			+ " where  a.deliveryRequest.warehouse.id = ?4 and (customer1.id = ?1 or customer2.id = ?1) and a.deliveryRequest.project.id in (?2) and a.partNumber.id = ?3 and a.deliveryRequest.type = ?5 and a.deliveryRequest.status in (?6)")
@@ -223,8 +221,8 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query(c4
 			+ " from DeliveryRequestDetail a where a.partNumber.id = ?1 and a.deliveryRequest.type = ?2 and a.deliveryRequest.project.type = 'Stock' and a.deliveryRequest.project.costcenter.lob.bu.company.id = ?3 and a.deliveryRequest.status in (?4)")
-	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(Integer partNumberId,
-			DeliveryRequestType deliveryRequestType, Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
+	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(Integer partNumberId, DeliveryRequestType deliveryRequestType,
+			Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus);
 
 	@Query("from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.partNumber.id = ?2")
 	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId);

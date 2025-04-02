@@ -525,10 +525,13 @@
 						<li>
 							<a data-toggle="tab" href="#tab14">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
+								<f:subview rendered="#{!deliveryRequestView.deliveryRequest.isInboundReturnFromOutboundHardwareSwap}">
 								<h:outputText value=" SDM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.sdm}" />
 								<h:outputText value=" ISM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.ism}" />
 								<h:outputText value=" SDM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.sdm}" />
 								<h:outputText value=" ISM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.ism}" />
+								</f:subview>
+								<h:outputText value=" #{deliveryRequestView.deliveryRequest.sdm?'SDM':'ISM'} Hardware Swap" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturnFromOutboundHardwareSwap}"/>
 							</a>
 						</li>
 					</f:subview>

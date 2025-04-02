@@ -448,6 +448,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest a set havingRunningStock = ?2 where id  = ?1")
 	void updateHavingRunningStock(Integer id, Boolean havingRunningStock);
+	
+	
+	
 
 	// mobile
 
@@ -494,4 +497,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select new ma.azdad.mobile.model.DeliveryRequestHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from DeliveryRequestHistory a left join a.user as u where a.parent.id = ?1")
 	List<ma.azdad.mobile.model.DeliveryRequestHistory> findHistoryListMobile(Integer id);
+	
+	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.partNumber.expirable is true and a.deliveryRequest.status not in ('REJECTED','CANCELED')")
+	List<Integer> findByHavingExpirableItems();
+	
 }

@@ -676,6 +676,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query(c22
 			+ "from StockRow a where a.deliveryRequest.po.id = ?1 and a.deliveryRequest.status in ('DELIVRED','ACKNOWLEDGED') and (a.deliveryRequest.type = 'INBOUND' or a.deliveryRequest.isFullyReturned is null or a.deliveryRequest.isFullyReturned is false) and (select count(*) from BoqMapping b where b.deliveryRequest.id = a.deliveryRequest.id) = 0 group by a.deliveryRequest.id,a.status,a.partNumber.id,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.unitPrice")
 	List<StockRow> findByPoAndDeliveredWithoutBoqMapping(Integer poId);
+	
+	
+	@Query("select a.partNumber.id,sum(case when a.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end) from StockRow a where a.deliveryRequest.id = ?1 and a.partNumber.expirable is true group by a.partNumber.id")
+	List<Object[]> findByDeliveryRequestAndExpirableMap(Integer deliveryRequestId);
 
 //	@Modifying
 //	@Query("update StockRow a set a.deliveryRequestDetail.unitPrice = ?1 where a.partNumber.id = ?2 and a.deliveryRequest.id in (select distinct b.id from DeliveryRequest b where b.outboundDeliveryRequestReturn.id = ?3)")

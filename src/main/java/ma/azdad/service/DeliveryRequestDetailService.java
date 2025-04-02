@@ -791,6 +791,10 @@ public class DeliveryRequestDetailService
 						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
 				0.0);
 	}
+	
+	public Double findTotalExpirableItems(Integer deliveryRequestId) {
+		return ObjectUtils.firstNonNull(repos.findTotalExpirableItems(deliveryRequestId),0.0);
+	}
 
 	// mobile
 	

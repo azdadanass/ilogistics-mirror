@@ -1075,9 +1075,14 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Map<Integer, Double> findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(Integer deliveryRequest) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findReturnedQuantityByOutboundDeliveryRequestGroupByPartNumber(deliveryRequest);
-		
-		System.out.println("data.size() : "+data.size());
-		
+		for (Object[] row : data)
+			result.put((Integer) row[0], (Double) row[1]);
+		return result;
+	}
+	
+	public Map<Integer, Double> findByDeliveryRequestAndExpirableMap(Integer deliveryRequestId){
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		List<Object[]> data = repos.findByDeliveryRequestAndExpirableMap(deliveryRequestId);
 		for (Object[] row : data)
 			result.put((Integer) row[0], (Double) row[1]);
 		return result;

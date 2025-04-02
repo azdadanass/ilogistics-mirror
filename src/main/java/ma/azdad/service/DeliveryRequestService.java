@@ -160,6 +160,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	BoqService boqService;
+	
 
 	@Override
 	public DeliveryRequest findOne(Integer id) {
@@ -2331,6 +2332,29 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println("-----------------------------------------------------");
 		updateHavingRunningStock(id, havingRunningStock);
 		
+	}
+	
+	public void calculateMissingExpiry(Integer id) {
+		System.out.println("calculateMissingExpiry : "+id);
+		Boolean missingExpiry = false;
+		Map<Integer,Double> dnMap = stockRowService.findByDeliveryRequestAndExpirableMap(id);
+		Map<Integer,Double> expiryMap = deliveryRequestExpiryDateService.findQuantityMap(id);
+		for (Integer partNumberId : dnMap.keySet()) {
+			Double srQuantity = dnMap.get(partNumberId);
+			Double expiryQuantity = expiryMap.getOrDefault(partNumberId, 0.0);
+			if(UtilsFunctions.compareDoubles(srQuantity, expiryQuantity)>0) {
+				missingExpiry = true;
+				break;
+			}
+		}
+		System.out.println("dnMap : "+dnMap);
+		System.out.println("expiryMap : "+expiryMap);
+		System.out.println("missingExpiry : "+missingExpiry);
+		updateMissingExpiry(id, missingExpiry);
+	}
+	
+	public void calculateMissingExpiryScript() {
+		repos.findByHavingExpirableItems().forEach(id->calculateMissingExpiry(id));
 	}
 
 	// mobile

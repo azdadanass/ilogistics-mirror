@@ -1,7 +1,9 @@
 package ma.azdad.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,5 +105,13 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 
 	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList) {
 		return repos.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(partNumberId, deliveryRequestList);
+	}
+	
+	public Map<Integer,Double> findQuantityMap(Integer deliveryRequestId) {
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		List<Object[]> data = repos.findQuantityMap(deliveryRequestId);
+		for (Object[] row : data)
+			result.put((Integer) row[0], (Double) row[1]);
+		return result;
 	}
 }

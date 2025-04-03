@@ -84,6 +84,9 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 
 	@Query("select sum(quantity) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 and a.partNumber.expirable is true")
 	Double findTotalExpirableItems(Integer deliveryRequestId);
+	
+	@Query("select a.partNumber.id,sum(a.quantity) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1 group by a.partNumber.id")
+	List<Object[]> findQuantityByDeliveryRequestGroupByPartNumber(Integer deliveryRequest);
 
 	// UPDATE UNIT COST
 	@Modifying

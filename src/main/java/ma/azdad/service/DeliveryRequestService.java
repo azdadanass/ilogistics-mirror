@@ -2248,7 +2248,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public void calculatePendingJrMapping(Integer id) {
-		Map<Integer, Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(id);
+		Map<Integer, Double> dnQtyMap = deliveryRequestDetailService.findQuantityPartNumberMapByDeliveryRequest(id);
 		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
 		Map<Integer, Double> mappedQtyMap = jobRequestDeliveryDetailService.findMappedQuantityMap(id);
 		DeliveryRequestType dnType = repos.findType(id);
@@ -2259,7 +2259,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double dnQty = dnQtyMap.get(key);
 				Double returnQty = returnQtyMap.getOrDefault(key, 0.0);
 				Double mappedQty = mappedQtyMap.getOrDefault(key, 0.0);
-				Double remainingQty = -dnQty - returnQty - mappedQty;
+				Double remainingQty = dnQty - returnQty - mappedQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
 					System.out.println("remainingQty : " + remainingQty);
 					pendingJrMapping = true;
@@ -2293,7 +2293,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 	
 	public void calculateHavingRunningStock(Integer id) {
-		Map<Integer, Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(id);
+		Map<Integer, Double> dnQtyMap = deliveryRequestDetailService.findQuantityPartNumberMapByDeliveryRequest(id);
 		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
 		Map<Integer, Double> installedQtyMap = jobRequestDeliveryDetailService.findInstalledQuantityMap(id);
 		DeliveryRequestType dnType = repos.findType(id);
@@ -2304,7 +2304,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double dnQty = dnQtyMap.get(key);
 				Double returnQty = returnQtyMap.getOrDefault(key, 0.0);
 				Double installedQty = installedQtyMap.getOrDefault(key, 0.0);
-				Double remainingQty = -dnQty - returnQty - installedQty;
+				Double remainingQty = dnQty - returnQty - installedQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
 					System.out.println("remainingQty : " + remainingQty);
 					havingRunningStock = true;

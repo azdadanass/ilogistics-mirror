@@ -65,6 +65,14 @@ public class DeliveryRequestDetailService
 				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED),
 				Arrays.asList(JobRequestStatus.REJECTED, JobRequestStatus.CANCELED));
 	}
+	
+	public Map<Integer, Double> findQuantityPartNumberMapByDeliveryRequest(Integer deliveryRequest) {
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		List<Object[]> data = repos.findQuantityByDeliveryRequestGroupByPartNumber(deliveryRequest);
+		for (Object[] row : data)
+			result.put((Integer) row[0], (Double) row[1]);
+		return result;
+	}
 
 	@Override
 	public DeliveryRequestDetail findOne(Integer id) {

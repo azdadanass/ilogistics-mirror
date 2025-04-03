@@ -1014,7 +1014,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		case OUTBOUND:
 			return deliveryRequest.getDestinationProjectSdm();
 		case INBOUND:
-			return deliveryRequest.getProjectSdm() && InboundType.DISMANTLE.equals(deliveryRequest.getInboundType());
+			return Boolean.TRUE.equals(deliveryRequest.getProjectSdm()) && InboundType.DISMANTLE.equals(deliveryRequest.getInboundType());
 		default:
 			return false;
 		}
@@ -1025,7 +1025,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		case OUTBOUND:
 			return deliveryRequest.getDestinationProjectIsm();
 		case INBOUND:
-			return deliveryRequest.getProjectIsm() && (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());
+			return Boolean.TRUE.equals(deliveryRequest.getProjectIsm()) && (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());
 		default:
 			return false;
 		}

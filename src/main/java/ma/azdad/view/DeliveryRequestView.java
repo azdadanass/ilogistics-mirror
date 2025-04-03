@@ -1010,6 +1010,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SDM / ISM
 	public Boolean showSdm() {
+		if(deliveryRequest.getType()==null)
+			return false;
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
 			return deliveryRequest.getDestinationProjectSdm();
@@ -1021,6 +1023,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 	
 	public Boolean showIsm() {
+		if(deliveryRequest.getType()==null)
+			return false;
+		
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
 			return deliveryRequest.getDestinationProjectIsm();

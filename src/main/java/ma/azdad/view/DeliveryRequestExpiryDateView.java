@@ -87,7 +87,7 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 	public Boolean canEdit(DeliveryRequest deliveryRequest) {
 		return !editMode //
 				&& (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound()) //
-				&& deliveryRequest.getMissingExpiry() //
+				&& Boolean.TRUE.equals(deliveryRequest.getMissingExpiry())//
 				&& deliveryRequest.getDate4() != null //
 				&& cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId());
 	}

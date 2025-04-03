@@ -1011,7 +1011,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	// inplace
 	public Boolean canEditSdm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername()) ||   (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId())) ) //
 				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
 				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectSdm() : deliveryRequest.getProjectSdm());
 	}
@@ -1024,7 +1024,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Boolean canEditIsm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
 				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
 				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectIsm() : deliveryRequest.getProjectIsm());
 	}

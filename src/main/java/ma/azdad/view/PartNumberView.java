@@ -19,6 +19,7 @@ import ma.azdad.model.PartNumberDetail;
 import ma.azdad.model.PartNumberFile;
 import ma.azdad.model.PartNumberIndustry;
 import ma.azdad.repos.PartNumberRepos;
+import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.JsService;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberDetailService;
@@ -68,6 +69,9 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 
 	@Autowired
 	protected PartNumberCategoryService partNumberCategoryService;
+	
+	@Autowired
+	protected DeliveryRequestService deliveryRequestService;
 
 	private PartNumber partNumber = new PartNumber();
 	private PartNumber old = new PartNumber();
@@ -161,6 +165,8 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return null;
 			}
+			
+			deliveryRequestService.calculateMissingExpiryScriptByPartNumber(partNumber.getId());
 
 			return addParameters(viewPage, "faces-redirect=true", "id=" + partNumber.getId());
 		}

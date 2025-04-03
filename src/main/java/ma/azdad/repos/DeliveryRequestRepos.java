@@ -52,6 +52,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select id from DeliveryRequest where sdm is true or ism is true")
 	List<Integer> findBySdmOrIsmIdlist();
+	
+	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.partNumber.id = ?1 and (a.deliveryRequest.sdm is true or a.deliveryRequest.ism is true)")
+	List<Integer> findBySdmOrIsmAndHavingPartNumberIdlist(Integer partNumberId);
 
 	@Query("select type from DeliveryRequest where id = ?1")
 	DeliveryRequestType findType(Integer id);
@@ -500,5 +503,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	
 	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.partNumber.expirable is true and a.deliveryRequest.status not in ('REJECTED','CANCELED')")
 	List<Integer> findByHavingExpirableItems();
+	
+	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.partNumber.id = ?1")
+	List<Integer> findByHavingPartNumber(Integer partNumberId);
 	
 }

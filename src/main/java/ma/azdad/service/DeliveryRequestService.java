@@ -160,7 +160,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	BoqService boqService;
-	
 
 	@Override
 	public DeliveryRequest findOne(Integer id) {
@@ -214,24 +213,24 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			Hibernate.initialize(deliveryRequest.getWarehouse().getManagerList());
 		return deliveryRequest;
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.findPendingJrMapping")
-	public List<DeliveryRequest> findPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+	public List<DeliveryRequest> findPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
 		return repos.findPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countPendingJrMapping")
-	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
 		return repos.countPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.findHavingRunningStock")
-	public List<DeliveryRequest> findHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+	public List<DeliveryRequest> findHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
 		return repos.findHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
 	}
-	
+
 	@Cacheable(value = "deliveryRequestService.countHavingRunningStock")
-	public Long countHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism){
+	public Long countHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
 		return repos.countHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
 	}
 
@@ -1185,7 +1184,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			// owner/project/ref/g weight/volume cell
 			phrase = new Phrase();
 			phrase.add(new Chunk("# Of Items : ", boldFont));
-			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()) , normalFont));
+			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()), normalFont));
 			phrase.add(new Chunk("\nOwner : ", boldFont));
 			phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
 			phrase.add(new Chunk("\nProject : ", boldFont));
@@ -1271,7 +1270,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			phrase = new Phrase();
 			phrase.add(new Chunk("# Of Items : ", boldFont));
-			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()) , normalFont));
+			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()), normalFont));
 			phrase.add(new Chunk("\nOwner : ", boldFont));
 			phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
 			phrase.add(new Chunk("\nProject : ", boldFont));
@@ -1970,7 +1969,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
-		return deliveryRequestRepos.findLightDeliveredByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.DELIVRED,DeliveryRequestStatus.ACKNOWLEDGED), DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightDeliveredByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED),
+				DeliveryRequestType.XBOUND);
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList) {
@@ -1989,10 +1989,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<Integer> projectIdList = projectService.findAssignedProjectIdListByResource(username);
 		return repos.findByMissingOutboundDeliveryNoteFileMobile(username, warehouseList, projectIdList);
 	}
-	
+
 	public Long countByWarehouseListMobile(List<Integer> warehouseList) {
-		return deliveryRequestRepos.countByWarehouseListMobile(warehouseList,
-				Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.countByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
 	}
 
 	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList) {
@@ -2230,7 +2229,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
 		deliveryRequest.addHistory(new DeliveryRequestHistory("Adjust Quantity", connectedUser));
 		save(deliveryRequest);
-		
+
 		// update pendingJrMapping
 		calculatePendingJrMapping(deliveryRequest.getId());
 	}
@@ -2239,14 +2238,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		repos.updatePendingJrMapping(id, pendingJrMapping);
 		evictCache();
 	}
-	
+
 	public void updateHavingRunningStock(Integer id, Boolean pendingJrMapping) {
 		repos.updateHavingRunningStock(id, pendingJrMapping);
 		evictCache();
 	}
-	
+
 	public void calculatePendingJrMappingScript() {
-		repos.findBySdmOrIsmIdlist().forEach(id->calculatePendingJrMapping(id));
+		repos.findBySdmOrIsmIdlist().forEach(id -> calculatePendingJrMapping(id));
 	}
 
 	public void calculatePendingJrMapping(Integer id) {
@@ -2289,11 +2288,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println("-----------------------------------------------------");
 		updatePendingJrMapping(id, pendingJrMapping);
 	}
-	
+
 	public void calculateHavingRunningStockScript() {
-		repos.findBySdmOrIsmIdlist().forEach(id->calculateHavingRunningStock(id));
+		repos.findBySdmOrIsmIdlist().forEach(id -> calculateHavingRunningStock(id));
 	}
-	
+
 	public void calculateHavingRunningStock(Integer id) {
 		Map<Integer, Double> dnQtyMap = deliveryRequestDetailService.findQuantityPartNumberMapByDeliveryRequest(id);
 		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(id);
@@ -2333,30 +2332,35 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println(havingRunningStock);
 		System.out.println("-----------------------------------------------------");
 		updateHavingRunningStock(id, havingRunningStock);
-		
+
 	}
-	
+
 	public void calculateMissingExpiry(Integer id) {
-		System.out.println("calculateMissingExpiry : "+id);
+		System.out.println("calculateMissingExpiry : " + id);
 		Boolean missingExpiry = false;
-		Map<Integer,Double> dnMap = stockRowService.findByDeliveryRequestAndExpirableMap(id);
-		Map<Integer,Double> expiryMap = deliveryRequestExpiryDateService.findQuantityMap(id);
+		Map<Integer, Double> dnMap = stockRowService.findByDeliveryRequestAndExpirableMap(id);
+		Map<Integer, Double> expiryMap = deliveryRequestExpiryDateService.findQuantityMap(id);
 		for (Integer partNumberId : dnMap.keySet()) {
 			Double srQuantity = dnMap.get(partNumberId);
 			Double expiryQuantity = expiryMap.getOrDefault(partNumberId, 0.0);
-			if(UtilsFunctions.compareDoubles(srQuantity, expiryQuantity)>0) {
+			if (UtilsFunctions.compareDoubles(srQuantity, expiryQuantity) > 0) {
 				missingExpiry = true;
 				break;
 			}
 		}
-		System.out.println("dnMap : "+dnMap);
-		System.out.println("expiryMap : "+expiryMap);
-		System.out.println("missingExpiry : "+missingExpiry);
+		System.out.println("dnMap : " + dnMap);
+		System.out.println("expiryMap : " + expiryMap);
+		System.out.println("missingExpiry : " + missingExpiry);
 		updateMissingExpiry(id, missingExpiry);
 	}
-	
+
 	public void calculateMissingExpiryScript() {
-		repos.findByHavingExpirableItems().forEach(id->calculateMissingExpiry(id));
+		repos.findByHavingExpirableItems().forEach(id -> calculateMissingExpiry(id));
+	}
+	
+	
+	public void calculateMissingExpiryScriptByPartNumber(Integer partNumberId) {
+		repos.findByHavingPartNumber(partNumberId).forEach(id->calculateMissingExpiry(id));
 	}
 
 	// mobile
@@ -2392,14 +2396,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 		return list;
 	}
-	
+
 	public String getContentTypeFromUrl(String url) {
-	    // You can enhance this with more comprehensive detection
-	    url = url.toLowerCase();
-	    if (url.contains(".png")) return "image/png";
-	    if (url.contains(".gif")) return "image/gif";
-	    if (url.contains(".webp")) return "image/webp";
-	    return "image/jpeg"; // default
+		// You can enhance this with more comprehensive detection
+		url = url.toLowerCase();
+		if (url.contains(".png"))
+			return "image/png";
+		if (url.contains(".gif"))
+			return "image/gif";
+		if (url.contains(".webp"))
+			return "image/webp";
+		return "image/jpeg"; // default
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> findDnExpiry(Integer id) {

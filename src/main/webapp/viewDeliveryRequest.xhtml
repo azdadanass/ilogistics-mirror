@@ -2193,6 +2193,73 @@
 											<div class="action-buttons center">
 												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="mappingSummary" fileName="mappingSummary" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestDetailView.datatable1.search}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="datatable2" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="mappingSummary" value="#{deliveryRequestDetailView.datatable1.value}" var="item" rows="10" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Photo" width="100">
+												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+													<f:param name="fileName" value="#{item.partNumberImage}" />
+												</p:graphicImage>
+											</p:column>
+											<p:column headerText="Part Number" exportable="false">
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder pink" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="Mapped Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+												<h:outputText value="#{item.tmpMappedQuantity}" styleClass=" bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="DN Quantity" width="80">
+												<h:outputText value="#{item.quantity}" styleClass=" bolder blue">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Return Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+												<h:outputText value="#{item.tmpReturnedQuantity}" styleClass=" #{item.tmpReturnedQuantity gt 0?'bolder':''} orange">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Mapped Quantity" width="80" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
+												<h:outputText value="#{item.tmpMappedQuantity}" styleClass=" bolder green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Remaining QTY" width="80">
+												<h:outputText value="#{item.tmpRemainingQuantity}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-7 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Mapping Summary" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
 													<p:dataExporter type="xls" target="datatable2" fileName="datatable2" postProcessor="#{utilsView.excelExportation}" />
 												</h:commandLink>
 											</div>
@@ -2252,7 +2319,7 @@
 										</p:dataTable>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<h4 class="header blue bolder smaller">
 								<h:outputText value=" Install Base" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
 								<h:outputText value=" Dismantle Stage" rendered="#{deliveryRequestView.deliveryRequest.isInbound}" />

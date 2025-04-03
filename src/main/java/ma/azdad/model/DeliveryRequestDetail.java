@@ -65,6 +65,11 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	private Integer tmpSupplierId;
 	private Double tmpDeliveredQuantity;
 
+	private Double tmpReturnedQuantity;
+	private Double tmpMappedQuantity;
+	private Double tmpRemainingQuantity;
+	
+
 	private Double tmpQuantity1;
 	private Double tmpQuantity2;
 
@@ -1200,6 +1205,36 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 	@Transient
 	public void setTmpDeliveredQuantity(Double tmpDeliveredQuantity) {
 		this.tmpDeliveredQuantity = tmpDeliveredQuantity;
+	}
+
+	@Transient
+	public Double getTmpReturnedQuantity() {
+		return tmpReturnedQuantity;
+	}
+
+	@Transient
+	public void setTmpReturnedQuantity(Double tmpReturnedQuantity) {
+		this.tmpReturnedQuantity = tmpReturnedQuantity;
+	}
+
+	@Transient
+	public Double getTmpMappedQuantity() {
+		return tmpMappedQuantity;
+	}
+
+	@Transient
+	public void setTmpMappedQuantity(Double tmpMappedQuantity) {
+		this.tmpMappedQuantity = tmpMappedQuantity;
+	}
+
+	@Transient
+	public Double getTmpRemainingQuantity() {
+		return tmpRemainingQuantity;
+	}
+
+	@Transient
+	public void setTmpRemainingQuantity(Double tmpRemainingQuantity) {
+		this.tmpRemainingQuantity = tmpRemainingQuantity;
 	}
 	
 	

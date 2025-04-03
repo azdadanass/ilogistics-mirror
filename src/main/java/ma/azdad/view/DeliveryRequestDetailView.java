@@ -39,6 +39,8 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 	private Integer companyId;
 	private Integer customerId;
 
+	private DatatableList<DeliveryRequestDetail> datatable1;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -49,6 +51,14 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 			deliveryRequestDetail = deliveryRequestDetailService.findOne(id);
 		else if (isViewPage)
 			deliveryRequestDetail = deliveryRequestDetailService.findOne(id);
+		else if (isPage("viewDeliveryRequest"))
+			initMappingSummary();
+
+	}
+
+	public void initMappingSummary() {
+		System.out.println("initMappingSummary");
+		datatable1 = new DatatableList<DeliveryRequestDetail>(service.findMappingSummary(id));
 	}
 
 	@Override
@@ -181,8 +191,8 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 			list2 = list1 = deliveryRequestDetailService.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, DeliveryRequestType.INBOUND, InboundType.NEW, companyId,
 					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED));
 		else if ("/viewPartNumberPricing.xhtml".equals(currentPath))
-			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND,
-					companyId, Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
+			initLists(deliveryRequestDetailService.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, DeliveryRequestType.INBOUND, companyId,
+					Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED)));
 	}
 
 	public Double getMaxCost() {
@@ -242,6 +252,14 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 
 	public Integer getCompanyId() {
 		return companyId;
+	}
+
+	public DatatableList<DeliveryRequestDetail> getDatatable1() {
+		return datatable1;
+	}
+
+	public void setDatatable1(DatatableList<DeliveryRequestDetail> datatable1) {
+		this.datatable1 = datatable1;
 	}
 
 }

@@ -449,28 +449,28 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				}
 				break;
 			case 16:
-				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false));
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false));
 				break;
 			case 17:
-				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false));
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false));
 				break;
 			case 18:
-				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true));
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true));
 				break;
 			case 19:
-				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
+				initLists(service.findPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
 				break;
 			case 20:
-				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false));
+				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false));
 				break;
 			case 21:
-				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false));
+				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false));
 				break;
 			case 22:
-				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true));
+				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true));
 				break;
 			case 23:
-				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
+				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
 				break;
 			default:
 				break;
@@ -1008,10 +1008,33 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		smsService.sendSms(deliveryRequest);
 	}
 
-	// inplace
+	// SDM / ISM
+	public Boolean showSdm() {
+		switch (deliveryRequest.getType()) {
+		case OUTBOUND:
+			return deliveryRequest.getDestinationProjectSdm();
+		case INBOUND:
+			return deliveryRequest.getProjectSdm() && InboundType.DISMANTLE.equals(deliveryRequest.getInboundType());
+		default:
+			return false;
+		}
+	}
+	
+	public Boolean showIsm() {
+		switch (deliveryRequest.getType()) {
+		case OUTBOUND:
+			return deliveryRequest.getDestinationProjectIsm();
+		case INBOUND:
+			return deliveryRequest.getProjectIsm() && (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());
+		default:
+			return false;
+		}
+	}
+
 	public Boolean canEditSdm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername()) ||   (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId())) ) //
+				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())
+				|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
 				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
 				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectSdm() : deliveryRequest.getProjectSdm());
 	}
@@ -1024,7 +1047,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Boolean canEditIsm() {
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
+				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())
+				|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
 				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 //
 				&& Boolean.TRUE.equals(deliveryRequest.getIsOutbound() ? deliveryRequest.getDestinationProjectIsm() : deliveryRequest.getProjectIsm());
 	}
@@ -2791,37 +2815,37 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		return result;
 	}
-	
+
 	public Long countPendingJrMapping1() {
-		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false);
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false);
 	}
-	
+
 	public Long countPendingJrMapping2() {
-		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false);
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false);
 	}
-	
+
 	public Long countPendingJrMapping3() {
-		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true);
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true);
 	}
-	
+
 	public Long countPendingJrMapping4() {
-		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND,false, true);
+		return service.countPendingJrMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true);
 	}
-	
+
 	public Long countHavingRunningStock1() {
-		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false);
+		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, true, false);
 	}
-	
+
 	public Long countHavingRunningStock2() {
-		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false);
+		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, true, false);
 	}
-	
+
 	public Long countHavingRunningStock3() {
-		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true);
+		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.OUTBOUND, false, true);
 	}
-	
+
 	public Long countHavingRunningStock4() {
-		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(),  cacheView.getAllProjectList(), DeliveryRequestType.INBOUND,false, true);
+		return service.countHavingRunningStock(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true);
 	}
 
 	public Long countToTransfer() {

@@ -302,7 +302,7 @@
 									</f:subview>
 								</h:panelGroup>
 								<h:panelGroup id="sdm">
-									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.destinationProject.sdm}">
+									<f:subview rendered="#{deliveryRequestView.showSdm()}">
 										<div class="space-8" />
 										<div class="row">
 											<div class="col-xs-12 col-sm-3">
@@ -323,7 +323,7 @@
 									</f:subview>
 								</h:panelGroup>
 								<h:panelGroup id="ism">
-									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.destinationProject.ism}">
+									<f:subview rendered="#{deliveryRequestView.showIsm()}">
 										<div class="space-8" />
 										<div class="row">
 											<div class="col-xs-12 col-sm-3">

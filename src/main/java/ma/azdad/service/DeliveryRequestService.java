@@ -1185,6 +1185,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			// owner/project/ref/g weight/volume cell
 			phrase = new Phrase();
 			phrase.add(new Chunk("# Of Items : " + deliveryRequest.getNumberOfItems(), boldFont));
+			System.out.println("OWNERRRRR !!!");
 			phrase.add(new Chunk("\nOwner : ", boldFont));
 			phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
 			phrase.add(new Chunk("\nProject : ", boldFont));

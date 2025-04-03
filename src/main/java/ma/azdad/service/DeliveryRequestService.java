@@ -1184,8 +1184,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			// owner/project/ref/g weight/volume cell
 			phrase = new Phrase();
-			phrase.add(new Chunk("# Of Items : " + deliveryRequest.getNumberOfItems(), boldFont));
-			System.out.println("OWNERRRRR !!!");
+			phrase.add(new Chunk("# Of Items : ", boldFont));
+			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()) , normalFont));
 			phrase.add(new Chunk("\nOwner : ", boldFont));
 			phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
 			phrase.add(new Chunk("\nProject : ", boldFont));
@@ -1199,14 +1199,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			phrase = new Phrase();
 			phrase.add(new Chunk("Gross Weight\n", boldFont));
-			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", normalFont));
 			cell2 = new PdfPCell();
 			cell2.setBorder(0);
 			cell2.addElement(phrase);
 			table2.addCell(cell2);
 			phrase = new Phrase();
 			phrase.add(new Chunk("Volume\n", boldFont));
-			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getVolume()) + " m3", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getVolume()) + " m3", normalFont));
 			cell2 = new PdfPCell();
 			cell2.setBorder(0);
 			cell2.addElement(phrase);

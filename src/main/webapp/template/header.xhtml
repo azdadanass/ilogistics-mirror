@@ -153,163 +153,165 @@
 									</li>
 								</ul>
 							</li>
+							<li class="purple">
+								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+									<i class="ace-icon fa fa-tasks"></i>
+									<span class="badge badge-grey">
+										<h:outputText
+											value="#{deliveryRequestView.countHavingRunningStock1() + deliveryRequestView.countHavingRunningStock2() + deliveryRequestView.countHavingRunningStock3() + deliveryRequestView.countHavingRunningStock4()}" />
+									</span>
+								</a>
+								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+									<li class="dropdown-header">
+										<i class="ace-icon fa fa-spinner"></i>
+										<h:outputText value="Running Stock" />
+									</li>
+									<li class="dropdown-content">
+										<ul class="dropdown-menu dropdown-navbar">
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" SDM Outbond " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countHavingRunningStock1()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="20" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" SDM Inbound " />
+														</span>
+														<span class="pull-right badge badge-success">
+															<h:outputText value="#{deliveryRequestView.countHavingRunningStock2()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="21" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" ISM Outbond " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countHavingRunningStock3()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="22" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" ISM Inbound " />
+														</span>
+														<span class="pull-right badge badge-success">
+															<h:outputText value="#{deliveryRequestView.countHavingRunningStock4()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="23" />
+												</h:outputLink>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+							<li class="purple">
+								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+									<i class="ace-icon fa fa-tasks"></i>
+									<span class="badge badge-grey">
+										<h:outputText
+											value="#{deliveryRequestView.countPendingJrMapping1() + deliveryRequestView.countPendingJrMapping2() + deliveryRequestView.countPendingJrMapping3() + deliveryRequestView.countPendingJrMapping4()}" />
+									</span>
+								</a>
+								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+									<li class="dropdown-header">
+										<i class="ace-icon fa fa-spinner"></i>
+										<h:outputText value="Pending Mapping" />
+									</li>
+									<li class="dropdown-content">
+										<ul class="dropdown-menu dropdown-navbar">
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" SDM Outbond " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countPendingJrMapping1()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="16" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" SDM Inbound " />
+														</span>
+														<span class="pull-right badge badge-success">
+															<h:outputText value="#{deliveryRequestView.countPendingJrMapping2()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="17" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" ISM Outbond " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countPendingJrMapping3()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="18" />
+												</h:outputLink>
+											</li>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" ISM Inbound " />
+														</span>
+														<span class="pull-right badge badge-success">
+															<h:outputText value="#{deliveryRequestView.countPendingJrMapping4()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="19" />
+												</h:outputLink>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
 						</f:subview>
-						<li class="purple">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-								<i class="ace-icon fa fa-tasks"></i>
-								<span class="badge badge-grey">
-									<h:outputText value="#{deliveryRequestView.countHavingRunningStock1() + deliveryRequestView.countHavingRunningStock2() + deliveryRequestView.countHavingRunningStock3() + deliveryRequestView.countHavingRunningStock4()}" />
-								</span>
-							</a>
-							<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-								<li class="dropdown-header">
-									<i class="ace-icon fa fa-spinner"></i>
-									<h:outputText value="Running Stock" />
-								</li>
-								<li class="dropdown-content">
-									<ul class="dropdown-menu dropdown-navbar">
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" SDM Outbond " />
-													</span>
-													<span class="pull-right badge badge-danger">
-														<h:outputText value="#{deliveryRequestView.countHavingRunningStock1()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="20" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" SDM Inbound " />
-													</span>
-													<span class="pull-right badge badge-success">
-														<h:outputText value="#{deliveryRequestView.countHavingRunningStock2()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="21" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" ISM Outbond " />
-													</span>
-													<span class="pull-right badge badge-danger">
-														<h:outputText value="#{deliveryRequestView.countHavingRunningStock3()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="22" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" ISM Inbound " />
-													</span>
-													<span class="pull-right badge badge-success">
-														<h:outputText value="#{deliveryRequestView.countHavingRunningStock4()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="23" />
-											</h:outputLink>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-						<li class="purple">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-								<i class="ace-icon fa fa-tasks"></i>
-								<span class="badge badge-grey">
-									<h:outputText value="#{deliveryRequestView.countPendingJrMapping1() + deliveryRequestView.countPendingJrMapping2() + deliveryRequestView.countPendingJrMapping3() + deliveryRequestView.countPendingJrMapping4()}" />
-								</span>
-							</a>
-							<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-								<li class="dropdown-header">
-									<i class="ace-icon fa fa-spinner"></i>
-									<h:outputText value="Pending Mapping" />
-								</li>
-								<li class="dropdown-content">
-									<ul class="dropdown-menu dropdown-navbar">
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" SDM Outbond " />
-													</span>
-													<span class="pull-right badge badge-danger">
-														<h:outputText value="#{deliveryRequestView.countPendingJrMapping1()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="16" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" SDM Inbound " />
-													</span>
-													<span class="pull-right badge badge-success">
-														<h:outputText value="#{deliveryRequestView.countPendingJrMapping2()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="17" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" ISM Outbond " />
-													</span>
-													<span class="pull-right badge badge-danger">
-														<h:outputText value="#{deliveryRequestView.countPendingJrMapping3()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="18" />
-											</h:outputLink>
-										</li>
-										<li>
-											<h:outputLink value="deliveryRequestList.xhtml">
-												<span class="clearfix">
-													<span class="pull-left">
-														<i class="ace-icon fa fa-spinner green " style="font-size: 20px" />
-														&nbsp;&nbsp;
-														<h:outputText value=" ISM Inbound " />
-													</span>
-													<span class="pull-right badge badge-success">
-														<h:outputText value="#{deliveryRequestView.countPendingJrMapping4()}" />
-													</span>
-												</span>
-												<f:param name="pageIndex" value="19" />
-											</h:outputLink>
-										</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
 						<li class="grey">
 							<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 								<i class="ace-icon fa fa-tasks"></i>

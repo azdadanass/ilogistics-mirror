@@ -33,6 +33,9 @@ public class JobService {
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	EmailService emailService;
 
 	@Async
 	@Scheduled(cron = "0 34 19 * * *")
@@ -95,8 +98,14 @@ public class JobService {
 	}
 	
 	@Scheduled(cron = "00 20 05 * * *")
-	public  void calculateHavingRunningStockScript() {
+	public void calculateHavingRunningStockScript() {
 		deliveryRequestService.calculateHavingRunningStockScript();
+	}
+	
+	
+	@Scheduled(cron = "00 30 05 * * *")
+	public void sendDeliveryRequestDeliveryOverdueNotification() {
+		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}
 
 }

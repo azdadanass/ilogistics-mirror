@@ -215,23 +215,23 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	@Cacheable(value = "deliveryRequestService.findPendingJrMapping")
-	public List<DeliveryRequest> findPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
-		return repos.findPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
+	public List<DeliveryRequest> findPendingJrMapping(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
+		return repos.findPendingJrMapping(username, projectList, type, sdm, ism);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countPendingJrMapping")
-	public Long countPendingJrMapping(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
-		return repos.countPendingJrMapping(username, warehouseList, projectList, type, sdm, ism);
+	public Long countPendingJrMapping(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
+		return repos.countPendingJrMapping(username, projectList, type, sdm, ism);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findHavingRunningStock")
-	public List<DeliveryRequest> findHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
-		return repos.findHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
+	public List<DeliveryRequest> findHavingRunningStock(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
+		return repos.findHavingRunningStock(username, projectList, type, sdm, ism);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countHavingRunningStock")
-	public Long countHavingRunningStock(String username, List<Integer> warehouseList, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
-		return repos.countHavingRunningStock(username, warehouseList, projectList, type, sdm, ism);
+	public Long countHavingRunningStock(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism) {
+		return repos.countHavingRunningStock(username, projectList, type, sdm, ism);
 	}
 
 	@Cacheable(value = "deliveryRequestService.findLight")
@@ -2361,6 +2361,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	
 	public void calculateMissingExpiryScriptByPartNumber(Integer partNumberId) {
 		repos.findByHavingPartNumber(partNumberId).forEach(id->calculateMissingExpiry(id));
+	}
+	
+	public List<Integer> findDeliveryOverdue(){
+		return repos.findDeliveryOverdue();
 	}
 
 	// mobile

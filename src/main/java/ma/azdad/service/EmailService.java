@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -21,7 +22,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Issue;
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.User;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.App;
@@ -44,6 +47,9 @@ public class EmailService {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+	
+	@Autowired
+	private DeliveryRequestService deliveryRequestService;
 
 	@Autowired
 	UserRepos userRepos;
@@ -53,6 +59,29 @@ public class EmailService {
 
 	@Value("${application}")
 	private String application;
+	
+	
+	
+	public void sendDeliveryRequestDeliveryOverdueNotification() {
+		List<Integer> idList = deliveryRequestService.findDeliveryOverdue();
+		for (Integer id : idList) 
+			sendDeliveryRequestDeliveryOverdueNotification(deliveryRequestService.findOne(id)); 
+	}
+	
+	public void sendDeliveryRequestDeliveryOverdueNotification(DeliveryRequest deliveryRequest){
+		User toUser = deliveryRequest.getRequester();
+		String subject= deliveryRequest.getReference()+" Overdue";
+		Mail mail = new Mail(toUser.getEmail(), subject, "deliveryRequest.html", TemplateType.HTML);
+		mail.addCc(deliveryRequest.getProject().getManagerEmail());
+		deliveryRequest.getWarehouse().getManagerList().forEach(i->mail.addCc(i.getUser().getEmail()));
+		deliveryRequest.getProject().getManagerList().stream().filter(i->ProjectManagerType.HARDWARE_MANAGER.equals(i.getType())).forEach(i->mail.addCc(i.getUser().getEmail()));
+		mail.addParameter("deliveryRequest", deliveryRequest);
+		mail.addParameter("toUser", toUser);
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
+	
+	
 	
 	@Async
 	public void sendIssueNotification(Issue issue) {
@@ -77,6 +106,7 @@ public class EmailService {
 		issue.getToNotifyList().stream().filter(i -> i.getNotifyByEmail()).map(i -> i.getEmail()).forEach(i -> mail.addCc(i));
 		mail.addParameter("issue", issue);
 		mail.addParameter("toUser", toUser);
+		mail.generateMessageFromTemplate(thymeLeafService);
 		send(mail);
 	}
 

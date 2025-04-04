@@ -30,6 +30,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 import ma.azdad.utils.Color;
 import ma.azdad.utils.LabelValue;
 import ma.azdad.utils.Public;
@@ -499,6 +500,44 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@Transient
+	public String getQrImageLink() {
+		return App.QR.getLink() + "/img/dn/" + id + "/" + qrKey;
+	}
+
+	@Transient
+	public String getQrLink() {
+		return App.QR.getLink() + "/dn/" + id + "/" + qrKey;
+	}
+
+	@Transient // to remove
+	public String getTimeLineImageLink() {
+		String path = "http://www.3gcom.ma/erp/ilogistics/dn/";
+		switch (status) {
+		case EDITED:
+			return getIsInbound() ? path + "1.png" : path + "a1.png";
+		case REQUESTED:
+			return getIsInbound() ? path + "2.png" : path + "a2.png";
+		case APPROVED1:
+			return getIsInbound() ? path + "3.png" : path + "a3.png";
+		case APPROVED2:
+			return getIsInbound() ? path + "3.png" : path + "a3.png";
+		case PARTIALLY_DELIVRED:
+			return path + "4.png";
+		case DELIVRED:
+			return getIsInbound() ? path + "5.png" : path + "a4.png";
+		case ACKNOWLEDGED:
+			return path + "a5.png";
+		case REJECTED:
+			return path + "r.png";
+		case CANCELED:
+			return path + (date2 == null ? "c1.png" : date3 == null ? "c2.png" : "c3.png");
+		default:
+			break;
+		}
+		return null;
+	}
+
+	@Transient
 	public List<PackingDetail> getPackingDetailSummaryList() {
 		List<PackingDetail> result = new ArrayList<PackingDetail>();
 		Map<PackingDetail, Integer> map = new HashMap<PackingDetail, Integer>();
@@ -597,6 +636,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (company == null || !company.getId().equals(companyId))
 			company = new Company();
 		company.setId(companyId);
+	}
+	
+	@Transient
+	public String getPreferedLocationName(){
+		return preferedLocation!=null?preferedLocation.getName():null;
+	}
+
+	@Transient
+	public void setPreferedLocationName(String preferedLocationName){
+		if(preferedLocation==null)
+			preferedLocation=new Location();
+		preferedLocation.setName(preferedLocationName);
 	}
 
 	@Transient
@@ -1668,6 +1719,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			origin = new Site();
 		origin.setName(originName);
 	}
+	
+	@Transient
+	public String getOriginGoogleAddress() {
+		return origin != null ? origin.getGoogleAddress() : null;
+	}
+
+	@Transient
+	public void setOriginGoogleAddress(String originGoogleAddress) {
+		if (origin == null)
+			origin = new Site();
+		origin.setGoogleAddress(originGoogleAddress);
+	}
 
 	public String getRejectionReason() {
 		return rejectionReason;
@@ -1686,6 +1749,30 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (toUser == null || !toUserUsername.equals(toUser.getUsername()))
 			toUser = new User();
 		toUser.setUsername(toUserUsername);
+	}
+
+	@Transient
+	public String getTransportationRequestReference() {
+		return transportationRequest != null ? transportationRequest.getReference() : null;
+	}
+
+	@Transient
+	public void setTransportationRequestReference(String transportationRequestReference) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
+		transportationRequest.setReference(transportationRequestReference);
+	}
+
+	@Transient
+	public TransportationRequestStatus getTransportationRequestStatus() {
+		return transportationRequest != null ? transportationRequest.getStatus() : null;
+	}
+
+	@Transient
+	public void setTransportationRequestStatus(TransportationRequestStatus transportationRequestStatus) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
+		transportationRequest.setStatus(transportationRequestStatus);
 	}
 
 	@Transient
@@ -1785,6 +1872,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@Transient
+	public String getDestinationProjectManagerFullName() {
+		return destinationProject != null ? destinationProject.getManagerFullName() : null;
+	}
+
+	@Transient
+	public void setDestinationProjectManagerFullName(String destinationProjectManagerFullName) {
+		if (destinationProject == null)
+			destinationProject = new Project();
+		destinationProject.setManagerFullName(destinationProjectManagerFullName);
+	}
+
+	@Transient
 	public Integer getDestinationProjectCustomerId() {
 		return destinationProject != null ? destinationProject.getCustomerId() : null;
 	}
@@ -1857,6 +1956,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		return getIsInbound() && InboundType.TRANSFER.equals(inboundType);
 	}
 
+	@Column(columnDefinition = "TEXT")
 	public String getSmsRef() {
 		return smsRef;
 	}
@@ -2254,6 +2354,18 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (destination == null)
 			destination = new Site();
 		destination.setName(destinationName);
+	}
+
+	@Transient
+	public String getDestinationGoogleAddress() {
+		return destination != null ? destination.getGoogleAddress() : null;
+	}
+
+	@Transient
+	public void setDestinationGoogleAddress(String destinationGoogleAddress) {
+		if (destination == null)
+			destination = new Site();
+		destination.setGoogleAddress(destinationGoogleAddress);
 	}
 
 	@Transient

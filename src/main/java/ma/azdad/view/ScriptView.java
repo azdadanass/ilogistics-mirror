@@ -39,7 +39,7 @@ public class ScriptView {
 
 	@Autowired
 	public SessionView sessionView;
-	
+
 	@Autowired
 	public IssueCategoryService issueCategoryService;
 
@@ -144,33 +144,39 @@ public class ScriptView {
 	public void generateForOutboundAssociatedWithInbound() {
 		deliveryRequestExpiryDateService.generateForOutboundAssociatedWithInbound(inboundDeliveryRequestId);
 	}
-	
+
 	public void updateDetailListPurchaseCostFromBoqMappingScript() {
 		deliveryRequestService.updateDetailListPurchaseCostFromBoqMappingScript();
 	}
-	
+
 	public void addDefaultIssueCategoryScript() {
 		issueCategoryService.addDefaultIssueCategoryScript();
 	}
-	
+
 	public void adjustQuantityScript() {
 		if (!canExecute)
 			return;
 		deliveryRequestService.adjustQuantityScript();
 	}
-	
-	public  void calculatePendingJrMappingScript() {
+
+	public void calculatePendingJrMappingScript() {
 		if (!canExecute)
 			return;
 		deliveryRequestService.calculatePendingJrMappingScript();
 	}
-	
-	public  void calculateHavingRunningStockScript() {
+
+	public void calculateHavingRunningStockScript() {
 		if (!canExecute)
 			return;
 		deliveryRequestService.calculateHavingRunningStockScript();
 	}
-	
+
+	public void sendDeliveryRequestDeliveryOverdueNotification() {
+		if (!canExecute)
+			return;
+		emailService.sendDeliveryRequestDeliveryOverdueNotification();
+	}
+
 	public void updateOutboundInboundPoScript() {
 		log.info("start updateOutboundInboundPoScript");
 		deliveryRequestService.updateOutboundInboundPoScript();

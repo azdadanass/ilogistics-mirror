@@ -310,7 +310,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound and (deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.destinationProjectSdm)) or deliveryRequestView.deliveryRequest.isInboundDismantle}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.showSdm()}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="SDM" />
@@ -331,7 +331,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{(deliveryRequestView.deliveryRequest.isOutbound and (deliveryRequestView.deliveryRequest.ism or deliveryRequestView.deliveryRequest.destinationProjectIsm)) or deliveryRequestView.isHardwareSwapInbound}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.ism or deliveryRequestView.showIsm()}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="ISM" />
@@ -738,12 +738,12 @@
 						</h:outputText>
 						<h:outputText value=" m3" />
 					</p:column>
-					<p:column headerText="Remaining Quantity" width="150" rendered="#{DeliveryRequestStatus.PARTIALLY_DELIVRED==deliveryRequestView.deliveryRequest.status}"
+					<!-- <p:column headerText="Remaining Quantity" width="150" rendered="#{DeliveryRequestStatus.PARTIALLY_DELIVRED==deliveryRequestView.deliveryRequest.status}"
 						styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<h:outputText value="#{item.remainingQuantity}">
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
-					</p:column>
+					</p:column> -->
 					<p:column headerText="Expirable" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.showExpiryData()}">
 						<i class="ace-icon fa #{item.partNumber.expirable?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 					</p:column>

@@ -20,5 +20,10 @@ public class DeliveryRequestRestService {
 	public void calculatePendingJrMapping(@PathVariable Integer id) {
 		deliveryRequestService.calculatePendingJrMapping(id);
 	}
+	
+	@RequestMapping("/rest/deliveryRequest/calculateHavingRunningStock/{id}")
+	public void calculateHavingRunningStock(@PathVariable Integer id) {
+		deliveryRequestService.calculateHavingRunningStock(id);
+	}
 
 }

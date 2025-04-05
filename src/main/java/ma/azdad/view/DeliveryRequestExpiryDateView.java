@@ -3,6 +3,7 @@ package ma.azdad.view;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -84,24 +85,30 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 	private Boolean editMode = false;
 
 	public Boolean canEdit(DeliveryRequest deliveryRequest) {
-		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound())
-			return deliveryRequest.getDate4() != null && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId()) && !editMode && (list1.isEmpty() || list1.stream().filter(i -> i.getId() == null).count() > 0);
-		return false;
+		return !editMode //
+				&& (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound()) //
+				&& Boolean.TRUE.equals(deliveryRequest.getMissingExpiry())//
+				&& deliveryRequest.getDate4() != null //
+				&& cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId());
 	}
 
 	public void initEdit(DeliveryRequest deliveryRequest) {
-		if (list1.isEmpty() && deliveryRequest.getIsInbound())
+		if (deliveryRequest.getIsInbound())
 			generateInboundExpiryList(deliveryRequest);
-
 	}
 
 	private void addRemainingToOutbound() {
 		Map<Integer, Double> map = list1.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getStockRowId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
-		deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable() && -i.getQuantity() > map.getOrDefault(i.getId(), 0.0)).forEach(i -> list1.add(new DeliveryRequestExpiryDate(i, true, deliveryRequestExpiryDateService.findOneExpiryDate(i))));
+		deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable() && -i.getQuantity() > map.getOrDefault(i.getId(), 0.0))
+				.forEach(i -> list1.add(new DeliveryRequestExpiryDate(i, true, deliveryRequestExpiryDateService.findOneExpiryDate(i))));
 	}
 
 	private void generateInboundExpiryList(DeliveryRequest deliveryRequest) {
-		deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).forEach(i -> list1.add(new DeliveryRequestExpiryDate(i, true)));
+		Set<Integer> stockRowIdSet = list1.stream().map(i -> i.getStockRowId()).collect(Collectors.toSet());
+		deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).forEach(i -> {
+			if (!stockRowIdSet.contains(i.getId()))
+				list1.add(new DeliveryRequestExpiryDate(i, true));
+		});
 	}
 
 	// auto save outbound list if no conflict
@@ -144,13 +151,12 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 	public void save(DeliveryRequest deliveryRequest) {
 		if (!validate(deliveryRequest))
 			return;
-
 		list1.stream().forEach(i -> deliveryRequestExpiryDateService.save(i));
-
-		deliveryRequestService.updateMissingExpiry(deliveryRequest.getId(), false);
-
+		deliveryRequest.setMissingExpiry(false);
+		deliveryRequestService.calculateMissingExpiry(deliveryRequest.getId());
 		editMode = false;
 		refreshList();
+		
 	}
 
 	private Boolean validate(DeliveryRequest deliveryRequest) {

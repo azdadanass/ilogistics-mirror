@@ -164,6 +164,18 @@ public class Project implements Serializable {
 			manager = new User();
 		manager.setFullName(managerFullName);
 	}
+	
+	@Transient
+	public String getManagerEmail() {
+		return manager == null ? null : manager.getEmail();
+	}
+
+	@Transient
+	public void setManagerEmail(String managerEmail) {
+		if (manager == null)
+			manager = new User();
+		manager.setEmail(managerEmail);
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

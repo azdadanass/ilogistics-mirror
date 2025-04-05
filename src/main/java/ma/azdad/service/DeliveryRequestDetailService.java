@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,6 @@ import ma.azdad.model.InboundType;
 import ma.azdad.model.JobRequestStatus;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.StockRow;
-import ma.azdad.model.StockRowState;
 import ma.azdad.model.StockRowStatus;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
 import ma.azdad.repos.DeliveryRequestRepos;
@@ -39,8 +37,7 @@ import ma.azdad.utils.DeliveryRequestExcelFileException;
 import ma.azdad.utils.LabelValue;
 
 @Component
-public class DeliveryRequestDetailService
-		extends GenericService<Integer, DeliveryRequestDetail, DeliveryRequestDetailRepos> {
+public class DeliveryRequestDetailService extends GenericService<Integer, DeliveryRequestDetail, DeliveryRequestDetailRepos> {
 
 	@Autowired
 	DeliveryRequestDetailRepos repos;
@@ -50,20 +47,34 @@ public class DeliveryRequestDetailService
 
 	@Autowired
 	StockRowRepos stockRowRepos;
+
 	@Autowired
 	StockRowService stockRowService;
 
 	@Autowired
 	DeliveryRequestRepos deliveryRequestRepos;
+	
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
 
+	@Autowired
+	JobRequestDeliveryDetailService jobRequestDeliveryDetailService;
+
+	@Autowired
+	PartNumberService partNumberService;
+
 	// reporting
 	public List<DeliveryRequestDetail> teamInventory(Integer projectId) {
-		return repos.findByDestinationProjectAndTypeAndStatus(projectId,
-				Arrays.asList(DeliveryRequestType.OUTBOUND, DeliveryRequestType.XBOUND),
-				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED),
-				Arrays.asList(JobRequestStatus.REJECTED, JobRequestStatus.CANCELED));
+		return repos.findByDestinationProjectAndTypeAndStatus(projectId, Arrays.asList(DeliveryRequestType.OUTBOUND, DeliveryRequestType.XBOUND),
+				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED), Arrays.asList(JobRequestStatus.REJECTED, JobRequestStatus.CANCELED));
+	}
+
+	public Map<Integer, Double> findQuantityPartNumberMapByDeliveryRequest(Integer deliveryRequest) {
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		List<Object[]> data = repos.findQuantityByDeliveryRequestGroupByPartNumber(deliveryRequest);
+		for (Object[] row : data)
+			result.put((Integer) row[0], (Double) row[1]);
+		return result;
 	}
 
 	@Override
@@ -76,30 +87,69 @@ public class DeliveryRequestDetailService
 	public List<DeliveryRequestDetail> findByOutboundAndWaiting(Integer projectId, Integer warehouseId, Integer id) {
 		return id == null
 				? repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND,
-						Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-								DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
+						Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2))
 				: repos.findByProjectAndWarehouseAndTypeAndStatus(projectId, warehouseId, DeliveryRequestType.OUTBOUND,
-						Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-								DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2),
-						id);
+						Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2), id);
 	}
 
 	public List<DeliveryRequestDetail> findRemainingByPo(Integer poId) {
 		return repos.findRemainingByPo(poId);
 	}
 
-	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId,
-			DeliveryRequest deliveryRequest) {
-		List<DeliveryRequestDetail> stockRowList = stockRowRepos.findRemainingByProjectAndWarehouse(projectId,
-				warehouseId);
+	public List<DeliveryRequestDetail> findMappingSummary(Integer deliveryRequestId) {
+		List<DeliveryRequestDetail> result = new ArrayList<DeliveryRequestDetail>();
+		Map<Integer, Double> dnQtyMap = findQuantityPartNumberMapByDeliveryRequest(deliveryRequestId);
+		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(deliveryRequestId);
+		Map<Integer, Double> mappedQtyMap = jobRequestDeliveryDetailService.findMappedQuantityMap(deliveryRequestId);
+		DeliveryRequestType dnType = deliveryRequestRepos.findType(deliveryRequestId);
+
+		switch (dnType) {
+		case OUTBOUND:
+			for (Integer key : dnQtyMap.keySet()) {
+				Double dnQty = dnQtyMap.get(key);
+				Double returnQty = returnQtyMap.getOrDefault(key, 0.0);
+				Double mappedQty = mappedQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = dnQty - returnQty - mappedQty;
+
+				DeliveryRequestDetail deliveryRequestDetail = new DeliveryRequestDetail();
+				deliveryRequestDetail.setPartNumber(partNumberService.findOneLight(key));
+				deliveryRequestDetail.setQuantity(dnQty);
+				deliveryRequestDetail.setTmpReturnedQuantity(returnQty);
+				deliveryRequestDetail.setTmpMappedQuantity(mappedQty);
+				deliveryRequestDetail.setTmpRemainingQuantity(remainingQty);
+				result.add(deliveryRequestDetail);
+
+			}
+			break;
+		case INBOUND:
+			for (Integer key : mappedQtyMap.keySet()) {
+				Double mappedQty = mappedQtyMap.get(key);
+				Double dnQty = dnQtyMap.getOrDefault(key, 0.0);
+				Double remainingQty = mappedQty - dnQty;
+				DeliveryRequestDetail deliveryRequestDetail = new DeliveryRequestDetail();
+				deliveryRequestDetail.setPartNumber(partNumberService.findOneLight(key));
+				deliveryRequestDetail.setQuantity(dnQty);
+				deliveryRequestDetail.setTmpMappedQuantity(mappedQty);
+				deliveryRequestDetail.setTmpRemainingQuantity(remainingQty);
+				result.add(deliveryRequestDetail);
+			}
+			break;
+		default:
+			break;
+		}
+
+		return result;
+	}
+
+	public List<DeliveryRequestDetail> findRemainingByProjectAndWarehouse(Integer projectId, Integer warehouseId, DeliveryRequest deliveryRequest) {
+		List<DeliveryRequestDetail> stockRowList = stockRowRepos.findRemainingByProjectAndWarehouse(projectId, warehouseId);
 		if (stockRowList == null)
 			return new ArrayList<>();
 
 		// Initialize packing information
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
-		List<DeliveryRequestDetail> waitingList = findByOutboundAndWaiting(projectId, warehouseId,
-				deliveryRequest.getId());
+		List<DeliveryRequestDetail> waitingList = findByOutboundAndWaiting(projectId, warehouseId, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
 		for (DeliveryRequestDetail deliveryRequestDetail : stockRowList) {
@@ -131,22 +181,18 @@ public class DeliveryRequestDetailService
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestReturn(DeliveryRequest deliveryRequest,
-			DeliveryRequest outboundDeliveryRequest) {
-		List<DeliveryRequestDetail> stockRowList = stockRowRepos
-				.findRemainingByOutboundDeliveryRequestReturn(outboundDeliveryRequest.getId());
+	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestReturn(DeliveryRequest deliveryRequest, DeliveryRequest outboundDeliveryRequest) {
+		List<DeliveryRequestDetail> stockRowList = stockRowRepos.findRemainingByOutboundDeliveryRequestReturn(outboundDeliveryRequest.getId());
 		if (stockRowList == null)
 			return new ArrayList<>();
 
 		// Initialize packing information
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
-		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED,
-				DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
+		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
 		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null
 				? repos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus)
-				: repos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus,
-						deliveryRequest.getId());
+				: repos.findByOutboundDeliveryRequestReturnAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
 		for (DeliveryRequestDetail deliveryRequestDetail : stockRowList) {
@@ -178,22 +224,18 @@ public class DeliveryRequestDetailService
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestTransfer(DeliveryRequest deliveryRequest,
-			DeliveryRequest outboundDeliveryRequest) {
-		List<DeliveryRequestDetail> stockRowList = stockRowRepos
-				.findRemainingByOutboundDeliveryRequestTransfer(outboundDeliveryRequest.getId());
+	public List<DeliveryRequestDetail> findRemainingByOutboundDeliveryRequestTransfer(DeliveryRequest deliveryRequest, DeliveryRequest outboundDeliveryRequest) {
+		List<DeliveryRequestDetail> stockRowList = stockRowRepos.findRemainingByOutboundDeliveryRequestTransfer(outboundDeliveryRequest.getId());
 		if (stockRowList == null)
 			return new ArrayList<>();
 
 		// Initialize packing information
 		stockRowList.forEach(i -> Hibernate.initialize(i.getPacking()));
 
-		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED,
-				DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
+		List<DeliveryRequestStatus> waitingStatus = Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2);
 		List<DeliveryRequestDetail> waitingList = deliveryRequest == null || deliveryRequest.getId() == null
 				? repos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus)
-				: repos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus,
-						deliveryRequest.getId());
+				: repos.findByOutboundDeliveryRequestTransferAndStatus(outboundDeliveryRequest.getId(), waitingStatus, deliveryRequest.getId());
 
 		Map<String, DeliveryRequestDetail> stockRowMap = new HashMap<>();
 		for (DeliveryRequestDetail deliveryRequestDetail : stockRowList) {
@@ -231,8 +273,7 @@ public class DeliveryRequestDetailService
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> readInboundFile(InputStream inputStream, DeliveryRequest deliveryRequest)
-			throws DeliveryRequestExcelFileException {
+	public List<DeliveryRequestDetail> readInboundFile(InputStream inputStream, DeliveryRequest deliveryRequest) throws DeliveryRequestExcelFileException {
 		List<DeliveryRequestDetail> result = new ArrayList<>();
 
 		Map<PartNumber, Double> map = new HashMap<>();
@@ -257,8 +298,7 @@ public class DeliveryRequestDetailService
 			}
 
 			if (cols != 2)
-				throw new DeliveryRequestExcelFileException(
-						"number of columns should be 2 with this order (PN[TEXT],Quantity[Numeric])");
+				throw new DeliveryRequestExcelFileException("number of columns should be 2 with this order (PN[TEXT],Quantity[Numeric])");
 
 			for (int r = 1; r < rows; r++) {
 				row = sheet.getRow(r);
@@ -267,8 +307,7 @@ public class DeliveryRequestDetailService
 					Double quantity;
 					HSSFCell pnCell = row.getCell(0);
 					HSSFCell quantityCell = row.getCell(1);
-					if (pnCell == null || quantityCell == null || pnCell.getCellType() == HSSFCell.CELL_TYPE_BLANK
-							|| quantityCell.getCellType() == HSSFCell.CELL_TYPE_BLANK)
+					if (pnCell == null || quantityCell == null || pnCell.getCellType() == HSSFCell.CELL_TYPE_BLANK || quantityCell.getCellType() == HSSFCell.CELL_TYPE_BLANK)
 						continue;
 
 					pn = getPnFromCell(pnCell, r);
@@ -297,8 +336,7 @@ public class DeliveryRequestDetailService
 		return result;
 	}
 
-	public Map<String, Double> readOutboundFile(InputStream inputStream, DeliveryRequest deliveryRequest,
-			List<DeliveryRequestDetail> sourceList) throws DeliveryRequestExcelFileException {
+	public Map<String, Double> readOutboundFile(InputStream inputStream, DeliveryRequest deliveryRequest, List<DeliveryRequestDetail> sourceList) throws DeliveryRequestExcelFileException {
 		Map<String, Double> srcMap = new HashMap<>();
 		for (DeliveryRequestDetail drd : sourceList)
 			srcMap.put(drd.getKey(), drd.getRemainingQuantity());
@@ -325,8 +363,7 @@ public class DeliveryRequestDetailService
 			}
 
 			if (cols != 5)
-				throw new DeliveryRequestExcelFileException(
-						"number of columns should be 5 with this order (PN[TEXT],Origin DN Number[TEXT],Inbound Request[TEXT],STATUS[INTEGER],Quantity[Numeric])");
+				throw new DeliveryRequestExcelFileException("number of columns should be 5 with this order (PN[TEXT],Origin DN Number[TEXT],Inbound Request[TEXT],STATUS[INTEGER],Quantity[Numeric])");
 
 			for (int r = 1; r < rows; r++) {
 				row = sheet.getRow(r);
@@ -344,10 +381,7 @@ public class DeliveryRequestDetailService
 
 					if (Arrays.asList(pnCell, onCell, idrCell, statusCell, quantityCell).contains(null))
 						continue;
-					if (Arrays
-							.asList(pnCell.getCellType(), onCell.getCellType(), idrCell.getCellType(),
-									statusCell.getCellType(), quantityCell.getCellType())
-							.contains(HSSFCell.CELL_TYPE_BLANK))
+					if (Arrays.asList(pnCell.getCellType(), onCell.getCellType(), idrCell.getCellType(), statusCell.getCellType(), quantityCell.getCellType()).contains(HSSFCell.CELL_TYPE_BLANK))
 						continue;
 
 					pn = getPnFromCell(pnCell, r);
@@ -361,28 +395,23 @@ public class DeliveryRequestDetailService
 						throw new DeliveryRequestExcelFileException("PN " + pn + " dosen't exist in DB !");
 
 					if (deliveryRequestRepos.countByOriginNumber(on) == 0)
-						throw new DeliveryRequestExcelFileException(
-								"Origin Number :  " + on + " dosen't exist in DB !");
+						throw new DeliveryRequestExcelFileException("Origin Number :  " + on + " dosen't exist in DB !");
 
 					Integer inboundReferenceNumber;
 
 					try {
-						inboundReferenceNumber = Integer
-								.valueOf(idr.replace("DN" + (DeliveryRequestType.INBOUND.ordinal() + 1), ""));
+						inboundReferenceNumber = Integer.valueOf(idr.replace("DN" + (DeliveryRequestType.INBOUND.ordinal() + 1), ""));
 					} catch (Exception e) {
 						throw new DeliveryRequestExcelFileException("Invalid Format for Inbound DN : " + idr);
 					}
-					DeliveryRequest inboundDeliveryRequest = deliveryRequestRepos
-							.findByTypeAndReferenceNumber(DeliveryRequestType.INBOUND, inboundReferenceNumber);
+					DeliveryRequest inboundDeliveryRequest = deliveryRequestRepos.findByTypeAndReferenceNumber(DeliveryRequestType.INBOUND, inboundReferenceNumber);
 					if (inboundDeliveryRequest == null)
 						throw new DeliveryRequestExcelFileException("Inbound DN " + idr + " dosen't exist in DB !");
 
 					String key = StockRow.getKey(status, on, partNumber.getId(), inboundDeliveryRequest.getId());
 
 					if (!srcMap.containsKey(key))
-						throw new DeliveryRequestExcelFileException(
-								"one or more rows dont match with actual remaining list, check columns (PN,OriginDN,status,InboundDN) : "
-										+ partNumber.getName());
+						throw new DeliveryRequestExcelFileException("one or more rows dont match with actual remaining list, check columns (PN,OriginDN,status,InboundDN) : " + partNumber.getName());
 					if (!resultMap.containsKey(key))
 						// resultMap.put(key, new DeliveryRequestDetail(0.0,
 						// partNumber, StockRowStatus.values()[status], on,
@@ -394,8 +423,7 @@ public class DeliveryRequestDetailService
 					resultMap.put(key, resultMap.get(key) + quantity);
 
 					if (resultMap.get(key).compareTo(srcMap.get(key)) > 0)
-						throw new DeliveryRequestExcelFileException("Error MAX quantity for (pn:" + pn
-								+ ",originNumber:" + on + ",inboundDn:" + idr + ",status:" + status + ")");
+						throw new DeliveryRequestExcelFileException("Error MAX quantity for (pn:" + pn + ",originNumber:" + on + ",inboundDn:" + idr + ",status:" + status + ")");
 				}
 			}
 
@@ -464,8 +492,7 @@ public class DeliveryRequestDetailService
 		try {
 			int status = (int) cell.getNumericCellValue();
 			if (status < 0 || status >= StockRowStatus.values().length)
-				throw new DeliveryRequestExcelFileException("error Status at row : " + (r + 1)
-						+ " --> Status should be between 0 and " + (StockRowStatus.values().length - 1));
+				throw new DeliveryRequestExcelFileException("error Status at row : " + (r + 1) + " --> Status should be between 0 and " + (StockRowStatus.values().length - 1));
 			return status;
 		} catch (Exception e) {
 			throw new DeliveryRequestExcelFileException("error Status at row : " + (r + 1));
@@ -488,14 +515,12 @@ public class DeliveryRequestDetailService
 //				stockRowRepos.updateUnitCost(idList, unitCost);
 
 			// update related outbound details
-			idList = repos.findIdList(DeliveryRequestType.OUTBOUND, deliveryRequestDetail.getPartNumber().getId(),
-					deliveryRequestDetail.getDeliveryRequest().getId());
+			idList = repos.findIdList(DeliveryRequestType.OUTBOUND, deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getDeliveryRequest().getId());
 			if (idList != null && !idList.isEmpty()) {
 				repos.updateUnitCost(idList, unitCost);
 				// update related return from outbound
 				for (Integer outboundDeliveryRequestDetailId : idList) {
-					List<Integer> idList2 = repos.findIdListByPartNumberAndOutboundDeliveryRequestReturn(
-							deliveryRequestDetail.getPartNumber().getId(), outboundDeliveryRequestDetailId);
+					List<Integer> idList2 = repos.findIdListByPartNumberAndOutboundDeliveryRequestReturn(deliveryRequestDetail.getPartNumber().getId(), outboundDeliveryRequestDetailId);
 					for (Integer integer : idList2)
 						updateUnitCost(integer, unitCost);
 				}
@@ -536,21 +561,16 @@ public class DeliveryRequestDetailService
 
 		List<LabelValue> result = new ArrayList<>();
 
-		result.addAll(
-				customerList.stream().map(item -> new LabelValue("", item, "customer")).collect(Collectors.toList()));
-		result.addAll(
-				supplierList.stream().map(item -> new LabelValue("", item, "supplier")).collect(Collectors.toList()));
-		result.addAll(
-				companyList.stream().map(item -> new LabelValue("", item, "company")).collect(Collectors.toList()));
+		result.addAll(customerList.stream().map(item -> new LabelValue("", item, "customer")).collect(Collectors.toList()));
+		result.addAll(supplierList.stream().map(item -> new LabelValue("", item, "supplier")).collect(Collectors.toList()));
+		result.addAll(companyList.stream().map(item -> new LabelValue("", item, "company")).collect(Collectors.toList()));
 
 		return result;
 	}
 
-	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId,
-			DeliveryRequestType deliveryRequestType, InboundType inboundType, Integer companyId,
+	public List<DeliveryRequestDetail> findByPartNumberAndDeliveryRequestTypeAndCompany(Integer partNumberId, DeliveryRequestType deliveryRequestType, InboundType inboundType, Integer companyId,
 			List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, inboundType,
-				companyId, deliveryRequestStatus);
+		return repos.findByPartNumberAndDeliveryRequestTypeAndCompany(partNumberId, deliveryRequestType, inboundType, companyId, deliveryRequestStatus);
 	}
 
 //	public Double findPendingQuantityByCompanyOwnerAnPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId) {
@@ -563,130 +583,95 @@ public class DeliveryRequestDetailService
 //		return d != null ? d : 0.0;
 //	}
 
-	public Map<Integer, Double> findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(
-			String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		List<Object[]> data = repos.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username,
-				warehouseList, assignedProjectList, companyId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Map<Integer, Double> findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList,
+			Integer companyId) {
+		List<Object[]> data = repos.findPendingQuantityByCompanyOwnerAndProjectSubTypeStockGroupByPartNumber(username, warehouseList, assignedProjectList, companyId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
 
-	public Map<Integer, Double> findForecastQuantityGroupByPartNumber(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer companyId) {
-		List<Object[]> data = repos.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList,
-				companyId);
+	public Map<Integer, Double> findForecastQuantityGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		List<Object[]> data = repos.findForecastQuantityGroupByPartNumber(username, warehouseList, assignedProjectList, companyId);
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
 
-	public Map<Integer, Double> findPendingQuantityByCustomerOwnerGroupByPartNumber(String username,
-			List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
-		List<Object[]> data = repos.findPendingQuantityByCustomerOwnerGroupByPartNumber(username, warehouseList,
-				assignedProjectList, customerId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Map<Integer, Double> findPendingQuantityByCustomerOwnerGroupByPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId) {
+		List<Object[]> data = repos.findPendingQuantityByCustomerOwnerGroupByPartNumber(username, warehouseList, assignedProjectList, customerId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
 
-	public Map<Integer, Double> findPendingQuantityByCustomerOwnerGroupByPartNumber(Integer customerId,
-			List<Integer> projectIdList) {
-		List<Object[]> data = repos.findPendingQuantityByCustomerOwnerGroupByPartNumber(customerId, projectIdList,
-				DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Map<Integer, Double> findPendingQuantityByCustomerOwnerGroupByPartNumber(Integer customerId, List<Integer> projectIdList) {
+		List<Object[]> data = repos.findPendingQuantityByCustomerOwnerGroupByPartNumber(customerId, projectIdList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
 
-	public Map<Integer, Double> findPendingQuantityBySupplierOwnerGroupByPartNumber(Integer supplierId,
-			List<Integer> projectIdList) {
-		List<Object[]> data = repos.findPendingQuantityBySupplierOwnerGroupByPartNumber(supplierId, projectIdList,
-				DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Map<Integer, Double> findPendingQuantityBySupplierOwnerGroupByPartNumber(Integer supplierId, List<Integer> projectIdList) {
+		List<Object[]> data = repos.findPendingQuantityBySupplierOwnerGroupByPartNumber(supplierId, projectIdList, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		data.forEach(i -> result.put((Integer) i[0], (Double) i[1]));
 		return result;
 	}
 
-	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer companyId, Integer partNumberId, Integer projectId) {
-		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList,
-				assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
-		return d != null ? d : 0.0;
-	}
-
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer customerId, Integer partNumberId, Integer projectId) {
-		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList,
-				assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
-		return d != null ? d : 0.0;
-	}
-
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(Integer customerId, Integer partNumberId,
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
 			Integer projectId) {
-		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(customerId, partNumberId, projectId,
-				DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, companyId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
-	public Double findPendingQuantityBySupplierOwnerAnPartNumberAndProject(Integer supplierId, Integer partNumberId,
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
 			Integer projectId) {
-		Double d = repos.findPendingQuantityBySupplierOwnerAnPartNumberAndProject(supplierId, partNumberId, projectId,
-				DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(username, warehouseList, assignedProjectList, customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
-	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username,
-			List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndProject(Integer customerId, Integer partNumberId, Integer projectId) {
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndProject(customerId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		return d != null ? d : 0.0;
+	}
+
+	public Double findPendingQuantityBySupplierOwnerAnPartNumberAndProject(Integer supplierId, Integer partNumberId, Integer projectId) {
+		Double d = repos.findPendingQuantityBySupplierOwnerAnPartNumberAndProject(supplierId, partNumberId, projectId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		return d != null ? d : 0.0;
+	}
+
+	public Double findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
 			Integer warehouseId) {
-		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(username, warehouseList,
-				assignedProjectList, companyId, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCompanyOwnerAnPartNumberAndWarehouse(username, warehouseList, assignedProjectList, companyId, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username,
-			List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
 			Integer warehouseId) {
-		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(username, warehouseList,
-				assignedProjectList, customerId, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(username, warehouseList, assignedProjectList, customerId, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
-	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(Integer customerId,
-			List<Integer> projectIdList, Integer partNumberId, Integer warehouseId) {
-		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(customerId, projectIdList,
-				partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Double findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(Integer customerId, List<Integer> projectIdList, Integer partNumberId, Integer warehouseId) {
+		Double d = repos.findPendingQuantityByCustomerOwnerAnPartNumberAndWarehouse(customerId, projectIdList, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
-	public Double findPendingQuantityBySupplierOwnerAnPartNumberAndWarehouse(Integer supplierId,
-			List<Integer> projectIdList, Integer partNumberId, Integer warehouseId) {
-		Double d = repos.findPendingQuantityBySupplierOwnerAnPartNumberAndWarehouse(supplierId, projectIdList,
-				partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
+	public Double findPendingQuantityBySupplierOwnerAnPartNumberAndWarehouse(Integer supplierId, List<Integer> projectIdList, Integer partNumberId, Integer warehouseId) {
+		Double d = repos.findPendingQuantityBySupplierOwnerAnPartNumberAndWarehouse(supplierId, projectIdList, partNumberId, warehouseId, DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2));
 		return d != null ? d : 0.0;
 	}
 
@@ -709,26 +694,21 @@ public class DeliveryRequestDetailService
 //	}
 
 	public List<DeliveryRequestDetail> findReturnedDetailListGroupByPartNumber(Integer outboundDeliveryRequestId) {
-		return repos.findReturnedDetailListGroupByPartNumber(outboundDeliveryRequestId,
-				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return repos.findReturnedDetailListGroupByPartNumber(outboundDeliveryRequestId, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
 		return findReturnedDetailListGroupByPartNumber(outboundDeliveryRequestId).stream()
-				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber,
-						Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
+				.collect(Collectors.groupingBy(DeliveryRequestDetail::getPartNumber, Collectors.summingDouble(DeliveryRequestDetail::getQuantity)));
 	}
 
-	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(
-			Integer partNumberId, DeliveryRequestType deliveryRequestType, Integer companyId,
-			List<DeliveryRequestStatus> deliveryRequestStatus) {
-		return repos.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId,
-				deliveryRequestType, companyId, deliveryRequestStatus);
+	public List<DeliveryRequestDetail> findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(Integer partNumberId, DeliveryRequestType deliveryRequestType,
+			Integer companyId, List<DeliveryRequestStatus> deliveryRequestStatus) {
+		return repos.findByPartNumberAndTypeAndProjectTypeStockAndProjectCompanyAndDeliveryRequestStatus(partNumberId, deliveryRequestType, companyId, deliveryRequestStatus);
 	}
 
 	// size <= 1 if inbound
-	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId,
-			Integer partNumberId) {
+	public List<DeliveryRequestDetail> findByDeliveryRequestAndPartNumber(Integer deliveryRequestId, Integer partNumberId) {
 		return repos.findByDeliveryRequestAndPartNumber(deliveryRequestId, partNumberId);
 	}
 
@@ -736,11 +716,9 @@ public class DeliveryRequestDetailService
 		repos.clearPurchaseCostByDeliveryRequest(deliveryRequestId);
 	}
 
-	public List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username,
-			List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, DeliveryRequestType type,
-			Integer partNumberId) {
-		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList,
-				companyId, type, partNumberId);
+	public List<DeliveryRequestDetail> findByCompanyOwnerAndPartNumberAndNotDelivered(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId,
+			DeliveryRequestType type, Integer partNumberId) {
+		return repos.findByCompanyOwnerAndPartNumberAndNotDelivered(username, warehouseList, assignedProjectList, companyId, type, partNumberId);
 	}
 
 	public List<DeliveryRequestDetail> findTransferredAndPendingDetailList(Integer outboundDeliveryRequestId) {
@@ -752,78 +730,61 @@ public class DeliveryRequestDetailService
 	}
 
 	// PN Reporting quantities
-	public Double findPendingStockByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+	public Double findPendingStockByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
 			DeliveryRequestType deliveryRequestType) {
-		return ObjectUtils.firstNonNull(repos.findPendingStockByCompanyOwnerAndPartNumber(username, warehouseList,
-				assignedProjectList, companyId, partNumberId, deliveryRequestType,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
-				0.0);
+		return ObjectUtils.firstNonNull(repos.findPendingStockByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
 	}
 
-	public Double findPendingByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
+	public Double findPendingByCompanyOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId, Integer partNumberId,
 			DeliveryRequestType deliveryRequestType) {
-		return ObjectUtils.firstNonNull(repos.findPendingByCompanyOwnerAndPartNumber(username, warehouseList,
-				assignedProjectList, companyId, partNumberId, deliveryRequestType,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
-				0.0);
+		return ObjectUtils.firstNonNull(repos.findPendingByCompanyOwnerAndPartNumber(username, warehouseList, assignedProjectList, companyId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
 	}
 
-	public Double findPendingStockByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+	public Double findPendingStockByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
 			DeliveryRequestType deliveryRequestType) {
-		return ObjectUtils.firstNonNull(repos.findPendingStockByCustomerOwnerAndPartNumber(username, warehouseList,
-				assignedProjectList, customerId, partNumberId, deliveryRequestType,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
-				0.0);
+		return ObjectUtils.firstNonNull(repos.findPendingStockByCustomerOwnerAndPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
 	}
 
-	public Double findPendingByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList,
-			List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
+	public Double findPendingByCustomerOwnerAndPartNumber(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer customerId, Integer partNumberId,
 			DeliveryRequestType deliveryRequestType) {
-		return ObjectUtils.firstNonNull(repos.findPendingByCustomerOwnerAndPartNumber(username, warehouseList,
-				assignedProjectList, customerId, partNumberId, deliveryRequestType,
-				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED,
-						DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)),
-				0.0);
+		return ObjectUtils.firstNonNull(repos.findPendingByCustomerOwnerAndPartNumber(username, warehouseList, assignedProjectList, customerId, partNumberId, deliveryRequestType,
+				Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)), 0.0);
+	}
+
+	public Double findTotalExpirableItems(Integer deliveryRequestId) {
+		return ObjectUtils.firstNonNull(repos.findTotalExpirableItems(deliveryRequestId), 0.0);
 	}
 
 	// mobile
-	
-	public List<ma.azdad.mobile.model.HardwareStatusData> initStockRowList(
-			ma.azdad.mobile.model.DeliveryRequest deliveryRequest, String countOk) {
+
+	public List<ma.azdad.mobile.model.HardwareStatusData> initStockRowList(ma.azdad.mobile.model.DeliveryRequest deliveryRequest, String countOk) {
 		System.out.println("details size : " + deliveryRequest.getDetailList().get(0).getTmpQuantity());
 		for (ma.azdad.mobile.model.DeliveryRequestDetail detail : deliveryRequest.getDetailList())
 			if (detail.getTmpQuantity() > 0.0) {
 				// detail.setRemainingQuantity(detail.getRemainingQuantity() -
 				// detail.getTmpQuantity());
 				if (countOk.equals("Yes"))
-					deliveryRequest.getStockRowList()
-							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
-									detail.getPartNumberName(), detail.getRemainingQuantity(), detail.getPackingName(),
-									detail.getPackingQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
+					deliveryRequest.getStockRowList().add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(), detail.getPartNumberName(), detail.getRemainingQuantity(),
+							detail.getPackingName(), detail.getPackingQuantity(), detail.getPackingId(), detail.getId(), detail.getPartNumberImage()));
 				else
-					deliveryRequest.getStockRowList()
-							.add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(),
-									detail.getPartNumberName(), detail.getTmpQuantity(), detail.getPackingName(),
-									detail.getTmpQuantity(),detail.getPackingId(),detail.getId(),detail.getPartNumberImage()));
+					deliveryRequest.getStockRowList().add(new ma.azdad.mobile.model.HardwareStatusData(detail.getId(), detail.getPartNumberName(), detail.getTmpQuantity(), detail.getPackingName(),
+							detail.getTmpQuantity(), detail.getPackingId(), detail.getId(), detail.getPartNumberImage()));
 
 			}
 		System.out.println("stocks size : " + deliveryRequest.getStockRowList().get(0).getQuantity());
 		return deliveryRequest.getStockRowList();
 	}
-	
-	public List<ma.azdad.mobile.model.DnMaterials> initStockRowList(ma.azdad.mobile.model.DeliveryRequest deliveryRequest){
+
+	public List<ma.azdad.mobile.model.DnMaterials> initStockRowList(ma.azdad.mobile.model.DeliveryRequest deliveryRequest) {
 		DeliveryRequest dn = deliveryRequestService.findOne(deliveryRequest.getId());
 		List<StockRow> rows = stockRowService.generateStockRowFromOutboundDeliveryRequest(dn);
 		List<ma.azdad.mobile.model.DnMaterials> list = new ArrayList<>();
 		for (StockRow row : rows) {
-			list.add(new DnMaterials(0, row.getPartNumber().getName(), row.getStatus().getValue(), row.getLocation().getName()
-					, row.getOriginNumber(), -row.getQuantity(), row.getInboundDeliveryRequest().getReference(),row.getPartNumber().getImage()));
+			list.add(new DnMaterials(0, row.getPartNumber().getName(), row.getStatus().getValue(), row.getLocation().getName(), row.getOriginNumber(), -row.getQuantity(),
+					row.getInboundDeliveryRequest().getReference(), row.getPartNumber().getImage()));
 		}
 		return list;
 	}

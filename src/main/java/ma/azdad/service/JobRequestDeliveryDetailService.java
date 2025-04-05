@@ -55,7 +55,7 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "",jrdd.getPartNumberId(), jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
 							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
@@ -73,6 +73,17 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			result.putIfAbsent(key, 0.0);
 			Double mappedQuantity = Arrays.asList(JobRequestStatus.COMPLETED, JobRequestStatus.VALIDATED).contains(jrdd.getJobRequestStatus()) ? jrdd.getInstalledQuantity() : jrdd.getQuantity();
 			result.put(key, result.get(key) + mappedQuantity);
+		}
+		return result;
+	}
+	
+	public Map<Integer, Double> findInstalledQuantityMap(Integer deliveryRequestId) {
+		List<JobRequestDeliveryDetail> data = repos.findByDeliveryRequest(deliveryRequestId);
+		Map<Integer, Double> result = new HashMap<Integer, Double>();
+		for (JobRequestDeliveryDetail jrdd : data) {
+			Integer key = jrdd.getPartNumberId();
+			result.putIfAbsent(key, 0.0);
+			result.put(key, result.get(key) +  jrdd.getInstalledQuantity());
 		}
 		return result;
 	}
@@ -116,7 +127,7 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "",jrdd.getPartNumberId(), jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
 							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;
@@ -137,7 +148,7 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 			else {
 				List<SerialNumber> serialNumberList = serialNumberRepos.findByJobRequestAndDeliveryRequestAndPartNumber(jrdd.getJobRequestId(), jrdd.getDeliveryRequestId(), jrdd.getPartNumberId());
 				for (int i = 0; i < jrdd.getInstalledQuantity(); i++)
-					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "", jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
+					result.add(new JobRequestDeliveryDetail(1.0, i < serialNumberList.size() ? serialNumberList.get(i).getName() : "",jrdd.getPartNumberId(), jrdd.getPartNumberName(), jrdd.getPartNumberDescription(),
 							jrdd.getDeliveryRequestReference(), jrdd.getJobRequestId(), jrdd.getJobRequestReference(), jrdd.getSiteName(), jrdd.getTeamName()));
 			}
 		return result;

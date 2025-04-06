@@ -2,6 +2,7 @@ package ma.azdad.mobile.model;
 
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.StockRowStatus;
 import ma.azdad.utils.Public;
 
 public class DeliveryRequestDetail {
@@ -16,6 +17,21 @@ public class DeliveryRequestDetail {
 	private String partNumberName;
 	private String partNumberImage;
 	private Double remainingQuantity;
+	
+	//Extra Informations
+	private String location;
+	private String status;
+	private String partNumberDescription;
+	private Boolean unit;
+	private String unitType;
+	private String brandName;
+	private String industryName;
+	private String categoryName;
+	private String typeName;
+	private Double grossWeight;
+	private Double volume;
+
+	
 
 	// TMP
 	private Double tmpQuantity;
@@ -31,7 +47,6 @@ public class DeliveryRequestDetail {
 		this.id = id;
 		this.quantity = quantity;
 		this.isSerialNumberRequired = isSerialNumberRequired;
-		
 		this.packingName = packingName;
 		this.packingQuantity = packingQuantity;
 		this.partNumberName = partNumberName;
@@ -40,10 +55,14 @@ public class DeliveryRequestDetail {
 	
 	// c1
 	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,Boolean expirable,
-			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity) {
+			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity
+			,String location,StockRowStatus status,String partNumberDescription, Boolean unit, String unitType, String brandName,
+			String industryName, String categoryName, String typeName, Double grossWeight, Double volume) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
+		this.location = location;
+		this.status = status.getValue();
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.expirable = expirable;
 		this.packingName = packingName;
@@ -53,7 +72,20 @@ public class DeliveryRequestDetail {
 		this.partNumberImage = Public.getPublicUrl(partNumberImage);
 		this.remainingQuantity = remainingQuantity;
 		this.tmpQuantity = remainingQuantity;
+		this.partNumberDescription = partNumberDescription;
+		this.unit = unit;
+		this.unitType = unitType;
+		this.brandName = brandName;
+		this.industryName = industryName;
+		this.categoryName = categoryName;
+		this.typeName = typeName;
+		this.grossWeight = grossWeight;
+		this.volume = volume;
 	}
+	
+	
+
+
 
 	public Integer getId() {
 		return id;
@@ -154,6 +186,25 @@ public class DeliveryRequestDetail {
 	
 	
 
+	public String getLocation() {
+		return location;
+	}
+
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 
 	public Boolean getExpirable() {
 		return expirable;
@@ -162,6 +213,96 @@ public class DeliveryRequestDetail {
 
 	public void setExpirable(Boolean expirable) {
 		this.expirable = expirable;
+	}
+	
+	
+	public String getPartNumberDescription() {
+		return partNumberDescription;
+	}
+
+
+	public void setPartNumberDescription(String partNumberDescription) {
+		this.partNumberDescription = partNumberDescription;
+	}
+
+
+	public Boolean getUnit() {
+		return unit;
+	}
+
+
+	public void setUnit(Boolean unit) {
+		this.unit = unit;
+	}
+
+
+	public String getUnitType() {
+		return unitType;
+	}
+
+
+	public void setUnitType(String unitType) {
+		this.unitType = unitType;
+	}
+
+
+	public String getBrandName() {
+		return brandName;
+	}
+
+
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
+	}
+
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+
+	public Double getVolume() {
+		return volume;
+	}
+
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
 	}
 
 

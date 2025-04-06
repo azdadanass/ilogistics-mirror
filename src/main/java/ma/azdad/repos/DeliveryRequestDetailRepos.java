@@ -74,7 +74,10 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	public List<Integer> findIdListByPartNumberAndOutboundDeliveryRequestTransfer(Integer partNumberId, Integer outboundDeliveryRequestDetailId);
 
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired,a.partNumber.expirable," //
-			+ "a.packing.name,a.packing.id,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity) ";
+			+ "a.packing.name,a.packing.id,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity,"
+			+ "(select sr.location.name from StockRow sr where sr.deliveryRequestDetail.id = a.id),(select sr.status from StockRow sr where sr.deliveryRequestDetail.id = a.id),"
+			+ "a.partNumber.description,a.partNumber.unit,a.partNumber.unitType,a.partNumber.brandName,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,"
+			+ "(select sr.packing.grossWeight from StockRow sr where sr.deliveryRequestDetail.id = a.id),(select sr.packing.volume from StockRow sr where sr.deliveryRequestDetail.id = a.id)) ";
 
 	String cm2 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
 			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image) ";

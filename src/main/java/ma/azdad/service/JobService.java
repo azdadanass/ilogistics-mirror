@@ -102,8 +102,13 @@ public class JobService {
 		deliveryRequestService.calculateHavingRunningStockScript();
 	}
 	
-	
 	@Scheduled(cron = "00 30 05 * * *")
+	public void calculateMissingExpiryScript() {
+		deliveryRequestService.calculateMissingExpiryScript();
+	}
+	
+	
+	@Scheduled(cron = "00 40 05 * * *")
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}

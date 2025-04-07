@@ -57,6 +57,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	String c13 = " select new StockRow(sum(a.quantity),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequest.id,a.deliveryRequest.type,a.deliveryRequest.project.id,a.deliveryRequest.project.name,destinationProject.customer.id) ";
 	String c15 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,sum(a.deliveryRequestDetail.unitCost*a.quantity),a.deliveryRequest.deliverToCompanyType,(select b.name from Company b where a.deliveryRequest.deliverToCompany.id = b.id),(select b.name from Customer b where a.deliveryRequest.deliverToCustomer.id = b.id),(select b.name from Supplier b where a.deliveryRequest.deliverToSupplier.id = b.id),a.deliveryRequest.deliverToOther) ";
 	String c16 = " select new StockRow(sum(a.quantity),a.status,a.deliveryRequest,a.inboundDeliveryRequest) ";
+	//mobile
+	String cm1 = " select new ma.azdad.mobile.model.StockRow(a.id,a.partNumber.name,a.partNumber.image,a.location,a.status,a.state,a.partNumber.description,sum(a.quantity),"
+			+ "a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end),"
+			+ "a.deliveryRequest.reference) ";
+	
 
 	String drd_c5 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.packing) ";
 	String drd_c6 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.deliveryRequestDetail.unitPrice,a.deliveryRequestDetail.priceCurrency.id,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";
@@ -106,14 +111,25 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query(c3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
 	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query(cm1 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+	public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId);
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Query(c4 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.partNumber.id")
 	public List<StockRow> findByInboundDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query(cm1 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.partNumber.id")
+	public List<ma.azdad.mobile.model.StockRow> findByInboundDeliveryRequestMobile(Integer deliveryRequestId);
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Query(c5 + "from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.quantity < 0 group by a.partNumber.id,a.deliveryRequest.id")
 	public List<StockRow> findAttachedOutboundDeliveryRequestList(Integer deliveryRequestId);
+	
+	@Query(cm1 + "from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.quantity < 0 group by a.partNumber.id,a.deliveryRequest.id")
+	public List<ma.azdad.mobile.model.StockRow> findAttachedOutboundDeliveryRequestListMobile(Integer deliveryRequestId);
 
 	// UPDATE UNIT COST
 //	@Modifying

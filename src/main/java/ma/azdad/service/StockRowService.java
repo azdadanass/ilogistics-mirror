@@ -24,6 +24,7 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.Location;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
@@ -49,6 +50,12 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	@Autowired
 	ProjectRepos projectRepos;
+	
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	LocationService locationService;
 
 	@Autowired
 	CustomerRepos customerRepos;
@@ -169,6 +176,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
 		return repos.findByResource(username, warehouseList, assignedProjectList);
 	}
+	
+	
 
 	public void updateLocation(StockRow groupStockRow) {
 		System.out.println("groupStockRow.getNewLocation() " + groupStockRow.getNewLocation());
@@ -180,6 +189,36 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			repos.updateLocation(groupStockRow.getNewLocation(), groupStockRow.getInboundDeliveryRequest().getId(), groupStockRow.getPartNumber().getId(), groupStockRow.getLocation().getId(),
 					groupStockRow.getStatus());
 	}
+	
+	//mobile
+		public List<ma.azdad.mobile.model.StockRow> findByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
+			return repos.findByInboundDeliveryRequestMobile(deliveryRequestId);
+		}
+
+		public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
+			return repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
+		}
+
+		public List<ma.azdad.mobile.model.StockRow> findAttachedOutboundDeliveryRequestListMobile(Integer deliveryRequestId) {
+			return repos.findAttachedOutboundDeliveryRequestListMobile(deliveryRequestId);
+		}
+		
+		public List<ma.azdad.mobile.model.Location> findLocationsByDn(Integer id){
+			DeliveryRequest dn = deliveryRequestService.findOne(id);
+			List<Location> locations = dn.getWarehouse().getLocationList();
+			List<ma.azdad.mobile.model.Location> mbLocations = new ArrayList<>();
+			for (Location location : locations) {
+				mbLocations.add(new ma.azdad.mobile.model.Location(location.getId(),location.getName()));
+			}
+			return mbLocations;
+		}
+		
+		public void changeStockRowLocation(Integer srId,Integer locationId) {
+			Location location = locationService.findOne(locationId);
+			StockRow sr = findOne(srId);
+			repos.updateLocation(location, sr.getInboundDeliveryRequest().getId(), sr.getPartNumber().getId(), sr.getLocation().getId(),
+					sr.getStatus());
+		}
 
 	// REPORTING
 	public List<Integer> findCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {

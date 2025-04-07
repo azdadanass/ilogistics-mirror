@@ -62,7 +62,7 @@ public class DeliveryRequestDetail {
 		this.id = id;
 		this.quantity = quantity;
 		this.location = location;
-		this.status = status.getValue();
+		this.status = status!=null ?status.getValue():"";
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.expirable = expirable;
 		this.packingName = packingName;

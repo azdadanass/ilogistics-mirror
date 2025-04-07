@@ -1959,7 +1959,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Collections.sort(list, new Comparator<ma.azdad.mobile.model.DeliveryRequest>() {
 			@Override
 			public int compare(ma.azdad.mobile.model.DeliveryRequest o1, ma.azdad.mobile.model.DeliveryRequest o2) {
-				return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
+				return o1.getNeededDeliveryDate().compareTo(o2.getNeededDeliveryDate());
 			}
 		});
 		return list;

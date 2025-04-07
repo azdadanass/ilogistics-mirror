@@ -31,8 +31,8 @@ public class StockRow {
 		this.location = location != null
 			    ? new Location(location.getId(), location.getName())
 			    : null;
-		this.status = status.getValue();
-		this.state = state.getValue();
+		this.status = status!=null ?status.getValue():"";
+		this.state = state!=null ?state.getValue():"";
 		this.partNumberDescription = partNumberDescription;
 		this.quantity = quantity;
 		this.projectName = projectName;

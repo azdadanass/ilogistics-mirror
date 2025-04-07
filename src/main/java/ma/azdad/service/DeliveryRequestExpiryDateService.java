@@ -45,22 +45,24 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 
 		return result;
 	}
-	
-	public Long countByDeliveryRequestAndDate(Integer deliveryRequestId,Date expiryDate) {
-		
-		return repos.countByDeliveryRequestAndDate(deliveryRequestId,expiryDate);
-			}
+
+	public Long countByDeliveryRequestAndDate(Integer deliveryRequestId, Date expiryDate) {
+
+		return repos.countByDeliveryRequestAndDate(deliveryRequestId, expiryDate);
+	}
 
 	public List<Date> findRemainingExpiryDateList(Integer partNumberId, Integer inboundDeliveryRequestId, StockRowStatus stockRowStatus, Integer locationId) {
 		return repos.findRemainingExpiryDateList(partNumberId, inboundDeliveryRequestId, DeliveryRequestType.OUTBOUND, stockRowStatus, locationId);
 	}
 
 	public List<Date> findRemainingExpiryDateList(StockRow outboundStockRow) {
-		return findRemainingExpiryDateList(outboundStockRow.getPartNumber().getId(), outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
+		return findRemainingExpiryDateList(outboundStockRow.getPartNumber().getId(), outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getStatus(),
+				outboundStockRow.getLocation().getId());
 	}
 
 	public Double findRemainingQuantity(DeliveryRequestExpiryDate dred) {
-		return repos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND, dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
+		return repos.findRemainingQuantity(dred.getStockRow().getPartNumber().getId(), dred.getStockRow().getInboundDeliveryRequest().getId(), DeliveryRequestType.OUTBOUND,
+				dred.getStockRow().getStatus(), dred.getStockRow().getLocation().getId(), dred.getExpiryDate());
 	}
 
 	public void generateForOutboundAssociatedWithInbound(Integer inboundDeliveryRequestId) {
@@ -83,22 +85,24 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			if (!outboundExpiryList.isEmpty())
 				continue;
 			for (StockRow stockRow : deliveryRequestRepos.findById(outboundDeliveryRequestId).get().getStockRowList()) {
-				List<DeliveryRequestExpiryDate> list = repos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(), stockRow.getStatus(), stockRow.getLocation().getId());
+				List<Date> list = repos.findExpiryDateByDeliveryRequestAndPartNumberAndStatusAndLocation(inboundDeliveryRequestId, stockRow.getPartNumber().getId(), stockRow.getStatus(),
+						stockRow.getLocation().getId());
 				if (list.size() != 1)
 					continue;
 				DeliveryRequestExpiryDate dred = new DeliveryRequestExpiryDate();
 				dred.setStockRow(stockRow);
 				dred.setQuantity(-stockRow.getQuantity());
-				dred.setExpiryDate(list.get(0).getExpiryDate());
+				dred.setExpiryDate(list.get(0));
 				save(dred);
 			}
 		}
 	}
 
 	public Date findOneExpiryDate(StockRow outboundStockRow) {
-		List<DeliveryRequestExpiryDate> list = repos.findByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getPartNumber().getId(), outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
+		List<Date> list = repos.findExpiryDateByDeliveryRequestAndPartNumberAndStatusAndLocation(outboundStockRow.getInboundDeliveryRequest().getId(), outboundStockRow.getPartNumber().getId(),
+				outboundStockRow.getStatus(), outboundStockRow.getLocation().getId());
 		if (list.size() == 1)
-			return list.get(0).getExpiryDate();
+			return list.get(0);
 		else
 			return null;
 	}
@@ -106,8 +110,8 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 	public List<DeliveryRequestExpiryDate> findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(Integer partNumberId, List<Integer> deliveryRequestList) {
 		return repos.findByPartNumberAndDeliveryRequestListGroupByExpiryDateAndDeliveryRequestAndInboundDeliveryRequest(partNumberId, deliveryRequestList);
 	}
-	
-	public Map<Integer,Double> findQuantityMap(Integer deliveryRequestId) {
+
+	public Map<Integer, Double> findQuantityMap(Integer deliveryRequestId) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findQuantityMap(deliveryRequestId);
 		for (Object[] row : data)

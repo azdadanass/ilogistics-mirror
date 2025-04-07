@@ -170,6 +170,13 @@ public class ScriptView {
 			return;
 		deliveryRequestService.calculateHavingRunningStockScript();
 	}
+	
+
+	public void calculateMissingExpiryScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculateMissingExpiryScript();
+	}
 
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		if (!canExecute)

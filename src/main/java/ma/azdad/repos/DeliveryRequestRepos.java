@@ -450,42 +450,53 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	// mobile
 
-	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(a.id,a.reference,a.type,a.neededDeliveryDate,"//
-			+ "a.inboundType,a.status,a.isForReturn,a.isForTransfer,a.requester.fullName,a.project.id,a.project.name,"//
-			+ "a.destinationProject.id,(select b.name from Project b where b.id = a.destinationProject.id),"//
-			+ "a.warehouse.id,a.warehouse.name,"//
-			+ " a.destination.id,(select b.name from Site b where b.id = a.destination.id),"//
-			+ " a.origin.id,(select b.name from Site b where b.id = a.origin.id),a.requester.photo,a.deliveryDate,a.transportationNeeded,a.isSnRequired)";
+	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(" +
+		    "a.id, a.reference, a.type, a.neededDeliveryDate, a.date4, " +
+		    "a.inboundType, a.status, a.isForReturn, a.isForTransfer, a.requester.fullName, " +
+		    "a.project.id, a.project.name, " +
+		    "a.destinationProject.id, (select b.name from Project b where b.id = a.destinationProject.id), " +
+		    "a.warehouse.id, a.warehouse.name, " +
+		    "a.destination.id, (select b.name from Site b where b.id = a.destination.id), " +
+		    "a.origin.id, (select b.name from Site b where b.id = a.origin.id), " +
+		    "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " +
+		    "company.name, supplier.name, customer.name, a.ownerType) " + // NOTE: space at the end
+		    "from DeliveryRequest a " +
+		    "left join a.company company " +
+		    "left join a.supplier supplier " +
+		    "left join a.customer customer ";
 
-	@Query(cm1 + " from DeliveryRequest a where a.id = ?1")
+
+
+
+	@Query(cm1 + "  where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);
 
-	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
+	@Query(cm1 + " where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
 
 	@Query("select count(*) from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public Long countByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
 
-	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
+	@Query(cm1 + " where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightNewByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
 
-	@Query(cm1 + " from DeliveryRequest a where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
+	@Query(cm1 + "  where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.date4 desc")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
 
-	@Query(cm1 + "from DeliveryRequest a where a.missingSerialNumber = true and a.warehouse.id in (?1)")
+	@Query(cm1 + " where a.missingSerialNumber = true and a.warehouse.id in (?1)")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList);
 
 	@Query("select count(*) from DeliveryRequest a where a.missingSerialNumber = true and a.warehouse.id in (?1)")
 	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList);
 
-	@Query(cm1 + "from DeliveryRequest a where a.missingExpiry = true and a.warehouse.id in (?1)")
+	@Query(cm1 + " where a.missingExpiry = true and a.warehouse.id in (?1)")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingExpiryMobile(List<Integer> warehouseList);
 
 	@Query("select count(*) from DeliveryRequest a where a.missingExpiry = true and a.warehouse.id in (?1)")
 	public Long countByMissingExpiryMobile(List<Integer> warehouseList);
 
 	@Query(cm1
-			+ "from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
+			+ " where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findByMissingOutboundDeliveryNoteFileMobile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
 	@Query("select count(*) from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")

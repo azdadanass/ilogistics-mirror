@@ -73,11 +73,30 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 	@Query("select a.id from DeliveryRequestDetail a where a.partNumber.id =?1 and a.deliveryRequest.outboundDeliveryRequestTransfer.id = (select b.deliveryRequest.id from DeliveryRequestDetail b where b.id = ?2)")
 	public List<Integer> findIdListByPartNumberAndOutboundDeliveryRequestTransfer(Integer partNumberId, Integer outboundDeliveryRequestDetailId);
 
-	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired,a.partNumber.expirable," //
-			+ "a.packing.name,a.packing.id,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image,a.remainingQuantity,"
-			+ "(select sr.location.name from StockRow sr where sr.deliveryRequestDetail.id = a.id),(select sr.status from StockRow sr where sr.deliveryRequestDetail.id = a.id),"
-			+ "a.partNumber.description,a.partNumber.unit,a.partNumber.unitType,a.partNumber.brandName,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,"
-			+ "(select sr.packing.grossWeight from StockRow sr where sr.deliveryRequestDetail.id = a.id),(select sr.packing.volume from StockRow sr where sr.deliveryRequestDetail.id = a.id)) ";
+	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(" +
+		    "a.id," +
+		    "a.quantity," +
+		    "a.deliveryRequest.isSnRequired," +
+		    "a.partNumber.expirable," +
+		    "a.packing.name," +
+		    "a.packing.id," +
+		    "a.quantity / a.packing.quantity," +
+		    "a.partNumber.name," +
+		    "a.partNumber.image," +
+		    "a.remainingQuantity," +
+		    "(select MIN(sr.location.name) from StockRow sr where sr.deliveryRequest.id = a.inboundDeliveryRequest.id)," +
+		    "(select MIN(sr.status) from StockRow sr where sr.deliveryRequestDetail.id = a.id)," + 
+		    "a.partNumber.description," +
+		    "a.partNumber.unit," +
+		    "a.partNumber.unitType," +
+		    "a.partNumber.brandName," +
+		    "a.partNumber.industryName," +
+		    "a.partNumber.categoryName," +
+		    "a.partNumber.typeName," +
+		    "(select MIN(sr.packing.grossWeight) from StockRow sr where sr.deliveryRequestDetail.id = a.id)," + 
+		    "(select MIN(sr.packing.volume) from StockRow sr where sr.deliveryRequestDetail.id = a.id)" + 
+		") ";
+
 
 	String cm2 = "select new ma.azdad.mobile.model.DeliveryRequestDetail(a.id,a.quantity,a.deliveryRequest.isSnRequired," //
 			+ "a.packing.name,a.quantity / a.packing.quantity,a.partNumber.name,a.partNumber.image) ";

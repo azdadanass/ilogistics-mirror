@@ -51,6 +51,11 @@ public class DeliveryRequest {
 	private Boolean toUserInternal;
 	private String toCompany;
 	private String toCompanyLogo;
+	//
+	private String company;
+	private String supplier;
+	private String customer;
+	private CompanyType ownerType;
 	
 	private List<ma.azdad.mobile.model.PackingDetail> packingDetailList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
@@ -79,16 +84,18 @@ public class DeliveryRequest {
 	}
 
 	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate,
+			Date date4,
 			InboundType inboundType, DeliveryRequestStatus status, Boolean isForReturn, Boolean isForTransfer,
 			String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
 			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
 			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
-			Boolean transportationNeeded,Boolean isSnRequired) {
+			Boolean transportationNeeded,Boolean isSnRequired,String company,String supplier,String customer,CompanyType ownerType) {
 		super();
 		this.id = id;
 		this.reference = reference;
 		this.type = type;
 		this.neededDeliveryDate = neededDeliveryDate;
+		this.date4 = date4;
 		this.inboundType = inboundType;
 		this.status = status;
 		this.isForReturn = isForReturn;
@@ -108,9 +115,57 @@ public class DeliveryRequest {
 		this.deliveryDate = deliveryDate;
 		this.transportationNeeded = transportationNeeded;
 		this.isSnRequired = isSnRequired;
+		this.reference = reference;
+		this.ownerType = ownerType;
+		this.company = company;
+		this.supplier = supplier;
+		this.customer = customer;
+		this.ownerName = getOwnerName2();
 		
 
 	}
+	
+	@Transient
+	public String getOwnerName2() {
+		if (ownerType == null)
+			return null;
+		switch (ownerType) {
+		case COMPANY:
+			return getCompanyName();
+		case CUSTOMER:
+			return getCustomerName();
+		case SUPPLIER:
+			return getSupplierName();
+		default:
+			return null;
+		}
+	}
+	
+	@Transient
+	public String getCustomerName() {
+		if (customer == null)
+			return null;
+		return customer;
+	}
+
+
+	@Transient
+	public String getSupplierName() {
+		if (supplier == null)
+			return null;
+		return supplier;
+	}
+
+	
+
+	@Transient
+	public String getCompanyName() {
+		if (company == null)
+			return null;
+		return company;
+	}
+
+	
 
 	public Integer getId() {
 		return id;
@@ -481,6 +536,39 @@ public class DeliveryRequest {
 		this.showExpiryData = showExpiryData;
 	}
 
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(String supplier) {
+		this.supplier = supplier;
+	}
+
+	public String getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(String customer) {
+		this.customer = customer;
+	}
+
+	public CompanyType getOwnerType() {
+		return ownerType;
+	}
+
+	public void setOwnerType(CompanyType ownerType) {
+		this.ownerType = ownerType;
+	}
+
+	
 	
 	
 	

@@ -1062,7 +1062,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		infoTable.addCell(createMixedCell("Tel: ", safeValue(deliveryRequest.getToUserPhone()), labelFont, phoneFont));
 		infoTable.addCell(createMixedCell("CIN: ", safeValue(deliveryRequest.getToUserCin()), labelFont, cinFont));
 		} else {
+		infoTable.addCell(createMixedCell("Company: ", deliveryRequest.getUser4().getCompanyName(), labelFont, companyFont));
 		infoTable.addCell(createMixedCell("WR Manager: ", deliveryRequest.getUser4().getFullName(), labelFont, companyFont));
+		infoTable.addCell(createMixedCell("Email: ", safeValue(deliveryRequest.getUser4().getEmail()), labelFont, emailFont));
+		infoTable.addCell(createMixedCell("Tel: ", safeValue(deliveryRequest.getUser4().getPhone()), labelFont, phoneFont));
+		infoTable.addCell(createMixedCell("CIN: ", safeValue(deliveryRequest.getUser4().getCin()), labelFont, cinFont));
 
 		}
 

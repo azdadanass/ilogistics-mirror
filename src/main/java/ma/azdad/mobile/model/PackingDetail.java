@@ -16,12 +16,8 @@ public class PackingDetail {
 	private Boolean stackable;
 	private Boolean flammable;
 
-	
-	
-	
-	
-	
-	
+	public PackingDetail() {
+    }
 	
 	public PackingDetail(Integer id, String typeImage, Double length, Double width, Double height, Integer quantity,
 			Double volume, Double grossWeight, Boolean fragile, Boolean stackable, Boolean flammable) {
@@ -38,14 +34,6 @@ public class PackingDetail {
 		this.stackable = stackable;
 		this.flammable = flammable;
 	}
-
-
-
-
-	
-
-
-
 
 
 	public Integer getId() {

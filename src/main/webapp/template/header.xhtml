@@ -602,7 +602,7 @@
 													</h:outputLink>
 												</li>
 											</f:subview>
-											<f:subview rendered="#{sessionView.isUser()}">
+											<f:subview rendered="#{sessionView.isUser() or sessionView.isWM}">
 												<li>
 													<h:outputLink value="deliveryRequestList.xhtml">
 														<span class="clearfix">

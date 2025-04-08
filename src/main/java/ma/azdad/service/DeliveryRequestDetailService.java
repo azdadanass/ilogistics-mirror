@@ -784,7 +784,7 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		List<ma.azdad.mobile.model.DnMaterials> list = new ArrayList<>();
 		for (StockRow row : rows) {
 			list.add(new DnMaterials(0, row.getPartNumber().getName(), row.getStatus().getValue(), row.getLocation().getName(), row.getOriginNumber(), -row.getQuantity(),
-					row.getInboundDeliveryRequest().getReference(), row.getPartNumber().getImage()));
+					row.getInboundDeliveryRequest().getReference(), row.getPartNumberImage()));
 		}
 		return list;
 	}

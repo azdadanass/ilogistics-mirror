@@ -378,6 +378,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 				if (DeliveryRequestState.WAITING.equals(state))
 					Collections.sort(list1);
+				else if(DeliveryRequestState.DELIVRED.equals(state))
+					Collections.sort(list1,new Comparator<DeliveryRequest>() {
+						public int compare(DeliveryRequest o1, DeliveryRequest o2) {
+							return o2.getDate4().compareTo(o1.getDate4());
+						}
+					});
 
 				break;
 			case 2:
@@ -400,7 +406,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				Collections.sort(list2, new Comparator<DeliveryRequest>() {
 					@Override
 					public int compare(DeliveryRequest o1, DeliveryRequest o2) {
-						return o2.getNeededDeliveryDate().compareTo(o1.getNeededDeliveryDate());
+						return o1.getNeededDeliveryDate().compareTo(o2.getNeededDeliveryDate());
 					}
 				});
 				break;

@@ -217,7 +217,7 @@
 							<p:column headerText="Destination Site" styleClass="hide" rendered="#{deliveryRequestView.isOutbound}">
 								<h:outputText value="#{item.destinationName}" />
 							</p:column>
-							<p:column headerText="Delivery Date" styleClass="#{deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15?'':'hide'}">
+							<p:column headerText="Delivery Date" rendered="#{(deliveryRequestView.pageIndex==1 and deliveryRequestView.state==DeliveryRequestState.DELIVRED) or  deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15}" >
 								<h:outputText value="#{item.date4}">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>

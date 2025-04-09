@@ -1919,7 +1919,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList().add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(), packingDetail.getLength(), packingDetail.getWidth(),
 					packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(),packingDetail.getFragile(),packingDetail.getStackable(),
-					packingDetail.getFlammable()));
+					packingDetail.getFlammable(),packingDetail.getMinStorageTemperature(),packingDetail.getMinStorageTemperature()));
 		}
 
 		dnm.setDetailList(deliveryRequestDetailRepos.findByDeliveryRequestMobile(id));
@@ -1954,6 +1954,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setDate8(dn.getDate8());
 		return dnm;
 	}
+	
+	
+
 
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())

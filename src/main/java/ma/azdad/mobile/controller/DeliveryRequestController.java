@@ -60,6 +60,8 @@ public class DeliveryRequestController {
 		Token token = tokenService.getBykey(key);
 		return service.findOneLightMobile(id);
 	}
+	
+	
 
 	@GetMapping("/mobile/dn/{key}")
 	public List<DeliveryRequest> findLightByWarehouseListMobile(@PathVariable String key) {

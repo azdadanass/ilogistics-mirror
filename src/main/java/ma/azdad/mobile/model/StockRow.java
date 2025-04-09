@@ -19,13 +19,15 @@ public class StockRow {
 	private Double inboundQuantity;
 	private Double outboundQuantity;
 	private String dnReference;
+	private Integer dnId;
 	
 	//cm1
 	public StockRow(Integer id, String partNumberName, String partNumberImage, ma.azdad.model.Location location, StockRowStatus status,
 			StockRowState state, String partNumberDescription, Double quantity, String projectName, String warehouseName,
-			Double inboundQuantity, Double outboundQuantity, String dnReference) {
+			Double inboundQuantity, Double outboundQuantity, String dnReference,Integer dnId) {
 		super();
 		this.id = id;
+		this.dnId = dnId;
 		this.partNumberName = partNumberName;
 		this.partNumberImage = Public.getPublicUrl(partNumberImage);
 		this.location = location != null
@@ -121,6 +123,16 @@ public class StockRow {
 	public void setDnReference(String dnReference) {
 		this.dnReference = dnReference;
 	}
+
+	public Integer getDnId() {
+		return dnId;
+	}
+
+
+	public void setDnId(Integer dnId) {
+		this.dnId = dnId;
+	}
+	
 	
 	
 	

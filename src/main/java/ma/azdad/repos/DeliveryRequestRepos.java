@@ -470,6 +470,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query(cm1 + "  where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);
+	
 
 	@Query(cm1 + " where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);

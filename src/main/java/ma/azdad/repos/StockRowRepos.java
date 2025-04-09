@@ -60,7 +60,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	//mobile
 	String cm1 = " select new ma.azdad.mobile.model.StockRow(a.id,a.partNumber.name,a.partNumber.image,a.location,a.status,a.state,a.partNumber.description,sum(a.quantity),"
 			+ "a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end),"
-			+ "a.deliveryRequest.reference) ";
+			+ "a.deliveryRequest.reference,a.deliveryRequest.id) ";
 	
 
 	String drd_c5 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.packing) ";

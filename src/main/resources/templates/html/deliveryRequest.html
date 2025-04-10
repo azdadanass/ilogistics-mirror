@@ -10,6 +10,11 @@
 }
 </style>
 <body style="padding-top: 40px; background-color: #fff; font-family: 'Arial'; font-size: 12px;">
+	<div style='text-align: center; margin: 20px 0px 10px 0px'>
+		<a th:href="${deliveryRequest.qrLink}" style='text-align: right; margin: 20px 0px 10px 0px;'>
+			<img height='100' width='100' style='width: 100px; height: 100px' th:src="${deliveryRequest.qrImageLink}" />
+		</a>
+	</div>
 	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
 		Dear
 		<span th:text="${toUser.fullName}"></span>
@@ -18,15 +23,8 @@
 		DN below is overdue for delivery <br />
 	</div>
 	<br />
-	<h4 class="header" style="color: #478fca">Required Action</h4>
 	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
 		In case this DN is delivered as per the Needed Delivery Date, Please contact the warehouse Manager to deliver the DN in the system <br /> Otherwise, Please update the Needed Delivery Date in the DN
-	</div>
-	<h4 class="header" style="color: #478fca">DN Information</h4>
-	<div style='text-align: center; margin: 20px 0px 10px 0px'>
-		<a th:href="${deliveryRequest.qrLink}" style='text-align: right; margin: 20px 0px 10px 0px;'>
-			<img height='100' width='100' style='width: 100px; height: 100px' th:src="${deliveryRequest.qrImageLink}" />
-		</a>
 	</div>
 	<div style='text-align: center; margin: 20px 0px 10px 0px'>
 		<img th:src="${deliveryRequest.timeLineImageLink}" />

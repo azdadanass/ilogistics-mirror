@@ -1661,7 +1661,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.getDetailList().forEach(i -> i.getPartNumber().setTmpPackingList(packingService.findByPartNumberAndActive(i.getPartNumber().getId())));
 		// if tmp packing list size == 1 then select this item as packing
 		deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getTmpPackingList().size() == 1).forEach(i -> i.setPacking(i.getPartNumber().getTmpPackingList().get(0)));
-		changePackingListener();
+//		changePackingListener();
 	}
 
 	private Boolean validateStep4() {
@@ -2041,9 +2041,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				.filter(d -> d.getPacking() != null && d.getPacking().getDetailList().stream().filter(packingDetail -> packingDetail.getHasSerialnumber()).count() > 0).count() == 0;
 	}
 
-	public void changePackingListener() {
-		deliveryRequest.setIsSnRequired(!noPackingDetailHasSerialNumber());
-	}
+//	public void changePackingListener() {
+//		deliveryRequest.setIsSnRequired(!noPackingDetailHasSerialNumber());
+//	}
 
 	// check database status
 	public Boolean checkDatabaseStatus(Integer id, DeliveryRequestStatus status) {

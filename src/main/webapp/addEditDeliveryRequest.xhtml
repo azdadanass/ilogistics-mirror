@@ -1338,7 +1338,8 @@
 														<h:selectOneMenu value="#{item.packing}" converter="#{genericSecuredConverter}">
 															<f:selectItem itemLabel="---" noSelectionOption="true" />
 															<f:selectItems value="#{item.partNumber.tmpPackingList}" var="p" itemLabel="#{p.name}" itemValue="#{p}" />
-															<p:ajax listener="#{deliveryRequestView.changePackingListener()}" update="packingQuantity,hasSerialnumber,:main_form:step4:isSnRequired" />
+															<p:ajax update="packingQuantity,hasSerialnumber" />
+															<!-- <p:ajax listener="#{deliveryRequestView.changePackingListener()}" update="packingQuantity,hasSerialnumber,:main_form:step4:isSnRequired" /> -->
 														</h:selectOneMenu>
 													</p:column>
 													<p:column headerText="Packing qty" width="60">

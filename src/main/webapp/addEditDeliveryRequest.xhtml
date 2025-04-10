@@ -292,7 +292,7 @@
 													<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.destinationProjectId}" styleClass="col-xs-12 col-sm-6" required="true" filter="true" filterMatchMode="contains"
 														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{projectView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+														<f:selectItems value="#{projectView.findLightOpen()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm" />
 													</p:selectOneMenu>
 													<br />

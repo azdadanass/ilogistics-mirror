@@ -17,12 +17,15 @@ public class PackingDetail {
 	private Boolean flammable;
 	private Integer minStorageTemperature;
 	private Integer maxStorageTemperature;
+	private Integer storageHumidity;
+	private Integer maxStack;
 
 	public PackingDetail() {
     }
 	
 	public PackingDetail(Integer id, String typeImage, Double length, Double width, Double height, Integer quantity,
-			Double volume, Double grossWeight, Boolean fragile, Boolean stackable, Boolean flammable,Integer minStorageTemperature,Integer maxStorageTemperature) {
+			Double volume, Double grossWeight, Boolean fragile, Boolean stackable, Boolean flammable,Integer minStorageTemperature,Integer maxStorageTemperature
+			,Integer storageHumidity,Integer maxStack) {
 		super();
 		this.id = id;
 		this.typeImage = "http://ilogistics.3gcominside.com"+typeImage;
@@ -37,6 +40,9 @@ public class PackingDetail {
 		this.flammable = flammable;
 		this.minStorageTemperature = minStorageTemperature;
 		this.maxStorageTemperature = maxStorageTemperature;
+		this.storageHumidity = storageHumidity;
+		this.maxStack = maxStack;
+
 	}
 
 
@@ -125,6 +131,25 @@ public class PackingDetail {
 	public void setMaxStorageTemperature(Integer maxStorageTemperature) {
 		this.maxStorageTemperature = maxStorageTemperature;
 	}
+
+	public Integer getStorageHumidity() {
+		return storageHumidity;
+	}
+
+	public void setStorageHumidity(Integer storageHumidity) {
+		this.storageHumidity = storageHumidity;
+	}
+
+	public Integer getMaxStack() {
+		return maxStack;
+	}
+
+	public void setMaxStack(Integer maxStack) {
+		this.maxStack = maxStack;
+	}
+	
+	
+	
 	
 	
 

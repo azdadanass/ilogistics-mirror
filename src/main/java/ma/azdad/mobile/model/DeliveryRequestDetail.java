@@ -17,9 +17,13 @@ public class DeliveryRequestDetail {
 	private String partNumberName;
 	private String partNumberImage;
 	private Double remainingQuantity;
+    private Double tmpDeliveredQuantity;
+    private Double tmpRemainingQuantity;
+
 	
 	//Extra Informations
 	private String location;
+	private String location2;
 	private String status;
 	private String partNumberDescription;
 	private Boolean unit;
@@ -30,6 +34,8 @@ public class DeliveryRequestDetail {
 	private String typeName;
 	private Double grossWeight;
 	private Double volume;
+	private String status2;
+	
 
 	
 
@@ -57,11 +63,12 @@ public class DeliveryRequestDetail {
 	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,Boolean expirable,
 			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity
 			,String location,StockRowStatus status,String partNumberDescription, Boolean unit, String unitType, String brandName,
-			String industryName, String categoryName, String typeName, Double grossWeight, Double volume) {
+			String industryName, String categoryName, String typeName, Double grossWeight, Double volume,StockRowStatus status2,String location2) {
 		super();
 		this.id = id;
 		this.quantity = quantity;
 		this.location = location;
+		this.location2 = location2;
 		this.status = status!=null ?status.getValue():"";
 		this.isSerialNumberRequired = isSerialNumberRequired;
 		this.expirable = expirable;
@@ -81,6 +88,7 @@ public class DeliveryRequestDetail {
 		this.typeName = typeName;
 		this.grossWeight = grossWeight;
 		this.volume = volume;
+		this.status2 = status2!=null ?status2.getValue():"";
 	}
 	
 	
@@ -110,6 +118,16 @@ public class DeliveryRequestDetail {
 
 	public void setIsSerialNumberRequired(Boolean isSerialNumberRequired) {
 		this.isSerialNumberRequired = isSerialNumberRequired;
+	}
+
+
+	public String getStatus2() {
+		return status2;
+	}
+
+
+	public void setStatus2(String status2) {
+		this.status2 = status2;
 	}
 
 
@@ -303,6 +321,36 @@ public class DeliveryRequestDetail {
 
 	public void setVolume(Double volume) {
 		this.volume = volume;
+	}
+	
+	
+	public String getLocation2() {
+		return location2;
+	}
+
+
+	public void setLocation2(String location2) {
+		this.location2 = location2;
+	}
+	
+	
+	public Double getTmpDeliveredQuantity() {
+		return tmpDeliveredQuantity;
+	}
+
+
+	public void setTmpDeliveredQuantity(Double tmpDeliveredQuantity) {
+		this.tmpDeliveredQuantity = tmpDeliveredQuantity;
+	}
+
+
+	public Double getTmpRemainingQuantity() {
+		return tmpRemainingQuantity;
+	}
+
+
+	public void setTmpRemainingQuantity(Double tmpRemainingQuantity) {
+		this.tmpRemainingQuantity = tmpRemainingQuantity;
 	}
 
 

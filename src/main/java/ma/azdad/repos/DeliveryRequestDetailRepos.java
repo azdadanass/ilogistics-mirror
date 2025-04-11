@@ -94,7 +94,9 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 		    "a.partNumber.categoryName," +
 		    "a.partNumber.typeName," +
 		    "(select MIN(sr.packing.grossWeight) from StockRow sr where sr.deliveryRequestDetail.id = a.id)," + 
-		    "(select MIN(sr.packing.volume) from StockRow sr where sr.deliveryRequestDetail.id = a.id)" + 
+		    "(select MIN(sr.packing.volume) from StockRow sr where sr.deliveryRequestDetail.id = a.id),"
+		    + "(select MIN(sr.status) from StockRow sr where sr.deliveryRequest.id = a.inboundDeliveryRequest.id),"
+		    + "(select MIN(sr.location.name) from StockRow sr where sr.deliveryRequestDetail.id = a.id)" + 
 		") ";
 
 

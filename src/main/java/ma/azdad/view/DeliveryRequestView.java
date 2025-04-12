@@ -2262,8 +2262,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// needed delivery date
 	public Boolean canUpdateNeededDeliveryDate() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus())
-				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED).contains(deliveryRequest.getStatus())
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())  || cacheView.hasDelegation(deliveryRequest.getProject().getId()));
 	}
 
 	public void updateNeededDeliveryDate() {

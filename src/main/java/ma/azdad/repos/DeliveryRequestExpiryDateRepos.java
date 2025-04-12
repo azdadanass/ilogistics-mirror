@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.DeliveryRequestType;
+import ma.azdad.model.PartNumber;
 import ma.azdad.model.StockRowStatus;
+import ma.azdad.utils.Pair;
 
 @Repository
 public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRequestExpiryDate, Integer> {
@@ -43,4 +45,8 @@ public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRe
 	
 	@Query("select a.stockRow.partNumber.id,sum(quantity) from DeliveryRequestExpiryDate a where a.stockRow.deliveryRequest.id = ?1 group by a.stockRow.partNumber.id")
 	public List<Object[]> findQuantityMap(Integer deliveryRequest);
+	
+	
+	@Query("select new DeliveryRequestExpiryDate(a.stockRow.partNumber.id,a.stockRow.partNumber.name,a.stockRow.partNumber.description,a.stockRow.partNumber.image,sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end),a.expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.inboundDeliveryRequest.id = ?1  group by a.stockRow.inboundDeliveryRequestDetail,a.expiryDate having sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end) > 0")
+	List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId);
 }

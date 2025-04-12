@@ -118,4 +118,8 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			result.put((Integer) row[0], (Double) row[1]);
 		return result;
 	}
+	
+	public List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId){
+		return repos.findByInboundDeliveryRequest(inboundDeliveryRequestId);
+	}
 }

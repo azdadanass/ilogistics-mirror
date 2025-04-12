@@ -43,6 +43,8 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 
 	private DeliveryRequest deliveryRequest;
 
+	private DatatableList<DeliveryRequestExpiryDate> summaryDatatable;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -64,7 +66,9 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
 			list1 = deliveryRequestExpiryDateService.findByDeliveryRequest(id);
 			deliveryRequest = deliveryRequestView.getDeliveryRequest();
-			if (deliveryRequest.getIsOutbound()) {
+			if (deliveryRequest.getIsInbound())
+				summaryDatatable = new DatatableList<DeliveryRequestExpiryDate>(service.findByInboundDeliveryRequest(deliveryRequest.getId()));
+			else if (deliveryRequest.getIsOutbound()) {
 				addRemainingToOutbound();
 				autoSaveOutboundExpiryList();
 			}
@@ -156,7 +160,7 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 		deliveryRequestService.calculateMissingExpiry(deliveryRequest.getId());
 		editMode = false;
 		refreshList();
-		
+
 	}
 
 	private Boolean validate(DeliveryRequest deliveryRequest) {
@@ -245,5 +249,15 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 	public void setEditMode(Boolean editMode) {
 		this.editMode = editMode;
 	}
+
+	public DatatableList<DeliveryRequestExpiryDate> getSummaryDatatable() {
+		return summaryDatatable;
+	}
+
+	public void setSummaryDatatable(DatatableList<DeliveryRequestExpiryDate> summaryDatatable) {
+		this.summaryDatatable = summaryDatatable;
+	}
+	
+	
 
 }

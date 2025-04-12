@@ -70,7 +70,7 @@ public class EmailService {
 	
 	public void sendDeliveryRequestDeliveryOverdueNotification(DeliveryRequest deliveryRequest){
 		User toUser = deliveryRequest.getRequester();
-		String subject= deliveryRequest.getReference()+" Overdue";
+		String subject= deliveryRequest.getType().getValue()+" "+deliveryRequest.getReference()+" Overdue";
 		Mail mail = new Mail(toUser.getEmail(), subject, "deliveryRequest.html", TemplateType.HTML);
 		mail.addCc(deliveryRequest.getProject().getManagerEmail());
 		deliveryRequest.getWarehouse().getManagerList().forEach(i->mail.addCc(i.getUser().getEmail()));

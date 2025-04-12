@@ -29,6 +29,15 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 		super();
 	}
 
+	public DeliveryRequestExpiryDate(Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberImage, Double quantity, Date expiryDate) {
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setPartNumberImage(partNumberImage);
+		this.setQuantity(quantity);
+		this.setExpiryDate(expiryDate);
+	}
+
 	public DeliveryRequestExpiryDate(StockRow stockRow, Boolean initial) {
 		super();
 		Boolean isInbound = stockRow.getDeliveryRequest().getIsInbound();
@@ -64,6 +73,54 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 		// if (!result && name != null)
 		// result = name.toLowerCase().contains(query);
 		return result;
+	}
+
+	@Transient
+	public Integer getPartNumberId() {
+		return stockRow != null ? stockRow.getPartNumberId() : null;
+	}
+
+	@Transient
+	public void setPartNumberId(Integer partNumberId) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setPartNumberId(partNumberId);
+	}
+
+	@Transient
+	public String getPartNumberName() {
+		return stockRow != null ? stockRow.getPartNumberName() : null;
+	}
+
+	@Transient
+	public void setPartNumberName(String partNumberName) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setPartNumberName(partNumberName);
+	}
+
+	@Transient
+	public String getPartNumberDescription() {
+		return stockRow != null ? stockRow.getPartNumberDescription() : null;
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setPartNumberDescription(partNumberDescription);
+	}
+
+	@Transient
+	public String getPartNumberImage() {
+		return stockRow != null ? stockRow.getPartNumberImage() : null;
+	}
+
+	@Transient
+	public void setPartNumberImage(String partNumberImage) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setPartNumberImage(partNumberImage);
 	}
 
 	@Transient

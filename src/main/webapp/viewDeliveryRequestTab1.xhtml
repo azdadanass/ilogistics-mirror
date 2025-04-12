@@ -744,7 +744,7 @@
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
 					</p:column> -->
-					<p:column headerText="has SN" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" >
+					<p:column headerText="SN" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" >
 						<i class="ace-icon fa #{item.packing.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 					</p:column>
 					<p:column headerText="Expirable" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.showExpiryData()}">

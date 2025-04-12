@@ -378,8 +378,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 				if (DeliveryRequestState.WAITING.equals(state))
 					Collections.sort(list1);
-				else if(DeliveryRequestState.DELIVRED.equals(state))
-					Collections.sort(list1,new Comparator<DeliveryRequest>() {
+				else if (DeliveryRequestState.DELIVRED.equals(state))
+					Collections.sort(list1, new Comparator<DeliveryRequest>() {
 						public int compare(DeliveryRequest o1, DeliveryRequest o2) {
 							return o2.getDate4().compareTo(o1.getDate4());
 						}
@@ -630,6 +630,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		}
 		execJavascript("PF('nextButton').enable()");
+		return null;
+	}
+
+	public List<StockRow> generateStockRowFromOutboundDeliveryRequest() {
+		System.out.println("generateStockRowFromOutboundDeliveryRequest");
+		if (deliveryRequest.getIsOutbound())
+			return stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest);
 		return null;
 	}
 
@@ -907,7 +914,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		else if (UtilsFunctions.compareDoubles(row.getTmpQuantity(), row.getQuantity(), 4) != 0) {
 			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), row.getPartNumber().getId()).get(0);
 			deliveryRequest.getStockRowList().add(++index, new StockRow(row.getTmpQuantity() - row.getQuantity(), row.getTmpQuantity() - row.getQuantity(), row.getPartNumber(), deliveryRequest,
-					row.getStatus(), deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, row.getPacking()));
+					row.getStatus(), deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, inboundDeliveryRequestDetail, row.getPacking()));
 			row.setTmpQuantity(row.getQuantity());
 		}
 	}
@@ -1016,7 +1023,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SDM / ISM
 	public Boolean showSdm() {
-		if(deliveryRequest.getType()==null)
+		if (deliveryRequest.getType() == null)
 			return false;
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
@@ -1027,16 +1034,17 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return false;
 		}
 	}
-	
+
 	public Boolean showIsm() {
-		if(deliveryRequest.getType()==null)
+		if (deliveryRequest.getType() == null)
 			return false;
-		
+
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
 			return deliveryRequest.getDestinationProjectIsm();
 		case INBOUND:
-			return Boolean.TRUE.equals(deliveryRequest.getProjectIsm()) && (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());
+			return Boolean.TRUE.equals(deliveryRequest.getProjectIsm())
+					&& (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());
 		default:
 			return false;
 		}
@@ -1046,7 +1054,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())
 				|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 ;
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
 	}
 
 	public void editSdm() {
@@ -1059,7 +1067,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())
 				|| (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.hasDelegation(deliveryRequest.getProject().getId()))) //
-				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0 ;
+				&& jobRequestDeliveryDetailService.countByDeliveryRequest(deliveryRequest.getId()) == 0;
 	}
 
 	public void editIsm() {
@@ -1661,7 +1669,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.getDetailList().forEach(i -> i.getPartNumber().setTmpPackingList(packingService.findByPartNumberAndActive(i.getPartNumber().getId())));
 		// if tmp packing list size == 1 then select this item as packing
 		deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getTmpPackingList().size() == 1).forEach(i -> i.setPacking(i.getPartNumber().getTmpPackingList().get(0)));
-		changePackingListener();
+//		changePackingListener();
 	}
 
 	private Boolean validateStep4() {
@@ -2041,9 +2049,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				.filter(d -> d.getPacking() != null && d.getPacking().getDetailList().stream().filter(packingDetail -> packingDetail.getHasSerialnumber()).count() > 0).count() == 0;
 	}
 
-	public void changePackingListener() {
-		deliveryRequest.setIsSnRequired(!noPackingDetailHasSerialNumber());
-	}
+//	public void changePackingListener() {
+//		deliveryRequest.setIsSnRequired(!noPackingDetailHasSerialNumber());
+//	}
 
 	// check database status
 	public Boolean checkDatabaseStatus(Integer id, DeliveryRequestStatus status) {
@@ -2262,8 +2270,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// needed delivery date
 	public Boolean canUpdateNeededDeliveryDate() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus())
-				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED)
+				.contains(deliveryRequest.getStatus())
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+						|| cacheView.hasDelegation(deliveryRequest.getProject().getId()));
 	}
 
 	public void updateNeededDeliveryDate() {

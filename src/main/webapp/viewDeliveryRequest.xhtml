@@ -526,12 +526,12 @@
 							<a data-toggle="tab" href="#tab14">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
 								<f:subview rendered="#{!deliveryRequestView.deliveryRequest.isInboundReturnFromOutboundHardwareSwap}">
-								<h:outputText value=" SDM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.sdm}" />
-								<h:outputText value=" ISM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.ism}" />
-								<h:outputText value=" SDM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.sdm}" />
-								<h:outputText value=" ISM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.ism}" />
+									<h:outputText value=" SDM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.sdm}" />
+									<h:outputText value=" ISM Install base" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.ism}" />
+									<h:outputText value=" SDM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.sdm}" />
+									<h:outputText value=" ISM Dismantle Stage" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isInbound and deliveryRequestView.deliveryRequest.ism}" />
 								</f:subview>
-								<h:outputText value=" #{deliveryRequestView.deliveryRequest.sdm?'SDM':'ISM'} Hardware Swap" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturnFromOutboundHardwareSwap}"/>
+								<h:outputText value=" #{deliveryRequestView.deliveryRequest.sdm?'SDM':'ISM'} Hardware Swap" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturnFromOutboundHardwareSwap}" />
 							</a>
 						</li>
 					</f:subview>
@@ -1947,6 +1947,10 @@
 					<div id="tab11" class="tab-pane">
 						<div class="space-8" />
 						<div class="row">
+							<h4 class="header blue bolder smaller">
+								<i class="fa fa-list purple" />
+								<h:outputText value=" Expiry Details" />
+							</h4>
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-10">
@@ -2026,9 +2030,50 @@
 								</div>
 							</div>
 						</div>
+						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-home green" />
+									<h:outputText value=" Current Stock Expiry" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Current Stock Expiry" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestExpiryDateView.summaryDatatable.value}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Part Number">
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder blue" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.partNumberDescription}" styleClass="purple aa-cut-text" />
+											</p:column>
+											<p:column headerText="Expiry Date">
+												<h:outputText value="#{item.expiryDate}" styleClass="#{item.expiryDate gt utilsView.currentDate ?'green':'red bolder'}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}" styleClass="green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
 					</div>
 					<div id="tab12" class="tab-pane">
 						<div class="row">
+							<h4 class="header blue bolder smaller">
+								<i class="fa fa-dropbox purple" />
+								<h:outputText value=" Packing" />
+							</h4>
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-10">
@@ -2054,10 +2099,76 @@
 										<p:column headerText="Quantity">
 											<h:outputText value="#{item.tmpQuantity}" />
 										</p:column>
+										<p:column headerText="Packing Options">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Flammable" rendered="#{item.flammable}">
+													<i class="ace-icon fa fa-fire bigger-130 orange" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Fragile" rendered="#{item.fragile}">
+													<i class="ace-icon fa fa-glass bigger-130 light-blue" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Min Storage Temperature : #{item.minStorageTemperature}°" rendered="#{item.minStorageTemperature!=null}">
+													<i class="ace-icon fa fa-thermometer-empty bigger-130 blue" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Max Storage Temperature : #{item.maxStorageTemperature}°" rendered="#{item.maxStorageTemperature!=null}">
+													<i class="ace-icon fa fa-thermometer-full bigger-130 red" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip" title="HAS SN" rendered="#{item.hasSerialnumber}">
+													<i class="ace-icon fa fa-barcode bigger-130 purple" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip" title="Storage Humidity : #{item.storageHumidity}" rendered="#{item.storageHumidity!=null}">
+													<i class="ace-icon fa fa-tint bigger-130 pink" />
+												</p:commandLink>
+											</div>
+										</p:column>
 									</p:dataTable>
 								</div>
 							</div>
 						</div>
+						<f:subview rendered="#{DeliveryRequestStatus.APPROVED2==deliveryRequestView.deliveryRequest.status}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-home green" />
+									<h:outputText value=" TMP NAME(Storage)" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Storage" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestView.generateStockRowFromOutboundDeliveryRequest()}" rows="40" var="item" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Status">
+												<h:outputText value="#{item.status.value}" />
+											</p:column>
+											<p:column headerText="Origin DN Number">
+												<h:outputText value="#{item.originNumber}" />
+											</p:column>
+											<p:column headerText="Inbound Request">
+												<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder orange" />
+											</p:column>
+											<p:column headerText="Location">
+												<h:outputText value="#{item.location.name}" />
+											</p:column>
+											<p:column headerText="Quantity">
+												<h:outputText value="#{-item.quantity}" styleClass="bolder">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
 					</div>
 					<div id="tab13" class="tab-pane">
 						<div class="row">

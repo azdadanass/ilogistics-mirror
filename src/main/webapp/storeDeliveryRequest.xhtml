@@ -28,6 +28,7 @@
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.StockRowStatus" var="StockRowStatus" allSuffix="ALL_ENUM_VALUES" />
 		<p:importEnum type="ma.azdad.model.StockRowState" var="StockRowState" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.DeliveryRequestType" var="DeliveryRequestType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="widget-box">
 				<div class="widget-header widget-header-blue widget-header-flat">
@@ -362,7 +363,8 @@
 													<h:selectOneMenu value="#{item.location}" converter="#{genericSecuredConverter}" disabled="#{item.id!=null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<!-- <f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" /> -->
-														<f:selectItems value="#{locationView.findByWarehouseAndStockRowStateAndOwner(deliveryRequestView.deliveryRequest)}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
+														<f:selectItems value="#{locationView.findByWarehouseAndStockRowStateAndOwner(deliveryRequestView.deliveryRequest)}" var="location" itemLabel="#{location.name}"
+															itemValue="#{location}" />
 													</h:selectOneMenu>
 												</p:column>
 												<p:column headerText="Packing">
@@ -468,9 +470,13 @@
 							</f:subview>
 							<f:subview rendered="#{deliveryRequestView.step==7}">
 								<h3 class="lighter block green">
-									<i class="ace-icon fa fa-cubes" />
+									<i class="ace-icon fa fa-list-alt" />
 									<h:outputText value=" Summary" />
 								</h3>
+								<ui:include src="viewDeliveryRequestTab1.xhtml" />
+								<h4 class="header blue bolder smaller">
+									<h:outputText value="Storage" />
+								</h4>
 								<div class="row">
 									<div class="col-sm-offset-1 col-sm-10">
 										<div class="table-header col-sm-12 col-xs-12">

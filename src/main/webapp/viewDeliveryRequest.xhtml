@@ -2070,6 +2070,10 @@
 					</div>
 					<div id="tab12" class="tab-pane">
 						<div class="row">
+							<h4 class="header blue bolder smaller">
+								<i class="fa fa-dropbox purple" />
+								<h:outputText value=" Packing" />
+							</h4>
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-10">
@@ -2121,6 +2125,50 @@
 								</div>
 							</div>
 						</div>
+						<f:subview rendered="#{DeliveryRequestStatus.APPROVED2==deliveryRequestView.deliveryRequest.status}">
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-home green" />
+									<h:outputText value=" TMP NAME(Storage)" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Storage" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestView.generateStockRowFromOutboundDeliveryRequest()}" rows="40" var="item" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Part Number">
+												<h:outputLink value="viewPartNumber.xhtml" target="blank">
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.partNumber.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Status">
+												<h:outputText value="#{item.status.value}" />
+											</p:column>
+											<p:column headerText="Origin DN Number">
+												<h:outputText value="#{item.originNumber}" />
+											</p:column>
+											<p:column headerText="Inbound Request">
+												<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder orange" />
+											</p:column>
+											<p:column headerText="Location">
+												<h:outputText value="#{item.location.name}" />
+											</p:column>
+											<p:column headerText="Quantity">
+												<h:outputText value="#{-item.quantity}" styleClass="bolder">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
 					</div>
 					<div id="tab13" class="tab-pane">
 						<div class="row">

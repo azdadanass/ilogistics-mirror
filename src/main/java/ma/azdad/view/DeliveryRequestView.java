@@ -907,7 +907,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		else if (UtilsFunctions.compareDoubles(row.getTmpQuantity(), row.getQuantity(), 4) != 0) {
 			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), row.getPartNumber().getId()).get(0);
 			deliveryRequest.getStockRowList().add(++index, new StockRow(row.getTmpQuantity() - row.getQuantity(), row.getTmpQuantity() - row.getQuantity(), row.getPartNumber(), deliveryRequest,
-					row.getStatus(), deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, row.getPacking()));
+					row.getStatus(), deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail,inboundDeliveryRequestDetail, row.getPacking()));
 			row.setTmpQuantity(row.getQuantity());
 		}
 	}

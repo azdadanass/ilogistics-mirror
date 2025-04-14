@@ -16,6 +16,12 @@ public class DeliveryRequestExpiryDate {
 	private String status;
 	
 	
+	
+	public DeliveryRequestExpiryDate() {
+		super();
+	}
+
+
 	public DeliveryRequestExpiryDate(Integer id,Integer stockRowId, String partNumberImage, String partNumberName, String location,
 			Double quantity, Date expiryDate,String status) {
 		super();

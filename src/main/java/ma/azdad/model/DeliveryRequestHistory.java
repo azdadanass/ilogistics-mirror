@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import ma.azdad.utils.Color;
+
 @Entity
 public class DeliveryRequestHistory extends GenericHistory<DeliveryRequest> {
 
@@ -39,11 +41,19 @@ public class DeliveryRequestHistory extends GenericHistory<DeliveryRequest> {
 	@Override
 	@Transient
 	public String getStatusStyleClass() {
-		try {
-			return DeliveryRequestStatus.getByValue(status).getBadge();
-		} catch (Exception e) {
-			return "badge";
+		switch (status) {
+		case "Created":
+			return Color.ORANGE.getBadge();
+		case "Handover":
+			return Color.PURPLE.getBadge();
+		default:
+			try {
+				return DeliveryRequestStatus.getByValue(status).getBadge();
+			} catch (Exception e) {
+				return "badge";
+			}
 		}
+
 	}
 
 }

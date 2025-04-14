@@ -2,8 +2,10 @@ package ma.azdad.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hibernate.Hibernate;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CompanyType;
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.repos.UserRepos;
@@ -402,6 +405,19 @@ public class UserService {
 		if(list.isEmpty())
 			return null;
 		return list.get(0);
+	}
+	
+	public List<User> findByActiveAndProjectAssignment(Integer projectId){
+		return repos.findByActiveAndProjectAssignment(projectId);
+	}
+	
+	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest){
+		Set<User> result =  new HashSet<User>();
+		result.addAll(findByActiveAndProjectAssignment(deliveryRequest.getProjectId()));
+		result.addAll(findByProjectDelegation(deliveryRequest.getProjectId(), true));
+		result.add(deliveryRequest.getProject().getManager());
+		result.remove(deliveryRequest.getRequester());
+		return new ArrayList<User>(result);
 	}
 
 }

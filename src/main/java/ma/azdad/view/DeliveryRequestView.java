@@ -295,13 +295,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				findRemainingDetailListByPo();
 
 		} else if (isViewPage) {
-			deliveryRequest = service.findOne(id);
-			deliveryRequest.init();
-			if (deliveryRequest.getIsInbound() && DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()))
-				deliveryRequest.getDetailList().forEach(i -> i.setTmpDeliveredQuantity(stockRowService.findQuantityByDeliveryRequestDetail(i.getId())));
+			initViewPage();
 
 //			initCommentsVariables();
-			projectCross = projectCrossService.findByDeliveryRequest(id);
+
 		} else if (isLightViewPage || isPrintPage) {
 			deliveryRequest = service.findOne(id);
 		} else if (isStoragePage) {
@@ -312,6 +309,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.init();
 			preparationNextStep();
 		}
+	}
+
+	private void initViewPage() {
+		deliveryRequest = service.findOne(id);
+		deliveryRequest.init();
+		if (deliveryRequest.getIsInbound() && DeliveryRequestStatus.PARTIALLY_DELIVRED.equals(deliveryRequest.getStatus()))
+			deliveryRequest.getDetailList().forEach(i -> i.setTmpDeliveredQuantity(stockRowService.findQuantityByDeliveryRequestDetail(i.getId())));
+
+		projectCross = projectCrossService.findByDeliveryRequest(id);
 	}
 
 	public Boolean canDuplicate() {
@@ -374,7 +380,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					list2 = list1 = service.findLight(sessionView.getUsername(), type, state, cacheView.getWarehouseList(),
 							Stream.concat(cacheView.getUserProjectList().stream(), cacheView.getHmProjectList().stream()).distinct().collect(Collectors.toList()));
 				else if (sessionView.getIsSupplierUser())
-					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList());
+					list2 = list1 = service.findLightBySupplierUser(type, state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList(),
+							cacheView.getWarehouseList());
 
 				if (DeliveryRequestState.WAITING.equals(state))
 					Collections.sort(list1);
@@ -439,10 +446,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				list2 = list1 = service.findLightByMissingExpiry(cacheView.getWarehouseList());
 				break;
 			case 13:
-				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.OUTBOUND);
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						DeliveryRequestType.OUTBOUND);
 				break;
 			case 14:
-				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), DeliveryRequestType.INBOUND);
+				list2 = list1 = service.findByMissingBoqMapping(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
+						DeliveryRequestType.INBOUND);
 				break;
 			case 15:
 				if (sessionView.getInternal())
@@ -766,7 +775,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				service.updateReturnInboundsUnitPrice(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 				DeliveryRequest outboundDeliveryRequestReturn = service.findOne(deliveryRequest.getOutboundDeliveryRequestReturn().getId());
 				service.clearBoqMapping(outboundDeliveryRequestReturn);
-				jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn(), deliveryRequest, sessionView.getUser());
+				jobRequestDeliveryDetailService.deleteByDeliveryRequestAndNotStartedJobRequest(deliveryRequest.getOutboundDeliveryRequestReturn(), deliveryRequest,
+						sessionView.getUser());
 				service.calculatePendingJrMapping(outboundDeliveryRequestReturn.getId());
 				service.calculateHavingRunningStock(outboundDeliveryRequestReturn.getId());
 			}
@@ -902,7 +912,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList())
 			if (detail.getTmpQuantity() > 0.0) {
 				detail.setRemainingQuantity(detail.getRemainingQuantity() - detail.getTmpQuantity());
-				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
+				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
+						.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
 				deliveryRequest.getStockRowList().add(new StockRow(detail, detail.getTmpQuantity(), detail.getTmpQuantity(), detail.getPartNumber(), deliveryRequest, true,
 						deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, currentDate, detail.getPacking()));
 			}
@@ -912,9 +923,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (UtilsFunctions.compareDoubles(row.getQuantity(), 0.0, 4) <= 0)
 			FacesContextMessages.ErrorMessages("Quantity should be greather than 0");
 		else if (UtilsFunctions.compareDoubles(row.getTmpQuantity(), row.getQuantity(), 4) != 0) {
-			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), row.getPartNumber().getId()).get(0);
-			deliveryRequest.getStockRowList().add(++index, new StockRow(row.getTmpQuantity() - row.getQuantity(), row.getTmpQuantity() - row.getQuantity(), row.getPartNumber(), deliveryRequest,
-					row.getStatus(), deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, inboundDeliveryRequestDetail, row.getPacking()));
+			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
+					.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), row.getPartNumber().getId()).get(0);
+			deliveryRequest.getStockRowList().add(++index,
+					new StockRow(row.getTmpQuantity() - row.getQuantity(), row.getTmpQuantity() - row.getQuantity(), row.getPartNumber(), deliveryRequest, row.getStatus(),
+							deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, inboundDeliveryRequestDetail, row.getPacking()));
 			row.setTmpQuantity(row.getQuantity());
 		}
 	}
@@ -970,6 +983,24 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				FacesContextMessages.ErrorMessages(e.getMessage());
 				return;
 			}
+	}
+
+	// handover
+	public Boolean canHandover() {
+		return Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED).contains(deliveryRequest.getStatus()) //
+				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+						|| cacheView.hasDelegation(deliveryRequest.getProject().getId()));
+	}
+
+	public void handover() {
+		if (!canHandover())
+			return;
+		String oldRequesterFullName = service.findRequesterFullName(deliveryRequest.getId());
+		deliveryRequest.setRequester(userService.findOneLight(deliveryRequest.getRequesterUsername()));
+		deliveryRequest.addHistory(
+				new DeliveryRequestHistory("Handover", sessionView.getUser(), "DN Handover from " + oldRequesterFullName + " to " + deliveryRequest.getRequesterFullName()));
+		service.save(deliveryRequest);
+		initViewPage();
 	}
 
 	/*
@@ -1302,18 +1333,20 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelDeliveryRequest() {
-		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
+		return (Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED).contains(deliveryRequest.getStatus())
+				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester()))
 				|| (Arrays.asList(DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus())
-						&& (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) || cacheView.getDelegatedProjectList().contains(deliveryRequest.getProjectId())))//
+						&& (sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+								|| cacheView.getDelegatedProjectList().contains(deliveryRequest.getProjectId())))//
 						&& deliveryRequest.getAcceptance() == null;
 	}
 
 	public String cancelDeliveryRequest() {
 		if (!canCancelDeliveryRequest())
 			return null;
-		if (deliveryRequest.getTransportationRequest() != null
-				&& Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED)
-						.contains(deliveryRequest.getTransportationRequest().getStatus())) {
+		if (deliveryRequest.getTransportationRequest() != null && Arrays
+				.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED)
+				.contains(deliveryRequest.getTransportationRequest().getStatus())) {
 			FacesContextMessages.ErrorMessages("can not cancel DN --> associated TR status is : " + deliveryRequest.getTransportationRequest().getStatus().getValue());
 			return null;
 		}
@@ -1544,7 +1577,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer()) {
 				findRemainingDetailListByOutboundDeliveryRequest();
 				deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream(). //
-						filter(i -> deliveryRequest.getOwnerType().equals(i.getTmpOwnerType()) && deliveryRequest.getOwnerId().equals(i.getTmpOwnerId())).collect(Collectors.toList());
+						filter(i -> deliveryRequest.getOwnerType().equals(i.getTmpOwnerType()) && deliveryRequest.getOwnerId().equals(i.getTmpOwnerId()))
+						.collect(Collectors.toList());
 				fillDetailSelectionList();
 
 				if (isAddPage && deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
@@ -1607,22 +1641,26 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getFilterType() != null)
 			switch (deliveryRequest.getFilterType()) {
 			case "Brand":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberBrandName())).map(i -> i.getPartNumberBrandName()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberBrandName())).map(i -> i.getPartNumberBrandName()).distinct()
+						.collect(Collectors.toList());
 			case "Category":
 				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberCategoryName())).map(i -> i.getPartNumberCategoryName()).distinct()
 						.collect(Collectors.toList());
 			case "Type":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberTypeName())).map(i -> i.getPartNumberTypeName()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberTypeName())).map(i -> i.getPartNumberTypeName()).distinct()
+						.collect(Collectors.toList());
 			case "Part Number":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberName())).map(i -> i.getPartNumberName()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getPartNumberName())).map(i -> i.getPartNumberName()).distinct()
+						.collect(Collectors.toList());
 			case "Purchase PO":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero())).map(i -> i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName()).distinct()
-						.collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundPoNumero()))
+						.map(i -> i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName()).distinct().collect(Collectors.toList());
 			case "Inbound DN":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundDeliveryRequestReference())).map(i -> i.getInboundDeliveryRequestReference()).distinct()
-						.collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getInboundDeliveryRequestReference()))
+						.map(i -> i.getInboundDeliveryRequestReference()).distinct().collect(Collectors.toList());
 			case "Origin DN Number":
-				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getOriginNumber())).map(i -> i.getOriginNumber()).distinct().collect(Collectors.toList());
+				return deliveryRequestDetailList1.stream().filter(i -> StringUtils.isNotBlank(i.getOriginNumber())).map(i -> i.getOriginNumber()).distinct()
+						.collect(Collectors.toList());
 			default:
 				break;
 			}
@@ -1639,27 +1677,32 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (deliveryRequest.getFilterType() != null)
 			switch (deliveryRequest.getFilterType()) {
 			case "Brand":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberBrandName())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberBrandName()))
+						.collect(Collectors.toList());
 				break;
 			case "Category":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberCategoryName())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberCategoryName()))
+						.collect(Collectors.toList());
 				break;
 			case "Type":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberTypeName())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberTypeName()))
+						.collect(Collectors.toList());
 				break;
 			case "Part Number":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberName())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getPartNumberName()))
+						.collect(Collectors.toList());
 				break;
 			case "Purchase PO":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName()))
-						.collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream()
+						.filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundPoNumero() + "-" + i.getInboundPoSupplierName())).collect(Collectors.toList());
 				break;
 			case "Inbound DN":
 				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getInboundDeliveryRequestReference()))
 						.collect(Collectors.toList());
 				break;
 			case "Origin DN Number":
-				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getOriginNumber())).collect(Collectors.toList());
+				deliveryRequestDetailList2 = deliveryRequestDetailList1.stream().filter(i -> deliveryRequest.getFilterValue().equals(i.getOriginNumber()))
+						.collect(Collectors.toList());
 				break;
 			}
 
@@ -1668,7 +1711,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	private void initPackingData() {
 		deliveryRequest.getDetailList().forEach(i -> i.getPartNumber().setTmpPackingList(packingService.findByPartNumberAndActive(i.getPartNumber().getId())));
 		// if tmp packing list size == 1 then select this item as packing
-		deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getTmpPackingList().size() == 1).forEach(i -> i.setPacking(i.getPartNumber().getTmpPackingList().get(0)));
+		deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getTmpPackingList().size() == 1)
+				.forEach(i -> i.setPacking(i.getPartNumber().getTmpPackingList().get(0)));
 //		changePackingListener();
 	}
 
@@ -1916,9 +1960,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			for (DeliveryRequestDetail detail : deliveryRequestDetailSelectionList) {
 				DeliveryRequestDetail inboundDeliveryRequestDetail = null;
 				if (deliveryRequest.getIsOutbound())
-					inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(detail.getInboundDeliveryRequest().getId(), detail.getPartNumber().getId()).get(0);
-				deliveryRequest.getDetailList().add(new DeliveryRequestDetail(detail.getQuantity(), detail.getPartNumber(), deliveryRequest, detail.getStatus(), detail.getOriginNumber(),
-						detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(), deliveryRequest.getIsForTransfer() ? detail.getUnitCost() : 0.0, detail.getPacking()));
+					inboundDeliveryRequestDetail = deliveryRequestDetailService
+							.findByDeliveryRequestAndPartNumber(detail.getInboundDeliveryRequest().getId(), detail.getPartNumber().getId()).get(0);
+				deliveryRequest.getDetailList()
+						.add(new DeliveryRequestDetail(detail.getQuantity(), detail.getPartNumber(), deliveryRequest, detail.getStatus(), detail.getOriginNumber(),
+								detail.getInboundDeliveryRequest(), inboundDeliveryRequestDetail, detail.getUnitCost(),
+								deliveryRequest.getIsForTransfer() ? detail.getUnitCost() : 0.0, detail.getPacking()));
 
 			}
 
@@ -1953,8 +2000,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 							.filter(i -> i.getInboundDeliveryRequestReference().equals(deliveryRequest.getFilterValue())).collect(Collectors.toList());
 					break;
 				case "Origin DN Number":
-					deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream().filter(i -> i.getOriginNumber().equals(deliveryRequest.getFilterValue()))
-							.collect(Collectors.toList());
+					deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream()
+							.filter(i -> i.getOriginNumber().equals(deliveryRequest.getFilterValue())).collect(Collectors.toList());
 					break;
 				default:
 					break;
@@ -1965,7 +2012,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				Set<Integer> boqSet = boqService.findPartNumberIdListByPoAndHavingRemainingQuantity(deliveryRequest.getPoId());
 				Set<Integer> equivalenceSet = partNumberEquivalenceService.findPartNumberIdListByEquivalence(boqSet);
 				deliveryRequestDetailList2 = deliveryRequestDetailList1 = deliveryRequestDetailList1.stream()
-						.filter(item -> item.getQuantity() > 0 || boqSet.contains(item.getPartNumber().getId()) || equivalenceSet.contains(item.getPartNumber().getId())).collect(Collectors.toList());
+						.filter(item -> item.getQuantity() > 0 || boqSet.contains(item.getPartNumber().getId()) || equivalenceSet.contains(item.getPartNumber().getId()))
+						.collect(Collectors.toList());
 				// item.getQuantity()>0 for edit case
 			}
 		}
@@ -2028,7 +2076,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						return FacesContextMessages.ErrorMessages("In Case of Planned Transfer, PN should have same packing ");
 				}
 			}
-			if (deliveryRequest.getDetailList().stream().map(i -> i.getInboundDeliveryRequest().getOwnerType() + ";" + i.getInboundDeliveryRequest().getOwnerId()).distinct().count() > 1)
+			if (deliveryRequest.getDetailList().stream().map(i -> i.getInboundDeliveryRequest().getOwnerType() + ";" + i.getInboundDeliveryRequest().getOwnerId()).distinct()
+					.count() > 1)
 				return FacesContextMessages.ErrorMessages("All the selected items should belong to the same Owner");
 
 			Set<StockRowStatus> stockRowStatusList = deliveryRequest.getDetailList().stream().map(i -> i.getStatus()).distinct().collect(Collectors.toSet());
@@ -2046,7 +2095,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public Boolean noPackingDetailHasSerialNumber() {
 		return deliveryRequest.getDetailList().stream()
-				.filter(d -> d.getPacking() != null && d.getPacking().getDetailList().stream().filter(packingDetail -> packingDetail.getHasSerialnumber()).count() > 0).count() == 0;
+				.filter(d -> d.getPacking() != null && d.getPacking().getDetailList().stream().filter(packingDetail -> packingDetail.getHasSerialnumber()).count() > 0)
+				.count() == 0;
 	}
 
 //	public void changePackingListener() {
@@ -2146,7 +2196,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// DELETE DELIVERYREQUEST
 	public Boolean canDeleteDeliveryRequest() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus()) && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REJECTED).contains(deliveryRequest.getStatus())
+				&& sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 	}
 
 	public String deleteDeliveryRequest() {
@@ -2225,7 +2276,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// smsRef
 	public Boolean canUpdateSmsRef() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus())
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)
+				.contains(deliveryRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()));
 	}
 
@@ -2270,7 +2322,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// needed delivery date
 	public Boolean canUpdateNeededDeliveryDate() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED)
+		return Arrays
+				.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2,
+						DeliveryRequestStatus.PARTIALLY_DELIVRED)
 				.contains(deliveryRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
 						|| cacheView.hasDelegation(deliveryRequest.getProject().getId()));
@@ -2286,10 +2340,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	// transportation needed
 	public Boolean canUpdateTransportationNeeded() {
 		if (deliveryRequest.getTransportationNeeded() == null || !deliveryRequest.getTransportationNeeded())
-			return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus())
+			return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)
+					.contains(deliveryRequest.getStatus())
 					&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()))
 					&& (deliveryRequest.getIsInbound() ? deliveryRequest.getOrigin() != null
-							: deliveryRequest.getIsOutbound() ? deliveryRequest.getDestination() != null : deliveryRequest.getOrigin() != null && deliveryRequest.getDestination() != null);
+							: deliveryRequest.getIsOutbound() ? deliveryRequest.getDestination() != null
+									: deliveryRequest.getOrigin() != null && deliveryRequest.getDestination() != null);
 		else
 			return deliveryRequest.getTransportationRequest() == null || (deliveryRequest.getTransportationRequest() != null
 					&& Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(deliveryRequest.getTransportationRequest().getStatus()));
@@ -2636,7 +2692,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// edit deliver to
 	public Boolean canEditDeliverTo() {
-		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus()) //
+		return Arrays.asList(DeliveryRequestStatus.EDITED, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2)
+				.contains(deliveryRequest.getStatus()) //
 				&& (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) //
 						|| sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername()) //
 						|| cacheView.hasDelegation(deliveryRequest.getProject().getId())) //

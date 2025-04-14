@@ -1147,4 +1147,38 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="handoverForm" rendered="#{deliveryRequestView.isViewPage}">
+		<p:dialog widgetVar="handoverDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('handoverDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-arrows-h blue" />
+					<h:outputText value=" Handover" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Handover to" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.requesterUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Handover to should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{userView.findHandoverUserList(deliveryRequestView.deliveryRequest)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('handoverDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{deliveryRequestView.handover()}" value="Handover" styleClass="btn btn-primary" oncomplete="PF('handoverDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

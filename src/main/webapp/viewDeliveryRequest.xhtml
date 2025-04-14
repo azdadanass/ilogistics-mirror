@@ -176,6 +176,11 @@
 							<h:outputText value="Map" />
 							<f:param name="siteId" value="#{deliveryRequestView.deliveryRequest.destination.id}" />
 						</h:outputLink>
+						<p:commandLink title="Handover" styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" onclick="PF('handoverDlg').show()"
+							rendered="#{deliveryRequestView.canHandover()}">
+							<i class="ace-icon fa fa-arrows-h bigger-230"></i>
+							<h:outputText value="Handover" />
+						</p:commandLink>
 					</div>
 					<div class="col-sm-7  hidden-xs infobox-container">
 						<div class="row">

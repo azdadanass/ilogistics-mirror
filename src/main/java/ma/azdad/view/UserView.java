@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Conversation;
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
@@ -394,6 +395,10 @@ public class UserView {
 	
 	public User findFirstByRoleTM() {
 		return userService.findFirstByRoleTM();
+	}
+	
+	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest){
+		return userService.findHandoverUserList(deliveryRequest);
 	}
 
 	// getters & setters

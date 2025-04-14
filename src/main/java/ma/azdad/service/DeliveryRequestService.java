@@ -2393,6 +2393,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<Integer> findDeliveryOverdue() {
 		return repos.findDeliveryOverdue();
 	}
+	
+	public String findRequesterFullName(Integer id) {
+		return repos.findRequesterFullName(id);
+	}
 
 	// mobile
 

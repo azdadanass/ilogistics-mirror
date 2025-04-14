@@ -447,6 +447,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select a.id from DeliveryRequest a where a.status in ('APPROVED2','PARTIALLY_DELIVRED') and a.type in ('INBOUND','OUTBOUND') and a.neededDeliveryDate < current_date")
 	List<Integer> findDeliveryOverdue();
+	
+	
+	@Query("select a.requester.fullName from DeliveryRequest a where a.id = ?1")
+	String findRequesterFullName(Integer id);
 
 	// mobile
 

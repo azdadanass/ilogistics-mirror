@@ -50,10 +50,10 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	@Autowired
 	ProjectRepos projectRepos;
-	
+
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
-	
+
 	@Autowired
 	LocationService locationService;
 
@@ -147,10 +147,24 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		return result;
 	}
 
+	public List<StockRow> generateStockRowFromOutboundDeliveryRequest(DeliveryRequest deliveryRequest, String method) {
+		List<StockRow> result = new ArrayList<>();
+		Date currentDate = new Date();
+		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
+			List<StockRow> stockRowList = findRemainingToPrepare(detail);
+
+		}
+		return null;
+	}
+
 	// must be sorted by quantity !!!!!
+//	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
+//		return repos.findRemainingToPrepare(deliveryRequestDetail.getDeliveryRequest().getProject().getId(), deliveryRequestDetail.getInboundDeliveryRequest().getWarehouse().getId(),
+//				deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getStatus(), deliveryRequestDetail.getOriginNumber(), deliveryRequestDetail.getInboundDeliveryRequest().getId());
+//	}
+
 	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
-		return repos.findRemainingToPrepare(deliveryRequestDetail.getDeliveryRequest().getProject().getId(), deliveryRequestDetail.getInboundDeliveryRequest().getWarehouse().getId(),
-				deliveryRequestDetail.getPartNumber().getId(), deliveryRequestDetail.getStatus(), deliveryRequestDetail.getOriginNumber(), deliveryRequestDetail.getInboundDeliveryRequest().getId());
+		return repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
 	}
 
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
@@ -176,8 +190,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
 		return repos.findByResource(username, warehouseList, assignedProjectList);
 	}
-	
-	
 
 	public void updateLocation(StockRow groupStockRow) {
 		System.out.println("groupStockRow.getNewLocation() " + groupStockRow.getNewLocation());
@@ -189,36 +201,35 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			repos.updateLocation(groupStockRow.getNewLocation(), groupStockRow.getInboundDeliveryRequest().getId(), groupStockRow.getPartNumber().getId(), groupStockRow.getLocation().getId(),
 					groupStockRow.getStatus());
 	}
-	
-	//mobile
-		public List<ma.azdad.mobile.model.StockRow> findByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
-			return repos.findByInboundDeliveryRequestMobile(deliveryRequestId);
-		}
 
-		public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
-			return repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
-		}
+	// mobile
+	public List<ma.azdad.mobile.model.StockRow> findByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
+		return repos.findByInboundDeliveryRequestMobile(deliveryRequestId);
+	}
 
-		public List<ma.azdad.mobile.model.StockRow> findAttachedOutboundDeliveryRequestListMobile(Integer deliveryRequestId) {
-			return repos.findAttachedOutboundDeliveryRequestListMobile(deliveryRequestId);
+	public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
+		return repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
+	}
+
+	public List<ma.azdad.mobile.model.StockRow> findAttachedOutboundDeliveryRequestListMobile(Integer deliveryRequestId) {
+		return repos.findAttachedOutboundDeliveryRequestListMobile(deliveryRequestId);
+	}
+
+	public List<ma.azdad.mobile.model.Location> findLocationsByDn(Integer id) {
+		DeliveryRequest dn = deliveryRequestService.findOne(id);
+		List<Location> locations = dn.getWarehouse().getLocationList();
+		List<ma.azdad.mobile.model.Location> mbLocations = new ArrayList<>();
+		for (Location location : locations) {
+			mbLocations.add(new ma.azdad.mobile.model.Location(location.getId(), location.getName()));
 		}
-		
-		public List<ma.azdad.mobile.model.Location> findLocationsByDn(Integer id){
-			DeliveryRequest dn = deliveryRequestService.findOne(id);
-			List<Location> locations = dn.getWarehouse().getLocationList();
-			List<ma.azdad.mobile.model.Location> mbLocations = new ArrayList<>();
-			for (Location location : locations) {
-				mbLocations.add(new ma.azdad.mobile.model.Location(location.getId(),location.getName()));
-			}
-			return mbLocations;
-		}
-		
-		public void changeStockRowLocation(Integer srId,Integer locationId) {
-			Location location = locationService.findOne(locationId);
-			StockRow sr = findOne(srId);
-			repos.updateLocation(location, sr.getInboundDeliveryRequest().getId(), sr.getPartNumber().getId(), sr.getLocation().getId(),
-					sr.getStatus());
-		}
+		return mbLocations;
+	}
+
+	public void changeStockRowLocation(Integer srId, Integer locationId) {
+		Location location = locationService.findOne(locationId);
+		StockRow sr = findOne(srId);
+		repos.updateLocation(location, sr.getInboundDeliveryRequest().getId(), sr.getPartNumber().getId(), sr.getLocation().getId(), sr.getStatus());
+	}
 
 	// REPORTING
 	public List<Integer> findCompanyOwnerList(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
@@ -1102,7 +1113,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Map<PartNumber, Double> findReturnedQuantityMap(Integer outboundDeliveryRequestId) {
 		return findReturnedStockRowListGroupByPartNumber(outboundDeliveryRequestId).stream().collect(Collectors.groupingBy(StockRow::getPartNumber, Collectors.summingDouble(StockRow::getQuantity)));
 	}
-	
+
 	public Map<Integer, Double> findQuantityPartNumberMapByDeliveryRequest(Integer deliveryRequest) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findQuantityByDeliveryRequestGroupByPartNumber(deliveryRequest);
@@ -1110,7 +1121,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			result.put((Integer) row[0], (Double) row[1]);
 		return result;
 	}
-	
+
 	public Map<Integer, Double> findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(Integer deliveryRequest) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findReturnedQuantityByOutboundDeliveryRequestGroupByPartNumber(deliveryRequest);
@@ -1118,8 +1129,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			result.put((Integer) row[0], (Double) row[1]);
 		return result;
 	}
-	
-	public Map<Integer, Double> findByDeliveryRequestAndExpirableMap(Integer deliveryRequestId){
+
+	public Map<Integer, Double> findByDeliveryRequestAndExpirableMap(Integer deliveryRequestId) {
 		Map<Integer, Double> result = new HashMap<Integer, Double>();
 		List<Object[]> data = repos.findByDeliveryRequestAndExpirableMap(deliveryRequestId);
 		for (Object[] row : data)
@@ -1134,8 +1145,8 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public void updateInboundOwnerId(Integer deliveryRequestId) {
 		repos.updateInboundOwnerId(deliveryRequestId);
 	}
-	
+
 	public Double findQuantityByDeliveryRequestDetail(Integer deliveryRequestDetail) {
-		return ObjectUtils.firstNonNull(repos.findQuantityByDeliveryRequestDetail(deliveryRequestDetail),0.0) ;
+		return ObjectUtils.firstNonNull(repos.findQuantityByDeliveryRequestDetail(deliveryRequestDetail), 0.0);
 	}
 }

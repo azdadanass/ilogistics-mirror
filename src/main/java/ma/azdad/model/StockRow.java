@@ -397,7 +397,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	// c20
 	public StockRow(Double quantity, Double tmpQuantity, PartNumber partNumber, DeliveryRequest deliveryRequest, StockRowStatus status, String originNumber, DeliveryRequest inboundDeliveryRequest,
-			DeliveryRequestDetail deliveryRequestDetail,DeliveryRequestDetail inboundDeliveryRequestDetail, Packing packing) {
+			DeliveryRequestDetail deliveryRequestDetail, DeliveryRequestDetail inboundDeliveryRequestDetail, Packing packing) {
 		super();
 		this.quantity = quantity;
 		this.partNumber = partNumber;
@@ -407,7 +407,7 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = new Date();
 		this.originNumber = originNumber;
 		this.inboundDeliveryRequest = inboundDeliveryRequest;
-		this.deliveryRequestDetail=deliveryRequestDetail;
+		this.deliveryRequestDetail = deliveryRequestDetail;
 		this.inboundDeliveryRequestDetail = inboundDeliveryRequestDetail;
 		this.packing = packing;
 	}
@@ -430,7 +430,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c22 --> deliveryReporting
-	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice,String originNumber, Integer priceCurrencyId, String projectName, String warehouseName, //
+	public StockRow(Double quantity, StockRowStatus status, Double unitCost, Integer costCurrencyId, Double unitPrice, String originNumber, Integer priceCurrencyId, String projectName,
+			String warehouseName, //
 			Integer partNumberId, String partNumberName, String partNumberImage, String partNumberDescription, String partNumberBrandName, //
 			Integer deliveryRequestId, DeliveryRequestType deliveryRequestType, InboundType deliveryRequestInboundType, String deliveryRequestReference, String deliveryRequestSmsRef,
 			Date deliveryRequestDate4, Boolean deliveryRequestSdm, Boolean deliveryRequestIsm, Boolean deliveryRequestIsForReturn, String deliveryRequestReturnReason,
@@ -934,9 +935,17 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = creationDate;
 	}
 
+	
+	
+	
+
+	
+
+	
+
 	@Override
 	public String toString() {
-		return "StockRow [quantity=" + quantity + ", partNumber=" + partNumber + "]\n";
+		return "{\"quantity\":\"" + quantity + "\", \"status\":\"" + status + "\", \"Location\":\"" + getLocation().getName() + "\", \"pn\":\"" + getPartNumberName() + "\"}";
 	}
 
 	public String getOriginNumber() {

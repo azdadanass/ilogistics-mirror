@@ -447,34 +447,31 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select a.id from DeliveryRequest a where a.status in ('APPROVED2','PARTIALLY_DELIVRED') and a.type in ('INBOUND','OUTBOUND') and a.neededDeliveryDate < current_date")
 	List<Integer> findDeliveryOverdue();
-	
-	
+
 	@Query("select a.requester.fullName from DeliveryRequest a where a.id = ?1")
 	String findRequesterFullName(Integer id);
+	
+	
+	@Query("from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' ")
+	List<DeliveryRequest> ackOldDeliveryRequestsScript();
+
+	@Query("select id from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 ")
+	List<Integer> findPendingAcknowledgementIdList();
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 and a.requester.username = ?1")
+	Long countPendingAcknowledgementIdList(String requesterUsername);
 
 	// mobile
 
-	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(" +
-		    "a.id, a.reference, a.type, a.neededDeliveryDate, a.date4, " +
-		    "a.inboundType, a.status, a.isForReturn, a.isForTransfer, a.requester.fullName, " +
-		    "a.project.id, a.project.name, " +
-		    "a.destinationProject.id, (select b.name from Project b where b.id = a.destinationProject.id), " +
-		    "a.warehouse.id, a.warehouse.name, " +
-		    "a.destination.id, (select b.name from Site b where b.id = a.destination.id), " +
-		    "a.origin.id, (select b.name from Site b where b.id = a.origin.id), " +
-		    "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " +
-		    "company.name, supplier.name, customer.name, a.ownerType) " + // NOTE: space at the end
-		    "from DeliveryRequest a " +
-		    "left join a.company company " +
-		    "left join a.supplier supplier " +
-		    "left join a.customer customer ";
-
-
-
+	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(" + "a.id, a.reference, a.type, a.neededDeliveryDate, a.date4, "
+			+ "a.inboundType, a.status, a.isForReturn, a.isForTransfer, a.requester.fullName, " + "a.project.id, a.project.name, "
+			+ "a.destinationProject.id, (select b.name from Project b where b.id = a.destinationProject.id), " + "a.warehouse.id, a.warehouse.name, "
+			+ "a.destination.id, (select b.name from Site b where b.id = a.destination.id), " + "a.origin.id, (select b.name from Site b where b.id = a.origin.id), "
+			+ "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " + "company.name, supplier.name, customer.name, a.ownerType) " + // NOTE: space at the end
+			"from DeliveryRequest a " + "left join a.company company " + "left join a.supplier supplier " + "left join a.customer customer ";
 
 	@Query(cm1 + "  where a.id = ?1")
 	ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id);
-	
 
 	@Query(cm1 + " where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.priority desc,a.neededDeliveryDate")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);

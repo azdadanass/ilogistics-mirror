@@ -81,6 +81,22 @@ public class EmailService {
 		send(mail);
 	}
 	
+	public void sendDeliveryRequestPendingAcknowledgementNotification() {
+		List<Integer> idList = deliveryRequestService.findPendingAcknowledgementIdList();
+		for (Integer id : idList) 
+			sendDeliveryRequestPendingAcknowledgementNotification(deliveryRequestService.findOne(id)); 
+	}
+	
+	public void sendDeliveryRequestPendingAcknowledgementNotification(DeliveryRequest deliveryRequest){
+		User toUser = deliveryRequest.getRequester();
+		String subject= deliveryRequest.getType().getValue()+" "+deliveryRequest.getReference()+" Pending Acknowledgement";
+		Mail mail = new Mail(toUser.getEmail(), subject, "deliveryRequest1.html", TemplateType.HTML);
+		mail.addCc(deliveryRequest.getToUserEmail());
+		mail.addParameter("deliveryRequest", deliveryRequest);
+		mail.addParameter("toUser", toUser);
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
 	
 	
 	@Async

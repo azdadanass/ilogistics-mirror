@@ -21,6 +21,11 @@ public class StockRow {
 	private String dnReference;
 	private Integer dnId;
 	
+	 public StockRow() {
+			super();
+		}
+
+	
 	//cm1
 	public StockRow(Integer id, String partNumberName, String partNumberImage, ma.azdad.model.Location location, StockRowStatus status,
 			StockRowState state, String partNumberDescription, Double quantity, String projectName, String warehouseName,

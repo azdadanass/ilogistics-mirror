@@ -457,6 +457,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select id from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 ")
 	List<Integer> findPendingAcknowledgementIdList();
+	
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 and a.requester.username = ?1")
+	Long countPendingAcknowledgementIdList(String requesterUsername);
 
 	// mobile
 

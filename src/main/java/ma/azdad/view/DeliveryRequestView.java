@@ -1557,6 +1557,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 1:
 			System.err.println("step1");
+			if (!validateStep1())
+				return null;
 
 			if (DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType())) {
 				findRemainingDetailListByProjectAndWarehouse();
@@ -1634,6 +1636,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		}
 		return null;
+	}
+	
+	private Boolean validateStep1() {
+		if(service.countPendingAcknowledgementIdList(sessionView.getUsername())>0)
+			return FacesContextMessages.ErrorMessages("Please note that you cannot request further DN unless you acknowledge your previous DN delivery");
+		
+		return true;
 	}
 
 	public List<String> getFilterList() {

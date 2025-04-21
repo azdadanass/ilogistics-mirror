@@ -2412,6 +2412,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return repos.findPendingAcknowledgementIdList();
 	}
 
+	public Long countPendingAcknowledgementIdList(String requesterUsername) {
+		return ObjectUtils.firstNonNull(repos.countPendingAcknowledgementIdList(requesterUsername),0l);
+	}
+	
 	// mobile
 
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {

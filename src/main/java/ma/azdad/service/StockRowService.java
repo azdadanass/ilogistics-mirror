@@ -41,7 +41,6 @@ import ma.azdad.repos.SiteRepos;
 import ma.azdad.repos.StockRowRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.ChartContainer;
-import ma.azdad.utils.ChartData;
 import ma.azdad.utils.Color;
 import ma.azdad.utils.Serie;
 
@@ -150,11 +149,30 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public List<StockRow> generateStockRowFromOutboundDeliveryRequest(DeliveryRequest deliveryRequest, String method) {
 		List<StockRow> result = new ArrayList<>();
 		Date currentDate = new Date();
-		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
-			List<StockRow> stockRowList = findRemainingToPrepare(detail);
 
+		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList()) {
+			DeliveryRequestDetail inboundDetail = detail.getInboundDeliveryRequestDetail();
+			Double quantity = detail.getQuantity();
+			List<StockRow> stockRowList = null;
+			switch (method) {
+			case "DEFAULT":
+				stockRowList = findRemainingToPrepare(detail);
+				break;
+//			case "FIFO":
+//				stockRowList = repos.findRemainingToPrepareMethod1(inboundDetail.getId(), detail.getStatus());
+//				break;
+			}
+			System.out.println(stockRowList);
+			for (StockRow stockRow : stockRowList) {
+				Double newStockRowQuantity = UtilsFunctions.compareDoubles(quantity, stockRow.getQuantity(), 4) >= 0 ? stockRow.getQuantity() : quantity;
+				quantity -= newStockRowQuantity;
+				result.add(new StockRow(detail, -newStockRowQuantity, deliveryRequest, stockRow.getStatus(), stockRow.getOriginNumber(), stockRow.getPartNumber(), stockRow.getInboundDeliveryRequest(),
+						inboundDetail, stockRow.getLocation(), currentDate, stockRow.getPacking()));
+				if (UtilsFunctions.compareDoubles(quantity, 0.0, 4) == 0)
+					break;
+			}
 		}
-		return null;
+		return result;
 	}
 
 	// must be sorted by quantity !!!!!

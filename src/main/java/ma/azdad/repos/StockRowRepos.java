@@ -97,13 +97,13 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 //	@Query(c2
 //			+ " from StockRow a where a.deliveryRequest.project.id = ?1 and a.deliveryRequest.warehouse.id = ?2 and a.partNumber.id = ?3 and a.status = ?4 and a.originNumber = ?5 and a.inboundDeliveryRequest.id = ?6 group by a.location.id having sum(a.quantity) != 0 order by sum(a.quantity) ")
 //	public List<StockRow> findRemainingToPrepare(Integer projectId, Integer warehouseId, Integer partNumberId, StockRowStatus status, String originNumber, Integer inboundDeliveryRequestId);
-	
+
 	@Query(c2 + "from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.status = ?2 group by a.location.id having sum(a.quantity) != 0 order by sum(a.quantity)")
 	public List<StockRow> findRemainingToPrepare(Integer inboundDeliveryRequestDetailId, StockRowStatus status);
-	
-	
-	
-	
+
+//	// FIFO no sense : we know already inbound delivery date
+//	@Query(c2 + "from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.status = ?2 group by a.location.id, having sum(a.quantity) != 0 order by a.inboundDeliveryRequestDetail.deliveryRequest.date4,sum(a.quantity)")
+//	public List<StockRow> findRemainingToPrepareMethod1(Integer inboundDeliveryRequestDetailId, StockRowStatus status);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -409,6 +409,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<DeliveryRequest> findByCanBeTransported(String username) {
 		return deliveryRequestRepos.findByCanBeTransported(username, DeliveryRequestStatus.APPROVED2);
 	}
+	
+	public void ackOldDeliveryRequestsScript() {
+		repos.ackOldDeliveryRequestsScript().forEach(i->{
+			i.setStatus(DeliveryRequestStatus.ACKNOWLEDGED);
+			i.setDate5(new Date());
+			i.setUser5(i.getRequester());
+			i.addHistory(new DeliveryRequestHistory(i.getStatus().getValue(), i.getRequester()));
+			save(i);
+		});
+	}
 
 	public String generateEmailNotification(DeliveryRequest deliveryRequest, String dearFullName, Boolean showMessage) {
 		DecimalFormat decimalFormat = new DecimalFormat("###,###.##");
@@ -2396,6 +2406,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	
 	public String findRequesterFullName(Integer id) {
 		return repos.findRequesterFullName(id);
+	}
+	
+	public List<Integer> findPendingAcknowledgementIdList(){
+		return repos.findPendingAcknowledgementIdList();
 	}
 
 	// mobile

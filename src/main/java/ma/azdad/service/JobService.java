@@ -112,5 +112,10 @@ public class JobService {
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}
+	
+	@Scheduled(cron = "00 45 05 * * *")
+	public void sendDeliveryRequestPendingAcknowledgementNotification() {
+		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
+	}
 
 }

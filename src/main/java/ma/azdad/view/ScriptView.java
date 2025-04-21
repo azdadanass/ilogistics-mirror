@@ -183,6 +183,12 @@ public class ScriptView {
 			return;
 		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}
+	
+	public void ackOldDeliveryRequestsScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.ackOldDeliveryRequestsScript();
+	}
 
 	public void updateOutboundInboundPoScript() {
 		log.info("start updateOutboundInboundPoScript");

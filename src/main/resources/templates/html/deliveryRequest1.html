@@ -1,0 +1,169 @@
+<html>
+<style type="text/css">
+.header {
+	line-height: 28px;
+	margin-bottom: 16px;
+	margin-top: 18px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #CCC;
+	font-size: 17px;
+}
+</style>
+<body style="padding-top: 40px; background-color: #fff; font-family: 'Arial'; font-size: 12px;">
+	<div style='text-align: center; margin: 20px 0px 10px 0px'>
+		<a th:href="${deliveryRequest.qrLink}" style='text-align: right; margin: 20px 0px 10px 0px;'>
+			<img height='100' width='100' style='width: 100px; height: 100px' th:src="${deliveryRequest.qrImageLink}" />
+		</a>
+	</div>
+	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
+		Dear
+		<span th:text="${toUser.fullName}"></span>
+		, <br /> Kindly be informed that the
+		<span th:text="${deliveryRequest.type.value}"></span>
+		DN below is pending Acknowledgement <br />
+	</div>
+	<div style='text-align: center; margin: 20px 0px 10px 0px'>
+		<img th:src="${deliveryRequest.timeLineImageLink}" />
+	</div>
+	<br />
+	<table style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Reference</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:if="${deliveryRequest.isInbound}"
+				th:text="${deliveryRequest.reference}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #dd5a43' th:if="${!deliveryRequest.isInbound}"
+				th:text="${deliveryRequest.reference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Status</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${deliveryRequest.status.value}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Project</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.projectName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Warehouse</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3' th:text="${deliveryRequest.warehouseName}"></td>
+		</tr>
+		<tr th:if="${deliveryRequest.isInbound}">
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Pref Storage Location</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #c6699f' th:text="${deliveryRequest.preferedLocationName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Appr Storage Period</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46'
+				th:text="${deliveryRequest.approximativeStoragePeriod}"></td>
+		</tr>
+		<tr th:if="${deliveryRequest.isOutbound}">
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination Project</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #c6699f' th:text="${deliveryRequest.destinationProjectName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination Project Manager</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46'
+				th:text="${deliveryRequest.destinationProjectManagerFullName}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Priority</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.priority.value}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Important</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3' th:text="${deliveryRequest.important} ? 'Yes' : 'No'"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Requester</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff892a' th:text="${deliveryRequest.requesterFullName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>REF</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #93cbf9' th:text="${deliveryRequest.smsRef}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Transportation Needed</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${deliveryRequest.transportationNeeded} ? 'Yes' : 'No'"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Transporter</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${deliveryRequest.transporterName}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Transportation Request</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46'
+				th:text="${deliveryRequest.transportationRequestReference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>TR Status</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3'
+				th:text="${deliveryRequest.transportationRequestStatus}"></td>
+		</tr>
+	</table>
+	<h4 class="header" style="color: #478fca">Delivery Details</h4>
+	<table th:if="${deliveryRequest.isInbound}" style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Owner</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.ownerName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Needed Delivery Date</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #dd5a43' th:text="${deliveryRequest.neededDeliveryDate}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Origin Number</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #ff892a' th:text="${deliveryRequest.originNumber}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Delivery Date</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3' th:text="${deliveryRequest.date4}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Origin Site</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #478fca' th:text="${deliveryRequest.originName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Origin Address</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #93cbf9' th:text="${deliveryRequest.originGoogleAddress}"></td>
+		</tr>
+	</table>
+	<table th:if="${deliveryRequest.isOutbound}" style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>End Customer</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.endCustomerName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Needed Delivery Date</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #dd5a43' th:text="${deliveryRequest.neededDeliveryDate}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination Site</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.destinationName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination Address</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #a069c3' th:text="${deliveryRequest.destinationGoogleAddress}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Deliver To Entity</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46' th:text="${deliveryRequest.deliverToEntityName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Deliver To</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'>
+				<span style='color: #69aa46' th:text="${deliveryRequest.toUserFullName}"></span>
+				,
+				<span style='color: #93cbf9' th:text="${deliveryRequest.toUserEmail}"></span>
+				,
+				<span style='color: #ff892a' th:text="${deliveryRequest.toUserPhone}"></span>
+				,
+				<span style='color: #a069c3' th:text="${deliveryRequest.toUserCin}"></span>
+			</td>
+		</tr>
+	</table>
+	<h4 class="header" style="color: #478fca">Details</h4>
+	<table style="border: 2px solid #307ecc; border-spacing: 0; border-collapse: collapse; width: 80%; margin: auto; margin-top: 20px; text-align: center; font-family: 'Arial'; font-size: 12px;">
+		<tr>
+			<th colspan='5' style='background-color: #307ecc; color: #fff; padding: 10px'>Details</th>
+		</tr>
+		<tr style='background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6); font-weight: bold; color: #333333'>
+			<th style='border: 1px solid #ddd; padding: 8px'>Part Number</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Description</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Unit / Kit</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Quantity</th>
+		</tr>
+		<tr th:each="detail : ${deliveryRequest.detailList}" style='background-color: #F9F9F9;'>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${detail.partNumberName}"></td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${detail.partNumberDescription}"></td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${detail.partNumber.unit} ? 'Unit' : 'kit'"></td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${detail.quantity}"></td>
+		</tr>
+	</table>
+	<br />
+</body>
+</html>

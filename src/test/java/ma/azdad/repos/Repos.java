@@ -6,8 +6,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.model.DeliveryRequest;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.EmailService;
 import ma.azdad.service.StockRowService;
 
 @Rollback(false)
@@ -21,14 +21,19 @@ public class Repos extends GenericTest {
 	DeliveryRequestService deliveryRequestService; 
 	
 
+	@Autowired
+	DeliveryRequestRepos deliveryRequestRepos; 
+	
+	@Autowired
+	EmailService emailService; 
+	
+
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		DeliveryRequest deliveryRequest = deliveryRequestService.findOne(24400);
-		System.out.println(stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest, "DEFAULT"));
-		System.out.println(stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest, "FIFO"));
-		
-		
+//		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
+		deliveryRequestService.ackOldDeliveryRequestsScript();
+		System.out.println(deliveryRequestService.findPendingAcknowledgementIdList().size());
 	}
 
 }

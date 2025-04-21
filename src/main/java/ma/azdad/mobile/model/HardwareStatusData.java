@@ -20,6 +20,10 @@ public class HardwareStatusData {
 	private Boolean isAdded;
 	private Location location;
 	
+	public HardwareStatusData() {
+		
+	}
+	
 	
 	public HardwareStatusData(Integer id, String partNumber, Double quantity, String packing,
 			Double packingQty,Integer packingId,Integer detailId,String partNumberImage) {

@@ -11,6 +11,11 @@ public class DnMaterials {
     private String inboundRequest;
     private String location;
     private double quantity;
+    
+    
+    public DnMaterials() {
+		super();
+	}
 
     // Constructor
     public DnMaterials(int id, String partNumber, String status, String location, 

@@ -14,6 +14,11 @@ public class DeliveryRequestSerialNumber {
 	private String partNumberImage;
 	private String snType;
 	
+	public DeliveryRequestSerialNumber() {
+		super();
+	}
+
+	
 	
 	public DeliveryRequestSerialNumber(Integer id, String packingDetail, String partNumber, String serialNumber,String image,String snType,
 			Integer packingNumero,String status,String location) {

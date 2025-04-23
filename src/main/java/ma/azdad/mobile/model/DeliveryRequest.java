@@ -31,6 +31,8 @@ public class DeliveryRequest {
 	private Boolean isForTransfer = false;
 	private Boolean isSnRequired = false;
 	private Boolean showExpiryData = false;
+	private Integer approximativeStoragePeriod = 0;
+
 
 	
 	private String ownerName;
@@ -89,13 +91,15 @@ public class DeliveryRequest {
 			String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
 			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
 			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
-			Boolean transportationNeeded,Boolean isSnRequired,String company,String supplier,String customer,CompanyType ownerType) {
+			Boolean transportationNeeded,Boolean isSnRequired,String company,String supplier,String customer,CompanyType ownerType
+			,Integer approximativeStoragePeriod) {
 		super();
 		this.id = id;
 		this.reference = reference;
 		this.type = type;
 		this.neededDeliveryDate = neededDeliveryDate;
 		this.date4 = date4;
+		this.approximativeStoragePeriod = approximativeStoragePeriod;
 		this.inboundType = inboundType;
 		this.status = status;
 		this.isForReturn = isForReturn;
@@ -567,6 +571,16 @@ public class DeliveryRequest {
 	public void setOwnerType(CompanyType ownerType) {
 		this.ownerType = ownerType;
 	}
+
+	public Integer getApproximativeStoragePeriod() {
+		return approximativeStoragePeriod;
+	}
+
+	public void setApproximativeStoragePeriod(Integer approximativeStoragePeriod) {
+		this.approximativeStoragePeriod = approximativeStoragePeriod;
+	}
+	
+	
 
 	
 	

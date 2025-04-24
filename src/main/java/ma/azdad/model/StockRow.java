@@ -935,14 +935,6 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.creationDate = creationDate;
 	}
 
-	
-	
-	
-
-	
-
-	
-
 	@Override
 	public String toString() {
 		return "{\"quantity\":\"" + quantity + "\", \"status\":\"" + status + "\", \"Location\":\"" + getLocation().getName() + "\", \"pn\":\"" + getPartNumberName() + "\"}";

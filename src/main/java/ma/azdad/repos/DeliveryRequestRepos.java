@@ -81,23 +81,27 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightBySupplierUser(Integer deliverToSupplierId, List<Integer> projectList, DeliveryRequestType type, List<Integer> warehouseList,
 			List<DeliveryRequestStatus> statusList);
 
-	@Query(c1 + " from DeliveryRequest a"
-			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5"
-			+ " order by a.neededDeliveryDate desc")
+	@Query(c1 + " from DeliveryRequest a "
+			+ "where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5 "
+			+"and a.status not in ('REJECTED','CANCELED') "
+			+ "order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findPendingJrMapping(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
 
-	@Query("select count(*) from DeliveryRequest a"
-			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5"
+	@Query("select count(*) from DeliveryRequest a "
+			+ " where a.pendingJrMapping is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5 "
+			+" and a.status not in ('REJECTED','CANCELED') "
 			+ " order by a.neededDeliveryDate desc")
 	public Long countPendingJrMapping(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
 
-	@Query(c1 + " from DeliveryRequest a"
-			+ " where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5"
-			+ " order by a.neededDeliveryDate desc")
+	@Query(c1 + " from DeliveryRequest a "
+			+ "where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5 "
+			+"and a.status not in ('REJECTED','CANCELED') "
+			+ "order by a.neededDeliveryDate desc")
 	public List<DeliveryRequest> findHavingRunningStock(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
 
-	@Query("select count(*) from DeliveryRequest a"
-			+ " where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5"
+	@Query("select count(*) from DeliveryRequest a "
+			+ "where a.havingRunningStock is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.project.id in (?2)) and a.type = ?3 and a.sdm = ?4 and a.ism = ?5 "
+			+"and a.status not in ('REJECTED','CANCELED')"
 			+ " order by a.neededDeliveryDate desc")
 	public Long countHavingRunningStock(String username, Collection<Integer> projectList, DeliveryRequestType type, Boolean sdm, Boolean ism);
 
@@ -455,10 +459,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' ")
 	List<DeliveryRequest> ackOldDeliveryRequestsScript();
 
-	@Query("select id from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 ")
+	@Query("select id from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' ")
 	List<Integer> findPendingAcknowledgementIdList();
 	
-	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and datediff(current_date,a.date4) > 5 and a.requester.username = ?1")
+	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and a.requester.username = ?1")
 	Long countPendingAcknowledgementIdList(String requesterUsername);
 
 	// mobile

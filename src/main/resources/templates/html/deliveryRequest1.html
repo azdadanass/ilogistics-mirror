@@ -18,9 +18,12 @@
 	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
 		Dear
 		<span th:text="${toUser.fullName}"></span>
-		, <br /> Kindly be informed that the
-		<span th:text="${deliveryRequest.type.value}"></span>
-		DN below is pending Acknowledgement <br />
+		, <br /> Please be informed that the Outbond DN below has been delivered on <span th:text="${#dates.format(deliveryRequest.date4)}"></span> and still pending acknowledge from your end
+		<br/>
+		You are requested to acknowledge the Goods delivery within 5 working days as per the internal policies. We would appreciate if you could complete this task before the deadline.
+		<br />
+		Below the DN details :
+		<br/>
 	</div>
 	<div style='text-align: center; margin: 20px 0px 10px 0px'>
 		<img th:src="${deliveryRequest.timeLineImageLink}" />

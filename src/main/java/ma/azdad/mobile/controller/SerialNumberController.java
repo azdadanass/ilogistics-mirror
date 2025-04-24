@@ -3,13 +3,14 @@ package ma.azdad.mobile.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.server.ResponseStatusException;
 
 import ma.azdad.mobile.model.Token;
 import ma.azdad.model.DeliveryRequestSerialNumber;
@@ -30,15 +31,27 @@ public class SerialNumberController {
 	@Autowired
 	TokenService tokenService;
 
-	@GetMapping("/mobile/sn/scan/{key}/{id}/{serial}")
-	public void updateSerialNumber(@PathVariable Integer id, @PathVariable String serial, @PathVariable String key) {
-		Token token = tokenService.getBykey(key);
-		System.out.println("/mobile/sn/scan/" + id + "/"+serial+"/" + token.getKey());
-		DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id).get();
-		sn.setSerialNumber(serial);
-		sn = deliveryRequestSerialNumberRepos.save(sn);
+	@GetMapping("/mobile/sn/scan/{key}/{id}/{dnId}/{serial}")
+	public void updateSerialNumber(@PathVariable Integer id,@PathVariable Integer dnId, @PathVariable String serial, @PathVariable String key) {
+	    Token token = tokenService.getBykey(key);
+	    System.out.println("/mobile/sn/scan/" + id + "/" + serial + "/" + token.getKey());
 
+	    DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id)
+	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Serial number not found"));
+
+	    List<DeliveryRequestSerialNumber> serials = deliveryRequestSerialNumberRepos.findByDeliveryRequest(dnId);
+
+	    boolean serialExists = serials.stream()
+	        .anyMatch(s -> serial.equals(s.getSerialNumber()));
+
+	    if (serialExists) {
+	        throw new ResponseStatusException(HttpStatus.CONFLICT, "Serial already exists");
+	    }
+
+	    sn.setSerialNumber(serial);
+	    deliveryRequestSerialNumberRepos.save(sn);
 	}
+
 	
 	@GetMapping("/mobile/sn/scanOutbound/{key}/{id}/{serial}")
 	public ResponseEntity<String> scanOutboundSnMobile( @PathVariable String key,@PathVariable Integer id, @PathVariable String serial) {

@@ -1902,9 +1902,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					break;
 				}
 
-			if (deliveryRequest.getIsOutbound())
-				service.updateOutboundInboundPo(deliveryRequest.getId());
-
 			if (deliveryRequest.getIsInboundReturn() && deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo() != null)
 				deliveryRequest.setPo(deliveryRequest.getOutboundDeliveryRequestReturn().getInboundPo());
 
@@ -1947,6 +1944,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		} catch (Exception e) {
 			FacesContextMessages.ErrorMessages(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

@@ -2285,7 +2285,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		// update field missing sn
 		deliveryRequest = findOne(deliveryRequest.getId());
 		if (deliveryRequest.getStockRowList().stream().filter(i -> deliveryRequestSerialNumberService
-				.countByPartNumberAndInboundDeliveryRequest(i.getId(), i.getInboundDeliveryRequest().getId()) > 0)
+				.countByPartNumberAndInboundDeliveryRequest(i.getPartNumberId(), i.getInboundDeliveryRequest().getId()) > 0)
 				.count() > 0)
 			updateMissingSerialNumber(deliveryRequest.getId(), true);
 		// update is missing expiry

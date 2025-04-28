@@ -2859,6 +2859,17 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
+	
+	// serial number
+	public Boolean showSerialNumber() {
+		if(deliveryRequest.getIsInbound())
+			return deliveryRequest.getIsSnRequired();
+		else if(deliveryRequest.getIsOutbound())
+			return deliveryRequest.getMissingSerialNumber()!=null;
+		return false;
+	}
+	
+	
 
 	// generic
 	public Boolean getisHardwareSwapInbound() {

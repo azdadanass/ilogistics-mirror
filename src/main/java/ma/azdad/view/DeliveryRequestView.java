@@ -627,9 +627,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update field missing sn
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 			if (deliveryRequest.getStockRowList().stream()
-					.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getPartNumberId(), i.getInboundDeliveryRequest().getId()) > 0).count() > 0) 
+					.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getPartNumberId(), i.getInboundDeliveryRequest().getId()) > 0)
+					.count() > 0)
 				service.updateMissingSerialNumber(deliveryRequest.getId(), true);
-				
 
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
@@ -1109,8 +1109,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public Boolean canEditIsSnRequired() {
-		return (sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
-				|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
+
+		return deliveryRequest.getIsInbound() && //
+				(sessionView.isTheConnectedUser(deliveryRequest.getRequester()) || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername())
+						|| projectService.isHardwareManager(deliveryRequest.getProject().getId(), sessionView.getUsername())) //
 				&& ((deliveryRequest.getIsSnRequired() && deliveryRequestSerialNumberService.countByDeliveryRequest(deliveryRequest.getId()) == 0) //
 						|| (!deliveryRequest.getIsSnRequired()) && packingDetailService.countByDeliveryRequestAndHasSerialNumber(deliveryRequest.getId()) > 0);
 	}
@@ -1119,6 +1121,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (!canEditIsSnRequired())
 			return;
 		service.updateIsSnRequired(deliveryRequest.getId(), deliveryRequest.getIsSnRequired());
+		service.updateMissingSerialNumber(deliveryRequest.getId(), deliveryRequest.getIsSnRequired()?true:null);
 	}
 
 	/*
@@ -2859,17 +2862,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + deliveryRequest.getId());
 	}
-	
+
 	// serial number
 	public Boolean showSerialNumber() {
-		if(deliveryRequest.getIsInbound())
+		if (deliveryRequest.getIsInbound())
 			return deliveryRequest.getIsSnRequired();
-		else if(deliveryRequest.getIsOutbound())
-			return deliveryRequest.getMissingSerialNumber()!=null;
+		else if (deliveryRequest.getIsOutbound())
+			return deliveryRequest.getMissingSerialNumber() != null;
 		return false;
 	}
-	
-	
 
 	// generic
 	public Boolean getisHardwareSwapInbound() {

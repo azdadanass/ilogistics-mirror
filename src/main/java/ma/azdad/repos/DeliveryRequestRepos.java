@@ -214,10 +214,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select count(*)  from DeliveryRequest a where a.transportationNeeded = true and (select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)=0 and a.requester.username = ?1 and a.status not in (?2)")
 	public Long countByPendingTransportation(String username, List<DeliveryRequestStatus> notInStatus);
 
-	@Query(c1 + "from DeliveryRequest a where a.isSnRequired is true and a.missingSerialNumber is true and a.warehouse.id in (?1)")
+	@Query(c1 + "from DeliveryRequest a where a.missingSerialNumber is true and a.warehouse.id in (?1)")
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList);
 
-	@Query("select count(*) from DeliveryRequest a where a.isSnRequired is true and a.missingSerialNumber is true and a.warehouse.id in (?1)")
+	@Query("select count(*) from DeliveryRequest a where a.missingSerialNumber is true and a.warehouse.id in (?1)")
 	public Long countByMissingSerialNumber(List<Integer> warehouseList);
 
 	@Query(c1 + "from DeliveryRequest a where a.missingExpiry = true and a.warehouse.id in (?1)")

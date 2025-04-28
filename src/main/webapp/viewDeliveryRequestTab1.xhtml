@@ -57,6 +57,7 @@
 						&nbsp;
 					</div>
 				</div>
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
 				<div class="profile-info-row">
 					<div class="profile-info-name">
 						<h:outputText value="Is SN Required" />
@@ -70,6 +71,7 @@
 						&nbsp;
 					</div>
 				</div>
+				</f:subview>
 				<div class="profile-info-row">
 					<div class="profile-info-name">
 						<h:outputText value="Requester" />

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,8 +54,10 @@ public class SerialNumberController {
 	}
 
 	
-	@GetMapping("/mobile/sn/scanOutbound/{key}/{id}/{serial}")
-	public ResponseEntity<String> scanOutboundSnMobile( @PathVariable String key,@PathVariable Integer id, @PathVariable String serial) {
+	@GetMapping("/mobile/sn/scanOutbound")
+	public ResponseEntity<String> scanOutboundSnMobile(@RequestParam String key,
+		    @RequestParam Integer id,
+		    @RequestParam String serial) {
 		Token token = tokenService.getBykey(key);
 		System.out.println("/mobile/sn/scanOutbound/");
 	    return deliveryRequestSerialNumberService.scanOutboundSnMobile(id, serial);

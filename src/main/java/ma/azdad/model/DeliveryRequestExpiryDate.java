@@ -3,6 +3,7 @@ package ma.azdad.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -176,6 +177,7 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 	}
 
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false)
 	public Date getExpiryDate() {
 		return expiryDate;
 	}

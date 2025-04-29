@@ -1121,7 +1121,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		if (!canEditIsSnRequired())
 			return;
 		service.updateIsSnRequired(deliveryRequest.getId(), deliveryRequest.getIsSnRequired());
-		service.updateMissingSerialNumber(deliveryRequest.getId(), deliveryRequest.getIsSnRequired()?true:null);
+		service.updateMissingSerialNumber(deliveryRequest.getId(), deliveryRequest.getIsSnRequired() && Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED,DeliveryRequestStatus.DELIVRED).contains(deliveryRequest.getStatus())?true:null);
 	}
 
 	/*

@@ -2101,7 +2101,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
 		}
 		dnm.setShowExpiryData(dn.showExpiryData());
-
+		dnm.setShowSnData(showSerialNumber(dn));;
 		dnm.setOwnerName(
 				getOwnerName(dn.getCompanyName(), dn.getCustomerName(), dn.getSupplierName(), dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
@@ -2170,6 +2170,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (dn.getDate8() != null)
 			dnm.setDate8(dn.getDate8());
 		return dnm;
+	}
+	
+	public Boolean showSerialNumber(DeliveryRequest deliveryRequest) {
+		if (deliveryRequest.getIsInbound())
+			return deliveryRequest.getIsSnRequired();
+		else if (deliveryRequest.getIsOutbound())
+			return deliveryRequest.getMissingSerialNumber() != null;
+		return false;
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByWarehouseListMobile(List<Integer> warehouseList) {

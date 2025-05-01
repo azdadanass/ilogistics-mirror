@@ -31,6 +31,7 @@ public class DeliveryRequest {
 	private Boolean isForTransfer = false;
 	private Boolean isSnRequired = false;
 	private Boolean showExpiryData = false;
+	private Boolean showSnData = false;
 	private Integer approximativeStoragePeriod = 0;
 
 
@@ -579,6 +580,16 @@ public class DeliveryRequest {
 	public void setApproximativeStoragePeriod(Integer approximativeStoragePeriod) {
 		this.approximativeStoragePeriod = approximativeStoragePeriod;
 	}
+
+	public Boolean getShowSnData() {
+		return showSnData;
+	}
+
+	public void setShowSnData(Boolean showSnData) {
+		this.showSnData = showSnData;
+	}
+	
+	
 	
 	
 

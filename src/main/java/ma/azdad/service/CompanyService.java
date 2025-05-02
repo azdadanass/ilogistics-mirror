@@ -59,6 +59,11 @@ public class CompanyService {
 	public Currency findAccountingCurrency(Integer id) {
 		return repos.findAccountingCurrency(id);
 	}
+	
+	@Cacheable("companyService.findLightByProject")
+	public Company findLightByProject(Integer projectId) {
+		return repos.findLightByProject(projectId);
+	}
 
 	@Cacheable("companyService.findNameMap")
 	public Map<Integer, String> findNameMap() {

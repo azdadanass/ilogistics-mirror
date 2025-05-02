@@ -33,5 +33,8 @@ public abstract interface CompanyRepos extends JpaRepository<Company, Integer> {
 	
 	@Query("select a.accountingCurrency from Company a where a.id = ?1")
 	Currency findAccountingCurrency(Integer id);
+	
+	@Query("select new Company(a.costcenter.lob.bu.company.id,a.costcenter.lob.bu.company.name) from Project a where a.id = ?1")
+	Company findLightByProject(Integer projectId);
 
 }

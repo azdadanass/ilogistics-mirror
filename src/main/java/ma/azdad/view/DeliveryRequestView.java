@@ -319,7 +319,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		projectCross = projectCrossService.findByDeliveryRequest(id);
 	}
-
+	
 	public Boolean canDuplicate() {
 		return sessionView.getIsUser() && sessionView.isTheConnectedUser(deliveryRequest.getRequester());
 	}

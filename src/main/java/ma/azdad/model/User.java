@@ -60,6 +60,7 @@ public class User extends GenericModel<String> {
 	private Company company;
 	private Customer customer;
 	private Supplier supplier;
+	private String other;
 	private Transporter transporter;
 
 	private User user;
@@ -176,6 +177,21 @@ public class User extends GenericModel<String> {
 	@Transient
 	public String getName() {
 		return this.fullName;
+	}
+	
+	@Transient
+	public String getEntityName() {
+		switch (companyType) {
+		case COMPANY:
+		case CONSULTANT:
+			return getCompanyName();
+		case CUSTOMER:
+			return getCustomerName();
+		case SUPPLIER:
+			return getSupplierName();
+		default:
+			return null;
+		}
 	}
 
 	@Transient
@@ -752,6 +768,14 @@ public class User extends GenericModel<String> {
 	@Transient
 	public Boolean getIsSupplierUser() {
 		return CompanyType.SUPPLIER.equals(companyType);
+	}
+	
+	public String getOther() {
+		return other;
+	}
+
+	public void setOther(String other) {
+		this.other = other;
 	}
 
 }

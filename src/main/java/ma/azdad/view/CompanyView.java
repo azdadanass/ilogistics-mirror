@@ -66,6 +66,10 @@ public class CompanyView {
 	public List<Company> findLight() {
 		return service.findLight();
 	}
+	
+	public Company findLightByProject(Integer projectId) {
+		return service.findLightByProject(projectId);
+	}
 
 	public Company findCompanyUser(String username) {
 		return service.findCompanyUser(username);

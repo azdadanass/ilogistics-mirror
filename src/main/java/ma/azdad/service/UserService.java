@@ -419,5 +419,42 @@ public class UserService {
 		result.remove(deliveryRequest.getRequester());
 		return new ArrayList<User>(result);
 	}
+	
+	public List<User> findByAssignementAndCompany(Integer projectId, Integer companyId) {
+		return repos.findByAssignementAndCompany(projectId, companyId);
+	}
+
+	public List<User> findByAssignementAndCustomer(Integer projectId, Integer customerId) {
+		return repos.findByAssignementAndCustomer(projectId, customerId);
+	}
+
+	public List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId) {
+		return repos.findByAssignementAndSupplier(projectId, supplierId);
+	}
+	
+	@Cacheable("userService.findCompanyType")
+	public CompanyType findCompanyType(String username) {
+		return repos.findCompanyType(username);
+	}
+	
+	@Cacheable("userService.findEntityName")
+	public String findEntityName(User user) {
+		if (user.getCompanyType() != null)
+			switch (user.getCompanyType()) {
+			case COMPANY:
+				return repos.findCompanyName(user.getUsername());
+			case CUSTOMER:
+				return repos.findCustomerName(user.getUsername());
+			case SUPPLIER:
+				return repos.findSupplierName(user.getUsername());
+			case OTHER:
+				return user.getOther();
+			default:
+				break;
+			}
+
+		return null;
+
+	}
 
 }

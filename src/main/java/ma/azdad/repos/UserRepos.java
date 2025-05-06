@@ -153,9 +153,6 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	User findByPhone(String phone);
 
-	@Query("select case when company is not null then company.name else 'haha' end from User a left join a.company company left join a.customer customer left join a.supplier supplier where a.username = ?1")
-	String findCompanyName(String username);
-
 	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and (select count(*) from UserRole b where b.user.username = a.user.username and  b.role = ?2) > 0 and a.user.internal = ?3 ")
 	List<User> findByProjectAssignmentAndUserRole(Integer projectId, Role userRole, Boolean internal);
 
@@ -198,4 +195,28 @@ public interface UserRepos extends JpaRepository<User, String> {
 	
 	@Query("select distinct a.user from UserRole a where a.user.active is true and a.role = ?1")
 	List<User> findByRole(Role role);
+	
+	@Query(c1
+			+ "from User a where a.companyType = 'COMPANY' and a.company.id = ?2 and (select count(*) from ProjectAssignment b where b.user.username = a.username and b.project.id = ?1 and current_date between b.startDate and b.endDate) > 0")
+	List<User> findByAssignementAndCompany(Integer projectId, Integer companyId);
+
+	@Query(c1
+			+ "from User a where a.companyType = 'CUSTOMER' and a.customer.id = ?2 and (select count(*) from ProjectAssignment b where b.user.username = a.username and b.project.id = ?1 and current_date between b.startDate and b.endDate) > 0")
+	List<User> findByAssignementAndCustomer(Integer projectId, Integer customerId);
+
+	@Query(c1
+			+ "from User a where a.companyType = 'SUPPLIER' and a.supplier.id = ?2 and (select count(*) from ProjectAssignment b where b.user.username = a.username and b.project.id = ?1 and current_date between b.startDate and b.endDate) > 0")
+	List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId);
+	
+	@Query("select a.companyType from User a where a.username = ?1")
+	CompanyType findCompanyType(String username);
+	
+	@Query("select a.company.name from User a where a.username = ?1")
+	String findCompanyName(String username);
+
+	@Query("select a.customer.name from User a where a.username = ?1")
+	String findCustomerName(String username);
+
+	@Query("select a.supplier.name from User a where a.username = ?1")
+	String findSupplierName(String username);
 }

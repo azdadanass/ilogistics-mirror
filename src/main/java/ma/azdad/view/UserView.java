@@ -114,6 +114,10 @@ public class UserView {
 		if (isListPage)
 			list2 = list1 = filterByUser ? userService.findLightByUser(false, sessionView.getUsername()) : userService.findLight(false);
 	}
+	
+	public void refreshList(List<User> list) {
+		list2 = list1 = list;
+	}
 
 	public Integer getRowsNumber() {
 		if (list3 != null)
@@ -399,6 +403,26 @@ public class UserView {
 	
 	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest){
 		return userService.findHandoverUserList(deliveryRequest);
+	}
+	
+	public List<User> findByAssignementAndCompany(Integer projectId, Integer companyId) {
+		return userService.findByAssignementAndCompany(projectId, companyId);
+	}
+
+	public List<User> findByAssignementAndCustomer(Integer projectId, Integer customerId) {
+		return userService.findByAssignementAndCustomer(projectId, customerId);
+	}
+
+	public List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId) {
+		return userService.findByAssignementAndSupplier(projectId, supplierId);
+	}
+	
+	public CompanyType findCompanyType(String username) {
+		return userService.findCompanyType(username);
+	}
+	
+	public String findEntityName(User user) {
+		return userService.findEntityName(user);
 	}
 
 	// getters & setters

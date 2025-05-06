@@ -217,7 +217,7 @@
 							<p:column headerText="Destination Site" styleClass="hide" rendered="#{deliveryRequestView.isOutbound}">
 								<h:outputText value="#{item.destinationName}" />
 							</p:column>
-							<p:column headerText="Delivery Date" rendered="#{(deliveryRequestView.pageIndex==1 and deliveryRequestView.state==DeliveryRequestState.DELIVRED) or  deliveryRequestView.pageIndex==2 or deliveryRequestView.pageIndex==15}" >
+							<p:column headerText="Delivery Date" rendered="#{deliveryRequestView.isPageIndex(2,11,15) or (deliveryRequestView.isPageIndex(1) and deliveryRequestView.state==DeliveryRequestState.DELIVRED)}" >
 								<h:outputText value="#{item.date4}">
 									<f:convertDateTime pattern="yyyy-MM-dd" />
 								</h:outputText>
@@ -237,7 +237,7 @@
 								rendered="#{(DeliveryRequestType.INBOUND==deliveryRequestView.type or DeliveryRequestType.XBOUND==deliveryRequestView.type) and deliveryRequestView.pageIndex!=15}">
 								<h:outputText value="#{item.originName}" />
 							</p:column>
-							<p:column headerText="Origin DN Number" rendered="#{deliveryRequestView.pageIndex!=2 and deliveryRequestView.pageIndex!=4 and deliveryRequestView.pageIndex!=5 and deliveryRequestView.pageIndex!=15}">
+							<p:column headerText="Origin DN Number" rendered="#{!deliveryRequestView.isPageIndex(2,4,5,15,11)}">
 								<h:outputText value="#{item.originNumber}" styleClass="bolder" />
 							</p:column>
 							<p:column headerText="DN Cost" rendered="#{deliveryRequestView.pageIndex==5}">

@@ -84,7 +84,11 @@ public class SerialNumberController {
 		Token token = tokenService.getBykey(key);
 		System.out.println("/mobile/sn/clear/" + id + "/" + token.getKey());
 		DeliveryRequestSerialNumber sn = deliveryRequestSerialNumberRepos.findById(id).get();
-		sn.setSerialNumber(null);
+		if(sn.getOutboundDeliveryRequest() != null) {
+		sn.setOutboundDeliveryRequest(null);
+		}else {
+			sn.setSerialNumber(null);
+		}
 		deliveryRequestSerialNumberRepos.save(sn);
 
 	}

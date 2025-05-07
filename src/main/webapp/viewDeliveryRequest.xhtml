@@ -2211,7 +2211,7 @@
 								</div>
 							</div>
 						</div>
-						<f:subview rendered="#{DeliveryRequestStatus.APPROVED2==deliveryRequestView.deliveryRequest.status}">
+						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound and DeliveryRequestStatus.APPROVED2==deliveryRequestView.deliveryRequest.status}">
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-home green" />

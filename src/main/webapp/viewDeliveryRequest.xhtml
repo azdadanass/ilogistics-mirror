@@ -1985,7 +1985,7 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
 												<h:outputText value="#{item.tmpPartNumber.name} / " styleClass="blue bolder" />

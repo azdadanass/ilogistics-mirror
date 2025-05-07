@@ -23,5 +23,9 @@ public class DayoffService {
 	public Long countBetweenDates(Date startDate,Date endDate) {
 		return repos.countBetweenDates(startDate, endDate);
 	}
+	
+	public Boolean isDayoff(Date date) {
+		return countByDate(date) > 0;
+	}
 
 }

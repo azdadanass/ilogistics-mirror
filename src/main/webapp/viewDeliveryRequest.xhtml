@@ -525,7 +525,8 @@
 							<h:outputText value=" Issue List" />
 						</a>
 					</li>
-					<f:subview rendered="#{(deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.ism) and DeliveryRequestStatus.CANCELED!=deliveryRequestView.deliveryRequest.status and DeliveryRequestStatus.REJECTED!=deliveryRequestView.deliveryRequest.status}">
+					<f:subview
+						rendered="#{(deliveryRequestView.deliveryRequest.sdm or deliveryRequestView.deliveryRequest.ism) and DeliveryRequestStatus.CANCELED!=deliveryRequestView.deliveryRequest.status and DeliveryRequestStatus.REJECTED!=deliveryRequestView.deliveryRequest.status}">
 						<li>
 							<a data-toggle="tab" href="#tab14">
 								<i class="green ace-icon fa fa-check bigger-120"></i>
@@ -1857,16 +1858,16 @@
 						</f:subview>
 						<div class="space-8" />
 						<h4 class="header blue bolder smaller">
-							<h:outputText value="Serial Number Details" />
+							<h:outputText value="DN Serial Number" />
 						</h4>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-8 hidden-xs">
+									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
-										<h:outputText value=" Serial Number Details" />
+										<h:outputText value=" Current Stock SN" />
 									</div>
-									<div class="col-sm-2">
+									<div class="col-sm-2 hidden-xs">
 										<div class="action-buttons center">
 											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 												<img src="/resources/img/xls.png" width="20" height="20" />
@@ -1874,9 +1875,19 @@
 											</h:commandLink>
 										</div>
 									</div>
+									<div class="col-sm-2 col-xs-4">
+										<div class="nav-search minimized">
+											<span class="input-icon">
+												<p:inputText value="#{deliveryRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+													<p:ajax event="keyup" update="serialNumberList" />
+												</p:inputText>
+												<i class="ace-icon fa fa-search nav-search-icon" />
+											</span>
+										</div>
+									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="serialNumberList" value="#{deliveryRequestSerialNumberView.list2}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+									<p:dataTable id="serialNumberList" value="#{deliveryRequestSerialNumberView.list2}" rows="12" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="#{deliveryRequestView.deliveryRequest.isOutbound?'Inbound DN / ':''} Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
 											<h:outputText value="#{item.tmpInboundDeliveryRequest.reference} / " styleClass="green bolder" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}" />
@@ -1942,6 +1953,82 @@
 								</div>
 							</div>
 						</div>
+						<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+								<h:outputText value="Current Stock SN" />
+							</h4>
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 col-xs-8">
+											<i class="fa fa-list" />
+											<h:outputText value=" Current Stock SN" />
+										</div>
+										<div class="col-sm-2 hidden-xs">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="currentStockSn" fileName="currentStockSn" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestSerialNumberView.datatable1.search}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="currentStockSn" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
+												<h:outputText value="#{item.tmpPartNumber.name} / " styleClass="blue bolder" />
+												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
+											</p:column>
+											<p:column headerText="KEY" styleClass="hide">
+												<h:outputText value="#{item.key}" />
+											</p:column>
+											<p:column headerText="Reference" styleClass="hide" rendered="#{!deliveryRequestSerialNumberView.list2.isEmpty()}">
+												<h:outputText value="#{item.getReference(false)}" />
+											</p:column>
+											<p:column headerText="Packing Detail">
+												<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
+											</p:column>
+											<p:column headerText="Status" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.status.value}" />
+												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Location" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
+												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Serial Number">
+												<h:outputText value="#{item.serialNumber}" styleClass="green bolder"
+													rendered="#{!deliveryRequestSerialNumberView.editMode or (item.inboundStockRow != null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound) }" />
+												<p:inputText value="#{item.serialNumber}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+												<p:selectOneMenu value="#{item.serialNumber}" filter="true" filterMatchMode="contains" style="width:100px"
+													rendered="#{item.inboundStockRow == null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{deliveryRequestSerialNumberView.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(item)}" var="i"
+														itemLabel="#{i.serialNumber}" itemValue="#{i.serialNumber}" />
+													<p:ajax listener="#{deliveryRequestSerialNumberView.selectSerialNumberListener(item,deliveryRequestView.deliveryRequest)}" update="serialNumberList" />
+												</p:selectOneMenu>
+											</p:column>
+											<p:column headerText="Box Id">
+												<h:outputText value="#{item.box}" styleClass="orange bolder" rendered="#{!deliveryRequestSerialNumberView.editMode}" />
+												<p:inputText value="#{item.box}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</f:subview>
 					</div>
 					<div id="tab11" class="tab-pane">
 						<div class="space-8" />
@@ -1958,7 +2045,7 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="expiryDateList" value="#{deliveryRequestExpiryDateView.list1}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+									<p:dataTable id="expiryDateList" value="#{deliveryRequestExpiryDateView.list1}" rows="12" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="Inbound DN" rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 											<h:outputText value="#{item.stockRow.inboundDeliveryRequest.reference}" styleClass="bolder green" />

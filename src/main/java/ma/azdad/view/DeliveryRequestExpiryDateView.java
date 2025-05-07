@@ -66,7 +66,7 @@ public class DeliveryRequestExpiryDateView extends GenericView<Integer, Delivery
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
 			list1 = deliveryRequestExpiryDateService.findByDeliveryRequest(id);
 			deliveryRequest = deliveryRequestView.getDeliveryRequest();
-			if (deliveryRequest.getIsInbound())
+			if (deliveryRequest.getIsInbound()) 
 				summaryDatatable = new DatatableList<DeliveryRequestExpiryDate>(service.findByInboundDeliveryRequest(deliveryRequest.getId()));
 			else if (deliveryRequest.getIsOutbound()) {
 				addRemainingToOutbound();

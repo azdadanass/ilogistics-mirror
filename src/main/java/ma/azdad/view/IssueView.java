@@ -224,15 +224,15 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			default:
 				break;
 			}
-
-			// init to notify list
-			addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
-			addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
-			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-			issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername())));
 			
-
+			if(isAddPage) {
+				// init to notify list
+				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
+				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
+				delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+				issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername())));
+			}
 			step++;
 			break;
 		case 3:

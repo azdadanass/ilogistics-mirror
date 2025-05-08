@@ -39,6 +39,10 @@ public class CustomerView {
 	public List<Customer> findLight() {
 		return service.findLight();
 	}
+	
+	public List<Customer> findAssignedToProject(Integer projectId){
+		return service.findAssignedToProject(projectId);
+	}
 
 	public String findNameByPo(Integer poId) {
 		return service.findNameByPo(poId);

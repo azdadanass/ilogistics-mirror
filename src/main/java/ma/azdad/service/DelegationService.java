@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.User;
 import ma.azdad.repos.DelegationRepos;
 
 @Component
@@ -14,19 +15,23 @@ import ma.azdad.repos.DelegationRepos;
 public class DelegationService {
 
 	@Autowired
-	DelegationRepos delegationRepos;
+	DelegationRepos repos;
 
 	public List<Integer> findDelegatedProjects(String username) {
 		List<Integer> result = new ArrayList<Integer>();
 		result.add(0);
-		result.addAll(delegationRepos.findDelegatedProjects(username, "Active", "PM"));
+		result.addAll(repos.findDelegatedProjects(username, "Active", "PM"));
 		return result;
 	}
 	
 	public List<Integer> findDelegatedLobs(String username) {
 		List<Integer> result = new ArrayList<Integer>();
 		result.add(0);
-		result.addAll(delegationRepos.findDelegatedLobs(username));
+		result.addAll(repos.findDelegatedLobs(username));
 		return result;
+	}
+	
+	public List<User> findDelegateUserListByProject(Integer projectId){
+		return repos.findDelegateUserListByProject(projectId);
 	}
 }

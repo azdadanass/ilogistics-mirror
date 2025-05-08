@@ -2,9 +2,13 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -14,19 +18,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.CompanyType;
 import ma.azdad.model.Issue;
 import ma.azdad.model.IssueComment;
 import ma.azdad.model.IssueFile;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.Role;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.User;
 import ma.azdad.repos.IssueRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
+import ma.azdad.service.DelegationService;
+import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.EmailService;
 import ma.azdad.service.IssueFileService;
 import ma.azdad.service.IssueService;
-import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.ProjectAssignmentService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UserService;
@@ -73,6 +81,12 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	@Autowired
 	private CacheView cacheView;
+
+	@Autowired
+	private DelegationService delegationService;
+
+	@Autowired
+	private ProjectAssignmentService projectAssignmentService;
 
 	private Issue issue = new Issue();
 	private IssueFile issueFile;
@@ -251,6 +265,46 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	public Boolean validate() {
 		return true;
+	}
+
+	public List<User> findOwnerShipUserSelectionList(String type) {
+		CompanyType companyType = null;
+		switch (type) {
+		case "confirmator":
+			companyType = issue.getConfirmatorCompanyType();
+			break;
+		case "assignator":
+			companyType = issue.getAssignatorCompanyType();
+			break;
+		}
+		if (companyType == null)
+			return new ArrayList<User>();
+		Set<User> result = new HashSet<User>();
+		switch (companyType) {
+		case COMPANY:
+			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
+			result.add(issue.getDeliveryRequest().getRequester());
+			result.add(issue.getDeliveryRequest().getProject().getManager());
+			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
+			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
+			break;
+		case CUSTOMER:
+			if ("confirmator".equals(type))
+				userService.findLightByCustomerAndHasRole(issue.getConfirmatorCustomerId(), Role.ROLE_ILOGISTICS_PM);
+			else if ("assignator".equals(type))
+				userService.findLightByCustomerAndHasRole(issue.getAssignatorCustomerId(), Role.ROLE_ILOGISTICS_PM);
+			break;
+		case SUPPLIER:
+			if ("confirmator".equals(type))
+				userService.findLightBySupplierAndHasRole(issue.getConfirmatorSupplierId(), Role.ROLE_ILOGISTICS_PM);
+			else if ("confirmator".equals(type))
+				userService.findLightBySupplierAndHasRole(issue.getAssignatorSupplierId(), Role.ROLE_ILOGISTICS_PM);
+			break;
+		default:
+			break;
+		}
+
+		return new ArrayList<User>(result);
 	}
 
 	// inplace

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.Customer;
 import ma.azdad.model.Supplier;
 import ma.azdad.service.SupplierService;
 import ma.azdad.utils.LabelValue;
@@ -41,6 +42,10 @@ public class SupplierView {
 	
 	public String findName(Integer id) {
 		return service.findNameMap().get(id);
+	}
+	
+	public List<Supplier> findAssignedToProject(Integer projectId){
+		return service.findAssignedToProject(projectId);
 	}
 
 }

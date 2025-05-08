@@ -53,10 +53,12 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	private User ownershipUser;
 
 	private CompanyType assignatorCompanyType;
+	private Customer assignatorCustomer;
 	private Supplier assignatorSupplier;
 	private User assignator;
 
 	private CompanyType confirmatorCompanyType;
+	private Customer confirmatorCustomer;
 	private Supplier confirmatorSupplier;
 	private User confirmator;
 
@@ -420,6 +422,30 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public void addHistory(User user, String description) {
 		historyList.add(new IssueHistory(status.getValue(), user, description, this));
+	}
+
+	@Transient
+	public Integer getConfirmatorSupplierId() {
+		return confirmatorSupplier != null ? confirmatorSupplier.getId() : null;
+	}
+
+	@Transient
+	public void setConfirmatorSupplierId(Integer confirmatorSupplierId) {
+		if (confirmatorSupplier == null || !confirmatorSupplierId.equals(confirmatorSupplier.getId()))
+			confirmatorSupplier = new Supplier();
+		confirmatorSupplier.setId(confirmatorSupplierId);
+	}
+
+	@Transient
+	public Integer getConfirmatorCustomerId() {
+		return confirmatorCustomer != null ? confirmatorCustomer.getId() : null;
+	}
+
+	@Transient
+	public void setConfirmatorCustomerId(Integer confirmatorCustomerId) {
+		if (confirmatorCustomer == null || !confirmatorCustomerId.equals(confirmatorCustomer.getId()))
+			confirmatorCustomer = new Customer();
+		confirmatorCustomer.setId(confirmatorCustomerId);
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
@@ -816,6 +842,16 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	public void setAssignatorCompanyType(CompanyType assignatorCompanyType) {
 		this.assignatorCompanyType = assignatorCompanyType;
 	}
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	public Customer getAssignatorCustomer() {
+		return assignatorCustomer;
+	}
+
+	public void setAssignatorCustomer(Customer assignatorCustomer) {
+		this.assignatorCustomer = assignatorCustomer;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Supplier getAssignatorSupplier() {
@@ -824,6 +860,18 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 
 	public void setAssignatorSupplier(Supplier assignatorSupplier) {
 		this.assignatorSupplier = assignatorSupplier;
+	}
+	
+	@Transient
+	public Integer getAssignatorCustomerId() {
+		return assignatorCustomer != null ? assignatorCustomer.getId() : null;
+	}
+
+	@Transient
+	public void setAssignatorCustomerId(Integer assignatorCustomerId) {
+		if (assignatorCustomer == null || !assignatorCustomerId.equals(assignatorCustomer.getId()))
+			assignatorCustomer = new Customer();
+		assignatorCustomer.setId(assignatorCustomerId);
 	}
 
 	@Transient
@@ -848,24 +896,21 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	public Customer getConfirmatorCustomer() {
+		return confirmatorCustomer;
+	}
+
+	public void setConfirmatorCustomer(Customer confirmatorCustomer) {
+		this.confirmatorCustomer = confirmatorCustomer;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Supplier getConfirmatorSupplier() {
 		return confirmatorSupplier;
 	}
 
 	public void setConfirmatorSupplier(Supplier confirmatorSupplier) {
 		this.confirmatorSupplier = confirmatorSupplier;
-	}
-
-	@Transient
-	public Integer getConfirmatorSupplierId() {
-		return confirmatorSupplier != null ? confirmatorSupplier.getId() : null;
-	}
-
-	@Transient
-	public void setConfirmatorSupplierId(Integer confirmatorSupplierId) {
-		if (confirmatorSupplier == null || !confirmatorSupplierId.equals(confirmatorSupplier.getId()))
-			confirmatorSupplier = new Supplier();
-		confirmatorSupplier.setId(confirmatorSupplierId);
 	}
 
 	public Boolean getConfirmation() {

@@ -50,4 +50,8 @@ public class SupplierService {
 	public Map<Integer, String> findNameMap() {
 		return repos.findLight().stream().collect(Collectors.toMap(s -> s.getId(), s -> s.getName()));
 	}
+	
+	public List<Supplier> findAssignedToProject(Integer projectId){
+		return repos.findAssignedToProject(projectId);
+	}
 }

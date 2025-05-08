@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.ProjectAssignment;
 import ma.azdad.model.ProjectAssignmentType;
+import ma.azdad.model.User;
 
 @Repository
 public interface ProjectAssignmentRepos extends JpaRepository<ProjectAssignment, Integer> {
@@ -64,5 +65,11 @@ public interface ProjectAssignmentRepos extends JpaRepository<ProjectAssignment,
 
 	@Query("select count(*) from ProjectAssignment a where a.project.id = ?1 and a.user.username = ?2 and current_date between a.startDate and a.endDate")
 	Long countActiveByProjectAndUser(Integer projectId, String username);
+	
+	@Query("select distinct a.customer.id from ProjectAssignment a where a.project.id = ?1 and current_date between a.startDate and a.endDate")
+	List<Integer> findCustomerAssignedToProject(Integer projectId);
+	
+	@Query("select distinct a.user from ProjectAssignment a where a.project.id = ?1 and a.user.company.id = a.project.costcenter.lob.bu.company.id and a.user.active is true and current_date between a.startDate and a.endDate ")
+	List<User> findCompanyUserListAssignedToProject(Integer projectId);
 
 }

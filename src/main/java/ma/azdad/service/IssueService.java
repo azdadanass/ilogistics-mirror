@@ -34,7 +34,8 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 		Issue issue = super.findOne(id);
 
 		initialize(issue.getDeliveryRequest().getProject().getCustomer());
-
+		if (issue.getDeliveryRequest().getWarehouse() != null)
+			issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i -> initialize(i.getUser()));
 		initialize(issue.getAssignatorSupplier());
 		initialize(issue.getAssignator());
 

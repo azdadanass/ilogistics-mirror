@@ -23,4 +23,8 @@ public interface SupplierRepos extends JpaRepository<Supplier, Integer> {
 
 	@Query("select a.supplier.name from Po a where a.id = ?1")
 	String findNameByPo(Integer poId);
+	
+	
+	@Query("select new Supplier(id,name) from Supplier where id in (select distinct a.supplier.id from ProjectAssignment a where a.project.id = ?1 and current_date between a.startDate and a.endDate)")
+	List<Supplier> findAssignedToProject(Integer projectId);
 }

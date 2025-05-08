@@ -38,5 +38,8 @@ public interface CustomerRepos extends JpaRepository<Customer, Integer> {
 
 	@Query("select a.project.customer.name from Po a where a.id = ?1")
 	String findNameByPo(Integer poId);
+	
+	@Query(c1+"from Customer where id in (select distinct a.customer.id from ProjectAssignment a where a.project.id = ?1 and current_date between a.startDate and a.endDate)")
+	List<Customer> findAssignedToProject(Integer projectId);
 
 }

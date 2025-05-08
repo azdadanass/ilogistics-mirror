@@ -226,8 +226,12 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			}
 
 			// init to notify list
-			addToNotify(userService.findOneLight(issue.getConfirmatorUsername()));
-			addToNotify(userService.findOneLight(issue.getAssignatorUsername()));
+			addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
+			addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
+			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+			issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername())));
+			
 
 			step++;
 			break;
@@ -282,9 +286,9 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		Set<User> result = new HashSet<User>();
 		switch (companyType) {
 		case COMPANY:
-			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
 			result.add(issue.getDeliveryRequest().getRequester());
 			result.add(issue.getDeliveryRequest().getProject().getManager());
+			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
 			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
 			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
 			break;
@@ -434,6 +438,8 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		issue.addHistory(sessionView.getUser(), issue.getTmpComment());
 		issueService.save(issue);
 		deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
+		
+		emailService.sendIssueNotification(issue);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + issue.getId());
 	}
@@ -563,6 +569,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		issue.addHistory(sessionView.getUser(), issue.getTmpComment());
 		issueService.save(issue);
 		deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
+		emailService.sendIssueNotification(issue);
 		return addParameters(viewPage, "faces-redirect=true", "id=" + issue.getId());
 	}
 
@@ -593,6 +600,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		issueService.save(issue);
 		deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
 		refreshIssue();
+		emailService.sendIssueNotification(issue);
 	}
 
 	// open

@@ -2341,9 +2341,23 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println("-----------------------------------------------------");
 		updatePendingJrMapping(id, pendingJrMapping);
 	}
+	
+	
+	
+	
 
 	public void calculateHavingRunningStockScript() {
 		repos.findBySdmOrIsmIdlist().forEach(id -> calculateHavingRunningStock(id));
+	}
+	
+	// remove all deliveryRequestSerialNumber if inbound totally delivered and 0 sn filled
+	public void clearMissingSerialNumberBacklog() {
+		stockRowRepos.clearMissingSerialNumberBacklogQuery().forEach(id->{
+			System.out.println("clearMissingSerialNumberBacklog : "+id);
+			updateIsSnRequired(id, false);
+			updateMissingSerialNumber(id, null);
+			deliveryRequestSerialNumberRepos.deleteByInboundDeliveryRequest(id);
+		});
 	}
 
 	public void calculateMissingSerialNumber(Integer id) {

@@ -183,6 +183,12 @@ public class ScriptView {
 			return;
 		deliveryRequestService.calculateMissingSerialNumberScript();
 	}
+	
+	public void clearMissingSerialNumberBacklog() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.clearMissingSerialNumberBacklog();
+	}
 
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		if (!canExecute)

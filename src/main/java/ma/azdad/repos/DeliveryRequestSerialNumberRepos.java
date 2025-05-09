@@ -3,6 +3,7 @@ package ma.azdad.repos;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -51,5 +52,9 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1 and (a.serialNumber is null or serialNumber = '')  ")
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId);
+	
+	@Modifying
+	@Query("delete from DeliveryRequestSerialNumber where inboundStockRow.id in (select sr.id from StockRow sr where sr.deliveryRequest.id = ?1)")
+	void deleteByInboundDeliveryRequest(Integer inboundDeliveryRequestId);
 
 }

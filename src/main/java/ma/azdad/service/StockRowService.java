@@ -1167,4 +1167,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Double findQuantityByDeliveryRequestDetail(Integer deliveryRequestDetail) {
 		return ObjectUtils.firstNonNull(repos.findQuantityByDeliveryRequestDetail(deliveryRequestDetail), 0.0);
 	}
+	
+	public Double findTotalRequiringSerialNumberInOurbound(Integer outboundDelievryRequestId) {
+		return ObjectUtils.firstNonNull(repos.findTotalRequiringSerialNumberInOurbound(outboundDelievryRequestId),0.0);
+	}
+	
+	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId){
+		return repos.findAssociatedOutboundWithInbound(inboundDeliveryRequestId);
+	}
+	
 }

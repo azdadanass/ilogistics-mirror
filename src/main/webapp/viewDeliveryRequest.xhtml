@@ -1837,7 +1837,11 @@
 												<h:outputText value="#{item.partNumberName}" styleClass="bolder blue" />
 											</p:column>
 											<p:column headerText="Inbound DN">
-												<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.inboundDeliveryRequestId}"/>
+												</h:outputLink>
+												
 											</p:column>
 											<p:column headerText="Packing">
 												<h:outputText value="#{item.packingName}" />
@@ -1865,7 +1869,7 @@
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-8 col-xs-8">
 										<i class="fa fa-list" />
-										<h:outputText value=" Current Stock SN" />
+										<h:outputText value=" DN Serial Number" />
 									</div>
 									<div class="col-sm-2 hidden-xs">
 										<div class="action-buttons center">
@@ -1876,14 +1880,14 @@
 										</div>
 									</div>
 									<div class="col-sm-2 col-xs-4">
-										<div class="nav-search minimized">
+										<!-- <div class="nav-search minimized">
 											<span class="input-icon">
 												<p:inputText value="#{deliveryRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
 													<p:ajax event="keyup" update="serialNumberList" />
 												</p:inputText>
 												<i class="ace-icon fa fa-search nav-search-icon" />
 											</span>
-										</div>
+										</div> -->
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">

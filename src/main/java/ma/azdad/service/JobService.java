@@ -107,6 +107,11 @@ public class JobService {
 		deliveryRequestService.calculateMissingExpiryScript();
 	}
 	
+	@Scheduled(cron = "00 40 05 * * *")
+	public void calculateMissingSerialNumberScript() {
+		deliveryRequestService.calculateMissingSerialNumberScript();
+	}
+	
 	
 	@Scheduled(cron = "00 40 05 * * *")
 	public void sendDeliveryRequestDeliveryOverdueNotification() {

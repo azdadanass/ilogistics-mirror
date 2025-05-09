@@ -611,8 +611,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select MONTHNAME(date1) from DeliveryRequest where id = 2")
 	public List<String> test();
 
-	@Query("select distinct a.deliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.deliveryRequest.type = ?2")
-	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId, DeliveryRequestType outbound);
+	@Query("select distinct a.deliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.deliveryRequest.type = 'OUTBOUND'")
+	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId);
 
 	@Query("select distinct a.inboundDeliveryRequest.id from StockRow a where a.deliveryRequest.id = ?1")
 	public List<Integer> findAssociatedInboundWithOutbound(Integer outboundDeliveryRequestId);
@@ -744,4 +744,11 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Modifying
 	@Query("update StockRow a set a.inboundCompanyId = (select b.company.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id),a.inboundCustomerId = (select b.customer.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id),a.inboundSupplierId = (select b.supplier.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id)  where a.deliveryRequest.id = ?1")
 	void updateInboundOwnerId(Integer deliveryRequestId);
+
+	@Query("select sum(-a.quantity * (select sum(pd.quantity) from PackingDetail pd where pd.parent.id = a.packing.id and pd.hasSerialnumber is true) / a.packing.quantity) from StockRow a where a.deliveryRequest.id = ?1 and (select count(*) from DeliveryRequestSerialNumber b where b.inboundStockRow.deliveryRequestDetail = a.inboundDeliveryRequestDetail.id and b.serialNumber is not null and b.serialNumber!='') > 0  ")
+	Double findTotalRequiringSerialNumberInOurbound(Integer outboundDelievryRequestId);
+
+	@Query("select distinct a.deliveryRequest.id from StockRow a where (select count(*) from PackingDetail b where b.parent.id = a.packing.id and b.hasSerialnumber is true) > 0")
+	List<Integer> findDeliveryRequestListHavingPackingDetailRequiringSerialNumber();
+
 }

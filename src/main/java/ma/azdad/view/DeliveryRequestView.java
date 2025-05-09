@@ -626,10 +626,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			// update field missing sn
 			deliveryRequest = service.findOne(deliveryRequest.getId());
-			if (deliveryRequest.getStockRowList().stream()
-					.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getPartNumberId(), i.getInboundDeliveryRequest().getId()) > 0)
-					.count() > 0)
-				service.updateMissingSerialNumber(deliveryRequest.getId(), true);
+//			if (deliveryRequest.getStockRowList().stream()
+//					.filter(i -> deliveryRequestSerialNumberService.countByPartNumberAndInboundDeliveryRequest(i.getPartNumberId(), i.getInboundDeliveryRequest().getId()) > 0)
+//					.count() > 0)
+//				service.updateMissingSerialNumber(deliveryRequest.getId(), true);
+			service.calculateMissingSerialNumber(deliveryRequest.getId());
+			
 
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
@@ -829,6 +831,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		if (!map.isEmpty())
 			service.updateMissingSerialNumber(deliveryRequest.getId(), true);
+		
 
 	}
 

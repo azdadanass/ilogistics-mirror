@@ -177,6 +177,12 @@ public class ScriptView {
 			return;
 		deliveryRequestService.calculateMissingExpiryScript();
 	}
+	
+	public void calculateMissingSerialNumberScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculateMissingSerialNumberScript();
+	}
 
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		if (!canExecute)

@@ -75,7 +75,7 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			return;
 		}
 
-		List<Integer> associatedOutboundIdList = stockRowRepos.findAssociatedOutboundWithInbound(inboundDeliveryRequestId, DeliveryRequestType.OUTBOUND);
+		List<Integer> associatedOutboundIdList = stockRowRepos.findAssociatedOutboundWithInbound(inboundDeliveryRequestId);
 		for (Integer outboundDeliveryRequestId : associatedOutboundIdList) {
 			List<Integer> associatedInboundIdList = stockRowRepos.findAssociatedInboundWithOutbound(outboundDeliveryRequestId);
 			// skip outbound that have others inbounds

@@ -26,37 +26,30 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	public Long countByPartNumberAndInboundDeliveryRequest(Integer partNumberId, Integer inboundDeliveryRequestId);
 
 	@Query("from DeliveryRequestSerialNumber a where a.serialNumber is not null and a.serialNumber != '' and a.inboundStockRow.partNumber.id = ?1 and a.inboundStockRow.deliveryRequest.id = ?2 and a.inboundStockRow.status = ?3 and a.inboundStockRow.location.id = ?4 and a.packingDetail.id = ?5 and outboundDeliveryRequest is null and a.id not in (?6)")
-	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(Integer partNumberId,
-			Integer inboundDeliveryRequestId, StockRowStatus status, Integer locationId, Integer packingDetailId, List<Integer> exculdeList);
+	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(Integer partNumberId, Integer inboundDeliveryRequestId,
+			StockRowStatus status, Integer locationId, Integer packingDetailId, List<Integer> exculdeList);
 
 	@Query("select a.packingNumero from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.inboundStockRow.deliveryRequest.id = ?2 and a.serialNumber = ?3")
 	public Integer findPackingNumeroByPartNumberAndInboundDeliveryRequestAndSerialNumber(Integer partNumberId, Integer inboundDeliveryRequestId, String serialNumber);
 
 	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.inboundStockRow.deliveryRequest.id = ?2 and a.packingNumero = ?3")
-	public List<DeliveryRequestSerialNumber> findByPartNumberAndInboundDeliveryRequestAndPackingNumero(Integer partNumberId, Integer inboundDeliveryRequestId,
-			Integer packingNumero);
+	public List<DeliveryRequestSerialNumber> findByPartNumberAndInboundDeliveryRequestAndPackingNumero(Integer partNumberId, Integer inboundDeliveryRequestId, Integer packingNumero);
 
 	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id = ?1 and a.packingDetail.id = ?2 and a.serialNumber is not null and a.serialNumber != '' and a.outboundDeliveryRequest is null")
 	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId);
-	
-	@Query("SELECT a FROM DeliveryRequestSerialNumber a " +
-		       "JOIN a.inboundStockRow s " +
-		       "WHERE s.inboundDeliveryRequest.id IN " +
-		       "(SELECT sr.inboundDeliveryRequest.id FROM StockRow sr WHERE sr.deliveryRequest.id = :deliveryRequestId) " +
-		       "AND a.serialNumber = :serialNumber " +
-		       "AND a.outboundDeliveryRequest IS NULL")
-		List<DeliveryRequestSerialNumber> findRemainingOutboundMobile(
-		        @Param("deliveryRequestId") Integer deliveryRequestId, 
-		        @Param("serialNumber") String serialNumber);
 
+	@Query("SELECT a FROM DeliveryRequestSerialNumber a " + "JOIN a.inboundStockRow s " + "WHERE s.inboundDeliveryRequest.id IN "
+			+ "(SELECT sr.inboundDeliveryRequest.id FROM StockRow sr WHERE sr.deliveryRequest.id = :deliveryRequestId) " + "AND a.serialNumber = :serialNumber "
+			+ "AND a.outboundDeliveryRequest IS NULL")
+	List<DeliveryRequestSerialNumber> findRemainingOutboundMobile(@Param("deliveryRequestId") Integer deliveryRequestId, @Param("serialNumber") String serialNumber);
 
-	// INBOUND TESTS
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1")
 	public Long countByInboundDeliveryRequest(Integer deliveryRequestId);
 
+	@Query("select count(*) from DeliveryRequestSerialNumber a where a.outboundDeliveryRequest.id = ?1")
+	public Long countByOutboundDeliveryRequest(Integer deliveryRequestId);
+
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1 and (a.serialNumber is null or serialNumber = '')  ")
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId);
-
-	// OUTBOUND TESTS
 
 }

@@ -2100,7 +2100,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 //			updateMissingSerialNumber(deliveryRequest.getId(), true);
 		// correction azdad
 		calculateMissingSerialNumber(deliveryRequest.getId());
-		
+
 		// update is missing expiry
 		if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 			updateMissingExpiry(deliveryRequest.getId(), true);
@@ -2341,19 +2341,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println("-----------------------------------------------------");
 		updatePendingJrMapping(id, pendingJrMapping);
 	}
-	
-	
-	
-	
 
 	public void calculateHavingRunningStockScript() {
 		repos.findBySdmOrIsmIdlist().forEach(id -> calculateHavingRunningStock(id));
 	}
-	
-	// remove all deliveryRequestSerialNumber if inbound totally delivered and 0 sn filled
+
+	// remove all deliveryRequestSerialNumber if inbound totally delivered and 0 sn
+	// filled
 	public void clearMissingSerialNumberBacklog() {
-		stockRowRepos.clearMissingSerialNumberBacklogQuery().forEach(id->{
-			System.out.println("clearMissingSerialNumberBacklog : "+id);
+		stockRowRepos.clearMissingSerialNumberBacklogQuery().forEach(id -> {
+			System.out.println("clearMissingSerialNumberBacklog : " + id);
 			updateIsSnRequired(id, false);
 			updateMissingSerialNumber(id, null);
 			deliveryRequestSerialNumberRepos.deleteByInboundDeliveryRequest(id);
@@ -2362,26 +2359,29 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void calculateMissingSerialNumber(Integer id) {
 		DeliveryRequestType dnType = repos.findType(id);
+		DeliveryRequestStatus dnStatus = repos.findStatusById(id);
+
 		Boolean missingSerialNumber = null;
-		switch (dnType) {
-		case INBOUND:
-			if (deliveryRequestSerialNumberService.countByInboundDeliveryRequestAndEmpty(id) > 0)
-				missingSerialNumber = true;
-			else if (deliveryRequestSerialNumberService.countByInboundDeliveryRequest(id) > 0)
-				missingSerialNumber = false;
-			break;
-		case OUTBOUND:
-			Long needingSerialNumber = (long) (double) stockRowService.findTotalRequiringSerialNumberInOurbound(id);
-			Long totalSerialNumber = deliveryRequestSerialNumberService.countByOutboundDeliveryRequest(id);
-			if (needingSerialNumber > 0) {
-				missingSerialNumber = true;
-				if (needingSerialNumber.equals(totalSerialNumber))
+		if (Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(dnStatus))
+			switch (dnType) {
+			case INBOUND:
+				if (deliveryRequestSerialNumberService.countByInboundDeliveryRequestAndEmpty(id) > 0)
+					missingSerialNumber = true;
+				else if (deliveryRequestSerialNumberService.countByInboundDeliveryRequest(id) > 0)
 					missingSerialNumber = false;
+				break;
+			case OUTBOUND:
+				Long needingSerialNumber = (long) (double) stockRowService.findTotalRequiringSerialNumberInOurbound(id);
+				Long totalSerialNumber = deliveryRequestSerialNumberService.countByOutboundDeliveryRequest(id);
+				if (needingSerialNumber > 0) {
+					missingSerialNumber = true;
+					if (needingSerialNumber.equals(totalSerialNumber))
+						missingSerialNumber = false;
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
-		}
 		System.out.println("id : " + id + "\t" + missingSerialNumber);
 		updateMissingSerialNumber(id, missingSerialNumber);
 	}

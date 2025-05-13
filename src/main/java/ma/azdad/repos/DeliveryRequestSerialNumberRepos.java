@@ -53,6 +53,10 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1 and (a.serialNumber is null or serialNumber = '')  ")
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId);
 	
+	@Query("select count(*) from DeliveryRequestSerialNumber a where a.packingDetail.id = ?1")
+	public Long countByPackingDetail(Integer packginDetailId);
+	
+	
 	@Modifying
 	@Query("delete from DeliveryRequestSerialNumber where inboundStockRow.id in (select sr.id from StockRow sr where sr.deliveryRequest.id = ?1)")
 	void deleteByInboundDeliveryRequest(Integer inboundDeliveryRequestId);

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -108,6 +107,10 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 
 	public Long countByOutboundDeliveryRequest(Integer deliveryRequestId) {
 		return ObjectUtils.firstNonNull(repos.countByOutboundDeliveryRequest(deliveryRequestId), 0l);
+	}
+	
+	public Long countByPackingDetail(Integer packginDetailId) {
+		return ObjectUtils.firstNonNull(repos.countByPackingDetail(packginDetailId), 0l);
 	}
 
 	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId) {

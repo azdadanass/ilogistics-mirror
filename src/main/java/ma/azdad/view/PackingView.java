@@ -137,7 +137,7 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 		if (packing.getDetailList().stream().filter(i -> i.getHasSerialnumber()).mapToDouble(i -> i.getQuantity()).sum() > 10.0)
 			return FacesContextMessages.ErrorMessages("Number of packing details with SN should not exceed 10");
 		if(packing.getDetailList().stream().filter(i -> !i.getHasSerialnumber() && deliveryRequestSerialNumberService.countByPackingDetail(i.getId())>0).count()>0)
-			return FacesContextMessages.ErrorMessages("Can not change Packing Detail 'SN' Field : already used in DN");
+			return FacesContextMessages.ErrorMessages("You cannot change the Packing Detail 'SN' field as it has already been used in a Delivery Note (DN).");
 
 		return true;
 	}

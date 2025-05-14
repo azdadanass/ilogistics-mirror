@@ -789,10 +789,10 @@
 												<h:outputText value="#{item.partNumber.description}" styleClass="purple aa-cut-text" />
 											</p:column>
 											<p:column headerText="Project">
-												<h:outputText value="#{item.deliveryRequest.project.name}" />
+												<h:outputText value="#{deliveryRequestView.deliveryRequest.project.name}" />
 											</p:column>
 											<p:column headerText="Warehouse">
-												<h:outputText value="#{item.deliveryRequest.warehouse.name}" />
+												<h:outputText value="#{deliveryRequestView.deliveryRequest.warehouse.name}" />
 											</p:column>
 											<p:column headerText="State">
 												<h:outputText value="#{item.state.value}" styleClass="#{item.state.color}" />
@@ -802,6 +802,9 @@
 											</p:column>
 											<p:column headerText="Location">
 												<h:outputText value="#{item.location.name}" />
+											</p:column>
+											<p:column headerText="Age">
+												<h:outputText value="#{item.age}" />
 											</p:column>
 											<p:column headerText="Quantity">
 												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity lt 0 ?'red':'green'}">

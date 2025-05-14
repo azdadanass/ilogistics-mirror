@@ -81,6 +81,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
 			+ ",a.deliveryRequest.deliverToOther," + toUserFullName + "," + toUserEmail + "," + toUserPhone + "," + toUserCin + "," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero2
 			+ "," + endCustomerName + ") ";
+	
+	
+	String c25 = "select new StockRow(sum(a.quantity),a.status,a.state,a.creationDate,a.deliveryRequest.type,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.location.id,a.location.name) ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -116,7 +119,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
-	@Query(c3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+//	@Query(c3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+//	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query(c25 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id,a.deliveryRequest.type,date(a.creationDate) order by a.creationDate")
 	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
 
 	@Query(cm1 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")

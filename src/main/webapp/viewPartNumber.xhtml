@@ -33,9 +33,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View PartNumber" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{partNumberView.partNumber.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{partNumberView.partNumber.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -75,9 +73,9 @@
 					<div class=" col-sm-2 infobox-container">
 						<div class="infobox infobox-blue2">
 							<div class="infobox-progress">
-								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
+								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.remainingFields.size()*100.0/16.0}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
 									<span class="percent">
-										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+										<h:outputText value="#{partNumberView.partNumber.remainingFields.size()/16.0}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>
@@ -89,7 +87,16 @@
 									<h:outputText value="PN completeness" />
 								</span>
 								<div class="infobox-content">
-									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
+									<h:outputText id="remainingFields" value="#{partNumberView.partNumber.remainingFields.size()} fileds remaining" />
+									<p:overlayPanel for="remainingFields" showEvent="mouseover" hideEvent="mouseout">
+										<ul>
+											<ui:repeat var="item" value="#{partNumberView.partNumber.remainingFields}">
+												<li>
+													<h:outputText value="#{item}" />
+												</li>
+											</ui:repeat>
+										</ul>
+									</p:overlayPanel>
 								</div>
 							</div>
 						</div>
@@ -234,7 +241,8 @@
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder blue" />
 											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
-												title="Must be filled" /> &nbsp;
+												title="Must be filled" />
+											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
@@ -243,7 +251,8 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.industryName}" styleClass="green bolder" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" /> &nbsp;
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
@@ -252,7 +261,8 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.typeName}" styleClass="bolder pink" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" /> &nbsp;
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
@@ -340,7 +350,8 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.categoryName}" styleClass="bolder purple" />
-											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" /> &nbsp;
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.partNumberType==null?'':'hide'}" title="Must be filled" />
+											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">

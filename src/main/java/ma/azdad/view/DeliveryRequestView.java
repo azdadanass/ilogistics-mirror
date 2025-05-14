@@ -1646,9 +1646,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	private Boolean validateStep1() {
-		if (deliveryRequest.getIsOutbound() && service.countPendingAcknowledgementIdList(sessionView.getUsername()) > 0)
-			return FacesContextMessages.ErrorMessages(
-					"Please note that you can not create a new outbond DN unless you acknowledge the previously delivered DN(s). The maximum deadline to acknowledge the delivered DN is 5 working days");
+//		if (deliveryRequest.getIsOutbound() && service.countPendingAcknowledgementIdList(sessionView.getUsername()) > 0)
+//			return FacesContextMessages.ErrorMessages(
+//					"Please note that you can not create a new outbond DN unless you acknowledge the previously delivered DN(s). The maximum deadline to acknowledge the delivered DN is 5 working days");
 
 		return true;
 	}

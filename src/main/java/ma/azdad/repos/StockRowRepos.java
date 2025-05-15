@@ -759,5 +759,5 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	
 	@Query("select a.inboundDeliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id in (select b.id from DeliveryRequest b where b.type = 'INBOUND' and b.missingSerialNumber is true and (select count(*) from DeliveryRequestSerialNumber c where c.inboundStockRow.deliveryRequest.id = b.id and c.serialNumber is not null and c.serialNumber != '')=0)  group by a.inboundDeliveryRequest.id having sum(a.quantity) = 0" )
 	List<Integer> clearMissingSerialNumberBacklogQuery();
-
+	
 }

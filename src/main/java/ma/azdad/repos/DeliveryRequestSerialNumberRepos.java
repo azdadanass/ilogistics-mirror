@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.StockRowStatus;
 
@@ -60,5 +61,14 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	@Modifying
 	@Query("delete from DeliveryRequestSerialNumber where inboundStockRow.id in (select sr.id from StockRow sr where sr.deliveryRequest.id = ?1)")
 	void deleteByInboundDeliveryRequest(Integer inboundDeliveryRequestId);
+	
+	@Query("from DeliveryRequestSerialNumber a where serialNumber is not null and serialNumber != '' and outboundDeliveryRequest is null and (select sum(b.quantity) from StockRow b where b.inboundDeliveryRequestDetail.id = a.inboundStockRow.deliveryRequestDetail.id) = 0")
+	List<DeliveryRequestSerialNumber> automaticFillOutboundSerialNumberQuery1();
+	
+	@Query("select distinct a.deliveryRequest from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.deliveryRequest.type = 'OUTBOUND' and a.deliveryRequest.missingSerialNumber is true")
+	List<DeliveryRequest> automaticFillOutboundSerialNumberQuery2(Integer inboundDeliveryRequestDetailId);
+	
+	@Query("select count(*) from DeliveryRequestSerialNumber a where a.outboundDeliveryRequest.id = ?1 and a.inboundStockRow.deliveryRequestDetail.id = ?2 and a.packingDetail.id = ?3")
+	Long countByOutboundDelievryRequestAndInboundeDeliveryDetailAndPackingDetail(Integer outboundDeliveryRequestId,Integer inboundDeliveryDetailId,Integer packingDetailId);
 
 }

@@ -116,6 +116,33 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId) {
 		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
 	}
+	
+	
+	public void automaticFillOutboundSerialNumberScript(){
+		List<DeliveryRequestSerialNumber> data = repos.automaticFillOutboundSerialNumberQuery1();
+		for (DeliveryRequestSerialNumber drsn : data) {
+			System.out.println("------------------------------------");
+			System.out.println(drsn.getId());
+			Integer inboundDeliveryRequestDetailId = drsn.getInboundStockRow().getDeliveryRequestDetail().getId();
+			List<DeliveryRequest> outboundList = repos.automaticFillOutboundSerialNumberQuery2(inboundDeliveryRequestDetailId);
+			for (DeliveryRequest outbound : outboundList) {
+				Integer packingQuantity  =  drsn.getPackingDetail().getParent().getQuantity();
+				Integer packingDetailQuantity = drsn.getPackingDetail().getQuantity();
+				Double stockRowQuantity = outbound.getStockRowList().stream().filter(sr->sr.getInboundDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId)).mapToDouble(sr->sr.getQuantity()).sum();
+				Double quantity = -stockRowQuantity * packingDetailQuantity / packingQuantity;
+				Double usedQuantity = (double) repos.countByOutboundDelievryRequestAndInboundeDeliveryDetailAndPackingDetail(outbound.getId(), inboundDeliveryRequestDetailId, drsn.getPackingDetail().getId());
+				System.out.println(outbound.getReference());
+				System.out.println("quantity : "+quantity);
+				System.out.println("usedQuantity : "+usedQuantity);
+				if(quantity > usedQuantity) {
+					drsn.setOutboundDeliveryRequest(outbound);
+					repos.save(drsn);
+					deliveryRequestService.calculateMissingSerialNumber(outbound.getId());
+					break;
+				}
+			}
+		}
+	}
 
 	///////////////// Mobile
 	public ResponseEntity<String> scanOutboundSnMobile(Integer id, String serialNumber) {

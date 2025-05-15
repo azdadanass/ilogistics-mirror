@@ -465,6 +465,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select count(*) from DeliveryRequest a where a.type = 'OUTBOUND' and a.status = 'DELIVRED' and a.requester.username = ?1")
 	Long countPendingAcknowledgementIdList(String requesterUsername);
 
+	
 	// mobile
 
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(" + "a.id, a.reference, a.type, a.neededDeliveryDate, a.date4, "

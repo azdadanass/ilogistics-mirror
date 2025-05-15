@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequest;
@@ -117,7 +118,7 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
 	}
 	
-	
+	@Async
 	public void automaticFillOutboundSerialNumberScript(){
 		List<DeliveryRequestSerialNumber> data = repos.automaticFillOutboundSerialNumberQuery1();
 		for (DeliveryRequestSerialNumber drsn : data) {

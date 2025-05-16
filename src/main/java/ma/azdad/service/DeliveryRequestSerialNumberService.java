@@ -24,7 +24,7 @@ import ma.azdad.model.StockRow;
 import ma.azdad.model.StockRowStatus;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
 import ma.azdad.view.DeliveryRequestSerialNumberView;
-import ma.azdad.view.DeliveryRequestSerialNumberView.OutboundSerialNumberSummary;
+import ma.azdad.view.DeliveryRequestSerialNumberView.SerialNumberSummary;
 
 @Component
 public class DeliveryRequestSerialNumberService extends GenericService<Integer, DeliveryRequestSerialNumber, DeliveryRequestSerialNumberRepos> {
@@ -162,11 +162,11 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 
 		List<StockRow> list = deliveryRequest.getStockRowList().stream()
 				.filter(i -> i.getInboundDeliveryRequest().getIsSnRequired() && i.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).count() > 0).collect(Collectors.toList());
-		List<OutboundSerialNumberSummary> outboundSerialNumberSummaryList;
+		List<SerialNumberSummary> serialNumberSummaryList;
 
-		outboundSerialNumberSummaryList = new ArrayList<DeliveryRequestSerialNumberView.OutboundSerialNumberSummary>();
+		serialNumberSummaryList = new ArrayList<DeliveryRequestSerialNumberView.SerialNumberSummary>();
 
-		Map<String, OutboundSerialNumberSummary> map = new HashMap<String, OutboundSerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
+		Map<String, SerialNumberSummary> map = new HashMap<String, SerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
 		for (StockRow stockRow : list) {
 			stockRow.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).forEach(pd -> {
 				String key = stockRow.getInboundDeliveryRequestDetail().getId() + ";" + pd.getId();
@@ -178,23 +178,23 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 				Double usedQuantity = (double) findByDeliveryRequest(id).stream()
 						.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId())).count();
 
-				map.putIfAbsent(key, new OutboundSerialNumberSummary(inboundDeliveryRequestDetailId, pd.getId(), partNumberName, inboundDeliveryRequestId, inboundDeliveryRequestReference, packingName,
+				map.putIfAbsent(key, new SerialNumberSummary(inboundDeliveryRequestDetailId, pd.getId(), partNumberName, inboundDeliveryRequestId, inboundDeliveryRequestReference, packingName,
 						pd.getType(), usedQuantity));
 				map.get(key).setQuantity(map.get(key).getQuantity() + pd.getQuantity() * (-stockRow.getQuantity() / stockRow.getPacking().getQuantity()));
 			});
 		}
 
 		for (String key : map.keySet())
-			outboundSerialNumberSummaryList.add(map.get(key));
+			serialNumberSummaryList.add(map.get(key));
 
 		List<DeliveryRequestSerialNumber> inboundList1 = new ArrayList<DeliveryRequestSerialNumber>();
-		outboundSerialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0.0)
+		serialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0.0)
 				.forEach(i -> inboundList1.addAll(findRemainingOutbound(i.getInboundDeliveryRequestDetailId(), i.getPackingDetailId())));
 		List<DeliveryRequestSerialNumber> matchList = inboundList1.stream().filter(sn -> serialNumber.equals(sn.getSerialNumber())).collect(Collectors.toList());
 		if (!matchList.isEmpty()) {
 			for (DeliveryRequestSerialNumber dns : matchList) {
 				dns.setOutboundDeliveryRequest(dn);
-//				deliveryRequestService.updateMissingSerialNumber(id, outboundSerialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0).count() > 0);
+//				deliveryRequestService.updateMissingSerialNumber(id, serialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0).count() > 0);
 				// correction azdad
 				deliveryRequestService.calculateMissingSerialNumber(id);
 			}

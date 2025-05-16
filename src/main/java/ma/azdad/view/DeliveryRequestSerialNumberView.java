@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestSerialNumber;
+import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.StockRow;
 import ma.azdad.repos.DeliveryRequestSerialNumberRepos;
@@ -56,7 +57,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	private DeliveryRequestSerialNumber deliveryRequestSerialNumber = new DeliveryRequestSerialNumber();
 
-	List<OutboundSerialNumberSummary> outboundSerialNumberSummaryList;
+	List<SerialNumberSummary> serialNumberSummaryList;
 
 	private List<DeliveryRequestSerialNumber> inboundList1 = new ArrayList<>();
 	private List<DeliveryRequestSerialNumber> inboundList2 = new ArrayList<>();
@@ -85,7 +86,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public void refreshList() {
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
 			list2 = list1 = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
-			refreshOutboundSerialNumberSummaryList();
+			refreshSerialNumberSummaryList();
 			datatable1 = new DatatableList<DeliveryRequestSerialNumber>(list1.stream().filter(i -> i.getOutboundDeliveryRequest() == null).collect(Collectors.toList()));
 		}
 	}
@@ -227,8 +228,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		deliveryRequestService.calculateMissingSerialNumber(deliveryRequest.getId());
 		// update associated outbound
 		stockRowService.findAssociatedOutboundWithInbound(deliveryRequest.getId()).forEach(deliveryRequestService::calculateMissingSerialNumber);
-		
-		
+
 		editMode = false;
 		refreshList();
 	}
@@ -367,15 +367,20 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	// outbound
 
-	public void refreshOutboundSerialNumberSummaryList() {
+	public void refreshSerialNumberSummaryList() {
 		DeliveryRequest deliveryRequest = deliveryRequestView.getDeliveryRequest();
-		if (!deliveryRequest.getIsOutbound())
-			return;
-		List<StockRow> list = deliveryRequest.getStockRowList().stream()
-				.filter(i -> i.getInboundDeliveryRequest().getIsSnRequired() && i.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).count() > 0).collect(Collectors.toList());
-		outboundSerialNumberSummaryList = new ArrayList<DeliveryRequestSerialNumberView.OutboundSerialNumberSummary>();
+		List<StockRow> list = null;
+		serialNumberSummaryList = new ArrayList<DeliveryRequestSerialNumberView.SerialNumberSummary>();
+		Map<String, SerialNumberSummary> map = new HashMap<String, SerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
+		switch (deliveryRequest.getType()) {
+		case INBOUND:
+			list = deliveryRequest.getStockRowList().stream().filter(i -> i.getPacking().getHasSerialnumber()).collect(Collectors.toList());
+			break;
+		case OUTBOUND:
+			list = deliveryRequest.getStockRowList().stream().filter(i -> i.getInboundDeliveryRequest().getIsSnRequired() && i.getPacking().getHasSerialnumber()).collect(Collectors.toList());
+			break;
+		}
 
-		Map<String, OutboundSerialNumberSummary> map = new HashMap<String, OutboundSerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
 		for (StockRow stockRow : list) {
 			stockRow.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).forEach(pd -> {
 				String key = stockRow.getInboundDeliveryRequestDetail().getId() + ";" + pd.getId();
@@ -384,23 +389,33 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 				Integer inboundDeliveryRequestId = stockRow.getInboundDeliveryRequestId();
 				String inboundDeliveryRequestReference = stockRow.getInboundDeliveryRequestReference();
 				String packingName = stockRow.getPacking().getName();
-				Double usedQuantity = (double) list1.stream()
-						.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId())).count();
-
-				map.putIfAbsent(key, new OutboundSerialNumberSummary(inboundDeliveryRequestDetailId, pd.getId(), partNumberName, inboundDeliveryRequestId, inboundDeliveryRequestReference, packingName,
+				Double usedQuantity = null;
+				Double stockRowQuantity = null;
+				switch (deliveryRequest.getType()) {
+				case INBOUND:
+					usedQuantity = (double) list1.stream()
+					.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId()) && StringUtils.isNotBlank(i.getSerialNumber())).count();
+					stockRowQuantity = stockRow.getQuantity();
+					break;
+				case OUTBOUND:
+					usedQuantity = (double) list1.stream()
+							.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId())).count();
+					stockRowQuantity = -stockRow.getQuantity();
+					break;
+				}
+				map.putIfAbsent(key, new SerialNumberSummary(inboundDeliveryRequestDetailId, pd.getId(), partNumberName, inboundDeliveryRequestId, inboundDeliveryRequestReference, packingName,
 						pd.getType(), usedQuantity));
-				map.get(key).setQuantity(map.get(key).getQuantity() + pd.getQuantity() * (-stockRow.getQuantity() / stockRow.getPacking().getQuantity()));
+				map.get(key).setQuantity(map.get(key).getQuantity() + pd.getQuantity() * (stockRowQuantity / stockRow.getPacking().getQuantity()));
 			});
 		}
-
 		for (String key : map.keySet())
-			outboundSerialNumberSummaryList.add(map.get(key));
+			serialNumberSummaryList.add(map.get(key));
 
 	}
 
 	public void initInboundLists() {
 		inboundList1 = new ArrayList<DeliveryRequestSerialNumber>();
-		outboundSerialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0.0)
+		serialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0.0)
 				.forEach(i -> inboundList1.addAll(service.findRemainingOutbound(i.getInboundDeliveryRequestDetailId(), i.getPackingDetailId())));
 		inboundList2 = inboundList1;
 
@@ -421,7 +436,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			inboundQuantityMap.put(key, inboundQuantityMap.get(key) + 1);
 		}
 
-		for (OutboundSerialNumberSummary outboundSerialNumberSummary : outboundSerialNumberSummaryList) {
+		for (SerialNumberSummary outboundSerialNumberSummary : serialNumberSummaryList) {
 			String key = outboundSerialNumberSummary.getInboundDeliveryRequestDetailId() + ";" + outboundSerialNumberSummary.getPackingDetailId();
 			outboundRemainingQuantityMap.put(key, outboundSerialNumberSummary.getRemainingQuantity());
 		}
@@ -452,7 +467,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		deliveryRequestView.refreshDeliveryRequest();
 		refreshList();
 //		deliveryRequestService.updateMissingSerialNumber(deliveryRequestView.getDeliveryRequest().getId(),
-//				outboundSerialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0).count() > 0);
+//				serialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0).count() > 0);
 
 		deliveryRequestService.calculateMissingSerialNumber(deliveryRequestView.getDeliveryRequest().getId());
 
@@ -466,7 +481,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	}
 
 	// tmp class
-	public static class OutboundSerialNumberSummary {
+	public static class SerialNumberSummary {
 
 		// key
 		private Integer inboundDeliveryRequestDetailId;
@@ -480,8 +495,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		private Double quantity = 0.0;
 		private Double usedQuantity = 0.0;
 
-		public OutboundSerialNumberSummary(Integer inboundDeliveryRequestDetailId, Integer packingDetailId, String partNumberName, Integer inboundDeliveryRequestId,
-				String inboundDeliveryRequestReference, String packingName, String packingDetailType, Double usedQuantity) {
+		public SerialNumberSummary(Integer inboundDeliveryRequestDetailId, Integer packingDetailId, String partNumberName, Integer inboundDeliveryRequestId, String inboundDeliveryRequestReference,
+				String packingName, String packingDetailType, Double usedQuantity) {
 			super();
 			this.inboundDeliveryRequestDetailId = inboundDeliveryRequestDetailId;
 			this.packingDetailId = packingDetailId;
@@ -571,7 +586,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 		@Override
 		public String toString() {
-			return "OutboundSerialNumberSummary [partNumberName=" + partNumberName + ", inboundDeliveryRequestReference=" + inboundDeliveryRequestReference + ", packingName=" + packingName
+			return "SerialNumberSummary [partNumberName=" + partNumberName + ", inboundDeliveryRequestReference=" + inboundDeliveryRequestReference + ", packingName=" + packingName
 					+ ", packingDetailType=" + packingDetailType + ", quantity=" + quantity + ", usedQuantity=" + usedQuantity + "]";
 		}
 
@@ -625,12 +640,12 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		inboundList2 = list;
 	}
 
-	public List<OutboundSerialNumberSummary> getOutboundSerialNumberSummaryList() {
-		return outboundSerialNumberSummaryList;
+	public List<SerialNumberSummary> getSerialNumberSummaryList() {
+		return serialNumberSummaryList;
 	}
 
-	public void setOutboundSerialNumberSummaryList(List<OutboundSerialNumberSummary> outboundSerialNumberSummaryList) {
-		this.outboundSerialNumberSummaryList = outboundSerialNumberSummaryList;
+	public void setSerialNumberSummaryList(List<SerialNumberSummary> serialNumberSummaryList) {
+		this.serialNumberSummaryList = serialNumberSummaryList;
 	}
 
 	public List<DeliveryRequestSerialNumber> getInboundList3() {

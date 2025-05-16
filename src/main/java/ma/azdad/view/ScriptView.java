@@ -215,7 +215,7 @@ public class ScriptView {
 	public void automaticFillOutboundSerialNumberScript() {
 		if (!canExecute)
 			return;
-		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript();
+		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(1000);
 	}
 
 	// GETTERS & SETTERS

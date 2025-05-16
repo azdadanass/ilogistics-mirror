@@ -118,18 +118,19 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
 	}
 
-	public List<DeliveryRequestSerialNumber> findHavingSerialNumberAndNoOutbound(Integer inboundDeliveryRequestDetailId, Integer locationId,
-			Integer packingDetailId, Integer limit) {
+	public List<DeliveryRequestSerialNumber> findHavingSerialNumberAndNoOutbound(Integer inboundDeliveryRequestDetailId, Integer locationId, Integer packingDetailId, Integer limit) {
 		List<DeliveryRequestSerialNumber> data = repos.findHavingSerialNumberAndNoOutbound(inboundDeliveryRequestDetailId, locationId, packingDetailId);
 		return data.subList(0, Math.min(limit, data.size()));
 	}
 
-	@Async
-	public void automaticFillOutboundSerialNumberScript() {
+	public void automaticFillOutboundSerialNumberScript(Integer limit) {
 		List<DeliveryRequestSerialNumber> data = repos.automaticFillOutboundSerialNumberQuery1();
+		data = data.subList(0, Math.min(limit, data.size()));
+		int i = 0;
 		for (DeliveryRequestSerialNumber drsn : data) {
 			System.out.println("------------------------------------");
-			System.out.println(drsn.getId());
+			System.out.println(UtilsFunctions.formatDouble(i * 100.0 / (double) data.size()) + " %");
+			System.out.println(i);
 			Integer inboundDeliveryRequestDetailId = drsn.getInboundStockRow().getDeliveryRequestDetail().getId();
 			List<DeliveryRequest> outboundList = repos.automaticFillOutboundSerialNumberQuery2(inboundDeliveryRequestDetailId);
 			for (DeliveryRequest outbound : outboundList) {
@@ -150,6 +151,7 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 					break;
 				}
 			}
+			i++;
 		}
 	}
 

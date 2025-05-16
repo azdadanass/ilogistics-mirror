@@ -33,7 +33,10 @@ public class JobService {
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
-	
+
+	@Autowired
+	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+
 	@Autowired
 	EmailService emailService;
 
@@ -90,37 +93,40 @@ public class JobService {
 	public void updatePartNumberPricingQuantities() {
 		partNumberPricingService.updateQuantities();
 	}
-	
-	
+
 	@Scheduled(cron = "00 10 05 * * *")
-	public  void calculatePendingJrMappingScript() {
+	public void calculatePendingJrMappingScript() {
 		deliveryRequestService.calculatePendingJrMappingScript();
 	}
-	
+
 	@Scheduled(cron = "00 20 05 * * *")
 	public void calculateHavingRunningStockScript() {
 		deliveryRequestService.calculateHavingRunningStockScript();
 	}
-	
+
 	@Scheduled(cron = "00 30 05 * * *")
 	public void calculateMissingExpiryScript() {
 		deliveryRequestService.calculateMissingExpiryScript();
 	}
-	
+
 	@Scheduled(cron = "00 40 05 * * *")
 	public void calculateMissingSerialNumberScript() {
 		deliveryRequestService.calculateMissingSerialNumberScript();
 	}
-	
-	
+
 	@Scheduled(cron = "00 40 05 * * *")
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}
-	
+
 	@Scheduled(cron = "00 45 05 * * *")
 	public void sendDeliveryRequestPendingAcknowledgementNotification() {
 		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
+	}
+
+	@Scheduled(cron = "00 * 01-05 * * *")
+	public void automaticFillOutboundSerialNumberScript() {
+		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(200);
 	}
 
 }

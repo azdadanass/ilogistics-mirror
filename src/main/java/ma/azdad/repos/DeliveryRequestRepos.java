@@ -489,7 +489,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query(cm1 + "  where a.warehouse.id in (?1) and a.status in (?2) and a.type != ?3 order by a.date4 desc")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList, List<DeliveryRequestStatus> status, DeliveryRequestType xbound);
 
-	@Query(cm1 + " where a.missingSerialNumber = true and a.warehouse.id in (?1)")
+	@Query(cm1 + " where a.missingSerialNumber = true and a.warehouse.id in (?1) order by a.date4 desc")
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightByMissingSerialNumberMobile(List<Integer> warehouseList);
 
 	@Query("select count(*) from DeliveryRequest a where a.missingSerialNumber = true and a.warehouse.id in (?1)")

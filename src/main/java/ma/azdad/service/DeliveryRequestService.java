@@ -2113,7 +2113,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 							packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(),
 							packingDetail.getFragile(), packingDetail.getStackable(), packingDetail.getFlammable(),
 							packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(),
-							packingDetail.getStorageHumidity(), packingDetail.getMaxStack()));
+							packingDetail.getStorageHumidity(), packingDetail.getMaxStack(),packingDetail.getHasSerialnumber()));
 		}
 
 		List<ma.azdad.mobile.model.DeliveryRequestDetail> mobileDetails = deliveryRequestDetailRepos

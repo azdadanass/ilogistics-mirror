@@ -9,6 +9,7 @@ public class PackingDetail {
 	private Double length;
 	private Double width;
 	private Double height;
+	private Boolean hasSerialnumber = false;
 	private Integer quantity;
 	private Double volume;
 	private Double grossWeight;
@@ -25,7 +26,7 @@ public class PackingDetail {
 	
 	public PackingDetail(Integer id, String typeImage, Double length, Double width, Double height, Integer quantity,
 			Double volume, Double grossWeight, Boolean fragile, Boolean stackable, Boolean flammable,Integer minStorageTemperature,Integer maxStorageTemperature
-			,Integer storageHumidity,Integer maxStack) {
+			,Integer storageHumidity,Integer maxStack,Boolean hasSerialnumber) {
 		super();
 		this.id = id;
 		this.typeImage = "http://ilogistics.3gcominside.com"+typeImage;
@@ -42,6 +43,8 @@ public class PackingDetail {
 		this.maxStorageTemperature = maxStorageTemperature;
 		this.storageHumidity = storageHumidity;
 		this.maxStack = maxStack;
+		this.hasSerialnumber = hasSerialnumber;
+
 
 	}
 
@@ -147,6 +150,16 @@ public class PackingDetail {
 	public void setMaxStack(Integer maxStack) {
 		this.maxStack = maxStack;
 	}
+
+	public Boolean getHasSerialnumber() {
+		return hasSerialnumber;
+	}
+
+	public void setHasSerialnumber(Boolean hasSerialnumber) {
+		this.hasSerialnumber = hasSerialnumber;
+	}
+	
+	
 	
 	
 	

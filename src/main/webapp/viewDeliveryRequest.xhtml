@@ -1842,9 +1842,8 @@
 											<p:column headerText="Inbound DN">
 												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
 													<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
-													<f:param name="id" value="#{item.inboundDeliveryRequestId}"/>
+													<f:param name="id" value="#{item.inboundDeliveryRequestId}" />
 												</h:outputLink>
-												
 											</p:column>
 											<p:column headerText="Packing">
 												<h:outputText value="#{item.packingName}" />
@@ -1922,7 +1921,8 @@
 										<p:column headerText="Serial Number">
 											<h:outputText value="#{item.serialNumber}" styleClass="green bolder"
 												rendered="#{!deliveryRequestSerialNumberView.editMode or (item.inboundStockRow != null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound) }" />
-											<p:inputText value="#{item.serialNumber}" readonly="#{item.outboundDeliveryRequest!=null}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+											<p:inputText value="#{item.serialNumber}" readonly="#{item.outboundDeliveryRequest!=null}"
+												rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
 											<p:selectOneMenu value="#{item.serialNumber}" filter="true" filterMatchMode="contains" style="width:100px"
 												rendered="#{item.inboundStockRow == null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
@@ -1992,8 +1992,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.datatable1.value}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
 												<h:outputText value="#{item.tmpPartNumber.name} / " styleClass="blue bolder" />
 												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
@@ -2222,18 +2222,18 @@
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-home green" />
-									<h:outputText value=" TMP NAME(Storage)" />
+									<h:outputText value=" Potential Stock" />
 								</h4>
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-10">
 											<i class="fa fa-list" />
-											<h:outputText value=" Storage" />
+											<h:outputText value=" Potential Stock" />
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable value="#{deliveryRequestView.generateStockRowFromOutboundDeliveryRequest()}" rows="40" var="item" styleClass="table table-striped table-hover center"
-											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:dataTable value="#{deliveryRequestView.potentialStockRowlist}" rows="40" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number">
 												<h:outputLink value="viewPartNumber.xhtml" target="blank">
 													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
@@ -2256,6 +2256,49 @@
 												<h:outputText value="#{-item.quantity}" styleClass="bolder">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<h4 class="header blue bolder smaller">
+									<i class="fa fa-home green" />
+									<h:outputText value=" Potential SN" />
+								</h4>
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-10">
+											<i class="fa fa-list" />
+											<h:outputText value=" Potential SN" />
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable value="#{deliveryRequestView.potentialSerialNumberList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number / Packing Numero" groupRow="true" width="300" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.partNumber.name} / " styleClass="blue bolder" />
+												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
+											</p:column>
+											<p:column headerText="KEY" styleClass="hide">
+												<h:outputText value="#{item.key}" />
+											</p:column>
+											<p:column headerText="Packing Detail">
+												<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
+											</p:column>
+											<p:column headerText="Status" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.status.value}" />
+												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Location" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
+												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Serial Number">
+												<h:outputText value="#{item.serialNumber}" styleClass="green bolder" />
+											</p:column>
+											<p:column headerText="Box Id">
+												<h:outputText value="#{item.box}" styleClass="orange bolder" />
 											</p:column>
 										</p:dataTable>
 									</div>

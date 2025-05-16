@@ -109,7 +109,7 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	public Long countByOutboundDeliveryRequest(Integer deliveryRequestId) {
 		return ObjectUtils.firstNonNull(repos.countByOutboundDeliveryRequest(deliveryRequestId), 0l);
 	}
-	
+
 	public Long countByPackingDetail(Integer packginDetailId) {
 		return ObjectUtils.firstNonNull(repos.countByPackingDetail(packginDetailId), 0l);
 	}
@@ -117,9 +117,15 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	public List<DeliveryRequestSerialNumber> findRemainingOutbound(Integer deliveryRequestDetailId, Integer packingDetailId) {
 		return repos.findRemainingOutbound(deliveryRequestDetailId, packingDetailId);
 	}
-	
+
+	public List<DeliveryRequestSerialNumber> findHavingSerialNumberAndNoOutbound(Integer inboundDeliveryRequestDetailId, Integer locationId,
+			Integer packingDetailId, Integer limit) {
+		List<DeliveryRequestSerialNumber> data = repos.findHavingSerialNumberAndNoOutbound(inboundDeliveryRequestDetailId, locationId, packingDetailId);
+		return data.subList(0, Math.min(limit, data.size()));
+	}
+
 	@Async
-	public void automaticFillOutboundSerialNumberScript(){
+	public void automaticFillOutboundSerialNumberScript() {
 		List<DeliveryRequestSerialNumber> data = repos.automaticFillOutboundSerialNumberQuery1();
 		for (DeliveryRequestSerialNumber drsn : data) {
 			System.out.println("------------------------------------");
@@ -127,15 +133,17 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 			Integer inboundDeliveryRequestDetailId = drsn.getInboundStockRow().getDeliveryRequestDetail().getId();
 			List<DeliveryRequest> outboundList = repos.automaticFillOutboundSerialNumberQuery2(inboundDeliveryRequestDetailId);
 			for (DeliveryRequest outbound : outboundList) {
-				Integer packingQuantity  =  drsn.getPackingDetail().getParent().getQuantity();
+				Integer packingQuantity = drsn.getPackingDetail().getParent().getQuantity();
 				Integer packingDetailQuantity = drsn.getPackingDetail().getQuantity();
-				Double stockRowQuantity = outbound.getStockRowList().stream().filter(sr->sr.getInboundDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId)).mapToDouble(sr->sr.getQuantity()).sum();
+				Double stockRowQuantity = outbound.getStockRowList().stream().filter(sr -> sr.getInboundDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId))
+						.mapToDouble(sr -> sr.getQuantity()).sum();
 				Double quantity = -stockRowQuantity * packingDetailQuantity / packingQuantity;
-				Double usedQuantity = (double) repos.countByOutboundDelievryRequestAndInboundeDeliveryDetailAndPackingDetail(outbound.getId(), inboundDeliveryRequestDetailId, drsn.getPackingDetail().getId());
+				Double usedQuantity = (double) repos.countByOutboundDelievryRequestAndInboundeDeliveryDetailAndPackingDetail(outbound.getId(), inboundDeliveryRequestDetailId,
+						drsn.getPackingDetail().getId());
 				System.out.println(outbound.getReference());
-				System.out.println("quantity : "+quantity);
-				System.out.println("usedQuantity : "+usedQuantity);
-				if(quantity > usedQuantity) {
+				System.out.println("quantity : " + quantity);
+				System.out.println("usedQuantity : " + usedQuantity);
+				if (quantity > usedQuantity) {
 					drsn.setOutboundDeliveryRequest(outbound);
 					repos.save(drsn);
 					deliveryRequestService.calculateMissingSerialNumber(outbound.getId());
@@ -185,7 +193,7 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 			for (DeliveryRequestSerialNumber dns : matchList) {
 				dns.setOutboundDeliveryRequest(dn);
 //				deliveryRequestService.updateMissingSerialNumber(id, outboundSerialNumberSummaryList.stream().filter(i -> i.getRemainingQuantity() > 0).count() > 0);
-				// correction azdad 
+				// correction azdad
 				deliveryRequestService.calculateMissingSerialNumber(id);
 			}
 			return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.TEXT_PLAIN).body("SN scanned successfully");

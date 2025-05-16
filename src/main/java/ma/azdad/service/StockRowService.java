@@ -182,7 +182,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 //	}
 
 	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
-		return repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
+		List<StockRow> result =repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
+		result.forEach(i->{
+			i.getPacking().getDetailList().forEach(j->initialize(j));
+		});
+		return result;
 	}
 
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {

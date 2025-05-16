@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestExpiryDateService;
+import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.EmailService;
 import ma.azdad.service.IssueCategoryService;
@@ -57,6 +58,9 @@ public class ScriptView {
 
 	@Autowired
 	DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
+	
+	@Autowired
+	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 
 	@Autowired
 	EmailService emailService;
@@ -177,6 +181,18 @@ public class ScriptView {
 			return;
 		deliveryRequestService.calculateMissingExpiryScript();
 	}
+	
+	public void calculateMissingSerialNumberScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculateMissingSerialNumberScript();
+	}
+	
+	public void clearMissingSerialNumberBacklog() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.clearMissingSerialNumberBacklog();
+	}
 
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		if (!canExecute)
@@ -194,6 +210,12 @@ public class ScriptView {
 		log.info("start updateOutboundInboundPoScript");
 		deliveryRequestService.updateOutboundInboundPoScript();
 		log.info("end updateOutboundInboundPoScript");
+	}
+	
+	public void automaticFillOutboundSerialNumberScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(1000);
 	}
 
 	// GETTERS & SETTERS

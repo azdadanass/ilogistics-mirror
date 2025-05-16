@@ -552,6 +552,23 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 		this.setEndCustomerName(endCustomerName);
 	}
 
+	// c25
+	public StockRow(Double quantity, StockRowStatus status, StockRowState state, Date creationDate, //
+			DeliveryRequestType deliveryRequestType,
+			Integer partNumberId, String partNumberName, String partNumberDescription, Integer locationId, String locationName) {
+		super();
+		this.quantity = quantity;
+		this.status = status;
+		this.state = state;
+		this.creationDate = creationDate;
+		this.setDeliveryRequestType(deliveryRequestType);
+		this.setPartNumberId(partNumberId);
+		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
+		this.setLocationId(locationId);
+		this.setLocationName(locationName);
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Override
@@ -580,6 +597,11 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	public static String getKey(Integer statusOrdinal, String originNumber, Integer partNumberId, Integer inboundDeliveryRequestId) {
 		Integer originNumberHashCode = originNumber != null ? originNumber.hashCode() : 0;
 		return statusOrdinal + ";" + originNumberHashCode + ";" + partNumberId + ";" + inboundDeliveryRequestId;
+	}
+
+	@Transient
+	public Long getAge() {
+		return UtilsFunctions.getDateDifference(new Date(), creationDate);
 	}
 
 	@Transient
@@ -1510,6 +1532,30 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Transient
+	public Integer getLocationId() {
+		return location != null ? location.getId() : null;
+	}
+
+	@Transient
+	public void setLocationId(Integer locationId) {
+		if (location == null || !locationId.equals(location.getId()))
+			location = new Location();
+		location.setId(locationId);
+	}
+
+	@Transient
+	public String getLocationName() {
+		return location != null ? location.getName() : null;
+	}
+
+	@Transient
+	public void setLocationName(String locationName) {
+		if (location == null)
+			location = new Location();
+		location.setName(locationName);
 	}
 
 	@Transient

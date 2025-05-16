@@ -182,7 +182,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 //	}
 
 	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
-		return repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
+		List<StockRow> result =repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
+		result.forEach(i->{
+			i.getPacking().getDetailList().forEach(j->initialize(j));
+		});
+		return result;
 	}
 
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList) {
@@ -194,7 +198,46 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	}
 
 	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId) {
-		return repos.getStockSituationByInboundDeliveryRequest(deliveryRequestId);
+		List<StockRow> result = new ArrayList<StockRow>();
+		List<StockRow> data = repos.getStockSituationByInboundDeliveryRequest(deliveryRequestId);
+
+		// key = pn;status;location
+		Map<String, Double> outboundMap = new HashMap<String, Double>();
+		for (StockRow stockRow : data) {
+			System.out.println(stockRow.getPartNumberId());
+			System.out.println(stockRow.getQuantity());
+			if (stockRow.getQuantity()<0) { // outbound
+				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
+				outboundMap.putIfAbsent(key, 0.0);
+				outboundMap.put(key, outboundMap.get(key) - stockRow.getQuantity()); // - to get positive outbound quantity
+			}
+		}
+
+		System.out.println("outboundMap");
+		System.out.println(outboundMap);
+
+		for (StockRow stockRow : data) {
+			if (stockRow.getQuantity()>0) { // inbound
+				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
+				Double quantity = stockRow.getQuantity();
+				Double outboundQuantity = outboundMap.getOrDefault(key,0.0);
+				
+				System.out.println("key : "+key+"\t"+stockRow.getCreationDate());
+
+				if (quantity >= outboundQuantity) {
+					System.out.println("1");
+					stockRow.setQuantity(quantity - outboundQuantity);
+					outboundMap.put(key, 0.0);
+				} else {
+					System.out.println("2");
+					stockRow.setQuantity(0.0);
+					outboundMap.put(key, outboundQuantity - stockRow.getQuantity());
+				}
+				if (!stockRow.getQuantity().equals(0.0))
+					result.add(stockRow);
+			}
+		}
+		return result;
 	}
 
 	public List<StockRow> findAttachedOutboundDeliveryRequestList(Integer deliveryRequestId) {
@@ -1167,4 +1210,13 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	public Double findQuantityByDeliveryRequestDetail(Integer deliveryRequestDetail) {
 		return ObjectUtils.firstNonNull(repos.findQuantityByDeliveryRequestDetail(deliveryRequestDetail), 0.0);
 	}
+
+	public Double findTotalRequiringSerialNumberInOurbound(Integer outboundDelievryRequestId) {
+		return ObjectUtils.firstNonNull(repos.findTotalRequiringSerialNumberInOurbound(outboundDelievryRequestId), 0.0);
+	}
+
+	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId) {
+		return repos.findAssociatedOutboundWithInbound(inboundDeliveryRequestId);
+	}
+
 }

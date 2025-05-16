@@ -21,6 +21,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 @Entity
@@ -79,7 +80,6 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private List<Packing> packingList = new ArrayList<Packing>();
 
 	private PartNumberFile selectedPhoto;
-	private Integer remainingFileds = 0;
 
 	// tmp
 	private PartNumber relatedPartNumber;
@@ -265,75 +265,41 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
-	public Double getCompletenessPercentage() {
-		int total = 0, filled = 0;
-
-		total++;
-		if (name != null && !name.isEmpty())
-			filled++;
-
-		total++;
-		if (partNumberType != null)
-			filled++;
-
-		total++;
-		if (countryOfOrigin != null && !countryOfOrigin.isEmpty())
-			filled++;
-
-		total++;
-		if (description != null && !description.isEmpty())
-			filled++;
-
-		total++;
-		if (grossWeight != null)
-			filled++;
-
-		total++;
-		if (netWeight != null)
-			filled++;
-
-		total++;
-		if (volume != null)
-			filled++;
-
-		total++;
-		if (length != null)
-			filled++;
-
-		total++;
-		if (width != null)
-			filled++;
-
-		total++;
-		if (height != null)
-			filled++;
-
-		total++;
-		if (storageTemperature != null)
-			filled++;
-
-		total++;
-		if (storageHumidity != null)
-			filled++;
-
-		total++;
-		if (flammable != null)
-			filled++;
-
-		total++;
-		if (maxStack != null)
-			filled++;
-
-		total++;
-		if (maxStorageDuration != null)
-			filled++;
-
-		total++;
-		if (fragile != null)
-			filled++;
-		remainingFileds = total - filled;
-		return ((double) filled) / ((double) total);
-
+	public List<String> getRemainingFields() {
+		List<String> remainingFields = new ArrayList<String>();
+		if (StringUtils.isBlank(name))
+			remainingFields.add("Name");
+		if (partNumberClass == null)
+			remainingFields.add("Class");
+		if (StringUtils.isBlank(industryName))
+			remainingFields.add("Industry");
+		if (StringUtils.isBlank(typeName))
+			remainingFields.add("Type");
+		if (StringUtils.isBlank(categoryName))
+			remainingFields.add("Category");
+		if (partialDelivery == null)
+			remainingFields.add("Partial Delivery");
+		if (StringUtils.isBlank(brandName))
+			remainingFields.add("Brand");
+		if (unit == null)
+			remainingFields.add("Unit/Kit");
+		if (StringUtils.isBlank(countryOfOrigin))
+			remainingFields.add("Country Of Origin");
+		if (stockItem == null)
+			remainingFields.add("Stock PN");
+		if (StringUtils.isBlank(unitType))
+			remainingFields.add("Unit Type");
+		if (expirable == null)
+			remainingFields.add("Expirable");
+		if (spare == null)
+			remainingFields.add("Spare");
+		if (state == null)
+			remainingFields.add("State");
+		if (expiryDuration == null)
+			remainingFields.add("Expiry Duration");
+		if (StringUtils.isBlank(description))
+			remainingFields.add("Description");
+		return remainingFields;
 	}
 
 	@Transient
@@ -626,15 +592,6 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		return name;
 	}
 
-	@Transient
-	public Integer getRemainingFileds() {
-		return remainingFileds;
-	}
-
-	public void setRemainingFileds(Integer remainingFileds) {
-		this.remainingFileds = remainingFileds;
-	}
-
 	public String getImage() {
 		return image;
 	}
@@ -830,5 +787,4 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		this.industryName = industryName;
 	}
 
-	
 }

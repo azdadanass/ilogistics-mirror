@@ -21,6 +21,9 @@ public class PackingService extends GenericService<Integer, Packing, PackingRepo
 
 	@Autowired
 	PartNumberRepos partNumberRepos;
+	
+	@Autowired
+	PackingDetailService packingDetailService;
 
 	@Override
 	public Packing findOne(Integer id) {
@@ -70,6 +73,11 @@ public class PackingService extends GenericService<Integer, Packing, PackingRepo
 
 	public void updateName(Integer id, String name) {
 		packingRepos.updateName(id, name);
+	}
+	
+	public Boolean hasSerialNumber(Integer id) {
+		return packingDetailService.countByPackingAndHasSerialnumber(id)>0;
+		
 	}
 
 }

@@ -11,6 +11,7 @@ import ma.azdad.model.Packing;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PackingRepos;
+import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
@@ -29,6 +30,9 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 
 	@Autowired
 	private PartNumberService partNumberService;
+	
+	@Autowired
+	private DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 
 	@Autowired
 	private CacheView cacheView;
@@ -132,6 +136,8 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 			return FacesContextMessages.ErrorMessages("Type / Quantity should not be null");
 		if (packing.getDetailList().stream().filter(i -> i.getHasSerialnumber()).mapToDouble(i -> i.getQuantity()).sum() > 10.0)
 			return FacesContextMessages.ErrorMessages("Number of packing details with SN should not exceed 10");
+		if(packing.getDetailList().stream().filter(i -> !i.getHasSerialnumber() && deliveryRequestSerialNumberService.countByPackingDetail(i.getId())>0).count()>0)
+			return FacesContextMessages.ErrorMessages("You cannot change the Packing Detail 'SN' field as it has already been used in a Delivery Note (DN).");
 
 		return true;
 	}

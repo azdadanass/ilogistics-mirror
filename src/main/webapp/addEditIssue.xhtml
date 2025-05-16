@@ -139,8 +139,7 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<h:selectOneMenu value="#{issueView.issue.category}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Category should not be null"
-												converter="#{genericSecuredConverter}">
+											<h:selectOneMenu value="#{issueView.issue.category}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Category should not be null" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{issueCategoryView.findByProjectAndParenType(issueView.issue)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 												<p:ajax update="type" />
@@ -158,8 +157,7 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<h:selectOneMenu id="type" value="#{issueView.issue.type}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Type should not be null"
-												converter="#{genericSecuredConverter}">
+											<h:selectOneMenu id="type" value="#{issueView.issue.type}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Type should not be null" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{issueTypeView.findByCategory(issueView.issue.category.id)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</h:selectOneMenu>
@@ -253,14 +251,20 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true"
-													rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}" styleClass="col-xs-12 col-sm-6" />
-												<p:inputText value="#{issueView.issue.project.customer.name}" readonly="true" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}"
+												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true" rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}"
 													styleClass="col-xs-12 col-sm-6" />
+												<!-- <p:inputText value="#{issueView.issue.project.customer.name}" readonly="true" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}"
+													styleClass="col-xs-12 col-sm-6" /> -->
+												<p:selectOneMenu value="#{issueView.issue.confirmatorCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+													requiredMessage="Confirmation Customer should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{customerView.findAssignedToProject(issueView.issue.projectId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax update="confirmator" />
+												</p:selectOneMenu>
 												<p:selectOneMenu value="#{issueView.issue.confirmatorSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 													requiredMessage="Confirmation Supplier should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.confirmatorCompanyType}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<f:selectItems value="#{supplierView.findAssignedToProject(issueView.issue.projectId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													<p:ajax update="confirmator" />
 												</p:selectOneMenu>
 												<br />
@@ -278,23 +282,25 @@
 											<div class="clearfix">
 												<h:panelGroup id="confirmator">
 													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-														requiredMessage="Confirmation should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}">
+														requiredMessage="Confirmation should not be null" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{issueView.findOwnerShipUserSelectionList('confirmator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<!-- <p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Confirmation should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}">
 														<f:selectItems value="#{userView.findByAssignementAndCompany(issueView.issue.project.id,companyView.findLightByProject(issueView.issue.project.id).id)}" var="item"
 															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Confirmation should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.confirmatorCompanyType}">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.project.customer.id)}" var="item"
-															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.confirmatorCustomerId)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Confirmation should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.confirmatorCompanyType}">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.confirmatorSupplierId)}" var="item"
-															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
-													</p:selectOneMenu>
+														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.confirmatorSupplierId)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item.username}" />
+													</p:selectOneMenu> -->
 												</h:panelGroup>
 												<br />
 											</div>
@@ -331,14 +337,18 @@
 										</div>
 										<div class="col-xs-12 col-sm-9">
 											<div class="clearfix">
-												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true"
-													rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}" styleClass="col-xs-12 col-sm-6" />
-												<p:inputText value="#{issueView.issue.project.customer.name}" readonly="true" rendered="#{CompanyType.CUSTOMER==issueView.issue.assignatorCompanyType}"
+												<p:inputText value="#{companyView.findLightByProject(issueView.issue.project.id).name}" readonly="true" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}"
 													styleClass="col-xs-12 col-sm-6" />
+												<p:selectOneMenu value="#{issueView.issue.assignatorCustomerId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+													requiredMessage="Assignator Customer should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.assignatorCompanyType}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{customerView.findAssignedToProject(issueView.issue.projectId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<p:ajax update="assignator" />
+												</p:selectOneMenu>
 												<p:selectOneMenu value="#{issueView.issue.assignatorSupplierId}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 													requiredMessage="Assignator Supplier should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.assignatorCompanyType}">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													<f:selectItems value="#{supplierView.findAssignedToProject(issueView.issue.projectId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													<p:ajax update="assignator" />
 												</p:selectOneMenu>
 												<br />
@@ -356,23 +366,25 @@
 											<div class="clearfix">
 												<h:panelGroup id="assignator">
 													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
-														requiredMessage="Assignator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}">
+														requiredMessage="Assignator should not be null" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{issueView.findOwnerShipUserSelectionList('assignator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+													</p:selectOneMenu>
+													<!-- <p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Assignator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}">
 														<f:selectItems value="#{userView.findByAssignementAndCompany(issueView.issue.project.id,companyView.findLightByProject(issueView.issue.project.id).id)}" var="item"
 															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Assignator should not be null" rendered="#{CompanyType.CUSTOMER==issueView.issue.assignatorCompanyType}">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.project.customer.id)}" var="item"
-															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+														<f:selectItems value="#{userView.findByAssignementAndCustomer(issueView.issue.project.id,issueView.issue.project.customer.id)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Assignator should not be null" rendered="#{CompanyType.SUPPLIER==issueView.issue.assignatorCompanyType}">
-														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.assignatorSupplierId)}" var="item"
-															itemLabel="#{item.fullName}" itemValue="#{item.username}" />
-													</p:selectOneMenu>
+														<f:selectItems value="#{userView.findByAssignementAndSupplier(issueView.issue.project.id,issueView.issue.assignatorSupplierId)}" var="item" itemLabel="#{item.fullName}"
+															itemValue="#{item.username}" /> 
+													</p:selectOneMenu>-->
 												</h:panelGroup>
 												<br />
 											</div>
@@ -394,8 +406,8 @@
 											<h:outputText value=" Notification List" />
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable id="notification_tab" value="#{issueView.issue.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-												paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:dataTable id="notification_tab" value="#{issueView.issue.toNotifyList}" var="item" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+												paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
 													<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 														<f:param name="fileName" value="#{item.photo}" />
@@ -408,8 +420,7 @@
 													<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
 												</p:column>
 												<p:column headerText="Entity">
-													<h:outputText value="#{userView.findCompanyType(item.internalResource.username).value}"
-														styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
+													<h:outputText value="#{userView.findCompanyType(item.internalResource.username).value}" styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
 													<h:outputText value=" / " />
 													<h:outputText value="#{userView.findEntityName(item.internalResource)}" styleClass="bolder #{userView.findCompanyType(item.internalResource.username).color.name}" />
 												</p:column>
@@ -440,8 +451,8 @@
 												</p:column>
 												<f:facet name="footer">
 													<div class="action-buttons center">
-														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()"
-															partialSubmit="true" process="notification_tab">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()" partialSubmit="true"
+															process="notification_tab">
 															<i class="fa fa-plus green" />
 														</p:commandLink>
 													</div>

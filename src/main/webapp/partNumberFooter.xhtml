@@ -33,6 +33,7 @@
 				</h4>
 			</div>
 			<div class="modal-body" style="width: 100%">
+				<p:messages id="messages" closable="true" />
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="table-header col-sm-12 col-xs-12">
@@ -169,7 +170,7 @@
 										<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{packingView.addDetail()}" rendered="#{packingView.canAddDetail()}" update="main_tab">
 											<i class="fa fa-plus blue" />
 										</p:commandLink>
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{packingView.savePacking()}" rendered="#{packingView.canAddDetail()}" update="main_tab">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{packingView.savePacking()}" rendered="#{packingView.canAddDetail()}" update="main_tab,:viewPackingForm:messages">
 											<i class="fa fa-save green" />
 										</p:commandLink>
 									</div>

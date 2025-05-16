@@ -81,6 +81,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ "," + originName + "," + destinationProjectName + ",a.deliveryRequest.deliverToCompanyType ," + deliverToCompanyName + " ," + deliverToCustomerName + "," + deliverToSupplierName
 			+ ",a.deliveryRequest.deliverToOther," + toUserFullName + "," + toUserEmail + "," + toUserPhone + "," + toUserCin + "," + poNumero + ",a.inboundDeliveryRequest.po.id," + inboundPoNumero2
 			+ "," + endCustomerName + ") ";
+	
+	
+	String c25 = "select new StockRow(sum(a.quantity),a.status,a.state,a.creationDate,a.deliveryRequest.type,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.location.id,a.location.name) ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -116,7 +119,10 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 			+ " from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
 	public List<StockRow> getStockSituationByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
 
-	@Query(c3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+//	@Query(c3 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
+//	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
+	
+	@Query(c25 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id,a.deliveryRequest.type,date(a.creationDate) order by a.creationDate")
 	public List<StockRow> getStockSituationByInboundDeliveryRequest(Integer deliveryRequestId);
 
 	@Query(cm1 + " from StockRow a where a.inboundDeliveryRequest.id = ?1 group by a.status,a.partNumber.id,a.location.id having sum(a.quantity) != 0")
@@ -611,8 +617,8 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Query("select MONTHNAME(date1) from DeliveryRequest where id = 2")
 	public List<String> test();
 
-	@Query("select distinct a.deliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.deliveryRequest.type = ?2")
-	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId, DeliveryRequestType outbound);
+	@Query("select distinct a.deliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id = ?1 and a.deliveryRequest.type = 'OUTBOUND'")
+	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId);
 
 	@Query("select distinct a.inboundDeliveryRequest.id from StockRow a where a.deliveryRequest.id = ?1")
 	public List<Integer> findAssociatedInboundWithOutbound(Integer outboundDeliveryRequestId);
@@ -744,4 +750,14 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	@Modifying
 	@Query("update StockRow a set a.inboundCompanyId = (select b.company.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id),a.inboundCustomerId = (select b.customer.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id),a.inboundSupplierId = (select b.supplier.id from DeliveryRequest b where a.inboundDeliveryRequest.id = b.id)  where a.deliveryRequest.id = ?1")
 	void updateInboundOwnerId(Integer deliveryRequestId);
+
+	@Query("select sum(-a.quantity * (select sum(pd.quantity) from PackingDetail pd where pd.parent.id = a.packing.id and pd.hasSerialnumber is true) / a.packing.quantity) from StockRow a where a.deliveryRequest.id = ?1 and (select count(*) from DeliveryRequestSerialNumber b where b.inboundStockRow.deliveryRequestDetail = a.inboundDeliveryRequestDetail.id and b.serialNumber is not null and b.serialNumber!='') > 0  ")
+	Double findTotalRequiringSerialNumberInOurbound(Integer outboundDelievryRequestId);
+
+	@Query("select distinct a.deliveryRequest.id from StockRow a where (select count(*) from PackingDetail b where b.parent.id = a.packing.id and b.hasSerialnumber is true) > 0")
+	List<Integer> findDeliveryRequestListHavingPackingDetailRequiringSerialNumber();
+	
+	@Query("select a.inboundDeliveryRequest.id from StockRow a where a.inboundDeliveryRequest.id in (select b.id from DeliveryRequest b where b.type = 'INBOUND' and b.missingSerialNumber is true and (select count(*) from DeliveryRequestSerialNumber c where c.inboundStockRow.deliveryRequest.id = b.id and c.serialNumber is not null and c.serialNumber != '')=0)  group by a.inboundDeliveryRequest.id having sum(a.quantity) = 0" )
+	List<Integer> clearMissingSerialNumberBacklogQuery();
+	
 }

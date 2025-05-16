@@ -94,8 +94,6 @@ public class JobRequestDeliveryDetailService extends GenericService<Integer, Job
 		Map<Integer, Double> dnQtyMap = stockRowService.findQuantityPartNumberMapByDeliveryRequest(deliveryRequestId);
 		Map<Integer, Double> returnQtyMap = stockRowService.findReturnedQuantityPartNumberMapByOutboundDeliveryRequest(deliveryRequestId);
 
-		System.out.println("returnQtyMap : " + returnQtyMap);
-
 		Map<Integer, JobRequestDeliveryDetail> map = new HashMap<Integer, JobRequestDeliveryDetail>();
 		for (JobRequestDeliveryDetail jrdd : data) {
 			JobRequestDeliveryDetail jobRequestDeliveryDetail;

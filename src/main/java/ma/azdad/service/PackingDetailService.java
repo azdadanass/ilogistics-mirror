@@ -29,5 +29,9 @@ public class PackingDetailService extends GenericService<Integer, PackingDetail,
 	public Long countByDeliveryRequestAndHasSerialNumber(Integer deliveryRequestId) {
 		return ObjectUtils.firstNonNull(repos.countByDeliveryRequestAndHasSerialNumber(deliveryRequestId), 0l);
 	}
+	
+	public Long countByPackingAndHasSerialnumber(Integer packingId) {
+		return ObjectUtils.firstNonNull(repos.countByPackingAndHasSerialnumber(packingId), 0l);
+	}
 
 }

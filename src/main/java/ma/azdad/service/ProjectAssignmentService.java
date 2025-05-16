@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ma.azdad.model.ProjectAssignment;
 import ma.azdad.model.ProjectAssignmentType;
 import ma.azdad.model.Supplier;
+import ma.azdad.model.User;
 import ma.azdad.repos.ProjectAssignmentRepos;
 
 @Component
@@ -100,5 +101,10 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 	public Boolean isUserHavingActiveAssignmentInProject(Integer projectId, String username) {
 		return countActiveByProjectAndUser(projectId, username) > 0;
 	}
+	
+	public List<User> findCompanyUserListAssignedToProject(Integer projectId){
+		return repos.findCompanyUserListAssignedToProject(projectId);
+	}
+	
 
 }

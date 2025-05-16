@@ -119,6 +119,8 @@ public class EmailService {
 			toUser = issue.getConfirmator();
 			break;
 		case CONFIRMED:
+		case ACKNOWLEDGED:
+		case RESOLVED:
 			toUser = issue.getUser1();
 			break;
 		case ASSIGNED:

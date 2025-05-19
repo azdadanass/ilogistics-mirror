@@ -106,5 +106,9 @@ public class ProjectAssignmentService extends GenericService<Integer, ProjectAss
 		return repos.findCompanyUserListAssignedToProject(projectId);
 	}
 	
+	public List<User> findUserListAssignedToProject(Integer projectId){
+		return repos.findUserListAssignedToProject(projectId);
+	}
+	
 
 }

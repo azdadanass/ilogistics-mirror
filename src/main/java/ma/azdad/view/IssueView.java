@@ -230,7 +230,8 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
 				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
 				delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+//				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+				projectAssignmentService.findUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
 				issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername())));
 			}
 			step++;

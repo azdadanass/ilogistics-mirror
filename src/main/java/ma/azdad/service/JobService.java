@@ -124,9 +124,9 @@ public class JobService {
 		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
 	}
 
-	@Scheduled(cron = "00 * 01-05 * * *")
-	public void automaticFillOutboundSerialNumberScript() {
-		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(200);
-	}
+//	@Scheduled(cron = "00 * 01-05 * * *")
+//	public void automaticFillOutboundSerialNumberScript() {
+//		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(200);
+//	}
 
 }

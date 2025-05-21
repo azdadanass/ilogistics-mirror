@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -479,6 +480,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public List<DeliveryRequestSerialNumber> findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(DeliveryRequestSerialNumber current) {
 		return deliveryRequestSerialNumberService.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(current, exculdeList);
 	}
+	
 
 	// tmp class
 	public static class SerialNumberSummary {

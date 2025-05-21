@@ -73,5 +73,6 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	
 	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id = ?1 and a.inboundStockRow.location.id = ?2 and a.packingDetail.id = ?3 and a.serialNumber is not null and a.serialNumber != '' and a.outboundDeliveryRequest is null")
 	List<DeliveryRequestSerialNumber> findHavingSerialNumberAndNoOutbound(Integer inboundDeliveryRequestDetailId,Integer locationId,Integer packingDetailId);
+	
 
 }

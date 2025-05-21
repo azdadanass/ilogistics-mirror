@@ -2220,13 +2220,13 @@
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-home green" />
-									<h:outputText value=" Potential Stock" />
+									<h:outputText value=" Equipment Location" />
 								</h4>
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-10">
 											<i class="fa fa-list" />
-											<h:outputText value=" Potential Stock" />
+											<h:outputText value=" Equipment Location" />
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
@@ -2234,7 +2234,7 @@
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number">
 												<h:outputLink value="viewPartNumber.xhtml" target="blank">
-													<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" />
+													<h:outputText value="#{item.partNumber.name}" styleClass="bolder blue" />
 													<f:param name="id" value="#{item.partNumber.id}" />
 												</h:outputLink>
 											</p:column>
@@ -2245,7 +2245,10 @@
 												<h:outputText value="#{item.originNumber}" />
 											</p:column>
 											<p:column headerText="Inbound Request">
-												<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder orange" />
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.inboundDeliveryRequest.reference}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
+												</h:outputLink>
 											</p:column>
 											<p:column headerText="Location">
 												<h:outputText value="#{item.location.name}" />
@@ -2262,13 +2265,13 @@
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-home green" />
-									<h:outputText value=" Potential SN" />
+									<h:outputText value=" Equipment SN" />
 								</h4>
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-10">
 											<i class="fa fa-list" />
-											<h:outputText value=" Potential SN" />
+											<h:outputText value=" Equipment SN" />
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">

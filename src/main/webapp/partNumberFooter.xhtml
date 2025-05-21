@@ -73,7 +73,7 @@
 								</p:column>
 								<p:column headerText="Quantity" width="40">
 									<h:outputText value="#{item.quantity}" rendered="#{!packingView.editMode}" />
-									<p:inputText value="#{item.quantity}" style="width: 40px" rendered="#{packingView.editMode}" />
+									<p:inputText value="#{item.quantity}" readonly="#{packingDetailView.hasDelivertyRequestSerialNumber(item.id)}" style="width: 40px" rendered="#{packingView.editMode}" />
 								</p:column>
 								<p:column headerText="SN" width="40">
 									<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />

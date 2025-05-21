@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PackingDetail;
 import ma.azdad.repos.PackingDetailRepos;
+import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.PackingDetailService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -24,6 +25,9 @@ public class PackingDetailView extends GenericView<Integer, PackingDetail, Packi
 
 	@Autowired
 	private CacheView cacheView;
+	
+	@Autowired
+	private DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 
 	private PackingDetail packingDetail = new PackingDetail();
 
@@ -114,6 +118,10 @@ public class PackingDetailView extends GenericView<Integer, PackingDetail, Packi
 	// generic
 	public List<PackingDetail> findByPartNumber(Integer partNumberId) {
 		return packingDetailService.findByPartNumber(partNumberId);
+	}
+	
+	public Boolean hasDelivertyRequestSerialNumber(Integer packingDetailId) {
+		return deliveryRequestSerialNumberService.countByPackingDetail(packingDetailId)>0;
 	}
 
 	// GETTERS & SETTERS

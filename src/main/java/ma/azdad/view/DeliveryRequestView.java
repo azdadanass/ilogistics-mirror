@@ -854,9 +854,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 					Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
 					if (i.getQuantity().equals(outboundQuantity)) {
 						List<DeliveryRequestSerialNumber> drsnList = deliveryRequestSerialNumberService.findByInboundDeliveryRequestDetail(i.getId());
-						List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(),
-								i.getPartNumberId());
-						drsnList.forEach(drsn -> {
+						List<String> usedSnList = drsnList.stream().filter(j->!j.getIsEmpty()).map(j->j.getSerialNumber()).collect(Collectors.toList());
+						List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(),
+								i.getPartNumberId(),usedSnList);
+						drsnList.stream().filter(drsn->drsn.getIsEmpty()).forEach(drsn -> {
 							DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst()
 									.get();
 							drsn.setSerialNumber(outboundDrsn.getSerialNumber());

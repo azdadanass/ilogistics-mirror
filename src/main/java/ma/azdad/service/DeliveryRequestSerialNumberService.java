@@ -61,8 +61,8 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return repos.findByInboundDeliveryRequestDetail(inboundDeliveryRequestId);
 	}
 	
-	public List<DeliveryRequestSerialNumber>  findByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId){
-		return repos.findByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId);
+	public List<DeliveryRequestSerialNumber>  findNotUsedByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId,List<String> usedSnList){
+		return repos.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId,usedSnList);
 	}
 
 	public void save(PackingDetail packingDetail, StockRow inboundStockRow) {

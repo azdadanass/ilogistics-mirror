@@ -56,6 +56,14 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		result.sort(COMPARATOR);
 		return result;
 	}
+	
+	public List<DeliveryRequestSerialNumber> findByInboundDeliveryRequestDetail(Integer inboundDeliveryRequestId){
+		return repos.findByInboundDeliveryRequestDetail(inboundDeliveryRequestId);
+	}
+	
+	public List<DeliveryRequestSerialNumber>  findByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId){
+		return repos.findByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId);
+	}
 
 	public void save(PackingDetail packingDetail, StockRow inboundStockRow) {
 		int n = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());

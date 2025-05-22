@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ecs.html.A;
 import org.apache.ecs.html.Body;
 import org.apache.ecs.html.Div;
@@ -93,6 +94,8 @@ import ma.azdad.utils.App;
 import ma.azdad.utils.ImageUtil;
 import ma.azdad.utils.PdfHelper;
 import ma.azdad.utils.Public;
+import ma.azdad.view.DeliveryRequestSerialNumberView;
+import ma.azdad.view.DeliveryRequestSerialNumberView.SerialNumberSummary;
 
 @Component
 public class DeliveryRequestService extends GenericService<Integer, DeliveryRequest, DeliveryRequestRepos> {
@@ -2547,6 +2550,61 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (url.contains(".webp"))
 			return "image/webp";
 		return "image/jpeg"; // default
+	}
+	
+	public List<ma.azdad.mobile.model.SerialNumberSummary> findSnSummary(Integer id) {
+		List<SerialNumberSummary> serialNumberSummaryList = new ArrayList<>();
+		List<DeliveryRequestSerialNumber> list1 = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
+		DeliveryRequest deliveryRequest = findOne(id);
+		List<StockRow> list = null;
+		serialNumberSummaryList = new ArrayList<SerialNumberSummary>();
+		Map<String, SerialNumberSummary> map = new HashMap<String, SerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
+		switch (deliveryRequest.getType()) {
+		case INBOUND:
+			list = deliveryRequest.getStockRowList().stream().filter(i -> i.getPacking().getHasSerialnumber()).collect(Collectors.toList());
+			break;
+		case OUTBOUND:
+			list = deliveryRequest.getStockRowList().stream().filter(i -> i.getInboundDeliveryRequest().getIsSnRequired() && i.getPacking().getHasSerialnumber()).collect(Collectors.toList());
+			break;
+		}
+		for (StockRow stockRow : list) {
+			stockRow.getPacking().getDetailList().stream().filter(pd -> pd.getHasSerialnumber()).forEach(pd -> {
+				String key = stockRow.getInboundDeliveryRequestDetail().getId() + ";" + pd.getId();
+				Integer inboundDeliveryRequestDetailId = stockRow.getInboundDeliveryRequestDetail().getId();
+				String partNumberName = stockRow.getPartNumberName();
+				Integer inboundDeliveryRequestId = stockRow.getInboundDeliveryRequestId();
+				String inboundDeliveryRequestReference = stockRow.getInboundDeliveryRequestReference();
+				String packingName = stockRow.getPacking().getName();
+				Double usedQuantity = null;
+				Double stockRowQuantity = null;
+				switch (deliveryRequest.getType()) {
+				case INBOUND:
+					usedQuantity = (double) list1.stream()
+					.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId()) && StringUtils.isNotBlank(i.getSerialNumber())).count();
+					stockRowQuantity = stockRow.getQuantity();
+					break;
+				case OUTBOUND:
+					usedQuantity = (double) list1.stream()
+							.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId())).count();
+					stockRowQuantity = -stockRow.getQuantity();
+					break;
+				}
+				map.putIfAbsent(key, new SerialNumberSummary(inboundDeliveryRequestDetailId, pd.getId(), partNumberName, inboundDeliveryRequestId, inboundDeliveryRequestReference, packingName,
+						pd.getType(), usedQuantity));
+				map.get(key).setQuantity(map.get(key).getQuantity() + pd.getQuantity() * (stockRowQuantity / stockRow.getPacking().getQuantity()));
+				map.get(key).setPartNumberImage(stockRow.getPartNumberImage());
+			});
+		}
+		for (String key : map.keySet())
+			serialNumberSummaryList.add(map.get(key));
+		
+		List<ma.azdad.mobile.model.SerialNumberSummary> serialNumberSummaryListMobile = new ArrayList<>();
+		for (SerialNumberSummary sum : serialNumberSummaryList) {
+			serialNumberSummaryListMobile.add(new ma.azdad.mobile.model.SerialNumberSummary(sum.getPackingName(), null, sum.getInboundDeliveryRequestReference(), sum.getInboundDeliveryRequestId()
+					, sum.getPartNumberName(), sum.getPartNumberImage(),sum.getQuantity(), sum.getUsedQuantity()));
+		}
+		
+		return serialNumberSummaryListMobile;
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> findDnExpiry(Integer id) {

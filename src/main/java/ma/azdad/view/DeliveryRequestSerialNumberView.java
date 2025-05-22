@@ -488,7 +488,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 		// key
 		private Integer inboundDeliveryRequestDetailId;
 		private Integer packingDetailId;
-
+		private String partNumberImage;
 		private String partNumberName;
 		private Integer inboundDeliveryRequestId;
 		private String inboundDeliveryRequestReference;
@@ -510,6 +510,14 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			this.usedQuantity = usedQuantity;
 		}
 
+		public String getPartNumberImage() {
+			return partNumberImage;
+		}
+
+		public void setPartNumberImage(String partNumberImage) {
+			this.partNumberImage = partNumberImage;
+		}
+		
 		public String getPartNumberName() {
 			return partNumberName;
 		}
@@ -673,5 +681,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 	public void setDatatable1(DatatableList<DeliveryRequestSerialNumber> datatable1) {
 		this.datatable1 = datatable1;
 	}
+	
+	
 
 }

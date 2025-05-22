@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.mobile.model.DnMaterials;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestSerialNumber;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
@@ -50,6 +51,9 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 
 	@Autowired
 	StockRowService stockRowService;
+	
+	@Autowired
+	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 
 	@Autowired
 	DeliveryRequestRepos deliveryRequestRepos;
@@ -788,4 +792,31 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		}
 		return list;
 	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> initSNList(ma.azdad.mobile.model.DeliveryRequest deliveryRequest){
+		DeliveryRequest dn = deliveryRequestService.findOne(deliveryRequest.getId());
+		List<StockRow> rows = stockRowService.generateStockRowFromOutboundDeliveryRequest(dn);
+		List<DeliveryRequestSerialNumber> potentialSerialNumberList = new ArrayList<DeliveryRequestSerialNumber>();
+		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> potentialSerialNumberListMobile = new ArrayList<ma.azdad.mobile.model.DeliveryRequestSerialNumber>();
+		List<StockRow> potentialStockRowlist = new ArrayList<StockRow>();
+		potentialStockRowlist = stockRowService.generateStockRowFromOutboundDeliveryRequest(dn);
+		potentialStockRowlist.stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
+			System.out.println(i.getPartNumberName());
+			i.getPacking().getDetailList().stream().filter(j -> j.getHasSerialnumber()).forEach(j -> {
+				Integer quantity = -((int) (double) i.getQuantity()) * j.getQuantity() / i.getPacking().getQuantity();
+				List<DeliveryRequestSerialNumber> snList = deliveryRequestSerialNumberService.findHavingSerialNumberAndNoOutbound(i.getInboundDeliveryRequestDetail().getId(), i.getLocationId(),
+						j.getId(), quantity);
+				potentialSerialNumberList.addAll(snList);
+			});
+		});
+		for (DeliveryRequestSerialNumber sn : potentialSerialNumberList) {
+			potentialSerialNumberListMobile.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getType(), sn.getInboundStockRow().getPartNumberName(), 
+					sn.getSerialNumber(), sn.getInboundStockRow().getPartNumberImage(), null, sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue() , sn.getInboundStockRow().getLocationName()));
+			
+		}
+		
+		return potentialSerialNumberListMobile;
+	}
+	
+	
 }

@@ -269,7 +269,9 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	}
 
 	public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
-		return repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
+		List<ma.azdad.mobile.model.StockRow> list =  repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
+		
+		return list;
 	}
 
 	public List<ma.azdad.mobile.model.StockRow> findAttachedOutboundDeliveryRequestListMobile(Integer deliveryRequestId) {

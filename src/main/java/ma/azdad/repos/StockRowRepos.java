@@ -60,7 +60,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	// mobile
 	String cm1 = " select new ma.azdad.mobile.model.StockRow(a.id,a.partNumber.name,a.partNumber.image,a.location,a.status,a.state,a.partNumber.description,sum(a.quantity),"
 			+ "a.deliveryRequest.project.name,a.deliveryRequest.warehouse.name,sum(case when a.quantity > 0 then a.quantity else 0 end),sum(case when a.quantity < 0 then a.quantity else 0 end),"
-			+ "a.deliveryRequest.reference,a.deliveryRequest.id) ";
+			+ "a.deliveryRequest.reference,a.deliveryRequest.id,a.creationDate) ";
 
 	String drd_c5 = "select new DeliveryRequestDetail(sum(a.quantity),a.status,a.originNumber,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.packing) ";
 	String drd_c6 = "select new DeliveryRequestDetail(sum(-a.quantity) - COALESCE((select sum(b.quantity) from StockRow b where b.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 and b.partNumber.id = a.partNumber.id),0),a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.deliveryRequestDetail.unitPrice,a.deliveryRequestDetail.priceCurrency.id,a.inboundDeliveryRequest.ownerType,a.inboundDeliveryRequest.company.id,a.inboundDeliveryRequest.customer.id,a.inboundDeliveryRequest.supplier.id) ";

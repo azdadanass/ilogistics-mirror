@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ma.azdad.mobile.model.DeliveryRequest;
+import ma.azdad.mobile.model.DeliveryRequestSerialNumber;
 import ma.azdad.mobile.model.DnMaterials;
 import ma.azdad.mobile.model.HardwareStatusData;
 import ma.azdad.mobile.model.Location;
@@ -46,6 +47,14 @@ public class DeliveryRequestDetailController {
 		System.out.println("/mobile/init-sr2/{key}/");
 		Token token = tokenService.getBykey(key);
 		return service.initStockRowList(request);
+
+	}
+	
+	@PostMapping("/mobile/dnd/init-serials/{key}")
+	public List<DeliveryRequestSerialNumber> initSerials(@PathVariable String key,@RequestBody DeliveryRequest request) {
+		System.out.println("/mobile/init-sr2/{key}/");
+		Token token = tokenService.getBykey(key);
+		return service.initSNList(request);
 
 	}
 	

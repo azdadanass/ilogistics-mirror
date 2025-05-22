@@ -1,7 +1,10 @@
 package ma.azdad.mobile.model;
 
+import java.util.Date;
+
 import ma.azdad.model.StockRowState;
 import ma.azdad.model.StockRowStatus;
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.Public;
 
 public class StockRow {
@@ -20,6 +23,7 @@ public class StockRow {
 	private Double outboundQuantity;
 	private String dnReference;
 	private Integer dnId;
+	private Long age;
 	
 	 public StockRow() {
 			super();
@@ -29,7 +33,7 @@ public class StockRow {
 	//cm1
 	public StockRow(Integer id, String partNumberName, String partNumberImage, ma.azdad.model.Location location, StockRowStatus status,
 			StockRowState state, String partNumberDescription, Double quantity, String projectName, String warehouseName,
-			Double inboundQuantity, Double outboundQuantity, String dnReference,Integer dnId) {
+			Double inboundQuantity, Double outboundQuantity, String dnReference,Integer dnId,Date creationDate) {
 		super();
 		this.id = id;
 		this.dnId = dnId;
@@ -47,6 +51,7 @@ public class StockRow {
 		this.inboundQuantity = inboundQuantity;
 		this.outboundQuantity = outboundQuantity;
 		this.dnReference = dnReference;
+		this.age = UtilsFunctions.getDateDifference(new Date(), creationDate);
 	}
 	
 	
@@ -137,6 +142,18 @@ public class StockRow {
 	public void setDnId(Integer dnId) {
 		this.dnId = dnId;
 	}
+
+
+	public Long getAge() {
+		return age;
+	}
+
+
+	public void setAge(Long age) {
+		this.age = age;
+	}
+	
+	
 	
 	
 	

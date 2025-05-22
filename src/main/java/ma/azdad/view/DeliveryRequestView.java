@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -821,16 +822,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	private void generateSerialNumberList() {
 		Map<String, Integer> map = new HashMap<>();
-
 		for (Integer stockRowId : deliveryRequest.getStockRowList().stream().map(i -> i.getId()).collect(Collectors.toList())) {
 			StockRow inboundStockRow = stockRowService.findOne(stockRowId);
 			for (PackingDetail packingDetail : inboundStockRow.getPacking().getDetailList()) {
 				if (!packingDetail.getHasSerialnumber())
 					continue;
-
-				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), 0);
-
-				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
+				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(stockRowId,packingDetail.getId()),0);
+				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), maxPackingNumero);
+				long existingCount = deliveryRequestSerialNumberService.countByInboundStockRowAndPackingDetail(stockRowId,packingDetail.getId());
+				int packingQuantity = (int) ((inboundStockRow.getQuantity()-existingCount) / packingDetail.getParent().getQuantity());
 				int n = packingDetail.getQuantity();
 				for (int i = 0; i < packingQuantity; i++) {
 					int packingNumero = map.get(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId()) + 1;

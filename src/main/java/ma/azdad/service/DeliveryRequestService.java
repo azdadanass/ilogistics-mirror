@@ -1734,7 +1734,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequestRepos.updateSmsRef(id, smsRef);
 		evictCache();
 	}
-	
+
 	public void updateApproximativeStoragePeriod(Integer id, Integer approximativeStoragePeriod) {
 		deliveryRequestRepos.updateApproximativeStoragePeriod(id, approximativeStoragePeriod);
 		evictCache();
@@ -1937,12 +1937,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList()
-					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(),
-							packingDetail.getLength(), packingDetail.getWidth(), packingDetail.getHeight(),
-							packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(),
-							packingDetail.getFragile(), packingDetail.getStackable(), packingDetail.getFlammable(),
-							packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(),
-							packingDetail.getStorageHumidity(), packingDetail.getMaxStack(),packingDetail.getHasSerialnumber()));
+					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(), packingDetail.getLength(), packingDetail.getWidth(), packingDetail.getHeight(),
+							packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(), packingDetail.getFragile(), packingDetail.getStackable(),
+							packingDetail.getFlammable(), packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(), packingDetail.getStorageHumidity(),
+							packingDetail.getMaxStack(), packingDetail.getHasSerialnumber()));
 		}
 
 		List<ma.azdad.mobile.model.DeliveryRequestDetail> mobileDetails = deliveryRequestDetailRepos.findByDeliveryRequestMobile(id);
@@ -2482,6 +2480,27 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public Long countPendingAcknowledgementIdList(String requesterUsername) {
 		return ObjectUtils.firstNonNull(repos.countPendingAcknowledgementIdList(requesterUsername), 0l);
+	}
+
+	public void automaticFillSerialNumberFromOutbound(DeliveryRequest inboundDn) {
+		if (!Arrays.asList(InboundType.RETURN, InboundType.TRANSFER).contains(inboundDn.getInboundType()))
+			return;
+		if (!inboundDn.getIsSnRequired())
+			return;
+
+		final DeliveryRequest outboundDn = inboundDn.getOutboundDeliveryRequestReturn() != null ? inboundDn.getOutboundDeliveryRequestReturn() : inboundDn.getOutboundDeliveryRequestTransfer();
+		inboundDn.getDetailList().stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
+			Double outboundQuantity = outboundDn.getDetailList().stream().filter(j -> j.getPartNumber().equals(i.getPartNumber())).mapToDouble(j -> j.getQuantity()).sum();
+			if(i.getQuantity().equals(outboundQuantity)) {
+				
+				
+				
+			}
+			System.out.println(i.getQuantity());
+			System.out.println(outboundQuantity);
+			System.out.println("-----------------------");
+		});
+
 	}
 
 	// mobile

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequest;
@@ -62,6 +61,8 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	}
 	
 	public List<DeliveryRequestSerialNumber>  findNotUsedByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId,List<String> usedSnList){
+		if(usedSnList.isEmpty())
+			return repos.findByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId);
 		return repos.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId,usedSnList);
 	}
 

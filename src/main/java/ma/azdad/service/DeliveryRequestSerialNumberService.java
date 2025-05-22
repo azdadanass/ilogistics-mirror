@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequest;
@@ -56,6 +55,16 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		result.sort(COMPARATOR);
 		return result;
 	}
+	
+	public List<DeliveryRequestSerialNumber> findByInboundDeliveryRequestDetail(Integer inboundDeliveryRequestId){
+		return repos.findByInboundDeliveryRequestDetail(inboundDeliveryRequestId);
+	}
+	
+	public List<DeliveryRequestSerialNumber>  findNotUsedByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId,List<String> usedSnList){
+		if(usedSnList.isEmpty())
+			return repos.findByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId);
+		return repos.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDeliveryRequestId, partNumberId,usedSnList);
+	}
 
 	public void save(PackingDetail packingDetail, StockRow inboundStockRow) {
 		int n = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
@@ -88,6 +97,14 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		List<DeliveryRequestSerialNumber> result = repos.findByPartNumberAndInboundDeliveryRequestAndPackingNumero(partNumberId, inboundDeliveryRequestId, packingNumero);
 		result.forEach(i -> i.init());
 		return result;
+	}
+	
+	public Integer findMaxPackingNumero(Integer inboundStockRowId,Integer packingDetailId) {
+		return repos.findMaxPackingNumero(inboundStockRowId, packingDetailId);
+	}
+	
+	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
+		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
 	}
 
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId) {

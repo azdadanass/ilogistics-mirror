@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.StringUtils;
+
 @Entity
 
 public class DeliveryRequestSerialNumber extends GenericModel<Integer> implements Serializable {
@@ -62,6 +64,11 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	@Override
 	public boolean filter(String query) {
 		return contains(query, serialNumber, box);
+	}
+	
+	@Transient
+	public Boolean getIsEmpty() {
+		return StringUtils.isBlank(serialNumber);
 	}
 
 	@Transient

@@ -761,6 +761,10 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 	public Double findTotalExpirableItems(Integer deliveryRequestId) {
 		return ObjectUtils.firstNonNull(repos.findTotalExpirableItems(deliveryRequestId), 0.0);
 	}
+	
+	public Double findQuantityByDeliveryRequestAndPartNumber(Integer deliveryRequestId,Integer partNumberId) {
+		return repos.findQuantityByDeliveryRequestAndPartNumber(deliveryRequestId, partNumberId);
+	}
 
 	// mobile
 

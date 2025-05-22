@@ -182,9 +182,9 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 //	}
 
 	public List<StockRow> findRemainingToPrepare(DeliveryRequestDetail deliveryRequestDetail) {
-		List<StockRow> result =repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
-		result.forEach(i->{
-			i.getPacking().getDetailList().forEach(j->initialize(j));
+		List<StockRow> result = repos.findRemainingToPrepare(deliveryRequestDetail.getInboundDeliveryRequestDetail().getId(), deliveryRequestDetail.getStatus());
+		result.forEach(i -> {
+			i.getPacking().getDetailList().forEach(j -> initialize(j));
 		});
 		return result;
 	}
@@ -206,7 +206,7 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		for (StockRow stockRow : data) {
 			System.out.println(stockRow.getPartNumberId());
 			System.out.println(stockRow.getQuantity());
-			if (stockRow.getQuantity()<0) { // outbound
+			if (stockRow.getQuantity() < 0) { // outbound
 				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
 				outboundMap.putIfAbsent(key, 0.0);
 				outboundMap.put(key, outboundMap.get(key) - stockRow.getQuantity()); // - to get positive outbound quantity
@@ -217,12 +217,12 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		System.out.println(outboundMap);
 
 		for (StockRow stockRow : data) {
-			if (stockRow.getQuantity()>0) { // inbound
+			if (stockRow.getQuantity() > 0) { // inbound
 				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
 				Double quantity = stockRow.getQuantity();
-				Double outboundQuantity = outboundMap.getOrDefault(key,0.0);
-				
-				System.out.println("key : "+key+"\t"+stockRow.getCreationDate());
+				Double outboundQuantity = outboundMap.getOrDefault(key, 0.0);
+
+				System.out.println("key : " + key + "\t" + stockRow.getCreationDate());
 
 				if (quantity >= outboundQuantity) {
 					System.out.println("1");

@@ -24,9 +24,9 @@ public class Repos extends GenericTest {
 	
 
 	@Test
-//	@Transactional
+	@Transactional
 	public void test() throws Exception {
-		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(100);
+		deliveryRequestService.automaticFillSerialNumberFromOutbound(deliveryRequestService.findOne(11774) );
 	}
 
 }

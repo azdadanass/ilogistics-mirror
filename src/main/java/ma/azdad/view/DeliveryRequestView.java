@@ -2677,6 +2677,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setWarehouse(deliveryRequest.getOutboundDeliveryRequestReturn().getWarehouse());
 		if (deliveryRequest.getOutboundDeliveryRequestReturn().getDestination() != null)
 			deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestReturn().getDestination());
+		
+		deliveryRequest.setIsSnRequired(deliveryRequest.getOutboundDeliveryRequestReturn().getMissingSerialNumber()!=null);
+		
 //		if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap()) {
 //			deliveryRequest.setSdm(deliveryRequest.getOutboundDeliveryRequestReturn().getSdm());
 //			deliveryRequest.setIsm(deliveryRequest.getOutboundDeliveryRequestReturn().getIsm());
@@ -2702,6 +2705,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		deliveryRequest.setWarehouse(warehouseService.findOne(deliveryRequest.getOutboundDeliveryRequestTransfer().getDestination().getWarehouse().getId()));
 		deliveryRequest.setOrigin(deliveryRequest.getOutboundDeliveryRequestTransfer().getDestination());
 		deliveryRequest.setTransportationNeeded(false);
+		deliveryRequest.setIsSnRequired(deliveryRequest.getOutboundDeliveryRequestTransfer().getMissingSerialNumber()!=null);
 	}
 
 	// LINK PO

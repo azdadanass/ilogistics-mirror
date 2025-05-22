@@ -103,8 +103,8 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return repos.findMaxPackingNumero(inboundStockRowId, packingDetailId);
 	}
 	
-	public Long countByInboundStockRow(Integer inboundStockRowId) {
-		return ObjectUtils.firstNonNull(repos.countByInboundStockRow(inboundStockRowId),0l);
+	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
+		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
 	}
 
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId) {

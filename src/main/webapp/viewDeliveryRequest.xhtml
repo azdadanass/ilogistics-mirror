@@ -804,7 +804,7 @@
 												<h:outputText value="#{item.location.name}" />
 											</p:column>
 											<p:column headerText="Age">
-												<h:outputText value="#{item.age}" />
+												<h:outputText value="#{item.age}" styleClass="#{item.age le deliveryRequestView.deliveryRequest.approximativeStoragePeriod?'green':'red bolder'}"/>
 											</p:column>
 											<p:column headerText="Quantity">
 												<h:outputText value="#{item.quantity}" styleClass="bolder #{item.quantity lt 0 ?'red':'green'}">
@@ -2257,6 +2257,9 @@
 												<h:outputText value="#{-item.quantity}" styleClass="bolder">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
+											</p:column>
+											<p:column headerText="Age">
+												<h:outputText value="#{utilsView.getAge(item.inboundDeliveryRequest.date4)}" />
 											</p:column>
 										</p:dataTable>
 									</div>

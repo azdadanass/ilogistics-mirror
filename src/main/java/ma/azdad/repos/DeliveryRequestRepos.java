@@ -346,6 +346,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Modifying
 	@Query("update DeliveryRequest set smsRef = ?2 where id = ?1")
 	public void updateSmsRef(Integer id, String smsRef);
+	
+	@Modifying
+	@Query("update DeliveryRequest set approximativeStoragePeriod = ?2 where id = ?1")
+	public void updateApproximativeStoragePeriod(Integer id, Integer approximativeStoragePeriod);
 
 	@Modifying
 	@Query("update DeliveryRequest set transportationNeeded = ?2 where id = ?1")

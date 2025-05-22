@@ -2284,6 +2284,17 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return;
 		service.updateSmsRef(deliveryRequest.getId(), deliveryRequest.getSmsRef());
 	}
+	
+	// approximativeStoragePeriod
+	public Boolean canUpdateApproximativeStoragePeriod() {
+		return sessionView.isTheConnectedUser(deliveryRequest.getRequester())  || sessionView.isTheConnectedUser(deliveryRequest.getProject().getManager().getUsername());
+	}
+	
+	public void updateApproximativeStoragePeriod() {
+		if(!canUpdateApproximativeStoragePeriod())
+			return;
+		service.updateApproximativeStoragePeriod(deliveryRequest.getId(), deliveryRequest.getApproximativeStoragePeriod());
+	}
 
 	// requestDate
 	public Boolean canUpdateRequestDate() {

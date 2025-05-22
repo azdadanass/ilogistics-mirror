@@ -1734,6 +1734,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		deliveryRequestRepos.updateSmsRef(id, smsRef);
 		evictCache();
 	}
+	
+	public void updateApproximativeStoragePeriod(Integer id, Integer approximativeStoragePeriod) {
+		deliveryRequestRepos.updateApproximativeStoragePeriod(id, approximativeStoragePeriod);
+		evictCache();
+	}
 
 	public void updateTransportationNeeded(Integer id, Boolean transportationNeeded) {
 		deliveryRequestRepos.updateTransportationNeeded(id, transportationNeeded);

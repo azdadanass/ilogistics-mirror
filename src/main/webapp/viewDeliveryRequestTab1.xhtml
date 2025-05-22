@@ -58,19 +58,19 @@
 					</div>
 				</div>
 				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
-				<div class="profile-info-row">
-					<div class="profile-info-name">
-						<h:outputText value="Is SN Required" />
+					<div class="profile-info-row">
+						<div class="profile-info-name">
+							<h:outputText value="Is SN Required" />
+						</div>
+						<div class="profile-info-value">
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" rendered="#{!deliveryRequestView.canEditIsSnRequired()}" />
+							<p:commandLink id="isSnRequired" action="#{deliveryRequestView.editIsSnRequired()}" update=":main_form" rendered="#{deliveryRequestView.canEditIsSnRequired()}">
+								<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+								<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
+							</p:commandLink>
+							&nbsp;
+						</div>
 					</div>
-					<div class="profile-info-value">
-						<h:outputText value="#{deliveryRequestView.deliveryRequest.isSnRequired?'Yes':'No'}" rendered="#{!deliveryRequestView.canEditIsSnRequired()}" />
-						<p:commandLink id="isSnRequired" action="#{deliveryRequestView.editIsSnRequired()}" update=":main_form" rendered="#{deliveryRequestView.canEditIsSnRequired()}">
-							<i class="ace-icon fa #{deliveryRequestView.deliveryRequest.isSnRequired?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-							<f:setPropertyActionListener value="#{!deliveryRequestView.deliveryRequest.isSnRequired}" target="#{deliveryRequestView.deliveryRequest.isSnRequired}" />
-						</p:commandLink>
-						&nbsp;
-					</div>
-				</div>
 				</f:subview>
 				<div class="profile-info-row">
 					<div class="profile-info-name">
@@ -218,7 +218,12 @@
 							<h:outputText value="Appr Storage Period" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days" rendered="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod!=null}" />
+							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateApproximativeStoragePeriod()}">
+								<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days" rendered="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod!=null}" />
+								<p:inputNumber value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" />
+								<p:ajax event="save" listener="#{deliveryRequestView.updateApproximativeStoragePeriod()}" update=":main_form" />
+								<p:ajax event="cancel" />
+							</p:inplace>
 							&nbsp;
 						</div>
 					</div>
@@ -411,7 +416,8 @@
 							<h:outputText value="Origin DN N°" />
 						</div>
 						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isInboundDismantle}" />
+							<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}"
+								rendered="#{deliveryRequestView.deliveryRequest.isInboundNew or deliveryRequestView.deliveryRequest.isInboundDismantle}" />
 							<h:outputLink value="viewDeliveryRequest.xhtml" target="_blank" rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.originNumber}" />
 								<f:param name="id" value="#{deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.id}" />
@@ -746,7 +752,7 @@
 							<f:convertNumber type="number" maxFractionDigits="2" />
 						</h:outputText>
 					</p:column> -->
-					<p:column headerText="SN" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" >
+					<p:column headerText="SN" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
 						<i class="ace-icon fa #{item.packing.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 					</p:column>
 					<p:column headerText="Expirable" width="70" styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}" rendered="#{deliveryRequestView.deliveryRequest.showExpiryData()}">

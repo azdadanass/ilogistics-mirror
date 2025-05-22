@@ -84,6 +84,7 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 	
 	
 	String c25 = "select new StockRow(sum(a.quantity),a.status,a.state,a.creationDate,a.deliveryRequest.type,a.partNumber.id,a.partNumber.name,a.partNumber.description,a.location.id,a.location.name) ";
+	String c26 = "select new StockRow(a.quantity,a.status, a.originNumber, a.partNumber.id,a.partNumber.name,a.partNumber.description,a.partNumber.industryName,a.partNumber.categoryName,a.partNumber.typeName,a.partNumber.brandName,a.partNumber.internalPartNumberName,a.partNumber.internalPartNumberDescription, a.inboundDeliveryRequest,a.deliveryRequestDetail.unitCost,a.deliveryRequestDetail.costCurrency.id,a.location,a.packing) ";
 
 	@Query("from StockRow a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.warehouse.id in (?2) or a.deliveryRequest.project.id in (?3))")
 	public List<StockRow> findByResource(String username, List<Integer> warehouseList, List<Integer> assignedProjectList);
@@ -103,6 +104,9 @@ public interface StockRowRepos extends JpaRepository<StockRow, Integer> {
 
 	@Query(c2 + "from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.status = ?2 group by a.location.id having sum(a.quantity) != 0 order by sum(a.quantity)")
 	public List<StockRow> findRemainingToPrepare(Integer inboundDeliveryRequestDetailId, StockRowStatus status);
+	
+	@Query(c26 + "from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.status = ?2 order by a.creationDate")
+	public List<StockRow> findByInboundDeliveryRequestDetailAndStatus(Integer inboundDeliveryRequestDetailId, StockRowStatus status);
 
 //	// FIFO no sense : we know already inbound delivery date
 //	@Query(c2 + "from StockRow a where a.inboundDeliveryRequestDetail.id = ?1 and a.status = ?2 group by a.location.id, having sum(a.quantity) != 0 order by a.inboundDeliveryRequestDetail.deliveryRequest.date4,sum(a.quantity)")

@@ -2238,11 +2238,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			for (PackingDetail packingDetail : inboundStockRow.getPacking().getDetailList()) {
 				if (!packingDetail.getHasSerialnumber())
 					continue;
-				// case partially dleiverd --> maxPackingNumero > 0
-				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(stockRowId,packingDetail.getId()),0);
+				if(deliveryRequestSerialNumberService.countByInboundStockRow(stockRowId)>0)
+					continue;
+				// case partially delivered --> maxPackingNumero > 0
+				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(inboundStockRow.getPartNumber().getId(),packingDetail.getId()),0);
 				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), maxPackingNumero);
-				long existingSrCount = deliveryRequestSerialNumberService.countByInboundStockRowAndPackingDetail(stockRowId,packingDetail.getId()) * packingDetail.getParent().getQuantity() / packingDetail.getQuantity();
-				int packingQuantity = (int) ((inboundStockRow.getQuantity()-existingSrCount) / packingDetail.getParent().getQuantity());
+				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
 				int n = packingDetail.getQuantity();
 				for (int i = 0; i < packingQuantity; i++) {
 					int packingNumero = map.get(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId()) + 1;

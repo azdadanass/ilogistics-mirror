@@ -22,11 +22,14 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	List<DeliveryRequestSerialNumber> findByInboundDeliveryRequestDetail(Integer inboundDeliveryRequestId);
 	
 	
-	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1 and a.packingDetail.id = ?2")
-	Integer findMaxPackingNumero(Integer inboundStockRowId,Integer packingDetailId);
+	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.packingDetail.id = ?2")
+	Integer findMaxPackingNumero(Integer partNumberId,Integer packingDetailId);
 	
-	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1  and a.packingDetail.id = ?2")
-	Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId);
+//	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1  and a.packingDetail.id = ?2")
+//	Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId);
+	
+	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1")
+	Long countByInboundStockRow(Integer inboundStockRowId);
 	
 	@Query("from DeliveryRequestSerialNumber a where a.outboundDeliveryRequest.id  = ?1 and a.inboundStockRow.partNumber.id = ?2 and a.serialNumber is not null and a.serialNumber != ''")
 	List<DeliveryRequestSerialNumber> findByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId);

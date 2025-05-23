@@ -99,12 +99,16 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return result;
 	}
 	
-	public Integer findMaxPackingNumero(Integer inboundStockRowId,Integer packingDetailId) {
-		return repos.findMaxPackingNumero(inboundStockRowId, packingDetailId);
+	public Integer findMaxPackingNumero(Integer partNumberId,Integer packingDetailId) {
+		return repos.findMaxPackingNumero(partNumberId, packingDetailId);
 	}
 	
-	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
-		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
+//	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
+//		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
+//	}
+	
+	public Long countByInboundStockRow(Integer inboundStockRowId) {
+		return ObjectUtils.firstNonNull(repos.countByInboundStockRow(inboundStockRowId),0l);
 	}
 
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId) {

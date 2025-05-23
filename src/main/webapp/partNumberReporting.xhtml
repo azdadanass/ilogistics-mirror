@@ -58,10 +58,9 @@
 					<div class=" col-sm-2 infobox-container">
 						<div class="infobox infobox-blue2">
 							<div class="infobox-progress">
-								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.completenessPercentage*100}" data-size="45"
-									style="height: 46px; width: 46px; line-height: 45px;">
+								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.remainingFields.size()*100.0/16.0}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
 									<span class="percent">
-										<h:outputText value="#{partNumberView.partNumber.completenessPercentage}">
+										<h:outputText value="#{partNumberView.partNumber.remainingFields.size()/16.0}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>
@@ -73,7 +72,16 @@
 									<h:outputText value="PN completeness" />
 								</span>
 								<div class="infobox-content">
-									<h:outputText value="#{partNumberView.partNumber.remainingFileds} fileds remaining" />
+									<h:outputText id="remainingFields" value="#{partNumberView.partNumber.remainingFields.size()} fileds remaining" />
+									<p:overlayPanel for="remainingFields" showEvent="mouseover" hideEvent="mouseout">
+										<ul>
+											<ui:repeat var="item" value="#{partNumberView.partNumber.remainingFields}">
+												<li>
+													<h:outputText value="#{item}" />
+												</li>
+											</ui:repeat>
+										</ul>
+									</p:overlayPanel>
 								</div>
 							</div>
 						</div>

@@ -99,8 +99,8 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return result;
 	}
 	
-	public Integer findMaxPackingNumero(Integer partNumberId,Integer packingDetailId) {
-		return repos.findMaxPackingNumero(partNumberId, packingDetailId);
+	public Integer findMaxPackingNumero(Integer inboundDeliveryRequestDetailId,Integer packingDetailId) {
+		return repos.findMaxPackingNumero(inboundDeliveryRequestDetailId, packingDetailId);
 	}
 	
 //	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {

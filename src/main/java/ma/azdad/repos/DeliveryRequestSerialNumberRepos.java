@@ -22,8 +22,8 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	List<DeliveryRequestSerialNumber> findByInboundDeliveryRequestDetail(Integer inboundDeliveryRequestId);
 	
 	
-	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.packingDetail.id = ?2")
-	Integer findMaxPackingNumero(Integer partNumberId,Integer packingDetailId);
+	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id = ?1 and a.packingDetail.id = ?2")
+	Integer findMaxPackingNumero(Integer inboundDeliveryRequestDetailId,Integer packingDetailId);
 	
 //	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1  and a.packingDetail.id = ?2")
 //	Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId);

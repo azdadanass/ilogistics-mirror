@@ -830,7 +830,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				if(deliveryRequestSerialNumberService.countByInboundStockRow(stockRowId)>0)
 					continue;
 				// case partially delivered --> maxPackingNumero > 0
-				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(inboundStockRow.getPartNumber().getId(),packingDetail.getId()),0);
+				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(inboundStockRow.getDeliveryRequestDetail().getId(),packingDetail.getId()),0);
 				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), maxPackingNumero);
 				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
 				int n = packingDetail.getQuantity();

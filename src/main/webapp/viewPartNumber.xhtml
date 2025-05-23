@@ -73,9 +73,9 @@
 					<div class=" col-sm-2 infobox-container">
 						<div class="infobox infobox-blue2">
 							<div class="infobox-progress">
-								<div class="easy-pie-chart percentage" data-percent="#{partNumberView.partNumber.remainingFields.size()*100.0/16.0}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
+								<div class="easy-pie-chart percentage" data-percent="#{(16-partNumberView.partNumber.remainingFields.size())*100.0/16.0}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
 									<span class="percent">
-										<h:outputText value="#{partNumberView.partNumber.remainingFields.size()/16.0}">
+										<h:outputText value="#{(16-partNumberView.partNumber.remainingFields.size())/16.0}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
 										</h:outputText>
 									</span>

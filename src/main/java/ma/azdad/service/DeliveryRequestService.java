@@ -2233,16 +2233,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	private void generateSerialNumberList(DeliveryRequest deliveryRequest) {
 		Map<String, Integer> map = new HashMap<>();
-
 		for (Integer stockRowId : deliveryRequest.getStockRowList().stream().map(i -> i.getId()).collect(Collectors.toList())) {
 			StockRow inboundStockRow = stockRowService.findOne(stockRowId);
 			for (PackingDetail packingDetail : inboundStockRow.getPacking().getDetailList()) {
 				if (!packingDetail.getHasSerialnumber())
 					continue;
-
-				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), 0);
-
-				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
+				// case partially dleiverd --> maxPackingNumero > 0
+				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(stockRowId,packingDetail.getId()),0);
+				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), maxPackingNumero);
+				long existingSrCount = deliveryRequestSerialNumberService.countByInboundStockRowAndPackingDetail(stockRowId,packingDetail.getId()) * packingDetail.getParent().getQuantity() / packingDetail.getQuantity();
+				int packingQuantity = (int) ((inboundStockRow.getQuantity()-existingSrCount) / packingDetail.getParent().getQuantity());
 				int n = packingDetail.getQuantity();
 				for (int i = 0; i < packingQuantity; i++) {
 					int packingNumero = map.get(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId()) + 1;
@@ -2255,6 +2255,35 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		if (!map.isEmpty())
 			updateMissingSerialNumber(deliveryRequest.getId(), true);
+
+		// automatic fill SN from associated Outbound
+		if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer()) {
+			try {
+				final DeliveryRequest outboundDn = deliveryRequest.getOutboundDeliveryRequestReturn() != null ? deliveryRequest.getOutboundDeliveryRequestReturn()
+						: deliveryRequest.getOutboundDeliveryRequestTransfer();
+				deliveryRequest.getDetailList().stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
+//					Double outboundQuantity = outboundDn.getDetailList().stream().filter(j -> j.getPartNumber().equals(i.getPartNumber())).mapToDouble(j -> j.getQuantity()).sum();
+					Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
+					if (i.getQuantity().equals(outboundQuantity)) {
+						List<DeliveryRequestSerialNumber> drsnList = deliveryRequestSerialNumberService.findByInboundDeliveryRequestDetail(i.getId());
+						List<String> usedSnList = drsnList.stream().filter(j->!j.getIsEmpty()).map(j->j.getSerialNumber()).collect(Collectors.toList());
+						List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(),
+								i.getPartNumberId(),usedSnList);
+						drsnList.stream().filter(drsn->drsn.getIsEmpty()).forEach(drsn -> {
+							DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst()
+									.get();
+							drsn.setSerialNumber(outboundDrsn.getSerialNumber());
+							deliveryRequestSerialNumberService.save(drsn);
+							outboundDrsnList.removeIf(j -> j.getId().equals(outboundDrsn.getId()));
+							System.out.println("outboundDrsnList : "+outboundDrsnList);
+						});
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
 
 	}
 

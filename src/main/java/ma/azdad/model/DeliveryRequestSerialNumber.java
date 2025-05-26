@@ -60,6 +60,26 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 		this.tmpLocation = outboundStockRow.getLocation();
 		this.tmpStockRowStatus = outboundStockRow.getStatus();
 	}
+	
+	// c1
+	public DeliveryRequestSerialNumber(Integer id,Integer packingNumero,String serialNumber,String box,//
+			String partNumberName,StockRowStatus inboundStockRowStatus,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference,//
+			String packingDetailType,String locationName) {
+		super(id);
+		this.packingNumero = packingNumero;
+		this.serialNumber = serialNumber;
+		this.box=box;
+		this.setPartNumberName(partNumberName);
+		this.setInboundStockRowStatus(inboundStockRowStatus);
+		this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+		this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+		this.setPackingDetailType(packingDetailType);
+		this.setLocationName(locationName);
+	}
+	
+	
+	
+	
 
 	@Override
 	public boolean filter(String query) {
@@ -70,6 +90,79 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	public Boolean getIsEmpty() {
 		return StringUtils.isBlank(serialNumber);
 	}
+	
+	@Transient
+	public StockRowStatus getInboundStockRowStatus(){
+		return inboundStockRow!=null?inboundStockRow.getStatus():null;
+	}
+
+	@Transient
+	public void setInboundStockRowStatus(StockRowStatus inboundStockRowStatus){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setStatus(inboundStockRowStatus);
+	}
+	
+	@Transient
+	public String getPartNumberName(){
+		return inboundStockRow!=null?inboundStockRow.getPartNumberName():null;
+	}
+
+	@Transient
+	public void setPartNumberName(String partNumberName){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setPartNumberName(partNumberName);
+	}
+	
+	@Transient
+	public String getInboundDeliveryRequestReference(){
+		return inboundStockRow!=null?inboundStockRow.getInboundDeliveryRequestReference():null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestReference(String inboundDeliveryRequestReference){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
+	}
+	
+	@Transient
+	public Integer getInboundDeliveryRequestId(){
+		return inboundStockRow!=null?inboundStockRow.getInboundDeliveryRequestId():null;
+	}
+
+	@Transient
+	public void setInboundDeliveryRequestId(Integer inboundDeliveryRequestId){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setInboundDeliveryRequestId(inboundDeliveryRequestId);
+	}
+	
+	@Transient
+	public String getPackingDetailType(){
+		return packingDetail!=null?packingDetail.getType():null;
+	}
+
+	@Transient
+	public void setPackingDetailType(String packingDetailType){
+		if(packingDetail==null)
+			packingDetail=new PackingDetail();
+		packingDetail.setType(packingDetailType);
+	}
+	
+	@Transient
+	public String getLocationName(){
+		return inboundStockRow!=null?inboundStockRow.getLocationName():null;
+	}
+
+	@Transient
+	public void setLocationName(String locationName){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setLocationName(locationName);
+	}
+
 
 	@Transient
 	public String getReference(Boolean isOutboundDeliveryRequest) {

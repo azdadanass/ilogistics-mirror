@@ -316,6 +316,10 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 	}
 
 	// generic FUNCTIONS
+	public Boolean hasSerialNumber(Integer id) {
+		return service.hasSerialNumber(id);
+	}
+	
 	public List<PartNumber> findLight(Boolean unit) {
 		return partNumberService.findLight(unit);
 	}

@@ -175,6 +175,11 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 			i++;
 		}
 	}
+	
+	// reporting
+	public List<DeliveryRequestSerialNumber> findCurrentInventory(Integer partNumberId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventory(partNumberId, companyId, username, projectList, warehouseList);
+	}
 
 	///////////////// Mobile
 	public ResponseEntity<String> scanOutboundSnMobile(Integer id, String serialNumber) {

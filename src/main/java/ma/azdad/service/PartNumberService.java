@@ -44,6 +44,10 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 
 	@Autowired
 	protected PartNumberCategoryService partNumberCategoryService;
+	
+
+	@Autowired
+	protected PackingDetailService packingDetailService;
 
 	@Autowired
 	PartNumberBrandService brandService;
@@ -190,6 +194,10 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	public void updateImage(Integer id) {
 		repos.updateImage(id);
 		evictCache();
+	}
+	
+	public Boolean hasSerialNumber(Integer id) {
+		return packingDetailService.countByPartNumberAndHasSerialnumber(id)>0;
 	}
 
 	public void updateHasPacking(Integer id) {

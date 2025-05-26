@@ -73,6 +73,7 @@
 												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />
 												<p:ajax listener="#{jobRequestDeliveryDetailView.refreshListByProject(stockRowView.projectId)}" update=":main_form:panel4" />
 												<p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel5" />
+												<p:ajax listener="#{deliveryRequestSerialNumberView.refreshList()}" update=":main_form:panel6" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -95,6 +96,12 @@
 						<a data-toggle="tab" href="#tab2" onclick="currentStock()">
 							<i class="orange ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Current Stock" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6">
+							<i class="blue ace-icon fa fa-spinner bigger-120"></i>
+							<h:outputText value=" Current Stock SN" styleClass="hidden-xs" />
 						</a>
 					</li>
 					<li>
@@ -569,6 +576,68 @@
 												<h:outputText value="#{item.quantity-item.tmpUsedQuantity}" styleClass="orange bolder">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab6" class="tab-pane">
+						<h:panelGroup id="panel6">
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 col-xs-8">
+											<i class="fa fa-list" />
+											<h:outputText value=" Current Stock SN" />
+										</div>
+										<div class="col-sm-2 hidden-xs">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="currentStockSn" fileName="currentStockSn" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="currentStockSn" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="PN /Inbound DN / Packing Numero" groupRow="true" width="300" exportable="false">
+												<h:outputText value="#{item.partNumberName} / " styleClass="bolder blue" />
+												<h:outputText value="#{item.inboundDeliveryRequestReference} / " styleClass="bolder green" />
+												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
+											</p:column>
+											<p:column headerText="Reference" styleClass="hide" rendered="#{!deliveryRequestSerialNumberView.list2.isEmpty()}">
+												<h:outputText value="#{item.getReference(false)}" />
+											</p:column>
+											<p:column headerText="Packing Detail">
+												<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
+											</p:column>
+											<p:column headerText="Status" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.status.value}" />
+												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Location" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
+												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Serial Number">
+												<h:outputText value="#{item.serialNumber}" styleClass="green bolder" />
+											</p:column>
+											<p:column headerText="Box Id">
+												<h:outputText value="#{item.box}" styleClass="orange bolder" />
 											</p:column>
 										</p:dataTable>
 									</div>

@@ -61,6 +61,9 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	@Autowired
 	private DeliveryRequestView deliveryRequestView;
+	
+	@Autowired
+	private StockRowView stockRowView;
 
 	private DeliveryRequestSerialNumber deliveryRequestSerialNumber = new DeliveryRequestSerialNumber();
 
@@ -96,9 +99,12 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			refreshSerialNumberSummaryList();
 			datatable1 = new DatatableList<DeliveryRequestSerialNumber>(list1.stream().filter(i -> i.getOutboundDeliveryRequest() == null).collect(Collectors.toList()));
 		} else if (isPage("partNumberReporting"))
-			initLists(service.findCurrentInventory(id, menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
+			initLists(service.findCurrentInventoryByPartNumber(id, menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
+		else if(isPage("projectReporting"))
+			initLists(service.findCurrentInventoryByProject(stockRowView.getProjectId(), menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
 		
 	}
+	
 
 	public void flushDeliveryRequestSerialNumber() {
 		deliveryRequestSerialNumberService.flush();

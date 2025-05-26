@@ -177,8 +177,12 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 	}
 	
 	// reporting
-	public List<DeliveryRequestSerialNumber> findCurrentInventory(Integer partNumberId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
-		return repos.findCurrentInventory(partNumberId, companyId, username, projectList, warehouseList);
+	public List<DeliveryRequestSerialNumber> findCurrentInventoryByPartNumber(Integer partNumberId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventoryByPartNumber(partNumberId, companyId, username, projectList, warehouseList);
+	}
+	
+	public List<DeliveryRequestSerialNumber> findCurrentInventoryByProject(Integer projectId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventoryByProject(projectId, companyId, username, projectList, warehouseList);
 	}
 
 	///////////////// Mobile

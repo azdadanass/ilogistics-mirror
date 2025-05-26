@@ -105,5 +105,8 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	
 	@Query(c1+"from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.project.id = ?1 and a.inboundStockRow.deliveryRequest.company.id = ?2 and (a.inboundStockRow.deliveryRequest.project.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?3 or a.inboundStockRow.deliveryRequest.project.id in (?4) or a.inboundStockRow.deliveryRequest.warehouse.id in (?5)) and a.outboundDeliveryRequest is null and a.serialNumber is not null and a.serialNumber != '' ")
 	List<DeliveryRequestSerialNumber> findCurrentInventoryByProject(Integer projectId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList);
+	
+	@Query(c1+"from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.warehouse.id = ?1 and a.inboundStockRow.deliveryRequest.company.id = ?2 and (a.inboundStockRow.deliveryRequest.project.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?3 or a.inboundStockRow.deliveryRequest.project.id in (?4) or a.inboundStockRow.deliveryRequest.warehouse.id in (?5)) and a.outboundDeliveryRequest is null and a.serialNumber is not null and a.serialNumber != '' ")
+	List<DeliveryRequestSerialNumber> findCurrentInventoryByWarehouse(Integer warehouseId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList);
 
 }

@@ -102,6 +102,8 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 			initLists(service.findCurrentInventoryByPartNumber(id, menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
 		else if(isPage("projectReporting"))
 			initLists(service.findCurrentInventoryByProject(stockRowView.getProjectId(), menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
+		else if(isPage("warehouseReporting"))
+			initLists(service.findCurrentInventoryByWarehouse(stockRowView.getWarehouseId(), menuView.getCompanyId(), sessionView.getUsername(), cacheView.getAssignedProjectList(), cacheView.getWarehouseList()));
 		
 	}
 	

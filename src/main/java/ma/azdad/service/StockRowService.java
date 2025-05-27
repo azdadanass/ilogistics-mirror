@@ -269,7 +269,66 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 	}
 
 	public List<ma.azdad.mobile.model.StockRow> getStockSituationByInboundDeliveryRequestMobile(Integer deliveryRequestId) {
-		List<ma.azdad.mobile.model.StockRow> list =  repos.getStockSituationByInboundDeliveryRequestMobile(deliveryRequestId);
+		List<ma.azdad.mobile.model.StockRow> list =  new ArrayList<>();
+		List<StockRow> result = new ArrayList<StockRow>();
+		List<StockRow> data = repos.getStockSituationByInboundDeliveryRequest(deliveryRequestId);
+
+		// key = pn;status;location
+		Map<String, Double> outboundMap = new HashMap<String, Double>();
+		for (StockRow stockRow : data) {
+			System.out.println(stockRow.getPartNumberId());
+			System.out.println(stockRow.getQuantity());
+			if (stockRow.getQuantity() < 0) { // outbound
+				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
+				outboundMap.putIfAbsent(key, 0.0);
+				outboundMap.put(key, outboundMap.get(key) - stockRow.getQuantity()); // - to get positive outbound quantity
+			}
+		}
+
+		System.out.println("outboundMap");
+		System.out.println(outboundMap);
+
+		for (StockRow stockRow : data) {
+			if (stockRow.getQuantity() > 0) { // inbound
+				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
+				Double quantity = stockRow.getQuantity();
+				Double outboundQuantity = outboundMap.getOrDefault(key, 0.0);
+
+				System.out.println("key : " + key + "\t" + stockRow.getCreationDate());
+
+				if (quantity >= outboundQuantity) {
+					System.out.println("1");
+					stockRow.setQuantity(quantity - outboundQuantity);
+					outboundMap.put(key, 0.0);
+				} else {
+					System.out.println("2");
+					stockRow.setQuantity(0.0);
+					outboundMap.put(key, outboundQuantity - stockRow.getQuantity());
+				}
+				if (!stockRow.getQuantity().equals(0.0))
+					result.add(stockRow);
+			}
+		}
+		for (StockRow stockRow : result) {
+		    list.add(new ma.azdad.mobile.model.StockRow(
+		        stockRow.getId(),
+		        stockRow.getPartNumberName(),
+		        stockRow.getPartNumberImage(),
+		        stockRow.getLocation(),
+		        stockRow.getStatus(),
+		        stockRow.getState(),
+		        stockRow.getPartNumberDescription(),
+		        stockRow.getQuantity(),
+		        stockRow.getProjectName(),
+		        stockRow.getWarehouseName(),
+		        stockRow.getInboundQuantity(),
+		        stockRow.getOutboundQuantity(),
+		        stockRow.getDeliveryRequestReference(),
+		        stockRow.getDeliveryRequestId(),
+		        stockRow.getCreationDate()
+		    ));
+		}
+
 		
 		return list;
 	}

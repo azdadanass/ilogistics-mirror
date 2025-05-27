@@ -293,7 +293,7 @@
 														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{projectView.findLightOpen()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm" />
+														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm,:main_form:step1:ism" />
 													</p:selectOneMenu>
 													<br />
 												</div>

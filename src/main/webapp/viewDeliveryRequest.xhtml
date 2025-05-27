@@ -463,7 +463,8 @@
 						<li>
 							<a data-toggle="tab" href="#tab2">
 								<i class="purple ace-icon fa fa-list bigger-120"></i>
-								<h:outputText value=" R / T Details" styleClass="hidden-xs" />
+								<h:outputText value=" Transfer Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isForTransfer}" />
+								<h:outputText value=" Return Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isForReturn}" />
 							</a>
 						</li>
 					</f:subview>

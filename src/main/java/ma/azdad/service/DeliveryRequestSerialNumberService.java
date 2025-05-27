@@ -99,12 +99,16 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 		return result;
 	}
 	
-	public Integer findMaxPackingNumero(Integer inboundStockRowId,Integer packingDetailId) {
-		return repos.findMaxPackingNumero(inboundStockRowId, packingDetailId);
+	public Integer findMaxPackingNumero(Integer inboundDeliveryRequestDetailId,Integer packingDetailId) {
+		return repos.findMaxPackingNumero(inboundDeliveryRequestDetailId, packingDetailId);
 	}
 	
-	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
-		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
+//	public Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId) {
+//		return ObjectUtils.firstNonNull(repos.countByInboundStockRowAndPackingDetail(inboundStockRowId,packingDetailId),0l);
+//	}
+	
+	public Long countByInboundStockRow(Integer inboundStockRowId) {
+		return ObjectUtils.firstNonNull(repos.countByInboundStockRow(inboundStockRowId),0l);
 	}
 
 	public Long countByInboundDeliveryRequestAndEmpty(Integer deliveryRequestId) {
@@ -170,6 +174,19 @@ public class DeliveryRequestSerialNumberService extends GenericService<Integer, 
 			}
 			i++;
 		}
+	}
+	
+	// reporting
+	public List<DeliveryRequestSerialNumber> findCurrentInventoryByPartNumber(Integer partNumberId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventoryByPartNumber(partNumberId, companyId, username, projectList, warehouseList);
+	}
+	
+	public List<DeliveryRequestSerialNumber> findCurrentInventoryByProject(Integer projectId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventoryByProject(projectId, companyId, username, projectList, warehouseList);
+	}
+	
+	public List<DeliveryRequestSerialNumber> findCurrentInventoryByWarehouse(Integer warehouseId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList){
+		return repos.findCurrentInventoryByWarehouse(warehouseId, companyId, username, projectList, warehouseList);
 	}
 
 	///////////////// Mobile

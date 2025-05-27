@@ -14,6 +14,9 @@ import ma.azdad.model.StockRowStatus;
 
 @Repository
 public interface DeliveryRequestSerialNumberRepos extends JpaRepository<DeliveryRequestSerialNumber, Integer> {
+	
+	String c1 = "select new DeliveryRequestSerialNumber(a.id,a.packingNumero,a.serialNumber,a.box,a.inboundStockRow.partNumber.name,a.inboundStockRow.status,a.inboundStockRow.deliveryRequest.id,a.inboundStockRow.deliveryRequest.reference,a.packingDetail.type,a.inboundStockRow.location.name) ";
+	
 
 	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.id = ?1 or a.outboundDeliveryRequest.id = ?1")
 	List<DeliveryRequestSerialNumber> findByDeliveryRequest(Integer deliveryRequestId);
@@ -22,11 +25,14 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	List<DeliveryRequestSerialNumber> findByInboundDeliveryRequestDetail(Integer inboundDeliveryRequestId);
 	
 	
-	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1 and a.packingDetail.id = ?2")
-	Integer findMaxPackingNumero(Integer inboundStockRowId,Integer packingDetailId);
+	@Query("select max(a.packingNumero) from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id = ?1 and a.packingDetail.id = ?2")
+	Integer findMaxPackingNumero(Integer inboundDeliveryRequestDetailId,Integer packingDetailId);
 	
-	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1  and a.packingDetail.id = ?2")
-	Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId);
+//	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1  and a.packingDetail.id = ?2")
+//	Long countByInboundStockRowAndPackingDetail(Integer inboundStockRowId,Integer packingDetailId);
+	
+	@Query("select count(*) from DeliveryRequestSerialNumber a where a.inboundStockRow.id = ?1")
+	Long countByInboundStockRow(Integer inboundStockRowId);
 	
 	@Query("from DeliveryRequestSerialNumber a where a.outboundDeliveryRequest.id  = ?1 and a.inboundStockRow.partNumber.id = ?2 and a.serialNumber is not null and a.serialNumber != ''")
 	List<DeliveryRequestSerialNumber> findByOutboundDeliveryRequestAndPartNumber(Integer outboundDeliveryRequestId,Integer partNumberId);
@@ -90,5 +96,17 @@ public interface DeliveryRequestSerialNumberRepos extends JpaRepository<Delivery
 	@Query("from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequestDetail.id = ?1 and a.inboundStockRow.location.id = ?2 and a.packingDetail.id = ?3 and a.serialNumber is not null and a.serialNumber != '' and a.outboundDeliveryRequest is null")
 	List<DeliveryRequestSerialNumber> findHavingSerialNumberAndNoOutbound(Integer inboundDeliveryRequestDetailId,Integer locationId,Integer packingDetailId);
 	
+	
+	// reporting
+	
+	
+	@Query(c1+"from DeliveryRequestSerialNumber a where a.inboundStockRow.partNumber.id = ?1 and a.inboundStockRow.deliveryRequest.company.id = ?2 and (a.inboundStockRow.deliveryRequest.project.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?3 or a.inboundStockRow.deliveryRequest.project.id in (?4) or a.inboundStockRow.deliveryRequest.warehouse.id in (?5)) and a.outboundDeliveryRequest is null and a.serialNumber is not null and a.serialNumber != '' ")
+	List<DeliveryRequestSerialNumber> findCurrentInventoryByPartNumber(Integer partNumberId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList);
+	
+	@Query(c1+"from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.project.id = ?1 and a.inboundStockRow.deliveryRequest.company.id = ?2 and (a.inboundStockRow.deliveryRequest.project.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?3 or a.inboundStockRow.deliveryRequest.project.id in (?4) or a.inboundStockRow.deliveryRequest.warehouse.id in (?5)) and a.outboundDeliveryRequest is null and a.serialNumber is not null and a.serialNumber != '' ")
+	List<DeliveryRequestSerialNumber> findCurrentInventoryByProject(Integer projectId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList);
+	
+	@Query(c1+"from DeliveryRequestSerialNumber a where a.inboundStockRow.deliveryRequest.warehouse.id = ?1 and a.inboundStockRow.deliveryRequest.company.id = ?2 and (a.inboundStockRow.deliveryRequest.project.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.manager.username = ?3 or a.inboundStockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?3 or a.inboundStockRow.deliveryRequest.project.id in (?4) or a.inboundStockRow.deliveryRequest.warehouse.id in (?5)) and a.outboundDeliveryRequest is null and a.serialNumber is not null and a.serialNumber != '' ")
+	List<DeliveryRequestSerialNumber> findCurrentInventoryByWarehouse(Integer warehouseId,Integer companyId,String username, List<Integer> projectList, List<Integer> warehouseList);
 
 }

@@ -102,6 +102,15 @@ public class SerialNumberController {
 	
 	}
 	
+	@GetMapping("/mobile/sn/stock/{key}/{id}")
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnStock(@PathVariable Integer id, @PathVariable String key) {
+		Token token = tokenService.getBykey(key);
+		System.out.println("/mobile/sn/stock/" + id + "/" + token.getKey());
+		
+		return deliveryRequestService.findSnStock(id);
+	
+	}
+	
 	@GetMapping("/mobile/sn/summary/{key}/{id}")
 	public List<ma.azdad.mobile.model.SerialNumberSummary> findSnSummary(@PathVariable Integer id, @PathVariable String key) {
 		Token token = tokenService.getBykey(key);

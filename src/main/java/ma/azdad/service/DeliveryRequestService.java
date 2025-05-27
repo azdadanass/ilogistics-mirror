@@ -1940,6 +1940,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (dn.getToUserUsername() != null) {
 			dn.setToUser(userService.findOne(dn.getToUserUsername()));
 			dnm.setToUser(dn.getToUserFullName());
+			dnm.setToUserEmail(dn.getToUserEmail());
+			dnm.setToUserPhone(dn.getToUserPhone());
+			dnm.setToUserPhoto(Public.getPublicUrl(dn.getToUser().getPhoto()));
+			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
 		}
 		if (dn.getDeliverToEntityName() != null) {
@@ -2693,6 +2697,18 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
 		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
 		for (DeliveryRequestSerialNumber sn : list) {
+			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
+					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
+					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName()));
+		}
+		return mobileList;
+	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnStock(Integer id) {
+		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
+		List<DeliveryRequestSerialNumber> list1 = list.stream().filter(i -> i.getOutboundDeliveryRequest() == null).collect(Collectors.toList());
+		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
+		for (DeliveryRequestSerialNumber sn : list1) {
 			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
 					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
 					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName()));

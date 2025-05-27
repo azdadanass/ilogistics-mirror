@@ -51,6 +51,10 @@ public class DeliveryRequest {
 	private Integer originId;
 	private String originName;
 	private String toUser;
+	private String toUserEmail;
+	private String toUserPhone;
+	private String toUserCin;
+	private String toUserPhoto;
 	private Boolean toUserInternal;
 	private String toCompany;
 	private String toCompanyLogo;
@@ -588,6 +592,40 @@ public class DeliveryRequest {
 	public void setShowSnData(Boolean showSnData) {
 		this.showSnData = showSnData;
 	}
+
+	public String getToUserEmail() {
+		return toUserEmail;
+	}
+
+	public void setToUserEmail(String toUserEmail) {
+		this.toUserEmail = toUserEmail;
+	}
+
+	public String getToUserPhone() {
+		return toUserPhone;
+	}
+
+	public void setToUserPhone(String toUserPhone) {
+		this.toUserPhone = toUserPhone;
+	}
+
+	public String getToUserCin() {
+		return toUserCin;
+	}
+
+	public void setToUserCin(String toUserCin) {
+		this.toUserCin = toUserCin;
+	}
+
+	public String getToUserPhoto() {
+		return toUserPhoto;
+	}
+
+	public void setToUserPhoto(String toUserPhoto) {
+		this.toUserPhoto = toUserPhoto;
+	}
+	
+	
 	
 	
 	

@@ -1104,7 +1104,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return false;
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
-			return deliveryRequest.getDestinationProjectSdm();
+			return deliveryRequest.getDestinationProjectSdm() && !deliveryRequest.getIsForTransfer();
 		case INBOUND:
 			return Boolean.TRUE.equals(deliveryRequest.getProjectSdm()) && InboundType.DISMANTLE.equals(deliveryRequest.getInboundType());
 		default:
@@ -1118,7 +1118,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		switch (deliveryRequest.getType()) {
 		case OUTBOUND:
-			return deliveryRequest.getDestinationProjectIsm();
+			return deliveryRequest.getDestinationProjectIsm() && !deliveryRequest.getIsForTransfer();
 		case INBOUND:
 			return Boolean.TRUE.equals(deliveryRequest.getProjectIsm())
 					&& (InboundType.DISMANTLE.equals(deliveryRequest.getInboundType()) || deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap());

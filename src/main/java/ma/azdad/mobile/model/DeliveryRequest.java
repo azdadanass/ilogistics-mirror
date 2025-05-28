@@ -22,6 +22,7 @@ public class DeliveryRequest {
 
 	private Integer id;
 	private String reference;
+	private String smsRef;
 	private DeliveryRequestType type;
 	private Date neededDeliveryDate;
 	private Date deliveryDate;
@@ -33,6 +34,7 @@ public class DeliveryRequest {
 	private Boolean showExpiryData = false;
 	private Boolean showSnData = false;
 	private Integer approximativeStoragePeriod = 0;
+	private String returnReason;
 
 
 	
@@ -48,8 +50,16 @@ public class DeliveryRequest {
 	private String warehouseName;
 	private Integer destinationId;
 	private String destinationName;
+	private String destinationOwner;
+	private String destinationPhone;
+	private String destinationAddress;
+	private String destinationPhoto;
 	private Integer originId;
 	private String originName;
+	private String originOwner;
+	private String originPhone;
+	private String originAddress;
+	private String originPhoto;
 	private String toUser;
 	private String toUserEmail;
 	private String toUserPhone;
@@ -59,6 +69,9 @@ public class DeliveryRequest {
 	private String toCompany;
 	private String toCompanyLogo;
 	//
+	private Integer numberOfItems;
+	private Double grossWeight;
+	private Double volume;
 	private String company;
 	private String supplier;
 	private String customer;
@@ -97,7 +110,7 @@ public class DeliveryRequest {
 			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
 			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
 			Boolean transportationNeeded,Boolean isSnRequired,String company,String supplier,String customer,CompanyType ownerType
-			,Integer approximativeStoragePeriod) {
+			,Integer approximativeStoragePeriod,String smsRef) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -130,6 +143,7 @@ public class DeliveryRequest {
 		this.supplier = supplier;
 		this.customer = customer;
 		this.ownerName = getOwnerName2();
+		this.smsRef = smsRef;
 		
 
 	}
@@ -624,6 +638,121 @@ public class DeliveryRequest {
 	public void setToUserPhoto(String toUserPhoto) {
 		this.toUserPhoto = toUserPhoto;
 	}
+
+	public String getReturnReason() {
+		return returnReason;
+	}
+
+	public void setReturnReason(String returnReason) {
+		this.returnReason = returnReason;
+	}
+
+	public String getSmsRef() {
+		return smsRef;
+	}
+
+	public void setSmsRef(String smsRef) {
+		this.smsRef = smsRef;
+	}
+
+
+
+	public String getDestinationPhone() {
+		return destinationPhone;
+	}
+
+	public void setDestinationPhone(String destinationPhone) {
+		this.destinationPhone = destinationPhone;
+	}
+
+	public String getDestinationAddress() {
+		return destinationAddress;
+	}
+
+	public void setDestinationAddress(String destinationAddress) {
+		this.destinationAddress = destinationAddress;
+	}
+
+	public String getDestinationPhoto() {
+		return destinationPhoto;
+	}
+
+	public void setDestinationPhoto(String destinationPhoto) {
+		this.destinationPhoto = destinationPhoto;
+	}
+
+	
+
+	public String getDestinationOwner() {
+		return destinationOwner;
+	}
+
+	public void setDestinationOwner(String destinationOwner) {
+		this.destinationOwner = destinationOwner;
+	}
+
+	public String getOriginOwner() {
+		return originOwner;
+	}
+
+	public void setOriginOwner(String originOwner) {
+		this.originOwner = originOwner;
+	}
+
+	public String getOriginPhone() {
+		return originPhone;
+	}
+
+	public void setOriginPhone(String originPhone) {
+		this.originPhone = originPhone;
+	}
+
+	public String getOriginAddress() {
+		return originAddress;
+	}
+
+	public void setOriginAddress(String originAddress) {
+		this.originAddress = originAddress;
+	}
+
+	public String getOriginPhoto() {
+		return originPhoto;
+	}
+
+	public void setOriginPhoto(String originPhoto) {
+		this.originPhoto = originPhoto;
+	}
+
+	public Integer getNumberOfItems() {
+		return numberOfItems;
+	}
+
+	public void setNumberOfItems(Integer numberOfItems) {
+		this.numberOfItems = numberOfItems;
+	}
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+	public Double getVolume() {
+		return volume;
+	}
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

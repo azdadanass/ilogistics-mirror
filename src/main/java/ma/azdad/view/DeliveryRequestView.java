@@ -2448,6 +2448,20 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setIsm(false);
 		}
 	}
+	
+	public void changeIsForReturnListener() {
+		
+	}
+	
+	public void changeReturnReasonListener() {
+		
+		System.out.println("deliveryRequest.getIsOutbound() : "+deliveryRequest.getIsOutbound());
+		System.out.println("deliveryRequest.getReturnReason() : "+deliveryRequest.getReturnReason());
+		System.out.println("!\"Hardware Swap\".equals(deliveryRequest.getReturnReason()) : "+!"Hardware Swap".equals(deliveryRequest.getReturnReason()));
+		
+		if(deliveryRequest.getIsOutbound() && !"Hardware Swap".equals(deliveryRequest.getReturnReason()))
+			deliveryRequest.setIsm(false);
+	}
 
 	public void changeDestinationProjectListener() {
 		deliveryRequest.setDestinationProject(projectService.findOne2(deliveryRequest.getDestinationProjectId()));
@@ -2464,6 +2478,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		Boolean sdm = deliveryRequest.getDestinationProject().getSdm();
 		deliveryRequest.setSdm(Boolean.TRUE.equals(sdm));
+		
+		
+		changeReturnReasonListener();
 
 	}
 

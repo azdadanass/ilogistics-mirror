@@ -181,6 +181,7 @@
 														<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
 														<f:selectItem itemLabel="Hardware Swap" itemValue="Hardware Swap" />
 														<f:selectItem itemLabel="Other" itemValue="Other" />
+														<p:ajax listener="#{deliveryRequestView.changeReturnReasonListener()}" update=":main_form:step1:ism"/>
 													</h:selectOneMenu>
 													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
 														rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
@@ -334,7 +335,7 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ism}" disabled="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="ism field should not be null" styleClass="col-xs-12 col-sm-6">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ism}" disabled="#{deliveryRequestView.deliveryRequest.isForTransfer or (deliveryRequestView.deliveryRequest.isForReturn and !deliveryRequestView.deliveryRequest.isOutboundHardwareSwap)}" required="true" requiredMessage="ism field should not be null" styleClass="col-xs-12 col-sm-6">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 													</h:selectOneMenu>

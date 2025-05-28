@@ -1946,6 +1946,24 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
 		}
+		if (dn.getOrigin() != null) {
+			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());
+			dnm.setOriginOwner(dn.getOrigin().getOwnerName());
+			dnm.setOriginPhone(dn.getOrigin().getPhone());
+			dnm.setOriginPhoto(erp);
+			dnm.setOriginPhoto(Public.getPublicUrl(dn.getOrigin().getUser().getPhoto()));
+		}
+		if (dn.getDestination() != null) {
+			dnm.setDestinationAddress(dn.getDestination().getGoogleAddress());
+			dnm.setDestinationOwner(dn.getDestination().getOwnerName());
+			dnm.setDestinationPhone(dn.getDestination().getPhone());
+			dnm.setDestinationPhoto(erp);
+			dnm.setDestinationPhoto(Public.getPublicUrl(dn.getDestination().getUser().getPhoto()));
+		}
+		dnm.setNumberOfItems(dn.getNumberOfItems());
+		dnm.setGrossWeight(dn.getGrossWeight());
+		dnm.setVolume(dn.getVolume());
+
 		if (dn.getDeliverToEntityName() != null) {
 			dnm.setToCompany(dn.getDeliverToEntityName());
 			dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
@@ -1955,6 +1973,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		;
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(), dn.getCustomerName(), dn.getSupplierName(), dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
+		if(dn.getIsOutbound()) {
+			dnm.setReturnReason(dn.getSubType());
+		}
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList()

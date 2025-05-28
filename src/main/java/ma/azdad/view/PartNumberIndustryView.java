@@ -133,5 +133,13 @@ public class PartNumberIndustryView extends GenericView<Integer, PartNumberIndus
 	public void setPartNumberIndustry(PartNumberIndustry partNumberIndustry) {
 		this.partNumberIndustry = partNumberIndustry;
 	}
+	
+	public PartNumberIndustry getModel() {
+		return model;
+	}
+
+	public void setModel(PartNumberIndustry model) {
+		this.model = model;
+	}
 
 }

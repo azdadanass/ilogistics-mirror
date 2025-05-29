@@ -2729,6 +2729,31 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return mobileList;
 	}
 	
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnByDnIdAndPn(int dnId, String partNumberName) {
+	    List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(dnId);
+	    List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
+
+	    for (DeliveryRequestSerialNumber sn : list) {
+	        String pnName = sn.getPackingDetail().getParent().getPartNumber().getName();
+	        if (pnName != null && pnName.equalsIgnoreCase(partNumberName)) {
+	            mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(
+	                sn.getId(),
+	                sn.getPackingDetail().getParent().getName(),
+	                pnName,
+	                sn.getSerialNumber(),
+	                sn.getPackingDetail().getParent().getPartNumber().getImage(),
+	                sn.getPackingDetail().getSnType(),
+	                sn.getPackingNumero(),
+	                sn.getInboundStockRow().getStatusValue(),
+	                sn.getInboundStockRow().getLocation().getName()
+	            ));
+	        }
+	    }
+
+	    return mobileList;
+	}
+
+	
 	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnStock(Integer id) {
 		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
 		List<DeliveryRequestSerialNumber> list1 = list.stream().filter(i -> i.getOutboundDeliveryRequest() == null).collect(Collectors.toList());

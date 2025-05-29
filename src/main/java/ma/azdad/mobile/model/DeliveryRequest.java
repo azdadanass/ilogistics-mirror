@@ -54,12 +54,16 @@ public class DeliveryRequest {
 	private String destinationPhone;
 	private String destinationAddress;
 	private String destinationPhoto;
+	private Double destinationLatitude = 33.966171;
+	private Double destinationLongitude = -6.8678663;
 	private Integer originId;
 	private String originName;
 	private String originOwner;
 	private String originPhone;
 	private String originAddress;
 	private String originPhoto;
+	private Double originLatitude = 33.966171;
+	private Double originLongitude = -6.8678663;
 	private String toUser;
 	private String toUserEmail;
 	private String toUserPhone;
@@ -746,6 +750,40 @@ public class DeliveryRequest {
 	public void setVolume(Double volume) {
 		this.volume = volume;
 	}
+
+	public Double getDestinationLatitude() {
+		return destinationLatitude;
+	}
+
+	public void setDestinationLatitude(Double destinationLatitude) {
+		this.destinationLatitude = destinationLatitude;
+	}
+
+	public Double getDestinationLongitude() {
+		return destinationLongitude;
+	}
+
+	public void setDestinationLongitude(Double destinationLongitude) {
+		this.destinationLongitude = destinationLongitude;
+	}
+
+	public Double getOriginLatitude() {
+		return originLatitude;
+	}
+
+	public void setOriginLatitude(Double originLatitude) {
+		this.originLatitude = originLatitude;
+	}
+
+	public Double getOriginLongitude() {
+		return originLongitude;
+	}
+
+	public void setOriginLongitude(Double originLongitude) {
+		this.originLongitude = originLongitude;
+	}
+	
+	
 	
 	
 	

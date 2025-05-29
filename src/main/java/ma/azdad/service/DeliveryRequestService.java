@@ -1952,6 +1952,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setOriginPhone(dn.getOrigin().getPhone());
 			dnm.setOriginPhoto(erp);
 			dnm.setOriginPhoto(Public.getPublicUrl(dn.getOrigin().getUser().getPhoto()));
+			dnm.setOriginLongitude(dn.getOrigin().getLongitude());
+			dnm.setOriginLatitude(dn.getOrigin().getLatitude());;
 		}
 		if (dn.getDestination() != null) {
 			dnm.setDestinationAddress(dn.getDestination().getGoogleAddress());
@@ -1959,6 +1961,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setDestinationPhone(dn.getDestination().getPhone());
 			dnm.setDestinationPhoto(erp);
 			dnm.setDestinationPhoto(Public.getPublicUrl(dn.getDestination().getUser().getPhoto()));
+			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
+			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
 		}
 		dnm.setNumberOfItems(dn.getNumberOfItems());
 		dnm.setGrossWeight(dn.getGrossWeight());

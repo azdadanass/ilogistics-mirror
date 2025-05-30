@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.OutboundType;
 import ma.azdad.model.Site;
 import ma.azdad.model.SiteCategory;
 import ma.azdad.model.SiteFile;
@@ -137,7 +138,7 @@ public class SiteView extends GenericView<Integer, Site, SiteRepos, SiteService>
 	@Override
 	public void refreshList() {
 		if ("/addEditDeliveryRequest.xhtml".equals(currentPath)) {
-			if (deliveryRequestView.getDeliveryRequest().getIsForTransfer() == null || !deliveryRequestView.getDeliveryRequest().getIsForTransfer())
+			if (!OutboundType.TRANSFER.equals(deliveryRequestView.getDeliveryRequest().getOutboundType()))
 				list2 = list1 = siteService.findByCategoryAndGoogleRegion(categoryId, googleRegion);
 			else
 				list2 = list1 = siteService.findLightAndHavingWarehouse();

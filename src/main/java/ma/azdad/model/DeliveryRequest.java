@@ -46,8 +46,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Date neededDeliveryDate;
 	private Date deliveryDate;
 	private String originNumber = "";
-	private Boolean isForReturn = false;
-	private Boolean isForTransfer = false;
 	private Boolean isSnRequired = false;
 	private Boolean isPackingListRequired = false;
 	private Integer approximativeStoragePeriod = 0;
@@ -68,6 +66,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
+	private OutboundType outboundType;
 	private DeliveryRequestStatus status = DeliveryRequestStatus.EDITED;
 
 	private User requester;
@@ -232,7 +231,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	// c1
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, //
-			InboundType inboundType, Boolean isForReturn, Boolean isForTransfer, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
+			InboundType inboundType, OutboundType outboundType, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
 			Date neededDeliveryDate, String returnReason, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName,
 			Warehouse warehouse, //
 			String destinationProjectName, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
@@ -245,8 +244,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.project = project;
 		this.type = type;
 		this.inboundType = inboundType;
-		this.isForReturn = isForReturn;
-		this.isForTransfer = isForTransfer;
+		this.outboundType = outboundType;
 		this.sdm = sdm;
 		this.status = status;
 		this.referenceNumber = referenceNumber;
@@ -413,8 +411,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void copyFromTemplate(DeliveryRequest template) {
 		this.type = template.getType();
-		this.isForReturn = template.getIsForReturn();
-		this.isForTransfer = template.getIsForTransfer();
+		this.outboundType = template.getOutboundType();
 		this.inboundType = template.getInboundType();
 		this.project = template.getProject();
 		this.destinationProject = template.getDestinationProject();
@@ -507,6 +504,16 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public String getQrLink() {
 		return App.QR.getLink() + "/dn/" + id + "/" + qrKey;
+	}
+	
+	@Transient
+	public Boolean getIsTransfer() {
+		return OutboundType.TRANSFER.equals(outboundType);
+	}
+	
+	@Transient
+	public Boolean getIsPlannedReturn() {
+		return OutboundType.PLANNED_RETURN.equals(outboundType);
 	}
 
 	@Transient // to remove
@@ -606,11 +613,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (getIsInbound())
 			return inboundType.getValue();
 		else if (getIsOutbound())
-			if (isForTransfer)
+			switch (outboundType) {
+			case TRANSFER:
 				return "Transfer to Inbound";
-			else if (isForReturn)
+			case PLANNED_RETURN:
 				return "Planned return (" + returnReason + ")";
-
+			}
 		return null;
 	}
 
@@ -637,16 +645,16 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			company = new Company();
 		company.setId(companyId);
 	}
-	
+
 	@Transient
-	public String getPreferedLocationName(){
-		return preferedLocation!=null?preferedLocation.getName():null;
+	public String getPreferedLocationName() {
+		return preferedLocation != null ? preferedLocation.getName() : null;
 	}
 
 	@Transient
-	public void setPreferedLocationName(String preferedLocationName){
-		if(preferedLocation==null)
-			preferedLocation=new Location();
+	public void setPreferedLocationName(String preferedLocationName) {
+		if (preferedLocation == null)
+			preferedLocation = new Location();
 		preferedLocation.setName(preferedLocationName);
 	}
 
@@ -679,11 +687,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (getIsInbound())
 			return inboundType.getColor();
 		else if (getIsOutbound())
-			if (isForTransfer)
-				return "purple";
-			else if (isForReturn)
-				return "orange";
-
+			return outboundType.getColor();
 		return null;
 	}
 
@@ -785,7 +789,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Boolean getIsOutboundHardwareSwap() {
-		return getIsOutbound() && isForReturn && "Hardware Swap".equals(returnReason);
+		return getIsOutbound() && OutboundType.PLANNED_RETURN.equals(outboundType) && "Hardware Swap".equals(returnReason);
 	}
 
 	@Transient
@@ -1719,7 +1723,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			origin = new Site();
 		origin.setName(originName);
 	}
-	
+
 	@Transient
 	public String getOriginGoogleAddress() {
 		return origin != null ? origin.getGoogleAddress() : null;
@@ -2118,22 +2122,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setDeliverToCompany(Company deliverToCompany) {
 		this.deliverToCompany = deliverToCompany;
-	}
-
-	public Boolean getIsForTransfer() {
-		return isForTransfer;
-	}
-
-	public void setIsForTransfer(Boolean isForTransfer) {
-		this.isForTransfer = isForTransfer;
-	}
-
-	public Boolean getIsForReturn() {
-		return isForReturn;
-	}
-
-	public void setIsForReturn(Boolean isForReturn) {
-		this.isForReturn = isForReturn;
 	}
 
 	@Column(nullable = false)
@@ -2555,6 +2543,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setHavingRunningStock(Boolean havingRunningStock) {
 		this.havingRunningStock = havingRunningStock;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public OutboundType getOutboundType() {
+		return outboundType;
+	}
+
+	public void setOutboundType(OutboundType outboundType) {
+		this.outboundType = outboundType;
 	}
 
 }

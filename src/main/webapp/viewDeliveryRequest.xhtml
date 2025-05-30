@@ -459,12 +459,12 @@
 						</li>
 					</f:subview>
 					<f:subview
-						rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isForTransfer or deliveryRequestView.deliveryRequest.isForReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty())}">
+						rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isTransfer or deliveryRequestView.deliveryRequest.isPlannedReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty())}">
 						<li>
 							<a data-toggle="tab" href="#tab2">
 								<i class="purple ace-icon fa fa-list bigger-120"></i>
-								<h:outputText value=" Transfer Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isForTransfer}" />
-								<h:outputText value=" Return Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isForReturn}" />
+								<h:outputText value=" Transfer Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isTransfer}" />
+								<h:outputText value=" Return Details" styleClass="hidden-xs" rendered="#{deliveryRequestView.deliveryRequest.isPlannedReturn}" />
 							</a>
 						</li>
 					</f:subview>
@@ -866,7 +866,7 @@
 							</div>
 						</f:subview>
 						<f:subview
-							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isForReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty()) }">
+							rendered="#{deliveryRequestView.deliveryRequest.isOutbound and deliveryRequestView.deliveryRequest.date4 != null and (deliveryRequestView.deliveryRequest.isPlannedReturn or !returnedList.isEmpty() or !pendingReturnList.isEmpty()) }">
 							<div class="row">
 								<h4 class="header blue bolder smaller">
 									<i class="fa fa-list blue" />

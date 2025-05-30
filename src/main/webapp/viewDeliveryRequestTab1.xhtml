@@ -143,7 +143,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isForReturn}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isPlannedReturn}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="Planned Return" />
@@ -154,7 +154,7 @@
 						</div>
 					</div>
 				</f:subview>
-				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isForReturn}">
+				<f:subview rendered="#{deliveryRequestView.deliveryRequest.isPlannedReturn}">
 					<div class="profile-info-row">
 						<div class="profile-info-name">
 							<h:outputText value="Planned Return" />
@@ -379,18 +379,6 @@
 						</div>
 					</div>
 				</f:subview>
-				<!-- <f:subview rendered="#{deliveryRequestView.deliveryRequest.isForTransfer}">
-					<div class="profile-info-row">
-						<div class="profile-info-name">
-							<h:outputText value="Transfer status" />
-						</div>
-
-						<div class="profile-info-value">
-							<h:outputText value="#{deliveryRequestView.transferStatus}" />
-							&nbsp;
-						</div>
-					</div>
-				</f:subview> -->
 			</div>
 		</div>
 	</div>

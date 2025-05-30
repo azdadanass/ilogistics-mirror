@@ -1952,6 +1952,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setOriginPhone(dn.getOrigin().getPhone());
 			dnm.setOriginPhoto(erp);
 			dnm.setOriginPhoto(Public.getPublicUrl(dn.getOrigin().getUser().getPhoto()));
+			dnm.setOriginLongitude(dn.getOrigin().getLongitude());
+			dnm.setOriginLatitude(dn.getOrigin().getLatitude());;
 		}
 		if (dn.getDestination() != null) {
 			dnm.setDestinationAddress(dn.getDestination().getGoogleAddress());
@@ -1959,6 +1961,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setDestinationPhone(dn.getDestination().getPhone());
 			dnm.setDestinationPhoto(erp);
 			dnm.setDestinationPhoto(Public.getPublicUrl(dn.getDestination().getUser().getPhoto()));
+			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
+			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
 		}
 		dnm.setNumberOfItems(dn.getNumberOfItems());
 		dnm.setGrossWeight(dn.getGrossWeight());
@@ -2724,6 +2728,31 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 		return mobileList;
 	}
+	
+	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnByDnIdAndPn(int dnId, String partNumberName) {
+	    List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(dnId);
+	    List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
+
+	    for (DeliveryRequestSerialNumber sn : list) {
+	        String pnName = sn.getPackingDetail().getParent().getPartNumber().getName();
+	        if (pnName != null && pnName.equalsIgnoreCase(partNumberName)) {
+	            mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(
+	                sn.getId(),
+	                sn.getPackingDetail().getParent().getName(),
+	                pnName,
+	                sn.getSerialNumber(),
+	                sn.getPackingDetail().getParent().getPartNumber().getImage(),
+	                sn.getPackingDetail().getSnType(),
+	                sn.getPackingNumero(),
+	                sn.getInboundStockRow().getStatusValue(),
+	                sn.getInboundStockRow().getLocation().getName()
+	            ));
+	        }
+	    }
+
+	    return mobileList;
+	}
+
 	
 	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnStock(Integer id) {
 		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);

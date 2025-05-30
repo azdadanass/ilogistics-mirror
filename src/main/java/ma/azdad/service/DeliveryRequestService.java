@@ -1950,16 +1950,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());
 			dnm.setOriginOwner(dn.getOrigin().getOwnerName());
 			dnm.setOriginPhone(dn.getOrigin().getPhone());
-			dnm.setOriginPhoto(erp);
 			dnm.setOriginPhoto(Public.getPublicUrl(dn.getOrigin().getUser().getPhoto()));
 			dnm.setOriginLongitude(dn.getOrigin().getLongitude());
-			dnm.setOriginLatitude(dn.getOrigin().getLatitude());;
+			dnm.setOriginLatitude(dn.getOrigin().getLatitude());
 		}
 		if (dn.getDestination() != null) {
 			dnm.setDestinationAddress(dn.getDestination().getGoogleAddress());
 			dnm.setDestinationOwner(dn.getDestination().getOwnerName());
 			dnm.setDestinationPhone(dn.getDestination().getPhone());
-			dnm.setDestinationPhoto(erp);
 			dnm.setDestinationPhoto(Public.getPublicUrl(dn.getDestination().getUser().getPhoto()));
 			dnm.setDestinationLongitude(dn.getDestination().getLongitude());
 			dnm.setDestinationLatitude(dn.getDestination().getLatitude());

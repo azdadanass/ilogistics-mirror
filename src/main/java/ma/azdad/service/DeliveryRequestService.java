@@ -1961,8 +1961,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setDestinationPhone(dn.getDestination().getPhone());
 			dnm.setDestinationPhoto(erp);
 			dnm.setDestinationPhoto(Public.getPublicUrl(dn.getDestination().getUser().getPhoto()));
-			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
-			dnm.setDestinationLongitude(dn.getOrigin().getLongitude());
+			dnm.setDestinationLongitude(dn.getDestination().getLongitude());
+			dnm.setDestinationLatitude(dn.getDestination().getLatitude());
 		}
 		dnm.setNumberOfItems(dn.getNumberOfItems());
 		dnm.setGrossWeight(dn.getGrossWeight());

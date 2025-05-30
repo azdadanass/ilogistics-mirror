@@ -815,7 +815,8 @@ public class DeliveryRequestDetailService extends GenericService<Integer, Delive
 		});
 		for (DeliveryRequestSerialNumber sn : potentialSerialNumberList) {
 			potentialSerialNumberListMobile.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getType(), sn.getInboundStockRow().getPartNumberName(), 
-					sn.getSerialNumber(), sn.getInboundStockRow().getPartNumberImage(), null, sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue() , sn.getInboundStockRow().getLocationName()));
+					sn.getSerialNumber(), sn.getInboundStockRow().getPartNumberImage(), null, sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue() , sn.getInboundStockRow().getLocationName(),
+					sn.getLongitude(),sn.getLatitude(),sn.getEntryMode()));
 			
 		}
 		

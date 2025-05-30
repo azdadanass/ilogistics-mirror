@@ -32,8 +32,9 @@ public class SerialNumberController {
 	@Autowired
 	TokenService tokenService;
 
-	@GetMapping("/mobile/sn/scan/{key}/{id}/{dnId}/{serial}")
-	public void updateSerialNumber(@PathVariable Integer id,@PathVariable Integer dnId, @PathVariable String serial, @PathVariable String key) {
+	@GetMapping("/mobile/sn/scan/{key}/{id}/{dnId}/{serial}/{longitude}/{latitude}/{entryMode}")
+	public void updateSerialNumber(@PathVariable Integer id,@PathVariable Integer dnId, @PathVariable String serial, 
+			@PathVariable Double longitude,@PathVariable Double latitude,@PathVariable String entryMode,@PathVariable String key) {
 	    Token token = tokenService.getBykey(key);
 	    System.out.println("/mobile/sn/scan/" + id + "/" + serial + "/" + token.getKey());
 
@@ -50,6 +51,9 @@ public class SerialNumberController {
 	    }
 
 	    sn.setSerialNumber(serial);
+	    sn.setLongitude(longitude);
+	    sn.setLatitude(latitude);
+	    sn.setEntryMode(entryMode);
 	    deliveryRequestSerialNumberRepos.save(sn);
 	}
 
@@ -74,7 +78,8 @@ public class SerialNumberController {
 		
 		return new ma.azdad.mobile.model.DeliveryRequestSerialNumber(id, sn.getPackingDetail().getParent().getName(), sn.getPackingDetail().getParent().getPartNumber().getName(),
 				sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),  sn.getPackingDetail().getSnType(),
-				sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue(),sn.getInboundStockRow().getLocation().getName());
+				sn.getPackingNumero(),sn.getInboundStockRow().getStatusValue(),sn.getInboundStockRow().getLocation().getName(),
+				sn.getLongitude(),sn.getLatitude(),sn.getEntryMode());
 		
 
 	}
@@ -88,6 +93,9 @@ public class SerialNumberController {
 		sn.setOutboundDeliveryRequest(null);
 		}else {
 			sn.setSerialNumber(null);
+			sn.setLongitude(null);
+			sn.setLatitude(null);
+			sn.setEntryMode(null);
 		}
 		deliveryRequestSerialNumberRepos.save(sn);
 

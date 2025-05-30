@@ -13,6 +13,9 @@ public class DeliveryRequestSerialNumber {
 	private String serialNumber;
 	private String partNumberImage;
 	private String snType;
+	private Double longitude;
+	private Double latitude;
+	private String entryMode;
 	
 	public DeliveryRequestSerialNumber() {
 		super();
@@ -21,7 +24,7 @@ public class DeliveryRequestSerialNumber {
 	
 	
 	public DeliveryRequestSerialNumber(Integer id, String packingDetail, String partNumber, String serialNumber,String image,String snType,
-			Integer packingNumero,String status,String location) {
+			Integer packingNumero,String status,String location,Double longitude,Double latitude,String entryMode) {
 		super();
 		this.id = id;
 		this.packingDetail = packingDetail;
@@ -32,6 +35,10 @@ public class DeliveryRequestSerialNumber {
 		this.packingNumero = packingNumero;
 		this.status = status;
 		this.location = location;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.entryMode = entryMode;
+
 	}
 	
 	
@@ -107,6 +114,44 @@ public class DeliveryRequestSerialNumber {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+
+
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+
+
+	public String getEntryMode() {
+		return entryMode;
+	}
+
+
+
+	public void setEntryMode(String entryMode) {
+		this.entryMode = entryMode;
+	}
+	
+	
 	
 	
 	

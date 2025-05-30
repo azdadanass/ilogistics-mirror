@@ -2723,7 +2723,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		for (DeliveryRequestSerialNumber sn : list) {
 			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
 					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
-					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName()));
+					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(),
+					sn.getLongitude(),sn.getLatitude(),sn.getEntryMode()));
 		}
 		return mobileList;
 	}
@@ -2744,7 +2745,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	                sn.getPackingDetail().getSnType(),
 	                sn.getPackingNumero(),
 	                sn.getInboundStockRow().getStatusValue(),
-	                sn.getInboundStockRow().getLocation().getName()
+	                sn.getInboundStockRow().getLocation().getName(),sn.getLongitude(),sn.getLatitude(),
+	                sn.getEntryMode()
 	            ));
 	        }
 	    }
@@ -2760,7 +2762,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		for (DeliveryRequestSerialNumber sn : list1) {
 			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
 					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
-					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName()));
+					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(),
+					sn.getLongitude(),sn.getLatitude(),sn.getEntryMode()));
 		}
 		return mobileList;
 	}

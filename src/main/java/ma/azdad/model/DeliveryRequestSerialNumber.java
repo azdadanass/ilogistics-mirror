@@ -29,6 +29,11 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	private DeliveryRequest tmpInboundDeliveryRequest;
 	private Location tmpLocation;
 	private StockRowStatus tmpStockRowStatus;
+	
+	//sn mobile infos
+	private Double longitude;
+	private Double latitude;
+	private String entryMode ;
 
 	public void init() {
 		if (inboundStockRow != null) {
@@ -232,6 +237,8 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	public void setBox(String box) {
 		this.box = box;
 	}
+	
+	
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	public PackingDetail getPackingDetail() {
@@ -307,4 +314,30 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getEntryMode() {
+		return entryMode;
+	}
+
+	public void setEntryMode(String entryMode) {
+		this.entryMode = entryMode;
+	}
+	
+	
 }

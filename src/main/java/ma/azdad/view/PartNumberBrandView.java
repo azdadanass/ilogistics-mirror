@@ -80,8 +80,8 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 
 	@Override
 	public void refreshList() {
-		if (isListPage)
-			list2 = list1 = brandService.findAll();
+		if(isPage("partNumberConfiguration"))
+			initLists(service.findAll());
 	}
 
 	public void flushBrand() {
@@ -108,12 +108,7 @@ public class PartNumberBrandView extends GenericView<Integer, PartNumberBrand, P
 
 	// SAVE BRAND
 	public Boolean canSaveBrand() {
-		if (isListPage || isAddPage)
-			return sessionView.getIsAdmin();
-		else if (isViewPage || isEditPage)
-			return sessionView.getIsAdmin();
-		;
-		return false;
+		return sessionView.getIsAdmin();
 	}
 
 	public String saveBrand() {

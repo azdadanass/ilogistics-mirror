@@ -89,26 +89,18 @@
 								</f:subview>
 								<f:subview rendered="#{sessionView.isAdmin}">
 									<li>
+										<h:outputLink value="partNumberConfiguration.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-gears bigger-130 orange" style="margin-right: 10px" />
+											<h:outputText value="PN Config" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
 										<h:outputLink value="warehouseList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-home bigger-130 blue" style="margin-right: 10px" />
 											<h:outputText value="Warehouse List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="partNumberBrandList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-tag bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Brand List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="partNumberConfiguration.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-tag bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="pnc List" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>

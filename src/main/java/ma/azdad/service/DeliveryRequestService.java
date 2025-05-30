@@ -75,6 +75,7 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.OutboundType;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
@@ -1808,8 +1809,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return deliveryRequestRepos.countByMissingExpiry(warehouseList);
 	}
 
-	public void updateIsForTransfer(Integer id, Boolean isForTransfer) {
-		deliveryRequestRepos.updateIsForTransfer(id, isForTransfer);
+	public void updateOutboundType(Integer id, OutboundType outboundType) {
+		deliveryRequestRepos.updateOutboundType(id, outboundType);
 		evictCache();
 	}
 

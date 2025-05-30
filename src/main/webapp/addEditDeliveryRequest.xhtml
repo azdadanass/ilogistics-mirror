@@ -109,48 +109,26 @@
 												rendered="#{deliveryRequestView.isAddPage and deliveryRequestView.templateId==null and deliveryRequestView.outboundDeliveryRequestId==null}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{DeliveryRequestType.ALL_ENUM_VALUES}" />
-												<p:ajax listener="#{deliveryRequestView.changeTypeListener()}" update="warehouse,project,destinationProject,inboundType,isForTransfer,isForReturn,po,sdm" />
+												<p:ajax listener="#{deliveryRequestView.changeTypeListener()}" update="warehouse,project,destinationProject,inboundType,outboundType,po,sdm" />
 											</h:selectOneMenu>
 											<br />
 										</div>
 									</div>
 								</div>
-								<h:panelGroup id="isForTransfer">
+								<h:panelGroup id="outboundType">
 									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
 										<div class="space-8" />
 										<div class="row">
 											<div class="col-xs-12 col-sm-3">
 												<label class="control-label pull-right">
-													<h:outputText value="For Transfer " />
+													<h:outputText value="Outbound Type " />
 												</label>
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForTransfer}" required="true" requiredMessage="is for transfer field should not be null" styleClass="col-xs-12 col-sm-6">
-														<f:selectItem itemLabel="No" itemValue="false" />
-														<f:selectItem itemLabel="Yes" itemValue="true" />
-													</h:selectOneMenu>
-													<br />
-												</div>
-											</div>
-										</div>
-									</f:subview>
-								</h:panelGroup>
-								<h:panelGroup id="isForReturn">
-									<f:subview rendered="#{deliveryRequestView.deliveryRequest.isOutbound}">
-										<div class="space-8" />
-										<div class="row">
-											<div class="col-xs-12 col-sm-3">
-												<label class="control-label pull-right">
-													<h:outputText value="Planned Return " />
-												</label>
-											</div>
-											<div class="col-xs-12 col-sm-9">
-												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.isForReturn}" required="true" requiredMessage="is for return field should not be null" styleClass="col-xs-12 col-sm-6">
-														<f:selectItem itemLabel="No" itemValue="false" />
-														<f:selectItem itemLabel="Yes" itemValue="true" />
-														<p:ajax update=":main_form:step1:returnReason" />
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.outboundType}" required="true" requiredMessage="Outbound Type field should not be null" styleClass="col-xs-12 col-sm-6">
+														<f:selectItems value="#{deliveryRequestView.outboundTypeSelectionList}" var="item" itemLabel="#{item.value}" itemValue="#{item}" />
+														<p:ajax listener="#{deliveryRequestView.changeOutboundTypeListener()}" update=":main_form:step1:sdm,:main_form:step1:ism,:main_form:step1:returnReason" />
 													</h:selectOneMenu>
 													<br />
 												</div>
@@ -160,7 +138,7 @@
 								</h:panelGroup>
 								<h:panelGroup id="returnReason">
 									<f:subview
-										rendered="#{deliveryRequestView.deliveryRequest.isForReturn or (deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isForReturn)}">
+										rendered="#{deliveryRequestView.deliveryRequest.isPlannedReturn or (deliveryRequestView.deliveryRequest.isInboundReturn and !deliveryRequestView.deliveryRequest.outboundDeliveryRequestReturn.isPlannedReturn)}">
 										<div class="space-8" />
 										<div class="row">
 											<div class="col-xs-12 col-sm-3">
@@ -180,6 +158,7 @@
 														<f:selectItem itemLabel="Repacking" itemValue="Repacking" />
 														<f:selectItem itemLabel="Hardware Swap" itemValue="Hardware Swap" />
 														<f:selectItem itemLabel="Other" itemValue="Other" />
+														<p:ajax listener="#{deliveryRequestView.changeReturnReasonListener()}" update=":main_form:step1:ism" />
 													</h:selectOneMenu>
 													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.returnReason}" required="true" requiredMessage="return reason field should not be null" styleClass="col-xs-12 col-sm-6"
 														rendered="#{deliveryRequestView.deliveryRequest.isInbound}">
@@ -293,7 +272,8 @@
 														requiredMessage="Destination Project should not be null" rendered="#{deliveryRequestView.isAddPage}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{projectView.findLightOpen()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}" update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm,:main_form:step1:ism" />
+														<p:ajax listener="#{deliveryRequestView.changeDestinationProjectListener()}"
+															update=":main_form:step1:destinationProjectMessage,:main_form:step1:po,:main_form:step1:sdm,:main_form:step1:ism" />
 													</p:selectOneMenu>
 													<br />
 												</div>
@@ -312,7 +292,8 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" required="true" requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.sdm}" disabled="#{deliveryRequestView.deliveryRequest.isTransfer}" required="true"
+														requiredMessage="sdm field should not be null" styleClass="col-xs-12 col-sm-6">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 													</h:selectOneMenu>
@@ -333,7 +314,9 @@
 											</div>
 											<div class="col-xs-12 col-sm-9">
 												<div class="clearfix">
-													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ism}" required="true" requiredMessage="ism field should not be null" styleClass="col-xs-12 col-sm-6">
+													<h:selectOneMenu value="#{deliveryRequestView.deliveryRequest.ism}"
+														disabled="#{deliveryRequestView.deliveryRequest.isTransfer or (deliveryRequestView.deliveryRequest.isPlannedReturn and !deliveryRequestView.deliveryRequest.isOutboundHardwareSwap)}"
+														required="true" requiredMessage="ism field should not be null" styleClass="col-xs-12 col-sm-6">
 														<f:selectItem itemLabel="No" itemValue="false" />
 														<f:selectItem itemLabel="Yes" itemValue="true" />
 													</h:selectOneMenu>

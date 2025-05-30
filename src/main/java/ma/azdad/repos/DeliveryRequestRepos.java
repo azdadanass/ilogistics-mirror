@@ -13,6 +13,7 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.OutboundType;
 import ma.azdad.model.Po;
 import ma.azdad.model.User;
 
@@ -36,7 +37,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
 	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
-	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.isForReturn,a.isForTransfer,a.sdm," //
+	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.outboundType,a.sdm," //
 			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate,a.returnReason," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName
 			+ "," + warehouse + "," + destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + ","
@@ -194,17 +195,17 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByRequester(DeliveryRequestType type, String username, DeliveryRequestStatus status);
 
 	@Query(c1
-			+ " from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id and b.status not in ('REJECTED','CANCELED')) and a.status in (?4)")
+			+ " from DeliveryRequest a where a.type = ?1 and a.outboundType='TRANSFER' and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id and b.status not in ('REJECTED','CANCELED')) and a.status in (?4)")
 	public List<DeliveryRequest> findLightByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username, List<Integer> assignedProjectList,
 			List<DeliveryRequestStatus> status);
 
-	@Query("select count(*)  from DeliveryRequest a where a.type = ?1 and a.isForTransfer = true and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id) and a.status in (?4) ")
+	@Query("select count(*)  from DeliveryRequest a where a.type = ?1 and a.outboundType='TRANSFER' and (a.destinationProject.manager.username = ?2 or a.destinationProject.id in (?3)) and 0 = (select count(*) from DeliveryRequest b where b.outboundDeliveryRequestTransfer.id = a.id) and a.status in (?4) ")
 	public long countByIsForTransferAndDestinationProjectAndNotTransferredAndStatus(DeliveryRequestType type, String username, List<Integer> assignedProjectList, List<DeliveryRequestStatus> status);
 
-	@Query(c1 + " from DeliveryRequest a where a.type = ?1 and a.isForReturn = true and a.isFullyReturned = false and a.requester.username = ?2 and a.status in (?3)")
+	@Query(c1 + " from DeliveryRequest a where a.type = ?1 and a.outboundType = 'PLANNED_RETURN' and a.isFullyReturned = false and a.requester.username = ?2 and a.status in (?3)")
 	public List<DeliveryRequest> findLightByIsForReturnAndNotFullyReturned(DeliveryRequestType type, String username, List<DeliveryRequestStatus> status);
 
-	@Query("select count(*)  from DeliveryRequest a where a.type = ?1 and a.isForReturn = true and a.isFullyReturned = false and a.requester.username = ?2 and a.status in (?3)")
+	@Query("select count(*)  from DeliveryRequest a where a.type = ?1 and a.outboundType = 'PLANNED_RETURN' and a.isFullyReturned = false and a.requester.username = ?2 and a.status in (?3)")
 	public Long countByIsForReturnAndNotFullyReturned(DeliveryRequestType type, String username, List<DeliveryRequestStatus> status);
 
 	@Query(c1
@@ -400,8 +401,8 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public void updateMissingExpiry(Integer id, Boolean missingExpiry);
 
 	@Modifying
-	@Query("update DeliveryRequest set isForTransfer = ?2 where id = ?1")
-	public void updateIsForTransfer(Integer id, Boolean isForTransfer);
+	@Query("update DeliveryRequest set outboundType = ?2 where id = ?1")
+	public void updateOutboundType(Integer id, OutboundType outboundType);
 
 	@Modifying
 	@Query("update DeliveryRequest set requestDate = ?2 where id = ?1")
@@ -473,7 +474,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	// mobile
 
 	String cm1 = "select new ma.azdad.mobile.model.DeliveryRequest(" + "a.id, a.reference, a.type, a.neededDeliveryDate, a.date4, "
-			+ "a.inboundType, a.status, a.isForReturn, a.isForTransfer, a.requester.fullName, " + "a.project.id, a.project.name, "
+			+ "a.inboundType, a.status, a.outboundType, a.requester.fullName, " + "a.project.id, a.project.name, "
 			+ "a.destinationProject.id, (select b.name from Project b where b.id = a.destinationProject.id), " + "a.warehouse.id, a.warehouse.name, "
 			+ "a.destination.id, (select b.name from Site b where b.id = a.destination.id), " + "a.origin.id, (select b.name from Site b where b.id = a.origin.id), "
 			+ "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " + "company.name, supplier.name, customer.name, a.ownerType,a.approximativeStoragePeriod,a.smsRef) " + 

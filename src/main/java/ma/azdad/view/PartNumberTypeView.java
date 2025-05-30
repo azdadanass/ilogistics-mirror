@@ -26,6 +26,9 @@ public class PartNumberTypeView extends GenericView<Integer, PartNumberType, Par
 	private PartNumberTypeService partNumberTypeService;
 
 	@Autowired
+	private PartNumberCategoryView partNumberCategoryView;
+
+	@Autowired
 	private CacheView cacheView;
 
 	private PartNumberType partNumberType = new PartNumberType();
@@ -44,8 +47,9 @@ public class PartNumberTypeView extends GenericView<Integer, PartNumberType, Par
 
 	@Override
 	public void refreshList() {
-		if ("/partNumberConfiguration.xhtml".equals(currentPath))
-			list2 = list1 = partNumberTypeService.findAll();
+		if (isPage("partNumberConfiguration"))
+			if (partNumberCategoryView.getModel() != null)
+				initLists(partNumberTypeService.findByCategory(partNumberCategoryView.getModel().getId()));
 	}
 
 	public void flushPartNumberType() {
@@ -72,6 +76,7 @@ public class PartNumberTypeView extends GenericView<Integer, PartNumberType, Par
 
 	public void initPartNumberType() {
 		partNumberType = new PartNumberType();
+		partNumberType.setCategory(partNumberCategoryView.getModel());
 	}
 
 	// SAVE PARTNUMBERTYPE
@@ -130,4 +135,11 @@ public class PartNumberTypeView extends GenericView<Integer, PartNumberType, Par
 		this.partNumberType = partNumberType;
 	}
 
+	public PartNumberType getModel() {
+		return model;
+	}
+
+	public void setModel(PartNumberType model) {
+		this.model = model;
+	}
 }

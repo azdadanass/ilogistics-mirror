@@ -15,6 +15,7 @@ import ma.azdad.model.DeliveryRequestHistory;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
+import ma.azdad.model.OutboundType;
 import ma.azdad.model.Supplier;
 import ma.azdad.utils.Public;
 
@@ -28,16 +29,14 @@ public class DeliveryRequest {
 	private Date deliveryDate;
 	private InboundType inboundType;
 	private DeliveryRequestStatus status;
-	private Boolean isForReturn = false;
-	private Boolean isForTransfer = false;
+	private OutboundType outboundType;
+
 	private Boolean isSnRequired = false;
 	private Boolean showExpiryData = false;
 	private Boolean showSnData = false;
 	private Integer approximativeStoragePeriod = 0;
 	private String returnReason;
 
-
-	
 	private String ownerName;
 	private Boolean transportationNeeded = false;
 	private String requesterFullName;
@@ -80,7 +79,7 @@ public class DeliveryRequest {
 	private String supplier;
 	private String customer;
 	private CompanyType ownerType;
-	
+
 	private List<ma.azdad.mobile.model.PackingDetail> packingDetailList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.DeliveryRequestDetail> detailList = new ArrayList<>();
 	private List<DeliveryRequestFile> fileList = new ArrayList<>();
@@ -107,14 +106,9 @@ public class DeliveryRequest {
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate,
-			Date date4,
-			InboundType inboundType, DeliveryRequestStatus status, Boolean isForReturn, Boolean isForTransfer,
-			String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId,
-			String destinationProjectName, Integer warehouseId, String warehouseName, Integer destinationId,
-			String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate,
-			Boolean transportationNeeded,Boolean isSnRequired,String company,String supplier,String customer,CompanyType ownerType
-			,Integer approximativeStoragePeriod,String smsRef) {
+	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, Date date4, InboundType inboundType, DeliveryRequestStatus status, OutboundType outboundType, String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId, String destinationProjectName, Integer warehouseId,
+			String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate, Boolean transportationNeeded,
+			Boolean isSnRequired, String company, String supplier, String customer, CompanyType ownerType, Integer approximativeStoragePeriod, String smsRef) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -124,8 +118,7 @@ public class DeliveryRequest {
 		this.approximativeStoragePeriod = approximativeStoragePeriod;
 		this.inboundType = inboundType;
 		this.status = status;
-		this.isForReturn = isForReturn;
-		this.isForTransfer = isForTransfer;
+		this.outboundType = outboundType;
 		this.requesterFullName = requesterFullName;
 		this.projectId = projectId;
 		this.projectName = projectName;
@@ -148,10 +141,9 @@ public class DeliveryRequest {
 		this.customer = customer;
 		this.ownerName = getOwnerName2();
 		this.smsRef = smsRef;
-		
 
 	}
-	
+
 	@Transient
 	public String getOwnerName2() {
 		if (ownerType == null)
@@ -167,14 +159,13 @@ public class DeliveryRequest {
 			return null;
 		}
 	}
-	
+
 	@Transient
 	public String getCustomerName() {
 		if (customer == null)
 			return null;
 		return customer;
 	}
-
 
 	@Transient
 	public String getSupplierName() {
@@ -183,16 +174,12 @@ public class DeliveryRequest {
 		return supplier;
 	}
 
-	
-
 	@Transient
 	public String getCompanyName() {
 		if (company == null)
 			return null;
 		return company;
 	}
-
-	
 
 	public Integer getId() {
 		return id;
@@ -242,20 +229,12 @@ public class DeliveryRequest {
 		this.status = status;
 	}
 
-	public Boolean getIsForReturn() {
-		return isForReturn;
+	public OutboundType getOutboundType() {
+		return outboundType;
 	}
 
-	public void setIsForReturn(Boolean isForReturn) {
-		this.isForReturn = isForReturn;
-	}
-
-	public Boolean getIsForTransfer() {
-		return isForTransfer;
-	}
-
-	public void setIsForTransfer(Boolean isForTransfer) {
-		this.isForTransfer = isForTransfer;
+	public void setOutboundType(OutboundType outboundType) {
+		this.outboundType = outboundType;
 	}
 
 	public String getRequesterFullName() {
@@ -466,7 +445,6 @@ public class DeliveryRequest {
 		this.transportationNeeded = transportationNeeded;
 	}
 
-
 	public String getOwnerName() {
 		return ownerName;
 	}
@@ -659,8 +637,6 @@ public class DeliveryRequest {
 		this.smsRef = smsRef;
 	}
 
-
-
 	public String getDestinationPhone() {
 		return destinationPhone;
 	}
@@ -684,8 +660,6 @@ public class DeliveryRequest {
 	public void setDestinationPhoto(String destinationPhoto) {
 		this.destinationPhoto = destinationPhoto;
 	}
-
-	
 
 	public String getDestinationOwner() {
 		return destinationOwner;
@@ -782,33 +756,5 @@ public class DeliveryRequest {
 	public void setOriginLongitude(Double originLongitude) {
 		this.originLongitude = originLongitude;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

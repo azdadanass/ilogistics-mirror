@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberCategory;
+import ma.azdad.model.PartNumberType;
 import ma.azdad.repos.PartNumberCategoryRepos;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.utils.FacesContextMessages;
@@ -28,6 +29,9 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 	@Autowired
 	private CacheView cacheView;
 
+	@Autowired
+	private PartNumberIndustryView partNumberIndustryView;
+
 	private PartNumberCategory partNumberCategory = new PartNumberCategory();
 
 	@Override
@@ -42,10 +46,10 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 		super.initParameters();
 	}
 
-	@Override
 	public void refreshList() {
-		if ("/partNumberConfiguration.xhtml".equals(currentPath))
-			list2 = list1 = partNumberCategoryService.findAll();
+		if (isPage("partNumberConfiguration"))
+			if (partNumberIndustryView.getModel() != null)
+				initLists(service.findByIndustry(partNumberIndustryView.getModel().getId()));
 	}
 
 	public void flushPartNumberCategory() {
@@ -72,6 +76,7 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 
 	public void initPartNumberCategory() {
 		partNumberCategory = new PartNumberCategory();
+		partNumberCategory.setIndustry(partNumberIndustryView.getModel());
 	}
 
 	// SAVE PARTNUMBERCATEGORY
@@ -128,6 +133,14 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 
 	public void setPartNumberCategory(PartNumberCategory partNumberCategory) {
 		this.partNumberCategory = partNumberCategory;
+	}
+	
+	public PartNumberCategory getModel() {
+		return model;
+	}
+
+	public void setModel(PartNumberCategory model) {
+		this.model = model;
 	}
 
 }

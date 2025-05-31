@@ -1976,9 +1976,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		;
 		dnm.setOwnerName(getOwnerName(dn.getCompanyName(), dn.getCustomerName(), dn.getSupplierName(), dn.getOwnerType()));
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
-		if(dn.getIsOutbound()) {
-			dnm.setReturnReason(dn.getSubType());
-		}
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
 			dnm.getPackingDetailList()

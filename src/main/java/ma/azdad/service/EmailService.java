@@ -92,6 +92,9 @@ public class EmailService {
 	}
 
 	public void sendDeliveryRequestPendingAcknowledgementNotification(DeliveryRequest deliveryRequest) {
+		if(dayoffService.isDayoff(new Date()))
+			return;
+		
 		Date deliveryDate = deliveryRequest.getDate4();
 		Date currentDate = UtilsFunctions.getCurrentDate();
 		Long totalDaysoff = dayoffService.countBetweenDates(deliveryDate, currentDate);

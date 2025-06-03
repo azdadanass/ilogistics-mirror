@@ -12,8 +12,11 @@ import ma.azdad.model.PartNumberClass;
 @Repository
 public interface PackingDetailTypeRepos extends JpaRepository<PackingDetailType, Integer> {
 
+	@Query("from PackingDetailType order by partNumberClass")
+	List<PackingDetailType> find();
+
 	@Query("select count(*) from PackingDetailType where name = ?1 and partNumberClass = ?2")
-	Long countByNameAndClass(String name,PartNumberClass partNumberClass);
+	Long countByNameAndClass(String name, PartNumberClass partNumberClass);
 
 	@Query("select name from PackingDetailType where partNumberClass = ?1 and active is true order by partNumberClass")
 	List<String> findNameListByClassAndActive(PartNumberClass partNumberClass);

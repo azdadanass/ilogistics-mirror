@@ -19,7 +19,7 @@ public class PackingDetailType extends GenericModel<Integer> {
 	private PartNumberClass partNumberClass;
 
 	public boolean filter(String query) {
-		return contains(query, name);
+		return contains(query, name,partNumberClass.getValue());
 	}
 
 	@Transient

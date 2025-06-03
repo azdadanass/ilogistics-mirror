@@ -17,6 +17,11 @@ public class PackingDetailTypeService extends GenericService<Integer, PackingDet
 		return repos.findAll();
 	}
 	
+	@Cacheable("packingDetailTypeService.find")
+	public List<PackingDetailType> find() {
+		return repos.find();
+	}
+	
 	@Cacheable("packingDetailTypeService.findNameListByClassAndActive")
 	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass){
 		return repos.findNameListByClassAndActive(partNumberClass);

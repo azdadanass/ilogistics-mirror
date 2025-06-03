@@ -43,7 +43,7 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 
 	public void refreshList() {
 		if (isPage("partNumberConfiguration"))
-			datatableList = new DatatableList<PackingDetailType>(service.findAll());
+			datatableList = new DatatableList<PackingDetailType>(service.find());
 	}
 
 	// save

@@ -21,4 +21,6 @@ public interface PackingDetailTypeRepos extends JpaRepository<PackingDetailType,
 	@Query("select name from PackingDetailType where partNumberClass = ?1 and active is true order by partNumberClass")
 	List<String> findNameListByClassAndActive(PartNumberClass partNumberClass);
 
+	@Query("select image from PackingDetailType where name = ?1 and partNumberClass = ?2")
+	String findImageByNameAndClass(String name, PartNumberClass partNumberClass);
 }

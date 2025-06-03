@@ -61,25 +61,25 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 		return result;
 	}
 
-	@Transient
-	public String getTypeImage() {
-		switch (type) {
-		case "Pallet":
-			return "/resources/img/pdt/pdt0.png";
-		case "Box":
-			return "/resources/img/pdt/pdt1.png";
-		case "Crate":
-			return "/resources/img/pdt/pdt2.png";
-		case "Reel":
-			return "/resources/img/pdt/pdt3.png";
-		case "Plastic Bag":
-			return "/resources/img/pdt/pdt4.png";
-		case "Plastic Barrel":
-			return "/resources/img/pdt/pdt5.png";
-		default:
-			return null;
-		}
-	}
+//	@Transient
+//	public String getTypeImage() {
+//		switch (type) {
+//		case "Pallet":
+//			return "/resources/img/pdt/pdt0.png";
+//		case "Box":
+//			return "/resources/img/pdt/pdt1.png";
+//		case "Crate":
+//			return "/resources/img/pdt/pdt2.png";
+//		case "Reel":
+//			return "/resources/img/pdt/pdt3.png";
+//		case "Plastic Bag":
+//			return "/resources/img/pdt/pdt4.png";
+//		case "Plastic Barrel":
+//			return "/resources/img/pdt/pdt5.png";
+//		default:
+//			return null;
+//		}
+//	}
 
 	public String getType() {
 		return type;

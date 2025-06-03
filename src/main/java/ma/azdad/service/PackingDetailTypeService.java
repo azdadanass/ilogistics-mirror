@@ -16,14 +16,14 @@ public class PackingDetailTypeService extends GenericService<Integer, PackingDet
 	public List<PackingDetailType> findAll() {
 		return repos.findAll();
 	}
-	
+
 	@Cacheable("packingDetailTypeService.find")
 	public List<PackingDetailType> find() {
 		return repos.find();
 	}
-	
+
 	@Cacheable("packingDetailTypeService.findNameListByClassAndActive")
-	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass){
+	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass) {
 		return repos.findNameListByClassAndActive(partNumberClass);
 	}
 
@@ -31,11 +31,14 @@ public class PackingDetailTypeService extends GenericService<Integer, PackingDet
 		PackingDetailType packingDetailType = super.findOne(id);
 		return packingDetailType;
 	}
-	
-	public Long  countByNameAndClass(String name,PartNumberClass partNumberClass) {
-		return repos.countByNameAndClass(name,partNumberClass);
+
+	public Long countByNameAndClass(String name, PartNumberClass partNumberClass) {
+		return repos.countByNameAndClass(name, partNumberClass);
 	}
-	
-	
+
+	@Cacheable("packingDetailTypeService.findImageByNameAndClass")
+	public String findImageByNameAndClass(String name, PartNumberClass partNumberClass) {
+		return repos.findImageByNameAndClass(name, partNumberClass);
+	}
 
 }

@@ -46,7 +46,9 @@
 							<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="datatable-hidden-overflow table table-striped table-hover center"
 								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 								<p:column headerText="Type" width="30">
-									<img src="#{item.typeImage}" width="10" />
+									<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+										<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.type,packingView.packing.partNumber.partNumberClass)}" />
+									</p:graphicImage>
 								</p:column>
 								<p:column headerText="Type" width="80">
 									<h:outputText value="#{item.type}" rendered="#{!packingView.editMode}" />

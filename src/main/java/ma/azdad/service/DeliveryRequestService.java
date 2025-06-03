@@ -161,6 +161,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
+	
+	@Autowired
+	PackingDetailTypeService packingDetailTypeService;
 
 	@Autowired
 	BoqService boqService;
@@ -1037,7 +1040,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		for (PackingDetail detail : deliveryRequest.getPackingDetailSummaryList()) {
 			try {
-				String imageUrl = detail.getTypeImage(); // Get image URL
+//				String imageUrl = detail.getTypeImage(); // get packing detail type image from table PackingDetailTpe
+				String imageUrl = packingDetailTypeService.findImageByNameAndClass(detail.getType(), detail.getParent().getPartNumber().getPartNumberClass()); // Get image URL
 				if (imageUrl != null && !imageUrl.isEmpty()) {
 					Image partImage = ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com" + imageUrl);
 					partImage.scaleToFit(40, 25); // Scale image size
@@ -1978,8 +1982,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		dnm.setHistoryList(repos.findHistoryListMobile(id));
 		List<PackingDetail> packingList = dn.getPackingDetailSummaryList();
 		for (PackingDetail packingDetail : packingList) {
+			String typeImage = packingDetailTypeService.findImageByNameAndClass(packingDetail.getType(), packingDetail.getParent().getPartNumber().getPartNumberClass());
 			dnm.getPackingDetailList()
-					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), packingDetail.getTypeImage(), packingDetail.getLength(), packingDetail.getWidth(),
+					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), typeImage, packingDetail.getLength(), packingDetail.getWidth(),
 							packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(), packingDetail.getFragile(),
 							packingDetail.getStackable(), packingDetail.getFlammable(), packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(),
 							packingDetail.getStorageHumidity(), packingDetail.getMaxStack(), packingDetail.getHasSerialnumber()));

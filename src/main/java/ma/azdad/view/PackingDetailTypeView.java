@@ -124,6 +124,10 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass){
 		return service.findNameListByClassAndActive(partNumberClass);
 	}
+	
+	public String findImageByNameAndClass(String name, PartNumberClass partNumberClass) {
+		return service.findImageByNameAndClass(name, partNumberClass);
+	}
 
 	// getters & setters
 	public PackingDetailType getModel() {

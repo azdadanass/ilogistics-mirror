@@ -282,7 +282,7 @@
 								<h:outputText value="Industry" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<p:inputText value="#{partNumberTypeView.partNumberType.category.industry.name}" readonly="true"/>
+								<p:inputText value="#{partNumberTypeView.partNumberType.category.industry.name}" readonly="true" />
 							</div>
 						</div>
 					</div>
@@ -292,7 +292,7 @@
 								<h:outputText value="Category" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
-								<p:inputText value="#{partNumberTypeView.partNumberType.category.name}" readonly="true"/>
+								<p:inputText value="#{partNumberTypeView.partNumberType.category.name}" readonly="true" />
 							</div>
 						</div>
 					</div>
@@ -315,6 +315,51 @@
 				<p:commandButton onclick="PF('addTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
 				<p:commandButton action="#{partNumberTypeView.savePartNumberType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()"
 					update=":typeListForm:typeList,:typeListForm:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addPackingDetailTypeForm">
+		<p:dialog widgetVar="addPackingDetailTypeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addPackingDetailTypeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add Type" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Class" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{packingDetailTypeView.model.partNumberClass}" required="true" requiredMessage="Class should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{PartNumberClass.ALL_ENUM_VALUES}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Name" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputText value="#{packingDetailTypeView.model.name}" required="true" requiredMessage="Name should not be null" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addPackingDetailTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{packingDetailTypeView.save()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addPackingDetailTypeDlg').hide()"
+					update=":main_form:packingDetailTypeList,:main_form:messages" />
 			</div>
 		</p:dialog>
 	</h:form>

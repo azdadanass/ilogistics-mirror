@@ -50,25 +50,9 @@
 								</p:column>
 								<p:column headerText="Type" width="80">
 									<h:outputText value="#{item.type}" rendered="#{!packingView.editMode}" />
-									<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isHardware and packingView.editMode}">
+									<h:selectOneMenu value="#{item.type}" rendered="#{packingView.editMode}" style="width:90px">
 										<f:selectItem itemLabel="---" noSelectionOption="true" />
-										<f:selectItem itemLabel="Pallet" itemValue="Pallet" />
-										<f:selectItem itemLabel="Box" itemValue="Box" />
-										<f:selectItem itemLabel="Crate" itemValue="Crate" />
-										<f:selectItem itemLabel="Reel" itemValue="Reel" />
-										<f:selectItem itemLabel="Plastic Bag" itemValue="Plastic Bag" />
-										<f:selectItem itemLabel="Plastic Barrel" itemValue="Plastic Barrel" />
-										<f:selectItem itemLabel="Container" itemValue="Container" />
-									</h:selectOneMenu>
-									<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isSoftware and packingView.editMode}">
-										<f:selectItem itemLabel="---" noSelectionOption="true" />
-										<f:selectItem itemLabel="USB" itemValue="USB" />
-										<f:selectItem itemLabel="CD" itemValue="CD" />
-										<f:selectItem itemLabel="DWLD" itemValue="DWLD" />
-									</h:selectOneMenu>
-									<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isService and packingView.editMode}">
-										<f:selectItem itemLabel="---" noSelectionOption="true" />
-										<f:selectItem itemLabel="SRV" itemValue="SRV" />
+										<f:selectItems value="#{packingDetailTypeView.findNameListByClassAndActive(packingView.packing.partNumber.partNumberClass)}" />
 									</h:selectOneMenu>
 								</p:column>
 								<p:column headerText="Quantity" width="40">
@@ -170,7 +154,8 @@
 										<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{packingView.addDetail()}" rendered="#{packingView.canAddDetail()}" update="main_tab">
 											<i class="fa fa-plus blue" />
 										</p:commandLink>
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{packingView.savePacking()}" rendered="#{packingView.canAddDetail()}" update="main_tab,:viewPackingForm:messages">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{packingView.savePacking()}" rendered="#{packingView.canAddDetail()}"
+											update="main_tab,:viewPackingForm:messages">
 											<i class="fa fa-save green" />
 										</p:commandLink>
 									</div>

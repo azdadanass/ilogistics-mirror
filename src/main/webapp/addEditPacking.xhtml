@@ -99,28 +99,12 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Type" width="100">
-												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isHardware}">
+												<h:selectOneMenu value="#{item.type}" style="width:90px" >
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItem itemLabel="Pallet" itemValue="Pallet" />
-													<f:selectItem itemLabel="Box" itemValue="Box" />
-													<f:selectItem itemLabel="Crate" itemValue="Crate" />
-													<f:selectItem itemLabel="Reel" itemValue="Reel" />
-													<f:selectItem itemLabel="Plastic Bag" itemValue="Plastic Bag" />
-													<f:selectItem itemLabel="Plastic Barrel" itemValue="Plastic Barrel" />
-													<f:selectItem itemLabel="Container" itemValue="Container" />
-												</h:selectOneMenu>
-												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isSoftware}">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItem itemLabel="USB" itemValue="USB" />
-													<f:selectItem itemLabel="CD" itemValue="CD" />
-													<f:selectItem itemLabel="DWLD" itemValue="DWLD" />
-												</h:selectOneMenu>
-												<h:selectOneMenu value="#{item.type}" style="width:90px" rendered="#{packingView.packing.partNumber.isService}">
-													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItem itemLabel="SRV" itemValue="SRV" />
+													<f:selectItems value="#{packingDetailTypeView.findNameListByClassAndActive(packingView.packing.partNumber.partNumberClass)}"/>
 												</h:selectOneMenu>
 											</p:column>
 											<p:column headerText="Quantity" width="60">
@@ -133,7 +117,7 @@
 												</p:commandLink>
 											</p:column>
 											<p:column headerText="SN Type" width="50">
-												<h:selectOneMenu value="#{item.snType}" style="width:90px" >
+												<h:selectOneMenu value="#{item.snType}" style="width:90px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="Numeric" itemValue="Numeric" />
 													<f:selectItem itemLabel="Bar Code" itemValue="Bar Code" />
@@ -190,16 +174,14 @@
 											</p:column>
 											<p:column headerText="Actions" width="50">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{packingView.removeDetail(rowIndexVar)}" update="main_tab" process="main_tab"
-														partialSubmit="true">
+													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{packingView.removeDetail(rowIndexVar)}" update="main_tab" process="main_tab" partialSubmit="true">
 														<i class="fa fa-trash-o red bigger-130" />
 													</p:commandLink>
 												</div>
 											</p:column>
 											<f:facet name="footer">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{packingView.addDetail()}" update="main_tab" process="main_tab"
-														partialSubmit="true">
+													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{packingView.addDetail()}" update="main_tab" process="main_tab" partialSubmit="true">
 														<i class="fa fa-plus green" />
 													</p:commandLink>
 												</div>

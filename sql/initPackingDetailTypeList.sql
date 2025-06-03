@@ -1,0 +1,11 @@
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Pallet','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Box','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Crate','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Reel','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Plastic Bag','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Plastic Barrel','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','Container','HW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','USB','SW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','CD','SW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','DWLD','SW');
+INSERT INTO packing_detail_type (active,image,name,part_number_class) VALUES (1,'photos/nopict.jpg','SRV','SRV');

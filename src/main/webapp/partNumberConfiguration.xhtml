@@ -24,6 +24,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.PartNumberClass" var="PartNumberClass" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -64,6 +65,12 @@
 							<h:outputText value=" Brand List" styleClass="hidden-xs" />
 						</a>
 					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4">
+							<i class="orange ace-icon fa fa-dropbox bigger-120"></i>
+							<h:outputText value=" Packing Types" styleClass="hidden-xs" />
+						</a>
+					</li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -95,9 +102,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable value="#{partNumberIndustryView.list2}" rowKey="#{item.id}" id="partNumberIndustryTab" var="item" rows="20"
-											styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-											paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable value="#{partNumberIndustryView.list2}" rowKey="#{item.id}" id="partNumberIndustryTab" var="item" rows="20" styleClass="table table-striped table-hover center"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Name">
 												<h:outputText value="#{item.name}" styleClass="bolder blue" />
 											</p:column>
@@ -116,8 +122,8 @@
 											</p:column>
 											<f:facet name="footer">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new industry" action="#{partNumberIndustryView.initPartNumberIndustry()}"
-														oncomplete="PF('addIndustryDlg').show()" update=":addIndustryForm" rendered="#{partNumberIndustryView.canSavePartNumberIndustry()}">
+													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new industry" action="#{partNumberIndustryView.initPartNumberIndustry()}" oncomplete="PF('addIndustryDlg').show()"
+														update=":addIndustryForm" rendered="#{partNumberIndustryView.canSavePartNumberIndustry()}">
 														<i class="fa fa-plus green" />
 													</p:commandLink>
 												</div>
@@ -157,8 +163,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{textView.list2}" rowKey="#{item.id}" id="textTab" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable value="#{textView.list2}" rowKey="#{item.id}" id="textTab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Name">
 											<h:outputText value="#{item.value}" styleClass="bolder purple" />
 										</p:column>
@@ -172,8 +178,8 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" action="#{textView.initText('partNumber','unitType')}"
-													oncomplete="PF('addTextDlg').show()" update=":addTextForm" rendered="#{textView.canAddText()}">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" action="#{textView.initText('partNumber','unitType')}" oncomplete="PF('addTextDlg').show()"
+													update=":addTextForm" rendered="#{textView.canAddText()}">
 													<i class="fa fa-plus green" />
 												</p:commandLink>
 											</div>
@@ -210,8 +216,8 @@
 								</div>
 							</div>
 							<div class="col-sm-12 col-xs-12 aa-datatable-container">
-								<p:dataTable value="#{partNumberBrandView.list2}" filteredValue="#{partNumberBrandView.list3}" rowKey="#{item.id}" selection="#{partNumberBrandView.list4}" id="brandList"
-									widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								<p:dataTable value="#{partNumberBrandView.list2}" filteredValue="#{partNumberBrandView.list3}" rowKey="#{item.id}" selection="#{partNumberBrandView.list4}" id="brandList" widgetVar="main_tab"
+									var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
 										<img src="#{item.image}" class="img-circle aa-datatable-photo" />
@@ -238,6 +244,71 @@
 											<h:outputLink value="#{partNumberBrandView.addEditPage}" title="Add New Brand" rendered="#{partNumberBrandView.canSaveBrand()}">
 												<i class="fa fa-plus green" />
 											</h:outputLink>
+										</div>
+									</f:facet>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<div class="col-sm-offset-2 col-sm-8">
+							<div class="table-header col-sm-12 col-xs-12">
+								<div class="col-sm-8 col-xs-8">
+									<i class="fa fa-list" />
+									<h:outputText value=" Packing Types" />
+								</div>
+								<div class="col-sm-2 hidden-xs">
+									<div class="action-buttons center">
+										<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+											<img src="/resources/img/xls.png" width="20" height="20" />
+											<p:dataExporter type="xls" target="packingDetailTypeList" fileName="packingDetailTypeList" postProcessor="#{utilsView.excelExportation}" />
+										</h:commandLink>
+									</div>
+								</div>
+								<div class="col-sm-2 col-xs-4">
+									<div class="nav-search minimized">
+										<span class="input-icon">
+											<p:inputText value="#{packingDetailTypeView.datatableList.search}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+												<p:ajax event="keyup" update="packingDetailTypeList" />
+											</p:inputText>
+											<i class="ace-icon fa fa-search nav-search-icon" />
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-xs-12 aa-datatable-container">
+								<p:dataTable id="packingDetailTypeList" value="#{packingDetailTypeView.datatableList.value}" rowKey="#{item.id}" selection="#{packingDetailTypeView.datatableList.selection}"
+									widgetVar="packingDetailTypeList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+									<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
+										<img src="#{item.image}" class="img-circle aa-datatable-photo" />
+									</p:column>
+									<p:column headerText="Name">
+										<h:outputText value="#{item.name}" styleClass="bolder purple" />
+									</p:column>
+									<p:column headerText="Class" width="150">
+										<h:outputText value="#{item.partNumberClass.value}" styleClass="#{item.partNumberClass.color.badge}" />
+									</p:column>
+									<p:column headerText="Status" width="150">
+										<p:commandLink action="#{packingDetailTypeView.toggle()}" update="packingDetailTypeList">
+											<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<f:setPropertyActionListener value="#{item}" target="#{packingDetailTypeView.model}" />
+										</p:commandLink>
+									</p:column>
+									<p:column headerText="Actions" width="200" exportable="false">
+										<div class="action-buttons center">
+											<h:outputLink value="#{packingDetailTypeView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+												<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+												<f:param name="id" value="#{item.id}" />
+											</h:outputLink>
+										</div>
+									</p:column>
+									<f:facet name="footer">
+										<div class="action-buttons center">
+											<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" action="#{packingDetailTypeView.initAdd()}" oncomplete="PF('addPackingDetailTypeDlg').show()"
+												update=":addPackingDetailTypeForm" rendered="#{packingDetailTypeView.canSave()}">
+												<i class="fa fa-plus green" />
+											</p:commandLink>
 										</div>
 									</f:facet>
 								</p:dataTable>

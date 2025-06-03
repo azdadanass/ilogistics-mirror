@@ -114,10 +114,10 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByMissingPo(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, DeliveryRequestType type);
 
 	@Query(c2
-			+ "from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
+			+ "from DeliveryRequest a where a.deliverToCompanyType != 'COMPANY' and a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))  order by a.id desc")
 	List<DeliveryRequest> findByMissingOutboundDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
-	@Query("select count(*) from DeliveryRequest a where a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3))")
+	@Query("select count(*) from DeliveryRequest a where a.deliverToCompanyType != 'COMPANY' and a.missingOutboundDeliveryNote is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.toUser.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")
 	Long countByMissingOutboundDeliveryNoteFile(String username, Collection<Integer> warehouseList, Collection<Integer> projectIdList);
 
 	@Query(c2 + "from DeliveryRequest a where a.missingOutboundDeliveryNote is true and a.deliverToSupplier.id = ?1 and a.project.id in (?2) order by a.id desc")

@@ -115,7 +115,8 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
 		model.setImage(getClassName2() + "/" + file.getName());
 		synchronized (PackingDetailTypeView.class) {
-			model = service.saveAndRefresh(model);
+			model = service.save(model);
+			refreshList();
 		}
 	}
 	

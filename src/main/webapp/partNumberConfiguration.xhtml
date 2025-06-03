@@ -295,12 +295,13 @@
 											<f:setPropertyActionListener value="#{item}" target="#{packingDetailTypeView.model}" />
 										</p:commandLink>
 									</p:column>
-									<p:column headerText="Actions" width="200" exportable="false">
+									<p:column headerText="Actions" width="150" exportable="false">
 										<div class="action-buttons center">
-											<h:outputLink value="#{packingDetailTypeView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
-												<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												<f:param name="id" value="#{item.id}" />
-											</h:outputLink>
+											<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Upload Image"  oncomplete="PF('uploadPackingDetailTypeImageDlg').show()"
+												update=":uploadPackingDetailTypeImageForm" >
+												<i class="fa fa-image orange" />
+												<f:setPropertyActionListener value="#{item}" target="#{packingDetailTypeView.model}" />
+											</p:commandLink>
 										</div>
 									</p:column>
 									<f:facet name="footer">

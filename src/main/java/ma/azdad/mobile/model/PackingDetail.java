@@ -29,7 +29,7 @@ public class PackingDetail {
 			,Integer storageHumidity,Integer maxStack,Boolean hasSerialnumber) {
 		super();
 		this.id = id;
-		this.typeImage = "http://ilogistics.3gcominside.com"+typeImage;
+		this.typeImage = Public.getPublicUrl(typeImage);
 		this.length = length;
 		this.width = width;
 		this.height = height;

@@ -1043,7 +1043,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 //				String imageUrl = detail.getTypeImage(); // get packing detail type image from table PackingDetailTpe
 				String imageUrl = packingDetailTypeService.findImageByNameAndClass(detail.getType(), detail.getParent().getPartNumber().getPartNumberClass()); // Get image URL
 				if (imageUrl != null && !imageUrl.isEmpty()) {
-					Image partImage = ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com" + imageUrl);
+					//Image partImage = ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com" + imageUrl);
+					Image partImage = ImageUtil.getImageFromUrl(Public.getPublicUrl(imageUrl));
 					partImage.scaleToFit(40, 25); // Scale image size
 					PdfPCell imageCell = new PdfPCell(partImage);
 					imageCell.setHorizontalAlignment(Element.ALIGN_CENTER);

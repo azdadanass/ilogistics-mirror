@@ -71,6 +71,10 @@ public class DeliveryRequest {
 	private Boolean toUserInternal;
 	private String toCompany;
 	private String toCompanyLogo;
+	private String toSupplierLogo;
+	private String toCustomerLogo;
+
+
 	//
 	private Integer numberOfItems;
 	private Double grossWeight;
@@ -106,9 +110,10 @@ public class DeliveryRequest {
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, Date date4, InboundType inboundType, DeliveryRequestStatus status, OutboundType outboundType, String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId, String destinationProjectName, Integer warehouseId,
+	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, Date date4, InboundType inboundType, DeliveryRequestStatus status, OutboundType outboundType, String requesterFullName, 
+			Integer projectId, String projectName, Integer destinationProjectId, String destinationProjectName, Integer warehouseId,
 			String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate, Boolean transportationNeeded,
-			Boolean isSnRequired, String company, String supplier, String customer, CompanyType ownerType, Integer approximativeStoragePeriod, String smsRef) {
+			Boolean isSnRequired, String company, String supplier, String customer, CompanyType ownerType, Integer approximativeStoragePeriod, String smsRef,String toCompanyLogo,String toSuplierLogo,String toCustomerLogo) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -141,6 +146,11 @@ public class DeliveryRequest {
 		this.customer = customer;
 		this.ownerName = getOwnerName2();
 		this.smsRef = smsRef;
+		this.toCompanyLogo = Public.getPublicUrl(toCompanyLogo);
+		this.toCustomerLogo = Public.getPublicUrl(toCustomerLogo);
+		this.toSupplierLogo = Public.getPublicUrl(toSuplierLogo);
+
+
 
 	}
 
@@ -756,5 +766,24 @@ public class DeliveryRequest {
 	public void setOriginLongitude(Double originLongitude) {
 		this.originLongitude = originLongitude;
 	}
+
+
+	public String getToSupplierLogo() {
+		return toSupplierLogo;
+	}
+
+	public void setToSupplierLogo(String toSupplierLogo) {
+		this.toSupplierLogo = toSupplierLogo;
+	}
+
+	public String getToCustomerLogo() {
+		return toCustomerLogo;
+	}
+
+	public void setToCustomerLogo(String toCustomerLogo) {
+		this.toCustomerLogo = toCustomerLogo;
+	}
+	
+	
 
 }

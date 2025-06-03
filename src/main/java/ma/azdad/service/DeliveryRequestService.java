@@ -1952,7 +1952,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
 			dnm.setToCompany(dn.getDeliverToEntityName());
-			dnm.setToCompanyLogo(dn.getDeliverToEntityLogo());
+			//dnm.setToCompanyLogo(dn.getDeliverToEntityLogo());
 		}
 		if (dn.getOrigin() != null) {
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());

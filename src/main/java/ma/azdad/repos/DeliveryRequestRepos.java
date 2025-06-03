@@ -26,6 +26,9 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String deliverToCompanyName = "(select b.name from Company b where a.deliverToCompany.id = b.id)";
 	String deliverToCustomerName = "(select b.name from Customer b where a.deliverToCustomer.id = b.id)";
 	String deliverToSupplierName = "(select b.name from Supplier b where a.deliverToSupplier.id = b.id)";
+	String deliverToCompanyLogo = "(select b.logo from Company b where a.deliverToCompany.id = b.id)";
+	String deliverToCustomerLogo = "(select b.logo from Customer b where a.deliverToCustomer.id = b.id)";
+	String deliverToSupplierLogo = "(select b.logo from Supplier b where a.deliverToSupplier.id = b.id)";
 	String toUserFullName = "(select b.fullName from User b where a.toUser.username = b.username)";
 	String originName = "(select b.name from Site b where a.origin.id = b.id)";
 	String destinationName = "(select b.name from Site b where a.destination.id = b.id)";

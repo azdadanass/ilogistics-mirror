@@ -113,7 +113,7 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 
 	public void handleImageUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		model.setImage(getClassName2() + "/" + file.getName());
+		model.setImage("files/"+ getClassName2() + "/" + file.getName());
 		synchronized (PackingDetailTypeView.class) {
 			model = service.save(model);
 			refreshList();

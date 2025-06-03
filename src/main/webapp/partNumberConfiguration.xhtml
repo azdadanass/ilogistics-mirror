@@ -281,7 +281,7 @@
 									widgetVar="packingDetailTypeList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
-										<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+										<p:graphicImage value="#{fileUploadView.stream}" width="20">
 											<f:param name="fileName" value="#{item.image}" />
 										</p:graphicImage>
 									</p:column>

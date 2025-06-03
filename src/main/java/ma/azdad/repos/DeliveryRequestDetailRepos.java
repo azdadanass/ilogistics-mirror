@@ -89,7 +89,7 @@ public interface DeliveryRequestDetailRepos extends JpaRepository<DeliveryReques
 		    "a.partNumber.description," +
 		    "a.partNumber.unit," +
 		    "a.partNumber.unitType," +
-		    "a.partNumber.brandName," +
+		    "a.partNumber.brandName,a.partNumber.brand.image," +
 		    "a.partNumber.industryName," +
 		    "a.partNumber.categoryName," +
 		    "a.partNumber.typeName," +

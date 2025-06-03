@@ -29,6 +29,7 @@ public class DeliveryRequestDetail {
 	private Boolean unit;
 	private String unitType;
 	private String brandName;
+	private String brandImage;
 	private String industryName;
 	private String categoryName;
 	private String typeName;
@@ -62,7 +63,7 @@ public class DeliveryRequestDetail {
 	// c1
 	public DeliveryRequestDetail(Integer id, Double quantity, Boolean isSerialNumberRequired,Boolean expirable,
 			String packingName,Integer packingId, Double packingQuantity, String partNumberName, String partNumberImage, Double remainingQuantity
-			,String location,StockRowStatus status,String partNumberDescription, Boolean unit, String unitType, String brandName,
+			,String location,StockRowStatus status,String partNumberDescription, Boolean unit, String unitType, String brandName,String brandImage,
 			String industryName, String categoryName, String typeName, Double grossWeight, Double volume,StockRowStatus status2,String location2) {
 		super();
 		this.id = id;
@@ -83,6 +84,7 @@ public class DeliveryRequestDetail {
 		this.unit = unit;
 		this.unitType = unitType;
 		this.brandName = brandName;
+		this.brandImage = Public.getPublicUrl(brandImage);
 		this.industryName = industryName;
 		this.categoryName = categoryName;
 		this.typeName = typeName;
@@ -351,6 +353,18 @@ public class DeliveryRequestDetail {
 
 	public void setTmpRemainingQuantity(Double tmpRemainingQuantity) {
 		this.tmpRemainingQuantity = tmpRemainingQuantity;
+	}
+	
+	
+
+
+	public String getBrandImage() {
+		return brandImage;
+	}
+
+
+	public void setBrandImage(String brandImage) {
+		this.brandImage = brandImage;
 	}
 
 

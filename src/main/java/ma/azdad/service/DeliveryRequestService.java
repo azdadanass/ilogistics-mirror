@@ -1951,6 +1951,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserPhoto(Public.getPublicUrl(dn.getToUser().getPhoto()));
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
+			dnm.setToCompany(dn.getDeliverToCompanyName());
+			dnm.setToCompanyLogo(Public.getPublicUrl(dn.getDeliverToCompanyLogo()));
 		}
 		if (dn.getOrigin() != null) {
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());

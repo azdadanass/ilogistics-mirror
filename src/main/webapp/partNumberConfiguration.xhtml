@@ -281,7 +281,9 @@
 									widgetVar="packingDetailTypeList" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 									<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
-										<img src="#{item.image}" class="img-circle aa-datatable-photo" />
+										<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+											<f:param name="fileName" value="#{item.image)}" />
+										</p:graphicImage>
 									</p:column>
 									<p:column headerText="Name">
 										<h:outputText value="#{item.name}" styleClass="bolder purple" />
@@ -297,8 +299,7 @@
 									</p:column>
 									<p:column headerText="Actions" width="150" exportable="false">
 										<div class="action-buttons center">
-											<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Upload Image"  oncomplete="PF('uploadPackingDetailTypeImageDlg').show()"
-												update=":uploadPackingDetailTypeImageForm" >
+											<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Upload Image" oncomplete="PF('uploadPackingDetailTypeImageDlg').show()" update=":uploadPackingDetailTypeImageForm">
 												<i class="fa fa-image orange" />
 												<f:setPropertyActionListener value="#{item}" target="#{packingDetailTypeView.model}" />
 											</p:commandLink>

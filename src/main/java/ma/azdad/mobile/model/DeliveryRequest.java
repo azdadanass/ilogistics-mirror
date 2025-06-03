@@ -71,8 +71,7 @@ public class DeliveryRequest {
 	private Boolean toUserInternal;
 	private String toCompany;
 	private String toCompanyLogo;
-	private String toSuplierLogo;
-	private String toCustomerLogo;
+
 
 
 	//
@@ -761,22 +760,6 @@ public class DeliveryRequest {
 		this.originLongitude = originLongitude;
 	}
 
-	public String getToSuplierLogo() {
-		return toSuplierLogo;
-	}
-
-	public void setToSuplierLogo(String toSuplierLogo) {
-		this.toSuplierLogo = toSuplierLogo;
-	}
-
-	public String getToCustomerLogo() {
-		return toCustomerLogo;
-	}
-
-	public void setToCustomerLogo(String toCustomerLogo) {
-		this.toCustomerLogo = toCustomerLogo;
-	}
-	
 	
 
 }

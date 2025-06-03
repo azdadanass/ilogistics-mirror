@@ -1982,8 +1982,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserPhoto(Public.getPublicUrl(dn.getToUser().getPhoto()));
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
-			dnm.setToCompany(dn.getDeliverToEntityName());
-			dnm.setToCompanyLogo(findToEntityLogo(dn));
+			
 		}
 		if (dn.getOrigin() != null) {
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());
@@ -2007,7 +2006,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		if (dn.getDeliverToEntityName() != null) {
 			dnm.setToCompany(dn.getDeliverToEntityName());
-			dnm.setToCompanyLogo(dn.getDeliverToCompanyLogo());
+			dnm.setToCompanyLogo(findToEntityLogo(dn));
 		}
 		dnm.setShowExpiryData(dn.showExpiryData());
 		dnm.setShowSnData(showSerialNumber(dn));

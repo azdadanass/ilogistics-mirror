@@ -614,6 +614,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			return inboundType.getValue();
 		else if (getIsOutbound())
 			switch (outboundType) {
+			case NORMAL:
+				return "Normal";
 			case TRANSFER:
 				return "Transfer to Inbound";
 			case PLANNED_RETURN:

@@ -480,8 +480,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 			+ "a.inboundType, a.status, a.outboundType, a.requester.fullName, " + "a.project.id, a.project.name, "
 			+ "a.destinationProject.id, (select b.name from Project b where b.id = a.destinationProject.id), " + "a.warehouse.id, a.warehouse.name, "
 			+ "a.destination.id, (select b.name from Site b where b.id = a.destination.id), " + "a.origin.id, (select b.name from Site b where b.id = a.origin.id), "
-			+ "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " + "company.name, supplier.name, customer.name, a.ownerType,a.approximativeStoragePeriod,a.smsRef,"
-			+ deliverToCompanyLogo + ","+deliverToSupplierLogo+","+deliverToCustomerLogo+ ")" +
+			+ "a.requester.photo, a.deliveryDate, a.transportationNeeded, a.isSnRequired, " + "company.name, supplier.name, customer.name, a.ownerType,a.approximativeStoragePeriod,a.smsRef) " + 
 			"from DeliveryRequest a " + "left join a.company company " + "left join a.supplier supplier " + "left join a.customer customer ";
 
 	@Query(cm1 + "  where a.id = ?1")

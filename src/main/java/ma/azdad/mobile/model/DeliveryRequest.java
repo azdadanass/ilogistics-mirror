@@ -71,7 +71,7 @@ public class DeliveryRequest {
 	private Boolean toUserInternal;
 	private String toCompany;
 	private String toCompanyLogo;
-	private String toSupplierLogo;
+	private String toSuplierLogo;
 	private String toCustomerLogo;
 
 
@@ -110,10 +110,9 @@ public class DeliveryRequest {
 		super();
 	}
 
-	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, Date date4, InboundType inboundType, DeliveryRequestStatus status, OutboundType outboundType, String requesterFullName, 
-			Integer projectId, String projectName, Integer destinationProjectId, String destinationProjectName, Integer warehouseId,
+	public DeliveryRequest(Integer id, String reference, DeliveryRequestType type, Date neededDeliveryDate, Date date4, InboundType inboundType, DeliveryRequestStatus status, OutboundType outboundType, String requesterFullName, Integer projectId, String projectName, Integer destinationProjectId, String destinationProjectName, Integer warehouseId,
 			String warehouseName, Integer destinationId, String destinationName, Integer originId, String originName, String requesterPhoto, Date deliveryDate, Boolean transportationNeeded,
-			Boolean isSnRequired, String company, String supplier, String customer, CompanyType ownerType, Integer approximativeStoragePeriod, String smsRef,String toCompanyLogo,String toSuplierLogo,String toCustomerLogo) {
+			Boolean isSnRequired, String company, String supplier, String customer, CompanyType ownerType, Integer approximativeStoragePeriod, String smsRef) {
 		super();
 		this.id = id;
 		this.reference = reference;
@@ -146,11 +145,6 @@ public class DeliveryRequest {
 		this.customer = customer;
 		this.ownerName = getOwnerName2();
 		this.smsRef = smsRef;
-		this.toCompanyLogo = Public.getPublicUrl(toCompanyLogo);
-		this.toCustomerLogo = Public.getPublicUrl(toCustomerLogo);
-		this.toSupplierLogo = Public.getPublicUrl(toSuplierLogo);
-
-
 
 	}
 
@@ -767,13 +761,12 @@ public class DeliveryRequest {
 		this.originLongitude = originLongitude;
 	}
 
-
-	public String getToSupplierLogo() {
-		return toSupplierLogo;
+	public String getToSuplierLogo() {
+		return toSuplierLogo;
 	}
 
-	public void setToSupplierLogo(String toSupplierLogo) {
-		this.toSupplierLogo = toSupplierLogo;
+	public void setToSuplierLogo(String toSuplierLogo) {
+		this.toSuplierLogo = toSuplierLogo;
 	}
 
 	public String getToCustomerLogo() {

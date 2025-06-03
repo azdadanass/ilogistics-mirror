@@ -108,6 +108,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	DeliveryRequestRepos deliveryRequestRepos;
 
 	@Autowired
+	CompanyService companyService;
+	
+	@Autowired
+	SupplierService supplierService;
+	
+	@Autowired
+	CustomerService customerService;
+
+	@Autowired
 	DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
 
 	@Autowired
@@ -1939,6 +1948,28 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			return null;
 		}
 	}
+	public String findToEntityLogo(DeliveryRequest dn) {
+		
+		try {
+			switch (dn.getDeliverToCompanyType()) {
+			case COMPANY:
+				String logo = companyService.findOne(dn.getDeliverToCompany().getId()).getLogo();
+				return Public.getPublicUrl(logo);
+			case CUSTOMER:
+				String logo2 = customerService.findOne(dn.getDeliverToCustomer().getId()).getPhoto();
+				return Public.getPublicUrl(logo2);
+			case SUPPLIER:
+				String logo3 = supplierService.findOne(dn.getDeliverToSupplier().getId()).getPhoto();
+				return Public.getPublicUrl(logo3);
+			case OTHER:
+				return "";
+			default:
+				return "";
+			}
+		} catch (Exception e) {
+			return "";
+		}
+	}
 
 	public ma.azdad.mobile.model.DeliveryRequest findOneLightMobile(Integer id) {
 		ma.azdad.mobile.model.DeliveryRequest dnm = repos.findOneLightMobile(id);
@@ -1952,7 +1983,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
 			dnm.setToCompany(dn.getDeliverToEntityName());
-			//dnm.setToCompanyLogo(dn.getDeliverToEntityLogo());
+			dnm.setToCompanyLogo(findToEntityLogo(dn));
 		}
 		if (dn.getOrigin() != null) {
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());

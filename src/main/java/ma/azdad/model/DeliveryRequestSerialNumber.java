@@ -68,13 +68,14 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	
 	// c1
 	public DeliveryRequestSerialNumber(Integer id,Integer packingNumero,String serialNumber,String box,//
-			String partNumberName,StockRowStatus inboundStockRowStatus,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference,//
+			String partNumberName,String partNumberDescription,StockRowStatus inboundStockRowStatus,Integer inboundDeliveryRequestId,String inboundDeliveryRequestReference,//
 			String packingDetailType,String locationName) {
 		super(id);
 		this.packingNumero = packingNumero;
 		this.serialNumber = serialNumber;
 		this.box=box;
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberDescription(partNumberDescription);
 		this.setInboundStockRowStatus(inboundStockRowStatus);
 		this.setInboundDeliveryRequestId(inboundDeliveryRequestId);
 		this.setInboundDeliveryRequestReference(inboundDeliveryRequestReference);
@@ -88,7 +89,7 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, serialNumber, box);
+		return contains(query,getPartNumberName(),getPartNumberDescription(), serialNumber, box,getInboundDeliveryRequestReference());
 	}
 	
 	@Transient
@@ -118,6 +119,18 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 		if(inboundStockRow==null)
 			inboundStockRow=new StockRow();
 		inboundStockRow.setPartNumberName(partNumberName);
+	}
+	
+	@Transient
+	public String getPartNumberDescription(){
+		return inboundStockRow!=null?inboundStockRow.getPartNumberDescription():null;
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription){
+		if(inboundStockRow==null)
+			inboundStockRow=new StockRow();
+		inboundStockRow.setPartNumberDescription(partNumberDescription);
 	}
 	
 	@Transient

@@ -614,9 +614,16 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
 											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-											<p:column headerText="PN /Inbound DN / Packing Numero" groupRow="true" width="300" exportable="false">
-												<h:outputText value="#{item.partNumberName} / " styleClass="bolder blue" />
-												<h:outputText value="#{item.inboundDeliveryRequestReference} / " styleClass="bolder green" />
+											<p:column headerText="PN" >
+												<h:outputText value="#{item.partNumberName}" styleClass="bolder purple" />
+											</p:column>
+											<p:column headerText="Description"  >
+												<h:outputText value="#{item.partNumberDescription}" styleClass="aa-cut-text blue" />
+											</p:column>
+											<p:column headerText="Inbound DN"  width="100">
+												<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+											</p:column>
+											<p:column headerText="Packing Numero" width="80">
 												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
 											</p:column>
 											<p:column headerText="Reference" styleClass="hide" rendered="#{!deliveryRequestSerialNumberView.list2.isEmpty()}">
@@ -625,18 +632,18 @@
 											<p:column headerText="Packing Detail">
 												<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
 											</p:column>
-											<p:column headerText="Status" exportable="false">
+											<p:column headerText="Status" width="100">
 												<h:outputText value="#{item.inboundStockRow.status.value}" />
 												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
 											</p:column>
-											<p:column headerText="Location" exportable="false">
+											<p:column headerText="Location" width="100">
 												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
 												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
 											</p:column>
 											<p:column headerText="Serial Number">
 												<h:outputText value="#{item.serialNumber}" styleClass="green bolder" />
 											</p:column>
-											<p:column headerText="Box Id">
+											<p:column headerText="Box Id" width="100">
 												<h:outputText value="#{item.box}" styleClass="orange bolder" />
 											</p:column>
 										</p:dataTable>

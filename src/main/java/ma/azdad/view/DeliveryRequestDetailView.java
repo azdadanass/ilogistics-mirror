@@ -57,7 +57,6 @@ public class DeliveryRequestDetailView extends GenericView<Integer, DeliveryRequ
 	}
 
 	public void initMappingSummary() {
-		System.out.println("initMappingSummary");
 		datatable1 = new DatatableList<DeliveryRequestDetail>(service.findMappingSummary(id));
 	}
 

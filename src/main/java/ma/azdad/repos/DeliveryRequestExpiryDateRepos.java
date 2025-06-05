@@ -48,4 +48,8 @@ public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRe
 	
 	@Query("select new DeliveryRequestExpiryDate(a.stockRow.partNumber.id,a.stockRow.partNumber.name,a.stockRow.partNumber.description,a.stockRow.partNumber.image,sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end),a.expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.inboundDeliveryRequest.id = ?1  group by a.stockRow.inboundDeliveryRequestDetail,a.expiryDate having sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end) > 0")
 	List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId);
+	
+	
+	@Query("select new DeliveryRequestExpiryDate(sum(a.quantity),expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.deliveryRequest.id = ?1 and a.stockRow.partNumber.id = ?2 group by a.expiryDate order by a.expiryDate")
+	List<DeliveryRequestExpiryDate> findByDeliveryRequestAndPartNumberGroupByExpiryDate(Integer deliveryRequestId,Integer partNumberId);
 }

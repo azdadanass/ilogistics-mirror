@@ -213,8 +213,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			}
 		}
 
-		System.out.println("outboundMap");
-		System.out.println(outboundMap);
 
 		for (StockRow stockRow : data) {
 			if (stockRow.getQuantity() > 0) { // inbound
@@ -222,7 +220,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				Double quantity = stockRow.getQuantity();
 				Double outboundQuantity = outboundMap.getOrDefault(key, 0.0);
 
-				System.out.println("key : " + key + "\t" + stockRow.getCreationDate());
 
 				if (quantity >= outboundQuantity) {
 					System.out.println("1");
@@ -285,8 +282,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			}
 		}
 
-		System.out.println("outboundMap");
-		System.out.println(outboundMap);
 
 		for (StockRow stockRow : data) {
 			if (stockRow.getQuantity() > 0) { // inbound
@@ -294,7 +289,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				Double quantity = stockRow.getQuantity();
 				Double outboundQuantity = outboundMap.getOrDefault(key, 0.0);
 
-				System.out.println("key : " + key + "\t" + stockRow.getCreationDate());
 
 				if (quantity >= outboundQuantity) {
 					System.out.println("1");

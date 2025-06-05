@@ -2435,7 +2435,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double mappedQty = mappedQtyMap.getOrDefault(key, 0.0);
 				Double remainingQty = dnQty - returnQty - mappedQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
-					System.out.println("remainingQty : " + remainingQty);
 					pendingJrMapping = true;
 					break;
 				}
@@ -2447,7 +2446,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double dnQty = dnQtyMap.getOrDefault(key, 0.0);
 				Double remainingQty = mappedQty - dnQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
-					System.out.println("remainingQty : " + remainingQty);
 					pendingJrMapping = true;
 					break;
 				}
@@ -2456,9 +2454,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		default:
 			break;
 		}
-		System.out.println(id);
-		System.out.println(pendingJrMapping);
-		System.out.println("-----------------------------------------------------");
 		updatePendingJrMapping(id, pendingJrMapping);
 	}
 
@@ -2524,7 +2519,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double installedQty = installedQtyMap.getOrDefault(key, 0.0);
 				Double remainingQty = dnQty - returnQty - installedQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
-					System.out.println("remainingQty : " + remainingQty);
 					havingRunningStock = true;
 					break;
 				}
@@ -2536,7 +2530,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double dnQty = dnQtyMap.getOrDefault(key, 0.0);
 				Double remainingQty = installedQty - dnQty;
 				if (UtilsFunctions.compareDoubles(remainingQty, 0.0) != 0) {
-					System.out.println("remainingQty : " + remainingQty);
 					havingRunningStock = true;
 					break;
 				}
@@ -2545,9 +2538,6 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		default:
 			break;
 		}
-		System.out.println(id);
-		System.out.println(havingRunningStock);
-		System.out.println("-----------------------------------------------------");
 		updateHavingRunningStock(id, havingRunningStock);
 
 	}

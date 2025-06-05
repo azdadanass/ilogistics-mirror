@@ -33,6 +33,7 @@ import ma.azdad.model.CompanyType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestComment;
 import ma.azdad.model.DeliveryRequestDetail;
+import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.DeliveryRequestFile;
 import ma.azdad.model.DeliveryRequestHistory;
 import ma.azdad.model.DeliveryRequestSerialNumber;
@@ -61,6 +62,7 @@ import ma.azdad.service.CompanyService;
 import ma.azdad.service.CurrencyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.DeliveryRequestDetailService;
+import ma.azdad.service.DeliveryRequestExpiryDateService;
 import ma.azdad.service.DeliveryRequestFileService;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
 import ma.azdad.service.DeliveryRequestService;
@@ -192,6 +194,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	MenuView menuView;
+
+	@Autowired
+	DeliveryRequestExpiryDateService deliveryRequestExpiryDateService;
 
 	@Autowired
 	ProjectAssignmentService projectAssignmentService;
@@ -780,6 +785,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();
 
+			automaticFillExpiryFromOutboundDeliveryRequest();
+
 			if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
 				projectCrossService.addCrossChargeForReturnFromOutbound(deliveryRequest);
 
@@ -845,33 +852,70 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			service.updateMissingSerialNumber(deliveryRequest.getId(), true);
 
 		// automatic fill SN from associated Outbound
-		if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer()) {
-			try {
-				final DeliveryRequest outboundDn = deliveryRequest.getOutboundDeliveryRequestReturn() != null ? deliveryRequest.getOutboundDeliveryRequestReturn()
-						: deliveryRequest.getOutboundDeliveryRequestTransfer();
-				deliveryRequest.getDetailList().stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
-//					Double outboundQuantity = outboundDn.getDetailList().stream().filter(j -> j.getPartNumber().equals(i.getPartNumber())).mapToDouble(j -> j.getQuantity()).sum();
-					Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
-					if (i.getQuantity().equals(outboundQuantity)) {
-						List<DeliveryRequestSerialNumber> drsnList = deliveryRequestSerialNumberService.findByInboundDeliveryRequestDetail(i.getId());
-						List<String> usedSnList = drsnList.stream().filter(j -> !j.getIsEmpty()).map(j -> j.getSerialNumber()).collect(Collectors.toList());
-						List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(),
-								i.getPartNumberId(), usedSnList);
-						drsnList.stream().filter(drsn -> drsn.getIsEmpty()).forEach(drsn -> {
-							DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst().get();
-							drsn.setSerialNumber(outboundDrsn.getSerialNumber());
-							deliveryRequestSerialNumberService.save(drsn);
-							outboundDrsnList.removeIf(j -> j.getId().equals(outboundDrsn.getId()));
-							System.out.println("outboundDrsnList : " + outboundDrsnList);
-						});
-					}
-				});
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		if (deliveryRequest.getIsInboundReturn() || deliveryRequest.getIsInboundTransfer())
+			automaticFillSerialNumberFromOutboundDeliveryRequest();
 
+	}
+
+	private void automaticFillExpiryFromOutboundDeliveryRequest() {
+		try {
+			final DeliveryRequest outboundDn = deliveryRequest.getOutboundDeliveryRequestReturn() != null ? deliveryRequest.getOutboundDeliveryRequestReturn()
+					: deliveryRequest.getOutboundDeliveryRequestTransfer();
+			deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getExpirable()).forEach(i -> {
+				Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
+				if (i.getQuantity().equals(outboundQuantity)) {
+					List<DeliveryRequestExpiryDate> outboundExpiryData = deliveryRequestExpiryDateService.findByDeliveryRequestAndPartNumberGroupByExpiryDate(outboundDn.getId(), i.getPartNumberId());
+					deliveryRequest.getStockRowList().stream().filter(sr -> sr.getPartNumber().equals(i.getPartNumber())).forEach(sr -> {
+						for (DeliveryRequestExpiryDate outboundDred : outboundExpiryData) {
+							if(outboundDred.getQuantity().equals(0.0))
+								continue;
+							if (outboundDred.getQuantity() >= sr.getQuantity()) {
+								DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
+								newDred.setQuantity(sr.getQuantity());
+								newDred.setExpiryDate(outboundDred.getExpiryDate());
+								outboundDred.setQuantity(outboundDred.getQuantity()-newDred.getQuantity());
+								deliveryRequestExpiryDateService.save(newDred);
+								break;
+							}else {
+								DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
+								newDred.setQuantity(outboundDred.getQuantity());
+								newDred.setExpiryDate(outboundDred.getExpiryDate());
+								outboundDred.setQuantity(0.0);
+								deliveryRequestExpiryDateService.save(newDred);
+							}
+
+						}
+					});
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
 
+	private void automaticFillSerialNumberFromOutboundDeliveryRequest() {
+		try {
+			final DeliveryRequest outboundDn = deliveryRequest.getOutboundDeliveryRequestReturn() != null ? deliveryRequest.getOutboundDeliveryRequestReturn()
+					: deliveryRequest.getOutboundDeliveryRequestTransfer();
+			deliveryRequest.getDetailList().stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
+//				Double outboundQuantity = outboundDn.getDetailList().stream().filter(j -> j.getPartNumber().equals(i.getPartNumber())).mapToDouble(j -> j.getQuantity()).sum();
+				Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
+				if (i.getQuantity().equals(outboundQuantity)) {
+					List<DeliveryRequestSerialNumber> drsnList = deliveryRequestSerialNumberService.findByInboundDeliveryRequestDetail(i.getId());
+					List<String> usedSnList = drsnList.stream().filter(j -> !j.getIsEmpty()).map(j -> j.getSerialNumber()).collect(Collectors.toList());
+					List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId(),
+							usedSnList);
+					drsnList.stream().filter(drsn -> drsn.getIsEmpty()).forEach(drsn -> {
+						DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst().get();
+						drsn.setSerialNumber(outboundDrsn.getSerialNumber());
+						deliveryRequestSerialNumberService.save(drsn);
+						outboundDrsnList.removeIf(j -> j.getId().equals(outboundDrsn.getId()));
+					});
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Boolean validateStorageStep2() {

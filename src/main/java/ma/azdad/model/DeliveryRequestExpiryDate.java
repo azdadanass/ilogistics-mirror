@@ -29,6 +29,21 @@ public class DeliveryRequestExpiryDate extends GenericModel<Integer> implements 
 	public DeliveryRequestExpiryDate() {
 		super();
 	}
+	
+	
+
+	public DeliveryRequestExpiryDate(StockRow stockRow) {
+		super();
+		this.stockRow = stockRow;
+	}
+
+
+
+	public DeliveryRequestExpiryDate(Double quantity, Date expiryDate) {
+		super();
+		this.quantity = quantity;
+		this.expiryDate = expiryDate;
+	}
 
 	public DeliveryRequestExpiryDate(Integer partNumberId, String partNumberName, String partNumberDescription, String partNumberImage, Double quantity, Date expiryDate) {
 		this.setPartNumberId(partNumberId);

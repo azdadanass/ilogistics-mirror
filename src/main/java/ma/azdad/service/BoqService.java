@@ -34,7 +34,6 @@ public class BoqService extends GenericService<Integer, Boq, BoqRepos> {
 	}
 
 	public void updateTotalUsedQuantity(Set<Integer> idList) {
-		System.out.println("updateTotalUsedQuantity " + idList);
 		if (idList == null || idList.isEmpty())
 			return;
 		repos.updateTotalUsedQuantity(idList);

@@ -31,9 +31,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View PartNumber" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{partNumberView.partNumber.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{partNumberView.partNumber.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -271,8 +269,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="15" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="currentStock" value="#{stockRowView.list2}" var="item" rows="15" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false" width="120">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -351,8 +349,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="stockHistory" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -446,8 +444,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
-											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="installBase" value="#{jobRequestDeliveryDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 													<f:param name="fileName" value="#{item.partNumberImage}" />
@@ -459,22 +457,28 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
-											<p:column headerText="DN" width="70">
+											<p:column headerText="DN" width="70" exportable="false">
 												<h:outputLink value="viewDeliveryRequest.xhtml">
 													<h:outputText value="#{item.deliveryRequestReference}" styleClass="red" />
 													<f:param name="id" value="#{item.deliveryRequestId}" />
 												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN" styleClass="hide">
+												<h:outputText value="#{item.deliveryRequestReference}" />
 											</p:column>
 											<p:column headerText="Quantity" width="70">
 												<h:outputText value="#{item.installedQuantity}" styleClass=" bolder green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="JR" width="70">
+											<p:column headerText="JR" width="70" exportable="false">
 												<h:outputLink value="viewJobRequest.xhtml" target="blank">
 													<h:outputText value="#{item.jobRequestReference}" styleClass="purple" />
 													<f:param name="id" value="#{item.jobRequestId}" />
 												</h:outputLink>
+											</p:column>
+											<p:column headerText="JR" styleClass="hide">
+												<h:outputText value="#{item.jobRequestReference}" />
 											</p:column>
 											<p:column headerText="Site">
 												<h:outputText value="#{item.siteName}" />
@@ -529,8 +533,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
-											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="teamInventory" value="#{deliveryRequestDetailView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Photo" width="100">
 												<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 													<f:param name="fileName" value="#{item.partNumberImage}" />
@@ -542,11 +546,14 @@
 											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 											</p:column>
-											<p:column headerText="DN" width="70">
+											<p:column headerText="DN" width="70" exportable="false">
 												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
 													<h:outputText value="#{item.tmpDeliveryRequestReference}" styleClass="#{item.tmpDeliveryRequestType.color}" />
 													<f:param name="id" value="#{item.tmpDeliveryRequestId}" />
 												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN" styleClass="hide">
+												<h:outputText value="#{item.tmpDeliveryRequestReference}" />
 											</p:column>
 											<p:column headerText="DN Date" width="80">
 												<h:outputText value="#{item.deliveryRequestDate1}" styleClass="orange">
@@ -612,16 +619,22 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center"
-											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-											<p:column headerText="PN" >
+										<p:dataTable id="currentStockSn" value="#{deliveryRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="PN">
 												<h:outputText value="#{item.partNumberName}" styleClass="bolder purple" />
 											</p:column>
-											<p:column headerText="Description"  >
+											<p:column headerText="Description">
 												<h:outputText value="#{item.partNumberDescription}" styleClass="aa-cut-text blue" />
 											</p:column>
-											<p:column headerText="Inbound DN"  width="100">
-												<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+											<p:column headerText="Inbound DN" width="100" exportable="false">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blnak">
+													<h:outputText value="#{item.inboundDeliveryRequestReference}" styleClass="bolder green" />
+													<f:param name="id" value="#{item.inboundDeliveryRequestId}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Inbound DN" styleClass="hide">
+												<h:outputText value="#{item.inboundDeliveryRequestReference}" />
 											</p:column>
 											<p:column headerText="Packing Numero" width="80">
 												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />

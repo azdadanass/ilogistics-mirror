@@ -864,33 +864,38 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.getDetailList().stream().filter(i -> i.getPartNumber().getExpirable()).forEach(i -> {
 				Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
 				if (i.getQuantity().equals(outboundQuantity)) {
-					List<DeliveryRequestExpiryDate> outboundExpiryData = deliveryRequestExpiryDateService.findByDeliveryRequestAndPartNumberGroupByExpiryDate(outboundDn.getId(), i.getPartNumberId());
-					deliveryRequest.getStockRowList().stream().filter(sr -> sr.getPartNumber().equals(i.getPartNumber())).forEach(sr -> {
-						for (DeliveryRequestExpiryDate outboundDred : outboundExpiryData) {
-							if(outboundDred.getQuantity().equals(0.0))
-								continue;
-							if (outboundDred.getQuantity() >= sr.getQuantity()) {
-								DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
-								newDred.setQuantity(sr.getQuantity());
-								newDred.setExpiryDate(outboundDred.getExpiryDate());
-								outboundDred.setQuantity(outboundDred.getQuantity()-newDred.getQuantity());
-								deliveryRequestExpiryDateService.save(newDred);
-								break;
-							}else {
-								DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
-								newDred.setQuantity(outboundDred.getQuantity());
-								newDred.setExpiryDate(outboundDred.getExpiryDate());
-								outboundDred.setQuantity(0.0);
-								deliveryRequestExpiryDateService.save(newDred);
-							}
+					List<DeliveryRequestExpiryDate> outboundExpiryData = deliveryRequestExpiryDateService
+							.findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(outboundDn.getId(), i.getPartNumberId());
+					deliveryRequest.getStockRowList().stream().filter(sr -> sr.getPartNumber().equals(i.getPartNumber()) && deliveryRequestExpiryDateService.countByStockRow(sr.getId()).equals(0l))
+							.forEach(sr -> {
+								for (DeliveryRequestExpiryDate outboundDred : outboundExpiryData) {
+									if (outboundDred.getQuantity().equals(0.0))
+										continue;
+									if (outboundDred.getQuantity() >= sr.getQuantity()) {
+										DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
+										newDred.setQuantity(sr.getQuantity());
+										newDred.setExpiryDate(outboundDred.getExpiryDate());
+										outboundDred.setQuantity(outboundDred.getQuantity() - newDred.getQuantity());
+										deliveryRequestExpiryDateService.save(newDred);
+										break;
+									} else {
+										DeliveryRequestExpiryDate newDred = new DeliveryRequestExpiryDate(sr);
+										newDred.setQuantity(outboundDred.getQuantity());
+										newDred.setExpiryDate(outboundDred.getExpiryDate());
+										outboundDred.setQuantity(0.0);
+										deliveryRequestExpiryDateService.save(newDred);
+									}
 
-						}
-					});
+								}
+							});
 				}
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		
+		service.calculateMissingExpiry(deliveryRequest.getId());
 	}
 
 	private void automaticFillSerialNumberFromOutboundDeliveryRequest() {

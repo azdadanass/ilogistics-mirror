@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -123,7 +124,11 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 		return repos.findByInboundDeliveryRequest(inboundDeliveryRequestId);
 	}
 	
-	public List<DeliveryRequestExpiryDate> findByDeliveryRequestAndPartNumberGroupByExpiryDate(Integer deliveryRequestId,Integer partNumberId){
-		return repos.findByDeliveryRequestAndPartNumberGroupByExpiryDate(deliveryRequestId, partNumberId);
+	public List<DeliveryRequestExpiryDate> findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(Integer outboundDeliveryRequestId,Integer partNumberId){
+		return repos.findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(outboundDeliveryRequestId, partNumberId);
+	}
+	
+	public Long countByStockRow(Integer stockRowId) {
+		return ObjectUtils.firstNonNull(repos.countByStockRow(stockRowId),0l);
 	}
 }

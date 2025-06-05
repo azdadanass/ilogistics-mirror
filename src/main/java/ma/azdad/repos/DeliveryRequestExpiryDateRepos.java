@@ -9,9 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.DeliveryRequestExpiryDate;
 import ma.azdad.model.DeliveryRequestType;
-import ma.azdad.model.PartNumber;
 import ma.azdad.model.StockRowStatus;
-import ma.azdad.utils.Pair;
 
 @Repository
 public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRequestExpiryDate, Integer> {
@@ -49,7 +47,9 @@ public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRe
 	@Query("select new DeliveryRequestExpiryDate(a.stockRow.partNumber.id,a.stockRow.partNumber.name,a.stockRow.partNumber.description,a.stockRow.partNumber.image,sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end),a.expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.inboundDeliveryRequest.id = ?1  group by a.stockRow.inboundDeliveryRequestDetail,a.expiryDate having sum(case when a.stockRow.deliveryRequest.type = 'INBOUND' then a.quantity else -a.quantity end) > 0")
 	List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId);
 	
+	@Query("select new DeliveryRequestExpiryDate(sum(a.quantity)-coalesce((select sum(b.quantity) from  DeliveryRequestExpiryDate b where (b.stockRow.deliveryRequest.outboundDeliveryRequestReturn.id = ?1 or b.stockRow.deliveryRequest.outboundDeliveryRequestTransfer.id = ?1) and b.stockRow.partNumber.id = ?2 and b.expiryDate = a.expiryDate),0),a.expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.deliveryRequest.id = ?1 and a.stockRow.partNumber.id = ?2 group by a.expiryDate order by a.expiryDate")
+	List<DeliveryRequestExpiryDate> findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(Integer outboundDeliveryRequestId,Integer partNumberId);
 	
-	@Query("select new DeliveryRequestExpiryDate(sum(a.quantity),expiryDate) from DeliveryRequestExpiryDate a where a.stockRow.deliveryRequest.id = ?1 and a.stockRow.partNumber.id = ?2 group by a.expiryDate order by a.expiryDate")
-	List<DeliveryRequestExpiryDate> findByDeliveryRequestAndPartNumberGroupByExpiryDate(Integer deliveryRequestId,Integer partNumberId);
+	@Query("select count(*) from DeliveryRequestExpiryDate where stockRow.id = ?1")
+	Long countByStockRow(Integer stockRowId);
 }

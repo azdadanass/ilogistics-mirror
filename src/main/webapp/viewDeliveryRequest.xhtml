@@ -1934,6 +1934,18 @@
 											<h:outputText value="#{item.box}" styleClass="orange bolder" rendered="#{!deliveryRequestSerialNumberView.editMode}" />
 											<p:inputText value="#{item.box}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
 										</p:column>
+										<p:column headerText="Entry Mode">
+											<h:outputText value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
+										</p:column>
+										<p:column headerText="GPS Coordinates">
+											<div class="action-buttons center">
+												<h:outputLink value="map.xhtml" rendered="#{item.longitude!=null}" target="blank">
+													<i class="fa fa-map-marker blue" />
+													<f:param name="latitude" value="#{item.latitude}" />
+													<f:param name="longitude" value="#{item.longitude}" />
+												</h:outputLink>
+											</div>
+										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
 												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{deliveryRequestSerialNumberView.initEdit(deliveryRequestView.deliveryRequest)}"

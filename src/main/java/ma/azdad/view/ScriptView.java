@@ -188,6 +188,12 @@ public class ScriptView {
 		deliveryRequestService.calculateMissingSerialNumberScript();
 	}
 	
+	public void calculateStorageOverdueScript() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.calculateStorageOverdueScript();
+	}
+	
 	public void clearMissingSerialNumberBacklog() {
 		if (!canExecute)
 			return;

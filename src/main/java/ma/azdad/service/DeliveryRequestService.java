@@ -95,7 +95,6 @@ import ma.azdad.utils.App;
 import ma.azdad.utils.ImageUtil;
 import ma.azdad.utils.PdfHelper;
 import ma.azdad.utils.Public;
-import ma.azdad.view.DeliveryRequestSerialNumberView;
 import ma.azdad.view.DeliveryRequestSerialNumberView.SerialNumberSummary;
 
 @Component
@@ -109,10 +108,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	CompanyService companyService;
-	
+
 	@Autowired
 	SupplierService supplierService;
-	
+
 	@Autowired
 	CustomerService customerService;
 
@@ -170,7 +169,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
-	
+
 	@Autowired
 	PackingDetailTypeService packingDetailTypeService;
 
@@ -377,8 +376,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Long countByIsForReturnAndNotFullyReturned(String username) {
-		return deliveryRequestRepos.countByIsForReturnAndNotFullyReturned(DeliveryRequestType.OUTBOUND, username,
-				Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		return deliveryRequestRepos.countByIsForReturnAndNotFullyReturned(DeliveryRequestType.OUTBOUND, username, Arrays.asList(DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 	}
 
 	public List<DeliveryRequest> findLightByPendingTransportation(String username) {
@@ -405,8 +403,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Cacheable(value = "deliveryRequestService.findLightByWarehouseList")
 	public List<DeliveryRequest> findLightByWarehouseList(List<Integer> warehouseList) {
-		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED),
-				DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightByWarehouseList(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
 	}
 
 	@Cacheable(value = "deliveryRequestService.countByWarehouseList")
@@ -447,18 +444,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		String kindly;
 		switch (deliveryRequest.getStatus()) {
 		case REQUESTED:
-			kindly = "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName()
-					+ " has raised a new delivery request on Ilogistics pending your approval";
+			kindly = "Kindly be informed that the resource " + deliveryRequest.getRequester().getFullName() + " has raised a new delivery request on Ilogistics pending your approval";
 			break;
 		case APPROVED2:
 			kindly = "Kindly be informed that the delivery request below has been <b style='color:green'>Approved</b> for delivery";
 			break;
 		case DELIVRED:
-			kindly = "Kindly be informed that the delivery request below has been delivred " + (deliveryRequest.getIsInbound() ? " to warehouse"
-					: (deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"));
+			kindly = "Kindly be informed that the delivery request below has been delivred "
+					+ (deliveryRequest.getIsInbound() ? " to warehouse" : (deliveryRequest.getDestination() != null ? " to " + deliveryRequest.getDestination().getName() : " to site"));
 		default:
-			kindly = "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>"
-					+ deliveryRequest.getStatus().getValue();
+			kindly = "Kindly be informed that the delivery request below has been <b style='color:" + deliveryRequest.getStatus().getColorCode() + "'>" + deliveryRequest.getStatus().getValue();
 			break;
 		}
 		kindly += "</b> <br/><br/>";
@@ -543,8 +538,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		widgetDiv.addElement(widgetTable);
 		body.addElement(widgetDiv);
 
-		Table table = (Table) new Table()
-				.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
+		Table table = (Table) new Table().setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
 		table.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;");
 
 		String tdStyle1 = "background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;";
@@ -585,8 +579,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		} else if (deliveryRequest.getIsOutbound()) {
 			row = new TR();
 			row.addElement(new TD("Destination Project").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getName() : "").setWidth(tdWidth2)
-					.setStyle(tdStyle2 + ("color: #c6699f")));
+			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + ("color: #c6699f")));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Destination Project Manager").setWidth(tdWidth1).setStyle(tdStyle1));
 			row.addElement(new TD(deliveryRequest.getDestinationProject() != null ? deliveryRequest.getDestinationProject().getManager().getFullName() : "").setWidth(tdWidth2)
@@ -628,12 +621,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		row = new TR();
 		row.addElement(new TD("Transportation Request").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getReference() : "").setWidth(tdWidth2)
-				.setStyle(tdStyle2 + "color:#478fca"));
+		row.addElement(
+				new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getReference() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#478fca"));
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("TR Status").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getStatus().getValue() : "").setWidth(tdWidth2)
-				.setStyle(tdStyle2));
+		row.addElement(new TD(deliveryRequest.getTransportationRequest() != null ? deliveryRequest.getTransportationRequest().getStatus().getValue() : "").setWidth(tdWidth2).setStyle(tdStyle2));
 		table.addElement(row);
 
 		body.addElement(table);
@@ -641,8 +633,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		body.addElement(new H4("Delivery Details").setStyle("color:#478fca;font-size:17px;width:90%;margin:auto;margin-top:30px;margin-bottom:10px"));
 
 		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsXbound()) {
-			table = (Table) new Table()
-					.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
+			table = (Table) new Table().setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
 			table.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;");
 
 			row = new TR();
@@ -650,8 +641,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			row.addElement(new TD(deliveryRequest.getOrigin() != null ? deliveryRequest.getOwnerName() : "").setWidth(tdWidth2).setStyle(tdStyle2));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Needed Delivery Date").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "")
-					.setWidth(tdWidth2).setStyle(tdStyle2 + "color:#a069c3"));
+			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2)
+					.setStyle(tdStyle2 + "color:#a069c3"));
 			table.addElement(row);
 
 			row = new TR();
@@ -678,18 +669,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		body.addElement(new br());
 
 		if (deliveryRequest.getIsOutbound() || deliveryRequest.getIsXbound()) {
-			table = (Table) new Table()
-					.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
+			table = (Table) new Table().setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto;font-family: 'Arial'; font-size: 12px;");
 			table.setStyle("border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;");
 
 			row = new TR();
 			row.addElement(new TD("End Customer").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(
-					new TD(deliveryRequest.getEndCustomer() != null ? deliveryRequest.getEndCustomer().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#ff851d"));
+			row.addElement(new TD(deliveryRequest.getEndCustomer() != null ? deliveryRequest.getEndCustomer().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2 + "color:#ff851d"));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Needed Delivery Date").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "")
-					.setWidth(tdWidth2).setStyle(tdStyle2 + "color:#a069c3"));
+			row.addElement(new TD(deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "").setWidth(tdWidth2)
+					.setStyle(tdStyle2 + "color:#a069c3"));
 
 			table.addElement(row);
 
@@ -706,9 +695,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			row.addElement(new TD(deliveryRequest.getDeliverToEntityName()).setWidth(tdWidth2).setStyle(tdStyle2));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Deliver to").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getToUser() != null
-					? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone()
-					: "").setWidth(tdWidth2).setStyle(tdStyle2));
+			row.addElement(new TD(
+					deliveryRequest.getToUser() != null ? deliveryRequest.getToUser().getFullName() + ", " + deliveryRequest.getToUser().getEmail() + ", " + deliveryRequest.getToUser().getPhone()
+							: "")
+					.setWidth(tdWidth2).setStyle(tdStyle2));
 			table.addElement(row);
 
 			body.addElement(table);
@@ -964,8 +954,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		table3.setSpacingAfter(10f);
 		table3.setWidths(new float[] { 1f, 2f });
 
-		addTableRow(table3, "Needed Delivery Date",
-				deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "");
+		addTableRow(table3, "Needed Delivery Date", deliveryRequest.getNeededDeliveryDate() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getNeededDeliveryDate()) : "");
 		addTableRow(table3, "Delivery Date", deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getDate4()) : "");
 		addTableRow(table3, "Origin Site", safeValue(deliveryRequest.getOriginName()));
 		addTableRow(table3, "Origin Site Address", safeValue(deliveryRequest.getOrigin() != null ? deliveryRequest.getOrigin().getGoogleAddress() : ""));
@@ -1052,7 +1041,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 //				String imageUrl = detail.getTypeImage(); // get packing detail type image from table PackingDetailTpe
 				String imageUrl = packingDetailTypeService.findImageByNameAndClass(detail.getType(), detail.getParent().getPartNumber().getPartNumberClass()); // Get image URL
 				if (imageUrl != null && !imageUrl.isEmpty()) {
-					//Image partImage = ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com" + imageUrl);
+					// Image partImage =
+					// ImageUtil.getImageFromUrl("http://ilogistics.3gcominside.com" + imageUrl);
 					Image partImage = ImageUtil.getImageFromUrl(Public.getPublicUrl(imageUrl));
 					partImage.scaleToFit(40, 25); // Scale image size
 					PdfPCell imageCell = new PdfPCell(partImage);
@@ -1067,8 +1057,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			} catch (Exception e) {
 				packingTable.addCell(createTableCell("Error Loading Image", bodyFont));
 			}
-			packingTable
-					.addCell(createTableCell(safeValue(detail.getLength()) + " m / " + safeValue(detail.getWidth()) + " m / " + safeValue(detail.getHeight()) + " m", bodyFont));
+			packingTable.addCell(createTableCell(safeValue(detail.getLength()) + " m / " + safeValue(detail.getWidth()) + " m / " + safeValue(detail.getHeight()) + " m", bodyFont));
 			packingTable.addCell(createTableCell(safeValue(detail.getGrossWeight()) + " Kg", bodyFont));
 			packingTable.addCell(createTableCell(safeValue(detail.getVolume()) + " m3", bodyFont));
 			packingTable.addCell(createTableCell(String.valueOf(decimalFormat.format(detail.getTmpQuantity())), bodyFont));
@@ -1207,8 +1196,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			document.open();
 
-			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : "
-					+ (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""), titleFont);
+			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " + (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""),
+					titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -1294,8 +1283,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 			document.open();
 
-			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : "
-					+ (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""), titleFont);
+			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " + (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""),
+					titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -1577,13 +1566,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
 		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded()
 				&& (connectedUser.equals(deliveryRequest.getRequester().getUsername()) || connectedUser.equals(deliveryRequest.getProject().getManager().getUsername()))
-				&& deliveryRequest.getTransportationRequest() == null
-				&& !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
+				&& deliveryRequest.getTransportationRequest() == null && !Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED).contains(deliveryRequest.getStatus());
 	}
 
 	public List<DeliveryRequest> findOutboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
-		return deliveryRequestRepos.findOutboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(),
-				DeliveryRequestType.OUTBOUND, Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
+		return deliveryRequestRepos.findOutboundFinancialByCompanyOwner(username, warehouseList, assignedProjectList, companyId, ProjectTypes.STOCK.getValue(), DeliveryRequestType.OUTBOUND,
+				Arrays.asList(DeliveryRequestStatus.REJECTED, DeliveryRequestStatus.CANCELED));
 	}
 
 	public List<DeliveryRequest> findInboundFinancialByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
@@ -1707,8 +1695,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		// Formula & directEquivalence = false
 		deliveryRequest.getBoqMappingList().stream()//
 				.filter(i -> i.getPartNumberEquivalence() != null && !i.getDirectEquivalence()) //
-				.forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getPartNumber(),
-						i.getBoq().getUnitPrice() * i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
+				.forEach(i -> boqPriceMap.put(i.getPartNumberEquivalence().getPartNumber(), i.getBoq().getUnitPrice() * i.getPartNumberEquivalence().getDetailList().get(0).getQuantity()));
 
 		for (DeliveryRequestDetail drd : deliveryRequest.getDetailList()) {
 			Double unitPrice = boqPriceMap.get(drd.getPartNumber());
@@ -1747,8 +1734,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public void updateIsFullyReturnedForExistingOutbound() {
-		deliveryRequestRepos.findOutboundDeliveryRequestReturnIdList()
-				.forEach(i -> updateIsFullyReturned(i, deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(findOne(i))));
+		deliveryRequestRepos.findOutboundDeliveryRequestReturnIdList().forEach(i -> updateIsFullyReturned(i, deliveryRequestDetailService.isOutboundDeliveryRequestFullyReturned(findOne(i))));
 		evictCache();
 	}
 
@@ -1796,7 +1782,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	// deliveryRequestRepos.updateMissingSerialNumber(deliveryRequest.getId(),
 	// deliveryRequest.getMissingSerialNumber());
 	// }
-
+	
+	public void updateStorageOverdue(Integer id, Boolean storageOverdue) {
+		deliveryRequestRepos.updateStorageOverdue(id, storageOverdue);
+		evictCache();
+	}
+	
 	public void updateMissingSerialNumber(Integer id, Boolean missingSerialNumber) {
 		deliveryRequestRepos.updateMissingSerialNumber(id, missingSerialNumber);
 		evictCache();
@@ -1948,8 +1939,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			return null;
 		}
 	}
+
 	public String findToEntityLogo(DeliveryRequest dn) {
-		
+
 		try {
 			switch (dn.getDeliverToCompanyType()) {
 			case COMPANY:
@@ -1982,7 +1974,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			dnm.setToUserPhoto(Public.getPublicUrl(dn.getToUser().getPhoto()));
 			dnm.setToUserCin(dn.getToUserCin());
 			dnm.setToUserInternal(dn.getToUser().getInternal());
-			
+
 		}
 		if (dn.getOrigin() != null) {
 			dnm.setOriginAddress(dn.getOrigin().getGoogleAddress());
@@ -2017,10 +2009,10 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		for (PackingDetail packingDetail : packingList) {
 			String typeImage = packingDetailTypeService.findImageByNameAndClass(packingDetail.getType(), packingDetail.getParent().getPartNumber().getPartNumberClass());
 			dnm.getPackingDetailList()
-					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), typeImage, packingDetail.getLength(), packingDetail.getWidth(),
-							packingDetail.getHeight(), packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(), packingDetail.getFragile(),
-							packingDetail.getStackable(), packingDetail.getFlammable(), packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(),
-							packingDetail.getStorageHumidity(), packingDetail.getMaxStack(), packingDetail.getHasSerialnumber()));
+					.add(new ma.azdad.mobile.model.PackingDetail(packingDetail.getId(), typeImage, packingDetail.getLength(), packingDetail.getWidth(), packingDetail.getHeight(),
+							packingDetail.getTmpQuantity(), packingDetail.getVolume(), packingDetail.getGrossWeight(), packingDetail.getFragile(), packingDetail.getStackable(),
+							packingDetail.getFlammable(), packingDetail.getMinStorageTemperature(), packingDetail.getMinStorageTemperature(), packingDetail.getStorageHumidity(),
+							packingDetail.getMaxStack(), packingDetail.getHasSerialnumber()));
 		}
 
 		List<ma.azdad.mobile.model.DeliveryRequestDetail> mobileDetails = deliveryRequestDetailRepos.findByDeliveryRequestMobile(id);
@@ -2040,32 +2032,32 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 		dnm.setDetailList(mobileDetails);
 		if (dn.getRequester() != null) {
-			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(),
-					dn.getRequester().getLogin(), dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
+			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), dn.getRequester().getLogin(),
+					dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
 			dnm.setDate1(dn.getDate1());
-			dnm.setUser2(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(),
-					dn.getRequester().getLogin(), dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
+			dnm.setUser2(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), dn.getRequester().getLogin(),
+					dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
 			if (dn.getDate2() != null)
 				dnm.setDate2(dn.getDate2());
 		}
 		if (dn.getUser3() != null)
-			dnm.setUser3(new ma.azdad.mobile.model.User(dn.getUser3().getUsername(), dn.getUser3().getFirstName(), dn.getUser3().getLastName(), dn.getUser3().getLogin(),
-					dn.getUser3().getPhoto(), dn.getUser3().getEmail()));
+			dnm.setUser3(new ma.azdad.mobile.model.User(dn.getUser3().getUsername(), dn.getUser3().getFirstName(), dn.getUser3().getLastName(), dn.getUser3().getLogin(), dn.getUser3().getPhoto(),
+					dn.getUser3().getEmail()));
 		if (dn.getDate3() != null)
 			dnm.setDate3(dn.getDate3());
 		if (dn.getUser4() != null)
-			dnm.setUser4(new ma.azdad.mobile.model.User(dn.getUser4().getUsername(), dn.getUser4().getFirstName(), dn.getUser4().getLastName(), dn.getUser4().getLogin(),
-					dn.getUser4().getPhoto(), dn.getUser4().getEmail()));
+			dnm.setUser4(new ma.azdad.mobile.model.User(dn.getUser4().getUsername(), dn.getUser4().getFirstName(), dn.getUser4().getLastName(), dn.getUser4().getLogin(), dn.getUser4().getPhoto(),
+					dn.getUser4().getEmail()));
 		if (dn.getDate4() != null)
 			dnm.setDate4(dn.getDate4());
 		if (dn.getUser5() != null)
-			dnm.setUser5(new ma.azdad.mobile.model.User(dn.getUser5().getUsername(), dn.getUser5().getFirstName(), dn.getUser5().getLastName(), dn.getUser5().getLogin(),
-					dn.getUser5().getPhoto(), dn.getUser5().getEmail()));
+			dnm.setUser5(new ma.azdad.mobile.model.User(dn.getUser5().getUsername(), dn.getUser5().getFirstName(), dn.getUser5().getLastName(), dn.getUser5().getLogin(), dn.getUser5().getPhoto(),
+					dn.getUser5().getEmail()));
 		if (dn.getDate5() != null)
 			dnm.setDate5(dn.getDate5());
 		if (dn.getUser8() != null)
-			dnm.setUser8(new ma.azdad.mobile.model.User(dn.getUser8().getUsername(), dn.getUser8().getFirstName(), dn.getUser8().getLastName(), dn.getUser8().getLogin(),
-					dn.getUser8().getPhoto(), dn.getUser8().getEmail()));
+			dnm.setUser8(new ma.azdad.mobile.model.User(dn.getUser8().getUsername(), dn.getUser8().getFirstName(), dn.getUser8().getLastName(), dn.getUser8().getLogin(), dn.getUser8().getPhoto(),
+					dn.getUser8().getEmail()));
 		if (dn.getDate8() != null)
 			dnm.setDate8(dn.getDate8());
 		return dnm;
@@ -2096,8 +2088,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightNewByWarehouseListMobile(List<Integer> warehouseList) {
 		if (warehouseList.isEmpty())
 			return new ArrayList<>();
-		return deliveryRequestRepos.findLightNewByWarehouseListMobile(warehouseList,
-				Arrays.asList(DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.EDITED), DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.findLightNewByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.EDITED),
+				DeliveryRequestType.XBOUND);
 	}
 
 	public List<ma.azdad.mobile.model.DeliveryRequest> findLightDeliveredByWarehouseListMobile(List<Integer> warehouseList) {
@@ -2125,8 +2117,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Long countByWarehouseListMobile(List<Integer> warehouseList) {
-		return deliveryRequestRepos.countByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED),
-				DeliveryRequestType.XBOUND);
+		return deliveryRequestRepos.countByWarehouseListMobile(warehouseList, Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED), DeliveryRequestType.XBOUND);
 	}
 
 	public Long countByMissingSerialNumberMobile(List<Integer> warehouseList) {
@@ -2208,10 +2199,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			DeliveryRequestDetail detail = deliveryRequestDetailService.findOne(hardwareStatusData.getDetailId());
 			detail.setRemainingQuantity(detail.getRemainingQuantity() - hardwareStatusData.getQuantity());
 			detail = deliveryRequestDetailService.save(detail);
-			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService
-					.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
-			StockRow row = new StockRow(detail, hardwareStatusData.getQuantity(), hardwareStatusData.getQuantity(), detail.getPartNumber(), deliveryRequest, true,
-					deliveryRequest.getOriginNumber(), deliveryRequest, inboundDeliveryRequestDetail, new Date(), detail.getPacking());
+			DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService.findByDeliveryRequestAndPartNumber(deliveryRequest.getId(), detail.getPartNumber().getId()).get(0);
+			StockRow row = new StockRow(detail, hardwareStatusData.getQuantity(), hardwareStatusData.getQuantity(), detail.getPartNumber(), deliveryRequest, true, deliveryRequest.getOriginNumber(),
+					deliveryRequest, inboundDeliveryRequestDetail, new Date(), detail.getPacking());
 			if (category.equals("Normal")) {
 				row.setState(StockRowState.NORMAL);
 			} else {
@@ -2301,10 +2291,11 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			for (PackingDetail packingDetail : inboundStockRow.getPacking().getDetailList()) {
 				if (!packingDetail.getHasSerialnumber())
 					continue;
-				if(deliveryRequestSerialNumberService.countByInboundStockRow(stockRowId)>0)
+				if (deliveryRequestSerialNumberService.countByInboundStockRow(stockRowId) > 0)
 					continue;
 				// case partially delivered --> maxPackingNumero > 0
-				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(inboundStockRow.getDeliveryRequestDetail().getId(),packingDetail.getId()),0);
+				Integer maxPackingNumero = ObjectUtils.firstNonNull(deliveryRequestSerialNumberService.findMaxPackingNumero(inboundStockRow.getDeliveryRequestDetail().getId(), packingDetail.getId()),
+						0);
 				map.putIfAbsent(inboundStockRow.getPartNumber().getId() + ";" + packingDetail.getId(), maxPackingNumero);
 				int packingQuantity = (int) (inboundStockRow.getQuantity() / packingDetail.getParent().getQuantity());
 				int n = packingDetail.getQuantity();
@@ -2330,16 +2321,15 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 					Double outboundQuantity = deliveryRequestDetailService.findQuantityByDeliveryRequestAndPartNumber(outboundDn.getId(), i.getPartNumberId());
 					if (i.getQuantity().equals(outboundQuantity)) {
 						List<DeliveryRequestSerialNumber> drsnList = deliveryRequestSerialNumberService.findByInboundDeliveryRequestDetail(i.getId());
-						List<String> usedSnList = drsnList.stream().filter(j->!j.getIsEmpty()).map(j->j.getSerialNumber()).collect(Collectors.toList());
+						List<String> usedSnList = drsnList.stream().filter(j -> !j.getIsEmpty()).map(j -> j.getSerialNumber()).collect(Collectors.toList());
 						List<DeliveryRequestSerialNumber> outboundDrsnList = deliveryRequestSerialNumberService.findNotUsedByOutboundDeliveryRequestAndPartNumber(outboundDn.getId(),
-								i.getPartNumberId(),usedSnList);
-						drsnList.stream().filter(drsn->drsn.getIsEmpty()).forEach(drsn -> {
-							DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst()
-									.get();
+								i.getPartNumberId(), usedSnList);
+						drsnList.stream().filter(drsn -> drsn.getIsEmpty()).forEach(drsn -> {
+							DeliveryRequestSerialNumber outboundDrsn = outboundDrsnList.stream().filter(j -> j.getPackingDetail().equals(drsn.getPackingDetail())).findFirst().get();
 							drsn.setSerialNumber(outboundDrsn.getSerialNumber());
 							deliveryRequestSerialNumberService.save(drsn);
 							outboundDrsnList.removeIf(j -> j.getId().equals(outboundDrsn.getId()));
-							System.out.println("outboundDrsnList : "+outboundDrsnList);
+							System.out.println("outboundDrsnList : " + outboundDrsnList);
 						});
 					}
 				});
@@ -2386,8 +2376,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		Iterator<DeliveryRequestDetail> it = deliveryRequest.getDetailList().iterator();
 		while (it.hasNext()) {
 			DeliveryRequestDetail detail = it.next();
-			Double srQuantity = deliveryRequest.getStockRowList().stream().filter(i -> i.getDeliveryRequestDetail().getId().equals(detail.getId()))
-					.mapToDouble(i -> i.getQuantity()).sum();
+			Double srQuantity = deliveryRequest.getStockRowList().stream().filter(i -> i.getDeliveryRequestDetail().getId().equals(detail.getId())).mapToDouble(i -> i.getQuantity()).sum();
 			detail.setQuantity(srQuantity);
 			detail.setRemainingQuantity(0.0);
 			if (srQuantity.equals(0.0)) {
@@ -2459,6 +2448,20 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	public void calculateHavingRunningStockScript() {
 		repos.findBySdmOrIsmIdlist().forEach(id -> calculateHavingRunningStock(id));
+	}
+	
+	public void calculateStorageOverdueScript() {
+		repos.findIdByStorageOverdueFalseOrNull().forEach(this::calculateStorageOverdue);
+	}
+
+	public void calculateStorageOverdue(Integer id) {
+		DeliveryRequestType dnType = repos.findType(id);
+		if(!DeliveryRequestType.INBOUND.equals(dnType))
+			return;
+		final Integer approximativeStoragePeriod = repos.findApproximativeStoragePeriod(id);
+		List<StockRow> currentStockSituation  = stockRowService.getStockSituationByInboundDeliveryRequest(id);
+		Boolean storageOverdue = currentStockSituation.stream().anyMatch(i->i.getAge()>approximativeStoragePeriod);
+		updateStorageOverdue(id, storageOverdue);
 	}
 
 	// remove all deliveryRequestSerialNumber if inbound totally delivered and 0 sn
@@ -2613,8 +2616,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		DeliveryRequest deliveryRequest = findOne(id);
 		List<ma.azdad.mobile.model.DeliveryRequestFile> list = new ArrayList<>();
 		for (DeliveryRequestFile dnFile : deliveryRequest.getFileList()) {
-			list.add(new ma.azdad.mobile.model.DeliveryRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(),
-					dnFile.getName()));
+			list.add(new ma.azdad.mobile.model.DeliveryRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
 
 		}
 		return list;
@@ -2631,7 +2633,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			return "image/webp";
 		return "image/jpeg"; // default
 	}
-	
+
 	public List<ma.azdad.mobile.model.SerialNumberSummary> findSnSummary(Integer id) {
 		List<SerialNumberSummary> serialNumberSummaryList = new ArrayList<>();
 		List<DeliveryRequestSerialNumber> list1 = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
@@ -2659,8 +2661,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				Double stockRowQuantity = null;
 				switch (deliveryRequest.getType()) {
 				case INBOUND:
-					usedQuantity = (double) list1.stream()
-					.filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId) && i.getPackingDetail().getId().equals(pd.getId()) && StringUtils.isNotBlank(i.getSerialNumber())).count();
+					usedQuantity = (double) list1.stream().filter(i -> i.getInboundStockRow().getDeliveryRequestDetail().getId().equals(inboundDeliveryRequestDetailId)
+							&& i.getPackingDetail().getId().equals(pd.getId()) && StringUtils.isNotBlank(i.getSerialNumber())).count();
 					stockRowQuantity = stockRow.getQuantity();
 					break;
 				case OUTBOUND:
@@ -2677,13 +2679,13 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 		for (String key : map.keySet())
 			serialNumberSummaryList.add(map.get(key));
-		
+
 		List<ma.azdad.mobile.model.SerialNumberSummary> serialNumberSummaryListMobile = new ArrayList<>();
 		for (SerialNumberSummary sum : serialNumberSummaryList) {
-			serialNumberSummaryListMobile.add(new ma.azdad.mobile.model.SerialNumberSummary(sum.getPackingName(), null, sum.getInboundDeliveryRequestReference(), sum.getInboundDeliveryRequestId()
-					, sum.getPartNumberName(), sum.getPartNumberImage(),sum.getQuantity(), sum.getUsedQuantity()));
+			serialNumberSummaryListMobile.add(new ma.azdad.mobile.model.SerialNumberSummary(sum.getPackingName(), null, sum.getInboundDeliveryRequestReference(), sum.getInboundDeliveryRequestId(),
+					sum.getPartNumberName(), sum.getPartNumberImage(), sum.getQuantity(), sum.getUsedQuantity()));
 		}
-		
+
 		return serialNumberSummaryListMobile;
 	}
 
@@ -2697,8 +2699,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			updateMissingExpiry(dn.getId(), false);
 		}
 		if (dn.getIsOutbound()) {
-			Map<Integer, Double> map = list.stream()
-					.collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getStockRowId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
+			Map<Integer, Double> map = list.stream().collect(Collectors.groupingBy(DeliveryRequestExpiryDate::getStockRowId, Collectors.summingDouble(DeliveryRequestExpiryDate::getQuantity)));
 			dn.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable() && -i.getQuantity() > map.getOrDefault(i.getId(), 0.0))
 					.forEach(i -> list.add(new DeliveryRequestExpiryDate(i, true, deliveryRequestExpiryDateService.findOneExpiryDate(i))));
 			list.stream().filter(i -> i.getId() == null).forEach(i -> deliveryRequestExpiryDateService.save(i));
@@ -2709,8 +2710,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		System.out.println("expiry2 size :" + list2.size());
 		List<ma.azdad.mobile.model.DeliveryRequestExpiryDate> mobileList = new ArrayList<>();
 		for (DeliveryRequestExpiryDate e : list2) {
-			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestExpiryDate(e.getId(), e.getStockRowId(), e.getStockRow().getPartNumberImage(),
-					e.getStockRow().getPartNumberName(), e.getStockRow().getLocation().getName(), e.getQuantity(), e.getExpiryDate(), e.getStockRow().getStatusValue()));
+			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestExpiryDate(e.getId(), e.getStockRowId(), e.getStockRow().getPartNumberImage(), e.getStockRow().getPartNumberName(),
+					e.getStockRow().getLocation().getName(), e.getQuantity(), e.getExpiryDate(), e.getStockRow().getStatusValue()));
 		}
 		return mobileList;
 	}
@@ -2746,49 +2747,37 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
 		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
 		for (DeliveryRequestSerialNumber sn : list) {
-			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
-					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
-					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(),
-					sn.getLongitude(),sn.getLatitude(),sn.getEntryMode()));
+			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(), sn.getPackingDetail().getParent().getPartNumber().getName(),
+					sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(), sn.getPackingDetail().getSnType(), sn.getPackingNumero(),
+					sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(), sn.getLongitude(), sn.getLatitude(), sn.getEntryMode()));
 		}
 		return mobileList;
 	}
-	
+
 	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnByDnIdAndPn(int dnId, String partNumberName) {
-	    List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(dnId);
-	    List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
+		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(dnId);
+		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
 
-	    for (DeliveryRequestSerialNumber sn : list) {
-	        String pnName = sn.getPackingDetail().getParent().getPartNumber().getName();
-	        if (pnName != null && pnName.equalsIgnoreCase(partNumberName)) {
-	            mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(
-	                sn.getId(),
-	                sn.getPackingDetail().getParent().getName(),
-	                pnName,
-	                sn.getSerialNumber(),
-	                sn.getPackingDetail().getParent().getPartNumber().getImage(),
-	                sn.getPackingDetail().getSnType(),
-	                sn.getPackingNumero(),
-	                sn.getInboundStockRow().getStatusValue(),
-	                sn.getInboundStockRow().getLocation().getName(),sn.getLongitude(),sn.getLatitude(),
-	                sn.getEntryMode()
-	            ));
-	        }
-	    }
+		for (DeliveryRequestSerialNumber sn : list) {
+			String pnName = sn.getPackingDetail().getParent().getPartNumber().getName();
+			if (pnName != null && pnName.equalsIgnoreCase(partNumberName)) {
+				mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(), pnName, sn.getSerialNumber(),
+						sn.getPackingDetail().getParent().getPartNumber().getImage(), sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(),
+						sn.getInboundStockRow().getLocation().getName(), sn.getLongitude(), sn.getLatitude(), sn.getEntryMode()));
+			}
+		}
 
-	    return mobileList;
+		return mobileList;
 	}
 
-	
 	public List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> findSnStock(Integer id) {
 		List<DeliveryRequestSerialNumber> list = deliveryRequestSerialNumberService.findByDeliveryRequest(id);
 		List<DeliveryRequestSerialNumber> list1 = list.stream().filter(i -> i.getOutboundDeliveryRequest() == null).collect(Collectors.toList());
 		List<ma.azdad.mobile.model.DeliveryRequestSerialNumber> mobileList = new ArrayList<>();
 		for (DeliveryRequestSerialNumber sn : list1) {
-			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(),
-					sn.getPackingDetail().getParent().getPartNumber().getName(), sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(),
-					sn.getPackingDetail().getSnType(), sn.getPackingNumero(), sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(),
-					sn.getLongitude(),sn.getLatitude(),sn.getEntryMode()));
+			mobileList.add(new ma.azdad.mobile.model.DeliveryRequestSerialNumber(sn.getId(), sn.getPackingDetail().getParent().getName(), sn.getPackingDetail().getParent().getPartNumber().getName(),
+					sn.getSerialNumber(), sn.getPackingDetail().getParent().getPartNumber().getImage(), sn.getPackingDetail().getSnType(), sn.getPackingNumero(),
+					sn.getInboundStockRow().getStatusValue(), sn.getInboundStockRow().getLocation().getName(), sn.getLongitude(), sn.getLatitude(), sn.getEntryMode()));
 		}
 		return mobileList;
 	}

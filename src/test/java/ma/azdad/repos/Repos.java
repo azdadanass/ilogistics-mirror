@@ -26,6 +26,7 @@ public class Repos extends GenericTest {
 	@Test
 	@Transactional
 	public void test() throws Exception {
+		deliveryRequestService.calculateStorageOverdue(24509);
 	}
 
 }

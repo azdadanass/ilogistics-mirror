@@ -218,6 +218,7 @@
 							<h:outputText value="Appr Storage Period" />
 						</div>
 						<div class="profile-info-value">
+						<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days" rendered="#{!deliveryRequestView.canUpdateApproximativeStoragePeriod()}"/>
 							<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{deliveryRequestView.canUpdateApproximativeStoragePeriod()}">
 								<h:outputText value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod} Days" rendered="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod!=null}" />
 								<p:inputNumber value="#{deliveryRequestView.deliveryRequest.approximativeStoragePeriod}" />

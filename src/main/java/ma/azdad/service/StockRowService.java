@@ -204,8 +204,6 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 		// key = pn;status;location
 		Map<String, Double> outboundMap = new HashMap<String, Double>();
 		for (StockRow stockRow : data) {
-			System.out.println(stockRow.getPartNumberId());
-			System.out.println(stockRow.getQuantity());
 			if (stockRow.getQuantity() < 0) { // outbound
 				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
 				outboundMap.putIfAbsent(key, 0.0);
@@ -219,14 +217,10 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 				String key = stockRow.getPartNumberId() + ";" + stockRow.getStatus().ordinal() + ";" + stockRow.getLocationId();
 				Double quantity = stockRow.getQuantity();
 				Double outboundQuantity = outboundMap.getOrDefault(key, 0.0);
-
-
 				if (quantity >= outboundQuantity) {
-					System.out.println("1");
 					stockRow.setQuantity(quantity - outboundQuantity);
 					outboundMap.put(key, 0.0);
 				} else {
-					System.out.println("2");
 					stockRow.setQuantity(0.0);
 					outboundMap.put(key, outboundQuantity - stockRow.getQuantity());
 				}
@@ -1272,6 +1266,10 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 
 	public List<Integer> findAssociatedOutboundWithInbound(Integer inboundDeliveryRequestId) {
 		return repos.findAssociatedOutboundWithInbound(inboundDeliveryRequestId);
+	}
+	
+	public List<Integer> findAssociatedInboundWithOutbound(Integer outboundDeliveryRequestId){
+		return repos.findAssociatedInboundWithOutbound(outboundDeliveryRequestId); 
 	}
 
 }

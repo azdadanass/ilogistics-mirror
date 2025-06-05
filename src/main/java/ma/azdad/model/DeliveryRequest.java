@@ -115,6 +115,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private User externalRequester;
 	private Boolean missingSerialNumber = null;
 	private Boolean missingExpiry = null;
+	private Boolean storageOverdue = null;
 
 	private Boolean pendingJrMapping = false;
 	private Boolean havingRunningStock = false;
@@ -505,12 +506,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getQrLink() {
 		return App.QR.getLink() + "/dn/" + id + "/" + qrKey;
 	}
-	
+
 	@Transient
 	public Boolean getIsTransfer() {
 		return OutboundType.TRANSFER.equals(outboundType);
 	}
-	
+
 	@Transient
 	public Boolean getIsPlannedReturn() {
 		return OutboundType.PLANNED_RETURN.equals(outboundType);
@@ -2554,6 +2555,14 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	public void setOutboundType(OutboundType outboundType) {
 		this.outboundType = outboundType;
+	}
+
+	public Boolean getStorageOverdue() {
+		return storageOverdue;
+	}
+
+	public void setStorageOverdue(Boolean storageOverdue) {
+		this.storageOverdue = storageOverdue;
 	}
 
 }

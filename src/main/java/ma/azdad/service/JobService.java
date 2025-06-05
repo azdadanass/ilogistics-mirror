@@ -114,14 +114,19 @@ public class JobService {
 		deliveryRequestService.calculateMissingSerialNumberScript();
 	}
 
-	@Scheduled(cron = "00 40 05 * * *")
+	@Scheduled(cron = "00 45 05 * * *")
 	public void sendDeliveryRequestDeliveryOverdueNotification() {
 		emailService.sendDeliveryRequestDeliveryOverdueNotification();
 	}
 
-	@Scheduled(cron = "00 45 05 * * *")
+	@Scheduled(cron = "00 50 05 * * *")
 	public void sendDeliveryRequestPendingAcknowledgementNotification() {
 		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
+	}
+	
+	@Scheduled(cron = "00 00 06 * * *")
+	public void calculateStorageOverdueScript() {
+		deliveryRequestService.calculateStorageOverdueScript();
 	}
 
 //	@Scheduled(cron = "00 * 01-05 * * *")

@@ -642,6 +642,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
+			
+			
+			// update fields storageOverdue for associated inbounds
+			stockRowService.findAssociatedInboundWithOutbound(deliveryRequest.getId()).forEach(id->{
+				service.calculateStorageOverdue(id);
+			});
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:
@@ -809,6 +815,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
 				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
+			
+			// calculate storage overdue
+			service.calculateStorageOverdue(deliveryRequest.getId());
 
 			return addParameters("viewDeliveryRequest.xhtml", "faces-redirect=true", "id=" + deliveryRequest.getId());
 		default:

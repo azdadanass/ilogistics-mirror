@@ -1938,6 +1938,9 @@
 											<h:outputText value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
 										</p:column>
 										<p:column headerText="GPS Coordinates">
+											<h:outputText value="#{item.latitude},#{item.longitude}" />
+										</p:column>
+										<p:column headerText="Actions">
 											<div class="action-buttons center">
 												<h:outputLink value="map.xhtml" rendered="#{item.longitude!=null}" target="blank">
 													<i class="fa fa-map-marker blue" />

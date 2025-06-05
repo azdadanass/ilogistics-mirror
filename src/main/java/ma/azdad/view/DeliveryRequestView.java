@@ -785,6 +785,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (deliveryRequest.getIsSnRequired())
 				generateSerialNumberList();
 
+			// update is missing expiry
+			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
+				service.updateMissingExpiry(deliveryRequest.getId(), true);
 			automaticFillExpiryFromOutboundDeliveryRequest();
 
 			if (DeliveryRequestStatus.DELIVRED.equals(deliveryRequest.getStatus()))
@@ -803,13 +806,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
-
-//			if (deliveryRequest.getCustomer() != null)
-//				customerService.updateIsStockEmpty(deliveryRequest.getCustomer().getId());
-
-			// update is missing expiry
-			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
-				service.updateMissingExpiry(deliveryRequest.getId(), true);
 
 			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
 				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
@@ -893,8 +889,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		service.calculateMissingExpiry(deliveryRequest.getId());
 	}
 

@@ -494,6 +494,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			case 23:
 				initLists(service.findHavingRunningStock(sessionView.getUsername(), cacheView.getAllProjectList(), DeliveryRequestType.INBOUND, false, true));
 				break;
+			case 24:
+				initLists(service.findLightByStorageOverdue(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList()));
+				break;
 			default:
 				break;
 			}

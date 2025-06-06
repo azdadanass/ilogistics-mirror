@@ -1782,12 +1782,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	// deliveryRequestRepos.updateMissingSerialNumber(deliveryRequest.getId(),
 	// deliveryRequest.getMissingSerialNumber());
 	// }
-	
+
 	public void updateStorageOverdue(Integer id, Boolean storageOverdue) {
 		deliveryRequestRepos.updateStorageOverdue(id, storageOverdue);
 		evictCache();
 	}
-	
+
 	public void updateMissingSerialNumber(Integer id, Boolean missingSerialNumber) {
 		deliveryRequestRepos.updateMissingSerialNumber(id, missingSerialNumber);
 		evictCache();
@@ -1796,6 +1796,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void updateMissingExpiry(Integer id, Boolean missingExpiry) {
 		deliveryRequestRepos.updateMissingExpiry(id, missingExpiry);
 		evictCache();
+	}
+
+	@Cacheable(value = "deliveryRequestService.findLightByStorageOverdue")
+	public List<DeliveryRequest> findLightByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList) {
+		return repos.findLightByStorageOverdue(username, warehouseList, projectList);
+	}
+
+	@Cacheable(value = "deliveryRequestService.countLightByStorageOverdue")
+	public Long countLightByStorageOverdue(String username, List<Integer> warehouseList, List<Integer> projectList) {
+		return repos.countLightByStorageOverdue(username, warehouseList, projectList);
 	}
 
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList) {
@@ -2449,18 +2459,18 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	public void calculateHavingRunningStockScript() {
 		repos.findBySdmOrIsmIdlist().forEach(id -> calculateHavingRunningStock(id));
 	}
-	
+
 	public void calculateStorageOverdueScript() {
 		repos.findIdByStorageOverdueFalseOrNull().forEach(this::calculateStorageOverdue);
 	}
 
 	public void calculateStorageOverdue(Integer id) {
 		DeliveryRequestType dnType = repos.findType(id);
-		if(!DeliveryRequestType.INBOUND.equals(dnType))
+		if (!DeliveryRequestType.INBOUND.equals(dnType))
 			return;
 		final Integer approximativeStoragePeriod = repos.findApproximativeStoragePeriod(id);
-		List<StockRow> currentStockSituation  = stockRowService.getStockSituationByInboundDeliveryRequest(id);
-		Boolean storageOverdue = currentStockSituation.stream().anyMatch(i->i.getAge()>approximativeStoragePeriod);
+		List<StockRow> currentStockSituation = stockRowService.getStockSituationByInboundDeliveryRequest(id);
+		Boolean storageOverdue = currentStockSituation.stream().anyMatch(i -> i.getAge() > approximativeStoragePeriod);
 		updateStorageOverdue(id, storageOverdue);
 	}
 

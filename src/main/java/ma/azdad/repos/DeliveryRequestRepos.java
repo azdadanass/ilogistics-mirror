@@ -217,6 +217,13 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("select count(*)  from DeliveryRequest a where a.transportationNeeded = true and (select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)=0 and a.requester.username = ?1 and a.status not in (?2)")
 	public Long countByPendingTransportation(String username, List<DeliveryRequestStatus> notInStatus);
 
+	@Query(c1
+			+ "from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")
+	public List<DeliveryRequest> findLightByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList);
+
+	@Query("select count(*) from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")
+	public Long countLightByStorageOverdue(String username, List<Integer> warehouseList, List<Integer> projectList);
+
 	@Query(c1 + "from DeliveryRequest a where a.missingSerialNumber is true and a.warehouse.id in (?1) order by a.date4 desc")
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList);
 
@@ -525,7 +532,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 
 	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.partNumber.id = ?1")
 	List<Integer> findByHavingPartNumber(Integer partNumberId);
-	
+
 	@Query("select id from DeliveryRequest where  type = 'INBOUND' and (storageOverdue is null or storageOverdue is false)")
 	List<Integer> findIdByStorageOverdueFalseOrNull();
 

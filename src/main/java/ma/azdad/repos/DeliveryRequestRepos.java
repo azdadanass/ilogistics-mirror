@@ -222,7 +222,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public List<DeliveryRequest> findLightByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList);
 
 	@Query("select count(*) from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")
-	public Long countLightByStorageOverdue(String username, List<Integer> warehouseList, List<Integer> projectList);
+	public Long countByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList);
 
 	@Query(c1 + "from DeliveryRequest a where a.missingSerialNumber is true and a.warehouse.id in (?1) order by a.date4 desc")
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList);

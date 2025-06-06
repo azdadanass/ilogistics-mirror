@@ -619,6 +619,21 @@
 													</h:outputLink>
 												</li>
 											</f:subview>
+											<li>
+												<h:outputLink value="deliveryRequestList.xhtml">
+													<span class="clearfix">
+														<span class="pull-left">
+															<i class="ace-icon fa fa-spinner red " style="font-size: 20px" />
+															&nbsp;&nbsp;
+															<h:outputText value=" Overdue " />
+														</span>
+														<span class="pull-right badge badge-danger">
+															<h:outputText value="#{deliveryRequestView.countStorageOverdue()}" />
+														</span>
+													</span>
+													<f:param name="pageIndex" value="24" />
+												</h:outputLink>
+											</li>
 											<f:subview rendered="#{sessionView.internal or sessionView.isExternalPm}">
 												<li>
 													<h:outputLink value="deliveryRequestList.xhtml">

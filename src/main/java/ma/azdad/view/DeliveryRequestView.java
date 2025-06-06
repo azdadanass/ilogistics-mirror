@@ -645,10 +645,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			// update is missing expiry
 			if (deliveryRequest.getStockRowList().stream().filter(i -> i.getPartNumber().getExpirable()).count() > 0)
 				service.updateMissingExpiry(deliveryRequest.getId(), true);
-			
-			
+
 			// update fields storageOverdue for associated inbounds
-			stockRowService.findAssociatedInboundWithOutbound(deliveryRequest.getId()).forEach(id->{
+			stockRowService.findAssociatedInboundWithOutbound(deliveryRequest.getId()).forEach(id -> {
 				service.calculateStorageOverdue(id);
 			});
 
@@ -818,7 +817,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			if (deliveryRequest.getIsInboundReturnFromOutboundHardwareSwap())
 				service.updateHardwareSwapInboundIdAndStatus(deliveryRequest.getOutboundDeliveryRequestReturnId(), deliveryRequest.getId(), deliveryRequest.getStatus());
-			
+
 			// calculate storage overdue
 			service.calculateStorageOverdue(deliveryRequest.getId());
 
@@ -3158,6 +3157,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return 0l;
 	}
 
+	public Long countStorageOverdue() {
+		return service.countByStorageOverdue(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
+	}
+
 	public Long countByMissingOutboundDeliveryNoteFile() {
 		if (sessionView.getInternal())
 			return service.countByMissingOutboundDeliveryNoteFile(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAllProjectList());
@@ -3176,6 +3179,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		total += countToDeliverRequests() + countMissingSerialNumber() + countMissingExpiry();
 		total += countToReturn() + countToDeliverXboundRequests();
 		total += countToAcknowledgeRequests();
+		total += countStorageOverdue();
 		return total;
 	}
 

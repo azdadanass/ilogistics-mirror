@@ -1803,9 +1803,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return repos.findLightByStorageOverdue(username, warehouseList, projectList);
 	}
 
-	@Cacheable(value = "deliveryRequestService.countLightByStorageOverdue")
-	public Long countLightByStorageOverdue(String username, List<Integer> warehouseList, List<Integer> projectList) {
-		return repos.countLightByStorageOverdue(username, warehouseList, projectList);
+	@Cacheable(value = "deliveryRequestService.countByStorageOverdue")
+	public Long countByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList) {
+		return repos.countByStorageOverdue(username, warehouseList, projectList);
 	}
 
 	public List<DeliveryRequest> findLightByMissingSerialNumber(List<Integer> warehouseList) {

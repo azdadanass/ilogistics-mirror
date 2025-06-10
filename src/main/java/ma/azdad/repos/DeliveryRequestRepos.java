@@ -218,7 +218,7 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	public Long countByPendingTransportation(String username, List<DeliveryRequestStatus> notInStatus);
 
 	@Query(c1
-			+ "from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")
+			+ "from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) order by a.id desc")
 	public List<DeliveryRequest> findLightByStorageOverdue(String username, Collection<Integer> warehouseList, Collection<Integer> projectList);
 
 	@Query("select count(*) from DeliveryRequest a where  a.storageOverdue is true and (a.requester.username = ?1 or a.project.manager.username = ?1 or a.project.costcenter.lob.manager.username = ?1 or a.project.costcenter.lob.bu.director.username = ?1 or a.warehouse.id in (?2) or a.project.id in (?3)) ")

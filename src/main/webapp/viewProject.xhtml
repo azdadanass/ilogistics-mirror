@@ -154,7 +154,6 @@
 											&nbsp;
 										</div>
 									</div>
-									
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -227,6 +226,111 @@
 								</div>
 							</div>
 						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="SDM / Ilogistics" />
+						</h4>
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Company" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{projectView.project.companyWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Company Warehousing" />
+											<br />
+											<i class="ace-icon fa #{projectView.project.companyStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Company Stock Management" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Customer" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{projectView.project.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Customer Warehousing" />
+											<br />
+											<i class="ace-icon fa #{projectView.project.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Customer Stock Management" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Supplier" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{projectView.project.supplierWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Supplier Warehousing" />
+											<br />
+											<i class="ace-icon fa #{projectView.project.supplierStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<h:outputText value=" Supplier Stock Management" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="SDM" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{projectView.project.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="ISM" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{projectView.project.ism?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Manager List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Manager List" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="managerList" value="#{projectView.project.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.user.photo}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Type">
+											<h:outputText value="#{item.type.value}" styleClass="#{item.type.color.badge}" />
+										</p:column>
+										<p:column headerText="User">
+											<h:outputText value="#{item.user.fullName}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Email">
+											<h:outputText value="#{item.user.email}" styleClass="light-blue" />
+										</p:column>
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.user.phone}" styleClass="orange bolder" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 						<div class="space-16" />
 					</div>
 					<f:subview id="tab2" rendered="#{projectView.project.customerStockManagement}">
@@ -249,74 +353,61 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="partNumberThresholdList" widgetVar="partNumberThresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}" rowKey="#{item.id}" selection="#{partNumberThresholdView.list4}" 
-											 var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-											paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-
+										<p:dataTable id="partNumberThresholdList" widgetVar="partNumberThresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}"
+											rowKey="#{item.id}" selection="#{partNumberThresholdView.list4}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number" width="200">
 												<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" rendered="#{!partNumberThresholdView.editMode}" />
-												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
-													itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{partNumberThresholdView.editMode}">
+												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn"
+													itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{partNumberThresholdView.editMode}">
 													<p:column>
 														<h:outputText value="#{pn.name}" />
 													</p:column>
-
 													<p:column>
 														<h:outputText value="#{pn.description}" />
 													</p:column>
-
 													<p:ajax event="itemSelect" update="description" />
 												</p:autoComplete>
-
 											</p:column>
-
 											<p:column headerText="Description" width="200">
 												<h:outputText id="description" value="#{item.partNumber.description}" styleClass="blue aa-cut-text" />
 											</p:column>
-
 											<p:column headerText="Stock Min" width="100">
 												<h:outputText value="#{item.stockMin}" rendered="#{!partNumberThresholdView.editMode}" />
 												<p:inputNumber value="#{item.stockMin}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
 											</p:column>
-
 											<p:column headerText="Stock Max" width="100">
 												<h:outputText value="#{item.stockMax}" rendered="#{!partNumberThresholdView.editMode}" />
 												<p:inputNumber value="#{item.stockMax}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
 											</p:column>
-
 											<p:column headerText="Dormancy" width="100">
 												<h:outputText value="#{item.dormancy}" rendered="#{!partNumberThresholdView.editMode}" />
 												<p:inputNumber value="#{item.dormancy}" thousandSeparator="" decimalPlaces="0" rendered="#{partNumberThresholdView.editMode}" />
 											</p:column>
-
 											<p:column headerText="Actions" width="150" exportable="false">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}" rendered="#{partNumberThresholdView.canDeleteRow()}" update="main_tab">
+													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}"
+														rendered="#{partNumberThresholdView.canDeleteRow()}" update="main_tab">
 														<i class="fa fa-trash-o red bigger-130" />
 													</p:commandLink>
 												</div>
 											</p:column>
-
 											<f:facet name="footer">
 												<div class="action-buttons center">
 													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="main_tab">
 														<i class="fa fa-edit orange" />
 														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
 													</p:commandLink>
-
-													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}" rendered="#{partNumberThresholdView.canAddNewRow()}"
-														update="main_tab">
+													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}"
+														rendered="#{partNumberThresholdView.canAddNewRow()}" update="main_tab">
 														<i class="fa fa-plus blue" />
 													</p:commandLink>
-
 													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{partNumberThresholdView.save()}" rendered="#{partNumberThresholdView.canSave()}"
 														update="main_tab,:main_form:tab2:messages">
 														<i class="fa fa-save green" />
 													</p:commandLink>
-
 												</div>
 											</f:facet>
-
 										</p:dataTable>
 									</div>
 								</div>
@@ -324,7 +415,7 @@
 						</div>
 					</f:subview>
 					<div id="tab7" class="tab-pane">
-						<p:messages id="tab7Messages"/>
+						<p:messages id="tab7Messages" />
 						<div class="space-8" />
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">

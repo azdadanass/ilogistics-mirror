@@ -43,6 +43,7 @@ public class ProjectService {
 		Hibernate.initialize(p.getCostcenter().getLob().getManager());
 		Hibernate.initialize(p.getCurrency());
 		Hibernate.initialize(p.getContract());
+		Hibernate.initialize(p.getManagerList());
 		return p;
 	}
 

@@ -20,7 +20,6 @@ import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.User;
-import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
@@ -41,9 +40,6 @@ public class ProjectView {
 	private UserService userService;
 
 	@Autowired
-	private DeliveryRequestService deliveryRequestService;
-
-	@Autowired
 	private CacheView cacheView;
 
 	private String currentPath;
@@ -53,6 +49,7 @@ public class ProjectView {
 	protected List<Project> list3;
 	protected List<Project> list4;
 	private String searchBean = "";
+	private String status = "Open";
 
 	private Project project = new Project();
 
@@ -61,7 +58,7 @@ public class ProjectView {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
 		id = UtilsFunctions.getIntegerParameter("id");
 		refreshList();
-		if ("/viewProject.xhtml".equals(currentPath) )
+		if ("/viewProject.xhtml".equals(currentPath))
 			project = projectService.findOne(id);
 	}
 
@@ -72,14 +69,14 @@ public class ProjectView {
 
 	public void refreshList() {
 		if ("/viewUser.xhtml".equals(currentPath)) {
-			List<Project> list = projectService.findLightByResource(sessionView.getUsername(),cacheView.getDelegatedProjectList());
+			List<Project> list = projectService.findLightByResource(sessionView.getUsername(), cacheView.getDelegatedProjectList());
 			Integer customerId = userService.findCustomerId(id);
 			if (customerId == null)
 				list2 = list1 = list;
 			else
 				list2 = list1 = list.stream().filter(project -> customerId.equals(project.getTmpCustomerId())).collect(Collectors.toList());
 		} else if ("/projectList.xhtml".equals(currentPath))
-			list2 = list1 = projectService.findLightByManager(sessionView.getUsername());
+			list2 = list1 = projectService.findLightByManager(sessionView.getUsername(),status);
 	}
 
 	public void setProject(Integer projectId) {
@@ -151,11 +148,11 @@ public class ProjectView {
 			return null;
 		switch (deliveryRequestType) {
 		case INBOUND:
-			return projectService.findInboundProjectList(username,cacheView.getDelegatedProjectList());
+			return projectService.findInboundProjectList(username, cacheView.getDelegatedProjectList());
 		case XBOUND:
-			return projectService.findXboundProjectList(username,cacheView.getDelegatedProjectList());
+			return projectService.findXboundProjectList(username, cacheView.getDelegatedProjectList());
 		case OUTBOUND:
-			return projectService.findOutboundProjectList(username,cacheView.getDelegatedProjectList());
+			return projectService.findOutboundProjectList(username, cacheView.getDelegatedProjectList());
 		default:
 			return null;
 		}
@@ -174,9 +171,9 @@ public class ProjectView {
 	}
 
 	public List<Project> findProjectListHavingIssues() {
-		return projectService.findProjectListHavingIssues(sessionView.getUsername(),cacheView.getAllProjectList(),cacheView.getDelegatedLobIdList());
+		return projectService.findProjectListHavingIssues(sessionView.getUsername(), cacheView.getAllProjectList(), cacheView.getDelegatedLobIdList());
 	}
-	
+
 	public Boolean getSdm(Integer id) {
 		return projectService.getSdm(id);
 	}
@@ -261,6 +258,14 @@ public class ProjectView {
 	public void setSearchBean(String searchBean) {
 		this.searchBean = searchBean;
 		filterBean(searchBean);
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

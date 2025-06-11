@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,7 +45,7 @@ public class ProjectService {
 		Hibernate.initialize(p.getContract());
 		return p;
 	}
-	
+
 	public Project findOneLight(Integer id) {
 		Project p = repos.findById(id).get();
 		return p;
@@ -70,13 +71,15 @@ public class ProjectService {
 //		Hibernate.initialize(p.getPartNumberThresholdList());
 //		return p;
 //	}
-	
-	public List<Project> findByCompanyWarehousing(){
+
+	public List<Project> findByCompanyWarehousing() {
 		return repos.findByCompanyWarehousing();
 	}
 
-	public List<Project> findLightByManager(String managerUsername) {
-		return repos.findLightByManager(managerUsername);
+	public List<Project> findLightByManager(String managerUsername, String status) {
+		if (StringUtils.isBlank(status))
+			return repos.findLightByManager(managerUsername);
+		return repos.findLightByManager(managerUsername, status);
 	}
 
 	public List<Project> findLight() {
@@ -103,20 +106,20 @@ public class ProjectService {
 	// return repos.findLightByResource(username);
 	// }
 
-	public List<Project> findLightByResource(String username,List<Integer> delegatedProjectList) {
-		return repos.findByResourceAndStatus(username,delegatedProjectList, "Open");
+	public List<Project> findLightByResource(String username, List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatus(username, delegatedProjectList, "Open");
 	}
 
-	public List<Project> findInboundProjectList(String username,List<Integer> delegatedProjectList) {
-		return repos.findByResourceAndStatusAndHavingWarehousing(username,delegatedProjectList, "Open");
+	public List<Project> findInboundProjectList(String username, List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatusAndHavingWarehousing(username, delegatedProjectList, "Open");
 	}
 
-	public List<Project> findXboundProjectList(String username,List<Integer> delegatedProjectList) {
-		return repos.findByResourceAndStatusAndNotType(username,delegatedProjectList, "Open", ProjectTypes.STOCK.getValue());
+	public List<Project> findXboundProjectList(String username, List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndStatusAndNotType(username, delegatedProjectList, "Open", ProjectTypes.STOCK.getValue());
 	}
 
-	public List<Project> findOutboundProjectList(String username,List<Integer> delegatedProjectList) {
-		return repos.findByResourceAndInProjectList(username,delegatedProjectList, findNonEmptyProjectList());
+	public List<Project> findOutboundProjectList(String username, List<Integer> delegatedProjectList) {
+		return repos.findByResourceAndInProjectList(username, delegatedProjectList, findNonEmptyProjectList());
 	}
 
 	public Set<Integer> findNonEmptyProjectList() {
@@ -226,8 +229,8 @@ public class ProjectService {
 		return repos.findIdListByDelegation(username);
 	}
 
-	public List<Project> findProjectListHavingIssues(String username,Collection<Integer> userProjectIdList,Collection<Integer> lobIdList) {
-		List<Integer> idList = issueRepos.findProjectIdList(username,userProjectIdList,lobIdList);
+	public List<Project> findProjectListHavingIssues(String username, Collection<Integer> userProjectIdList, Collection<Integer> lobIdList) {
+		List<Integer> idList = issueRepos.findProjectIdList(username, userProjectIdList, lobIdList);
 		if (!idList.isEmpty())
 			return repos.findLight(idList);
 		return new ArrayList<Project>();
@@ -237,10 +240,10 @@ public class ProjectService {
 		return repos.findLightByIdListAndCustomer(idList, customerId);
 	}
 
-	public List<Integer> findAllProjectIdListByResource(String username,List<Integer> delegatedProjectList) {
+	public List<Integer> findAllProjectIdListByResource(String username, List<Integer> delegatedProjectList) {
 		List<Integer> result = new ArrayList<>();
 		result.add(-1);
-		result.addAll(repos.findAllProjectIdListByResource(username,delegatedProjectList));
+		result.addAll(repos.findAllProjectIdListByResource(username, delegatedProjectList));
 		return result;
 	}
 }

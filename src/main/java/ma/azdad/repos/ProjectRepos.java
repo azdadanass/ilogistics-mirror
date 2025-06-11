@@ -16,7 +16,7 @@ import ma.azdad.model.ProjectManagerType;
 @Repository
 public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	String select1 = "select new Project(id,name,type,startDate,endDate,customer.id) ";
-	String select2 = "select new Project(id,name,type,subType,startDate,endDate,customer.name,customerWarehousing,customerStockManagement,sdm) ";
+	String c2 = "select new Project(id,name,type,subType,status,startDate,endDate,customer.name,customerWarehousing,customerStockManagement,sdm,ism,manager.fullName) ";
 
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();
@@ -36,8 +36,11 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Query("select new Project(id,name) from Project where id in (?1) and customer.id = ?2 and (companyWarehousing is true or supplierWarehousing is true or customerWarehousing is true)")
 	public List<Project> findLightByIdListAndCustomer(Collection<Integer> idList, Integer customerId);
 
-	@Query(select2 + "from Project where manager.username = ?1 order by customerWarehousing desc")
+	@Query(c2 + "from Project where manager.username = ?1 order by customerWarehousing desc")
 	public List<Project> findLightByManager(String managerUsername);
+	
+	@Query(c2 + "from Project where manager.username = ?1 and status = ?2 order by customerWarehousing desc")
+	public List<Project> findLightByManager(String managerUsername,String status);
 
 	@Query(select1 + "from Project where manager.username = ?1 and status = ?2")
 	public List<Project> findLightByManagerAndStatus(String managerUsername, String status);

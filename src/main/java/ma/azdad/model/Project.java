@@ -102,18 +102,25 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	public Project(Integer id, String name, String type, String subType, Date startDate, Date endDate, String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm) {
+	
+	// c2
+	public Project(Integer id, String name, String type, String subType,String status, Date startDate, Date endDate, //
+			String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm,Boolean ism,//
+			String managerFullName) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.subType = subType;
+		this.status = status;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.setCustomerName(customerName);
 		this.customerWarehousing = customerWarehousing;
 		this.customerStockManagement = customerStockManagement;
 		this.sdm = sdm;
+		this.ism = ism;
+		this.setManagerFullName(managerFullName);
 	}
 
 	public boolean filter(String query) {

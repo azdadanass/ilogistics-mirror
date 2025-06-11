@@ -52,15 +52,42 @@
 				<p:messages id="messages" />
 				<div class="col-sm-offset-1 col-sm-10">
 					<div class="table-header col-sm-12 col-xs-12">
-						<div class="col-sm-8 hidden-xs">
+						<div class="col-sm-2 hidden-xs">
 							<i class="fa fa-list" />
 							<h:outputText value=" Project List" />
+						</div>
+						<div class="col-sm-6 ">
+							<table style="margin-top: 5px">
+								<tr>
+									<td>
+										<h:outputText value="Filter by : " />
+									</td>
+									<td>
+										<p:commandLink action="#{projectView.refreshList()}" update="projectList" styleClass="aa-tooltip tooltip-info" title="Open">
+											<div class="aa-icon-open" />
+											<f:setPropertyActionListener value="Open" target="#{projectView.status}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{projectView.refreshList()}" update="projectList" styleClass="aa-tooltip" title="Closed">
+											<div class="aa-icon-closed" />
+											<f:setPropertyActionListener value="Closed" target="#{projectView.status}" />
+										</p:commandLink>
+									</td>
+									<td>
+										<p:commandLink action="#{projectView.refreshList()}" update="projectList" styleClass="aa-tooltip" title="All">
+											<div class="aa-icon-all" />
+											<f:setPropertyActionListener value="#{null}" target="#{projectView.status}" />
+										</p:commandLink>
+									</td>
+								</tr>
+							</table>
 						</div>
 						<div class="col-sm-2">
 							<div class="action-buttons center">
 								<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 									<img src="/resources/img/xls.png" width="20" height="20" />
-									<p:dataExporter type="xls" target="main_tab" fileName="projectList" />
+									<p:dataExporter type="xls" target="projectList" fileName="projectList" />
 								</h:commandLink>
 							</div>
 						</div>
@@ -68,7 +95,7 @@
 							<div class="nav-search minimized">
 								<span class="input-icon">
 									<p:inputText value="#{projectView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-										<p:ajax event="keyup" update="main_tab,widgetPanel" />
+										<p:ajax event="keyup" update="projectList,widgetPanel" />
 									</p:inputText>
 									<i class="ace-icon fa fa-search nav-search-icon" />
 								</span>
@@ -76,7 +103,7 @@
 						</div>
 					</div>
 					<div class="col-sm-12 col-xs-12 aa-datatable-container">
-						<p:dataTable value="#{projectView.list2}" filteredValue="#{projectView.list3}" rowKey="#{item.id}" selection="#{projectView.list4}" id="main_tab" widgetVar="main_tab" var="item" rows="40"
+						<p:dataTable id="projectList" value="#{projectView.list2}" filteredValue="#{projectView.list3}" rowKey="#{item.id}" selection="#{projectView.list4}" widgetVar="projectList" var="item" rows="40"
 							styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:column headerText="Name">
@@ -91,15 +118,11 @@
 							<p:column headerText="SubType" width="70">
 								<h:outputText value="#{item.subType}" styleClass="purple" />
 							</p:column>
-							<p:column headerText="Start Date" width="80">
-								<h:outputText value="#{item.startDate}">
-									<f:convertDateTime pattern="yyyy-MM-dd" />
-								</h:outputText>
+							<p:column headerText="Status" width="100">
+								<h:outputText value="#{item.status}" styleClass="badge #{item.status=='Open'?'badge-success':''}" />
 							</p:column>
-							<p:column headerText="End Date" width="80">
-								<h:outputText value="#{item.endDate}">
-									<f:convertDateTime pattern="yyyy-MM-dd" />
-								</h:outputText>
+							<p:column headerText="Manager" width="150">
+								<h:outputText value="#{item.managerFullName}" styleClass="bolder pink" />
 							</p:column>
 							<p:column headerText="Warehousing" width="80">
 								<i class="ace-icon fa #{item.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
@@ -108,6 +131,9 @@
 								<i class="ace-icon fa #{item.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>
 							<p:column headerText="SDM" width="80">
+								<i class="ace-icon fa #{item.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+							</p:column>
+							<p:column headerText="ISM" width="80">
 								<i class="ace-icon fa #{item.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>
 							<p:column headerText="Actions" width="100">

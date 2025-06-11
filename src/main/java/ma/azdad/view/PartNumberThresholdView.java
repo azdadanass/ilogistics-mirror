@@ -69,7 +69,7 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 
 	@Override
 	public void refreshList() {
-		if ("/partNumberThresholdList.xhtml".contentEquals(currentPath))
+		if (isPage("viewProject"))
 			list2 = list1 = partNumberThresholdService.findByProject(id);
 	}
 

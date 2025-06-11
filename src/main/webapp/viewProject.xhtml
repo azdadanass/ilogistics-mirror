@@ -351,11 +351,25 @@
 												</h:commandLink>
 											</div>
 										</div>
+										<div class="col-sm-2 col-xs-4">
+											<h:panelGroup id="searchThreshold">
+												<f:subview rendered="#{!partNumberThresholdView.editMode}">
+													<div class="nav-search minimized">
+														<span class="input-icon">
+															<p:inputText value="#{partNumberThresholdView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+																<p:ajax event="keyup" update=":main_form:tab2:thresholdList" />
+															</p:inputText>
+															<i class="ace-icon fa fa-search nav-search-icon" />
+														</span>
+													</div>
+												</f:subview>
+											</h:panelGroup>
+										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="thresholdList" widgetVar="thresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}"
-											rowKey="#{item.id}" selection="#{partNumberThresholdView.list4}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:dataTable id="thresholdList" widgetVar="thresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}" rowKey="#{item.id}"
+											selection="#{partNumberThresholdView.list4}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number" width="200">
 												<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" rendered="#{!partNumberThresholdView.editMode}" />
 												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn"
@@ -394,7 +408,7 @@
 											</p:column>
 											<f:facet name="footer">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="thresholdList">
+													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="thresholdList,:main_form:tab2:searchThreshold">
 														<i class="fa fa-edit orange" />
 														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
 													</p:commandLink>

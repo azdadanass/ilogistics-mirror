@@ -347,13 +347,13 @@
 											<div class="action-buttons center">
 												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
 													<img src="/resources/img/xls.png" width="20" height="20" />
-													<p:dataExporter type="xls" target=":main_form:tab2:partNumberThresholdList" fileName="partNumberThresholdList" postProcessor="#{utilsView.excelExportation}" />
+													<p:dataExporter type="xls" target=":main_form:tab2:thresholdList" fileName="thresholdList" postProcessor="#{utilsView.excelExportation}" />
 												</h:commandLink>
 											</div>
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="partNumberThresholdList" widgetVar="partNumberThresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}"
+										<p:dataTable id="thresholdList" widgetVar="thresholdList" value="#{partNumberThresholdView.list2}" filteredValue="#{partNumberThresholdView.list3}"
 											rowKey="#{item.id}" selection="#{partNumberThresholdView.list4}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number" width="200">
@@ -387,23 +387,23 @@
 											<p:column headerText="Actions" width="150" exportable="false">
 												<div class="action-buttons center">
 													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}"
-														rendered="#{partNumberThresholdView.canDeleteRow()}" update="main_tab">
+														rendered="#{partNumberThresholdView.canDeleteRow()}" update="thresholdList">
 														<i class="fa fa-trash-o red bigger-130" />
 													</p:commandLink>
 												</div>
 											</p:column>
 											<f:facet name="footer">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="main_tab">
+													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="thresholdList">
 														<i class="fa fa-edit orange" />
 														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
 													</p:commandLink>
 													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}"
-														rendered="#{partNumberThresholdView.canAddNewRow()}" update="main_tab">
+														rendered="#{partNumberThresholdView.canAddNewRow()}" update="thresholdList">
 														<i class="fa fa-plus blue" />
 													</p:commandLink>
 													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{partNumberThresholdView.save()}" rendered="#{partNumberThresholdView.canSave()}"
-														update="main_tab,:main_form:tab2:messages">
+														update="thresholdList,:main_form:tab2:messages">
 														<i class="fa fa-save green" />
 													</p:commandLink>
 												</div>

@@ -31,6 +31,9 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 
 	@Autowired
 	private ProjectService projectService;
+	
+	@Autowired
+	private ProjectView projectView;
 
 	@Autowired
 	private PartNumberService partNumberService;
@@ -45,10 +48,18 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 	@PostConstruct
 	public void init() {
 		super.init();
-		if ("/partNumberThresholdList.xhtml".contentEquals(currentPath)) {
-			project = projectService.findOne(id);
+//		if ("/partNumberThresholdList.xhtml".contentEquals(currentPath)) {
+//			project = projectService.findOne(id);
+//			refreshList();
+//		}
+		
+		if(isPage("viewProject")) {
+			project = projectView.getProject();
 			refreshList();
 		}
+			
+		
+		
 	}
 
 	@Override

@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.model.User;
 import ma.azdad.service.EmailService;
+import ma.azdad.service.RadiusDatabaseService;
 import ma.azdad.service.SmsService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
@@ -33,6 +35,9 @@ public class PasswordView {
 
 	@Autowired
 	protected SmsService smsService;
+	
+	@Autowired
+	protected RadiusDatabaseService radiusDatabaseService;
 
 	private String oldPassword;
 	private String newPassword;
@@ -51,6 +56,10 @@ public class PasswordView {
 		String newPasswordMD5 = UtilsFunctions.stringToMD5(newPassword);
 		userService.updatePassword(sessionView.getUsername(), newPasswordMD5);
 		FacesContextMessages.InfoMessages("Password Changed !");
+		
+		User user = sessionView.getUser();
+		radiusDatabaseService.updateRadiusdb(true, user.getLogin(), newPasswordMD5, user.getActive(), user.getVpnAccess());
+		
 		emailService.sendPasswordChangedNotification(sessionView.getUser());
 		smsService.sendSms(sessionView.getUser().getPhone(), "Dear " + sessionView.getUser().getFullName() + ", Your password has been changed successfully on the Orange application system");
 	}

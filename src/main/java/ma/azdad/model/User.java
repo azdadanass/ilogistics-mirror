@@ -42,6 +42,7 @@ public class User extends GenericModel<String> {
 	private String cin;
 	private Boolean gender = true;
 	private Boolean active = true;
+	private Boolean vpnAccess = false;
 	private Date birthday;
 
 	private Boolean accountNonLocked;
@@ -776,6 +777,14 @@ public class User extends GenericModel<String> {
 
 	public void setOther(String other) {
 		this.other = other;
+	}
+	
+	public Boolean getVpnAccess() {
+		return vpnAccess;
+	}
+
+	public void setVpnAccess(Boolean vpnAccess) {
+		this.vpnAccess = vpnAccess;
 	}
 
 }

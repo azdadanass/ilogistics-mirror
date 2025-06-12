@@ -571,7 +571,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		if (deliveryRequest.getIsInbound()) {
 			row = new TR();
 			row.addElement(new TD("Pref Storage Location").setWidth(tdWidth1).setStyle(tdStyle1));
-			row.addElement(new TD(deliveryRequest.getPreferedLocation() != null ? deliveryRequest.getPreferedLocation().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2));
+			row.addElement(new TD(deliveryRequest.getPreferredLocation() != null ? deliveryRequest.getPreferredLocation().getName() : "").setWidth(tdWidth2).setStyle(tdStyle2));
 			row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 			row.addElement(new TD("Appr Storage Period").setWidth(tdWidth1).setStyle(tdStyle1));
 			row.addElement(new TD(deliveryRequest.getApproximativeStoragePeriod() + "").setWidth(tdWidth2).setStyle(tdStyle2));

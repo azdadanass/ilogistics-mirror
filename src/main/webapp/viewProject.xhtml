@@ -34,9 +34,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View Project" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value="#{projectView.project.name}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value="#{projectView.project.name}" />
 					</small>
 				</h1>
 			</div>
@@ -81,6 +79,12 @@
 						<a data-toggle="tab" href="#tab7">
 							<i class="purple ace-icon fa fa-list bigger-120"></i>
 							<h:outputText value=" Issue Category / Type" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="orange ace-icon fa fa-th-list bigger-120"></i>
+							<h:outputText value=" Project Defaults" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -308,8 +312,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="managerList" value="#{projectView.project.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="managerList" value="#{projectView.project.managerList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.user.photo}" />
@@ -372,8 +376,8 @@
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 											<p:column headerText="Part Number" width="200">
 												<h:outputText value="#{item.partNumber.name}" styleClass="bolder green" rendered="#{!partNumberThresholdView.editMode}" />
-												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn"
-													itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{partNumberThresholdView.editMode}">
+												<p:autoComplete value="#{item.partNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
+													itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{partNumberThresholdView.editMode}">
 													<p:column>
 														<h:outputText value="#{pn.name}" />
 													</p:column>
@@ -400,8 +404,8 @@
 											</p:column>
 											<p:column headerText="Actions" width="150" exportable="false">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}"
-														rendered="#{partNumberThresholdView.canDeleteRow()}" update="thresholdList">
+													<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{partNumberThresholdView.deleteRow(rowIndexVar)}" rendered="#{partNumberThresholdView.canDeleteRow()}"
+														update="thresholdList">
 														<i class="fa fa-trash-o red bigger-130" />
 													</p:commandLink>
 												</div>
@@ -412,8 +416,8 @@
 														<i class="fa fa-edit orange" />
 														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
 													</p:commandLink>
-													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}"
-														rendered="#{partNumberThresholdView.canAddNewRow()}" update="thresholdList">
+													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Add New Item" action="#{partNumberThresholdView.addNewRow()}" rendered="#{partNumberThresholdView.canAddNewRow()}"
+														update="thresholdList">
 														<i class="fa fa-plus blue" />
 													</p:commandLink>
 													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Save Changes" action="#{partNumberThresholdView.save()}" rendered="#{partNumberThresholdView.canSave()}"
@@ -440,8 +444,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="issueCategoryList" value="#{issueCategoryView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="issueCategoryList" value="#{issueCategoryView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<!-- <p:column headerText="Object">
 											<h:outputText value="#{item.parentType.value}" styleClass="#{item.parentType.badge}" rendered="#{!issueCategoryView.editIssueCategoryList}" />
 											<h:selectOneMenu value="#{item.parentType}" rendered="#{issueCategoryView.editIssueCategoryList}">
@@ -458,8 +462,7 @@
 													rendered="#{!issueCategoryView.editIssueCategoryList}">
 													<i class="ace-icon fa fa-list bigger-130 blue" />
 												</p:commandLink>
-												<p:commandLink title="Delete " action="#{issueCategoryView.deleteIssueCategory(item)}" update=":main_form:issueCategoryList"
-													rendered="#{issueCategoryView.editIssueCategoryList}">
+												<p:commandLink title="Delete " action="#{issueCategoryView.deleteIssueCategory(item)}" update=":main_form:issueCategoryList" rendered="#{issueCategoryView.editIssueCategoryList}">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 												</p:commandLink>
 											</div>
@@ -485,6 +488,65 @@
 											</div>
 										</f:facet>
 									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Approximative Storage Period" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.approximativeStoragePeriod}" rendered="#{!projectView.canEditInplace()}"/>
+											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.approximativeStoragePeriod}" />
+												<p:inputNumber value="#{projectView.project.approximativeStoragePeriod}" thousandSeparator="" decimalPlaces="0" />
+												<p:ajax event="save" listener="#{projectView.updateApproximativeStoragePeriod()}"  />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Preferred Warehouse" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.preferredWarehouseName}" rendered="#{!projectView.canEditInplace()}"/>
+											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.preferredWarehouseName}" />
+												<h:selectOneMenu value="#{projectView.project.preferredWarehouse}" converter="#{genericSecuredConverter}">
+													<f:selectItem itemLabel="---" noSelectionOption="true"/>
+													<f:selectItems value="#{warehouseView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
+												</h:selectOneMenu>
+												<p:ajax event="save" listener="#{projectView.updatePreferredWarehouse()}"  />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="PreferedLocation Location" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.preferredLocationName}" rendered="#{!projectView.canEditInplace()}"/>
+											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.preferredLocationName}" />
+												<h:selectOneMenu value="#{projectView.project.preferredLocation}" converter="#{genericSecuredConverter}">
+													<f:selectItem itemLabel="---" noSelectionOption="true"/>
+													<f:selectItems value="#{locationView.findLightByWarehouse(projectView.project.preferredWarehouseId)}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
+												</h:selectOneMenu>
+												<p:ajax event="save" listener="#{projectView.updatePreferredLocation()}"  />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

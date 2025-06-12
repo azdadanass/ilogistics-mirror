@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -106,5 +107,19 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select id from Project where (companyWarehousing is true or supplierWarehousing is true or customerWarehousing is true) and status = 'Open' and (manager.username = ?1 or id in (?2) or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
 	public List<Integer> findAllProjectIdListByResource(String username,List<Integer> delegatedProjectList);
+	
+	
+	// inplace
+	@Modifying
+	@Query("update Project set approximativeStoragePeriod = ?2 where id = ?1")
+	void updateApproximativeStoragePeriod(Integer id,Integer approximativeStoragePeriod);
+	
+	@Modifying
+	@Query("update Project set preferredWarehouse.id = ?2 where id = ?1")
+	void updatePreferredWarehouse(Integer id,Integer preferredWarehouseId);
+	
+	@Modifying
+	@Query("update Project set preferredLocation.id = ?2 where id = ?1")
+	void updatePreferredLocation(Integer id,Integer preferredLocationId);
 
 }

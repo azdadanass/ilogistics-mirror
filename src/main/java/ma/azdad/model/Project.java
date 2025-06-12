@@ -57,7 +57,8 @@ public class Project implements Serializable {
 
 	// ilogistics
 	private Integer approximativeStoragePeriod;
-	private Location preferedLocation;
+	private Warehouse preferredWarehouse;
+	private Location preferredLocation;
 
 	private List<ProjectManager> managerList = new ArrayList<>();
 
@@ -144,6 +145,57 @@ public class Project implements Serializable {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	@Transient
+	public Integer getPreferredWarehouseId(){
+		return preferredWarehouse!=null?preferredWarehouse.getId():null;
+	}
+
+	@Transient
+	public void setPreferredWarehouseId(Integer preferredWarehouseId){
+		if(preferredWarehouse==null || !preferredWarehouseId.equals(preferredWarehouse.getId()))
+			preferredWarehouse=new Warehouse();
+		preferredWarehouse.setId(preferredWarehouseId);
+	}
+	
+	@Transient
+	public Integer getPreferredLocationId(){
+		return preferredLocation!=null?preferredLocation.getId():null;
+	}
+
+	@Transient
+	public void setPreferredLocationId(Integer preferredLocationId){
+		if(preferredLocation==null || !preferredLocationId.equals(preferredLocation.getId()))
+			preferredLocation=new Location();
+		preferredLocation.setId(preferredLocationId);
+	}
+
+	
+	@Transient
+	public String getPreferredLocationName(){
+		return preferredLocation!=null?preferredLocation.getName():null;
+	}
+
+	@Transient
+	public void setPreferredLocationName(String preferredLocationName){
+		if(preferredLocation==null)
+			preferredLocation=new Location();
+		preferredLocation.setName(preferredLocationName);
+	}
+
+
+	
+	@Transient
+	public String getPreferredWarehouseName(){
+		return preferredWarehouse!=null?preferredWarehouse.getName():null;
+	}
+
+	@Transient
+	public void setPreferredWarehouseName(String preferredWarehouseName){
+		if(preferredWarehouse==null)
+			preferredWarehouse=new Warehouse();
+		preferredWarehouse.setName(preferredWarehouseName);
 	}
 
 	@Transient
@@ -455,12 +507,23 @@ public class Project implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Location getPreferedLocation() {
-		return preferedLocation;
+	public Location getPreferredLocation() {
+		return preferredLocation;
 	}
 
-	public void setPreferedLocation(Location preferedLocation) {
-		this.preferedLocation = preferedLocation;
+	public void setPreferredLocation(Location preferredLocation) {
+		this.preferredLocation = preferredLocation;
 	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public Warehouse getPreferredWarehouse() {
+		return preferredWarehouse;
+	}
+
+	public void setPreferredWarehouse(Warehouse preferredWarehouse) {
+		this.preferredWarehouse = preferredWarehouse;
+	}
+	
+	
 
 }

@@ -29,6 +29,15 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public Location() {
 		super();
 	}
+	
+	
+
+	public Location(Integer id,String name) {
+		super(id);
+		this.name = name;
+	}
+
+
 
 	public Location(Warehouse warehouse) {
 		super();

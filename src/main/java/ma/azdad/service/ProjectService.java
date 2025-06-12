@@ -44,6 +44,8 @@ public class ProjectService {
 		Hibernate.initialize(p.getCurrency());
 		Hibernate.initialize(p.getContract());
 		Hibernate.initialize(p.getManagerList());
+		Hibernate.initialize(p.getPreferredWarehouse());
+		Hibernate.initialize(p.getPreferredLocation());
 		return p;
 	}
 
@@ -246,5 +248,17 @@ public class ProjectService {
 		result.add(-1);
 		result.addAll(repos.findAllProjectIdListByResource(username, delegatedProjectList));
 		return result;
+	}
+
+	public void updateApproximativeStoragePeriod(Integer id, Integer approximativeStoragePeriod) {
+		repos.updateApproximativeStoragePeriod(id, approximativeStoragePeriod);
+	}
+	
+	public void updatePreferredWarehouse(Integer id,Integer preferredWarehouseId) {
+		repos.updatePreferredWarehouse(id, preferredWarehouseId);
+	}
+	
+	public void updatePreferredLocation(Integer id,Integer preferredLocationId) {
+		repos.updatePreferredLocation(id, preferredLocationId);
 	}
 }

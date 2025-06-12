@@ -112,6 +112,30 @@ public class ProjectView {
 		project = projectService.save(project);
 		refreshList();
 	}
+	
+	// inplace
+	public Boolean canEditInplace() {
+		return sessionView.isTheConnectedUser(project.getManager().getUsername());
+	}
+	
+	public void updateApproximativeStoragePeriod() {
+		if (!canEditInplace())
+			return;
+		projectService.updateApproximativeStoragePeriod(project.getId(),project.getApproximativeStoragePeriod());
+	}
+	
+	public void updatePreferredWarehouse() {
+		if (!canEditInplace())
+			return;
+		projectService.updatePreferredWarehouse(project.getId(),project.getPreferredWarehouseId());
+	}
+	
+	public void updatePreferredLocation() {
+		if (!canEditInplace())
+			return;
+		projectService.updatePreferredLocation(project.getId(),project.getPreferredLocationId());
+	}
+	
 
 	// generic
 	public List<Project> findLightOpen() {

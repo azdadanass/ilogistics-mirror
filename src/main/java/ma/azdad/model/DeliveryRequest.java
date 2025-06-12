@@ -91,7 +91,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Site origin;
 	private Site destination;
 	private Boolean isPartial = null;
-	private Location preferedLocation;
+	private Location preferredLocation;
 
 	private TransportationRequest transportationRequest;
 
@@ -445,7 +445,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.important = template.getImportant();
 		this.transportationNeeded = template.transportationNeeded;
 		this.transporter = template.transporter;
-		this.preferedLocation = template.preferedLocation;
+		this.preferredLocation = template.preferredLocation;
 		this.approximativeStoragePeriod = template.approximativeStoragePeriod;
 		this.sdm = template.sdm;
 		init();
@@ -650,15 +650,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@Transient
-	public String getPreferedLocationName() {
-		return preferedLocation != null ? preferedLocation.getName() : null;
+	public String getPreferredLocationName() {
+		return preferredLocation != null ? preferredLocation.getName() : null;
 	}
 
 	@Transient
-	public void setPreferedLocationName(String preferedLocationName) {
-		if (preferedLocation == null)
-			preferedLocation = new Location();
-		preferedLocation.setName(preferedLocationName);
+	public void setPreferredLocationName(String preferredLocationName) {
+		if (preferredLocation == null)
+			preferredLocation = new Location();
+		preferredLocation.setName(preferredLocationName);
 	}
 
 	@Transient
@@ -1648,12 +1648,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	public Location getPreferedLocation() {
-		return preferedLocation;
+	public Location getPreferredLocation() {
+		return preferredLocation;
 	}
 
-	public void setPreferedLocation(Location preferedLocation) {
-		this.preferedLocation = preferedLocation;
+	public void setPreferredLocation(Location preferredLocation) {
+		this.preferredLocation = preferredLocation;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

@@ -55,6 +55,10 @@ public class Project implements Serializable {
 	private Boolean sdm = false;
 	private Boolean ism = false;
 
+	// ilogistics
+	private Integer approximativeStoragePeriod;
+	private Location preferedLocation;
+
 	private List<ProjectManager> managerList = new ArrayList<>();
 
 	// tmp
@@ -102,10 +106,9 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	
 	// c2
-	public Project(Integer id, String name, String type, String subType,String status, Date startDate, Date endDate, //
-			String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm,Boolean ism,//
+	public Project(Integer id, String name, String type, String subType, String status, Date startDate, Date endDate, //
+			String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm, Boolean ism, //
 			String managerFullName) {
 		super();
 		this.id = id;
@@ -171,7 +174,7 @@ public class Project implements Serializable {
 			manager = new User();
 		manager.setFullName(managerFullName);
 	}
-	
+
 	@Transient
 	public String getManagerEmail() {
 		return manager == null ? null : manager.getEmail();
@@ -441,6 +444,23 @@ public class Project implements Serializable {
 
 	public void setContract(Contract contract) {
 		this.contract = contract;
+	}
+
+	public Integer getApproximativeStoragePeriod() {
+		return approximativeStoragePeriod;
+	}
+
+	public void setApproximativeStoragePeriod(Integer approximativeStoragePeriod) {
+		this.approximativeStoragePeriod = approximativeStoragePeriod;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public Location getPreferedLocation() {
+		return preferedLocation;
+	}
+
+	public void setPreferedLocation(Location preferedLocation) {
+		this.preferedLocation = preferedLocation;
 	}
 
 }

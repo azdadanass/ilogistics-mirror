@@ -501,9 +501,9 @@
 											<h:outputText value="Approximative Storage Period" styleClass="smaller-80" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{projectView.project.approximativeStoragePeriod}" rendered="#{!projectView.canEditInplace()}"/>
+											<h:outputText value="#{projectView.project.approximativeStoragePeriod}" styleClass="bolder green" rendered="#{!projectView.canEditInplace()}"/>
 											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
-												<h:outputText value="#{projectView.project.approximativeStoragePeriod}" />
+												<h:outputText value="#{projectView.project.approximativeStoragePeriod}" styleClass="bolder green"/>
 												<p:inputNumber value="#{projectView.project.approximativeStoragePeriod}" thousandSeparator="" decimalPlaces="0" />
 												<p:ajax event="save" listener="#{projectView.updateApproximativeStoragePeriod()}"  />
 												<p:ajax event="cancel" />
@@ -516,14 +516,14 @@
 											<h:outputText value="Preferred Warehouse" styleClass="smaller-80" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{projectView.project.preferredWarehouseName}" rendered="#{!projectView.canEditInplace()}"/>
+											<h:outputText value="#{projectView.project.preferredWarehouseName}" styleClass="blue bolder" rendered="#{!projectView.canEditInplace()}"/>
 											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
-												<h:outputText value="#{projectView.project.preferredWarehouseName}" />
+												<h:outputText value="#{projectView.project.preferredWarehouseName}" styleClass="blue bolder"/>
 												<h:selectOneMenu value="#{projectView.project.preferredWarehouse}" converter="#{genericSecuredConverter}">
 													<f:selectItem itemLabel="---" noSelectionOption="true"/>
 													<f:selectItems value="#{warehouseView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>
 												</h:selectOneMenu>
-												<p:ajax event="save" listener="#{projectView.updatePreferredWarehouse()}"  />
+												<p:ajax event="save" listener="#{projectView.updatePreferredWarehouse()}"  update="preferredLocation"/>
 												<p:ajax event="cancel" />
 											</p:inplace>
 											&nbsp;
@@ -534,9 +534,9 @@
 											<h:outputText value="PreferedLocation Location" styleClass="smaller-80" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{projectView.project.preferredLocationName}" rendered="#{!projectView.canEditInplace()}"/>
-											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
-												<h:outputText value="#{projectView.project.preferredLocationName}" />
+											<h:outputText value="#{projectView.project.preferredLocationName}" styleClass="bolder pink" rendered="#{!projectView.canEditInplace()}"/>
+											<p:inplace id="preferredLocation" editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.preferredLocationName}" styleClass="bolder pink"/>
 												<h:selectOneMenu value="#{projectView.project.preferredLocation}" converter="#{genericSecuredConverter}">
 													<f:selectItem itemLabel="---" noSelectionOption="true"/>
 													<f:selectItems value="#{locationView.findLightByWarehouse(projectView.project.preferredWarehouseId)}" var="item" itemLabel="#{item.name}" itemValue="#{item}"/>

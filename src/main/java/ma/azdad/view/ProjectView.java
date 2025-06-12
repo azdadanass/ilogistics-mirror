@@ -128,6 +128,10 @@ public class ProjectView {
 		if (!canEditInplace())
 			return;
 		projectService.updatePreferredWarehouse(project.getId(),project.getPreferredWarehouseId());
+		
+		//init location too
+		project.setPreferredLocation(null);
+		projectService.updatePreferredLocation(project.getId(),null);
 	}
 	
 	public void updatePreferredLocation() {

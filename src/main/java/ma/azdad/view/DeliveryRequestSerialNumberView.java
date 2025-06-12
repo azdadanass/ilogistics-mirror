@@ -388,7 +388,7 @@ public class DeliveryRequestSerialNumberView extends GenericView<Integer, Delive
 
 	public void refreshSerialNumberSummaryList() {
 		DeliveryRequest deliveryRequest = deliveryRequestView.getDeliveryRequest();
-		List<StockRow> list = null;
+		List<StockRow> list = new ArrayList<StockRow>();
 		serialNumberSummaryList = new ArrayList<DeliveryRequestSerialNumberView.SerialNumberSummary>();
 		Map<String, SerialNumberSummary> map = new HashMap<String, SerialNumberSummary>(); // key (inboundDeliveryRequestDetailId;packingDetailId)
 		switch (deliveryRequest.getType()) {

@@ -61,6 +61,8 @@ public class ProjectService {
 		Hibernate.initialize(p.getCostcenter());
 		Hibernate.initialize(p.getCostcenter().getLob());
 		Hibernate.initialize(p.getCostcenter().getLob().getManager());
+		Hibernate.initialize(p.getPreferredWarehouse());
+		Hibernate.initialize(p.getPreferredLocation());
 		p.getManagerList().forEach(i -> Hibernate.initialize(i.getUser()));
 		return p;
 	}

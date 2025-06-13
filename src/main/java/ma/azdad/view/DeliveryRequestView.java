@@ -55,6 +55,7 @@ import ma.azdad.model.StockRowStatus;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
+import ma.azdad.model.Warehouse;
 import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.service.AppLinkService;
 import ma.azdad.service.BoqService;
@@ -2611,6 +2612,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	}
 
 	public void changeProjectListener() {
+		System.out.println("changeProjectListener");
 		deliveryRequest.setProject(projectService.findOne2(deliveryRequest.getProjectId()));
 		findRemainingDetailListByProjectAndWarehouse();
 		updateDestinationProject();
@@ -2618,6 +2620,31 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		Boolean ism = deliveryRequest.getProjectIsm();
 		deliveryRequest.setIsm(Boolean.TRUE.equals(ism));
+		
+		System.out.println("isAddPage : "+isAddPage);
+		System.out.println("deliveryRequest.getProject().getPreferredWarehouse()!=null" + deliveryRequest.getProject().getPreferredWarehouse()!=null);
+		if(isAddPage && deliveryRequest.getWarehouse()==null  && deliveryRequest.getProject().getPreferredWarehouse()!=null) {
+			System.out.println("getWarehouseList().contains(deliveryRequest.getProject().getPreferredWarehouse()) : "+getWarehouseList().contains(deliveryRequest.getProject().getPreferredWarehouse()));
+			if(getWarehouseList().contains(deliveryRequest.getProject().getPreferredWarehouse())) {
+				deliveryRequest.setWarehouse(deliveryRequest.getProject().getPreferredWarehouse());
+				changeWarehouseListener();
+			}
+		}
+	}
+	
+	public void changeWarehouseListener() {
+		findRemainingDetailListByProjectAndWarehouse();
+	}
+	
+	public List<Warehouse> getWarehouseList(){
+		if (deliveryRequest.getType() == null)
+			return null;
+		switch (deliveryRequest.getType()) {
+		case OUTBOUND:
+			return warehouseService.find(deliveryRequest.getProjectId());
+		default:
+			return warehouseService.findAll();
+		}
 	}
 
 	public Boolean canFillOwnerType() {

@@ -129,7 +129,7 @@ public class ProjectView {
 			return;
 		projectService.updatePreferredWarehouse(project.getId(),project.getPreferredWarehouseId());
 		
-		//init location too
+		//clear preferredLocation
 		project.setPreferredLocation(null);
 		projectService.updatePreferredLocation(project.getId(),null);
 	}

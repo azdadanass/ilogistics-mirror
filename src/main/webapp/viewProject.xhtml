@@ -241,10 +241,18 @@
 											<h:outputText value="Company" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.companyWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="companyWarehousing" update="companyWarehousing,companyStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateCompanyWarehousing()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.companyWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.companyWarehousing}" target="#{projectView.project.companyWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Company Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.companyStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="companyStockManagement" update="companyWarehousing,companyStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateCompanyStockManagement()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.companyStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.companyStockManagement}" target="#{projectView.project.companyStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Company Stock Management" />
 											&nbsp;
 										</div>
@@ -254,10 +262,18 @@
 											<h:outputText value="Customer" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="customerWarehousing" update="customerWarehousing,customerStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateCustomerWarehousing()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.customerWarehousing}" target="#{projectView.project.customerWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Customer Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="customerStockManagement" update="customerWarehousing,customerStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateCustomerStockManagement()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.customerStockManagement}" target="#{projectView.project.customerStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Customer Stock Management" />
 											&nbsp;
 										</div>
@@ -271,10 +287,18 @@
 											<h:outputText value="Supplier" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.supplierWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="supplierWarehousing" update="supplierWarehousing,supplierStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateSupplierWarehousing()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.supplierWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.supplierWarehousing}" target="#{projectView.project.supplierWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Supplier Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.supplierStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="supplierStockManagement" update="supplierWarehousing,supplierStockManagement" partialSubmit="true" process="@this" action="#{projectView.updateSupplierStockManagement()}"
+												disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.supplierStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.supplierStockManagement}" target="#{projectView.project.supplierStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Supplier Stock Management" />
 											&nbsp;
 										</div>
@@ -284,7 +308,10 @@
 											<h:outputText value="SDM" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="sdm" update="sdm,ism" partialSubmit="true" process="@this" action="#{projectView.updateSdm()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.sdm}" target="#{projectView.project.sdm}" />
+											</p:commandLink>
 											&nbsp;
 										</div>
 									</div>
@@ -293,7 +320,10 @@
 											<h:outputText value="ISM" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.ism?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="ism" update="ism,sdm" partialSubmit="true" process="@this" action="#{projectView.updateIsm()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.ism?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.ism}" target="#{projectView.project.ism}" />
+											</p:commandLink>
 											&nbsp;
 										</div>
 									</div>

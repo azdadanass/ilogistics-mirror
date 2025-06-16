@@ -121,5 +121,37 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	@Modifying
 	@Query("update Project set preferredLocation.id = ?2 where id = ?1")
 	void updatePreferredLocation(Integer id,Integer preferredLocationId);
+	
+	@Modifying
+	@Query("update Project set customerWarehousing = ?2 where id = ?1")
+	void updateCustomerWarehousing(Integer projectId, Boolean customerWarehousing);
+
+	@Modifying
+	@Query("update Project set customerStockManagement = ?2 where id = ?1")
+	void updateCustomerStockManagement(Integer projectId, Boolean customerStockManagement);
+
+	@Modifying
+	@Query("update Project set companyWarehousing = ?2 where id = ?1")
+	void updateCompanyWarehousing(Integer projectId, Boolean companyWarehousing);
+
+	@Modifying
+	@Query("update Project set companyStockManagement = ?2 where id = ?1")
+	void updateCompanyStockManagement(Integer projectId, Boolean companyStockManagement);
+
+	@Modifying
+	@Query("update Project set supplierWarehousing = ?2 where id = ?1")
+	void updateSupplierWarehousing(Integer projectId, Boolean supplierWarehousing);
+
+	@Modifying
+	@Query("update Project set supplierStockManagement = ?2 where id = ?1")
+	void updateSupplierStockManagement(Integer projectId, Boolean supplierStockManagement);
+	
+	@Modifying
+	@Query("update Project set sdm = ?2 where id = ?1")
+	void updateSdm(Integer projectId, Boolean sdm);
+	
+	@Modifying
+	@Query("update Project set ism = ?2 where id = ?1")
+	void updateIsm(Integer projectId, Boolean ism);
 
 }

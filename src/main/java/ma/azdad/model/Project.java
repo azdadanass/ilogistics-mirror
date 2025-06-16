@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 @Entity
 
-public class Project implements Serializable {
+public class Project extends GenericModel<Integer> {
 
 	private Integer id;
 	private String name;

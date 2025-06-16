@@ -140,6 +140,87 @@ public class ProjectView {
 		projectService.updatePreferredLocation(project.getId(),project.getPreferredLocationId());
 	}
 	
+	
+	public void updateCustomerWarehousing() {
+		if (!canEditInplace())
+			return;
+		projectService.updateCustomerWarehousing(project.getId(), project.getCustomerWarehousing());
+		if (!project.getCustomerWarehousing() && project.getCustomerStockManagement()) {
+			project.setCustomerStockManagement(false);
+			projectService.updateCustomerStockManagement(project.getId(), project.getCustomerStockManagement());
+		}
+	}
+
+	public void updateCustomerStockManagement() {
+		if (!canEditInplace())
+			return;
+		projectService.updateCustomerStockManagement(project.getId(), project.getCustomerStockManagement());
+		if (project.getCustomerStockManagement() && !project.getCustomerWarehousing()) {
+			project.setCustomerWarehousing(true);
+			projectService.updateCustomerWarehousing(project.getId(), project.getCustomerWarehousing());
+		}
+	}
+
+	public void updateCompanyWarehousing() {
+		if (!canEditInplace())
+			return;
+		projectService.updateCompanyWarehousing(project.getId(), project.getCompanyWarehousing());
+		if (!project.getCompanyWarehousing() && project.getCompanyStockManagement()) {
+			project.setCompanyStockManagement(false);
+			projectService.updateCompanyStockManagement(project.getId(), project.getCompanyStockManagement());
+		}
+	}
+
+	public void updateCompanyStockManagement() {
+		if (!canEditInplace())
+			return;
+		projectService.updateCompanyStockManagement(project.getId(), project.getCompanyStockManagement());
+		if (project.getCompanyStockManagement() && !project.getCompanyWarehousing()) {
+			project.setCompanyWarehousing(true);
+			projectService.updateCompanyWarehousing(project.getId(), project.getCompanyWarehousing());
+		}
+	}
+
+	public void updateSupplierWarehousing() {
+		if (!canEditInplace())
+			return;
+		projectService.updateSupplierWarehousing(project.getId(), project.getSupplierWarehousing());
+		if (!project.getSupplierWarehousing() && project.getSupplierStockManagement()) {
+			project.setSupplierStockManagement(false);
+			projectService.updateSupplierStockManagement(project.getId(), project.getSupplierStockManagement());
+		}
+	}
+
+	public void updateSupplierStockManagement() {
+		if (!canEditInplace())
+			return;
+		projectService.updateSupplierStockManagement(project.getId(), project.getSupplierStockManagement());
+		if (project.getSupplierStockManagement() && !project.getSupplierWarehousing()) {
+			project.setSupplierWarehousing(true);
+			projectService.updateSupplierWarehousing(project.getId(), project.getSupplierWarehousing());
+		}
+	}
+	
+	public void updateSdm() {
+		if (!canEditInplace())
+			return;
+		projectService.updateSdm(project.getId(), project.getSdm());
+		if (project.getSdm()) {
+			project.setIsm(false);
+			projectService.updateIsm(project.getId(), false);
+		}
+	}
+
+	public void updateIsm() {
+		if (!canEditInplace())
+			return;
+		projectService.updateIsm(project.getId(), project.getIsm());
+		if (project.getIsm()) {
+			project.setSdm(false);
+			projectService.updateSdm(project.getId(), false);
+		}
+	}
+	
 
 	// generic
 	public List<Project> findLightOpen() {

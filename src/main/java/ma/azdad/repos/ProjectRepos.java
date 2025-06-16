@@ -17,7 +17,7 @@ import ma.azdad.model.ProjectManagerType;
 @Repository
 public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	String select1 = "select new Project(id,name,type,startDate,endDate,customer.id) ";
-	String c2 = "select new Project(id,name,type,subType,status,startDate,endDate,customer.name,customerWarehousing,customerStockManagement,sdm,ism,manager.fullName) ";
+	String c2 = "select new Project(id,name,type,subType,status,startDate,endDate,customer.name,companyWarehousing,companyStockManagement,customerWarehousing,customerStockManagement,supplierWarehousing,supplierStockManagement,sdm,ism,manager.fullName) ";
 
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();

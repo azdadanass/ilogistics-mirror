@@ -109,7 +109,9 @@ public class Project extends GenericModel<Integer> {
 
 	// c2
 	public Project(Integer id, String name, String type, String subType, String status, Date startDate, Date endDate, //
-			String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm, Boolean ism, //
+			String customerName, Boolean companyWarehousing, Boolean companyStockManagement, Boolean customerWarehousing, Boolean customerStockManagement, //
+			Boolean supplierWarehousing, Boolean supplierStockManagement, //
+			Boolean sdm, Boolean ism, //
 			String managerFullName) {
 		super();
 		this.id = id;
@@ -122,6 +124,10 @@ public class Project extends GenericModel<Integer> {
 		this.setCustomerName(customerName);
 		this.customerWarehousing = customerWarehousing;
 		this.customerStockManagement = customerStockManagement;
+		this.companyWarehousing = companyWarehousing;
+		this.companyStockManagement = companyStockManagement;
+		this.supplierWarehousing = supplierWarehousing;
+		this.supplierStockManagement = supplierStockManagement;
 		this.sdm = sdm;
 		this.ism = ism;
 		this.setManagerFullName(managerFullName);
@@ -147,54 +153,63 @@ public class Project extends GenericModel<Integer> {
 		}
 	}
 	
+	
 	@Transient
-	public Integer getPreferredWarehouseId(){
-		return preferredWarehouse!=null?preferredWarehouse.getId():null;
-	}
-
-	@Transient
-	public void setPreferredWarehouseId(Integer preferredWarehouseId){
-		if(preferredWarehouse==null || !preferredWarehouseId.equals(preferredWarehouse.getId()))
-			preferredWarehouse=new Warehouse();
-		preferredWarehouse.setId(preferredWarehouseId);
+	public Boolean getWarehousing() {
+		return Boolean.TRUE.equals(companyWarehousing) ||Boolean.TRUE.equals(customerWarehousing)||Boolean.TRUE.equals(supplierWarehousing);  
 	}
 	
 	@Transient
-	public Integer getPreferredLocationId(){
-		return preferredLocation!=null?preferredLocation.getId():null;
+	public Boolean getStockManagement() {
+		return Boolean.TRUE.equals(companyStockManagement) ||Boolean.TRUE.equals(customerStockManagement)||Boolean.TRUE.equals(supplierStockManagement);  
+	}
+	
+
+	@Transient
+	public Integer getPreferredWarehouseId() {
+		return preferredWarehouse != null ? preferredWarehouse.getId() : null;
 	}
 
 	@Transient
-	public void setPreferredLocationId(Integer preferredLocationId){
-		if(preferredLocation==null || !preferredLocationId.equals(preferredLocation.getId()))
-			preferredLocation=new Location();
+	public void setPreferredWarehouseId(Integer preferredWarehouseId) {
+		if (preferredWarehouse == null || !preferredWarehouseId.equals(preferredWarehouse.getId()))
+			preferredWarehouse = new Warehouse();
+		preferredWarehouse.setId(preferredWarehouseId);
+	}
+
+	@Transient
+	public Integer getPreferredLocationId() {
+		return preferredLocation != null ? preferredLocation.getId() : null;
+	}
+
+	@Transient
+	public void setPreferredLocationId(Integer preferredLocationId) {
+		if (preferredLocation == null || !preferredLocationId.equals(preferredLocation.getId()))
+			preferredLocation = new Location();
 		preferredLocation.setId(preferredLocationId);
 	}
 
-	
 	@Transient
-	public String getPreferredLocationName(){
-		return preferredLocation!=null?preferredLocation.getName():null;
+	public String getPreferredLocationName() {
+		return preferredLocation != null ? preferredLocation.getName() : null;
 	}
 
 	@Transient
-	public void setPreferredLocationName(String preferredLocationName){
-		if(preferredLocation==null)
-			preferredLocation=new Location();
+	public void setPreferredLocationName(String preferredLocationName) {
+		if (preferredLocation == null)
+			preferredLocation = new Location();
 		preferredLocation.setName(preferredLocationName);
 	}
 
-
-	
 	@Transient
-	public String getPreferredWarehouseName(){
-		return preferredWarehouse!=null?preferredWarehouse.getName():null;
+	public String getPreferredWarehouseName() {
+		return preferredWarehouse != null ? preferredWarehouse.getName() : null;
 	}
 
 	@Transient
-	public void setPreferredWarehouseName(String preferredWarehouseName){
-		if(preferredWarehouse==null)
-			preferredWarehouse=new Warehouse();
+	public void setPreferredWarehouseName(String preferredWarehouseName) {
+		if (preferredWarehouse == null)
+			preferredWarehouse = new Warehouse();
 		preferredWarehouse.setName(preferredWarehouseName);
 	}
 
@@ -523,7 +538,5 @@ public class Project extends GenericModel<Integer> {
 	public void setPreferredWarehouse(Warehouse preferredWarehouse) {
 		this.preferredWarehouse = preferredWarehouse;
 	}
-	
-	
 
 }

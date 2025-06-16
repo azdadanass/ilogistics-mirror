@@ -67,7 +67,7 @@
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<f:subview rendered="#{projectView.project.customerStockManagement}">
+					<f:subview rendered="#{projectView.project.stockManagement}">
 						<li>
 							<a data-toggle="tab" href="#tab2">
 								<i class="blue ace-icon fa fa-list bigger-120"></i>
@@ -367,7 +367,7 @@
 						</div>
 						<div class="space-16" />
 					</div>
-					<f:subview id="tab2" rendered="#{projectView.project.customerStockManagement}">
+					<f:subview id="tab2" rendered="#{projectView.project.stockManagement}">
 						<div id="tab2" class="tab-pane">
 							<p:messages id="messages" closable="true" />
 							<div class="row">

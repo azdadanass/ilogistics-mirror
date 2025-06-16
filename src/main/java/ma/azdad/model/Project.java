@@ -153,6 +153,16 @@ public class Project extends GenericModel<Integer> {
 		}
 	}
 	
+	public void addManager(ProjectManager manager) {
+		manager.setProject(this);
+		managerList.add(manager);
+	}
+
+	public void removeManager(ProjectManager manager) {
+		manager.setProject(null);
+		managerList.remove(manager);
+	}
+	
 	
 	@Transient
 	public Boolean getWarehousing() {

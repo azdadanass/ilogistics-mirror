@@ -2,7 +2,9 @@ package ma.azdad.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectManager;
 import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectStatus;
 import ma.azdad.model.ProjectTypes;
@@ -23,6 +26,7 @@ import ma.azdad.model.User;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
 @Component
@@ -76,7 +80,7 @@ public class ProjectView {
 			else
 				list2 = list1 = list.stream().filter(project -> customerId.equals(project.getTmpCustomerId())).collect(Collectors.toList());
 		} else if ("/projectList.xhtml".equals(currentPath))
-			list2 = list1 = projectService.findLightByManager(sessionView.getUsername(),status);
+			list2 = list1 = projectService.findLightByManager(sessionView.getUsername(), status);
 	}
 
 	public void setProject(Integer projectId) {
@@ -112,35 +116,93 @@ public class ProjectView {
 		project = projectService.save(project);
 		refreshList();
 	}
-	
+
+	// managers
+	public Boolean editManagerList = false;
+
+	public Boolean canEditManagerList() {
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && !editManagerList;
+	}
+
+	public Boolean canAddManager() {
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && editManagerList;
+	}
+
+	public void addManager() {
+		if (!canAddManager())
+			return;
+		project.addManager(new ProjectManager());
+	}
+
+	public Boolean canSaveManagerList() {
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && editManagerList;
+	}
+
+	public Boolean validateSaveManagerList() {
+		Set<String> keySet = new HashSet<String>();
+		for (ProjectManager manager : project.getManagerList()) {
+			if (manager.getUserUsername() == null || manager.getUserUsername().isEmpty())
+				return FacesContextMessages.ErrorMessages("User should not be null");
+			if (manager.getType() == null)
+				return FacesContextMessages.ErrorMessages("Type should not be null");
+			if (!keySet.add(manager.getType().ordinal() + manager.getUserUsername()))
+				return FacesContextMessages.ErrorMessages("Duplicate Line !");
+		}
+
+		return true;
+	}
+
+	public void saveManagerList() {
+		if (!canSaveManagerList() || !validateSaveManagerList())
+			return;
+		project.getManagerList().forEach(i -> i.setUser(userService.findOneLight(i.getUserUsername())));
+		projectService.save(project);
+		project = projectService.findOne(project.getId());
+		
+		
+		System.out.println(project.getManagerFullName());
+		editManagerList = false;
+	}
+
+	public Boolean canDeleteManager() {
+		return sessionView.isTheConnectedUser(project.getManager().getUsername());
+	}
+
+	public void deleteManager(ProjectManager manager) {
+		if (!canDeleteManager())
+			return;
+		project.removeManager(manager);
+		projectService.save(project);
+		project = projectService.findOne(project.getId());
+	}
+
 	// inplace
 	public Boolean canEditInplace() {
 		return sessionView.isTheConnectedUser(project.getManager().getUsername());
 	}
-	
+
 	public void updateApproximativeStoragePeriod() {
 		if (!canEditInplace())
 			return;
-		projectService.updateApproximativeStoragePeriod(project.getId(),project.getApproximativeStoragePeriod());
+		projectService.updateApproximativeStoragePeriod(project.getId(), project.getApproximativeStoragePeriod());
 	}
-	
+
 	public void updatePreferredWarehouse() {
 		if (!canEditInplace())
 			return;
-		projectService.updatePreferredWarehouse(project.getId(),project.getPreferredWarehouseId());
-		
-		//clear preferredLocation
+		projectService.updatePreferredWarehouse(project.getId(), project.getPreferredWarehouseId());
+
+		// clear preferredLocation
 		project.setPreferredLocation(null);
-		projectService.updatePreferredLocation(project.getId(),null);
+		projectService.updatePreferredLocation(project.getId(), null);
 	}
-	
+
 	public void updatePreferredLocation() {
 		if (!canEditInplace())
 			return;
-		projectService.updatePreferredLocation(project.getId(),project.getPreferredLocationId());
+		projectService.updatePreferredLocation(project.getId(), project.getPreferredLocationId());
 	}
-	
-	
+
 	public void updateCustomerWarehousing() {
 		if (!canEditInplace())
 			return;
@@ -200,7 +262,7 @@ public class ProjectView {
 			projectService.updateSupplierWarehousing(project.getId(), project.getSupplierWarehousing());
 		}
 	}
-	
+
 	public void updateSdm() {
 		if (!canEditInplace())
 			return;
@@ -220,7 +282,6 @@ public class ProjectView {
 			projectService.updateSdm(project.getId(), false);
 		}
 	}
-	
 
 	// generic
 	public List<Project> findLightOpen() {
@@ -375,6 +436,14 @@ public class ProjectView {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Boolean getEditManagerList() {
+		return editManagerList;
+	}
+
+	public void setEditManagerList(Boolean editManagerList) {
+		this.editManagerList = editManagerList;
 	}
 
 }

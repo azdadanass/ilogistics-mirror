@@ -63,14 +63,14 @@
 								</p:column>
 								<p:column headerText="SN" width="40">
 									<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
-									<p:commandLink id="hasSerialnumber" update="hasSerialnumber" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
+									<p:commandLink id="hasSerialnumber" update="hasSerialnumber,snType" partialSubmit="true" process="@this" rendered="#{packingView.editMode}">
 										<i class="ace-icon fa #{item.hasSerialnumber?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 										<f:setPropertyActionListener value="#{!item.hasSerialnumber}" target="#{item.hasSerialnumber}" />
 									</p:commandLink>
 								</p:column>
 								<p:column headerText="SN Type" width="50">
 									<h:outputText value="#{item.snType}" rendered="#{!packingView.editMode}" />
-									<h:selectOneMenu value="#{item.snType}" style="width:90px" rendered="#{packingView.editMode}">
+									<h:selectOneMenu id="snType" value="#{item.snType}" disabled="#{!item.hasSerialnumber}" style="width:90px" rendered="#{packingView.editMode}">
 										<f:selectItem itemLabel="---" noSelectionOption="true" />
 										<f:selectItem itemLabel="Numeric" itemValue="Numeric" />
 										<f:selectItem itemLabel="Bar Code" itemValue="Bar Code" />

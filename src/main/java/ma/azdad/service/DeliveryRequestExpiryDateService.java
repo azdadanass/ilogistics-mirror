@@ -119,16 +119,21 @@ public class DeliveryRequestExpiryDateService extends GenericService<Integer, De
 			result.put((Integer) row[0], (Double) row[1]);
 		return result;
 	}
-	
-	public List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId){
+
+	public List<DeliveryRequestExpiryDate> findByInboundDeliveryRequest(Integer inboundDeliveryRequestId) {
 		return repos.findByInboundDeliveryRequest(inboundDeliveryRequestId);
 	}
-	
-	public List<DeliveryRequestExpiryDate> findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(Integer outboundDeliveryRequestId,Integer partNumberId){
+
+	public List<DeliveryRequestExpiryDate> findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(Integer outboundDeliveryRequestId, Integer partNumberId) {
 		return repos.findRemainingQuantityByOutboundDeliveryRequestAndPartNumberGroupByExpiryDate(outboundDeliveryRequestId, partNumberId);
 	}
-	
+
 	public Long countByStockRow(Integer stockRowId) {
-		return ObjectUtils.firstNonNull(repos.countByStockRow(stockRowId),0l);
+		return ObjectUtils.firstNonNull(repos.countByStockRow(stockRowId), 0l);
+	}
+
+	// delivery reporting
+	public List<DeliveryRequestExpiryDate> findDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId) {
+		return repos.findDeliveryListsByCompanyOwner(username, warehouseList, assignedProjectList, companyId);
 	}
 }

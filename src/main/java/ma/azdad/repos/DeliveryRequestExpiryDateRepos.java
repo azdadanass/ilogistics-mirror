@@ -52,4 +52,27 @@ public interface DeliveryRequestExpiryDateRepos extends JpaRepository<DeliveryRe
 	
 	@Query("select count(*) from DeliveryRequestExpiryDate where stockRow.id = ?1")
 	Long countByStockRow(Integer stockRowId);
+	
+	
+	// delivery reporting
+	String c1 = "select new DeliveryRequestExpiryDate(sum(a.quantity),a.expiryDate,"
+			+ "a.stockRow.partNumber.name,a.stockRow.partNumber.description,a.stockRow.partNumber.brandName,a.stockRow.deliveryRequest.project.name," //
+			+ "a.stockRow.deliveryRequest.reference,a.stockRow.deliveryRequest.date4,"
+			+ "a.stockRow.deliveryRequest.deliverToCompanyType,"
+			+ "(select b.name from Company b where b.id = a.stockRow.deliveryRequest.deliverToCompany.id),"//
+			+ "(select b.name from Customer b where b.id = a.stockRow.deliveryRequest.deliverToCustomer.id),"//
+			+ "(select b.name from Supplier b where b.id = a.stockRow.deliveryRequest.deliverToSupplier.id),"//
+			+ "a.stockRow.deliveryRequest.deliverToOther,"//
+			+ "(select b.name from Site b where b.id = a.stockRow.deliveryRequest.destination.id),"//
+			+ "(select b.name from Customer b where b.id = (select c.customer.id from Project c where c.id = a.stockRow.deliveryRequest.destinationProject.id)),"//
+			+ "(select b.name from Project b where b.id = a.stockRow.deliveryRequest.destinationProject.id),"//
+			+ "(select b.name from Customer b where b.id = a.stockRow.deliveryRequest.endCustomer.id),"//
+			+ "(select concat(b.numeroInvoice,'-',(select c.project.customer.abbreviation from Po c where c.id = a.stockRow.deliveryRequest.po.id)) from Po b where b.id = a.stockRow.deliveryRequest.po.id),"//
+			+ "(select b.fullName from User b where b.username = a.stockRow.deliveryRequest.toUser.username),"//
+			+ "a.stockRow.deliveryRequest.warehouse.name"//
+			+ ") ";
+	
+	@Query(c1+"from DeliveryRequestExpiryDate a left join a.stockRow.deliveryRequest.warehouse as warehouse left join a.stockRow.deliveryRequest.company as company1 left join a.stockRow.inboundDeliveryRequest.company as company2 where (a.stockRow.deliveryRequest.project.manager.username = ?1 or a.stockRow.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.stockRow.deliveryRequest.project.costcenter.lob.bu.director.username = ?1 or warehouse.id in (?2) or a.stockRow.deliveryRequest.project.id in (?3)) and (company1.id = ?4 or company2.id = ?4) group by a.stockRow.deliveryRequest.id,a.stockRow.partNumber.id,a.expiryDate")
+	List<DeliveryRequestExpiryDate> findDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
+	
 }

@@ -66,7 +66,7 @@
 											<p:selectOneMenu value="#{stockRowView.projectName}" filter="true" filterMatchMode="contains">
 												<f:selectItem itemLabel="All" itemValue="All" />
 												<f:selectItems value="#{stockRowView.projectStrList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-												<p:ajax listener="#{stockRowView.changeProjectNameListener()}" update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeProjectNameListener()}" update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -91,7 +91,7 @@
 												<f:selectItem itemValue="Part Number" itemLabel="Part Number" />
 												<f:selectItem itemValue="Brand" itemLabel="Brand" />
 												<f:selectItem itemValue="Warehouse" itemLabel="Warehouse" />
-												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4" />
 											</h:selectOneMenu>
 										</div>
 									</div>
@@ -107,7 +107,7 @@
 													<p:selectOneMenu value="#{stockRowView.reportTypeValue}" filter="true" filterMatchMode="contains">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{stockRowView.reportTypeValueList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4" />
 													</p:selectOneMenu>
 												</div>
 											</div>
@@ -138,6 +138,12 @@
 						<a data-toggle="tab" href="#tab3" onclick="tab3()">
 							<i class="blue ace-icon fa fa-spinner bigger-120"></i>
 							<h:outputText value=" Team running inventory" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4" onclick="tab4()">
+							<i class="green ace-icon fa fa-barcode bigger-120"></i>
+							<h:outputText value=" Serial Number" />
 						</a>
 					</li>
 				</ul>
@@ -204,7 +210,7 @@
 												<f:param name="id" value="#{item.deliveryRequest.id}" />
 											</h:outputLink>
 										</p:column>
-										<p:column headerText="SDM" width="70" >
+										<p:column headerText="SDM" width="70">
 											<h:outputText value="#{item.deliveryRequest.sdm?'Yes':'No'}" styleClass="bolder #{item.deliveryRequest.sdm?'green':'red'}" />
 										</p:column>
 										<p:column headerText="DN" styleClass="hide">
@@ -421,6 +427,74 @@
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<p:remoteCommand name="tab4" action="#{stockRowView.setSummary(false)}" update="tab3" />
+						<h:panelGroup id="tab4">
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 col-xs-8">
+											<i class="fa fa-list" />
+											<h:outputText value=" SN" />
+										</div>
+										<div class="col-sm-2 hidden-xs">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="serialNumberList" fileName="serialNumberList" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{jobRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="serialNumberList" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="serialNumberList" value="#{jobRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number">
+														<h:outputText value="#{item.packingDetail.parent.partNumber.name}" styleClass="bolder blue" />
+													</p:column>
+													<p:column headerText="Description">
+														<h:outputText value="#{item.packingDetail.parent.partNumber.description}" styleClass="aa-cut-text blue" />
+													</p:column>
+													<p:column headerText="Packing Detail">
+														<h:outputText value="#{item.packingDetail.parent.name} / #{item.packingDetail.type}" />
+													</p:column>
+													<p:column headerText="SN Type">
+														<h:outputText value="#{item.packingDetail.snType}" />
+													</p:column>
+													<p:column headerText="Serial Number">
+														<h:outputText value="#{item.serialNumber}" />
+													</p:column>
+													<p:column headerText="Entry Mode">
+														<h:outputText id="entryMode" value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
+													</p:column>
+													<p:column headerText="GPS Coordinates">
+														<h:outputText value="#{item.latitude},#{item.longitude}" styleClass="blue" />
+													</p:column>
+													<p:column headerText="Actions" width="100" exportable="false">
+														<div class="action-buttons center">
+															<h:outputLink value="map.xhtml" rendered="#{item.longitude!=null}" target="blank">
+																<i class="fa fa-map-marker blue" />
+																<f:param name="latitude" value="#{item.latitude}" />
+																<f:param name="longitude" value="#{item.longitude}" />
+															</h:outputLink>
+														</div>
+													</p:column>
 										</p:dataTable>
 									</div>
 								</div>

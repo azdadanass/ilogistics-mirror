@@ -60,26 +60,46 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 			result = type.toLowerCase().contains(query);
 		return result;
 	}
+	
+	
+	@Transient
+	public String getPartNumberName(){
+		return parent!=null?parent.getPartNumberName():null;
+	}
 
-//	@Transient
-//	public String getTypeImage() {
-//		switch (type) {
-//		case "Pallet":
-//			return "/resources/img/pdt/pdt0.png";
-//		case "Box":
-//			return "/resources/img/pdt/pdt1.png";
-//		case "Crate":
-//			return "/resources/img/pdt/pdt2.png";
-//		case "Reel":
-//			return "/resources/img/pdt/pdt3.png";
-//		case "Plastic Bag":
-//			return "/resources/img/pdt/pdt4.png";
-//		case "Plastic Barrel":
-//			return "/resources/img/pdt/pdt5.png";
-//		default:
-//			return null;
-//		}
-//	}
+	@Transient
+	public void setPartNumberName(String partNumberName){
+		if(parent==null)
+			parent=new Packing();
+		parent.setPartNumberName(partNumberName);
+	}
+	
+
+	@Transient
+	public String getPartNumberDescription(){
+		return parent!=null?parent.getPartNumberDescription():null;
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription){
+		if(parent==null)
+			parent=new Packing();
+		parent.setPartNumberDescription(partNumberDescription);
+	}
+	
+	@Transient
+	public String getPartNumberBrandName(){
+		return parent!=null?parent.getPartNumberBrandName():null;
+	}
+
+	@Transient
+	public void setPartNumberBrandName(String partNumberBrandName){
+		if(parent==null)
+			parent=new Packing();
+		parent.setPartNumberBrandName(partNumberBrandName);
+	}
+
+
 
 	public String getType() {
 		return type;

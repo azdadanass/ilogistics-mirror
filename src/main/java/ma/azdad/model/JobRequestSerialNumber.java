@@ -36,6 +36,7 @@ public class JobRequestSerialNumber extends GenericModel<Integer> implements Ser
 
 	//c1
 	public JobRequestSerialNumber(Integer id,String serialNumber,Double longitude,Double latitude,String entryMode,String phoneModel,Date date,//
+			String packingDetailType,String packingName,//
 			String partNumberName, String partNumberDescription,String partNumberBrandName,String projectName,//
 			String deliveryRequestReference,Date deliveryRequestDate4, //
 			CompanyType deliverToCompanyType,String deliverToCompanyName,String deliverToCustomerName,String deliverToSupplierName,String deliverToOther,//
@@ -50,6 +51,8 @@ public class JobRequestSerialNumber extends GenericModel<Integer> implements Ser
 		this.phoneModel=phoneModel;
 		this.date=date;
 		
+		this.setPackingDetailType(packingDetailType);
+		this.setPackingName(packingName);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberBrandName(partNumberBrandName);
@@ -81,6 +84,30 @@ public class JobRequestSerialNumber extends GenericModel<Integer> implements Ser
 		if (jobRequest == null)
 			jobRequest = new JobRequest();
 		jobRequest.setProjectName(projectName);
+	}
+	
+	@Transient
+	public String getPackingDetailType(){
+		return packingDetail!=null?packingDetail.getType():null;
+	}
+
+	@Transient
+	public void setPackingDetailType(String packingDetailType){
+		if(packingDetail==null)
+			packingDetail=new PackingDetail();
+		packingDetail.setType(packingDetailType);
+	}
+	
+	@Transient
+	public String getPackingName(){
+		return packingDetail!=null?packingDetail.getParentName():null;
+	}
+
+	@Transient
+	public void setPackingName(String packingName){
+		if(packingDetail==null)
+			packingDetail=new PackingDetail();
+		packingDetail.setParentName(packingName);
 	}
 	
 	@Transient

@@ -61,6 +61,19 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 		return result;
 	}
 	
+	@Transient
+	public String getParentName(){
+		return parent!=null?parent.getName():null;
+	}
+
+	@Transient
+	public void setParentName(String parentName){
+		if(parent==null)
+			parent=new Packing();
+		parent.setName(parentName);
+	}
+
+	
 	
 	@Transient
 	public String getPartNumberName(){

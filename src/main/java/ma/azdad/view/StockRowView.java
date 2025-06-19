@@ -114,13 +114,13 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 	private List<StockRow> deliveryList3;
 
 	private List<DeliveryRequestSerialNumber> serialNumberDeliveryList1 = new ArrayList<DeliveryRequestSerialNumber>();
-	private List<DeliveryRequestSerialNumber> serialNumberDeliveryList2;
+	private List<DeliveryRequestSerialNumber> serialNumberDeliveryList2= new ArrayList<DeliveryRequestSerialNumber>();
 
 	private List<DeliveryRequestExpiryDate> expiryDeliveryList1 = new ArrayList<DeliveryRequestExpiryDate>();
-	private List<DeliveryRequestExpiryDate> expiryDeliveryList2;
+	private List<DeliveryRequestExpiryDate> expiryDeliveryList2= new ArrayList<DeliveryRequestExpiryDate>();
 
 	private List<JobRequestSerialNumber> jobRequestSerialNumerList1 = new ArrayList<JobRequestSerialNumber>();
-	private List<JobRequestSerialNumber> jobRequestSerialNumerList2;
+	private List<JobRequestSerialNumber> jobRequestSerialNumerList2= new ArrayList<JobRequestSerialNumber>();
 
 	private List<Company> companyList;
 	private List<Customer> customerList;
@@ -392,8 +392,6 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 							cacheView.getAssignedProjectList(), companyId);
 					expiryDeliveryList1 = deliveryRequestExpiryDateService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(),
 							companyId);
-					jobRequestSerialNumerList1 = jobRequestSerialNumberService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
-							cacheView.getAssignedProjectList(), companyId);
 				}
 				if (customerId != null)
 					deliveryList1 = stockRowService.findDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
@@ -414,8 +412,11 @@ public class StockRowView extends GenericView<Integer, StockRow, StockRowRepos, 
 			break;
 		case "/sdmDeliveryReporting.xhtml":
 			if (sessionView.getInternal() || sessionView.getIsWM()) {
-				if (companyId != null)
+				if (companyId != null) {
 					deliveryList1 = stockRowService.findSdmDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), companyId);
+					jobRequestSerialNumerList1 = jobRequestSerialNumberService.findDeliveryListsByCompanyOwner(sessionView.getUsername(), cacheView.getWarehouseList(),
+							cacheView.getAssignedProjectList(), companyId);
+				}
 				if (customerId != null)
 					deliveryList1 = stockRowService.findSdmDeliveryListsByCustomerOwner(sessionView.getUsername(), cacheView.getWarehouseList(), cacheView.getAssignedProjectList(), customerId);
 			} else if (sessionView.getIsExternalPm()) {

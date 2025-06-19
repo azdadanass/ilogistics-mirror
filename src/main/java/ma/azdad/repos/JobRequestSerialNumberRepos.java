@@ -12,6 +12,7 @@ import ma.azdad.model.JobRequestSerialNumber;
 public interface JobRequestSerialNumberRepos extends JpaRepository<JobRequestSerialNumber, Integer> {
 	
 	String c1="select new JobRequestSerialNumber(a.id,a.serialNumber,a.longitude,a.latitude,a.entryMode,a.phoneModel,a.date,"//
+			+ "a.packingDetail.type,a.packingDetail.parent.name,"//
 			+ "a.packingDetail.parent.partNumber.name,a.packingDetail.parent.partNumber.description,a.packingDetail.parent.partNumber.brandName,a.deliveryRequest.project.name," //
 			+ "a.deliveryRequest.reference,a.deliveryRequest.date4,"
 			+ "a.deliveryRequest.deliverToCompanyType,"
@@ -28,8 +29,7 @@ public interface JobRequestSerialNumberRepos extends JpaRepository<JobRequestSer
 			+ "a.deliveryRequest.warehouse.name"//
 			+ ") ";
 	
-	
-	@Query(c1+"from JobRequestSerialNumber a left join a.deliveryRequest.warehouse as warehouse where (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1 or warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) and (a.deliveryRequest.company.id = ?4) and a.deliveryRequest.sdm is true")
+	@Query(c1+"from JobRequestSerialNumber a left join a.deliveryRequest.warehouse as warehouse where (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1 or warehouse.id in (?2) or a.deliveryRequest.project.id in (?3)) and (a.deliveryRequest.company.id = ?4) and a.deliveryRequest.sdm is true and a.serialNumber is not null and a.serialNumber != '' ")
 	List<JobRequestSerialNumber> findDeliveryListsByCompanyOwner(String username, List<Integer> warehouseList, List<Integer> assignedProjectList, Integer companyId);
 
 }

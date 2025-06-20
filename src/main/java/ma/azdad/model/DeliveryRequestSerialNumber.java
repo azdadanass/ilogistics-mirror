@@ -91,7 +91,7 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 	}
 
 	// c2
-	public DeliveryRequestSerialNumber(Integer id, Integer packingNumero, String serialNumber, String box, //
+	public DeliveryRequestSerialNumber(Integer id, Integer packingNumero, String serialNumber, String box,Double longitude,Double latitude,String entryMode, //
 			String partNumberName, String partNumberDescription,String partNumberBrandName, StockRowStatus inboundStockRowStatus, Integer inboundDeliveryRequestId, String inboundDeliveryRequestReference, //
 			String packingDetailType, String locationName,// 
 			String outboundDeliveryRequestReference,String outboundProjectName,CompanyType outboundDeliverToCompanyType,String outboundDeliverToCompanyName,String outboundDeliverToCustomerName,String outboundDeliverToSupplierName,String outboundDeliverToOther,//
@@ -101,6 +101,9 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 		this.packingNumero = packingNumero;
 		this.serialNumber = serialNumber;
 		this.box = box;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.entryMode = entryMode;
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setPartNumberBrandName(partNumberBrandName);

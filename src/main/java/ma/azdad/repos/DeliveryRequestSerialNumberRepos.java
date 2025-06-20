@@ -16,7 +16,7 @@ import ma.azdad.model.StockRowStatus;
 public interface DeliveryRequestSerialNumberRepos extends JpaRepository<DeliveryRequestSerialNumber, Integer> {
 
 	String c1 = "select new DeliveryRequestSerialNumber(a.id,a.packingNumero,a.serialNumber,a.box,a.inboundStockRow.partNumber.name,a.inboundStockRow.partNumber.description,a.inboundStockRow.status,a.inboundStockRow.deliveryRequest.id,a.inboundStockRow.deliveryRequest.reference,a.packingDetail.type,a.inboundStockRow.location.name) ";
-	String c2 = "select new DeliveryRequestSerialNumber(a.id,a.packingNumero,a.serialNumber,a.box," //
+	String c2 = "select new DeliveryRequestSerialNumber(a.id,a.packingNumero,a.serialNumber,a.box,a.longitude,a.latitude,a.entryMode," //
 			+ "a.inboundStockRow.partNumber.name,a.inboundStockRow.partNumber.description,a.inboundStockRow.partNumber.brandName,a.inboundStockRow.status," //
 			+ "a.inboundStockRow.deliveryRequest.id,a.inboundStockRow.deliveryRequest.reference,a.packingDetail.type,a.inboundStockRow.location.name,"//
 			+ "a.outboundDeliveryRequest.reference,a.outboundDeliveryRequest.project.name,a.outboundDeliveryRequest.deliverToCompanyType," //

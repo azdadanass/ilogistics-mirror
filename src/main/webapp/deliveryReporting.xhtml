@@ -595,6 +595,12 @@
 											<p:column headerText="Box Id">
 												<h:outputText value="#{item.box}" styleClass="orange bolder" />
 											</p:column>
+											<p:column headerText="Entry Mode">
+												<h:outputText id="entryMode" value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
+											</p:column>
+											<p:column headerText="GPS Coordinates">
+												<h:outputText value="#{item.latitude},#{item.longitude}" />
+											</p:column>
 										</p:dataTable>
 									</div>
 								</div>

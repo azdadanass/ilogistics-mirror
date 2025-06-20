@@ -486,6 +486,14 @@
 													<p:column headerText="GPS Coordinates">
 														<h:outputText value="#{item.latitude},#{item.longitude}" styleClass="blue" />
 													</p:column>
+													<p:column headerText="Phone Model">
+														<h:outputText value="#{item.phoneModel}" />
+													</p:column>
+													<p:column headerText="Date">
+														<h:outputText value="#{item.date}">
+															<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+														</h:outputText>
+													</p:column>
 													<p:column headerText="Actions" width="100" exportable="false">
 														<div class="action-buttons center">
 															<h:outputLink value="map.xhtml" rendered="#{item.longitude!=null}" target="blank">

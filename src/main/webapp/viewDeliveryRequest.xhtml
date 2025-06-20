@@ -1921,13 +1921,16 @@
 											<h:outputText value="#{item.serialNumber}" styleClass="green bolder"
 												rendered="#{!deliveryRequestSerialNumberView.editMode or (item.inboundStockRow != null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound) }" />
 											<p:inputText value="#{item.serialNumber}" readonly="#{item.outboundDeliveryRequest!=null}"
-												rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
+												rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" >
+												<p:ajax event="keyup" listener="#{item.changeSerialNumberListener()}" update="entryMode" />
+												</p:inputText>
 											<p:selectOneMenu value="#{item.serialNumber}" filter="true" filterMatchMode="contains" style="width:100px"
 												rendered="#{item.inboundStockRow == null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{deliveryRequestSerialNumberView.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(item)}" var="i" itemLabel="#{i.serialNumber}"
 													itemValue="#{i.serialNumber}" />
 												<p:ajax listener="#{deliveryRequestSerialNumberView.selectSerialNumberListener(item,deliveryRequestView.deliveryRequest)}" update="serialNumberList" />
+												<p:ajax listener="#{item.changeSerialNumberListener()}" update="entryMode"/>
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="Box Id">
@@ -1935,7 +1938,7 @@
 											<p:inputText value="#{item.box}" rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" />
 										</p:column>
 										<p:column headerText="Entry Mode">
-											<h:outputText value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
+											<h:outputText id="entryMode" value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
 										</p:column>
 										<p:column headerText="GPS Coordinates">
 											<h:outputText value="#{item.latitude},#{item.longitude}" />

@@ -45,6 +45,10 @@ public class DeliveryRequestSerialNumber extends GenericModel<Integer> implement
 		}
 
 	}
+	
+	public void changeSerialNumberListener() {
+		this.entryMode = "Manual";
+	}
 
 	public DeliveryRequestSerialNumber() {
 		super();

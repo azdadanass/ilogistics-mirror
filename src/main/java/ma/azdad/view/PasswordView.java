@@ -58,7 +58,7 @@ public class PasswordView {
 		FacesContextMessages.InfoMessages("Password Changed !");
 		
 		User user = sessionView.getUser();
-		radiusDatabaseService.updateRadiusdb(true, user.getLogin(), newPasswordMD5, user.getActive(), user.getVpnAccess());
+		radiusDatabaseService.updateRadiusdb(true, user, newPasswordMD5);
 		
 		emailService.sendPasswordChangedNotification(sessionView.getUser());
 		smsService.sendSms(sessionView.getUser().getPhone(), "Dear " + sessionView.getUser().getFullName() + ", Your password has been changed successfully on the Orange application system");

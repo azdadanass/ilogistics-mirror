@@ -48,6 +48,12 @@ public class User extends GenericModel<String> {
 	private Boolean accountNonLocked;
 	private Integer failedAttempt;
 	private Date lockTime;
+	
+	// double auth
+	private Boolean twoFactorAuthentication = false;
+	private String twoFactorAuthenticationType; // totp,email
+	private String verificationCode;
+	private String totpSecret;
 
 	// external systems
 	private Boolean myhr = false;
@@ -785,6 +791,38 @@ public class User extends GenericModel<String> {
 
 	public void setVpnAccess(Boolean vpnAccess) {
 		this.vpnAccess = vpnAccess;
+	}
+	
+	public Boolean getTwoFactorAuthentication() {
+		return twoFactorAuthentication;
+	}
+
+	public void setTwoFactorAuthentication(Boolean twoFactorAuthentication) {
+		this.twoFactorAuthentication = twoFactorAuthentication;
+	}
+
+	public String getTwoFactorAuthenticationType() {
+		return twoFactorAuthenticationType;
+	}
+
+	public void setTwoFactorAuthenticationType(String twoFactorAuthenticationType) {
+		this.twoFactorAuthenticationType = twoFactorAuthenticationType;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+
+	public String getTotpSecret() {
+		return totpSecret;
+	}
+
+	public void setTotpSecret(String totpSecret) {
+		this.totpSecret = totpSecret;
 	}
 
 }

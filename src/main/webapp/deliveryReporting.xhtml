@@ -66,7 +66,8 @@
 											<p:selectOneMenu value="#{stockRowView.projectName}" filter="true" filterMatchMode="contains">
 												<f:selectItem itemLabel="All" itemValue="All" />
 												<f:selectItems value="#{stockRowView.projectStrList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-												<p:ajax listener="#{stockRowView.changeProjectNameListener()}" update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeProjectNameListener()}"
+													update="reportType,reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4,:main_form:tab5" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -90,7 +91,7 @@
 												<f:selectItem itemValue="Part Number" itemLabel="Part Number" />
 												<f:selectItem itemValue="Brand" itemLabel="Brand" />
 												<f:selectItem itemValue="Warehouse" itemLabel="Warehouse" />
-												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+												<p:ajax listener="#{stockRowView.changeReportTypeListener()}" update="reportTypeValue,:main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4,:main_form:tab5" />
 											</h:selectOneMenu>
 										</div>
 									</div>
@@ -106,7 +107,7 @@
 													<p:selectOneMenu value="#{stockRowView.reportTypeValue}" filter="true" filterMatchMode="contains">
 														<f:selectItem itemLabel="---" noSelectionOption="true"></f:selectItem>
 														<f:selectItems value="#{stockRowView.reportTypeValueList}" var="item" itemLabel="#{item}" itemValue="#{item}" />
-														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3" />
+														<p:ajax listener="#{stockRowView.refreshDeliveryLists()}" update=":main_form:list1,:main_form:list1Size,:main_form:tab2,:main_form:tab3,:main_form:tab4,:main_form:tab5" />
 													</p:selectOneMenu>
 												</div>
 											</div>
@@ -137,6 +138,18 @@
 						<a data-toggle="tab" href="#tab3" onclick="tab3()">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Financial Summary" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4" onclick="tab4()">
+							<i class="green ace-icon fa fa-barcode bigger-120"></i>
+							<h:outputText value=" Serial Number" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab5" onclick="tab5()">
+							<i class="red ace-icon fa fa-remove bigger-120"></i>
+							<h:outputText value=" Expiry Status" />
 						</a>
 					</li>
 				</ul>
@@ -171,8 +184,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="list1" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="list1" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number" exportable="false">
 											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 												<h:outputText value="#{item.partNumber.name}" />
@@ -295,8 +308,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="tab2" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="tab2" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Photo" width="100">
 											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
 												<f:param name="fileName" value="#{item.partNumberImage}" />
@@ -453,8 +466,8 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="datatable" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:dataTable id="datatable" value="#{stockRowView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 											<p:column headerText="Part Number" exportable="false" width="200">
 												<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder pink" target="blank">
 													<h:outputText value="#{item.partNumber.name}" />
@@ -473,9 +486,8 @@
 													<f:param name="id" value="#{item.deliveryRequest.id}" />
 												</h:outputLink>
 											</p:column>
-											
-											<p:column headerText="Inbound Po" width="70" >
-													<h:outputText value="#{item.inboundPoNumero}" styleClass="bolder pink" />
+											<p:column headerText="Inbound Po" width="70">
+												<h:outputText value="#{item.inboundPoNumero}" styleClass="bolder pink" />
 											</p:column>
 											<p:column headerText="DN" styleClass="hide">
 												<h:outputText value="#{item.deliveryRequest.reference}" />
@@ -517,6 +529,134 @@
 											</p:column>
 											<p:column headerText="Total Price" styleClass="hide">
 												<h:outputText value="#{item.totalPrice == 0?0:-item.totalPrice}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<p:remoteCommand name="tab4" action="#{stockRowView.setSummary(false)}" update="tab3" />
+						<h:panelGroup id="tab4">
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 col-xs-8">
+											<i class="fa fa-list" />
+											<h:outputText value=" SN" />
+										</div>
+										<div class="col-sm-2 hidden-xs">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="serialNumberList" fileName="serialNumberList" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="serialNumberList" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="serialNumberList" value="#{deliveryRequestSerialNumberView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Inbound DN / Packing Numero" groupRow="true" width="300" exportable="false">
+												<h:outputText value="#{item.inboundDeliveryRequestReference} / " styleClass="bolder green" />
+												<h:outputText value="#{item.packingNumero}" styleClass="badge #{utilsView.getBadge(item.packingNumero)}" />
+											</p:column>
+											<p:column headerText="Outbound DN" width="300" exportable="false">
+												<h:outputText value="#{item.outboundDeliveryRequestReference}" styleClass="bolder red" />
+											</p:column>
+											<p:column headerText="Reference" styleClass="hide" rendered="#{!deliveryRequestSerialNumberView.list2.isEmpty()}">
+												<h:outputText value="#{item.getReference(false)}" />
+											</p:column>
+											<p:column headerText="Packing Detail">
+												<h:outputText value="#{item.packingDetail.type}" styleClass="purple" />
+											</p:column>
+											<p:column headerText="Status" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.status.value}" />
+												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Location" exportable="false">
+												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
+												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Serial Number">
+												<h:outputText value="#{item.serialNumber}" styleClass="green bolder" />
+											</p:column>
+											<p:column headerText="Box Id">
+												<h:outputText value="#{item.box}" styleClass="orange bolder" />
+											</p:column>
+											<p:column headerText="Entry Mode">
+												<h:outputText id="entryMode" value="#{item.entryMode}" styleClass="badge #{item.entryMode=='Manual'?'badge-info':'badge-success'}" />
+											</p:column>
+											<p:column headerText="GPS Coordinates">
+												<h:outputText value="#{item.latitude},#{item.longitude}" />
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+					</div>
+					<div id="tab5" class="tab-pane">
+						<p:remoteCommand name="tab5" action="#{stockRowView.setSummary(false)}" update="tab5" />
+						<h:panelGroup id="tab5">
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-8 col-xs-8">
+											<i class="fa fa-list" />
+											<h:outputText value=" Expiry" />
+										</div>
+										<div class="col-sm-2 hidden-xs">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="expiryList" fileName="expiryList" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
+										</div>
+										<div class="col-sm-2 col-xs-4">
+											<div class="nav-search minimized">
+												<span class="input-icon">
+													<p:inputText value="#{deliveryRequestSerialNumberView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+														<p:ajax event="keyup" update="expiryList" />
+													</p:inputText>
+													<i class="ace-icon fa fa-search nav-search-icon" />
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="expiryList" value="#{deliveryRequestExpiryDateView.list2}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Part Number">
+												<h:outputText value="#{item.stockRow.partNumber.name}" styleClass="bolder purple" />
+											</p:column>
+											<p:column headerText="Description">
+												<h:outputText value="#{item.stockRow.partNumber.description}" styleClass="light-blue aa-cut-text" />
+											</p:column>
+											<p:column headerText="DN" width="300" exportable="false">
+												<h:outputText value="#{item.deliveryRequestReference}" styleClass="bolder red" />
+											</p:column>
+											<p:column headerText="Quantity">
+												<h:outputText value="#{item.quantity}">
+													<f:convertNumber type="number" maxFractionDigits="0" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Expiry Date">
+												<h:outputText value="#{item.expiryDate}">
+													<f:convertDateTime pattern="yyyy-MM-dd" />
+												</h:outputText>
 											</p:column>
 										</p:dataTable>
 									</div>

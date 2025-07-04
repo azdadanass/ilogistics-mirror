@@ -360,6 +360,10 @@ public class UserView {
 	public List<User> findLightActive(Boolean internal) {
 		return userService.findLight(internal, true);
 	}
+	
+	public List<User> findLightActive() {
+		return findLightByStatus(true);
+	}
 
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return userService.findLightByCompany(companyId, active);

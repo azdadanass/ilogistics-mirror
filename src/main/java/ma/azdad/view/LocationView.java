@@ -177,6 +177,10 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
 	}
 
+	public List<Location> findLightByWarehouse(Integer warehouseId){
+		return service.findLightByWarehouse(warehouseId);
+	}
+	
 	// GETTERS & SETTERS
 
 	public LocationService getLocationService() {

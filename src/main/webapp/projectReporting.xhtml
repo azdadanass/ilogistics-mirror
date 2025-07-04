@@ -71,7 +71,8 @@
 												<p:ajax listener="#{projectView.setProject(stockRowView.projectId)}" update=":main_form" />
 												<p:ajax listener="#{jobRequestDeliveryDetailView.refreshListByProject(stockRowView.projectId)}" update=":main_form:panel4" />
 												<p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.projectId)}" update=":main_form:panel5" />
-												<p:ajax listener="#{deliveryRequestSerialNumberView.refreshList()}" update=":main_form:panel6" />
+												<!-- <p:ajax listener="#{deliveryRequestSerialNumberView.refreshList()}" update=":main_form:panel6" /> -->
+												<p:ajax listener="#{deliveryRequestSerialNumberView.refreshProjectReportingList(stockRowView.projectId)}" update=":main_form:panel6" />
 											</p:selectOneMenu>
 										</div>
 									</div>

@@ -125,10 +125,10 @@
 								<h:outputText value="#{item.managerFullName}" styleClass="bolder pink" />
 							</p:column>
 							<p:column headerText="Warehousing" width="80">
-								<i class="ace-icon fa #{item.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+								<i class="ace-icon fa #{item.warehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>
 							<p:column headerText="Stock Management" width="80">
-								<i class="ace-icon fa #{item.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+								<i class="ace-icon fa #{item.stockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 							</p:column>
 							<p:column headerText="SDM" width="80">
 								<i class="ace-icon fa #{item.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
@@ -138,10 +138,10 @@
 							</p:column>
 							<p:column headerText="Actions" width="100">
 								<div class="action-buttons center">
-									<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{projectView.setProject(item.id)}" update=":editForm" oncomplete="PF('editDlg').show()">
+									<!-- <p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" action="#{projectView.setProject(item.id)}" update=":editForm" oncomplete="PF('editDlg').show()">
 										<i class="ace-icon fa fa-edit bigger-130 orange" />
 										<f:setPropertyActionListener value="#{item}" target="#{projectView.project}" />
-									</p:commandLink>
+									</p:commandLink> -->
 									<!-- <h:outputLink value="partNumberThresholdList.xhtml" title="Part Number Threshold List" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 										<f:param name="id" value="#{item.id}" />

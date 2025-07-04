@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 @Entity
 
-public class Project implements Serializable {
+public class Project extends GenericModel<Integer> {
 
 	private Integer id;
 	private String name;
@@ -54,6 +54,11 @@ public class Project implements Serializable {
 
 	private Boolean sdm = false;
 	private Boolean ism = false;
+
+	// ilogistics
+	private Integer approximativeStoragePeriod;
+	private Warehouse preferredWarehouse;
+	private Location preferredLocation;
 
 	private List<ProjectManager> managerList = new ArrayList<>();
 
@@ -102,10 +107,11 @@ public class Project implements Serializable {
 		this.tmpCustomerId = tmpCustomerId;
 	}
 
-	
 	// c2
-	public Project(Integer id, String name, String type, String subType,String status, Date startDate, Date endDate, //
-			String customerName, Boolean customerWarehousing, Boolean customerStockManagement, Boolean sdm,Boolean ism,//
+	public Project(Integer id, String name, String type, String subType, String status, Date startDate, Date endDate, //
+			String customerName, Boolean companyWarehousing, Boolean companyStockManagement, Boolean customerWarehousing, Boolean customerStockManagement, //
+			Boolean supplierWarehousing, Boolean supplierStockManagement, //
+			Boolean sdm, Boolean ism, //
 			String managerFullName) {
 		super();
 		this.id = id;
@@ -118,6 +124,10 @@ public class Project implements Serializable {
 		this.setCustomerName(customerName);
 		this.customerWarehousing = customerWarehousing;
 		this.customerStockManagement = customerStockManagement;
+		this.companyWarehousing = companyWarehousing;
+		this.companyStockManagement = companyStockManagement;
+		this.supplierWarehousing = supplierWarehousing;
+		this.supplierStockManagement = supplierStockManagement;
 		this.sdm = sdm;
 		this.ism = ism;
 		this.setManagerFullName(managerFullName);
@@ -141,6 +151,76 @@ public class Project implements Serializable {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	public void addManager(ProjectManager manager) {
+		manager.setProject(this);
+		managerList.add(manager);
+	}
+
+	public void removeManager(ProjectManager manager) {
+		manager.setProject(null);
+		managerList.remove(manager);
+	}
+	
+	
+	@Transient
+	public Boolean getWarehousing() {
+		return Boolean.TRUE.equals(companyWarehousing) ||Boolean.TRUE.equals(customerWarehousing)||Boolean.TRUE.equals(supplierWarehousing);  
+	}
+	
+	@Transient
+	public Boolean getStockManagement() {
+		return Boolean.TRUE.equals(companyStockManagement) ||Boolean.TRUE.equals(customerStockManagement)||Boolean.TRUE.equals(supplierStockManagement);  
+	}
+	
+
+	@Transient
+	public Integer getPreferredWarehouseId() {
+		return preferredWarehouse != null ? preferredWarehouse.getId() : null;
+	}
+
+	@Transient
+	public void setPreferredWarehouseId(Integer preferredWarehouseId) {
+		if (preferredWarehouse == null || !preferredWarehouseId.equals(preferredWarehouse.getId()))
+			preferredWarehouse = new Warehouse();
+		preferredWarehouse.setId(preferredWarehouseId);
+	}
+
+	@Transient
+	public Integer getPreferredLocationId() {
+		return preferredLocation != null ? preferredLocation.getId() : null;
+	}
+
+	@Transient
+	public void setPreferredLocationId(Integer preferredLocationId) {
+		if (preferredLocation == null || !preferredLocationId.equals(preferredLocation.getId()))
+			preferredLocation = new Location();
+		preferredLocation.setId(preferredLocationId);
+	}
+
+	@Transient
+	public String getPreferredLocationName() {
+		return preferredLocation != null ? preferredLocation.getName() : null;
+	}
+
+	@Transient
+	public void setPreferredLocationName(String preferredLocationName) {
+		if (preferredLocation == null)
+			preferredLocation = new Location();
+		preferredLocation.setName(preferredLocationName);
+	}
+
+	@Transient
+	public String getPreferredWarehouseName() {
+		return preferredWarehouse != null ? preferredWarehouse.getName() : null;
+	}
+
+	@Transient
+	public void setPreferredWarehouseName(String preferredWarehouseName) {
+		if (preferredWarehouse == null)
+			preferredWarehouse = new Warehouse();
+		preferredWarehouse.setName(preferredWarehouseName);
 	}
 
 	@Transient
@@ -171,7 +251,7 @@ public class Project implements Serializable {
 			manager = new User();
 		manager.setFullName(managerFullName);
 	}
-	
+
 	@Transient
 	public String getManagerEmail() {
 		return manager == null ? null : manager.getEmail();
@@ -441,6 +521,32 @@ public class Project implements Serializable {
 
 	public void setContract(Contract contract) {
 		this.contract = contract;
+	}
+
+	public Integer getApproximativeStoragePeriod() {
+		return approximativeStoragePeriod;
+	}
+
+	public void setApproximativeStoragePeriod(Integer approximativeStoragePeriod) {
+		this.approximativeStoragePeriod = approximativeStoragePeriod;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public Location getPreferredLocation() {
+		return preferredLocation;
+	}
+
+	public void setPreferredLocation(Location preferredLocation) {
+		this.preferredLocation = preferredLocation;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	public Warehouse getPreferredWarehouse() {
+		return preferredWarehouse;
+	}
+
+	public void setPreferredWarehouse(Warehouse preferredWarehouse) {
+		this.preferredWarehouse = preferredWarehouse;
 	}
 
 }

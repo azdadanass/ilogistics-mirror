@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ import ma.azdad.model.ProjectManagerType;
 @Repository
 public interface ProjectRepos extends JpaRepository<Project, Integer> {
 	String select1 = "select new Project(id,name,type,startDate,endDate,customer.id) ";
-	String c2 = "select new Project(id,name,type,subType,status,startDate,endDate,customer.name,customerWarehousing,customerStockManagement,sdm,ism,manager.fullName) ";
+	String c2 = "select new Project(id,name,type,subType,status,startDate,endDate,customer.name,companyWarehousing,companyStockManagement,customerWarehousing,customerStockManagement,supplierWarehousing,supplierStockManagement,sdm,ism,manager.fullName) ";
 
 	@Query("select new Project(id,name,type) from Project ")
 	public List<Project> findLight();
@@ -106,5 +107,51 @@ public interface ProjectRepos extends JpaRepository<Project, Integer> {
 
 	@Query("select id from Project where (companyWarehousing is true or supplierWarehousing is true or customerWarehousing is true) and status = 'Open' and (manager.username = ?1 or id in (?2) or id in (select b.project.id from ProjectAssignment b where b.user.username = ?1 and current_date between b.startDate and  b.endDate))")
 	public List<Integer> findAllProjectIdListByResource(String username,List<Integer> delegatedProjectList);
+	
+	
+	// inplace
+	@Modifying
+	@Query("update Project set approximativeStoragePeriod = ?2 where id = ?1")
+	void updateApproximativeStoragePeriod(Integer id,Integer approximativeStoragePeriod);
+	
+	@Modifying
+	@Query("update Project set preferredWarehouse.id = ?2 where id = ?1")
+	void updatePreferredWarehouse(Integer id,Integer preferredWarehouseId);
+	
+	@Modifying
+	@Query("update Project set preferredLocation.id = ?2 where id = ?1")
+	void updatePreferredLocation(Integer id,Integer preferredLocationId);
+	
+	@Modifying
+	@Query("update Project set customerWarehousing = ?2 where id = ?1")
+	void updateCustomerWarehousing(Integer projectId, Boolean customerWarehousing);
+
+	@Modifying
+	@Query("update Project set customerStockManagement = ?2 where id = ?1")
+	void updateCustomerStockManagement(Integer projectId, Boolean customerStockManagement);
+
+	@Modifying
+	@Query("update Project set companyWarehousing = ?2 where id = ?1")
+	void updateCompanyWarehousing(Integer projectId, Boolean companyWarehousing);
+
+	@Modifying
+	@Query("update Project set companyStockManagement = ?2 where id = ?1")
+	void updateCompanyStockManagement(Integer projectId, Boolean companyStockManagement);
+
+	@Modifying
+	@Query("update Project set supplierWarehousing = ?2 where id = ?1")
+	void updateSupplierWarehousing(Integer projectId, Boolean supplierWarehousing);
+
+	@Modifying
+	@Query("update Project set supplierStockManagement = ?2 where id = ?1")
+	void updateSupplierStockManagement(Integer projectId, Boolean supplierStockManagement);
+	
+	@Modifying
+	@Query("update Project set sdm = ?2 where id = ?1")
+	void updateSdm(Integer projectId, Boolean sdm);
+	
+	@Modifying
+	@Query("update Project set ism = ?2 where id = ?1")
+	void updateIsm(Integer projectId, Boolean ism);
 
 }

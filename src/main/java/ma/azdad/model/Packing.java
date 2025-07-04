@@ -60,15 +60,51 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 				volume += packingDetail.getQuantity() * packingDetail.getVolume();
 		}
 	}
-	
+
 	@Transient
 	public Boolean getHasSerialnumber() {
-		return detailList.stream().anyMatch(i->i.getHasSerialnumber());
+		return detailList.stream().anyMatch(i -> i.getHasSerialnumber());
 	}
 
 	@Transient
 	public String getStatus() {
 		return active ? "Active" : "Non Active";
+	}
+
+	@Transient
+	public String getPartNumberName() {
+		return partNumber != null ? partNumber.getName() : null;
+	}
+
+	@Transient
+	public void setPartNumberName(String partNumberName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setName(partNumberName);
+	}
+	
+	@Transient
+	public String getPartNumberDescription() {
+		return partNumber != null ? partNumber.getDescription() : null;
+	}
+
+	@Transient
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
+		partNumber.setDescription(partNumberDescription);
+	}
+	
+	@Transient
+	public String getPartNumberBrandName(){
+		return partNumber!=null?partNumber.getBrandName():null;
+	}
+
+	@Transient
+	public void setPartNumberBrandName(String partNumberBrandName){
+		if(partNumber==null)
+			partNumber=new PartNumber();
+		partNumber.setBrandName(partNumberBrandName);
 	}
 
 	public String getName() {

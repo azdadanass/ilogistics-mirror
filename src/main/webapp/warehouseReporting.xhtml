@@ -67,7 +67,8 @@
 												<f:selectItem noSelectionOption="true" itemLabel="---" />
 												<f:selectItems value="#{stockRowView.warehouseList}" var="item" itemLabel="#{item.name} #{item.hasStock?'*':''}" itemValue="#{item.id}" />
 												<p:ajax listener="#{warehouseView.setWarehouse(stockRowView.warehouseId)}" update=":main_form" />
-												<p:ajax listener="#{deliveryRequestSerialNumberView.refreshList()}" update=":main_form:panel4" />
+												<!-- <p:ajax listener="#{deliveryRequestSerialNumberView.refreshList()}" update=":main_form:panel4" /> -->
+												<p:ajax listener="#{deliveryRequestSerialNumberView.refreshWarehouseReportingList(stockRowView.warehouseId)}" update=":main_form:panel4" />
 												<!-- <p:ajax listener="#{jobRequestDeliveryDetailView.refreshListByWarehouse(stockRowView.warehouseId)}" update=":main_form:panel4" /> -->
 												<!-- <p:ajax listener="#{deliveryRequestDetailView.refreshList(stockRowView.warehouseId)}" update=":main_form:panel5" /> -->
 											</p:selectOneMenu>

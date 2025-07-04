@@ -19,14 +19,14 @@ public class ProjectManager extends GenericModel<Integer> {
 	private Project project;
 
 	@Transient
-	public String getUserUsername() {
-		return user == null ? null : user.getUsername();
+	public String getUserUsername(){
+		return user!=null?user.getUsername():null;
 	}
 
 	@Transient
-	public void setUserUsername(String userUsername) {
-		if (user == null)
-			user = new User();
+	public void setUserUsername(String userUsername){
+		if(user==null || !userUsername.equals(user.getUsername()))
+			user=new User();
 		user.setUsername(userUsername);
 	}
 

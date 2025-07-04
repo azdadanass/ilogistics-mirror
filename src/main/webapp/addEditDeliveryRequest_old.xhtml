@@ -98,7 +98,7 @@
 											<p:selectOneMenu value="#{deliveryRequestView.deliveryRequest.warehouse}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Warehouse should not be null" converter="#{genericSecuredConverter}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{warehouseView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
-												<p:ajax update="preferedLocation" />
+												<p:ajax update="preferredLocation" />
 											</p:selectOneMenu>
 										</div>
 									</div>
@@ -181,7 +181,7 @@
 											<h:outputText value="Prefered Storage Location" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
-											<h:selectOneMenu id="preferedLocation" value="#{deliveryRequestView.deliveryRequest.preferedLocation}" converter="#{genericSecuredConverter}">
+											<h:selectOneMenu id="preferredLocation" value="#{deliveryRequestView.deliveryRequest.preferredLocation}" converter="#{genericSecuredConverter}">
 												<f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
 											</h:selectOneMenu>
 										</div>

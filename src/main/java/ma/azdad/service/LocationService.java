@@ -48,6 +48,10 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 		return findByWarehouseAndStockRowStateAndOwner(deliveryRequest.getWarehouseId(),deliveryRequest.getStockRowState(),deliveryRequest.getOwnerType(),deliveryRequest.getOwnerId());
 	}
 	
+	public List<Location> findLightByWarehouse(Integer warehouseId){
+		return repos.findLightByWarehouse(warehouseId);
+	}
+	
 	//mobile
 	@SuppressWarnings("null")
 	public List<ma.azdad.mobile.model.Location> findByWarehouseAndStockRowStateAndOwnerMobile(Integer id,String state){

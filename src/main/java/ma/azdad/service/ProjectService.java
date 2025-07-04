@@ -13,7 +13,6 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Project;
 import ma.azdad.model.ProjectCustomerType;
@@ -25,11 +24,7 @@ import ma.azdad.repos.IssueRepos;
 import ma.azdad.repos.ProjectRepos;
 
 @Component
-@Transactional
-public class ProjectService {
-
-	@Autowired
-	ProjectRepos repos;
+public class ProjectService extends GenericService<Integer, Project, ProjectRepos> {
 
 	@Autowired
 	IssueRepos issueRepos;
@@ -44,6 +39,8 @@ public class ProjectService {
 		Hibernate.initialize(p.getCurrency());
 		Hibernate.initialize(p.getContract());
 		Hibernate.initialize(p.getManagerList());
+		Hibernate.initialize(p.getPreferredWarehouse());
+		Hibernate.initialize(p.getPreferredLocation());
 		return p;
 	}
 
@@ -59,6 +56,8 @@ public class ProjectService {
 		Hibernate.initialize(p.getCostcenter());
 		Hibernate.initialize(p.getCostcenter().getLob());
 		Hibernate.initialize(p.getCostcenter().getLob().getManager());
+		Hibernate.initialize(p.getPreferredWarehouse());
+		Hibernate.initialize(p.getPreferredLocation());
 		p.getManagerList().forEach(i -> Hibernate.initialize(i.getUser()));
 		return p;
 	}
@@ -246,5 +245,58 @@ public class ProjectService {
 		result.add(-1);
 		result.addAll(repos.findAllProjectIdListByResource(username, delegatedProjectList));
 		return result;
+	}
+
+	public void updateApproximativeStoragePeriod(Integer id, Integer approximativeStoragePeriod) {
+		repos.updateApproximativeStoragePeriod(id, approximativeStoragePeriod);
+	}
+	
+	public void updatePreferredWarehouse(Integer id,Integer preferredWarehouseId) {
+		repos.updatePreferredWarehouse(id, preferredWarehouseId);
+	}
+	
+	public void updatePreferredLocation(Integer id,Integer preferredLocationId) {
+		repos.updatePreferredLocation(id, preferredLocationId);
+	}
+	
+	public void updateCustomerWarehousing(Integer projectId, Boolean customerWarehousing) {
+		repos.updateCustomerWarehousing(projectId, customerWarehousing);
+		evictCache();
+	}
+
+	public void updateCustomerStockManagement(Integer projectId, Boolean customerStockManagement) {
+		repos.updateCustomerStockManagement(projectId, customerStockManagement);
+		evictCache();
+	}
+
+	public void updateCompanyWarehousing(Integer projectId, Boolean companyWarehousing) {
+		repos.updateCompanyWarehousing(projectId, companyWarehousing);
+		evictCache();
+	}
+
+	public void updateCompanyStockManagement(Integer projectId, Boolean companyStockManagement) {
+		repos.updateCompanyStockManagement(projectId, companyStockManagement);
+		evictCache();
+	}
+
+	public void updateSupplierWarehousing(Integer projectId, Boolean supplierWarehousing) {
+		repos.updateSupplierWarehousing(projectId, supplierWarehousing);
+		evictCache();
+	}
+
+	public void updateSupplierStockManagement(Integer projectId, Boolean supplierStockManagement) {
+		repos.updateSupplierStockManagement(projectId, supplierStockManagement);
+		evictCache();
+	}
+	
+	public void updateSdm(Integer projectId, Boolean sdm) {
+		repos.updateSdm(projectId, sdm);
+		evictCache();
+	}
+	
+
+	public void updateIsm(Integer projectId, Boolean sdm) {
+		repos.updateIsm(projectId, sdm);
+		evictCache();
 	}
 }

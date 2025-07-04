@@ -69,7 +69,7 @@
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<f:subview rendered="#{projectView.project.customerStockManagement}">
+					<f:subview rendered="#{projectView.project.stockManagement}">
 						<li>
 							<a data-toggle="tab" href="#tab2">
 								<i class="blue ace-icon fa fa-list bigger-120"></i>
@@ -81,6 +81,12 @@
 						<a data-toggle="tab" href="#tab7">
 							<i class="purple ace-icon fa fa-list bigger-120"></i>
 							<h:outputText value=" Issue Category / Type" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="orange ace-icon fa fa-th-list bigger-120"></i>
+							<h:outputText value=" Project Defaults" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -237,10 +243,18 @@
 											<h:outputText value="Company" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.companyWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="companyWarehousing" update="companyWarehousing,companyStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateCompanyWarehousing()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.companyWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.companyWarehousing}" target="#{projectView.project.companyWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Company Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.companyStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="companyStockManagement" update="companyWarehousing,companyStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateCompanyStockManagement()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.companyStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.companyStockManagement}" target="#{projectView.project.companyStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Company Stock Management" />
 											&nbsp;
 										</div>
@@ -250,10 +264,18 @@
 											<h:outputText value="Customer" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="customerWarehousing" update="customerWarehousing,customerStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateCustomerWarehousing()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.customerWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.customerWarehousing}" target="#{projectView.project.customerWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Customer Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="customerStockManagement" update="customerWarehousing,customerStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateCustomerStockManagement()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.customerStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.customerStockManagement}" target="#{projectView.project.customerStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Customer Stock Management" />
 											&nbsp;
 										</div>
@@ -267,10 +289,18 @@
 											<h:outputText value="Supplier" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.supplierWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="supplierWarehousing" update="supplierWarehousing,supplierStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateSupplierWarehousing()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.supplierWarehousing?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.supplierWarehousing}" target="#{projectView.project.supplierWarehousing}" />
+											</p:commandLink>
 											<h:outputText value=" Supplier Warehousing" />
 											<br />
-											<i class="ace-icon fa #{projectView.project.supplierStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="supplierStockManagement" update="supplierWarehousing,supplierStockManagement" partialSubmit="true" process="@this"
+												action="#{projectView.updateSupplierStockManagement()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.supplierStockManagement?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.supplierStockManagement}" target="#{projectView.project.supplierStockManagement}" />
+											</p:commandLink>
 											<h:outputText value=" Supplier Stock Management" />
 											&nbsp;
 										</div>
@@ -280,7 +310,10 @@
 											<h:outputText value="SDM" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="sdm" update="sdm,ism" partialSubmit="true" process="@this" action="#{projectView.updateSdm()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.sdm?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.sdm}" target="#{projectView.project.sdm}" />
+											</p:commandLink>
 											&nbsp;
 										</div>
 									</div>
@@ -289,7 +322,10 @@
 											<h:outputText value="ISM" />
 										</div>
 										<div class="profile-info-value">
-											<i class="ace-icon fa #{projectView.project.ism?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											<p:commandLink id="ism" update="ism,sdm" partialSubmit="true" process="@this" action="#{projectView.updateIsm()}" disabled="#{!projectView.canEditInplace()}">
+												<i class="ace-icon fa #{projectView.project.ism?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!projectView.project.ism}" target="#{projectView.project.ism}" />
+											</p:commandLink>
 											&nbsp;
 										</div>
 									</div>
@@ -316,10 +352,18 @@
 											</p:graphicImage>
 										</p:column>
 										<p:column headerText="Type">
-											<h:outputText value="#{item.type.value}" styleClass="#{item.type.color.badge}" />
+											<h:outputText value="#{item.type.value}" styleClass="#{item.type.color.badge}" rendered="#{!projectView.editManagerList}" />
+											<h:selectOneMenu value="#{item.type}" rendered="#{projectView.editManagerList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{ProjectManagerType.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
 										</p:column>
 										<p:column headerText="User">
-											<h:outputText value="#{item.user.fullName}" styleClass="bolder green" />
+											<h:outputText value="#{item.user.fullName}" styleClass="bolder green" rendered="#{!projectView.editManagerList}" />
+											<p:selectOneMenu value="#{item.userUsername}" filter="true" filterMatchMode="contains" rendered="#{projectView.editManagerList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{userView.findLightActive()}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="Email">
 											<h:outputText value="#{item.user.email}" styleClass="light-blue" />
@@ -327,13 +371,35 @@
 										<p:column headerText="Phone">
 											<h:outputText value="#{item.user.phone}" styleClass="orange bolder" />
 										</p:column>
+										<p:column headerText="Actions" width="100" rendered="#{projectView.editManagerList}">
+											<div class="action-buttons center">
+												<p:commandLink title="Delete " action="#{projectView.deleteManager(item)}" update="managerList">
+													<i class="ace-icon fa fa-trash-o bigger-130 red" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Add New" styleClass="aa-tooltip" action="#{projectView.addManager()}" update="managerList" rendered="#{projectView.canAddManager()}">
+													<i class="ace-icon fa fa-plus bigger-130 green" />
+												</p:commandLink>
+												<p:commandLink title="Save" styleClass="aa-tooltip" action="#{projectView.saveManagerList()}" update="managerList,:main_form:messages"
+													rendered="#{projectView.canSaveManagerList()}">
+													<i class="ace-icon fa fa-save bigger-130 blue" />
+												</p:commandLink>
+												<p:commandLink title="Edit" styleClass="aa-tooltip" update="managerList" rendered="#{projectView.canEditManagerList()}">
+													<i class="ace-icon fa fa-edit  bigger-130 orange" />
+													<f:setPropertyActionListener value="true" target="#{projectView.editManagerList}" />
+												</p:commandLink>
+											</div>
+										</f:facet>
 									</p:dataTable>
 								</div>
 							</div>
 						</div>
 						<div class="space-16" />
 					</div>
-					<f:subview id="tab2" rendered="#{projectView.project.customerStockManagement}">
+					<f:subview id="tab2" rendered="#{projectView.project.stockManagement}">
 						<div id="tab2" class="tab-pane">
 							<p:messages id="messages" closable="true" />
 							<div class="row">
@@ -408,7 +474,8 @@
 											</p:column>
 											<f:facet name="footer">
 												<div class="action-buttons center">
-													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}" update="thresholdList,:main_form:tab2:searchThreshold">
+													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{partNumberThresholdView.canEdit()}"
+														update="thresholdList,:main_form:tab2:searchThreshold">
 														<i class="fa fa-edit orange" />
 														<f:setPropertyActionListener value="true" target="#{partNumberThresholdView.editMode}" />
 													</p:commandLink>
@@ -485,6 +552,66 @@
 											</div>
 										</f:facet>
 									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Approximative Storage Period" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.approximativeStoragePeriod}" styleClass="bolder green" rendered="#{!projectView.canEditInplace()}" />
+											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.approximativeStoragePeriod}" styleClass="bolder green" />
+												<p:inputNumber value="#{projectView.project.approximativeStoragePeriod}" thousandSeparator="" decimalPlaces="0" />
+												<p:ajax event="save" listener="#{projectView.updateApproximativeStoragePeriod()}" />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Preferred Warehouse" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.preferredWarehouseName}" styleClass="blue bolder" rendered="#{!projectView.canEditInplace()}" />
+											<p:inplace editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None" rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.preferredWarehouseName}" styleClass="blue bolder" />
+												<h:selectOneMenu value="#{projectView.project.preferredWarehouse}" converter="#{genericSecuredConverter}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{warehouseView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												</h:selectOneMenu>
+												<p:ajax event="save" listener="#{projectView.updatePreferredWarehouse()}" update="preferredLocation" />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="PreferedLocation Location" styleClass="smaller-80" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{projectView.project.preferredLocationName}" styleClass="bolder pink" rendered="#{!projectView.canEditInplace()}" />
+											<p:inplace id="preferredLocation" editor="true" styleClass="editable-click" saveLabel="save" cancelLabel="cancel" effect="none" emptyLabel="None"
+												rendered="#{projectView.canEditInplace()}">
+												<h:outputText value="#{projectView.project.preferredLocationName}" styleClass="bolder pink" />
+												<h:selectOneMenu value="#{projectView.project.preferredLocation}" converter="#{genericSecuredConverter}">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItems value="#{locationView.findLightByWarehouse(projectView.project.preferredWarehouseId)}" var="item" itemLabel="#{item.name}" itemValue="#{item}" />
+												</h:selectOneMenu>
+												<p:ajax event="save" listener="#{projectView.updatePreferredLocation()}" />
+												<p:ajax event="cancel" />
+											</p:inplace>
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

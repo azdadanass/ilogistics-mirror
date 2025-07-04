@@ -84,11 +84,11 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 
 	// EDIT MODE
 	public Boolean canEdit() {
-		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement() && !editMode;
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getStockManagement() && !editMode;
 	}
 
 	public Boolean canToggleEditMode() {
-		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement() && !editMode;
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getStockManagement() && !editMode;
 	}
 
 	public void toggleEditMode() {
@@ -98,7 +98,7 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 	}
 
 	public Boolean canAddNewRow() {
-		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement() && editMode;
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getStockManagement() && editMode;
 	}
 
 	public void addNewRow() {
@@ -141,7 +141,7 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 	}
 
 	public Boolean canDeleteRow() {
-		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement() && editMode;
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getStockManagement() && editMode;
 	}
 
 	public void deleteRow(int index) {
@@ -177,7 +177,7 @@ public class PartNumberThresholdView extends GenericView<Integer, PartNumberThre
 	}
 
 	public Boolean canSavePartNumberThreshold() {
-		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getCustomerStockManagement();
+		return sessionView.isTheConnectedUser(project.getManager().getUsername()) && project.getStockManagement();
 	}
 
 	public void savePartNumberThreshold() {

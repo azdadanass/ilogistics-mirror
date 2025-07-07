@@ -61,6 +61,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Dashboard;
 import ma.azdad.mobile.model.HardwareStatusData;
+import ma.azdad.mobile.model.IssueSupplier;
+import ma.azdad.mobile.model.ToNotify;
 import ma.azdad.model.BoqMapping;
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Currency;
@@ -74,16 +76,26 @@ import ma.azdad.model.DeliveryRequestState;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.DeliveryRequestType;
 import ma.azdad.model.InboundType;
+import ma.azdad.model.Issue;
+import ma.azdad.model.IssueCategory;
+import ma.azdad.model.IssueComment;
+import ma.azdad.model.IssueParentType;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.IssueType;
+import ma.azdad.model.JobRequest;
+import ma.azdad.model.JobRequestStatus;
 import ma.azdad.model.OutboundType;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
 import ma.azdad.model.ProjectTypes;
+import ma.azdad.model.Role;
+import ma.azdad.model.Severity;
 import ma.azdad.model.StockRow;
 import ma.azdad.model.StockRowState;
 import ma.azdad.model.StockRowStatus;
+import ma.azdad.model.Supplier;
 import ma.azdad.model.User;
 import ma.azdad.repos.AppLinkRepos;
 import ma.azdad.repos.DeliveryRequestDetailRepos;
@@ -108,6 +120,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 	@Autowired
 	CompanyService companyService;
+	
+	@Autowired
+	IssueService issueService;
 
 	@Autowired
 	SupplierService supplierService;
@@ -2794,5 +2809,291 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	
 	//issue
 	
+	public List<ma.azdad.mobile.model.Issue> findIssueMobile(Integer id) {
+	    DeliveryRequest dn = findOne(id);
+	    List<ma.azdad.model.Issue> list = dn.getIssueList();
+	    List<ma.azdad.mobile.model.Issue> mbList = new ArrayList<>();
+
+	    for (Issue issue : list) {
+	        mbList.add(new ma.azdad.mobile.model.Issue(
+	            issue.getId(),
+	            issue.getSeverity(),
+	            issue.getStatus(),
+	            issue.getCategory().getName(),
+	            issue.getType().getName(),
+	            issue.getBlocking(),
+	            issue.getPermanent(),
+	            issue.getDescription(),
+	            issue.getDeliveryRequestReference(),
+	            issue.getProjectName(),
+	            "",
+	            issue.getUser1().getPhoto()
+	        ));
+	    }
+
+	    return mbList;
+	}
+	
+	public ma.azdad.mobile.model.Issue findOneIssueMobile(Integer id) {
+		Issue issue = issueService.findOne(id);
+		ma.azdad.mobile.model.Issue im = new ma.azdad.mobile.model.Issue(
+	            issue.getId(),
+	            issue.getSeverity(),
+	            issue.getStatus(),
+	            issue.getCategory().getName(),
+	            issue.getType().getName(),
+	            issue.getBlocking(),
+	            issue.getPermanent(),
+	            issue.getDescription(),
+	            issue.getDeliveryRequestReference(),
+	            issue.getProjectName(),
+	            "",
+	            issue.getUser1().getPhoto()
+	        );
+		if(issue.getDeliveryRequest().getEndCustomerName() != null)
+		im.setEndCustomer(issue.getDeliveryRequest().getEndCustomerName());
+		if(issue.getResolutionDate() != null)
+		im.setResolutionDate(issue.getResolutionDate());
+		if(issue.getResolutionType() != null)
+		im.setResolutionType(issue.getResolutionType());
+		if(issue.getOwnershipUser() != null) {
+			im.setToUser(issue.getOwnershipUserFullName());
+			im.setToUserCin(issue.getOwnershipUser().getCin());
+			im.setToUserEmail(issue.getOwnershipUserEmail());
+			im.setToUserPhone(issue.getOwnershipUserPhone());
+			im.setToUserPhoto(Public.getPublicUrl(issue.getOwnershipUser().getPhoto()));
+			im.setToCompany(getDeliverToEntityName(issue.getOwnershipType(),issue));
+			im.setToCompanyLogo(findToEntityLogo(issue.getOwnershipType(),issue));
+		}
+		
+		if (issue.getUser1() != null) {
+		    im.setUser1(toMobileUser(issue.getUser1()));
+		    im.setDate1(issue.getDate1());
+		}
+		if (issue.getUser2() != null) {
+		    im.setUser2(toMobileUser(issue.getUser2()));
+		    im.setDate2(issue.getDate2());
+		}
+		if (issue.getUser3() != null) {
+		    im.setUser3(toMobileUser(issue.getUser3()));
+		    im.setDate3(issue.getDate3());
+		}
+		if (issue.getUser4() != null) {
+		    im.setUser4(toMobileUser(issue.getUser4()));
+		    im.setDate4(issue.getDate4());
+		}
+		if (issue.getUser5() != null) {
+		    im.setUser5(toMobileUser(issue.getUser5()));
+		    im.setDate5(issue.getDate5());
+		}
+		if (issue.getUser6() != null) {
+		    im.setUser6(toMobileUser(issue.getUser6()));
+		    im.setDate6(issue.getDate6());
+		}
+		if (issue.getUser7() != null) {
+		    im.setUser7(toMobileUser(issue.getUser7()));
+		    im.setDate7(issue.getDate7());
+		}
+		if (issue.getUser8() != null) {
+		    im.setUser8(toMobileUser(issue.getUser8()));
+		    im.setDate8(issue.getDate8());
+		}
+
+		
+		return im;
+	}
+	
+	public String findToEntityLogo(CompanyType type,Issue issue) {
+
+		try {
+			switch (type) {
+			case COMPANY:
+				String logo = companyService.findOne(issue.getCompanyId()).getLogo();
+				return Public.getPublicUrl(logo);
+			case CUSTOMER:
+				String logo2 = customerService.findOne(issue.getCustomerId()).getPhoto();
+				return Public.getPublicUrl(logo2);
+			case SUPPLIER:
+				String logo3 = supplierService.findOne(issue.getSupplierId()).getPhoto();
+				return Public.getPublicUrl(logo3);
+			case OTHER:
+				return "";
+			default:
+				return "";
+			}
+		} catch (Exception e) {
+			return "";
+		}
+	}
+	
+	public String getDeliverToEntityName(CompanyType type,Issue issue) {
+		try {
+			switch (type) {
+			case COMPANY:
+				return issue.getCompanyName();
+			case CUSTOMER:
+				return issue.getCustomerName();
+			case SUPPLIER:
+				return issue.getSupplierName();
+			case OTHER:
+				return "";
+			default:
+				return "";
+			}
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	
+	private ma.azdad.mobile.model.User toMobileUser(User user) {
+	    return new ma.azdad.mobile.model.User(
+	        user.getUsername(),
+	        user.getFirstName(),
+	        user.getLastName(),
+	        user.getLogin(),
+	        user.getPhoto(),
+	        user.getEmail()
+	    );
+	}
+	
+	//add Issue
+		public Boolean canAddIssue(JobRequest jobRequest, List<Role> roleList, List<Integer> teamIdList) {
+			return !Arrays.asList(JobRequestStatus.COMPLETED, JobRequestStatus.VALIDATED).contains(jobRequest.getStatus()) //
+					&& isTeamLeader(roleList) //
+					&& teamIdList.contains(jobRequest.getTeamId()) ;
+		}
+		
+		public List<String> findIssueByProjectAndParenType(Integer id) {
+		    JobRequest jr = findOne(id);
+		    List<IssueCategory> categories = issueCategoryService.findByProjectAndParenType(jr.getProjectId(), IssueParentType.JR);
+
+		    return categories.stream()
+		                     .map(IssueCategory::getName)
+		                     .collect(Collectors.toList());
+		}
+
+		
+		public List<String> findIssueByCategory(Integer id, String name) {
+		    JobRequest jr = findOne(id);
+		    IssueCategory issueCat = issueCategoryService
+		        .findByProjectAndParenTypeAndName(jr.getProjectId(), IssueParentType.JR, name)
+		        .get(0);
+		        
+		    List<IssueType> issueTypes = issueTypeService.findByCategory(issueCat.getId());
+		    
+		    return issueTypes.stream()
+		                     .map(IssueType::getName)
+		                     .collect(Collectors.toList());
+		}
+
+		
+		public String findIssueCompanyOrCustomer(String companyType,Integer id) {
+			if(companyType.equals("Company")) {
+				return companyService.findLightByProject(findOne(id).getProjectId()).getName();
+			}
+			if(companyType.equals("Customer")) {
+				return findOne(id).getCustomerName();
+			}
+			return "";
+		}
+		
+		public List<ma.azdad.mobile.model.User> findByAssignement(String companyType,Integer id,Integer supId) {
+			if(companyType.equals("Company")) {
+				List<User> users = userService.findByAssignementAndCompanyMobile(findOne(id).getProjectId(), companyService.findLightByProject(findOne(id).getProjectId()).getId());
+				List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
+				for (User user : users) {
+					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				}
+				return mbList;
+			}
+			if(companyType.equals("Customer")) {
+				List<User> users = userService.findByAssignementAndCustomerMobile(findOne(id).getProjectId(), findOne(id).getCustomerId());
+				List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
+				for (User user : users) {
+					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				}
+				return mbList;
+				
+			}else {
+				List<User> users = userService.findByAssignementAndSupplierMobile(findOne(id).getProjectId(), supId);
+				List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
+				for (User user : users) {
+					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				}
+				return mbList;
+				
+			}
+			
+		}
+		
+		public List<ma.azdad.mobile.model.User> findToNotifyUserMobile() {
+			
+				List<User> users = userService.findByStatus2(true);
+				List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
+				for (User user : users) {
+					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				}
+				return mbList;
+		
+		}
+		
+		public List<IssueSupplier> findIssueSupplier() {
+			List<Supplier> suppliers = supplierService.findLight();
+			List<IssueSupplier> mbList = new ArrayList<>();
+			for (Supplier is : suppliers) {
+				mbList.add(new IssueSupplier(is.getId(), is.getName()));
+				
+			}
+			return mbList;
+		}
+		
+		public void saveIssue(ma.azdad.mobile.model.Issue iss, ma.azdad.mobile.model.User user) {
+			User connectedUser = userService.findByUsername(user.getUsername());
+			JobRequest jr = findOne(iss.getJrId());
+			IssueCategory issueCat = issueCategoryService
+			        .findByProjectAndParenTypeAndName(jr.getProjectId(), IssueParentType.JR, iss.getCategory())
+			        .get(0);
+			
+		    IssueType issueType = issueTypeService.findByCategoryAndName(issueCat.getId(),iss.getType()).get(0);
+		    List<ToNotify> toNotifyList = iss.getToNotifyList();
+			Issue issue = new Issue(jr);
+			issue.setSeverity(Severity.getByValue(iss.getSeverityValue()));
+			issue.setCategory(issueCat);
+			issue.setType(issueType);
+			issue.setBlocking(iss.getBlocking());
+			issue.setPermanent(iss.getPermanent());
+			issue.setDescription(iss.getDescription());
+			issue.setConfirmatorCompanyType(CompanyType.getByValue(iss.getConfirmationOwnershipType()));
+			issue.setAssignatorCompanyType(CompanyType.getByValue(iss.getAssignOwnershipType()));
+			if(issue.getConfirmatorCompanyType().equals(CompanyType.SUPPLIER) ) {
+				issue.setConfirmatorSupplier(supplierService.findOne(iss.getConfirmationOwnershipSupplier().getId()));
+			
+			}
+			issue.setConfirmator(userService.findByUsername(iss.getConfirmationOwnershipUser().getUsername()));
+			if(issue.getAssignatorCompanyType().equals(CompanyType.SUPPLIER) ) {
+				issue.setAssignatorSupplier(supplierService.findOne(iss.getAssignOwnershipSupplier().getId()));
+			}
+			issue.setAssignator(userService.findByUsername(iss.getAssignOwnershipUser().getUsername()));
+			for (ToNotify toNotify : toNotifyList) {
+				issue.getToNotifyList().add(new ma.azdad.model.ToNotify(userService.findByUsername(toNotify.getInternalResource().getUsername()), issue,
+						toNotify.getNotifyByEmail(), toNotify.getNotifyBySms()));
+			}
+			IssueComment comment = new IssueComment("Creation Comment", connectedUser);
+			comment.setContent(iss.getComment());
+			issue.addComment(comment);
+			
+			issue.setDate1(new Date());
+			issue.setUser1(connectedUser);
+			issue.addHistory(connectedUser, issue.getDescription());
+
+			issue = issueService.save(issue);
+			updateCountIssues(issue.getDeliveryRequest().getId());
+
+
+			
+			
+			 
+		}
 
 }

@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import ma.azdad.mobile.ToNotify;
 import ma.azdad.model.IssueCategory;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.IssueType;
 import ma.azdad.model.Severity;
 import ma.azdad.model.User;
+import ma.azdad.model.ToNotify;
 import ma.azdad.utils.Public;
 
 public class Issue {
 	
 	
 	private Integer id;
-	private String jrRef;
-	private Integer jrId;
-	private String jrProject;
+	private String dnRef;
+	private Integer dnId;
+	private String dnProject;
 	private String jrSite;
 	private Severity severity;
 	private String severityValue;
@@ -76,7 +76,7 @@ public class Issue {
 	private ma.azdad.mobile.model.User user6;
 	private ma.azdad.mobile.model.User user7;
 	
-	private List<ToNotify> toNotifyList = new ArrayList<>();
+	private List<ma.azdad.mobile.model.ToNotify> toNotifyList = new ArrayList<>();
 	
 	
 	
@@ -94,8 +94,8 @@ public class Issue {
 		this.blocking = blocking;
 		this.permanent = permanent;
 		this.description = description;
-		this.jrRef = jrRef;
-		this.jrProject = jrProject;
+		this.dnRef = jrRef;
+		this.dnProject = jrProject;
 		this.jrSite = jrSite;
 		this.user1Photo = Public.getPublicUrl(user1Photo);
 	}
@@ -147,17 +147,24 @@ public class Issue {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getJrRef() {
-		return jrRef;
+
+	public String getDnRef() {
+		return dnRef;
 	}
-	public void setJrRef(String jrRef) {
-		this.jrRef = jrRef;
+	public void setDnRef(String dnRef) {
+		this.dnRef = dnRef;
 	}
-	public String getJrProject() {
-		return jrProject;
+	public Integer getDnId() {
+		return dnId;
 	}
-	public void setJrProject(String jrProject) {
-		this.jrProject = jrProject;
+	public void setDnId(Integer dnId) {
+		this.dnId = dnId;
+	}
+	public String getDnProject() {
+		return dnProject;
+	}
+	public void setDnProject(String dnProject) {
+		this.dnProject = dnProject;
 	}
 	public String getJrSite() {
 		return jrSite;
@@ -393,10 +400,10 @@ public class Issue {
 	public void setAssignOwnershipSupplier(ma.azdad.mobile.model.IssueSupplier assignOwnershipSupplier) {
 		this.assignOwnershipSupplier = assignOwnershipSupplier;
 	}
-	public List<ToNotify> getToNotifyList() {
+	public List<ma.azdad.mobile.model.ToNotify> getToNotifyList() {
 		return toNotifyList;
 	}
-	public void setToNotifyList(List<ToNotify> toNotifyList) {
+	public void setToNotifyList(List<ma.azdad.mobile.model.ToNotify> toNotifyList) {
 		this.toNotifyList = toNotifyList;
 	}
 	public String getComment() {
@@ -405,12 +412,7 @@ public class Issue {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	public Integer getJrId() {
-		return jrId;
-	}
-	public void setJrId(Integer jrId) {
-		this.jrId = jrId;
-	}
+	
 	
 	
 	

@@ -322,7 +322,7 @@ public class DeliveryRequestController {
 	public Issue findOneIssue(@PathVariable int id, @PathVariable String key) {
 		System.out.println("/mobile/issue/" + id + "/" + key);
 		Token token = tokenService.getBykey(key);
-		Issue issue = jobRequestService.findOneIssueMobile(id);
+		Issue issue = service.findOneIssueMobile(id);
 		return issue;
 	}
 	
@@ -331,7 +331,7 @@ public class DeliveryRequestController {
 		System.out.println("/mobile/jrs/issue/" + key);
 		Token token = tokenService.getBykey(key);
 
-		List<Issue> fullList = jobRequestService.findIssueMobile(id);
+		List<Issue> fullList = service.findIssueMobile(id);
 		return fullList;
 
 	}

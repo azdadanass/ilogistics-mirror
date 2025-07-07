@@ -13,6 +13,10 @@ public interface IssueTypeRepos extends JpaRepository<IssueType, Integer> {
 	
 	@Query("from IssueType where category.id = ?1")
 	List<IssueType> findByCategory(Integer categoryId);
+	
+	@Query("from IssueType where category.id = ?1 and name like ?2")
+	List<IssueType> findByCategoryAndName(Integer categoryId,String name);
+
 
 }
 

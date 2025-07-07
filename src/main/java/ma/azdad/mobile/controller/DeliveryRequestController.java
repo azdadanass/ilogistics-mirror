@@ -231,7 +231,7 @@ public class DeliveryRequestController {
  	public Boolean saveIssue(@PathVariable String key, @RequestBody Issue issue) throws Exception {
  		System.out.println("/mobile/jr/save_issue/{key}");
  		Token token = tokenService.getBykey(key);
- 		jobRequestService.saveIssue(issue, token.getUser());
+ 		service.saveIssue(issue, token.getUser());
  		return true;
  	}
  	
@@ -241,7 +241,7 @@ public class DeliveryRequestController {
  		if (id == 0)
  			return null;
  		Token token = tokenService.getBykey(key);
- 		return jobRequestService.canAddIssue(jobRequestService.findOne(id), token.getRoleList(), token.getTeamList());
+ 		return true;
  	}
  	
  	@GetMapping("/mobile/dn/issue/category/{key}/{id}/{name}")
@@ -249,7 +249,7 @@ public class DeliveryRequestController {
  	    System.out.println("/mobile/jrs/issue/category/" + key);
  	    Token token = tokenService.getBykey(key);
  	    
- 	    List<String> fullList = jobRequestService.findIssueByCategory(id,name);
+ 	    List<String> fullList = service.findIssueByCategory(id,name);
  	    return fullList;
 
  	}
@@ -259,7 +259,7 @@ public class DeliveryRequestController {
  	    System.out.println("/mobile/jrs/issue/type/" + key);
  	    Token token = tokenService.getBykey(key);
  	    
- 	    List<String> fullList = jobRequestService.findIssueByProjectAndParenType(id);
+ 	    List<String> fullList = service.findIssueByProjectAndParenType(id);
  	    return fullList;
 
  	}
@@ -269,7 +269,7 @@ public class DeliveryRequestController {
  	    System.out.println("/mobile/jrs/issue/supplier/" + key);
  	    Token token = tokenService.getBykey(key);
  	    
- 	    List<IssueSupplier> fullList = jobRequestService.findIssueSupplier();
+ 	    List<IssueSupplier> fullList = service.findIssueSupplier();
  	    return fullList;
 
  	}
@@ -287,7 +287,7 @@ public class DeliveryRequestController {
  		    
  		    Token token = tokenService.getBykey(key);
 
- 		    String type = jobRequestService.findIssueCompanyOrCustomer(companyType, id);
+ 		    String type = service.findIssueCompanyOrCustomer(companyType, id);
  		    if (type == null || type.trim().isEmpty()) {
  		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
  		                             .body("No company or customer found");
@@ -303,7 +303,7 @@ public class DeliveryRequestController {
  	    System.out.println("/mobile/jrs/issue/assign/" + key);
  	    Token token = tokenService.getBykey(key);
  	    
- 	    List<User> fullList = jobRequestService.findByAssignement(companyType, id, supId);
+ 	    List<User> fullList = service.findOwnerShipUserSelectionList(companyType, id, supId);
  	    return fullList;
 
  	}
@@ -313,7 +313,7 @@ public class DeliveryRequestController {
  	    System.out.println("/mobile/jrs/issue/tonotify/" + key);
  	    Token token = tokenService.getBykey(key);
  	    
- 	    List<User> fullList = jobRequestService.findToNotifyUserMobile();
+ 	    List<User> fullList = service.findToNotifyUserMobile();
  	    return fullList;
 
  	}

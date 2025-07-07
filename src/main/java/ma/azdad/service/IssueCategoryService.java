@@ -38,6 +38,10 @@ public class IssueCategoryService extends GenericService<Integer, IssueCategory,
 		return repos.findByProjectAndParenType(projectId, parentType);
 	}
 	
+	public List<IssueCategory> findByProjectAndParenTypeAndName(Integer projectId, IssueParentType parentType,String name) {
+		return repos.findByProjectAndParenTypeAndName(projectId, parentType,name);
+	}
+	
 	
 	public void addDefaultIssueCategory(Integer projectId) {
 		if(repos.countByProject(projectId, IssueParentType.DN)>0)

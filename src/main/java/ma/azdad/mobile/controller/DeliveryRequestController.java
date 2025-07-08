@@ -318,6 +318,16 @@ public class DeliveryRequestController {
 
  	}
  	
+ 	@GetMapping("/mobile/dn/issue/addtonotify/{key}/{id}")
+ 	public List<User> addToNotifyUsers(@PathVariable String key,@PathVariable Integer id) {
+ 	    System.out.println("/mobile/jrs/issue/addtonotify/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<User> fullList = service.addToNotifyUserMobile(id);
+ 	    return fullList;
+
+ 	}
+ 	
 	@GetMapping("/mobile/issue/{id}/{key}")
 	public Issue findOneIssue(@PathVariable int id, @PathVariable String key) {
 		System.out.println("/mobile/issue/" + id + "/" + key);

@@ -3163,18 +3163,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		}
 		
 		public List<ma.azdad.mobile.model.User> findOwnerShipUserSelectionList(String type,Integer id,Integer supId) {
-			CompanyType companyType = null;
 			Set<User> result = new HashSet<User>();
 			List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
 			DeliveryRequest dn = findOne(id);
-			if(companyType.equals("Company")) {
+			if(type.equals("Company")) {
 				result.add(dn.getRequester());
 				result.add(dn.getProject().getManager());
 				dn.getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
 				delegationService.findDelegateUserListByProject(dn.getProjectId()).forEach(i -> result.add(i));
 				projectAssignmentService.findCompanyUserListAssignedToProject(dn.getProjectId()).forEach(i -> result.add(i));
 				}
-			if(companyType.equals("Customer")) {
+			if(type.equals("Customer")) {
 					userService.findLightByCustomerAndHasRole(dn.getCustomerId(), Role.ROLE_ILOGISTICS_PM).forEach(i -> result.add(i));
 				
 			}else {
@@ -3202,6 +3201,34 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				return mbList;
 		
 		}
+		
+		public List<ma.azdad.mobile.model.User> addToNotifyUserMobile(Integer id) {
+			List<User> users = new ArrayList<>();
+			DeliveryRequest dn = findOne(id);
+
+			addToNotify(userService.findOneLight(dn.getRequester().getUsername()),users);
+			delegationService.findDelegateUserListByProject(dn.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername()),users));
+//			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+			projectAssignmentService.findUserListAssignedToProject(dn.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername()),users));
+			dn.getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername()),users));
+			List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
+			for (User user : users) {
+				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+			}
+			System.out.println("size list "+mbList.size());
+			return mbList;
+	
+	}
+		
+		public void addToNotify(User user, List<User> users) {
+		    boolean exists = users.stream()
+		        .anyMatch(u -> u.getUsername().equals(user.getUsername()));
+		    
+		    if (!exists) {
+		        users.add(user);
+		    }
+		}
+
 		
 		public List<IssueSupplier> findIssueSupplier() {
 			List<Supplier> suppliers = supplierService.findLight();

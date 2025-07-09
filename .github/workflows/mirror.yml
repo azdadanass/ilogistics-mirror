@@ -18,15 +18,16 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-      - name: Validate repository access
+      - name: Debug PAT access
         run: |
-          if ! curl -s -H "Authorization: token ${{ secrets.MIRROR_PAT }}" \
-            https://api.github.com/repos/azdadanass/ilogistics-mirror > /dev/null; then
-            echo "::error::Failed to access mirror repository"
-            exit 1
-          fi
+          echo "Testing PAT access to mirror repo"
+          curl -i -H "Authorization: token ${{ secrets.MIRROR_PAT }}" \
+            https://api.github.com/repos/azdadanass/ilogistics-mirror
+          
+          echo "Repository URL being used:"
+          echo "https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
 
-      - name: Push to mirror repository
+      - name: Push to mirror
         run: |
           git remote add mirror "https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
           git push --mirror mirror

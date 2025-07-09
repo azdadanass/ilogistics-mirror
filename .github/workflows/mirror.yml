@@ -20,5 +20,5 @@ jobs:
           
       - name: Push to mirror
         run: |
-          git remote add mirror "https://${{ github.actor }}:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
+          git remote add mirror "https://azdadanass:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
           git push --mirror mirror

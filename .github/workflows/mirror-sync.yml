@@ -1,7 +1,7 @@
 name: Mirror to External Repo
 on:
   push:
-    branches: [ "main" ]  # Sync on pushes to main
+    branches: [ "master" ]  # Sync on pushes to main
   workflow_dispatch:       # Allow manual sync
 
 jobs:

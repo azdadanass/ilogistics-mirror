@@ -2,7 +2,7 @@ name: Mirror to ilogistics-mirror
 
 on:
   push:
-    branches: [ "master" ]  # Change if your primary branch has a different name
+    branches: [ "master" ] # or your primary branch name
 
 jobs:
   mirror:
@@ -11,19 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Required for --mirror to work properly
+          fetch-depth: 0
 
-      - name: Configure Git
+      - name: Set up Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
       - name: Push to mirror
         run: |
-          if git ls-remote "https://${{ github.actor }}:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git" &> /dev/null; then
-            git remote add mirror "https://${{ github.actor }}:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
-            git push --mirror mirror
-          else
-            echo "Error: Mirror repository not found or inaccessible"
-            exit 1
-          fi
+          git remote add mirror https://github.com/azdadanass/ilogistics-mirror.git
+          git push --mirror mirror
+        env:
+          GIT_PASSWORD: ${{ secrets.MIRROR_PAT }}

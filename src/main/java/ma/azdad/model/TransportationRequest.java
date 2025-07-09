@@ -435,7 +435,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		if (deliveryRequest.getIsInbound())
 			return deliveryRequest.getWarehouse().getValue();
 		else
-			return deliveryRequest.getDestination().getValue();
+			return deliveryRequest.getDestination() !=null?deliveryRequest.getDestination().getValue():null;
 	}
 
 	public Date getNeededPickupDate() {

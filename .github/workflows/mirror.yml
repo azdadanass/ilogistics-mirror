@@ -18,7 +18,12 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-      - name: Mirror to destination
+      - name: Push to mirror
         run: |
-          git remote add mirror https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git
-          git push --mirror mirror
+          if git ls-remote "https://${{ github.actor }}:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git" &> /dev/null; then
+            git remote add mirror "https://${{ github.actor }}:${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git"
+            git push --mirror mirror
+          else
+            echo "Error: Mirror repository not found or inaccessible"
+            exit 1
+          fi

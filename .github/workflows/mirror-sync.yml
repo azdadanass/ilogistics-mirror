@@ -1,20 +1,24 @@
-name: Mirror to External Repo
+name: Mirror to ilogistics-mirror
+
 on:
   push:
-    branches: [ "master" ]  # Sync on pushes to main
-  workflow_dispatch:       # Allow manual sync
+    branches: [ "master" ] # or your primary branch name
 
 jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Mirror to Destination
+      - name: Set up Git
         run: |
-          git remote add mirror https://github.com/azdadanass/ilogistics-mirror.git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+      - name: Push to mirror
+        run: |
+          git remote add mirror https://${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror.git
           git push --mirror mirror
-        env:
-          GIT_USERNAME: ${{ github.actor }}
-          GIT_PASSWORD: ${{ secrets.MIRROR_PAT }}

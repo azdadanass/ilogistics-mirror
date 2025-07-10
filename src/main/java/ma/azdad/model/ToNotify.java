@@ -43,6 +43,14 @@ public class ToNotify extends GenericModel<Integer> implements Serializable {
 		this.internalResource = internalResource;
 		this.deliveryRequest = deliveryRequest;
 	}
+	
+	public ToNotify(User internalResource, Issue issue, Boolean notifyByEmail, Boolean notifyBySms) {
+		super();
+		this.internalResource = internalResource;
+		this.issue = issue;
+		this.notifyByEmail = notifyByEmail;
+		this.notifyBySms = notifyBySms;
+	}
 
 	public void init() {
 		if (internalResource != null)

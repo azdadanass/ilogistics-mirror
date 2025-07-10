@@ -1,5 +1,7 @@
 package ma.azdad.model;
 
+import java.util.stream.Stream;
+
 public enum Severity {
 	LOW("Low", "green", "#69aa46"),
 	MEDIUM("Medium", "blue", "#ff851d"),
@@ -26,6 +28,14 @@ public enum Severity {
 
 	public String getColorCode() {
 		return colorCode;
+	}
+	
+	public static Severity getByValue(String value) {
+		try {
+			return Stream.of(values()).filter(i -> value.equals(i.getValue())).findFirst().get();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override

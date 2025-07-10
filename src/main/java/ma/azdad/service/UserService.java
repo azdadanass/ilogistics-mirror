@@ -48,6 +48,10 @@ public class UserService {
 		return repos.findById(username).get();
 	}
 	
+	public List<User> findByStatus2(Boolean active) {
+		return repos.findLightByStatus2(active);
+	}
+	
 	public User findByUsername(String username) {
 		User us = repos.findByUsername(username);
 		

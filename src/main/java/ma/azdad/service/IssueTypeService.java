@@ -26,5 +26,10 @@ public class IssueTypeService extends GenericService<Integer, IssueType, IssueTy
 	public List<IssueType> findByCategory(Integer categoryId) {
 		return repos.findByCategory(categoryId);
 	}
+	
+	public List<IssueType> findByCategoryAndName(Integer categoryId,String name) {
+		return repos.findByCategoryAndName(categoryId,name);
+	}
+
 
 }

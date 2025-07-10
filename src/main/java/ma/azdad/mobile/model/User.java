@@ -33,6 +33,8 @@ public class User {
 		this.photo = Public.getPublicUrl(photo);
 		this.email = email;
 	}
+	
+	
 
 	public String getFullName() {
 		return firstName + " " + lastName;

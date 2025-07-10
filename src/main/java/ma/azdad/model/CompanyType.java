@@ -1,5 +1,7 @@
 package ma.azdad.model;
 
+import java.util.stream.Stream;
+
 import ma.azdad.utils.Color;
 
 public enum CompanyType {
@@ -23,6 +25,14 @@ public enum CompanyType {
 
 	public Color getColor() {
 		return color;
+	}
+	
+	public static CompanyType getByValue(String value) {
+		try {
+			return Stream.of(values()).filter(i -> value.equals(i.getValue())).findFirst().get();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	@Override

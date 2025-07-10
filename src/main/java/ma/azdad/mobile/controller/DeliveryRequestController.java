@@ -25,7 +25,10 @@ import ma.azdad.mobile.model.DeliveryRequest;
 import ma.azdad.mobile.model.DeliveryRequestExpiryDate;
 import ma.azdad.mobile.model.DeliveryRequestFile;
 import ma.azdad.mobile.model.HardwareStatusList;
+import ma.azdad.mobile.model.Issue;
+import ma.azdad.mobile.model.IssueSupplier;
 import ma.azdad.mobile.model.Token;
+import ma.azdad.mobile.model.User;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.DocTypeService;
 import ma.azdad.service.ProjectService;
@@ -221,6 +224,127 @@ public class DeliveryRequestController {
     	Token token = tokenService.getBykey(key);
     	service.createDnExpiryById(expiry);
     }
+    
+ // add Issue
+	
+ 	@PostMapping("/mobile/dn/save_issue/{key}")
+ 	public Boolean saveIssue(@PathVariable String key, @RequestBody Issue issue) throws Exception {
+ 		System.out.println("/mobile/jr/save_issue/{key}");
+ 		Token token = tokenService.getBykey(key);
+ 		service.saveIssue(issue, token.getUser());
+ 		return true;
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/addissue/test/{id}/{key}")
+ 	public Boolean canAddIssue(@PathVariable int id, @PathVariable String key) {
+ 		System.out.println("/mobile/jr/addissue/test/" + id + "/" + key);
+ 		if (id == 0)
+ 			return null;
+ 		Token token = tokenService.getBykey(key);
+ 		return true;
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/issue/category/{key}/{id}/{name}")
+ 	public List<String> findIssueCategory(@PathVariable String key,@PathVariable Integer id,@PathVariable String name) {
+ 	    System.out.println("/mobile/jrs/issue/category/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<String> fullList = service.findIssueByCategory(id,name);
+ 	    return fullList;
+
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/issue/type/{key}/{id}")
+ 	public List<String> findIssueType(@PathVariable String key,@PathVariable Integer id) {
+ 	    System.out.println("/mobile/jrs/issue/type/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<String> fullList = service.findIssueByProjectAndParenType(id);
+ 	    return fullList;
+
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/issue/supplier/{key}")
+ 	public List<IssueSupplier> findIssueSupplier(@PathVariable String key) {
+ 	    System.out.println("/mobile/jrs/issue/supplier/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<IssueSupplier> fullList = service.findIssueSupplier();
+ 	    return fullList;
+
+ 	}
+ 	
+ 	@GetMapping(
+ 		    value = "/mobile/dn/issue/compcus/{key}/{id}/{companyType}",
+ 		    produces = MediaType.TEXT_PLAIN_VALUE
+ 		)
+ 		public ResponseEntity<String> findIssueCompanyOrCustomer(
+ 		        @PathVariable String key,
+ 		        @PathVariable Integer id,
+ 		        @PathVariable String companyType) {
+
+ 		    System.out.println("/mobile/jrs/issue/compcus/" + key);
+ 		    
+ 		    Token token = tokenService.getBykey(key);
+
+ 		    String type = service.findIssueCompanyOrCustomer(companyType, id);
+ 		    if (type == null || type.trim().isEmpty()) {
+ 		        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+ 		                             .body("No company or customer found");
+ 		    }
+
+ 		    return ResponseEntity.ok(type); // Status 200, plain text body
+ 		}
+ 	
+ 	
+ 	@GetMapping("/mobile/dn/issue/assign/{key}/{id}/{supId}/{companyType}")
+ 	public List<User> findByAssignement(@PathVariable String key,@PathVariable Integer id, @PathVariable Integer supId,
+ 	        @PathVariable String companyType) {
+ 	    System.out.println("/mobile/jrs/issue/assign/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<User> fullList = service.findOwnerShipUserSelectionList(companyType, id, supId);
+ 	    return fullList;
+
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/issue/tonotify/{key}")
+ 	public List<User> findByAssignement(@PathVariable String key) {
+ 	    System.out.println("/mobile/jrs/issue/tonotify/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<User> fullList = service.findToNotifyUserMobile();
+ 	    return fullList;
+
+ 	}
+ 	
+ 	@GetMapping("/mobile/dn/issue/addtonotify/{key}/{id}")
+ 	public List<User> addToNotifyUsers(@PathVariable String key,@PathVariable Integer id) {
+ 	    System.out.println("/mobile/jrs/issue/addtonotify/" + key);
+ 	    Token token = tokenService.getBykey(key);
+ 	    
+ 	    List<User> fullList = service.addToNotifyUserMobile(id);
+ 	    return fullList;
+
+ 	}
+ 	
+	@GetMapping("/mobile/issue/{id}/{key}")
+	public Issue findOneIssue(@PathVariable int id, @PathVariable String key) {
+		System.out.println("/mobile/issue/" + id + "/" + key);
+		Token token = tokenService.getBykey(key);
+		Issue issue = service.findOneIssueMobile(id);
+		return issue;
+	}
+	
+	@GetMapping("/mobile/dn/issue/{key}/{id}")
+	public List<Issue> findIssue(@PathVariable String key, @PathVariable Integer id) {
+		System.out.println("/mobile/jrs/issue/" + key);
+		Token token = tokenService.getBykey(key);
+
+		List<Issue> fullList = service.findIssueMobile(id);
+		return fullList;
+
+	}
 	
 	
   

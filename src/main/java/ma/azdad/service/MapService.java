@@ -16,6 +16,10 @@ import ma.azdad.model.Stop;
 public class MapService {
 
 	public MapModel generate(GenericPlace p1, GenericPlace p2) {
+		if(p1==null || p2==null)
+			return new DefaultMapModel();
+		
+		
 		MapModel mapModel = new DefaultMapModel();
 
 		Marker marker1 = new Marker(new LatLng(p1.getLatitude(), p1.getLongitude()), p1.getName());

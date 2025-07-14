@@ -621,14 +621,12 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		TR row = new TR();
 		row.addElement(new TD("Reference").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getFullType()).setWidth(tdWidth2)
-				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46"
-						: deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
+		row.addElement(new TD(deliveryRequest.getReference()).setWidth(tdWidth2)
+				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("Type").setWidth(tdWidth1).setStyle(tdStyle1));
-		row.addElement(new TD(deliveryRequest.getType().getValue()).setWidth(tdWidth2)
-				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46"
-						: deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
+		row.addElement(new TD(deliveryRequest.getFullType()).setWidth(tdWidth2)
+				.setStyle(tdStyle2 + "color: " + (deliveryRequest.getIsInbound() ? "#69aa46" : deliveryRequest.getIsOutbound() ? "#dd5a43" : "#478fca")));
 		table.addElement(row);
 
 		if (deliveryRequest.getIsInbound() || deliveryRequest.getIsOutbound()) {

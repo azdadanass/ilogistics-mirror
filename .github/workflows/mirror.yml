@@ -2,7 +2,7 @@ name: Mirror to ilogistics-mirror
 
 on:
   push:
-    branches: [ "master" ] # or your primary branch name
+    branches: [ "master" ]
 
 jobs:
   mirror:
@@ -13,12 +13,17 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Git
+      - name: Configure Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.MIRROR_SSH_KEY }}
+      
       - name: Push to mirror
         run: |
-          git remote add mirror https://${{ secrets.MIRROR_PAT }}@github.com/azdadanass/ilogistics-mirror
+          git remote add mirror git@github.com:azdadanass/ilogistics-mirror.git
           git push --mirror mirror

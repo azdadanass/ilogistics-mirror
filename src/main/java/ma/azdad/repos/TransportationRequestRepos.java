@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.DeliveryRequestStatus;
+import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
@@ -85,6 +86,8 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query("select a from TransportationRequest a where a.id in (select b.id from TransportationRequest b where b.deliveryRequest.origin.id = ?1) or a.id in (select b.id from TransportationRequest b where b.deliveryRequest.destination.id = ?1)")
 	public List<TransportationRequest> findAssociatedWithSite(Integer siteId);
+	
+	public Integer countByTransportationJob(TransportationJob transportationJob);
 
 	// TR PAYMENT LISTS
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 ")

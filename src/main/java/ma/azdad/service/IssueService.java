@@ -77,19 +77,11 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 	}
 
 	public List<Issue> findToConfirm(String username) {
-		Set<Integer> projectList = new HashSet<Integer>();
-		projectList.add(0);
-		projectList.addAll(projectService.findIdListByDelegation(username));
-		projectList.addAll(projectService.findIdListByQualityManager(username));
-		return issueRepos.findToConfirm(username, projectList, IssueStatus.RAISED);
+		return issueRepos.findToConfirm(username,  IssueStatus.RAISED);
 	}
 
 	public Long countToConfirm(String username) {
-		Set<Integer> projectList = new HashSet<Integer>();
-		projectList.add(0);
-		projectList.addAll(projectService.findIdListByDelegation(username));
-		projectList.addAll(projectService.findIdListByQualityManager(username));
-		return issueRepos.countToConfirm(username, projectList, IssueStatus.RAISED);
+		return issueRepos.countToConfirm(username, IssueStatus.RAISED);
 	}
 
 	public List<Issue> findToAssign(String username) {

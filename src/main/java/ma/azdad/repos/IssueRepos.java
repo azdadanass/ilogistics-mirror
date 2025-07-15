@@ -31,14 +31,13 @@ public interface IssueRepos extends JpaRepository<Issue, Integer> {
 	public List<Issue> findDeliveryRequestIssueListByUser(String username, Collection<Integer> projectIdList, Collection<Integer> lobIdList);
 
 	@Query("select distinct a.deliveryRequest.project.id from Issue a where  (a.deliveryRequest.project.manager.username = ?2 or a.deliveryRequest.project.costcenter.lob.manager.username = ?2 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?2 or a.deliveryRequest.project.id in (?3) or a.deliveryRequest.project.costcenter.lob.id in (?4))   ")
-	public List<Integer> findProjectIdList( String username, Collection<Integer> projectIdList, Collection<Integer> lobIdList);
+	public List<Integer> findProjectIdList(String username, Collection<Integer> projectIdList, Collection<Integer> lobIdList);
 
-	@Query(c1
-			+ "from Issue a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.id in (?2)) and a.status = ?3")
-	List<Issue> findToConfirm(String username, Collection<Integer> projectList, IssueStatus raised);
+	@Query(c1 + "from Issue a where a.confirmator.username = ?1 and a.status = ?2")
+	List<Issue> findToConfirm(String username, IssueStatus raised);
 
-	@Query("select count(*) from Issue a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.id in (?2)) and a.status = ?3")
-	Long countToConfirm(String username, Collection<Integer> projectList, IssueStatus raised);
+	@Query("select count(*) from Issue a where a.confirmator.username = ?1 and a.status = ?2")
+	Long countToConfirm(String username,IssueStatus raised);
 
 	@Query(c1
 			+ "from Issue a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.id in (?2)) and a.status = ?3")

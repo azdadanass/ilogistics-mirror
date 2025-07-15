@@ -2,9 +2,7 @@ package ma.azdad.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,19 +83,11 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 	}
 
 	public List<Issue> findToAssign(String username) {
-		Set<Integer> projectList = new HashSet<Integer>();
-		projectList.add(0);
-		projectList.addAll(projectService.findIdListByDelegation(username));
-		projectList.addAll(projectService.findIdListByQualityManager(username));
-		return issueRepos.findToAssign(username, projectList, IssueStatus.CONFIRMED);
+		return issueRepos.findToAssign(username);
 	}
 
 	public Long countToAssign(String username) {
-		Set<Integer> projectList = new HashSet<Integer>();
-		projectList.add(0);
-		projectList.addAll(projectService.findIdListByDelegation(username));
-		projectList.addAll(projectService.findIdListByQualityManager(username));
-		return issueRepos.countToAssign(username, projectList, IssueStatus.CONFIRMED);
+		return issueRepos.countToAssign(username);
 	}
 
 	public List<Issue> findToResolve(String username) {

@@ -39,12 +39,11 @@ public interface IssueRepos extends JpaRepository<Issue, Integer> {
 	@Query("select count(*) from Issue a where a.confirmator.username = ?1 and a.status = 'SUBMITTED'")
 	Long countToConfirm(String username);
 
-	@Query(c1
-			+ "from Issue a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.id in (?2)) and a.status = ?3")
-	List<Issue> findToAssign(String username, Collection<Integer> projectList, IssueStatus confirmed);
+	@Query(c1 + "from Issue a where a.assignator.username = ?1 and a.status = 'CONFIRMED'")
+	List<Issue> findToAssign(String username);
 
-	@Query("select count(*) from Issue a where (a.deliveryRequest.requester.username = ?1 or a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.id in (?2)) and a.status = ?3")
-	Long countToAssign(String username, Collection<Integer> projectList, IssueStatus confirmed);
+	@Query("select count(*) from Issue a where a.assignator.username = ?1 and a.status = 'CONFIRMED'")
+	Long countToAssign(String username);
 
 	@Query(c1 + "from Issue a where a.ownershipUser.username = ?1 and a.status = ?2")
 	List<Issue> findToResolve(String username, IssueStatus assigned);

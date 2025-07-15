@@ -77,11 +77,11 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 	}
 
 	public List<Issue> findToConfirm(String username) {
-		return issueRepos.findToConfirm(username,  IssueStatus.RAISED);
+		return issueRepos.findToConfirm(username);
 	}
 
 	public Long countToConfirm(String username) {
-		return issueRepos.countToConfirm(username, IssueStatus.RAISED);
+		return issueRepos.countToConfirm(username);
 	}
 
 	public List<Issue> findToAssign(String username) {

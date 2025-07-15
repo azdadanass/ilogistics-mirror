@@ -100,7 +100,7 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	// c1
 	public Issue(Integer id, IssueStatus status, Severity severity, IssueCategory category, IssueType type, Boolean blocking, //
 			CompanyType ownershipType, Integer companyId, String companyName, Integer customerId, String customerName, Integer supplierId, String supplierName, //
-			Integer deliveryRequestId, String deliveryRequestReference,DeliveryRequestStatus deliveryRequestStatus, Integer projectId, String projectName) {
+			Integer deliveryRequestId, String deliveryRequestReference,DeliveryRequestType deliveryRequestType,DeliveryRequestStatus deliveryRequestStatus, Integer projectId, String projectName) {
 		super(id);
 		this.status = status;
 		this.severity = severity;
@@ -116,6 +116,7 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 		this.setSupplierName(supplierName);
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setDeliveryRequestReference(deliveryRequestReference);
+		this.setDeliveryRequestType(deliveryRequestType);
 		this.setDeliveryRequestStatus(deliveryRequestStatus);
 		this.setProjectId(projectId);
 		this.setProjectName(projectName);
@@ -194,6 +195,18 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 		default:
 			return null;
 		}
+	}
+	
+	@Transient
+	public DeliveryRequestType getDeliveryRequestType(){
+		return deliveryRequest!=null?deliveryRequest.getType():null;
+	}
+
+	@Transient
+	public void setDeliveryRequestType(DeliveryRequestType deliveryRequestType){
+		if(deliveryRequest==null)
+			deliveryRequest=new DeliveryRequest();
+		deliveryRequest.setType(deliveryRequestType);
 	}
 	
 	@Transient

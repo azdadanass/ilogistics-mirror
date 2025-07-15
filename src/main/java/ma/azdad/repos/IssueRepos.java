@@ -17,7 +17,7 @@ public interface IssueRepos extends JpaRepository<Issue, Integer> {
 			",a.company.id,(select b.name from Company b where b.id = a.company.id)" + //
 			",a.customer.id,(select b.name from Customer b where b.id = a.customer.id)" + //
 			",a.supplier.id,(select b.name from Supplier b where b.id = a.supplier.id)" + //
-			",a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.status" + //
+			",a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.status" + //
 			",a.deliveryRequest.project.id,a.deliveryRequest.project.name) ";
 
 	@Query(c1 + "from Issue a where a.deliveryRequest.project.id = ?1")

@@ -81,12 +81,12 @@
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 							<p:column headerText="DN" width="100" exportable="false" >
 								<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
-									<h:outputText value="#{item.deliveryRequestReference}" />
+									<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
 									<f:param name="id" value="#{item.deliveryRequestId}" />
 								</h:outputLink>
 							</p:column>
 							<p:column headerText="Status" width="70">
-								<h:outputText value="#{item.deliveryRequestStatus.value}" styleClass="#{item.deliveryRequestStatus.color.name}" />
+								<h:outputText value="#{item.deliveryRequestStatus.value}" styleClass="#{item.deliveryRequestStatus.color}" />
 							</p:column>
 							<p:column headerText="Project">
 								<h:outputText value="#{item.projectName}" styleClass="blue bolder" />

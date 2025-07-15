@@ -174,6 +174,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	public Boolean canViewIssue() {
 		return ((sessionView.getIsUser() || sessionView.isPM() || sessionView.getIsBuManager() || //
+				sessionView.isTheConnectedUser(issue.getAssignator()) ||sessionView.isTheConnectedUser(issue.getConfirmator()) || //
 				sessionView.getIsExternalPm() && cacheView.getUserProjectList().contains(issue.getDeliveryRequest().getProject().getId()))) //
 				|| (issue.getOwnershipUser() != null && sessionView.isTheConnectedUser(issue.getOwnershipUser()));
 

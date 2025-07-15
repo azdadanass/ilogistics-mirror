@@ -333,11 +333,11 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	}
 
 	public Boolean canEditAssignator() {
-		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED).contains(issue.getStatus());
+		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED, IssueStatus.CONFIRMED).contains(issue.getStatus());
 	}
 
 	public Boolean canEditConfirmator() {
-		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED, IssueStatus.CONFIRMED).contains(issue.getStatus());
+		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED).contains(issue.getStatus());
 	}
 
 	// to notify

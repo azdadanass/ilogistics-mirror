@@ -65,6 +65,11 @@ public interface UserRepos extends JpaRepository<User, String> {
 	
 	User findByUsername(String username);
 	
+	@Query(c6 + "from User a where a.username = ?1")
+	User findByUsernameLight(String username);
+	
+	List<User> findByCin(String cin);
+	
 	User findByFullName(String fullName);
 
 	User findByLogin(String login);

@@ -41,7 +41,8 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 		initialize(issue.getConfirmator());
 		
 		initialize(issue.getDeliveryRequest().getProject().getManager());
-
+		issue.getDeliveryRequest().getProject().getManagerList().forEach(i->initialize(i.getUser()));
+		
 		Hibernate.initialize(issue.getFileList());
 		Hibernate.initialize(issue.getHistoryList());
 		Hibernate.initialize(issue.getUser1());

@@ -181,6 +181,11 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 			commentGroupList.add(new CommentGroup<>(UtilsFunctions.getDate(dateStr), map.get(dateStr)));
 		Collections.sort(commentGroupList);
 	}
+	
+	@Transient
+	public String getReference() {
+		return "IS"+ String.format("%06d", id);
+	}
 
 	@Transient
 	public Period getPeriod() {

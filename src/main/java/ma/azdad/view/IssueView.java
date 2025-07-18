@@ -693,7 +693,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return;
 		String oldOwnershipFullName = issue.getOwnershipUserFullName();
 		issue.setOwnershipUser(userService.findOneLight(newOwnershipUser.getUsername()));
-		issue.addHistory(sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
+		issue.addHistory("Handover",sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
 		switch (issue.getOwnershipType()) {
 		case COMPANY:
 			issue.setCompany(companyService.findOne(issue.getCompanyId()));

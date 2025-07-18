@@ -227,15 +227,9 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 				break;
 			}
 
-			if (isAddPage) {
-				// init to notify list
-				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
-				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
-				delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-//				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-				projectAssignmentService.findUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-				issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i -> addToNotify(userService.findOneLight(i.getUser().getUsername())));
-			}
+			if (isAddPage)
+				initToNotifiyList();
+				
 			step++;
 			break;
 		case 3:
@@ -245,6 +239,17 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return save();
 		}
 		return null;
+	}
+
+	private void initToNotifiyList() {
+		addToNotify(issue.getDeliveryRequest().getRequester());
+		addToNotify(issue.getDeliveryRequest().getProject().getManager());
+		issue.getDeliveryRequest().getProject().getManagerList().stream()
+				.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i -> addToNotify(i.getUser()));
+		issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> addToNotify(i.getUser()));
+		delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+		projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+
 	}
 
 	public void savePreviousStep() {
@@ -273,9 +278,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	public Boolean validate() {
 		return true;
 	}
-	
-	
-	
+
 	public List<User> findUserSelectionList(String type) {
 		CompanyType companyType = null;
 		Integer customerId = null;
@@ -304,7 +307,9 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		case COMPANY:
 			result.add(issue.getDeliveryRequest().getRequester());
 			result.add(issue.getDeliveryRequest().getProject().getManager());
-			issue.getDeliveryRequest().getProject().getManagerList().stream().filter(i->Arrays.asList(ProjectManagerType.HARDWARE_MANAGER,ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i->result.add(i.getUser()));
+			issue.getDeliveryRequest().getProject().getManagerList().stream()
+					.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
+					.forEach(i -> result.add(i.getUser()));
 			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
 			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
 			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
@@ -320,7 +325,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		}
 
 		return new ArrayList<User>(result);
-		
+
 	}
 
 //	public List<User> findOwnerShipUserSelectionList(String type) {
@@ -693,7 +698,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return;
 		String oldOwnershipFullName = issue.getOwnershipUserFullName();
 		issue.setOwnershipUser(userService.findOneLight(newOwnershipUser.getUsername()));
-		issue.addHistory("Handover",sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
+		issue.addHistory("Handover", sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
 		switch (issue.getOwnershipType()) {
 		case COMPANY:
 			issue.setCompany(companyService.findOne(issue.getCompanyId()));

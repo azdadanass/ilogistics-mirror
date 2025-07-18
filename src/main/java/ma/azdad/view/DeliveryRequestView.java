@@ -1228,6 +1228,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 						? true
 						: null);
 	}
+	
+	//print Pdf
+	
+	public Boolean canGeneratePdf() {
+		
+		return Arrays.asList(DeliveryRequestStatus.PARTIALLY_DELIVRED,DeliveryRequestStatus.DELIVRED,DeliveryRequestStatus.ACKNOWLEDGED).contains(model.getStatus());
+	}
 
 	/*
 	 * INBOUND WORKFLOW

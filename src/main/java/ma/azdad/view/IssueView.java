@@ -665,6 +665,10 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		if (!canOpen())
 			return;
 		issue.setStatus(IssueStatus.SUBMITTED);
+		issue.setDate2(null);
+		issue.setUser2(null);
+		issue.setDate3(null);
+		issue.setUser3(null);
 		issue.setDate4(null);
 		issue.setUser4(null);
 		issue.setDate5(null);

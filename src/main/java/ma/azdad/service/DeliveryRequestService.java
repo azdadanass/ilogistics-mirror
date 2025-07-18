@@ -910,9 +910,9 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			Image logo = null;
 			// Load images
 			if ("gcom".equals(erp))
-				logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/gcom.png");
+				logo = Image.getInstance("https://ilogistics.3gcom.ma/resources/pdf/gcom.png");
 			else if ("orange".equals(erp))
-				logo = Image.getInstance("http://ilogistics.3gcominside.com/resources/pdf/orange.png");
+				logo = Image.getInstance("https://ilogistics.3gcom.ma/resources/pdf/orange.png");
 			logo.scaleToFit(70, 70);
 
 			String qrImageLink = App.QR.getLink() + "//img/dn/" + deliveryRequest.getId() + "/"
@@ -1050,15 +1050,17 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 
 		addTableRow(table1, "DN Number", safeValue(deliveryRequest.getReference()));
 		addTableRow(table1, "Type",
-				safeValue(deliveryRequest.getType() != null ? deliveryRequest.getType().getValue() : null));
+				safeValue(getFullTypeValue(deliveryRequest)));
 		addTableRow(table1, "REF", safeValue(deliveryRequest.getSmsRef()));
 		addTableRow(table1, "Project", safeValue(deliveryRequest.getProjectName()));
-		addTableRow(table1, "Owner", deliveryRequest.getOrigin() != null ? deliveryRequest.getOwnerName() : "");
+		addTableRow(table1, "Owner", deliveryRequest.getOwnerName() != null ? deliveryRequest.getOwnerName() : "");
 		addTableRow(table1, "Warehouse", safeValue(deliveryRequest.getWarehouseName()));
+		if((DeliveryRequestType.INBOUND).equals(deliveryRequest.getType())) {
 		addTableRow(table1, "Appr Storage Period",
 				deliveryRequest.getApproximativeStoragePeriod() != null
 						? String.valueOf(deliveryRequest.getApproximativeStoragePeriod())
 						: "");
+		}
 		addTableRow(table1, "Requester", safeValue(deliveryRequest.getRequesterFullName()));
 		addTableRow(table1, "Priority",
 				safeValue(deliveryRequest.getPriority() != null ? deliveryRequest.getPriority().getValue() : null));
@@ -1085,9 +1087,16 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		addTableRow(table3, "Delivery Date",
 				deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDateTime(deliveryRequest.getDate4())
 						: "");
+		
+		if((DeliveryRequestType.INBOUND).equals(deliveryRequest.getType())) {
 		addTableRow(table3, "Origin Site", safeValue(deliveryRequest.getOriginName()));
 		addTableRow(table3, "Origin Site Address",
 				safeValue(deliveryRequest.getOrigin() != null ? deliveryRequest.getOrigin().getGoogleAddress() : ""));
+		}else {
+			addTableRow(table3, "Destination Site", safeValue(deliveryRequest.getDestinationName()));
+			addTableRow(table3, "Destination Site Address",
+					safeValue(deliveryRequest.getDestination() != null ? deliveryRequest.getDestination().getGoogleAddress() : ""));
+		}
 		addTableRow(table3, "Transportation required",
 				deliveryRequest.getTransportationNeeded() != null
 						? (deliveryRequest.getTransportationNeeded() ? "Yes" : "No")
@@ -1285,6 +1294,27 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	private String safeValue(Double value) {
 		return value != null ? String.valueOf(value) : "";
 	}
+	
+	private String getFullTypeValue(DeliveryRequest deliveryRequest) {
+	    String type = deliveryRequest.getType() != null ? deliveryRequest.getType().getValue() : null;
+	    String subType = deliveryRequest.getSubType() != null ? deliveryRequest.getSubType() : null;
+
+	    StringBuilder result = new StringBuilder();
+	    if (type != null) result.append(type);
+	    if (subType != null) {
+	        if (result.length() > 0) result.append(", ");
+	        result.append(subType);
+	    }
+
+	    if ("Hardware Swap".equalsIgnoreCase(subType) &&
+	        countByHardwareSwapInboundId(deliveryRequest.getId()) > 0) {
+	        if (result.length() > 0) result.append(", ");
+	        result.append("Hardware Swap");
+	    }
+
+	    return result.toString();
+	}
+
 
 	private static PdfPCell createTableCell(String text, Font font) {
 		BaseColor lightGrey = new BaseColor(200, 200, 200);

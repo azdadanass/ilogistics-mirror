@@ -131,7 +131,8 @@
 							<h:outputText value="Print" />
 							<f:param name="id" value="#{deliveryRequestView.deliveryRequest.id}" />
 						</h:outputLink> -->
-						<p:commandLink title="Print" action="#{deliveryRequestView.generatePdf2()}" update="printForm2" oncomplete="PF('printDlg2').show()"
+						<p:commandLink title="Print" action="#{deliveryRequestView.generatePdf2()}" update="printForm2" oncomplete="PF('printDlg2').show()" 
+						rendered="#{deliveryRequestView.canGeneratePdf()}"
 							styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info">
 							<i class="ace-icon fa fa-print bigger-230"></i>
 							<h:outputText value="Print" />

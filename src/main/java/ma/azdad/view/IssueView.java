@@ -273,12 +273,19 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	public Boolean validate() {
 		return true;
 	}
-
-	public List<User> findOwnerShipUserSelectionList(String type) {
+	
+	
+	
+	public List<User> findUserSelectionList(String type) {
 		CompanyType companyType = null;
 		Integer customerId = null;
 		Integer supplierId = null;
 		switch (type) {
+		case "ownershipUser":
+			companyType = issue.getOwnershipType();
+			customerId = issue.getCustomerId();
+			supplierId = issue.getSupplierId();
+			break;
 		case "confirmator":
 			companyType = issue.getConfirmatorCompanyType();
 			customerId = issue.getConfirmatorCustomerId();
@@ -313,7 +320,49 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		}
 
 		return new ArrayList<User>(result);
+		
 	}
+
+//	public List<User> findOwnerShipUserSelectionList(String type) {
+//		CompanyType companyType = null;
+//		Integer customerId = null;
+//		Integer supplierId = null;
+//		switch (type) {
+//		case "confirmator":
+//			companyType = issue.getConfirmatorCompanyType();
+//			customerId = issue.getConfirmatorCustomerId();
+//			supplierId = issue.getConfirmatorSupplierId();
+//			break;
+//		case "assignator":
+//			companyType = issue.getAssignatorCompanyType();
+//			customerId = issue.getAssignatorCustomerId();
+//			supplierId = issue.getAssignatorSupplierId();
+//			break;
+//		}
+//		if (companyType == null)
+//			return new ArrayList<User>();
+//		Set<User> result = new HashSet<User>();
+//		switch (companyType) {
+//		case COMPANY:
+//			result.add(issue.getDeliveryRequest().getRequester());
+//			result.add(issue.getDeliveryRequest().getProject().getManager());
+//			issue.getDeliveryRequest().getProject().getManagerList().stream().filter(i->Arrays.asList(ProjectManagerType.HARDWARE_MANAGER,ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i->result.add(i.getUser()));
+//			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
+//			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
+//			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
+//			break;
+//		case CUSTOMER:
+//			userService.findLightByCustomerAndHasRole(customerId, Role.ROLE_ILOGISTICS_PM);
+//			break;
+//		case SUPPLIER:
+//			userService.findLightBySupplierAndHasRole(supplierId, Role.ROLE_ILOGISTICS_PM);
+//			break;
+//		default:
+//			break;
+//		}
+//
+//		return new ArrayList<User>(result);
+//	}
 
 	// inplace
 	public void editAssignator() {

@@ -142,8 +142,7 @@
 										<p:selectOneMenu value="#{issueView.issue.companyId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Company should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{companyView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,issueView.issue.companyId,null,null))}"
-												update=":assignForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":assignForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -159,8 +158,7 @@
 										<p:selectOneMenu value="#{issueView.issue.customerId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Customer should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,issueView.issue.customerId,null))}"
-												update=":assignForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":assignForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -176,8 +174,7 @@
 										<p:selectOneMenu value="#{issueView.issue.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,null,issueView.issue.supplierId))}"
-												update=":assignForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":assignForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -216,6 +213,12 @@
 								</p:column>
 								<p:column headerText="Full Name">
 									<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+								</p:column>
+								<p:column headerText="Email">
+									<h:outputText value="#{item.email}" styleClass="blue" />
+								</p:column>
+								<p:column headerText="Phone">
+									<h:outputText value="#{item.phone}" styleClass="orange" />
 								</p:column>
 							</p:dataTable>
 						</div>
@@ -268,8 +271,7 @@
 										<p:selectOneMenu value="#{issueView.issue.companyId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Company should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{companyView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,issueView.issue.companyId,null,null))}"
-												update=":handoverForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":handoverForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -285,8 +287,7 @@
 										<p:selectOneMenu value="#{issueView.issue.customerId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Customer should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{customerView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,issueView.issue.customerId,null))}"
-												update=":handoverForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":handoverForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -302,8 +303,7 @@
 										<p:selectOneMenu value="#{issueView.issue.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
 											<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-											<p:ajax listener="#{userView.refreshList(userView.findActiveByCompanyType(issueView.issue.ownershipType,null,null,issueView.issue.supplierId))}"
-												update=":handoverForm:userList" />
+											<p:ajax listener="#{userView.refreshList(issueView.findUserSelectionList('ownershipUser'))}" update=":handoverForm:userList" />
 										</p:selectOneMenu>
 									</div>
 								</div>
@@ -342,6 +342,12 @@
 								</p:column>
 								<p:column headerText="Full Name">
 									<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+								</p:column>
+								<p:column headerText="Email">
+									<h:outputText value="#{item.email}" styleClass="blue" />
+								</p:column>
+								<p:column headerText="Phone">
+									<h:outputText value="#{item.phone}" styleClass="orange" />
 								</p:column>
 							</p:dataTable>
 						</div>
@@ -661,7 +667,7 @@
 										<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 											requiredMessage="Assignator should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
-											<f:selectItems value="#{issueView.findOwnerShipUserSelectionList('assignator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+											<f:selectItems value="#{issueView.findUserSelectionList('assignator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 										</p:selectOneMenu>
 										<!-- <p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 											requiredMessage="Assignator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}">
@@ -753,7 +759,7 @@
 										<p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 											requiredMessage="Confirmation should not be null">
 											<f:selectItem itemLabel="---" noSelectionOption="true" />
-											<f:selectItems value="#{issueView.findOwnerShipUserSelectionList('confirmator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+											<f:selectItems value="#{issueView.findUserSelectionList('confirmator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 										</p:selectOneMenu>
 										<!-- <p:selectOneMenu value="#{issueView.issue.confirmatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 											requiredMessage="Confirmator should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.confirmatorCompanyType}">

@@ -2,19 +2,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml">
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -46,11 +41,15 @@
 								<i class="ace-icon fa fa-plus bigger-230"></i>
 								<h:outputText value="Add" />
 							</h:outputLink>
-
 							<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 								<i class="ace-icon fa fa-refresh bigger-230"></i>
 								<h:outputText value="Reload" />
 							</h:outputLink>
+							<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" action="#{transportationJobView.initAssignList()}"
+								disabled="#{transportationJobView.list4==null or transportationJobView.list4.isEmpty()}" rendered="#{transportationJobView.isPageIndex(4,5)}">
+								<i class="ace-icon fa fa-check bigger-230"></i>
+								<h:outputText value="Assign" />
+							</p:commandLink>
 						</div>
 						<div class="col-sm-5  hidden-xs infobox-container">
 							<span class="btn btn-app btn-sm btn-warning no-hover">
@@ -99,47 +98,44 @@
 						<p:dataTable value="#{transportationJobView.list2}" filteredValue="#{transportationJobView.list3}" rowKey="#{item.id}" selection="#{transportationJobView.list4}" id="main_tab"
 							widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 							paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-
+							<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowUnselect" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowSelectCheckbox" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
+							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
+							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" rendered="#{transportationJobView.isPageIndex(4,5)}" />
 							<p:column headerText="Numero" sortBy="#{item.idStr}">
 								<h:outputText value="#{item.idStr}" styleClass="bolder purple" />
 							</p:column>
-
 							<p:column headerText="Transporter">
 								<h:outputText value="#{item.transporterName}" />
 							</p:column>
-
-
-							<p:column headerText="Start Date" sortBy="#{item.startDate}" >
+							<p:column headerText="Start Date" sortBy="#{item.startDate}">
 								<h:outputText value="#{item.startDate}" styleClass="blue">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
-
 							<p:column headerText="End Date" sortBy="#{item.endDate}">
 								<h:outputText value="#{item.endDate}" styleClass="green">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
-
 							<p:column headerText="Cost">
 								<h:outputText value="#{item.realCost}" styleClass="bolder #{item.realCost le item.estimatedCost?'green':'red'}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" styleClass="bolder #{item.realCost le item.estimatedCost?'green':'red'}" />
 							</p:column>
-
 							<p:column headerText="Estimated Cost">
 								<h:outputText value="#{item.estimatedCost}" styleClass="pink">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" styleClass="pink" />
 							</p:column>
-
-
 							<p:column headerText="Status">
 								<h:outputText value="#{item.status.value}" styleClass="bolder #{item.status.color}" />
 							</p:column>
-
 							<p:column headerText="Actions" style="width:150px">
 								<div class="action-buttons center">
 									<h:outputLink value="#{transportationJobView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
@@ -148,10 +144,8 @@
 									</h:outputLink>
 								</div>
 							</p:column>
-
 						</p:dataTable>
 					</div>
-
 				</div>
 			</div>
 		</h:form>

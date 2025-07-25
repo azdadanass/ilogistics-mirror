@@ -48,7 +48,7 @@ public class User extends GenericModel<String> {
 	private Boolean accountNonLocked;
 	private Integer failedAttempt;
 	private Date lockTime;
-	
+
 	// double auth
 	private Boolean twoFactorAuthentication = false;
 	private String twoFactorAuthenticationType; // totp,email
@@ -69,6 +69,10 @@ public class User extends GenericModel<String> {
 	private Supplier supplier;
 	private String other;
 	private Transporter transporter;
+
+	// gps
+	private Double latitude;
+	private Double longitude;
 
 	private User user;
 	private Date date;
@@ -99,8 +103,8 @@ public class User extends GenericModel<String> {
 		this.username = username;
 		this.fullName = fullName;
 	}
-	
-	public User(String username, String fullName,String email,Boolean internal) {
+
+	public User(String username, String fullName, String email, Boolean internal) {
 		this.username = username;
 		this.fullName = fullName;
 		this.email = email;
@@ -126,18 +130,19 @@ public class User extends GenericModel<String> {
 		this.phone = phone;
 		this.cin = cin;
 	}
-	
-	public User(String username, String firstName, String lastName, String login,String photo,String email) {
+
+	public User(String username, String firstName, String lastName, String login, String photo, String email) {
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.login = login;
 		this.photo = photo;
 		this.email = email;
-	
+
 	}
 
-	public User(String username, String photo, String fullName, String cin, String job, String email, String phone, Boolean active, CompanyType companyType, String companyName, String customerName, String supplierName) {
+	public User(String username, String photo, String fullName, String cin, String job, String email, String phone, Boolean active, CompanyType companyType, String companyName, String customerName,
+			String supplierName) {
 		this.username = username;
 		this.photo = photo;
 		this.fullName = fullName;
@@ -195,7 +200,7 @@ public class User extends GenericModel<String> {
 	public String getName() {
 		return this.fullName;
 	}
-	
+
 	@Transient
 	public String getEntityName() {
 		switch (companyType) {
@@ -417,7 +422,7 @@ public class User extends GenericModel<String> {
 	public Boolean getIsLobManager() {
 		return hasRole(Role.ROLE_ILOGISTICS_LOB_MANAGER);
 	}
-	
+
 	@Transient
 	public Boolean getIsBuManager() {
 		return hasRole(Role.ROLE_ILOGISTICS_BU_MANAGER);
@@ -786,7 +791,7 @@ public class User extends GenericModel<String> {
 	public Boolean getIsSupplierUser() {
 		return CompanyType.SUPPLIER.equals(companyType);
 	}
-	
+
 	public String getOther() {
 		return other;
 	}
@@ -794,7 +799,7 @@ public class User extends GenericModel<String> {
 	public void setOther(String other) {
 		this.other = other;
 	}
-	
+
 	public Boolean getVpnAccess() {
 		return vpnAccess;
 	}
@@ -802,7 +807,7 @@ public class User extends GenericModel<String> {
 	public void setVpnAccess(Boolean vpnAccess) {
 		this.vpnAccess = vpnAccess;
 	}
-	
+
 	public Boolean getTwoFactorAuthentication() {
 		return twoFactorAuthentication;
 	}
@@ -833,6 +838,22 @@ public class User extends GenericModel<String> {
 
 	public void setTotpSecret(String totpSecret) {
 		this.totpSecret = totpSecret;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 }

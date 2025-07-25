@@ -705,7 +705,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("Transporter").setWidth(tdWidth1).setStyle(tdStyle1));
 		row.addElement(
-				new TD(deliveryRequest.getTransporter() != null ? deliveryRequest.getTransporter().getFullName() : "")
+				new TD(deliveryRequest.getTransporter() != null ? deliveryRequest.getTransporter().getName() : "")
 						.setWidth(tdWidth2).setStyle(tdStyle2));
 		table.addElement(row);
 

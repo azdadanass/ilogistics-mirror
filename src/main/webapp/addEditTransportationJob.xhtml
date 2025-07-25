@@ -77,12 +77,23 @@
 								<div class="col-xs-12 col-sm-6">
 									<div class="form-group">
 										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Real Cost (MAD)" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{transportationJobView.transportationJob.realCost}" thousandSeparator="" required="true" requiredMessage="Real Cost should not be null" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
 											<h:outputText value="Transporter" />
 										</label>
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu value="#{transportationJobView.transportationJob.transporterId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Transporter should not be null"
 												styleClass="col-xs-12 col-sm-6" disabled="#{!transportationJobView.isAddPage}">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{transporterView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 												<p:ajax update="vehicle,driver" />
 											</p:selectOneMenu>
@@ -97,7 +108,6 @@
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu id="vehicle" value="#{transportationJobView.transportationJob.vehicleId}" filter="true" filterMatchMode="contains" required="true"
 												requiredMessage="Vehicle should not be null" styleClass="col-sm-6" disabled="#{!transportationJobView.isAddPage}">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{vehicleView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.correctMatricule}" itemValue="#{item.id}" />
 											</p:selectOneMenu>
 										</div>
@@ -114,7 +124,6 @@
 										<div class="col-xs-9 col-sm-9">
 											<p:selectOneMenu id="driver" value="#{transportationJobView.transportationJob.driverUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Driver should not be null"
 												styleClass="col-xs-12 col-sm-6">
-												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{userView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 											</p:selectOneMenu>
 										</div>
@@ -130,7 +139,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<h4 class="header blue bolder smaller">
 								<h:outputText value="Comment" />
 							</h4>

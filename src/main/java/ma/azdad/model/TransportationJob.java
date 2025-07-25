@@ -34,16 +34,19 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Date startDate; // Calculable
 	private Date endDate; // Calculable
 	private TransportationJobStatus status = TransportationJobStatus.EDITED;
+	private TransportationJobAssignmentType assignmentType;
+	private Double acceptLeadTime = 12.0;
+	private Double startLeadTime = 24.0;
 
 	// timeline
-	private Date date1;
-	private Date date2;
-	private Date date3;
-	private Date date4;
-	private Date date5;
-	private Date date6;
-	private Date date7;
-	private Date date8;
+	private Date date1; // edited
+	private Date date2; // assigned1
+	private Date date3; // assigned2
+	private Date date4; // accepted
+	private Date date5; // started
+	private Date date6; // in_progress
+	private Date date7; // completed
+	private Date date8; // closed
 
 	private User user1;
 	private User user2;
@@ -57,8 +60,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	// Costs
 	private Double realCost = 0.0;
 	private Double estimatedCost = 0.0; // Calculable
-
 	private Double vehiclePrice = 0.0;
+
+	// gps (first TR latitude/longitude)
+	private Double latitude;
+	private Double longitude;
 
 	private Transporter transporter;
 	private Vehicle vehicle;
@@ -70,51 +76,54 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private List<Stop> stopList = new ArrayList<>();
 	private List<Path> pathList = new ArrayList<>();
 
-	// TM
-	private Integer transporterId;
-	private Integer vehicleId;
-	private String vehicleMatricule;
-	private String driverUsername;
-	private String transporterName;
-	private String transporterCin;
-
 	public TransportationJob() {
 		super();
 	}
 
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1,
-			String transporterName2) {
+	// c1
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
+			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
-		this.transporterName = transporterName2 != null ? transporterName2 : transporterName1;
+		this.setTransporterType(transporterType);
+		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
+		this.setTransporterPrivateLastName(transporterPrivateLastName);
+		this.setTransporterSupplierName(transporterSupplierName);
 	}
 
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1,
-			String transporterName2, String driverUsername, String vehicleMatricule) {
+	// c2
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
+			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
-		this.transporterName = transporterName2 != null ? transporterName2 : transporterName1;
-		this.driverUsername = driverUsername;
-		this.vehicleMatricule = vehicleMatricule;
+		this.setTransporterType(transporterType);
+		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
+		this.setTransporterPrivateLastName(transporterPrivateLastName);
+		this.setTransporterSupplierName(transporterSupplierName);
+		this.setDriverUsername(driverUsername);
+		this.setVehicleMatricule(vehicleMatricule);
 	}
 
 	public void init() {
-		if (transporter != null)
-			transporterId = transporter.getId();
-		if (vehicle != null)
-			vehicleId = vehicle.getId();
-		if (driver != null)
-			driverUsername = driver.getUsername();
-
 		Collections.sort(transportationRequestList);
+	}
+
+	public void addHistory(TransportationJobHistory history) {
+		history.setParent(this);
+		historyList.add(history);
+	}
+
+	public void removeHistory(TransportationJobHistory history) {
+		history.setParent(null);
+		historyList.remove(history);
 	}
 
 	@Override
@@ -360,7 +369,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.fileList = fileList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<TransportationJobHistory> getHistoryList() {
 		return historyList;
 	}
@@ -378,7 +387,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.comment = comment;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Transporter getTransporter() {
 		return transporter;
 	}
@@ -387,7 +396,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.transporter = transporter;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public Vehicle getVehicle() {
 		return vehicle;
 	}
@@ -396,7 +405,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.vehicle = vehicle;
 	}
 
-//	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@ManyToOne(fetch = FetchType.LAZY)
 	public User getDriver() {
 		return driver;
@@ -444,52 +452,116 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	@Transient
-	public String getVehicleMatricule() {
-		return vehicleMatricule;
-	}
-
-	public void setVehicleMatricule(String vehicleMatricule) {
-		this.vehicleMatricule = vehicleMatricule;
-	}
-
-	@Transient
 	public Integer getTransporterId() {
-		return transporterId;
+		return transporter != null ? transporter.getId() : null;
 	}
 
 	@Transient
 	public void setTransporterId(Integer transporterId) {
-		this.transporterId = transporterId;
-	}
-
-	@Transient
-	public Integer getVehicleId() {
-		return vehicleId;
-	}
-
-	@Transient
-	public void setVehicleId(Integer vehicleId) {
-		this.vehicleId = vehicleId;
-	}
-
-	@Transient
-	public String getDriverUsername() {
-		return driverUsername;
-	}
-
-	@Transient
-	public void setDriverUsername(String driverUsername) {
-		this.driverUsername = driverUsername;
+		if (transporter == null || !transporterId.equals(transporter.getId()))
+			transporter = new Transporter();
+		transporter.setId(transporterId);
 	}
 
 	@Transient
 	public String getTransporterName() {
-		return transporterName;
+		return transporter != null ? transporter.getName() : null;
 	}
 
 	@Transient
-	public String getTransporterCin() {
-		return transporterCin;
+	public TransporterType getTransporterType() {
+		return transporter != null ? transporter.getType() : null;
+	}
+
+	@Transient
+	public void setTransporterType(TransporterType transporterType) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setType(transporterType);
+	}
+
+	@Transient
+	public String getTransporterPrivateFirstName() {
+		return transporter != null ? transporter.getPrivateFirstName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateFirstName(String transporterPrivateFirstName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateFirstName(transporterPrivateFirstName);
+	}
+
+	@Transient
+	public String getTransporterPrivateLastName() {
+		return transporter != null ? transporter.getPrivateLastName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateLastName(String transporterPrivateLastName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateLastName(transporterPrivateLastName);
+	}
+
+	@Transient
+	public String getTransporterSupplierName() {
+		return transporter != null ? transporter.getSupplierName() : null;
+	}
+
+	@Transient
+	public void setTransporterSupplierName(String transporterSupplierName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setSupplierName(transporterSupplierName);
+	}
+
+	@Transient
+	public String getDriverUsername() {
+		return driver != null ? driver.getUsername() : null;
+	}
+
+	@Transient
+	public void setDriverUsername(String driverUsername) {
+		if (driver == null || !driverUsername.equals(driver.getUsername()))
+			driver = new User();
+		driver.setUsername(driverUsername);
+	}
+
+	@Transient
+	public String getDriverFullName() {
+		return driver != null ? driver.getFullName() : null;
+	}
+
+	@Transient
+	public void setDriverFullName(String driverFullName) {
+		if (driver == null)
+			driver = new User();
+		driver.setFullName(driverFullName);
+	}
+
+	@Transient
+	public String getVehicleMatricule() {
+		return vehicle != null ? vehicle.getMatricule() : null;
+	}
+
+	@Transient
+	public void setVehicleMatricule(String vehicleMatricule) {
+		if (vehicle == null)
+			vehicle = new Vehicle();
+		vehicle.setMatricule(vehicleMatricule);
+	}
+
+	@Transient
+	public Integer getVehicleId() {
+		return vehicle != null ? vehicle.getId() : null;
+	}
+
+	@Transient
+	public void setVehicleId(Integer vehicleId) {
+		if (vehicle == null || !vehicleId.equals(vehicle.getId()))
+			vehicle = new Vehicle();
+		vehicle.setId(vehicleId);
 	}
 
 	public Double getVehiclePrice() {
@@ -646,12 +718,45 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.user8 = user8;
 	}
 
-	public void setTransporterName(String transporterName) {
-		this.transporterName = transporterName;
+	@Enumerated(EnumType.STRING)
+	public TransportationJobAssignmentType getAssignmentType() {
+		return assignmentType;
 	}
 
-	public void setTransporterCin(String transporterCin) {
-		this.transporterCin = transporterCin;
+	public void setAssignmentType(TransportationJobAssignmentType assignmentType) {
+		this.assignmentType = assignmentType;
+	}
+
+	public Double getAcceptLeadTime() {
+		return acceptLeadTime;
+	}
+
+	public void setAcceptLeadTime(Double acceptLeadTime) {
+		this.acceptLeadTime = acceptLeadTime;
+	}
+
+	public Double getStartLeadTime() {
+		return startLeadTime;
+	}
+
+	public void setStartLeadTime(Double startLeadTime) {
+		this.startLeadTime = startLeadTime;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
 	}
 
 }

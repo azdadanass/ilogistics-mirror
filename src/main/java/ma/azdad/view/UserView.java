@@ -3,6 +3,8 @@ package ma.azdad.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +22,7 @@ import ma.azdad.model.CompanyType;
 import ma.azdad.model.Conversation;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Role;
+import ma.azdad.model.Team;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
 import ma.azdad.service.CustomerService;
@@ -78,6 +81,8 @@ public class UserView {
 	private Integer parent;
 	private Boolean filterByUser = true;
 
+	private String sortBy = "Full Name";
+
 	@PostConstruct
 	public void init() {
 		currentPath = FacesContext.getCurrentInstance().getViewRoot().getViewId();
@@ -99,6 +104,25 @@ public class UserView {
 		username = UtilsFunctions.getParameter("username");
 	}
 
+	public void sort() {
+		System.out.println("sort");
+		Collections.sort(list2, new Comparator<User>() {
+			@Override
+			public int compare(User o1, User o2) {
+				switch (sortBy) {
+				case "Full Name":
+					return o1.getFullName().compareTo(o2.getFullName());
+				}
+				return 1;
+			}
+		});
+
+	}
+
+	public void initLists(List<User> list) {
+		list2 = list1 = list;
+	}
+
 	private void filterBean(String query) {
 		list3 = null;
 		List<User> list = new ArrayList<>();
@@ -114,7 +138,7 @@ public class UserView {
 		if (isListPage)
 			list2 = list1 = filterByUser ? userService.findLightByUser(false, sessionView.getUsername()) : userService.findLight(false);
 	}
-	
+
 	public void refreshList(List<User> list) {
 		list2 = list1 = list;
 	}
@@ -172,30 +196,29 @@ public class UserView {
 			}
 		return true;
 	}
-	
-	//for chat
+
+	// for chat
 	@Cacheable("userView.findLightByActive")
 	public List<User> findLightByActive(String username) {
-		
+
 		return userService.findLightByActive(username);
 	}
-	
+
 	public List<Conversation> findOnlineUserConversations(String username) {
 
 		List<User> users = userService.findLightByActive(username);
 		List<Conversation> conversations = new ArrayList<>();
 		for (User user1 : users) {
 
-			if(sessionView.getOnlineUsers().contains(user1))
-			conversations.add(new Conversation(user1, null, null, null));
+			if (sessionView.getOnlineUsers().contains(user1))
+				conversations.add(new Conversation(user1, null, null, null));
 
 		}
 
 		return conversations;
 	}
-	
-	//
 
+	//
 
 	public void formatFirstName() {
 		user.setFirstName(UtilsFunctions.formatName(user.getFirstName()));
@@ -308,11 +331,11 @@ public class UserView {
 	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
 		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
-	
+
 	public List<User> findActiveByCompany(Integer companyId) {
 		return userService.findActiveByCompany(companyId);
 	}
-	
+
 	public List<User> findActiveByCustomer(Integer customerId) {
 		return userService.findActiveByCustomer(customerId);
 	}
@@ -360,7 +383,7 @@ public class UserView {
 	public List<User> findLightActive(Boolean internal) {
 		return userService.findLight(internal, true);
 	}
-	
+
 	public List<User> findLightActive() {
 		return findLightByStatus(true);
 	}
@@ -400,15 +423,15 @@ public class UserView {
 	public Boolean hasRolePm(String username) {
 		return hasRole(username, Role.ROLE_ILOGISTICS_PM);
 	}
-	
+
 	public User findFirstByRoleTM() {
 		return userService.findFirstByRoleTM();
 	}
-	
-	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest){
+
+	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest) {
 		return userService.findHandoverUserList(deliveryRequest);
 	}
-	
+
 	public List<User> findByAssignementAndCompany(Integer projectId, Integer companyId) {
 		return userService.findByAssignementAndCompany(projectId, companyId);
 	}
@@ -420,11 +443,11 @@ public class UserView {
 	public List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId) {
 		return userService.findByAssignementAndSupplier(projectId, supplierId);
 	}
-	
+
 	public CompanyType findCompanyType(String username) {
 		return userService.findCompanyType(username);
 	}
-	
+
 	public String findEntityName(User user) {
 		return userService.findEntityName(user);
 	}

@@ -11,29 +11,47 @@ import ma.azdad.model.TransportationJobStatus;
 
 @Repository
 public interface TransportationJobRepos extends JpaRepository<TransportationJob, Integer> {
-	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
-	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
-	String select = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterName1 + "," + transporterName2 + ") ";
-	String select2 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterName1 + "," + transporterName2 + ",a.driver.username,a.vehicle.matricule) ";
 
-	@Query(select + "from TransportationJob a order by a.id desc")
+	String transporterType = "(select b.type from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
+	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
+	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
+
+	String c1 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
+			+ "," + transporterSupplierName + ") ";
+	String c2 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
+			+ "," + transporterSupplierName + ",a.driver.username,a.vehicle.matricule) ";
+
+	@Query(c1 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> find();
-	
-	@Query(select2 + "from TransportationJob a order by a.id desc")
+
+	@Query(c1 + "from TransportationJob a where a.id in (?1) order by a.id desc")
+	public List<TransportationJob> findByIdList(List<Integer> idList);
+
+	@Query(c2 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> findMobile();
 
-	@Query(select + "from TransportationJob a where a.status = ?1 order by a.id desc")
+	@Query(c1 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> find(TransportationJobStatus status);
-	
-	@Query(select2 + "from TransportationJob a where a.status = ?1 order by a.id desc")
+
+	@Query(c2 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> findMobile(TransportationJobStatus status);
 
-	@Query(select + "from TransportationJob a where a.status in (?1) order by a.id desc")
+	@Query(c1 + "from TransportationJob a where a.status in (?1) order by a.id desc")
 	public List<TransportationJob> find(List<TransportationJobStatus> status);
-	
-	@Query(select2 + "from TransportationJob a where a.status in (?1) order by a.id desc")
+
+	@Query(c2 + "from TransportationJob a where a.status in (?1) order by a.id desc")
 	public List<TransportationJob> findMobile(List<TransportationJobStatus> status);
 
 	@Query("select a.transportationJob  from TransportationRequest a where a.id in (?1) group by a.transportationJob.id")
 	public List<TransportationJob> findByTransportationRequestList(List<Integer> transportationRequestIdList);
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' order by a.id desc")
+	public List<TransportationJob> findToAssign1(String user1Username);
+
+	// to correct
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
+	public List<TransportationJob> findToAssign2(String user1Username);
+
 }

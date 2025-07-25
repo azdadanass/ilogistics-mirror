@@ -54,7 +54,7 @@
 							<h:outputText value="Back" />
 						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationJob.xhtml"
-							rendered="#{transportationJobView.canSaveTransportationJob()}">
+							rendered="#{transportationJobView.canSave()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transportationJobView.id}" />

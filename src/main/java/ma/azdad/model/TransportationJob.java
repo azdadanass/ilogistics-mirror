@@ -33,7 +33,26 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private String comment;
 	private Date startDate; // Calculable
 	private Date endDate; // Calculable
-	private TransportationJobStatus status = TransportationJobStatus.NOT_STARTED; // Calculable or closed
+	private TransportationJobStatus status = TransportationJobStatus.EDITED;
+
+	// timeline
+	private Date date1;
+	private Date date2;
+	private Date date3;
+	private Date date4;
+	private Date date5;
+	private Date date6;
+	private Date date7;
+	private Date date8;
+
+	private User user1;
+	private User user2;
+	private User user3;
+	private User user4;
+	private User user5;
+	private User user6;
+	private User user7;
+	private User user8;
 
 	// Costs
 	private Double realCost = 0.0;
@@ -63,7 +82,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		super();
 	}
 
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1, String transporterName2) {
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1,
+			String transporterName2) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -72,9 +92,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.estimatedCost = estimatedCost;
 		this.transporterName = transporterName2 != null ? transporterName2 : transporterName1;
 	}
-	
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1, String transporterName2,
-			String driverUsername,String vehicleMatricule) {
+
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1,
+			String transporterName2, String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -85,8 +105,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.driverUsername = driverUsername;
 		this.vehicleMatricule = vehicleMatricule;
 	}
-	
-	
 
 	public void init() {
 		if (transporter != null)
@@ -101,18 +119,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && comment != null)
-			result = comment.toLowerCase().contains(query);
-		if (!result && transporter != null)
-			result = transporter.filter(query);
-		if (!result && transporterName != null)
-			result = transporterName.toLowerCase().contains(query);
-		if (!result && vehicle != null)
-			result = vehicle.filter(query);
-		if (!result && driver != null)
-			result = driver.filter(query);
-		return result;
+		return contains(query, comment, getTransporterName());
 	}
 
 	@Transient
@@ -435,8 +442,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setPathList(List<Path> pathList) {
 		this.pathList = pathList;
 	}
-	
-	
+
 	@Transient
 	public String getVehicleMatricule() {
 		return vehicleMatricule;
@@ -480,12 +486,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public String getTransporterName() {
 		return transporterName;
 	}
-	
+
 	@Transient
 	public String getTransporterCin() {
 		return transporterCin;
 	}
-
 
 	public Double getVehiclePrice() {
 		return vehiclePrice;
@@ -494,7 +499,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setVehiclePrice(Double vehiclePrice) {
 		this.vehiclePrice = vehiclePrice;
 	}
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -505,4 +509,149 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public Date getDate1() {
+		return date1;
+	}
+
+	public void setDate1(Date date1) {
+		this.date1 = date1;
+	}
+
+	public Date getDate2() {
+		return date2;
+	}
+
+	public void setDate2(Date date2) {
+		this.date2 = date2;
+	}
+
+	public Date getDate3() {
+		return date3;
+	}
+
+	public void setDate3(Date date3) {
+		this.date3 = date3;
+	}
+
+	public Date getDate4() {
+		return date4;
+	}
+
+	public void setDate4(Date date4) {
+		this.date4 = date4;
+	}
+
+	public Date getDate5() {
+		return date5;
+	}
+
+	public void setDate5(Date date5) {
+		this.date5 = date5;
+	}
+
+	public Date getDate6() {
+		return date6;
+	}
+
+	public void setDate6(Date date6) {
+		this.date6 = date6;
+	}
+
+	public Date getDate7() {
+		return date7;
+	}
+
+	public void setDate7(Date date7) {
+		this.date7 = date7;
+	}
+
+	public Date getDate8() {
+		return date8;
+	}
+
+	public void setDate8(Date date8) {
+		this.date8 = date8;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser1() {
+		return user1;
+	}
+
+	public void setUser1(User user1) {
+		this.user1 = user1;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser2() {
+		return user2;
+	}
+
+	public void setUser2(User user2) {
+		this.user2 = user2;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser3() {
+		return user3;
+	}
+
+	public void setUser3(User user3) {
+		this.user3 = user3;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser4() {
+		return user4;
+	}
+
+	public void setUser4(User user4) {
+		this.user4 = user4;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser5() {
+		return user5;
+	}
+
+	public void setUser5(User user5) {
+		this.user5 = user5;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser6() {
+		return user6;
+	}
+
+	public void setUser6(User user6) {
+		this.user6 = user6;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser7() {
+		return user7;
+	}
+
+	public void setUser7(User user7) {
+		this.user7 = user7;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
+	}
+
+	public void setTransporterName(String transporterName) {
+		this.transporterName = transporterName;
+	}
+
+	public void setTransporterCin(String transporterCin) {
+		this.transporterCin = transporterCin;
+	}
+
 }

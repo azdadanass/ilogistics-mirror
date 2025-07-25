@@ -177,7 +177,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// SAVE TRANSPORTATIONJOB
-	public Boolean canSaveTransportationJob() {
+	public Boolean canSave() {
 		if (isListPage || isAddPage)
 			return sessionView.isTM();
 		else if (isViewPage || isEditPage)
@@ -185,8 +185,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return false;
 	}
 
-	public String saveTransportationJob() {
-		if (!canSaveTransportationJob())
+	public String save() {
+		if (!canSave())
 			return addParameters(listPage, "faces-redirect=true");
 		if (!validateTransportationJob())
 			return null;

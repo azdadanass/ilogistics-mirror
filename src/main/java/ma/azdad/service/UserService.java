@@ -112,6 +112,10 @@ public class UserService {
 	public List<User> findLight2( Boolean active,String username) {
 		return repos.findLight2(active,username);
 	}
+	
+	public List<User> findLight2(){
+		return repos.findLight2();
+	}
 
 	public List<User> findLight() {
 		return repos.findLight();

@@ -1,5 +1,6 @@
 package ma.azdad.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +25,7 @@ import ma.azdad.utils.App;
 
 @Entity
 @Table(name = "users")
-public class User extends GenericModel<String> {
+public class User extends GenericModel<String> implements Serializable {
 
 	private Boolean internal = false;
 	private String username;

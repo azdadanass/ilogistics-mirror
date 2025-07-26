@@ -62,6 +62,11 @@
 							<h:outputText value="Add TR" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
+						<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationJobView.initAssignList()}"
+							rendered="#{transportationJobView.canAssign()}">
+							<i class="ace-icon fa fa-link bigger-230"></i>
+							<h:outputText value="Assign" />
+						</p:commandLink>
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
 							rendered="#{transportationJobView.canDeleteTransportationJob()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>

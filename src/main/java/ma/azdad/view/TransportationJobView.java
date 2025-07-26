@@ -153,7 +153,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			toAssignList = service.findByIdList(TO_ASSIGN_MAP.get(key));
 			transportationJob = toAssignList.get(0);
 			refreshMapModel();
-			if (pageIndex == 4) {
+			if (pageIndex == 5) {
 				transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
 				changeTransportationJobAssignmentTypeListener();
 			}
@@ -164,6 +164,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void refreshMapMpdel() {
 		mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
+	}
+	
+	@Override
+	protected void initParameters() {
+		super.initParameters();
+		key = UtilsFunctions.getParameter("key");
 	}
 
 	@Override
@@ -310,7 +316,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			TO_ASSIGN_MAP.put(key, Arrays.asList(transportationJob.getId()));
 			index = TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()) ? 5 : 4;
 		}
-		return "TransportationJob.xhtml?faces-redirect=true&pageIndex=" + index + "&key=" + key;
+		return "assignTransportationJob.xhtml?faces-redirect=true&pageIndex=" + index + "&key=" + key;
 	}
 
 	public void changeTransportationJobAssignmentTypeListener() {
@@ -318,10 +324,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			switch (transportationJob.getAssignmentType()) {
 			case TRANSPORTER:
 				transporterView.initLists(transporterService.findAll());
-				;
 				break;
 			case INTERNAL_DRIVER:
-				userView.initLists(userService.findLight());
+				userView.initLists(userService.findLight2());
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -332,7 +337,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				refreshMapModel();
 				break;
 			case EXTERNAL_DRIVER:
-				userView.initLists(userService.findLight());
+				userView.initLists(userService.findLight2());
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -345,6 +350,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			default:
 				break;
 			}
+	}
+
+	public Boolean canAssign() {
+		return canAssign(transportationJob);
 	}
 
 	public Boolean canAssign(TransportationJob transportationJob) {

@@ -327,6 +327,10 @@ public class UserView {
 	public List<User> findLight() {
 		return userService.findLight();
 	}
+	
+	public List<User> findLight2(){
+		return userService.findLight2();
+	}
 
 	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
 		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
@@ -679,4 +683,21 @@ public class UserView {
 		this.userFile = userFile;
 	}
 
+	public UserRoleService getUserRoleService() {
+		return userRoleService;
+	}
+
+	public void setUserRoleService(UserRoleService userRoleService) {
+		this.userRoleService = userRoleService;
+	}
+
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
+
+	
 }

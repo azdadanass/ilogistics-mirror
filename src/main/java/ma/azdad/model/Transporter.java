@@ -71,6 +71,8 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public String getName() {
+		if (type == null)
+			return null;
 		switch (type) {
 		case SUPPLIER:
 			return getSupplierName();
@@ -83,6 +85,8 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public String getEmail() {
+		if (type == null)
+			return null;
 		switch (type) {
 		case SUPPLIER:
 			return getSupplierEmail();
@@ -95,6 +99,8 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public String getPhone() {
+		if (type == null)
+			return null;
 		switch (type) {
 		case SUPPLIER:
 			return getSupplierPhone();

@@ -74,7 +74,7 @@
 							<h4 class="header blue bolder smaller">
 								<h:outputText value="General informations" />
 							</h4>
-							<h:panelGroup rendered="#{transportationJobView.pageIndex==3}">
+							<h:panelGroup rendered="#{transportationJobView.pageIndex==4}">
 								<div class="row">
 									<div class="col-xs-12 col-sm-6">
 										<div class="form-group">
@@ -93,33 +93,31 @@
 										</div>
 									</div>
 								</div>
-								<f:subview rendered="#{sessionView.internal}">
-									<div class="space-4" />
-									<div class="row">
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Accept Lead Time" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:inputNumber value="#{transportationJobView.transportationJob.acceptLeadTime}" thousandSeparator="" decimalSeparator="." minValue="0" required="true"
-														requiredMessage="Accept Lead Time should not be null" placeholder="(in hours)" />
-												</div>
-											</div>
-										</div>
-										<div class="col-xs-12 col-sm-6">
-											<div class="form-group">
-												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-													<h:outputText value="Start Lead Time" />
-												</label>
-												<div class="col-xs-9 col-sm-9">
-													<p:inputNumber value="#{transportationJobView.transportationJob.startLeadTime}" thousandSeparator="" decimalSeparator="." minValue="0" required="true"
-														requiredMessage="Start Lead Time should not be null" placeholder="(in hours)" />
-												</div>
+								<div class="space-4" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Accept Lead Time" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:inputNumber value="#{transportationJobView.transportationJob.acceptLeadTime}" thousandSeparator="" decimalSeparator="." minValue="0" required="true"
+													requiredMessage="Accept Lead Time should not be null" placeholder="(in hours)" />
 											</div>
 										</div>
 									</div>
-								</f:subview>
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+												<h:outputText value="Start Lead Time" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:inputNumber value="#{transportationJobView.transportationJob.startLeadTime}" thousandSeparator="" decimalSeparator="." minValue="0" required="true"
+													requiredMessage="Start Lead Time should not be null" placeholder="(in hours)" />
+											</div>
+										</div>
+									</div>
+								</div>
 								<br />
 							</h:panelGroup>
 							<div class="space-16" />
@@ -156,7 +154,8 @@
 										</div>
 									</div>
 								</f:subview>
-								<f:subview rendered="#{TransportationJobAssignmentType.INTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType or TransportationJobAssignmentType.EXTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType}">
+								<f:subview
+									rendered="#{TransportationJobAssignmentType.INTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType or TransportationJobAssignmentType.EXTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType}">
 									<div class="row">
 										<div class="col-sm-offset-1 col-sm-10">
 											<div class="table-header col-sm-12 col-xs-12">
@@ -166,7 +165,7 @@
 												</div>
 												<div class="col-sm-4 hidden-xs">
 													<i class="fa fa-list" />
-													<h:outputText value=" Sort By " style="margin-right:20px"/>
+													<h:outputText value=" Sort By " style="margin-right:20px" />
 													<h:selectOneMenu value="#{userView.sortBy}">
 														<f:selectItem itemLabel="Full Name" itemValue="Full Name" />
 														<p:ajax listener="#{userView.sort()}" update="teamList" />
@@ -184,9 +183,9 @@
 												</div>
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
-												<p:dataTable id="teamList" widgetVar="teamList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.id}" selection="#{transportationJobView.transportationJob.driver}" var="item"
-													rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-													paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+												<p:dataTable id="teamList" widgetVar="teamList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.username}"
+													selection="#{transportationJobView.transportationJob.driver}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
 													<p:column headerText="Photo" width="80" exportable="false" styleClass="hidden-xs">
 														<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -203,8 +202,15 @@
 								</f:subview>
 							</h:panelGroup>
 							<div class="space-16"></div>
-							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.latitude}, #{transportationJobView.transportationJob.longitude}" zoom="10" type="TERRAIN"
-								style="width:80%;height:400px;margin:auto" />
+							
+							#{transportationJobView.transportationJob.id}
+							<br/>
+							#{transportationJobView.transportationJob.latitude}
+							<br/>
+							
+							
+							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.latitude}, #{transportationJobView.transportationJob.longitude}"
+								zoom="10" type="TERRAIN" style="width:80%;height:400px;margin:auto" />
 							<div class="space-16" />
 						</div>
 						<div class="row"></div>

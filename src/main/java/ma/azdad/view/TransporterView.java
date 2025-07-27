@@ -67,7 +67,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	private TransporterFile transporterFile;
 
 	private Vehicle vehicle;
-	private User driver;
+	private User user;
 
 	@Override
 	@PostConstruct
@@ -138,10 +138,10 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	// Driver MANAGEMENT
-	public void addDriver() {
-		if (!transporter.getDriverList().contains(driver)) {
-			driver.setTransporter(transporter);
-			transporter.getDriverList().add(driver);
+	public void addUser() {
+		if (!transporter.getUserList().contains(user)) {
+			user.setTransporter(transporter);
+			transporter.getUserList().add(user);
 			transporterService.save(transporter);
 		}
 	}
@@ -224,9 +224,6 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// GETTERS & SETTERS
 
-
-
-
 	public TransporterService getTransporterService() {
 		return transporterService;
 	}
@@ -291,12 +288,12 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		this.vehicle = vehicle;
 	}
 
-	public User getDriver() {
-		return driver;
+	public User getUser() {
+		return user;
 	}
 
-	public void setDriver(User driver) {
-		this.driver = driver;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

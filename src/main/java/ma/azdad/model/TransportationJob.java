@@ -38,6 +38,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Double acceptLeadTime = 12.0;
 	private Double startLeadTime = 24.0;
 
+	private Date maxAcceptDate;
+	private Date maxStartDate;
+
 	// timeline
 	private Date date1; // edited
 	private Date date2; // assigned1
@@ -81,7 +84,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double latitude,Double longitude, //
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.startDate = startDate;
@@ -98,8 +101,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double latitude,Double longitude, //
-			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername, String vehicleMatricule) {
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
+			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
+			String vehicleMatricule) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -128,6 +132,25 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void removeHistory(TransportationJobHistory history) {
 		history.setParent(null);
 		historyList.remove(history);
+	}
+
+	public void calculateMaxAcceptTime() {
+		maxAcceptDate = null;
+		if (getAssignDate() != null)
+			maxAcceptDate = UtilsFunctions.addMinutesToDate(getAssignDate(), (int) (acceptLeadTime * 60));
+	}
+
+	@Transient
+	public Date getAssignDate() {
+		return date2 != null ? date2 : date3;
+	}
+
+	public void calculateMaxStartTime() {
+		maxStartDate = null;
+		Date assignDate = getAssignDate();
+		if (assignDate != null)
+			maxStartDate = UtilsFunctions.addMinutesToDate(assignDate, (int) (startLeadTime * 60));
+
 	}
 
 	@Override
@@ -761,6 +784,22 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public Date getMaxAcceptDate() {
+		return maxAcceptDate;
+	}
+
+	public void setMaxAcceptDate(Date maxAcceptDate) {
+		this.maxAcceptDate = maxAcceptDate;
+	}
+
+	public Date getMaxStartDate() {
+		return maxStartDate;
+	}
+
+	public void setMaxStartDate(Date maxStartDate) {
+		this.maxStartDate = maxStartDate;
 	}
 
 }

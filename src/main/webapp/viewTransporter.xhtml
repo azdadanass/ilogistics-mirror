@@ -26,6 +26,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.TransporterType" var="TransporterType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.Role" var="Role" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -52,12 +53,14 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransporter.xhtml" rendered="#{transporterView.canSaveTransporter()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransporter.xhtml"
+							rendered="#{transporterView.canSaveTransporter()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transporterView.id}" />
 						</h:outputLink>
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{transporterView.canDeleteTransporter()}">
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
+							rendered="#{transporterView.canDeleteTransporter()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
@@ -87,7 +90,7 @@
 					<li>
 						<a data-toggle="tab" href="#tab3">
 							<i class="pink ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Driver List" />
+							<h:outputText value=" User List" />
 						</a>
 					</li>
 					<li>
@@ -108,51 +111,31 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<f:subview rendered="#{TransporterType.SUPPLIER==transporterView.transporter.type}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Name" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.supplier.name}" styleClass="bolder orange" />
-												&nbsp;
-											</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Name" />
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Email" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.supplier.email}" styleClass="bolder light-blue" />
-												&nbsp;
-											</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transporterView.transporter.name}" styleClass="bolder orange" />
+											&nbsp;
 										</div>
-									</f:subview>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Email" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transporterView.transporter.email}" styleClass="bolder light-blue" />
+											&nbsp;
+										</div>
+									</div>
 									<f:subview rendered="#{TransporterType.PRIVATE==transporterView.transporter.type}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Name" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.fullName}" styleClass="bolder orange" />
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Email" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.email}" styleClass="bolder light-blue" />
-												&nbsp;
-											</div>
-										</div>
 										<div class="profile-info-row">
 											<div class="profile-info-name">
 												<h:outputText value="CIN" />
 											</div>
 											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.cin}" styleClass="red" />
+												<h:outputText value="#{transporterView.transporter.privateCin}" styleClass="red" />
 												&nbsp;
 											</div>
 										</div>
@@ -207,8 +190,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="vehicles_table" value="#{transporterView.transporter.vehicleList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="vehicles_table" value="#{transporterView.transporter.vehicleList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Matricule">
 											<h:outputText value="#{item.correctMatricule}" styleClass="purple bolder" />
 										</p:column>
@@ -257,12 +240,12 @@
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-9 hidden-xs">
 										<i class="fa fa-list" />
-										<h:outputText value=" List Of Drivers" />
+										<h:outputText value=" List Of Users" />
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="drivers_table" value="#{transporterView.transporter.driverList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="CIN">
 											<h:outputText value="#{item.cin}" styleClass="bolder green" />
 										</p:column>
@@ -278,17 +261,23 @@
 										<p:column headerText="Company">
 											<h:outputText value="#{item.company}" />
 										</p:column>
-										<p:column headerText="Actions" style="width:150px">
+										<p:column headerText="Role TM">
+											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_TM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Role Driver">
+											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_DRIVER)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<!-- <p:column headerText="Actions" style="width:150px">
 											<div class="action-buttons center">
 												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:param name="id" value="#{item.id}" />
 												</h:outputLink>
 											</div>
-										</p:column>
+										</p:column> -->
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink title="Add New Driver" oncomplete="PF('addDriverDlg').show()">
+												<p:commandLink title="Add New User" oncomplete="PF('addUserDlg').show()">
 													<i class="fa fa-plus green" />
 												</p:commandLink>
 											</div>
@@ -308,8 +297,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{transporterView.transporter.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="files_table" value="#{transporterView.transporter.fileList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -369,8 +358,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="transporterhistoryList" value="#{transporterView.transporter.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="transporterhistoryList" value="#{transporterView.transporter.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />

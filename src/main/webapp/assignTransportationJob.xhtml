@@ -146,6 +146,9 @@
 													selection="#{transportationJobView.transportationJob.transporter}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
+													<p:column headerText="ID">
+														<h:outputText value="#{item.id}" styleClass="bolder green" />
+													</p:column>
 													<p:column headerText="Name">
 														<h:outputText value="#{item.name}" styleClass="bolder green" />
 													</p:column>
@@ -175,7 +178,7 @@
 													<div class="nav-search minimized">
 														<span class="input-icon">
 															<p:inputText value="#{userView.searchBean}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
-																<p:ajax event="keyup" update="teamList" />
+																<p:ajax event="keyup" update="driverList" />
 															</p:inputText>
 															<i class="ace-icon fa fa-search nav-search-icon" />
 														</span>
@@ -183,7 +186,7 @@
 												</div>
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
-												<p:dataTable id="teamList" widgetVar="teamList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.username}"
+												<p:dataTable id="driverList" widgetVar="driverList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.username}"
 													selection="#{transportationJobView.transportationJob.driver}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
@@ -202,13 +205,6 @@
 								</f:subview>
 							</h:panelGroup>
 							<div class="space-16"></div>
-							
-							#{transportationJobView.transportationJob.id}
-							<br/>
-							#{transportationJobView.transportationJob.latitude}
-							<br/>
-							
-							
 							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.latitude}, #{transportationJobView.transportationJob.longitude}"
 								zoom="10" type="TERRAIN" style="width:80%;height:400px;margin:auto" />
 							<div class="space-16" />

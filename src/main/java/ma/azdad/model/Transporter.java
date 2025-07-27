@@ -42,7 +42,7 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	private List<TransporterFile> fileList = new ArrayList<>();
 	private List<TransporterHistory> historyList = new ArrayList<>();
 	private List<Vehicle> vehicleList = new ArrayList<>();
-	private List<User> driverList = new ArrayList<>();
+	private List<User> userList = new ArrayList<>();
 
 	@Override
 	public boolean filter(String query) {
@@ -159,12 +159,12 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transporter", cascade = CascadeType.ALL)
-	public List<User> getDriverList() {
-		return driverList;
+	public List<User> getUserList() {
+		return userList;
 	}
 
-	public void setDriverList(List<User> driverList) {
-		this.driverList = driverList;
+	public void setUserList(List<User> userList) {
+		this.userList = userList;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)

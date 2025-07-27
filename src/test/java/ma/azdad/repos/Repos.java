@@ -6,27 +6,25 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.DeliveryRequestSerialNumberService;
-import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.TransportationJobService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	
 	@Autowired
-	StockRowRepos stockRowRepos;
-	
-	@Autowired
-	DeliveryRequestService deliveryRequestService;
-	
-	@Autowired
-	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+	TransportationJobService transportationJobService;
 	
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		deliveryRequestService.calculateStorageOverdue(24509);
+		
+		
+		
+		System.out.println(transportationJobService.findOne(4741).getLatitude());
+		
+		
 	}
 
 }

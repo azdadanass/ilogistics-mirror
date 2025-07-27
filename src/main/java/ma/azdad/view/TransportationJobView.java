@@ -24,7 +24,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequestStatus;
+import ma.azdad.model.JobRequest;
 import ma.azdad.model.Path;
+import ma.azdad.model.ProjectAssignmentType;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
@@ -323,7 +325,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (transportationJob.getAssignmentType() != null)
 			switch (transportationJob.getAssignmentType()) {
 			case TRANSPORTER:
-				transporterView.initLists(transporterService.findAll());
+				transporterView.initLists(transporterService.findLight());
 				break;
 			case INTERNAL_DRIVER:
 				userView.initLists(userService.findLight2());
@@ -362,17 +364,32 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 						&& sessionView.isTheConnectedUser(transportationJob.getUser1())) //
 						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus())));
 	}
+	
+	private Boolean validateAssign() {
+		if (TransportationJobAssignmentType.TRANSPORTER.equals(transportationJob.getAssignmentType()) && transportationJob.getTransporter() == null)
+			return FacesContextMessages.ErrorMessages("Transporter should not be null");
+		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType()) && transportationJob.getDriver() == null)
+			return FacesContextMessages.ErrorMessages("Driver should not be null");
+		return true;
+	}
 
 	public void assign(TransportationJob transportationJob) {
 		if (!canAssign(transportationJob))
 			return;
+		if (!validateAssign())
+			return;
+		if (this.transportationJob.getStartLeadTime() != null)
+			transportationJob.setStartLeadTime(this.transportationJob.getStartLeadTime());
+		if (this.transportationJob.getAcceptLeadTime() != null)
+			transportationJob.setAcceptLeadTime(this.transportationJob.getAcceptLeadTime());
+		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
 
 		switch (transportationJob.getAssignmentType()) {
 		case TRANSPORTER:
 			transportationJob.setStatus(TransportationJobStatus.ASSIGNED1);
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(sessionView.getUser());
-			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getTransporterId()));
+			transportationJob.setTransporter(transporterService.findOneLight(this.transportationJob.getTransporterId()));
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter " + transportationJob.getTransporterName()));
 			break;
 		case INTERNAL_DRIVER:
@@ -380,28 +397,38 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setStatus(TransportationJobStatus.ASSIGNED2);
 			transportationJob.setDate3(new Date());
 			transportationJob.setUser3(sessionView.getUser());
-			transportationJob.setDriver(userService.findOneLight(transportationJob.getDriverUsername()));
+			transportationJob.setDriver(userService.findOneLight(this.transportationJob.getDriverUsername()));
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver " + transportationJob.getDriverFullName()));
 			break;
 		}
+		
+		transportationJob.calculateMaxAcceptTime();
+		transportationJob.calculateMaxStartTime();
+		transportationJob = service.save(transportationJob);
 	}
 
+//	public String assign() {
+//		if (isViewPage) {
+//			assign(transportationJob);
+//			return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
+//		} else if (pageIndex == 4 || pageIndex == 5) {
+//			for (TransportationJob transportationJob : list4)
+//				assign(service.findOne(transportationJob.getId()));
+//			return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
+//		}
+//		return null;
+//	}
+	
 	public String assign() {
-		if (isViewPage) {
-			assign(transportationJob);
-			return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
-		} else if (pageIndex == 4 || pageIndex == 5) {
-			for (TransportationJob transportationJob : list4)
-				assign(service.findOne(transportationJob.getId()));
-			return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
-		}
-		return null;
+		for (TransportationJob transportationJob : toAssignList)
+			assign(service.findOne(transportationJob.getId()));
+		return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
 	}
 
 	// GPS
 
 	public void refreshMapModel() {
-		if (isPage("assignJobRequest")) {
+		if (isPage("assignTransportationJob")) {
 			mapModel = new DefaultMapModel();
 			// to correct --> show TRs Sites
 //			for (TransportationJob transportationJob : toAssignList) 

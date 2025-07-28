@@ -105,8 +105,8 @@
 							<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
 							<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" rendered="#{transportationJobView.isPageIndex(4,5)}" />
-							<p:column headerText="Numero" sortBy="#{item.idStr}">
-								<h:outputText value="#{item.idStr}" styleClass="bolder purple" />
+							<p:column headerText="Reference" sortBy="#{item.reference}">
+								<h:outputText value="#{item.reference}" styleClass="bolder purple" />
 							</p:column>
 							<p:column headerText="Transporter">
 								<h:outputText value="#{item.transporterName}" />

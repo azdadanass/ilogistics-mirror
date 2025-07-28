@@ -44,6 +44,7 @@ public class UserService {
 		Hibernate.initialize(u.getRoleList());
 		Hibernate.initialize(u.getFileList());
 		Hibernate.initialize(u.getHistoryList());
+		Hibernate.initialize(u.getTransporter());
 		return u;
 	}
 
@@ -87,6 +88,7 @@ public class UserService {
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);
 		if (u != null) {
+			Hibernate.initialize(u.getTransporter());
 			Hibernate.initialize(u.getRoleList());
 		}
 			
@@ -478,6 +480,15 @@ public class UserService {
 	
 	public Boolean isTM(String username) {
 		return isHavingRole(username, Role.ROLE_ILOGISTICS_TM);
+	}
+	
+	
+	public List<User> findByRoleAndActive(Role role,Boolean internal){
+		return repos.findByRoleAndActive(role, internal);
+	}
+	
+	public List<User> findByRoleAndActiveAndTransporter(Role role,Integer transporterId){
+		return repos.findByRoleAndActiveAndTransporter(role, transporterId);
 	}
 	
 

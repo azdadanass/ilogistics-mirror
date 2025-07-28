@@ -22,7 +22,11 @@ public class TransporterService extends GenericService<Integer, Transporter, Tra
 		Hibernate.initialize(transporter.getHistoryList());
 		Hibernate.initialize(transporter.getVehicleList());
 		Hibernate.initialize(transporter.getSupplier());
-		Hibernate.initialize(transporter.getUserList());
+		transporter.getUserList().forEach(i->{
+			initialize(i.getCompany());
+			initialize(i.getCustomer());
+			initialize(i.getSupplier());
+		});
 		return transporter;
 	}
 

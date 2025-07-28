@@ -85,7 +85,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c1
 	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
-			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
+			Integer transporterId,TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -94,6 +94,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.estimatedCost = estimatedCost;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
 		this.setTransporterPrivateLastName(transporterPrivateLastName);
@@ -102,7 +103,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c2
 	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
-			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
+			Integer transporterId,TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
 			String vehicleMatricule) {
 		super(id);
 		this.startDate = startDate;
@@ -112,6 +113,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.estimatedCost = estimatedCost;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
 		this.setTransporterPrivateLastName(transporterPrivateLastName);

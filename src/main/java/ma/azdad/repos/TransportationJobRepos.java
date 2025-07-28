@@ -19,9 +19,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	
 	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
 
-	String c1 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
+	String c1 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
 			+ "," + transporterSupplierName + ") ";
-	String c2 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
+	String c2 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
 			+ "," + transporterSupplierName + ",a.driver.username,"+vehicleMatricule+") ";
 
 	@Query(c1 + "from TransportationJob a order by a.id desc")

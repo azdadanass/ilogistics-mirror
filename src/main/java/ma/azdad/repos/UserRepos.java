@@ -48,6 +48,15 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query("select new User(username,fullName,photo,email,job) from User ")
 	List<User> findLight2();
+	
+	
+	@Query("select new User(a.user.username,a.user.fullName,a.user.photo,a.user.email,a.user.job)  from UserRole a where a.role = ?1 and a.user.internal = ?2 and a.user.active is true")
+	List<User> findByRoleAndActive(Role role,Boolean internal);
+	
+	
+	
+	@Query("select new User(a.user.username,a.user.fullName,a.user.photo,a.user.email,a.user.job)  from UserRole a where a.role = ?1 and a.user.transporter.id = ?2 and a.user.active is true")
+	List<User> findByRoleAndActiveAndTransporter(Role role,Integer transporterId);
 
 	@Query("select new User(user.username,user.fullName) from UserRole where role = ?1")
 	List<User> findLightByRole(Role role);

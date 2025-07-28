@@ -24,9 +24,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequestStatus;
-import ma.azdad.model.JobRequest;
 import ma.azdad.model.Path;
-import ma.azdad.model.ProjectAssignmentType;
+import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
@@ -36,8 +35,6 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
-import ma.azdad.model.Transporter;
-import ma.azdad.model.User;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.MapService;
@@ -167,7 +164,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void refreshMapMpdel() {
 		mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 	}
-	
+
 	@Override
 	protected void initParameters() {
 		super.initParameters();
@@ -328,7 +325,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transporterView.initLists(transporterService.findLight());
 				break;
 			case INTERNAL_DRIVER:
-				userView.initLists(userService.findLight2());
+				userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, true));
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -339,7 +336,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				refreshMapModel();
 				break;
 			case EXTERNAL_DRIVER:
-				userView.initLists(userService.findLight2());
+				switch (transportationJob.getStatus()) {
+				case EDITED:
+					userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, false));
+					break;
+				case ASSIGNED1:
+					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : "+userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					System.out.println("transportationJob.getTransporterId() : "+transportationJob.getTransporterId());
+					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					break;
+				default:
+					break;
+				}
+
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -363,14 +372,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				&& ((TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
 						&& sessionView.isTheConnectedUser(transportationJob.getUser1())) //
 						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()) //
-								&& transportationJob.getTransporter().equals(sessionView.getUser().getTransporter()) //							
-								));
+								&& transportationJob.getTransporter().equals(sessionView.getUser().getTransporter()) //
+						));
 	}
-	
+
 	private Boolean validateAssign() {
 		if (TransportationJobAssignmentType.TRANSPORTER.equals(transportationJob.getAssignmentType()) && transportationJob.getTransporter() == null)
 			return FacesContextMessages.ErrorMessages("Transporter should not be null");
-		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType()) && transportationJob.getDriver() == null)
+		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType())
+				&& transportationJob.getDriver() == null)
 			return FacesContextMessages.ErrorMessages("Driver should not be null");
 		return true;
 	}
@@ -392,7 +402,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(sessionView.getUser());
 			transportationJob.setTransporter(transporterService.findOneLight(this.transportationJob.getTransporterId()));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter " + transportationJob.getTransporterName()));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			break;
 		case INTERNAL_DRIVER:
 		case EXTERNAL_DRIVER:
@@ -400,10 +410,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setDate3(new Date());
 			transportationJob.setUser3(sessionView.getUser());
 			transportationJob.setDriver(userService.findOneLight(this.transportationJob.getDriverUsername()));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver " + transportationJob.getDriverFullName()));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			break;
 		}
-		
+
 		transportationJob.calculateMaxAcceptTime();
 		transportationJob.calculateMaxStartTime();
 		transportationJob = service.save(transportationJob);
@@ -420,11 +430,85 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 //		}
 //		return null;
 //	}
-	
+
 	public String assign() {
 		for (TransportationJob transportationJob : toAssignList)
 			assign(service.findOne(transportationJob.getId()));
 		return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
+	}
+
+	// accept
+	public Boolean canAccept(TransportationJob transportationJob) {
+		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
+				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+	}
+
+	public Boolean canAccept() {
+		return canAccept(transportationJob);
+	}
+
+	public void accept(TransportationJob transportationJob) {
+		if (!canAccept(transportationJob))
+			return;
+		transportationJob.setStatus(TransportationJobStatus.ACCEPTED);
+		transportationJob.setDate4(new Date());
+		transportationJob.setUser4(sessionView.getUser());
+		transportationJob.addHistory(new TransportationJobHistory("Accepted", sessionView.getUser()));
+		service.save(transportationJob);
+	}
+
+	public void accept() {
+		accept(transportationJob);
+	}
+
+	// decline
+	public Boolean canDecline() {
+		return canDecline(transportationJob);
+	}
+
+	public Boolean canDecline(TransportationJob transportationJob) {
+		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
+				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+	}
+
+	public void decline(TransportationJob transportationJob) {
+		if (!canDecline(transportationJob))
+			return;
+		transportationJob.setStatus(TransportationJobStatus.EDITED);
+		transportationJob.setDate2(null);
+		transportationJob.setUser2(null);
+		transportationJob.setDate3(null);
+		transportationJob.setUser3(null);
+		transportationJob.addHistory(new TransportationJobHistory("Declined", sessionView.getUser()));
+		service.save(transportationJob);
+	}
+
+	public void decline() {
+		decline(transportationJob);
+	}
+
+	// start
+	public Boolean canStart() {
+		return canStart(transportationJob);
+	}
+
+	public Boolean canStart(TransportationJob transportationJob) {
+		return TransportationJobStatus.ACCEPTED.equals(transportationJob.getStatus()) //
+				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+	}
+
+	public void start(TransportationJob transportationJob) {
+		if (!canStart(transportationJob))
+			return;
+		transportationJob.setStatus(TransportationJobStatus.STARTED);
+		transportationJob.setDate5(new Date());
+		transportationJob.setUser5(sessionView.getUser());
+		transportationJob.addHistory(new TransportationJobHistory("Started", sessionView.getUser()));
+		service.save(transportationJob);
+	}
+
+	public void start() {
+		start(transportationJob);
 	}
 
 	// GPS

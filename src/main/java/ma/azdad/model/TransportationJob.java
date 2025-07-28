@@ -54,8 +54,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	// TM
 	private Integer transporterId;
 	private Integer vehicleId;
+	private String vehicleMatricule;
 	private String driverUsername;
 	private String transporterName;
+	private String transporterCin;
 
 	public TransportationJob() {
 		super();
@@ -70,6 +72,21 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.estimatedCost = estimatedCost;
 		this.transporterName = transporterName2 != null ? transporterName2 : transporterName1;
 	}
+	
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, String transporterName1, String transporterName2,
+			String driverUsername,String vehicleMatricule) {
+		super(id);
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.status = status;
+		this.realCost = realCost;
+		this.estimatedCost = estimatedCost;
+		this.transporterName = transporterName2 != null ? transporterName2 : transporterName1;
+		this.driverUsername = driverUsername;
+		this.vehicleMatricule = vehicleMatricule;
+	}
+	
+	
 
 	public void init() {
 		if (transporter != null)
@@ -418,6 +435,16 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setPathList(List<Path> pathList) {
 		this.pathList = pathList;
 	}
+	
+	
+	@Transient
+	public String getVehicleMatricule() {
+		return vehicleMatricule;
+	}
+
+	public void setVehicleMatricule(String vehicleMatricule) {
+		this.vehicleMatricule = vehicleMatricule;
+	}
 
 	@Transient
 	public Integer getTransporterId() {
@@ -453,6 +480,12 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public String getTransporterName() {
 		return transporterName;
 	}
+	
+	@Transient
+	public String getTransporterCin() {
+		return transporterCin;
+	}
+
 
 	public Double getVehiclePrice() {
 		return vehiclePrice;
@@ -461,6 +494,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setVehiclePrice(Double vehiclePrice) {
 		this.vehiclePrice = vehiclePrice;
 	}
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

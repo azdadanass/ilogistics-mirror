@@ -65,6 +65,10 @@ public class UserService {
 		return us;
 	}
 	
+	public User findByUsernameLight(String username) {
+		return repos.findByUsernameLight(username);
+	}
+	
 	public User findByFullName(String fullName) {
 		return repos.findByFullName(fullName);
 	}

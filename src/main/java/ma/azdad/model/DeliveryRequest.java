@@ -1703,14 +1703,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getFullType() {
 		String result = type.getValue();
 
-		if (getIsInboundNew())
-			result += ", New";
-		else if (getIsInboundDismantle())
-			result += ", Dismantle";
-		else if (getIsInboundReturn())
-			result += ", Return From Outbound, " + outboundDeliveryRequestReturn.getReference();
-		else if (getIsInboundTransfer())
-			result += ", Transfer From Outbound, " + outboundDeliveryRequestReturn.getReference();
+		if(getSubType()!=null)
+			result+=", "+getSubType();
 
 		return result;
 	}

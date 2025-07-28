@@ -1,5 +1,6 @@
 package ma.azdad.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,19 @@ import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.repos.TransportationJobRepos;
+import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.FacesContextMessages;
 
 @Component
 public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {
+
+    private final TransportationRequestRepos transportationRequestRepos;
+
+	@Autowired
+    UserService userService;
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;
@@ -43,6 +51,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	StopService stopService;
+
+    TransportationJobService(UserService userService, TransportationRequestRepos transportationRequestRepos) {
+        this.userService = userService;
+        this.transportationRequestRepos = transportationRequestRepos;
+    }
 
 	@Override
 	public TransportationJob findOne(Integer id) {
@@ -78,7 +91,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return result;
 	}
 
-	public Boolean validateTransportationRequestListDates(TransportationJob transportationJob, List<TransportationRequest> newList) {
+	public Boolean validateTransportationRequestListDates(TransportationJob transportationJob,
+			List<TransportationRequest> newList) {
 		// positive:site, negative:warehouse
 		Map<String, Integer> mapDateAndPlace = getMapDateAndPlace(transportationJob);
 		for (TransportationRequest tr : newList) {
@@ -137,9 +151,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 			Double grossWeight = deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
 			Double estimatedDistance = tr.getEstimatedDistance();
-			tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+			tr.setEstimatedCost(transportationJob.getEstimatedCost()
+					* (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
 			if (setCost)
-				tr.setCost(transportationJob.getRealCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+				tr.setCost(transportationJob.getRealCost()
+						* (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
 			transportationRequestService.save(tr);
 		}
 	}
@@ -168,7 +184,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService
+				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP,
+						TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());
@@ -187,4 +205,68 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
+
+	// mobile
+	public List<ma.azdad.mobile.model.TransportationJob> findMobile(TransportationJobStatus status) {
+		List<TransportationJob> list = transportationJobRepos.findMobile(status);
+		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
+		for (TransportationJob tj : list) {
+			System.out.println("driver : "+tj.getDriver());
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(),
+					tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())),
+					transportationRequestRepos.countByTransportationJob(tj),tj.getVehicleMatricule()));
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJob> findMobile(List<TransportationJobStatus> status) {
+		List<TransportationJob> list = transportationJobRepos.findMobile(status);
+		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
+		for (TransportationJob tj : list) {
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(),
+					tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()))
+					,transportationRequestRepos.countByTransportationJob(tj),tj.getVehicleMatricule()));
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJob> findMobile() {
+		List<TransportationJob> list = transportationJobRepos.findMobile();
+		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
+		for (TransportationJob tj : list) {
+			
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(),
+					tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())),
+					transportationRequestRepos.countByTransportationJob(tj),tj.getVehicleMatricule()));
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJob> findMobileByStatus(Integer state) {
+		switch (state) {
+		case 0:
+			return findMobile(TransportationJobStatus.NOT_STARTED);
+		case 1:
+			return findMobile(TransportationJobStatus.IN_PROGRESS);
+		case 2:
+			return findMobile(Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.CLOSED));
+		case 3:
+			return findMobile();
+
+		default:
+			return new ArrayList<>();
+		}
+	}
+
+	private ma.azdad.mobile.model.User toMobileUser(User user) {
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getLogin(), user.getPhoto(), user.getEmail());
+	}
+
 }

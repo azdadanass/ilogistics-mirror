@@ -44,6 +44,20 @@ public class LoginController {
 		return token;
 	}
 	
+	@PostMapping(path = "/mobile/login2", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Token login2(@RequestBody User user) {
+		System.out.println("/mobile/login "+user.getLogin()+" "+user.getPassword());
+		ma.azdad.model.User dbUser = userService.findByLogin(user.getLogin());
+		if (dbUser == null)
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login not found");
+		if (!StringUtils.equals(dbUser.getPassword(), UtilsFunctions.stringToMD5(user.getPassword())))
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad password");
+		if(!dbUser.getIsTM())
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied !");
+		Token token = tokenService.generateToken(dbUser.getUsername());
+		return token;
+	}
+	
 	@GetMapping("/mobile/logout/{key}")
 	public void logout(@PathVariable String key) {
 		Token token = tokenService.getBykey(key);

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import ma.azdad.model.JobRequest;
 import ma.azdad.model.Path;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
@@ -68,7 +67,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Hibernate.initialize(transportationJob.getTransporter().getSupplier());
 			initialize(transportationJob.getTransporter().getUserList());
 		}
-			
+
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
 		return transportationJob;
@@ -77,15 +76,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<TransportationJob> find() {
 		return repos.find();
 	}
-	
-	public List<TransportationJob> findToAssign1(String user1Username){
+
+	public List<TransportationJob> findToAssign1(String user1Username) {
 		return repos.findToAssign1(user1Username);
 	}
 
-	public List<TransportationJob> findToAssign2(String user1Username){
+	public List<TransportationJob> findToAssign2(String user1Username) {
 		return repos.findToAssign2(user1Username);
 	}
-	
+
 	public List<TransportationJob> findByIdList(List<Integer> id) {
 		return repos.findByIdList(id);
 	}
@@ -210,6 +209,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			updateCalculableFields(tj, true);
 		}
 
+	}
+
+	public void generateReferenceScript() {
+		repos.findAll().forEach(i -> {
+			i.generateReference();
+			save(i);
+		});
 	}
 
 	// mobile

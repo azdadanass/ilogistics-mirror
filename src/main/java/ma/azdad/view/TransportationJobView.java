@@ -251,6 +251,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.setUser1(sessionView.getUser());
 		transportationJob.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
 		transportationJob = transportationJobService.save(transportationJob);
+		if(isAddPage) {
+			transportationJob.generateReference();
+			transportationJobService.save(transportationJob);	
+		}
+		
+		
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
 

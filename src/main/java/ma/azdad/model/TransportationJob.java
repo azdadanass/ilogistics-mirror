@@ -30,6 +30,7 @@ import ma.azdad.service.UtilsFunctions;
 
 public class TransportationJob extends GenericModel<Integer> implements Serializable {
 
+	private String reference;
 	private String comment;
 	private Date startDate; // Calculable
 	private Date endDate; // Calculable
@@ -85,7 +86,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c1
 	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
-			Integer transporterId,TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
+			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -103,7 +104,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c2
 	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
-			Integer transporterId,TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
+			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
 			String vehicleMatricule) {
 		super(id);
 		this.startDate = startDate;
@@ -121,7 +122,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.setDriverUsername(driverUsername);
 		this.setVehicleMatricule(vehicleMatricule);
 	}
-	
 
 	public void init() {
 		Collections.sort(transportationRequestList);
@@ -356,6 +356,18 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		endDate = it.next().getEndDate();
 		while (it.hasNext())
 			endDate = UtilsFunctions.getMaxDate(endDate, it.next().getEndDate());
+	}
+	
+	public void generateReference() {
+		reference = "TJ" + String.format("%06d", id);
+	}
+
+	public String getReference() {
+		return reference;
+	}
+
+	public void setReference(String reference) {
+		this.reference = reference;
 	}
 
 	public Date getStartDate() {

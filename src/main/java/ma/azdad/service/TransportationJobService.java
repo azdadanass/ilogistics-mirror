@@ -11,7 +11,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +18,7 @@ import ma.azdad.model.Path;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobHistory;
+import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
@@ -81,6 +81,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return repos.find();
 	}
 
+	@Cacheable(value = "transportationJobService.findByUser1")
+	public List<TransportationJob> findByUser1(String user1Username, TransportationJobState state) {
+		if (state == null)
+			return repos.findByUser1(user1Username);
+		return repos.findByUser1(user1Username, state.getStatusList());
+	}
+
 	@Cacheable(value = "transportationJobService.findToAssign1")
 	public List<TransportationJob> findToAssign1(String user1Username) {
 		return repos.findToAssign1(user1Username);
@@ -108,7 +115,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Cacheable(value = "transportationJobService.countByDriverAndStatus")
 	public Long countByDriverAndStatus(String driverUsername, TransportationJobStatus status) {
-		return  ObjectUtils.firstNonNull(repos.countByDriverAndStatus(driverUsername,status), 0l);
+		return ObjectUtils.firstNonNull(repos.countByDriverAndStatus(driverUsername, status), 0l);
 	}
 
 	public List<TransportationJob> findByIdList(List<Integer> id) {
@@ -243,28 +250,26 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			save(i);
 		});
 	}
-	
-	
-	
+
 	// workflow
 	public Boolean canAccept(TransportationJob transportationJob, String connectedUserUsername) {
 		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
-				&&  connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
+				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
 	}
-	
-	public void accept(TransportationJob transportationJob,User connectedUser) {
+
+	public void accept(TransportationJob transportationJob, User connectedUser) {
 		transportationJob.setStatus(TransportationJobStatus.ACCEPTED);
 		transportationJob.setDate4(new Date());
 		transportationJob.setUser4(connectedUser);
 		transportationJob.addHistory(new TransportationJobHistory("Accepted", connectedUser));
 		save(transportationJob);
 	}
-	
+
 	public Boolean canDecline(TransportationJob transportationJob, String connectedUserUsername) {
 		return canAccept(transportationJob, connectedUserUsername);
 	}
-	
-	public void decline(TransportationJob transportationJob,User connectedUser) {
+
+	public void decline(TransportationJob transportationJob, User connectedUser) {
 		transportationJob.setStatus(TransportationJobStatus.EDITED);
 		transportationJob.setDate2(null);
 		transportationJob.setUser2(null);
@@ -273,13 +278,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.addHistory(new TransportationJobHistory("Declined", connectedUser));
 		save(transportationJob);
 	}
-	
+
 	public Boolean canStart(TransportationJob transportationJob, String connectedUserUsername) {
 		return TransportationJobStatus.ACCEPTED.equals(transportationJob.getStatus()) //
-				&&  connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
+				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
 	}
-	
-	public void start(TransportationJob transportationJob,User connectedUser) {
+
+	public void start(TransportationJob transportationJob, User connectedUser) {
 		transportationJob.setStatus(TransportationJobStatus.STARTED);
 		transportationJob.setDate5(new Date());
 		transportationJob.setUser5(connectedUser);

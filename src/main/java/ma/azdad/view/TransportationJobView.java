@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.persistence.Transient;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
@@ -33,6 +31,7 @@ import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
 import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
+import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
@@ -135,6 +134,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private List<TransportationJob> toAssignList = new ArrayList<TransportationJob>();
 	private String key;
 
+	private TransportationJobState state;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -170,6 +171,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	@Override
 	protected void initParameters() {
 		super.initParameters();
+		state = TransportationJobState.get(UtilsFunctions.getIntegerParameter("state"));
 		key = UtilsFunctions.getParameter("key");
 	}
 
@@ -181,13 +183,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			else
 				switch (pageIndex) {
 				case 1:
-					list2 = list1 = transportationJobService.find(TransportationJobStatus.EDITED);
-					break;
-				case 2:
-					list2 = list1 = transportationJobService.find(TransportationJobStatus.IN_PROGRESS);
-					break;
-				case 3:
-					list2 = list1 = transportationJobService.find(Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.CLOSED));
+					list2 = list1 = transportationJobService.findByUser1(sessionView.getUsername(), state);
 					break;
 				case 4:
 					initLists(transportationJobService.findToAssign1(sessionView.getUsername()));

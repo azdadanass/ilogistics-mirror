@@ -288,17 +288,39 @@
 										<h:outputLink value="transportationJobList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-clock-o bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Not Started" />
+											<h:outputText value="Pending" />
 											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="0" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
 									<li>
 										<h:outputLink value="transportationJobList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-spinner bigger-130 blue" style="margin-right: 10px" />
+											<i class="ace-icon fa fa-link bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="Assigned" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-check bigger-130 blue" style="margin-right: 10px" />
+											<h:outputText value="Accepted" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="2" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-spinner bigger-130 pink" style="margin-right: 10px" />
 											<h:outputText value="In Progress" />
-											<f:param name="pageIndex" value="2" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="3" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
@@ -307,7 +329,8 @@
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
 											<h:outputText value="Completed" />
-											<f:param name="pageIndex" value="3" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="4" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
@@ -316,6 +339,7 @@
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130 inverse" style="margin-right: 10px" />
 											<h:outputText value="All" />
+											<f:param name="pageIndex" value="1" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>

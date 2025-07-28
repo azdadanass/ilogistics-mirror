@@ -931,7 +931,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELETE TRANSPORTATIONJOB
 	public Boolean canDeleteTransportationJob() {
-		return sessionView.isTM() && transportationJob.getTransportationRequestList().isEmpty();
+		return TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
+				&& sessionView.isTM() //
+				&& sessionView.isTheConnectedUser(transportationJob.getUser1()) //
+				&& transportationJob.getTransportationRequestList().isEmpty();
 	}
 
 	public String deleteTransportationJob() {

@@ -2,6 +2,7 @@ package ma.azdad.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,6 +242,49 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			i.generateReference();
 			save(i);
 		});
+	}
+	
+	
+	
+	// workflow
+	public Boolean canAccept(TransportationJob transportationJob, String connectedUserUsername) {
+		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
+				&&  connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
+	}
+	
+	public void accept(TransportationJob transportationJob,User connectedUser) {
+		transportationJob.setStatus(TransportationJobStatus.ACCEPTED);
+		transportationJob.setDate4(new Date());
+		transportationJob.setUser4(connectedUser);
+		transportationJob.addHistory(new TransportationJobHistory("Accepted", connectedUser));
+		save(transportationJob);
+	}
+	
+	public Boolean canDecline(TransportationJob transportationJob, String connectedUserUsername) {
+		return canAccept(transportationJob, connectedUserUsername);
+	}
+	
+	public void decline(TransportationJob transportationJob,User connectedUser) {
+		transportationJob.setStatus(TransportationJobStatus.EDITED);
+		transportationJob.setDate2(null);
+		transportationJob.setUser2(null);
+		transportationJob.setDate3(null);
+		transportationJob.setUser3(null);
+		transportationJob.addHistory(new TransportationJobHistory("Declined", connectedUser));
+		save(transportationJob);
+	}
+	
+	public Boolean canStart(TransportationJob transportationJob, String connectedUserUsername) {
+		return TransportationJobStatus.ACCEPTED.equals(transportationJob.getStatus()) //
+				&&  connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
+	}
+	
+	public void start(TransportationJob transportationJob,User connectedUser) {
+		transportationJob.setStatus(TransportationJobStatus.STARTED);
+		transportationJob.setDate5(new Date());
+		transportationJob.setUser5(connectedUser);
+		transportationJob.addHistory(new TransportationJobHistory("Started", connectedUser));
+		save(transportationJob);
 	}
 
 	// mobile

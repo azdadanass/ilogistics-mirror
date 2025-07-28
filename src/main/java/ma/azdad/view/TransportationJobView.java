@@ -464,13 +464,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// unassign
 	public Boolean canUnassign() {
-		return Arrays.asList(TransportationJobStatus.ASSIGNED1,TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
-				 && sessionView.getIsTM() // 
+		return Arrays.asList(TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
+				&& sessionView.getIsTM() //
 				&& sessionView.isTheConnectedUser(transportationJob.getUser1());
 	}
-	
+
 	public void unassign() {
-		if(!canUnassign())
+		if (!canUnassign())
 			return;
 		transportationJob.setStatus(TransportationJobStatus.EDITED);
 		transportationJob.setDate2(null);
@@ -480,13 +480,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", sessionView.getUser()));
 		service.save(transportationJob);
 		transportationJob = service.findOne(transportationJob.getId());
-		
+
 	}
 
 	// accept
 	public Boolean canAccept(TransportationJob transportationJob) {
-		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
-				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+		return service.canAccept(transportationJob, sessionView.getUsername());
 	}
 
 	public Boolean canAccept() {
@@ -496,11 +495,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void accept(TransportationJob transportationJob) {
 		if (!canAccept(transportationJob))
 			return;
-		transportationJob.setStatus(TransportationJobStatus.ACCEPTED);
-		transportationJob.setDate4(new Date());
-		transportationJob.setUser4(sessionView.getUser());
-		transportationJob.addHistory(new TransportationJobHistory("Accepted", sessionView.getUser()));
-		service.save(transportationJob);
+		service.accept(transportationJob, sessionView.getUser());
 	}
 
 	public void accept() {
@@ -520,20 +515,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Boolean canDecline(TransportationJob transportationJob) {
-		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
-				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+		return service.canDecline(transportationJob, sessionView.getUsername());
 	}
 
 	public void decline(TransportationJob transportationJob) {
 		if (!canDecline(transportationJob))
 			return;
-		transportationJob.setStatus(TransportationJobStatus.EDITED);
-		transportationJob.setDate2(null);
-		transportationJob.setUser2(null);
-		transportationJob.setDate3(null);
-		transportationJob.setUser3(null);
-		transportationJob.addHistory(new TransportationJobHistory("Declined", sessionView.getUser()));
-		service.save(transportationJob);
+		service.decline(transportationJob, sessionView.getUser());
 	}
 
 	public void decline() {
@@ -553,18 +541,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Boolean canStart(TransportationJob transportationJob) {
-		return TransportationJobStatus.ACCEPTED.equals(transportationJob.getStatus()) //
-				&& sessionView.isTheConnectedUser(transportationJob.getDriver());
+		return service.canStart(transportationJob, sessionView.getUsername());
 	}
 
 	public void start(TransportationJob transportationJob) {
 		if (!canStart(transportationJob))
 			return;
-		transportationJob.setStatus(TransportationJobStatus.STARTED);
-		transportationJob.setDate5(new Date());
-		transportationJob.setUser5(sessionView.getUser());
-		transportationJob.addHistory(new TransportationJobHistory("Started", sessionView.getUser()));
-		service.save(transportationJob);
+		service.start(transportationJob, sessionView.getUser());
 	}
 
 	public void start() {

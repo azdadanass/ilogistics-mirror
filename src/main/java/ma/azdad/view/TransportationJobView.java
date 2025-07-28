@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.persistence.Transient;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -296,6 +297,18 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	}
 
+	public String getFirstTMUsername() {
+		if (transportationJob.getTransporter() == null)
+			return null;
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+	}
+	
+	public String getFirstDriverUsername() {
+		if (transportationJob.getTransporter() == null)
+			return null;
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+	}
+
 	// assign
 	public void initAssign() {
 		if ((isViewPage && TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus())) || (isListPage && pageIndex == 5))
@@ -341,8 +354,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, false));
 					break;
 				case ASSIGNED1:
-					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : "+userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
-					System.out.println("transportationJob.getTransporterId() : "+transportationJob.getTransporterId());
+					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : " + userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					System.out.println("transportationJob.getTransporterId() : " + transportationJob.getTransporterId());
 					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					break;
 				default:

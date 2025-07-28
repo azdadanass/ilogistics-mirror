@@ -144,7 +144,7 @@
 									<span class="title">
 										<h:outputText id="step3" value="#{TransportationJobStatus.ASSIGNED2.value}" />
 										<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date3,transportationJobView.transportationJob.user3.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date3,transportationJobView.transportationJob.user3.username,transportationJobView.transportationJob.transporter==null?transportationJobView.transportationJob.user1.username:transportationJobView.firstTMUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -155,7 +155,7 @@
 									<span class="title">
 										<h:outputText id="step4" value="#{TransportationJobStatus.ACCEPTED.value}" />
 										<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date4,transportationJobView.transportationJob.user4.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date4,transportationJobView.transportationJob.user4.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -166,7 +166,7 @@
 									<span class="title">
 										<h:outputText id="step5" value="#{TransportationJobStatus.STARTED.value}" />
 										<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date5,transportationJobView.transportationJob.user5.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date5,transportationJobView.transportationJob.user5.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -177,7 +177,7 @@
 									<span class="title">
 										<h:outputText id="step6" value="#{TransportationJobStatus.IN_PROGRESS.value}" />
 										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date6,transportationJobView.transportationJob.user6.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date6,transportationJobView.transportationJob.user6.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -188,7 +188,7 @@
 									<span class="title">
 										<h:outputText id="step7" value="#{TransportationJobStatus.COMPLETED.value}" />
 										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date7,transportationJobView.transportationJob.user7.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date7,transportationJobView.transportationJob.user7.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -199,7 +199,7 @@
 									<span class="title">
 										<h:outputText id="step8" value="#{TransportationJobStatus.CLOSED.value}" />
 										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username,transportationJobView.transportationJob.user1.username)}" />
 										</p:overlayPanel>
 									</span>
 								</li>

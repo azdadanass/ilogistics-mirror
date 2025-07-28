@@ -121,6 +121,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.setDriverUsername(driverUsername);
 		this.setVehicleMatricule(vehicleMatricule);
 	}
+	
 
 	public void init() {
 		Collections.sort(transportationRequestList);

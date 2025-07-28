@@ -80,6 +80,7 @@ import ma.azdad.model.InboundType;
 import ma.azdad.model.Issue;
 import ma.azdad.model.IssueCategory;
 import ma.azdad.model.IssueComment;
+import ma.azdad.model.IssueHistory;
 import ma.azdad.model.IssueParentType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.IssueType;
@@ -3238,6 +3239,23 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				
 			}
 			return mbList;
+		}
+		
+		// submit
+		public Boolean canSubmitIssue(Integer id,String username) {
+			Issue issue = issueService.findOne(id);
+			return IssueStatus.RAISED.equals(issue.getStatus()) && username.equals(issue.getUser1().getUsername());
+		}
+		
+		public void submitIssue(Integer id,String username) {
+			Issue issue = issueService.findOne(id);
+			User user = userService.findByUsername(username);
+			issue.setDate8(new Date());
+			issue.setUser8(user);
+			issue.setStatus(IssueStatus.SUBMITTED);
+			issue.addHistory(IssueStatus.SUBMITTED.getValue(), user);
+			issueService.save(issue);
+			
 		}
 		
 		public void saveIssue(ma.azdad.mobile.model.Issue iss, ma.azdad.mobile.model.User user) {

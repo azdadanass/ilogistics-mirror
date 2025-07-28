@@ -189,6 +189,14 @@ public class SessionView implements Serializable {
 		return user.getIsTM();
 	}
 
+	public Boolean getIsDriver() {
+		return user.getIsDriver();
+	}
+
+	public Boolean isDriver() {
+		return user.getIsDriver();
+	}
+
 	public Boolean getIsTM() {
 		return isTM();
 	}

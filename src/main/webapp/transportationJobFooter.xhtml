@@ -198,7 +198,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="deleteTransportationJobFileForm">
+	<h:form id="deleteTransportationJobFileForm" rendered="#{transportationJobView.isViewPage}">
 		<p:dialog widgetVar="deleteTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteTransportationJobFileDlg').hide()">
 				<h:outputText value="x" />
@@ -219,7 +219,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="addTransportationJobFileForm">
+	<h:form id="addTransportationJobFileForm" rendered="#{transportationJobView.isViewPage}">
 		<p:dialog widgetVar="uploadTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransportationJobFileDlg').hide()">
 				<h:outputText value="x" />

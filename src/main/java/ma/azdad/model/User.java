@@ -425,6 +425,11 @@ public class User extends GenericModel<String> implements Serializable {
 	public Boolean getIsTM() {
 		return hasRole(Role.ROLE_ILOGISTICS_TM);
 	}
+	
+	@Transient
+	public Boolean getIsDriver() {
+		return hasRole(Role.ROLE_ILOGISTICS_DRIVER);
+	}
 
 	@Transient
 	public Boolean getIsAdmin() {

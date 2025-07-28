@@ -437,6 +437,38 @@
 													</h:outputLink>
 												</li>
 											</f:subview>
+											<f:subview rendered="#{sessionView.isDriver()}">
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Accept  " />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToAccept()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="6" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Start  " />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToStart()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="7" />
+													</h:outputLink>
+												</li>
+											</f:subview>
 										</ul>
 									</li>
 									<li class="dropdown-header">

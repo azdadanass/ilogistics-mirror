@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
@@ -193,6 +194,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 5:
 					initLists(transportationJobService.findToAssign2(sessionView.getUser().getTransporterId()));
+					break;
+				case 6:
+					initLists(transportationJobService.findByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2));
+					break;
+				case 7:
+					initLists(transportationJobService.findByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED));
 					break;
 				}
 	}
@@ -476,7 +483,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public void accept() {
-		accept(transportationJob);
+		if (isViewPage) {
+			accept(transportationJob);
+			transportationJob = service.findOne(transportationJob.getId());
+		} else if (isListPage && pageIndex == 6) {
+			for (TransportationJob transportationJob : list4)
+				accept(service.findOne(transportationJob.getId()));
+			refreshList();
+		}
 	}
 
 	// decline
@@ -500,9 +514,16 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.addHistory(new TransportationJobHistory("Declined", sessionView.getUser()));
 		service.save(transportationJob);
 	}
-
+	
 	public void decline() {
-		decline(transportationJob);
+		if (isViewPage) {
+			decline(transportationJob);
+			transportationJob = service.findOne(transportationJob.getId());
+		} else if (isListPage && pageIndex == 6) {
+			for (TransportationJob transportationJob : list4)
+				decline(service.findOne(transportationJob.getId()));
+			refreshList();
+		}
 	}
 
 	// start
@@ -526,9 +547,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public void start() {
-		start(transportationJob);
+		if (isViewPage) {
+			start(transportationJob);
+			transportationJob = service.findOne(transportationJob.getId());
+		} else if (isListPage && pageIndex == 7) {
+			for (TransportationJob transportationJob : list4)
+				start(service.findOne(transportationJob.getId()));
+			refreshList();
+		}
 	}
-
 	// GPS
 
 	public void refreshMapModel() {
@@ -977,8 +1004,16 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return service.countToAssign2(sessionView.getUser().getTransporterId());
 	}
 
+	public Long countToAccept() {
+		return service.countByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
+	}
+
+	public Long countToStart() {
+		return service.countByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
+	}
+
 	public Long countTotal() {
-		return countToAssign1() + countToAssign2();
+		return countToAssign1() + countToAssign2() + countToAccept() + countToStart();
 	}
 
 	// GETTERS & SETTERS

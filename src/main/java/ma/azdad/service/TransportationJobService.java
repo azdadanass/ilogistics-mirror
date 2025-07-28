@@ -10,6 +10,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,7 +80,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return repos.find();
 	}
 
-	
 	@Cacheable(value = "transportationJobService.findToAssign1")
 	public List<TransportationJob> findToAssign1(String user1Username) {
 		return repos.findToAssign1(user1Username);
@@ -90,7 +90,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return ObjectUtils.firstNonNull(repos.countToAssign1(user1Username), 0l);
 	}
 
-	
 	@Cacheable(value = "transportationJobService.findToAssign2")
 	public List<TransportationJob> findToAssign2(Integer transporterId) {
 		return repos.findToAssign2(transporterId);
@@ -99,6 +98,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	@Cacheable(value = "transportationJobService.countToAssign2")
 	public Long countToAssign2(Integer transporterId) {
 		return ObjectUtils.firstNonNull(repos.countToAssign2(transporterId), 0l);
+	}
+
+	@Cacheable(value = "transportationJobService.findByDriverAndStatus")
+	public List<TransportationJob> findByDriverAndStatus(String driverUsername, TransportationJobStatus status) {
+		return repos.findByDriverAndStatus(driverUsername, status);
+	}
+
+	@Cacheable(value = "transportationJobService.countByDriverAndStatus")
+	public Long countByDriverAndStatus(String driverUsername, TransportationJobStatus status) {
+		return  ObjectUtils.firstNonNull(repos.countByDriverAndStatus(driverUsername,status), 0l);
 	}
 
 	public List<TransportationJob> findByIdList(List<Integer> id) {

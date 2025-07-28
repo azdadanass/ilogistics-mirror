@@ -362,7 +362,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return sessionView.getIsTM() //
 				&& ((TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
 						&& sessionView.isTheConnectedUser(transportationJob.getUser1())) //
-						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus())));
+						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()) //
+								&& transportationJob.getTransporter().equals(sessionView.getUser().getTransporter()) //							
+								));
 	}
 	
 	private Boolean validateAssign() {

@@ -34,6 +34,9 @@ public class UserService {
 
 	@Autowired
 	private CacheService cacheService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 
 	public User findOne(String username) {
 		User u = repos.findById(username).get();
@@ -468,5 +471,14 @@ public class UserService {
 		return null;
 
 	}
+	
+	public Boolean isHavingRole(String username, Role role) {
+		return userRoleService.isHavingRole(username, role);
+	}
+	
+	public Boolean isTM(String username) {
+		return isHavingRole(username, Role.ROLE_ILOGISTICS_TM);
+	}
+	
 
 }

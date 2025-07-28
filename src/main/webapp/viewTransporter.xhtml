@@ -267,6 +267,9 @@
 										<p:column headerText="Role Driver">
 											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_DRIVER)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.active?'Active':'Inactive'}" styleClass="#{item.active?'green':'red'}" />
+										</p:column>
 										<!-- <p:column headerText="Actions" style="width:150px">
 											<div class="action-buttons center">
 												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">

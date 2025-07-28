@@ -16,13 +16,13 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
 	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
 	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
-	
+
 	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
 
-	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
-			+ "," + transporterSupplierName + ") ";
-	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
-			+ "," + transporterSupplierName + ",a.driver.username,"+vehicleMatricule+") ";
+	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + ","
+			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ") ";
+	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.latitude,a.longitude,a.transporter.id, " + transporterType + ","
+			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
 
 	@Query(c1 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> find();
@@ -51,8 +51,13 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' order by a.id desc")
 	public List<TransportationJob> findToAssign1(String user1Username);
 
-	// to correct
-	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
-	public List<TransportationJob> findToAssign2(String user1Username);
+	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' order by a.id desc")
+	public Long countToAssign1(String user1Username);
+
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
+	public List<TransportationJob> findToAssign2(Integer transporterId);
+
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
+	public Long countToAssign2(Integer transporterId);
 
 }

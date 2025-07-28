@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,12 +79,26 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return repos.find();
 	}
 
+	
+	@Cacheable(value = "transportationJobService.findToAssign1")
 	public List<TransportationJob> findToAssign1(String user1Username) {
 		return repos.findToAssign1(user1Username);
 	}
 
-	public List<TransportationJob> findToAssign2(String user1Username) {
-		return repos.findToAssign2(user1Username);
+	@Cacheable(value = "transportationJobService.countToAssign1")
+	public Long countToAssign1(String user1Username) {
+		return ObjectUtils.firstNonNull(repos.countToAssign1(user1Username), 0l);
+	}
+
+	
+	@Cacheable(value = "transportationJobService.findToAssign2")
+	public List<TransportationJob> findToAssign2(Integer transporterId) {
+		return repos.findToAssign2(transporterId);
+	}
+
+	@Cacheable(value = "transportationJobService.countToAssign2")
+	public Long countToAssign2(Integer transporterId) {
+		return ObjectUtils.firstNonNull(repos.countToAssign2(transporterId), 0l);
 	}
 
 	public List<TransportationJob> findByIdList(List<Integer> id) {

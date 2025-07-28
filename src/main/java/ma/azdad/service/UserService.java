@@ -87,10 +87,9 @@ public class UserService {
 
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);
-		if (u != null) {
+		if (u != null) 
 			Hibernate.initialize(u.getTransporter());
 			Hibernate.initialize(u.getRoleList());
-		}
 			
 		return u;
 	}

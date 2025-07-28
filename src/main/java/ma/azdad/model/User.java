@@ -191,6 +191,18 @@ public class User extends GenericModel<String> implements Serializable {
 	protected Boolean contains(Date date, String query) {
 		return date != null && UtilsFunctions.getFormattedDate(date).toLowerCase().contains(query);
 	}
+	
+	@Transient
+	public Integer getTransporterId(){
+		return transporter!=null?transporter.getId():null;
+	}
+
+	@Transient
+	public void setTransporterId(Integer transporterId){
+		if(transporter==null || !transporterId.equals(transporter.getId()))
+			transporter=new Transporter();
+		transporter.setId(transporterId);
+	}
 
 	@Transient
 	public String getPublicPhoto() {

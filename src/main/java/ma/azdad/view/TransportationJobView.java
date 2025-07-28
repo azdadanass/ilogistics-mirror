@@ -192,7 +192,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					initLists(transportationJobService.findToAssign1(sessionView.getUsername()));
 					break;
 				case 5:
-					initLists(transportationJobService.findToAssign2(sessionView.getUsername()));
+					initLists(transportationJobService.findToAssign2(sessionView.getUser().getTransporterId()));
 					break;
 				}
 	}
@@ -251,12 +251,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.setUser1(sessionView.getUser());
 		transportationJob.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
 		transportationJob = transportationJobService.save(transportationJob);
-		if(isAddPage) {
+		if (isAddPage) {
 			transportationJob.generateReference();
-			transportationJobService.save(transportationJob);	
+			transportationJobService.save(transportationJob);
 		}
-		
-		
+
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
 
@@ -308,7 +307,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			return null;
 		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
 	}
-	
+
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
@@ -966,6 +965,20 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			return FacesContextMessages.ErrorMessages("Total Costs should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
 
 		return true;
+	}
+
+	// counts
+
+	public Long countToAssign1() {
+		return service.countToAssign1(sessionView.getUsername());
+	}
+
+	public Long countToAssign2() {
+		return service.countToAssign2(sessionView.getUser().getTransporterId());
+	}
+
+	public Long countTotal() {
+		return countToAssign1() + countToAssign2();
 	}
 
 	// GETTERS & SETTERS

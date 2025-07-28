@@ -67,6 +67,11 @@
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
+						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('unassignDlg').show()"
+							rendered="#{transportationJobView.canUnassign()}">
+							<i class="ace-icon fa fa-chain-broken bigger-230"></i>
+							<h:outputText value="Unassign" />
+						</p:commandLink>
 						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Accept" onclick="PF('acceptDlg').show()" rendered="#{transportationJobView.canAccept()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Accept" />

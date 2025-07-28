@@ -462,6 +462,27 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
 	}
 
+	// unassign
+	public Boolean canUnassign() {
+		return Arrays.asList(TransportationJobStatus.ASSIGNED1,TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
+				 && sessionView.getIsTM() // 
+				&& sessionView.isTheConnectedUser(transportationJob.getUser1());
+	}
+	
+	public void unassign() {
+		if(!canUnassign())
+			return;
+		transportationJob.setStatus(TransportationJobStatus.EDITED);
+		transportationJob.setDate2(null);
+		transportationJob.setUser2(null);
+		transportationJob.setDate3(null);
+		transportationJob.setUser3(null);
+		transportationJob.addHistory(new TransportationJobHistory("Unassign", sessionView.getUser()));
+		service.save(transportationJob);
+		transportationJob = service.findOne(transportationJob.getId());
+		
+	}
+
 	// accept
 	public Boolean canAccept(TransportationJob transportationJob) {
 		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
@@ -514,7 +535,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.addHistory(new TransportationJobHistory("Declined", sessionView.getUser()));
 		service.save(transportationJob);
 	}
-	
+
 	public void decline() {
 		if (isViewPage) {
 			decline(transportationJob);

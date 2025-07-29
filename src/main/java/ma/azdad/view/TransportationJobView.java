@@ -851,7 +851,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return sessionView.isTM() && TransportationRequestStatus.ASSIGNED.equals(status);
+		return sessionView.isTheConnectedUser(transportationJob.getDriver()) && TransportationRequestStatus.ASSIGNED.equals(status);
 	}
 
 	public Boolean canPickup() {
@@ -893,7 +893,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return sessionView.isTM() && TransportationRequestStatus.PICKEDUP.equals(status);
+		return sessionView.isTheConnectedUser(transportationJob.getDriver()) && TransportationRequestStatus.PICKEDUP.equals(status);
 	}
 
 	public Boolean canDeliver() {

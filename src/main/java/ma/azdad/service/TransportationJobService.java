@@ -18,6 +18,7 @@ import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
+import ma.azdad.model.TransportationJobAssignmentType;
 import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
@@ -51,6 +52,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	StopService stopService;
+	
+	@Autowired
+	TransporterService transporterService;
 
 	TransportationJobService(UserService userService, TransportationRequestRepos transportationRequestRepos) {
 		this.userService = userService;
@@ -255,6 +259,39 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	// workflow
+	
+	
+	
+	
+	public void assign(TransportationJob transportationJob,TransportationJobAssignmentType assignmentType,Integer transporterId,String driverUsername,User connectedUser) {
+		transportationJob.setAssignmentType(assignmentType);
+
+		switch (transportationJob.getAssignmentType()) {
+		case TRANSPORTER:
+			transportationJob.setStatus(TransportationJobStatus.ASSIGNED1);
+			transportationJob.setDate2(new Date());
+			transportationJob.setUser2(connectedUser);
+			transportationJob.setTransporter(transporterService.findOneLight(transporterId));
+			transportationJob.addHistory(
+					new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			break;
+		case INTERNAL_DRIVER:
+		case EXTERNAL_DRIVER:
+			transportationJob.setStatus(TransportationJobStatus.ASSIGNED2);
+			transportationJob.setDate3(new Date());
+			transportationJob.setUser3(connectedUser);
+			transportationJob.setDriver(userService.findOneLight(driverUsername));
+			transportationJob.addHistory(
+					new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			break;
+		}
+
+		transportationJob.calculateMaxAcceptTime();
+		transportationJob.calculateMaxStartTime();
+		save(transportationJob);
+	}
+	
+	
 	public Boolean canAccept(TransportationJob transportationJob, String connectedUserUsername) {
 		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
 				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());

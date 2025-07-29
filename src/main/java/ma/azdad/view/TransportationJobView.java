@@ -414,31 +414,33 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setStartLeadTime(this.transportationJob.getStartLeadTime());
 		if (this.transportationJob.getAcceptLeadTime() != null)
 			transportationJob.setAcceptLeadTime(this.transportationJob.getAcceptLeadTime());
-		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
-
-		switch (transportationJob.getAssignmentType()) {
-		case TRANSPORTER:
-			transportationJob.setStatus(TransportationJobStatus.ASSIGNED1);
-			transportationJob.setDate2(new Date());
-			transportationJob.setUser2(sessionView.getUser());
-			transportationJob.setTransporter(transporterService.findOneLight(this.transportationJob.getTransporterId()));
-			transportationJob.addHistory(
-					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
-			break;
-		case INTERNAL_DRIVER:
-		case EXTERNAL_DRIVER:
-			transportationJob.setStatus(TransportationJobStatus.ASSIGNED2);
-			transportationJob.setDate3(new Date());
-			transportationJob.setUser3(sessionView.getUser());
-			transportationJob.setDriver(userService.findOneLight(this.transportationJob.getDriverUsername()));
-			transportationJob.addHistory(
-					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
-			break;
-		}
-
-		transportationJob.calculateMaxAcceptTime();
-		transportationJob.calculateMaxStartTime();
-		transportationJob = service.save(transportationJob);
+		
+		service.assign(transportationJob, this.transportationJob.getAssignmentType(), this.transportationJob.getTransporterId(), this.transportationJob.getDriverUsername(), sessionView.getUser());
+//		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
+//
+//		switch (transportationJob.getAssignmentType()) {
+//		case TRANSPORTER:
+//			transportationJob.setStatus(TransportationJobStatus.ASSIGNED1);
+//			transportationJob.setDate2(new Date());
+//			transportationJob.setUser2(sessionView.getUser());
+//			transportationJob.setTransporter(transporterService.findOneLight(this.transportationJob.getTransporterId()));
+//			transportationJob.addHistory(
+//					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+//			break;
+//		case INTERNAL_DRIVER:
+//		case EXTERNAL_DRIVER:
+//			transportationJob.setStatus(TransportationJobStatus.ASSIGNED2);
+//			transportationJob.setDate3(new Date());
+//			transportationJob.setUser3(sessionView.getUser());
+//			transportationJob.setDriver(userService.findOneLight(this.transportationJob.getDriverUsername()));
+//			transportationJob.addHistory(
+//					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+//			break;
+//		}
+//
+//		transportationJob.calculateMaxAcceptTime();
+//		transportationJob.calculateMaxStartTime();
+//		transportationJob = service.save(transportationJob);
 	}
 
 //	public String assign() {

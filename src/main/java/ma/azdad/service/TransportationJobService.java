@@ -108,14 +108,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return ObjectUtils.firstNonNull(repos.countToAssign2(transporterId), 0l);
 	}
 
-	@Cacheable(value = "transportationJobService.findByDriverAndStatus")
-	public List<TransportationJob> findByDriverAndStatus(String driverUsername, TransportationJobStatus status) {
-		return repos.findByDriverAndStatus(driverUsername, status);
+	@Cacheable(value = "transportationJobService.findByDriver")
+	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobStatus status) {
+		if (status == null)
+			return repos.findByDriver(driverUsername);
+		return repos.findByDriver(driverUsername, status);
 	}
 
 	@Cacheable(value = "transportationJobService.countByDriverAndStatus")
-	public Long countByDriverAndStatus(String driverUsername, TransportationJobStatus status) {
-		return ObjectUtils.firstNonNull(repos.countByDriverAndStatus(driverUsername, status), 0l);
+	public Long countByDriver(String driverUsername, TransportationJobStatus status) {
+		return ObjectUtils.firstNonNull(repos.countByDriver(driverUsername, status), 0l);
 	}
 
 	public List<TransportationJob> findByIdList(List<Integer> id) {
@@ -223,8 +225,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService
-				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(
+				Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());

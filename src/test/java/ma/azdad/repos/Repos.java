@@ -20,11 +20,6 @@ public class Repos extends GenericTest {
 	@Transactional
 	public void test() throws Exception {
 		
-		
-		
-		System.out.println(transportationJobService.findOne(4741).getLatitude());
-		
-		
 	}
 
 }

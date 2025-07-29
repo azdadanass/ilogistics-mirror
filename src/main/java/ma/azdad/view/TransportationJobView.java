@@ -15,7 +15,6 @@ import javax.faces.bean.ManagedBean;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
@@ -131,6 +130,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private List<TransportationJob> toAssignList = new ArrayList<TransportationJob>();
 	private String key;
 
+	private TransportationJobStatus status;
 	private TransportationJobState state;
 	
 	
@@ -167,6 +167,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	@Override
 	protected void initParameters() {
 		super.initParameters();
+		status= TransportationJobStatus.get(UtilsFunctions.getIntegerParameter("status"));
 		state = TransportationJobState.get(UtilsFunctions.getIntegerParameter("state"));
 		key = UtilsFunctions.getParameter("key");
 	}
@@ -188,10 +189,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					initLists(transportationJobService.findToAssign2(sessionView.getUser().getTransporterId()));
 					break;
 				case 6:
-					initLists(transportationJobService.findByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2));
-					break;
-				case 7:
-					initLists(transportationJobService.findByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED));
+					initLists(transportationJobService.findByDriver(sessionView.getUsername(), status));
 					break;
 				}
 	}
@@ -1017,11 +1015,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Long countToAccept() {
-		return service.countByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
+		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
 	}
 
 	public Long countToStart() {
-		return service.countByDriverAndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
+		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
 	}
 
 	public Long countTotal() {

@@ -258,8 +258,8 @@
 										<p:column headerText="Job/Function">
 											<h:outputText value="#{item.job}" />
 										</p:column>
-										<p:column headerText="Company">
-											<h:outputText value="#{item.company}" />
+										<p:column headerText="Entity">
+											<h:outputText value="#{item.entityName}" />
 										</p:column>
 										<p:column headerText="Role TM">
 											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_TM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />

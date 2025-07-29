@@ -2,6 +2,8 @@ package ma.azdad.model;
 
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import ma.azdad.utils.Color;
 
 public enum TransportationJobStatus {
@@ -39,6 +41,16 @@ public enum TransportationJobStatus {
 	@Override
 	public String toString() {
 		return this.value;
+	}
+	
+	static public TransportationJobStatus get(Integer ordinal) {
+		if(ObjectUtils.equals(ordinal, -1))
+			return null;
+		try {
+			return TransportationJobStatus.values()[ordinal];
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static TransportationJobStatus getByValue(String value) {

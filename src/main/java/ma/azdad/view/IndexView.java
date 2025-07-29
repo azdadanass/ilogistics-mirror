@@ -88,7 +88,7 @@ public class IndexView implements Serializable {
 		case 2:
 			return sessionView.getIsUser() || sessionView.getIsPM() || sessionView.getIsWM() || sessionView.getIsLobManager() || sessionView.getIsBuManager();
 		case 3:
-			return sessionView.getIsPM() || sessionView.getIsUser() || sessionView.getIsTM();
+			return sessionView.getIsPM() || sessionView.getIsUser() || sessionView.getIsTM() || sessionView.getIsDriver();
 		case 4:
 			return sessionView.getIsInternalPM() || sessionView.getIsLobManager() || sessionView.getIsBuManager() || sessionView.getIsWM() || sessionView.getIsUser() || sessionView.getIsExternalPm();
 		default:

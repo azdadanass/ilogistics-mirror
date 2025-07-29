@@ -143,6 +143,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			user.setTransporter(transporter);
 			transporter.getUserList().add(user);
 			transporterService.save(transporter);
+			transporter = transporterService.findOne(transporter.getId());
 		}
 	}
 

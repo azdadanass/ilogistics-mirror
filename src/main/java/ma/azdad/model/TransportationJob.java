@@ -257,39 +257,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	}
 
-	// public void updateCalculableFields() {
-	// calculateStartDate();
-	// calculateEndDate();
-	// calculateStatus();
-	// }
-
-	public void calculateStatus() {
-		// Closed
-		if (TransportationJobStatus.CLOSED.equals(status))
-			return;
-
-		if (transportationRequestList.isEmpty())
-			return;
-
-		// Completed
-		Boolean test1 = true, test2 = false;
-		for (TransportationRequest transportationRequest : transportationRequestList) {
-			if (transportationRequest.getDeliveryDate() == null)
-				test1 = false;
-			if (transportationRequest.getPickupDate() != null)
-				test2 = true;
-		}
-		if (test1) {
-			status = TransportationJobStatus.COMPLETED;
-			return;
-		}
-		if (test2) {
-			status = TransportationJobStatus.IN_PROGRESS;
-			return;
-		}
-
-	}
-
 	@Transient
 	public Boolean getExpectedWarning() {
 		return getMinExpectedDate() != null && new Date().compareTo(getMinExpectedDate()) > 0;
@@ -350,6 +317,31 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		endDate = it.next().getEndDate();
 		while (it.hasNext())
 			endDate = UtilsFunctions.getMaxDate(endDate, it.next().getEndDate());
+	}
+
+	public void calculateStatus() {
+		// check if completed or < started
+		if (date5 == null || date8 != null || transportationRequestList.isEmpty())
+			return;
+
+		long countPicked = transportationRequestList.stream().filter(i -> i.getPickupDate() != null).count();
+		long countDelivered = transportationRequestList.stream().filter(i -> i.getDeliveryDate() != null).count();
+		long countTotal = transportationRequestList.size();
+
+		if (countTotal == countDelivered) {
+			status = TransportationJobStatus.COMPLETED;
+			date7 = new Date();
+			user7 = driver;
+		} else if (countPicked > 0) {
+			status = TransportationJobStatus.IN_PROGRESS;
+			if (date6 == null) {
+				date6 = new Date();
+				user6 = driver;
+			}
+			date7 = null;
+			user7 = null;
+		}
+
 	}
 
 	public void generateReference() {

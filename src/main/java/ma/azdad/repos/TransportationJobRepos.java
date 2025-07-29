@@ -66,10 +66,13 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
 	public Long countToAssign2(Integer transporterId);
 
+	@Query(c1 + "from TransportationJob a where a.driver.username = ?1")
+	public List<TransportationJob> findByDriver(String driverUsername);
+
 	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
-	public List<TransportationJob> findByDriverAndStatus(String driverUsername, TransportationJobStatus status);
+	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobStatus status);
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
-	public Long countByDriverAndStatus(String driverUsername, TransportationJobStatus status);
+	public Long countByDriver(String driverUsername, TransportationJobStatus status);
 
 }

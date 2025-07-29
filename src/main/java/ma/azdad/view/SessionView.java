@@ -200,6 +200,15 @@ public class SessionView implements Serializable {
 	public Boolean getIsTM() {
 		return isTM();
 	}
+	
+	
+	public Boolean getIsInternalTM() {
+		return getInternal() && getIsTM();
+	}
+	
+	public Boolean getIsExternalTM() {
+		return !getInternal() && getIsTM();
+	}
 
 	public Boolean getIsPm() {
 		return isPM();

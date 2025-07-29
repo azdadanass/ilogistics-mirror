@@ -69,7 +69,7 @@
 										<b class="arrow"></b>
 									</li>
 								</f:subview> -->
-								<f:subview rendered="#{sessionView.isTM}">
+								<f:subview rendered="#{sessionView.isInternalTM}">
 									<li>
 										<h:outputLink value="vehicleTypeList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
@@ -210,7 +210,7 @@
 						</f:subview>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 3}">
-						<f:subview rendered="#{sessionView.isPM or sessionView.isTM  or sessionView.isUser}">
+						<f:subview rendered="#{sessionView.isPM or sessionView.isInternalTM  or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-truck"></i>
@@ -346,7 +346,7 @@
 								</ul>
 							</li>
 						</f:subview>
-						<f:subview rendered="#{sessionView.isPM or sessionView.isTM  or sessionView.isUser}">
+						<f:subview rendered="#{sessionView.isPM or sessionView.isInternalTM  or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-dollar"></i>

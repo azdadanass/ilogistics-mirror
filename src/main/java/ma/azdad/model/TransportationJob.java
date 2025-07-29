@@ -66,10 +66,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Double estimatedCost = 0.0; // Calculable
 	private Double vehiclePrice = 0.0;
 
-	// gps (first TR latitude/longitude)
-	private Double latitude;
-	private Double longitude;
-
 	private Transporter transporter;
 	private Vehicle vehicle;
 	private User driver;
@@ -85,7 +81,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id,String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
 			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
@@ -94,8 +90,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
-		this.latitude = latitude;
-		this.longitude = longitude;
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -104,9 +98,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id,String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double latitude, Double longitude, //
-			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
-			String vehicleMatricule) {
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
+			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
+			String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -114,8 +108,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
-		this.latitude = latitude;
-		this.longitude = longitude;
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -160,7 +152,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, reference,comment, getTransporterName());
+		return contains(query, reference, comment, getTransporterName());
 	}
 
 	@Transient
@@ -359,7 +351,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		while (it.hasNext())
 			endDate = UtilsFunctions.getMaxDate(endDate, it.next().getEndDate());
 	}
-	
+
 	public void generateReference() {
 		reference = "TJ" + String.format("%06d", id);
 	}
@@ -785,22 +777,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setStartLeadTime(Double startLeadTime) {
 		this.startLeadTime = startLeadTime;
-	}
-
-	public Double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(Double latitude) {
-		this.latitude = latitude;
-	}
-
-	public Double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(Double longitude) {
-		this.longitude = longitude;
 	}
 
 	public Date getMaxAcceptDate() {

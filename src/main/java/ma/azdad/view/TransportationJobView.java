@@ -120,9 +120,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private List<TransportationRequest> transportationRequestList2 = new ArrayList<>();
 	private List<TransportationRequest> transportationRequestList3; // selection
 
-	private String assignTrListPage = "assignTrList.xhtml";
-	private Boolean isAssignPage = false;
-
 	private TransportationRequest transportationRequest;
 
 	private MapModel mapModel;
@@ -135,22 +132,25 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private String key;
 
 	private TransportationJobState state;
+	
+	
+	private Double latitude;
+	private Double longitude;
 
 	@Override
 	@PostConstruct
 	public void init() {
 		super.init();
-		isAssignPage = ("/" + assignTrListPage).equals(currentPath);
 		if (isListPage)
 			refreshList();
-		else if (isEditPage || isAssignPage) {
+		else if (isEditPage || isPage("assignTrList")) {
 			transportationJob = transportationJobService.findOne(id);
 			transportationJob.init();
 			refreshTransportationRequestList();
 		} else if (isViewPage) {
 			transportationJob = transportationJobService.findOne(id);
 			transportationJob.init();
-			refreshMapMpdel();
+			refreshMapModel();
 		} else if (isPage("assignTransportationJob")) {
 			toAssignList = service.findByIdList(TO_ASSIGN_MAP.get(key));
 			transportationJob = toAssignList.get(0);
@@ -162,10 +162,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 		}
 
-	}
-
-	public void refreshMapMpdel() {
-		mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 	}
 
 	@Override
@@ -207,8 +203,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private void refreshTransportationRequestList() {
+		System.out.println("refreshTransportationRequestList");
 		transportationRequestList2 = transportationRequestList1 = transportationRequestService.findByNotHavingTransportationJob(TransportationRequestStatus.APPROVED,
 				Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		System.out.println("transportationRequestList2 : " + transportationRequestList2);
 	}
 
 	/*
@@ -308,13 +306,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst()
+				.orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
+				.orElse(null);
 	}
 
 	// assign
@@ -362,7 +362,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, false));
 					break;
 				case ASSIGNED1:
-					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : " + userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : "
+							+ userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					System.out.println("transportationJob.getTransporterId() : " + transportationJob.getTransporterId());
 					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					break;
@@ -423,7 +424,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(sessionView.getUser());
 			transportationJob.setTransporter(transporterService.findOneLight(this.transportationJob.getTransporterId()));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			transportationJob.addHistory(
+					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			break;
 		case INTERNAL_DRIVER:
 		case EXTERNAL_DRIVER:
@@ -431,7 +433,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setDate3(new Date());
 			transportationJob.setUser3(sessionView.getUser());
 			transportationJob.setDriver(userService.findOneLight(this.transportationJob.getDriverUsername()));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			transportationJob.addHistory(
+					new TransportationJobHistory("Assigned", sessionView.getUser(), "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			break;
 		}
 
@@ -559,11 +562,16 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	// GPS
 
 	public void refreshMapModel() {
+		if (isViewPage)
+			mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 		if (isPage("assignTransportationJob")) {
-			mapModel = new DefaultMapModel();
-			// to correct --> show TRs Sites
-//			for (TransportationJob transportationJob : toAssignList) 
-//				mapModel.addOverlay(new Marker(new LatLng(jobRequest.getSiteLatitude(), jobRequest.getSiteLongitude()), jobRequest.getReference() + " " + jobRequest.getSiteName()));
+			List<Stop> stopList = stopService.findByTransportationJobList(toAssignList.stream().map(i->i.getId()).collect(Collectors.toList()));
+			//init center latitude,longitude
+			if(!stopList.isEmpty()) {
+				latitude = stopList.get(0).getPlace().getLatitude();
+				longitude = stopList.get(0).getPlace().getLongitude();
+			}
+			mapModel = mapService.generate(stopList, false);
 			userView.getList2().stream().filter(i -> i.getLatitude() != null).forEach(i -> {
 				Marker marker = new Marker(new LatLng(i.getLatitude(), i.getLongitude()), i.getName());
 				marker.setIcon(Public.getPublicResizedImage(i.getPhoto()));
@@ -950,7 +958,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();
@@ -1101,14 +1110,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		this.transportationRequestList3 = transportationRequestList3;
 	}
 
-	public String getAssignTrListPage() {
-		return assignTrListPage;
-	}
-
-	public void setAssignTrListPage(String assignTrListPage) {
-		this.assignTrListPage = assignTrListPage;
-	}
-
 	public TransportationRequest getTransportationRequest() {
 		return transportationRequest;
 	}
@@ -1148,5 +1149,23 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setEditCosts(Boolean editCosts) {
 		this.editCosts = editCosts;
 	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+	
+	
 
 }

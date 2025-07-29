@@ -56,7 +56,7 @@
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add TR" value="#{transportationJobView.assignTrListPage}"
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add TR" value="assignTrList.xhtml"
 							rendered="#{transportationJobView.canAssignTrList()}">
 							<i class="ace-icon fa fa-plus bigger-230"></i>
 							<h:outputText value="Add TR" />
@@ -159,7 +159,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step4" value="#{TransportationJobStatus.ACCEPTED.value}" />
-										<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
 											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date4,transportationJobView.transportationJob.user4.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
@@ -170,7 +170,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step5" value="#{TransportationJobStatus.STARTED.value}" />
-										<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
 											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date5,transportationJobView.transportationJob.user5.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
@@ -181,7 +181,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step6" value="#{TransportationJobStatus.IN_PROGRESS.value}" />
-										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
 											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date6,transportationJobView.transportationJob.user6.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
@@ -192,7 +192,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step7" value="#{TransportationJobStatus.COMPLETED.value}" />
-										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
 											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date7,transportationJobView.transportationJob.user7.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
@@ -528,7 +528,7 @@
 							<h:outputText value="Details" />
 							<span class="action-buttons center pull-right">
 								<h:outputText value="View Path List " />
-								<p:commandLink id="viewPath" update="main_tab_2,viewPath,gmap" action="#{transportationJobView.refreshMapMpdel()}">
+								<p:commandLink id="viewPath" update="main_tab_2,viewPath,gmap" action="#{transportationJobView.refreshMapModel()}">
 									<i class="fa  #{transportationJobView.viewPathList?'fa-toggle-on green':'fa-toggle-off'}" />
 									<f:setPropertyActionListener value="#{!transportationJobView.viewPathList}" target="#{transportationJobView.viewPathList}" />
 								</p:commandLink>

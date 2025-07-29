@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Profile;
+import ma.azdad.model.Role;
 import ma.azdad.model.User;
 import ma.azdad.service.CompanyProfileService;
 import ma.azdad.service.UserService;
@@ -42,6 +43,7 @@ public class SessionView implements Serializable {
 	private User user;
 
 	private List<Integer> companyCfoIdList = new ArrayList<>(Arrays.asList(-1));
+	private List<Role> roleList = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
@@ -51,6 +53,7 @@ public class SessionView implements Serializable {
 		user = userService.findByLogin(login);
 		addUser(user);
 		companyCfoIdList.addAll(companyProfileService.findCompanyIdList(user.getUsername(), Profile.CFO));
+		roleList = userService.findRoleList(user.getUsername());
 		System.out.println("**********************************");
 		System.out.println(user.getFullName() + "(" + user.getUsername() + ")" + " is connected");
 		System.out.println("serverName : " + serverName);
@@ -289,5 +292,15 @@ public class SessionView implements Serializable {
 	public void setOnlineUsers(List<User> onlineUsers) {
 		this.onlineUsers = onlineUsers;
 	}
+
+	public List<Role> getRoleList() {
+		return roleList;
+	}
+
+	public void setRoleList(List<Role> roleList) {
+		this.roleList = roleList;
+	}
+	
+	
 
 }

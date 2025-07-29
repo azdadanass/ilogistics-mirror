@@ -461,23 +461,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// unassign
 	public Boolean canUnassign() {
-		return Arrays.asList(TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
-				&& sessionView.getIsTM() //
-				&& sessionView.isTheConnectedUser(transportationJob.getUser1());
+		return service.canUnassign(transportationJob, sessionView.getUsername(), sessionView.getRoleList());
 	}
 
 	public void unassign() {
 		if (!canUnassign())
 			return;
-		transportationJob.setStatus(TransportationJobStatus.EDITED);
-		transportationJob.setDate2(null);
-		transportationJob.setUser2(null);
-		transportationJob.setDate3(null);
-		transportationJob.setUser3(null);
-		transportationJob.addHistory(new TransportationJobHistory("Unassign", sessionView.getUser()));
-		service.save(transportationJob);
-		transportationJob = service.findOne(transportationJob.getId());
-
+		service.unassign(transportationJob, sessionView.getUser());
 	}
 
 	// accept

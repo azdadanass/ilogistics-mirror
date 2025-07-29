@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.model.Path;
+import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobHistory;
@@ -291,6 +292,27 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setDate5(new Date());
 		transportationJob.setUser5(connectedUser);
 		transportationJob.addHistory(new TransportationJobHistory("Started", connectedUser));
+		save(transportationJob);
+	}
+	
+	private Boolean isTM(List<Role> roleList) {
+		return roleList.contains(Role.ROLE_ILOGISTICS_TM);
+	}
+	
+	
+	public Boolean canUnassign(TransportationJob transportationJob,String connectedUserUsername,List<Role> roleList) {
+		return Arrays.asList(TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
+				&& isTM(roleList) //
+				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getUser1().getUsername());
+	}
+	
+	public void unassign(TransportationJob transportationJob, User connectedUser) {
+		transportationJob.setStatus(TransportationJobStatus.EDITED);
+		transportationJob.setDate2(null);
+		transportationJob.setUser2(null);
+		transportationJob.setDate3(null);
+		transportationJob.setUser3(null);
+		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
 		save(transportationJob);
 	}
 

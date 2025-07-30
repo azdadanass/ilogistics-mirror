@@ -1,20 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml" xmlns:pe="http://primefaces.org/ui/extensions">
-
-
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -28,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.TransporterType" var="TransporterType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
@@ -45,17 +40,14 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
 						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transporterView.saveTransporter()}" update="messages" title="Save">
 							<i class="ace-icon fa fa-save bigger-230"></i>
 							<h:outputText value="Save" />
@@ -99,7 +91,8 @@
 													<h:outputText value="Supplier" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:selectOneMenu value="#{transporterView.transporter.supplierId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Supplier should not be null">
+													<p:selectOneMenu value="#{transporterView.transporter.supplierId}" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Supplier should not be null">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
@@ -116,7 +109,9 @@
 													<h:outputText value="First Name" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:inputText value="#{transporterView.transporter.privateFirstName}" required="true" requiredMessage="First Name should not be null" />
+													<p:inputText id="firstName" value="#{transporterView.transporter.privateFirstName}" required="true" requiredMessage="First Name should not be null">
+														<p:ajax listener="#{transporterView.formatPrivateFirstName()}" update="firstName" />
+													</p:inputText>
 												</div>
 											</div>
 										</div>
@@ -126,7 +121,9 @@
 													<h:outputText value="Last Name" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:inputText value="#{transporterView.transporter.privateLastName}" required="true" requiredMessage="Last Name should not be null" />
+													<p:inputText id="lastName" value="#{transporterView.transporter.privateLastName}" required="true" requiredMessage="Last Name should not be null">
+														<p:ajax listener="#{transporterView.formatPrivateLastName()}" update="lastName" />
+													</p:inputText>
 												</div>
 											</div>
 										</div>
@@ -139,7 +136,9 @@
 													<h:outputText value="CIN" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:inputText value="#{transporterView.transporter.privateCin}" required="true" requiredMessage="CIN should not be null" />
+													<p:inputText id="cin" value="#{transporterView.transporter.privateCin}" required="true" requiredMessage="CIN should not be null">
+														<p:ajax listener="#{transporterView.formatPrivateCin()}" update="cin" />
+													</p:inputText>
 												</div>
 											</div>
 										</div>
@@ -149,7 +148,7 @@
 													<h:outputText value="Phone" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:inputText value="#{transporterView.transporter.privatePhone}" />
+													<p:inputMask value="#{transporterView.transporter.privatePhone}" mask="+212999999999" validateMask="true" placeholder="example : +212673737373" />
 												</div>
 											</div>
 										</div>
@@ -162,7 +161,9 @@
 													<h:outputText value="Email" />
 												</label>
 												<div class="col-xs-9 col-sm-9">
-													<p:inputText value="#{transporterView.transporter.privateEmail}" />
+													<p:inputText id="email" value="#{transporterView.transporter.privateEmail}">
+														<p:ajax listener="#{transporterView.formatPrivateEmail()}" update="email" />
+													</p:inputText>
 												</div>
 											</div>
 										</div>

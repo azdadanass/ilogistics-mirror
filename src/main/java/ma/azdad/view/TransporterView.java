@@ -25,6 +25,7 @@ import ma.azdad.service.ToolService;
 import ma.azdad.service.TransporterFileService;
 import ma.azdad.service.TransporterHistoryService;
 import ma.azdad.service.TransporterService;
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -178,6 +179,22 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	public Boolean validateTransporter() {
 		return true;
+	}
+	
+	public void formatPrivateFirstName() {
+		transporter.setPrivateFirstName(UtilsFunctions.formatName(transporter.getPrivateFirstName()));
+	}
+
+	public void formaPrivatetLastName() {
+		transporter.setPrivateLastName(UtilsFunctions.formatName(transporter.getPrivateLastName()));
+	}
+
+	public void formatPrivateCin() {
+		transporter.setPrivateCin(UtilsFunctions.cleanString(transporter.getPrivateCin()).replace(" ", "").toUpperCase());
+	}
+
+	public void formatPrivateEmail() {
+		transporter.setPrivateEmail(UtilsFunctions.cleanString(transporter.getPrivateEmail()).replace(" ", "").toLowerCase());
 	}
 
 	// DELETE TRANSPORTER

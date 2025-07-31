@@ -204,6 +204,14 @@ public class SessionView implements Serializable {
 		return isTM();
 	}
 	
+	public Boolean getIsTrAdmin() {
+		return user.getIsTrAdmin();
+	}
+	
+	public Boolean isTrAdmin() {
+		return getIsTrAdmin();
+	}
+	
 	
 	public Boolean getIsInternalTM() {
 		return getInternal() && getIsTM();

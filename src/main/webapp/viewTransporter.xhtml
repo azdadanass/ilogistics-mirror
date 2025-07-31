@@ -270,14 +270,14 @@
 										<p:column headerText="Status">
 											<h:outputText value="#{item.active?'Active':'Inactive'}" styleClass="#{item.active?'green':'red'}" />
 										</p:column>
-										<!-- <p:column headerText="Actions" style="width:150px">
+										<p:column headerText="Actions" style="width:150px">
 											<div class="action-buttons center">
 												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:param name="id" value="#{item.id}" />
+													<f:param name="username" value="#{item.username}" />
 												</h:outputLink>
 											</div>
-										</p:column> -->
+										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
 												<p:commandLink title="Add New User" oncomplete="PF('addUserDlg').show()">

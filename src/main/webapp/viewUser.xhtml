@@ -45,42 +45,14 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+						<p:commandLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page" action="#{userView.evictCache()}">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
-						</h:outputLink>
+						</p:commandLink>
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditUser.xhtml" rendered="#{userView.canSaveUser()}">
-							<i class="ace-icon fa fa-edit bigger-230"></i>
-							<h:outputText value="Edit" />
-							<f:param name="id" value="#{userView.username}" />
-						</h:outputLink>
-						<p:commandLink title="Change Password" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-purple" onclick="PF('changePasswordUserDlg').show()"
-							rendered="#{userView.canChangePassword()}">
-							<i class="ace-icon fa fa-key bigger-230"></i>
-							<h:outputText value="Password" />
-						</p:commandLink>
-						<p:commandLink title="#{userView.user.active?'Disable Account':'Enable Account'}" styleClass="btn btn-app btn-sm #{userView.user.active?'btn-danger':'btn-success'} hover aa-tooltip"
-							update=":toggleStatusForm" oncomplete="PF('toggleStatusDlg').show()">
-							<i class="ace-icon fa fa-power-off bigger-230"></i>
-							<h:outputText value="#{userView.user.active?'Disable':'Enable'}" />
-						</p:commandLink>
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{userView.canDeleteUser()}">
-							<i class="ace-icon fa fa-trash-o bigger-230"></i>
-							<h:outputText value="Delete" />
-						</p:commandLink>
-						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadUserFileDlg').show()">
-							<i class="ace-icon fa fa-file bigger-230"></i>
-							<h:outputText value="Files" />
-						</p:commandLink>
-						<p:commandLink title="Assign Project" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-info" action="#{userView.initAssignment()}" update="assignProjectForm"
-							oncomplete="PF('assignProjectDlg').show()" rendered="#{userView.canAssignProject()}">
-							<i class="ace-icon fa fa-link bigger-230"></i>
-							<h:outputText value="Assign" />
-						</p:commandLink>
 					</div>
 				</div>
 			</div>
@@ -89,16 +61,17 @@
 				<div class="col-xs-12 col-sm-3 center">
 					<h:panelGroup id="avatar">
 						<div class="profile-picture">
-							<p:graphicImage value="#{userView.user.photo}" styleClass="editable img-responsive editable-click editable-empty aa-avatar" onclick="PF('uploadPhotoDlg').show()"
-								rendered="#{userView.canUploadPhoto()}" />
-							<p:graphicImage value="#{userView.user.photo}" styleClass="img-responsive aa-avatar" rendered="#{!userView.canUploadPhoto()}" />
+							<p:graphicImage id="photo" value="#{fileUploadView.stream}" styleClass="editable img-responsive editable-click editable-empty aa-avatar">
+								<f:param name="fileName" value="#{userView.user.photo}" />
+							</p:graphicImage>
 						</div>
 					</h:panelGroup>
 					<div class="space-4" />
 					<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
 						<div class="inline position-relative">
 							<a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
-								<i class="ace-icon fa fa-circle #{userView.user.active?'light-green':'light-red'}"></i> &nbsp;
+								<i class="ace-icon fa fa-circle #{userView.user.active?'light-green':'light-red'}"></i>
+								&nbsp;
 								<span class="white">
 									<h:outputText value="#{userView.user.fullName}" />
 								</span>
@@ -108,6 +81,7 @@
 				</div>
 			</div>
 			<div class="space-16" />
+			<p:messages id="messages" />
 			<div class="tabbable">
 				<ul class="nav nav-tabs padding-18">
 					<li class="active">
@@ -122,27 +96,18 @@
 							<h:outputText value=" Contact Data" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<li>
-						<a data-toggle="tab" href="#tab3">
-							<i class="red ace-icon fa fa-lock bigger-120"></i>
-							<h:outputText value=" Authorities" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
+					<!-- <li>
 						<a data-toggle="tab" href="#tab4">
 							<i class="blue ace-icon fa fa-file bigger-120"></i>
 							<h:outputText value=" Attachements" />
 						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab5">
-							<i class="orange ace-icon fa fa-clock-o bigger-120"></i>
-							<h:outputText value=" History" />
-						</a>
-					</li>
+					</li> -->
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="General informations" />
+						</h4>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
@@ -157,10 +122,10 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="CIN" />
+											<h:outputText value="Login" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.cin}" styleClass="bolder green" />
+											<h:outputText value="#{userView.user.login}" styleClass="badge badge-blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -175,41 +140,19 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Birthday" />
+											<h:outputText value="CIN" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.birthday}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
+											<h:outputText value="#{userView.user.cin}" styleClass="bolder green" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Passport ID" />
+											<h:outputText value="Primary Mobile N°" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.passportId}" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Drive Licence ID" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.driveLicenceId}" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DL Issued Date" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.driveLicenceIssuedDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
+											<h:outputText value="#{userView.user.phone}" styleClass="blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -219,15 +162,6 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{userView.user.job}" styleClass="bolder green" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Company" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.companyType.value} / #{userView.user.companyName}" styleClass="bolder #{userView.user.companyType.color.name}" />
 											&nbsp;
 										</div>
 									</div>
@@ -246,10 +180,10 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Status" />
+											<h:outputText value="Type" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.active?'Active':'Inactive'}" styleClass="#{userView.user.active?'green':'red'}" />
+											<h:outputText value="#{userView.user.internal?'Internal':'External'}" styleClass="bolder #{userView.user.internal?'blue':'orange'}" />
 											&nbsp;
 										</div>
 									</div>
@@ -264,6 +198,17 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Birthday" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{userView.user.birthday}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Gender" />
 										</div>
 										<div class="profile-info-value">
@@ -273,79 +218,13 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Passport Expire Date" />
+											<h:outputText value="Status" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.passportExpireDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
+											<h:outputText value="#{userView.user.active?'Active':'Inactive'}" styleClass="badge #{userView.user.active?'badge-green':'badge-red'}" />
 											&nbsp;
 										</div>
 									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Drive Licence Type" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.driveLicenceType}" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DL Expire Date" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.userData.driveLicenceExpireDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Sponsor Manager" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{cacheView.getLineManager(userView.user.username)}" />
-											&nbsp;
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<h4 class="header blue bolder smaller">
-							<h:outputText value="Assigned Projects" />
-						</h4>
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<i class="fa fa-list" />
-									<h:outputText value=" Assigned Projects" />
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{userView.user.assignmentList}" id="projectList" widgetVar="projectList" var="item" rows="50" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-										<p:column headerText="Name">
-											<h:outputText value="#{item.project.name}" styleClass="blue" />
-										</p:column>
-										<p:column headerText="Type" width="100">
-											<h:outputText value="#{item.project.type}" />
-										</p:column>
-										<p:column headerText="Start Date" width="100">
-											<h:outputText value="#{item.startDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="End Date" width="100">
-											<h:outputText value="#{item.endDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Manager">
-											<h:outputText value="#{cacheView.getFullName(item.project.manager.username)}" styleClass="bloder green" />
-										</p:column>
-									</p:dataTable>
 								</div>
 							</div>
 						</div>
@@ -363,15 +242,6 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Primary Mobile N°" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{userView.user.phone}" styleClass="blue" />
-											&nbsp;
-										</div>
-									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
 											<h:outputText value="Business phone" />
@@ -479,161 +349,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="tab3" class="tab-pane">
-						<div class="col-xs-12 col-sm-6">
-							<div class="profile-user-info profile-user-info-striped">
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="Ilogistics Access" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleIlogistics" update="hasRoleIlogistics" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="PM Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRolePm" update="hasRolePm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_PM)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_PM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="WM Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleWm" update="hasRoleWm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_WM)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_WM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="SE Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleSe" update="hasRoleSe" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_SE)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_SE)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="DN Notification" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleDnNotification" update="hasRoleDnNotification" partialSubmit="true" process="@this"
-											actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_DN_NOTIFICATION)}" action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_DN_NOTIFICATION)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="Collect Goods" title="Collect Goods from warehouse (CIN Required to toggle)" styleClass="aa-tooltip" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleCollectGoods" update="hasRoleCollectGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_COLLECT_GOODS)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace() or userView.user.cin==null or userView.user.cin==''}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_COLLECT_GOODS)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-xs-12 col-sm-6">
-							<div class="profile-user-info profile-user-info-striped">
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="User Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleUser" update="hasRoleUser" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_USER)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_USER)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="Admin Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleAdmin" update="hasRoleAdmin" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_ADMIN)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_ADMIN)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="TM Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleTm" update="hasRoleTm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_TM)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_TM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="HM Role" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleHm" update="hasRoleHm" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_HM)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_HM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="Receive Goods" title="Receive Goods on site" styleClass="aa-tooltip" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleReceiveGoods" update="hasRoleReceiveGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_RECEIVE_GOODS)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_RECEIVE_GOODS)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-								<div class="profile-info-row">
-									<div class="profile-info-name">
-										<h:outputText value="Deliver Goods" title="Deliver Goods to warehouse" styleClass="aa-tooltip" />
-									</div>
-									<div class="profile-info-value">
-										<p:commandLink id="hasRoleDeliverGoods" update="hasRoleDeliverGoods" partialSubmit="true" process="@this" actionListener="#{userView.user.toggleRole(Role.ROLE_ILOGISTICS_DELIVER_GOODS)}"
-											action="#{userView.updateInplace()}" disabled="#{!userView.canUpdateInplace()}">
-											<i class="ace-icon fa #{userView.user.hasRole(Role.ROLE_ILOGISTICS_DELIVER_GOODS)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-										</p:commandLink>
-										&nbsp;
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div id="tab4" class="tab-pane">
+					<!-- <div id="tab4" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -643,8 +359,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="fileList" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -673,9 +389,9 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteUserFileDlg').show()" styleClass="aa-tooltip">
+												<p:commandLink title="Delete File" oncomplete="PF('deleteFileDlg').show()" styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener target="#{userView.userFileId}" value="#{item.id}" />
+													<f:setPropertyActionListener target="#{userView.file}" value="#{item}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
 													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
@@ -684,7 +400,7 @@
 												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
-													<f:setPropertyActionListener target="#{userView.userFile}" value="#{item}" />
+													<f:setPropertyActionListener target="#{userView.file}" value="#{item}" />
 												</p:commandLink>
 											</div>
 										</p:column>
@@ -692,51 +408,10 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					<div id="tab5" class="tab-pane">
-						<div class="space-8" />
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-9 hidden-xs">
-										<i class="fa fa-list" />
-										<h:outputText value=" History" />
-									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="userhistoryList" value="#{userView.user.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
-										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Action" width="80" styleClass="center">
-											<span class="#{item.statusStyleClass}">
-												<h:outputText value="#{item.status}" styleClass="bolder" />
-											</span>
-										</p:column>
-										<p:column headerText="Date" width="90" styleClass="center">
-											<f:subview rendered="#{item.date==null}">
-												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
-											</f:subview>
-											<h:outputText value="#{item.date}" rendered="#{item.date!=null}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="User" width="120">
-											<h:outputText id="user" value="#{item.user.fullName}" styleClass="purple bolder" />
-											<p:overlayPanel for="user" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
-											</p:overlayPanel>
-										</p:column>
-										<p:column headerText="Description" width="400">
-											<h:outputText value="#{item.description}" escape="false" styleClass="aa-cut-text" />
-										</p:column>
-									</p:dataTable>
-								</div>
-							</div>
-						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		</h:form>
-		<ui:include src="userFooter.xhtml" />
 		<ui:include src="fileFooter.xhtml" />
 	</ui:define>
 </ui:composition>

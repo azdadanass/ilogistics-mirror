@@ -110,7 +110,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canSaveVehicle() {
-		return sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
 	}
 
 	public void saveVehicle() {
@@ -124,7 +124,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canDeleteVehicle() {
-		return sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.getIsTrAdmin() &&  sessionView.isTheConnectedUser(transporter.getUser());
 	}
 
 	public void deleteVehicle() {
@@ -151,7 +151,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	// SAVE TRANSPORTER
 	public Boolean canSaveTransporter() {
 		if (isListPage || isAddPage)
-			return sessionView.isTM();
+			return sessionView.isTrAdmin();
 		else if (isViewPage || isEditPage)
 			return sessionView.isTheConnectedUser(transporter.getUser());
 		return false;
@@ -199,7 +199,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// DELETE TRANSPORTER
 	public Boolean canDeleteTransporter() {
-		return sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
 	}
 
 	public String deleteTransporter() {

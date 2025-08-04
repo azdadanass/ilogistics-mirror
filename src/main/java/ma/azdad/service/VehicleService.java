@@ -33,5 +33,9 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 		evictCache();
 		repos.updateActive(id, active);
 	}
+	
+	public List<Vehicle> findActiveByDriver(String driverUsername){
+		return repos.findActiveByDriver(driverUsername);
+	}
 
 }

@@ -48,7 +48,7 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationJobView.assign()}">
+						<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationJobView.assign()}" update="messages">
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
@@ -196,6 +196,7 @@
 												<p:dataTable id="driverList" widgetVar="driverList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.username}"
 													selection="#{transportationJobView.transportationJob.driver}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
 													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+													<p:ajax event="rowSelectRadio" update=":main_form:vehicleListPanel" />
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
 													<p:column headerText="Photo" width="80" exportable="false" styleClass="hidden-xs">
 														<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -219,6 +220,44 @@
 										</div>
 									</div>
 								</f:subview>
+								<h:panelGroup id="vehicleListPanel">
+									<f:subview rendered="#{transportationJobView.transportationJob.driver!=null}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-sm-offset-1 col-sm-10">
+												<div class="table-header col-sm-12 col-xs-12">
+													<i class="fa fa-list" />
+													<h:outputText value=" Vehicle List" />
+												</div>
+												<div class="col-sm-12 col-xs-12 aa-datatable-container">
+													<p:dataTable id="vehicleList" widgetVar="vehicleList" value="#{transportationJobView.vehicleSelectionList}" rowKey="#{item.id}"
+														selection="#{transportationJobView.transportationJob.vehicle}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+														paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+														<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
+														<p:column headerText="Matricule">
+															<h:outputText value="#{item.correctMatricule}" styleClass="purple bolder" />
+														</p:column>
+														<p:column headerText="Vehicle Type">
+															<h:outputText value="#{item.vehicleType.name}" styleClass="bolder green" />
+														</p:column>
+														<p:column headerText="Max Weight">
+															<h:outputText value="#{item.maxWeight}">
+																<f:convertNumber type="number" maxFractionDigits="2" />
+															</h:outputText>
+															<h:outputText value=" Kg" />
+														</p:column>
+														<p:column headerText="Max Volume">
+															<h:outputText value="#{item.maxVolume}">
+																<f:convertNumber type="number" maxFractionDigits="2" />
+															</h:outputText>
+															<h:outputText value=" m3" />
+														</p:column>
+													</p:dataTable>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
 							</h:panelGroup>
 							<div class="space-16"></div>
 							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.latitude}, #{transportationJobView.longitude}" zoom="10"

@@ -35,6 +35,7 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.MapService;
@@ -132,8 +133,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private TransportationJobStatus status;
 	private TransportationJobState state;
-	
-	
+
 	private Double latitude;
 	private Double longitude;
 
@@ -167,7 +167,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	@Override
 	protected void initParameters() {
 		super.initParameters();
-		status= TransportationJobStatus.get(UtilsFunctions.getIntegerParameter("status"));
+		status = TransportationJobStatus.get(UtilsFunctions.getIntegerParameter("status"));
 		state = TransportationJobState.get(UtilsFunctions.getIntegerParameter("state"));
 		key = UtilsFunctions.getParameter("key");
 	}
@@ -344,7 +344,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transporterView.initLists(transporterService.findLight());
 				break;
 			case INTERNAL_DRIVER:
-				userView.initLists(userService.findActiveDriverList( true));
+				userView.initLists(userService.findActiveDriverList(true));
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -389,7 +389,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public Boolean canAssign(TransportationJob transportationJob) {
 		return sessionView.getIsTM() //
-				&& !transportationJob.getTransportationRequestList().isEmpty()  //
+				&& !transportationJob.getTransportationRequestList().isEmpty() //
 				&& ((TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
 						&& sessionView.isTheConnectedUser(transportationJob.getUser1())) //
 						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()) //
@@ -400,23 +400,25 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private Boolean validateAssign() {
 		if (TransportationJobAssignmentType.TRANSPORTER.equals(transportationJob.getAssignmentType()) && transportationJob.getTransporter() == null)
 			return FacesContextMessages.ErrorMessages("Transporter should not be null");
-		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType())
-				&& transportationJob.getDriver() == null)
-			return FacesContextMessages.ErrorMessages("Driver should not be null");
+		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType())) {
+			if (transportationJob.getDriver() == null)
+				return FacesContextMessages.ErrorMessages("Driver should not be null");
+			if (transportationJob.getVehicle() == null)
+				return FacesContextMessages.ErrorMessages("Vehicle should not be null");
+		}
 		return true;
 	}
 
 	public void assign(TransportationJob transportationJob) {
 		if (!canAssign(transportationJob))
 			return;
-		if (!validateAssign())
-			return;
 		if (this.transportationJob.getStartLeadTime() != null)
 			transportationJob.setStartLeadTime(this.transportationJob.getStartLeadTime());
 		if (this.transportationJob.getAcceptLeadTime() != null)
 			transportationJob.setAcceptLeadTime(this.transportationJob.getAcceptLeadTime());
-		
-		service.assign(transportationJob, this.transportationJob.getAssignmentType(), this.transportationJob.getTransporterId(), this.transportationJob.getDriverUsername(), sessionView.getUser());
+
+		service.assign(transportationJob, this.transportationJob.getAssignmentType(), this.transportationJob.getTransporterId(), //
+				this.transportationJob.getDriverUsername(), this.transportationJob.getVehicleId(), sessionView.getUser());
 //		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
 //
 //		switch (transportationJob.getAssignmentType()) {
@@ -457,9 +459,16 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 //	}
 
 	public String assign() {
+		if (!validateAssign())
+			return null;
+		
 		for (TransportationJob transportationJob : toAssignList)
 			assign(service.findOne(transportationJob.getId()));
 		return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
+	}
+
+	public List<Vehicle> getVehicleSelectionList() {
+		return vehicleService.findActiveByDriver(transportationJob.getDriverUsername());
 	}
 
 	// unassign
@@ -556,9 +565,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isViewPage)
 			mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 		if (isPage("assignTransportationJob")) {
-			List<Stop> stopList = stopService.findByTransportationJobList(toAssignList.stream().map(i->i.getId()).collect(Collectors.toList()));
-			//init center latitude,longitude
-			if(!stopList.isEmpty()) {
+			List<Stop> stopList = stopService.findByTransportationJobList(toAssignList.stream().map(i -> i.getId()).collect(Collectors.toList()));
+			// init center latitude,longitude
+			if (!stopList.isEmpty()) {
 				latitude = stopList.get(0).getPlace().getLatitude();
 				longitude = stopList.get(0).getPlace().getLongitude();
 			}
@@ -1156,7 +1165,5 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
-	
-	
 
 }

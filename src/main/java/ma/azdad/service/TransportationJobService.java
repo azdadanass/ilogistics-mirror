@@ -55,6 +55,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	
 	@Autowired
 	TransporterService transporterService;
+	
+	@Autowired
+	VehicleService vehicleService;
 
 	TransportationJobService(UserService userService, TransportationRequestRepos transportationRequestRepos) {
 		this.userService = userService;
@@ -263,7 +266,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	
 	
 	
-	public void assign(TransportationJob transportationJob,TransportationJobAssignmentType assignmentType,Integer transporterId,String driverUsername,User connectedUser) {
+	public void assign(TransportationJob transportationJob,TransportationJobAssignmentType assignmentType,Integer transporterId,String driverUsername,Integer vehicleId,User connectedUser) {
 		transportationJob.setAssignmentType(assignmentType);
 
 		switch (transportationJob.getAssignmentType()) {
@@ -281,6 +284,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDate3(new Date());
 			transportationJob.setUser3(connectedUser);
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
+			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
 			transportationJob.addHistory(
 					new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));

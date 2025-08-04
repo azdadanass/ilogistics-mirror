@@ -29,6 +29,7 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	// Supplier
 	private Supplier supplier;
+	private Company company;
 
 	// Private
 	private String privateFirstName;
@@ -54,8 +55,10 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	}
 
 	// c1
-	public Transporter(Integer id, TransporterType type, User user, String privateFirstName, String privateLastName, String privateEmail, String privatePhone, String privateCin, String supplierName,
-			String supplierEmail, String supplierPhone) {
+	public Transporter(Integer id, TransporterType type, User user, //
+			String privateFirstName, String privateLastName, String privateEmail, String privatePhone, String privateCin, //
+			String supplierName, String supplierEmail, String supplierPhone, //
+			String companyName) {
 		super(id);
 		this.type = type;
 		this.user = user;
@@ -67,6 +70,7 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 		this.setSupplierName(supplierName);
 		this.setSupplierEmail(supplierEmail);
 		this.setSupplierPhone(supplierPhone);
+		this.setCompanyName(companyName);
 	}
 
 	@Transient
@@ -74,6 +78,8 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 		if (type == null)
 			return null;
 		switch (type) {
+		case INTERNAL:
+			return getCompanyName();
 		case SUPPLIER:
 			return getSupplierName();
 		case PRIVATE:
@@ -131,6 +137,15 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 		this.supplier = supplier;
 	}
 
+	@OneToOne(fetch = FetchType.LAZY)
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
 	public List<TransporterFile> getFileList() {
 		return fileList;
@@ -174,6 +189,30 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@Transient
+	public Integer getCompanyId() {
+		return company != null ? company.getId() : null;
+	}
+
+	@Transient
+	public void setCompanyId(Integer companyId) {
+		if (company == null || !companyId.equals(company.getId()))
+			company = new Company();
+		company.setId(companyId);
+	}
+
+	@Transient
+	public String getCompanyName() {
+		return company != null ? company.getName() : null;
+	}
+
+	@Transient
+	public void setCompanyName(String companyName) {
+		if (company == null)
+			company = new Company();
+		company.setName(companyName);
 	}
 
 	@Transient

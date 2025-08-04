@@ -83,6 +83,24 @@
 							</div>
 							<hr />
 							<h:panelGroup id="panel1">
+								<f:subview rendered="#{TransporterType.INTERNAL==transporterView.transporter.type}">
+									<div class="row">
+										<div class="col-xs-12 col-sm-6">
+											<div class="form-group">
+												<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+													<h:outputText value="Company" />
+												</label>
+												<div class="col-xs-9 col-sm-9">
+													<p:selectOneMenu value="#{transporterView.transporter.companyId}" filter="true" filterMatchMode="contains" required="true"
+														requiredMessage="Company should not be null">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{companyView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+													</p:selectOneMenu>
+												</div>
+											</div>
+										</div>
+									</div>
+								</f:subview>
 								<f:subview rendered="#{TransporterType.SUPPLIER==transporterView.transporter.type}">
 									<div class="row">
 										<div class="col-xs-12 col-sm-6">
@@ -94,7 +112,7 @@
 													<p:selectOneMenu value="#{transporterView.transporter.supplierId}" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Supplier should not be null">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{supplierView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+														<f:selectItems value="#{supplierView.findActive()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
 													</p:selectOneMenu>
 												</div>
 											</div>

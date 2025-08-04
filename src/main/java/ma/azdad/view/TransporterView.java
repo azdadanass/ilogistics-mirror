@@ -22,6 +22,7 @@ import ma.azdad.model.TransporterType;
 import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransporterRepos;
+import ma.azdad.service.CompanyService;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.ToolService;
@@ -49,6 +50,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected SupplierService supplierService;
+	
+	@Autowired
+	protected CompanyService companyService;
 
 	@Autowired
 	protected VehicleService vehicleService;
@@ -188,6 +192,12 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			transporter.setSupplier(supplierService.findOne(transporter.getSupplierId()));
 		else
 			transporter.setSupplier(null);
+		
+		if (TransporterType.INTERNAL.equals(transporter.getType()))
+			transporter.setCompany(companyService.findOne(transporter.getCompanyId()));
+		else
+			transporter.setCompany(null);
+		
 		transporter = transporterService.save(transporter);
 
 		if (!isEditPage)

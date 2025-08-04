@@ -17,6 +17,9 @@ public interface SupplierRepos extends JpaRepository<Supplier, Integer> {
 
 	@Query("select new Supplier(id,name) from Supplier")
 	public List<Supplier> findLight();
+	
+	@Query("select new Supplier(id,name) from Supplier where active is true")
+	public List<Supplier> findActive();
 
 	@Query("select distinct new Supplier(a.supplier.id,a.supplier.name) from ProjectAssignment a where a.type = 'SUPPLIER' and current_date between a.startDate and a.endDate and a.project.id = ?1")
 	List<Supplier> findByHavingActiveProjectAssignment(Integer projectId);

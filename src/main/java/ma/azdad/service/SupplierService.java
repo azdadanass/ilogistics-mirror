@@ -37,6 +37,10 @@ public class SupplierService {
 	public List<Supplier> findLight() {
 		return repos.findLight();
 	}
+	
+	public List<Supplier> findActive(){
+		return repos.findActive();
+	}
 
 	public String findNameByPo(Integer poId) {
 		return repos.findNameByPo(poId);

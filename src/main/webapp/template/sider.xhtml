@@ -61,26 +61,6 @@
 										<b class="arrow"></b>
 									</li>
 								</f:subview> -->
-								<f:subview rendered="#{sessionView.isInternalTM}">
-									<li>
-										<h:outputLink value="vehicleTypeList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-car bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Vehicle Type List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
-								<f:subview rendered="#{sessionView.isTrAdmin}">
-									<li>
-										<h:outputLink value="transporterList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-truck bigger-130 pink" style="margin-right: 10px" />
-											<h:outputText value="Transporter List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
 								<f:subview rendered="#{sessionView.isAdmin}">
 									<li>
 										<h:outputLink value="partNumberConfiguration.xhtml">
@@ -136,6 +116,34 @@
 									</li>
 								</f:subview>
 							</ul>
+							<f:subview rendered="#{sessionView.isTrAdmin}">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-gears"></i>
+									<span class="menu-text">
+										<h:outputText value="Transport" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="vehicleTypeList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-car bigger-130 orange" style="margin-right: 10px" />
+											<h:outputText value="Configuration" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transporterList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-truck bigger-130 pink" style="margin-right: 10px" />
+											<h:outputText value="Transporter List" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</f:subview>
 						</li>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 2}">

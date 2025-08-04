@@ -122,6 +122,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		refreshTransporter();
 		RequestContext.getCurrentInstance().execute("PF('addEditVehicleDlg').hide()");
 	}
+	
 
 	public Boolean canDeleteVehicle() {
 		return sessionView.getIsTrAdmin() &&  sessionView.isTheConnectedUser(transporter.getUser());

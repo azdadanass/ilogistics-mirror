@@ -186,7 +186,7 @@
 											<h:outputText value="#{item.user.active?'Active':'Inactive'}" styleClass="#{item.user.active?'green':'red'}" />
 										</p:column>
 										<p:column headerText="Status" width="100">
-											<p:commandLink id="status" update="status" disabled="#{!vehicleView.editUserList}">
+											<p:commandLink id="status" update="status" disabled="#{!vehicleView.editUserList}" >
 												<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 												<f:setPropertyActionListener value="#{!item.active}" target="#{item.active}" />
 											</p:commandLink>

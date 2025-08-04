@@ -21,14 +21,17 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 		Hibernate.initialize(vehicle.getFileList());
 		Hibernate.initialize(vehicle.getHistoryList());
 		initialize(vehicle.getTransporter().getUserList());
-		vehicle.getUserList().forEach(i->initialize(i.getUser()));
+		vehicle.getUserList().forEach(i -> initialize(i.getUser()));
 		return vehicle;
 	}
 
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleRepos.findLightByTransporter(transporterId);
 	}
-	
-	
+
+	public void updateActive(Integer id, Boolean active) {
+		evictCache();
+		repos.updateActive(id, active);
+	}
 
 }

@@ -200,6 +200,10 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleService.findLightByTransporter(transporterId);
 	}
+	
+	public void updateActive(Integer id, Boolean active) {
+		vehicleService.updateActive(id, active);
+	}
 
 	// GETTERS & SETTERS
 

@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 @Entity
 public class Vehicle extends GenericModel<Integer> implements Serializable {
 
+	private Boolean active = true;
 	private String category;
 	private String type;
 	private String matricule;
@@ -212,5 +213,15 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
+	
 
 }

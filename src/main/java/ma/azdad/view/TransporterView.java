@@ -2,6 +2,8 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.Role;
 import ma.azdad.model.Transporter;
 import ma.azdad.model.TransporterFile;
 import ma.azdad.model.TransporterType;
@@ -25,6 +28,7 @@ import ma.azdad.service.ToolService;
 import ma.azdad.service.TransporterFileService;
 import ma.azdad.service.TransporterHistoryService;
 import ma.azdad.service.TransporterService;
+import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
@@ -63,6 +67,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected ExternalResourceService externalResourceService;
+
+	@Autowired
+	protected UserService userService;
 
 	private Transporter transporter = new Transporter();
 	private TransporterFile transporterFile;
@@ -122,10 +129,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		refreshTransporter();
 		RequestContext.getCurrentInstance().execute("PF('addEditVehicleDlg').hide()");
 	}
-	
 
 	public Boolean canDeleteVehicle() {
-		return sessionView.getIsTrAdmin() &&  sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
 	}
 
 	public void deleteVehicle() {
@@ -142,10 +148,24 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	// Driver MANAGEMENT
 	public void addUser() {
 		if (!transporter.getUserList().contains(user)) {
+			user = userService.findOneLight(user.getUsername());
 			user.setTransporter(transporter);
 			transporter.getUserList().add(user);
 			transporterService.save(transporter);
 			transporter = transporterService.findOne(transporter.getId());
+		}
+	}
+
+	public List<User> getUserSelectionList() {
+		switch (transporter.getType()) {
+		case INTERNAL:
+			return userService.findActiveAndHaveAnyRole(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), true);
+		case PRIVATE:
+			return userService.findActiveAndHaveAnyRole(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), false);
+		case SUPPLIER:
+			return userService.findActiveAndHaveAnyRoleAndSupplier(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), transporter.getSupplierId());
+		default:
+			return new ArrayList<User>();
 		}
 	}
 
@@ -181,7 +201,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public Boolean validateTransporter() {
 		return true;
 	}
-	
+
 	public void formatPrivateFirstName() {
 		transporter.setPrivateFirstName(UtilsFunctions.formatName(transporter.getPrivateFirstName()));
 	}

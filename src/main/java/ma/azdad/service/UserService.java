@@ -84,6 +84,14 @@ public class UserService {
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return repos.findLightByCompany(companyId, active);
 	}
+	
+	public List<User> findActiveAndHaveAnyRole(List<Role> roleList,Boolean internal){
+		return repos.findActiveAndHaveAnyRole(roleList,internal);
+	}
+	
+	public List<User> findActiveAndHaveAnyRoleAndSupplier(List<Role> roleList,Integer supplierId){
+		return repos.findActiveAndHaveAnyRoleAndSupplier(roleList, supplierId);
+	}
 
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);

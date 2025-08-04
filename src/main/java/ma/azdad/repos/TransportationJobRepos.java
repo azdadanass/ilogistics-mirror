@@ -54,16 +54,16 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query("select a.transportationJob  from TransportationRequest a where a.id in (?1) group by a.transportationJob.id")
 	public List<TransportationJob> findByTransportationRequestList(List<Integer> transportationRequestIdList);
 
-	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' order by a.id desc")
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0 order by a.id desc")
 	public List<TransportationJob> findToAssign1(String user1Username);
 
-	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' order by a.id desc")
+	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0")
 	public Long countToAssign1(String user1Username);
 
 	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
 	public List<TransportationJob> findToAssign2(Integer transporterId);
 
-	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1'")
 	public Long countToAssign2(Integer transporterId);
 
 	@Query(c1 + "from TransportationJob a where a.driver.username = ?1")

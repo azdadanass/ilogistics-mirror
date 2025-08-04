@@ -281,6 +281,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDate3(new Date());
 			transportationJob.setUser3(connectedUser);
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
+			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
 			transportationJob.addHistory(
 					new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			break;

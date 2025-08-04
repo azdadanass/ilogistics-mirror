@@ -344,7 +344,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transporterView.initLists(transporterService.findLight());
 				break;
 			case INTERNAL_DRIVER:
-				userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, true));
+				userView.initLists(userService.findActiveDriverList( true));
 //				teamView.getList1().forEach(t -> {
 //					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
 //					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
@@ -357,7 +357,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			case EXTERNAL_DRIVER:
 				switch (transportationJob.getStatus()) {
 				case EDITED:
-					userView.initLists(userService.findByRoleAndActive(Role.ROLE_ILOGISTICS_DRIVER, false));
+					userView.initLists(userService.findActiveDriverList(false));
 					break;
 				case ASSIGNED1:
 					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : "
@@ -389,6 +389,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public Boolean canAssign(TransportationJob transportationJob) {
 		return sessionView.getIsTM() //
+				&& !transportationJob.getTransportationRequestList().isEmpty()  //
 				&& ((TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
 						&& sessionView.isTheConnectedUser(transportationJob.getUser1())) //
 						|| (TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()) //

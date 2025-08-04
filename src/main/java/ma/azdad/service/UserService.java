@@ -482,8 +482,8 @@ public class UserService {
 	}
 	
 	
-	public List<User> findByRoleAndActive(Role role,Boolean internal){
-		return repos.findByRoleAndActive(role, internal);
+	public List<User> findActiveDriverList(Boolean internal){
+		return repos.findActiveDriverList(internal);
 	}
 	
 	public List<User> findByRoleAndActiveAndTransporter(Role role,Integer transporterId){

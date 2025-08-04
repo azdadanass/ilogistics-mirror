@@ -3,6 +3,7 @@ package ma.azdad.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -12,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.User;
+import ma.azdad.model.UserVehicle;
 import ma.azdad.model.Vehicle;
 import ma.azdad.model.VehicleFile;
 import ma.azdad.repos.VehicleRepos;
+import ma.azdad.service.UserService;
 import ma.azdad.service.VehicleFileService;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
@@ -38,6 +42,9 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	@Autowired
 	protected FileUploadView fileUploadView;
+
+	@Autowired
+	protected UserService userService;
 
 	private Vehicle vehicle = new Vehicle();
 	private VehicleFile vehicleFile;
@@ -136,15 +143,65 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	}
 
+	// user list
+	private Boolean editUserList = false;
+	
+	public Boolean canEditUserList() {
+		return !editUserList && sessionView.getIsTrAdmin();
+	}
+
+	public Boolean canAddUser() {
+		return editUserList && sessionView.getIsTrAdmin();
+	}
+
+	public void addUser() {
+		if (canAddUser())
+			vehicle.addUser(new UserVehicle());
+	}
+
+	public Boolean canDeleteUser() {
+		return editUserList && sessionView.getIsTrAdmin();
+	}
+
+	public void deleteUser(UserVehicle userVehicle) {
+		if (canDeleteUser())
+			vehicle.removeUser(userVehicle);
+	}
+
+	public Boolean canSaveUserList() {
+		return editUserList && sessionView.getIsTrAdmin();
+	}
+
+	private Boolean validateUserList() {
+		if (vehicle.getUserList().stream().filter(i -> i.getUserUsername() == null).count() > 0)
+			return FacesContextMessages.ErrorMessages("Driver should not be null");
+		if (vehicle.getUserList().stream().map(i->i.getUser()).distinct().count() < vehicle.getUserList().size())
+			return FacesContextMessages.ErrorMessages("Duplicate driver !");
+
+		return true;
+	}
+
+	public void saveUserList() {
+		if (!canSaveUserList())
+			return;
+		if (!validateUserList())
+			return;
+		vehicle.getUserList().forEach(i -> i.setUser(userService.findOneLight(i.getUserUsername())));
+		service.save(vehicle);
+		vehicle = service.findOne(vehicle.getId());
+		editUserList = false;
+	}
+
+	public List<User> getUserSelectionList() {
+		return vehicle.getTransporter().getUserList().stream().filter(i -> i.getActive()).collect(Collectors.toList());
+	}
+
 	// generic
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleService.findLightByTransporter(transporterId);
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public VehicleService getVehicleService() {
 		return vehicleService;
@@ -200,6 +257,14 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	public void setVehicleFile(VehicleFile vehicleFile) {
 		this.vehicleFile = vehicleFile;
+	}
+
+	public Boolean getEditUserList() {
+		return editUserList;
+	}
+
+	public void setEditUserList(Boolean editUserList) {
+		this.editUserList = editUserList;
 	}
 
 }

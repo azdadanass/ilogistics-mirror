@@ -30,9 +30,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View Vehicle" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{vehicleView.vehicle.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{vehicleView.vehicle.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -80,6 +78,7 @@
 						</a>
 					</li>
 				</ul>
+				<p:messages id="messages" closable="true" />
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
 						<div class="row">
@@ -149,6 +148,75 @@
 											&nbsp;
 										</div>
 									</div>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Assigned Drivers" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Assigned Drivers" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="userList" value="#{vehicleView.vehicle.userList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Full Name" width="200">
+											<h:outputText value="#{item.userFullName}" styleClass="bolder purple" rendered="#{!vehicleView.editUserList}"/>
+											<p:selectOneMenu value="#{item.userUsername}" style="width: 90%" rendered="#{vehicleView.editUserList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{vehicleView.userSelectionList}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+											</p:selectOneMenu>
+										</p:column>
+										<p:column headerText="Email">
+											<h:outputText value="#{item.user.email}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.user.phone}" styleClass="orange" />
+										</p:column>
+										<p:column headerText="CIN">
+											<h:outputText value="#{item.user.cin}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Job/Function">
+											<h:outputText value="#{item.user.job}" />
+										</p:column>
+										<p:column headerText="User Status" width="150">
+											<h:outputText value="#{item.user.active?'Active':'Inactive'}" styleClass="#{item.user.active?'green':'red'}" />
+										</p:column>
+										<p:column headerText="Status" width="100">
+											<p:commandLink id="status" update="status" disabled="#{!vehicleView.editUserList}">
+												<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!item.active}" target="#{item.active}" />
+											</p:commandLink>
+										</p:column>
+										<p:column headerText="Actions" styleClass="center" width="100" >
+											<div class="action-buttons center">
+												<p:commandLink title="Remove row" action="#{vehicleView.deleteUser(item)}" update="userList" partialSubmit="true" process="userList" rendered="#{vehicleView.canDeleteUser()}">
+													<i class="ace-icon fa fa-remove bigger-130 red" />
+												</p:commandLink>
+												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="username" value="#{item.userUsername}" />
+												</h:outputLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" update="userList" partialSubmit="true" process="userList" rendered="#{vehicleView.canEditUserList()}">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{vehicleView.editUserList}" />
+												</p:commandLink>
+												<p:commandLink title="Add New Item" action="#{vehicleView.addUser()}" update="userList" partialSubmit="true" process="userList" rendered="#{vehicleView.canAddUser()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+												<p:commandLink title="Save" action="#{vehicleView.saveUserList()}" update="userList,:main_form:messages" partialSubmit="true" process="userList" rendered="#{vehicleView.canSaveUserList()}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
 								</div>
 							</div>
 						</div>

@@ -194,6 +194,9 @@
 										<p:column headerText="Vehicle Type">
 											<h:outputText value="#{item.vehicleType.name}" styleClass="bolder green" />
 										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
+										</p:column>
 										<p:column headerText="Max Weight">
 											<h:outputText value="#{item.maxWeight}">
 												<f:convertNumber type="number" maxFractionDigits="2" />

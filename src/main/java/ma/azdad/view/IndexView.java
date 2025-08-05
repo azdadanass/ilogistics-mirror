@@ -102,15 +102,19 @@ public class IndexView implements Serializable {
 		case 1:
 			if (canAccessMenu(1))
 				return addParameters(sessionView.getIsAdmin() ? "warehouseList.xhtml" : sessionView.getIsPM() ? "projectList.xhtml" : "partNumberList.xhtml", "faces-redirect=true");
+			return null;
 		case 2:
 			if (canAccessMenu(2))
 				return addParameters("deliveryRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
+			return null;
 		case 3:
 			if (canAccessMenu(3))
 				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
+			return null;
 		case 4:
 			if (canAccessMenu(4))
 				return addParameters(sessionView.getInternal() || sessionView.getIsWM() ? "reporting.xhtml" : "deliveryReporting.xhtml", "faces-redirect=true");
+			return null;
 		default:
 			return null;
 		}

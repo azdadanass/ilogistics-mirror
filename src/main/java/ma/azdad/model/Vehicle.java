@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	private Boolean active = true;
+	private String description;
 	private String category;
 	private String type;
 	private String matricule;
@@ -221,7 +222,13 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
-	
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 }

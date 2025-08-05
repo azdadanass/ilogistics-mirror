@@ -390,6 +390,7 @@
 										</p:column>
 										<p:column headerText="Origin">
 											<h:outputText value="#{item.originName}" styleClass="purple" />
+											<h:outputText value="#{item.warehouseName}" styleClass="purple" rendered="#{item.isOutbound}"/>
 										</p:column>
 										<p:column headerText="Pickup Time">
 											<h:outputText value="Expected on " styleClass="purple" rendered="#{item.pickupDate==null}" />
@@ -407,6 +408,7 @@
 										</p:column>
 										<p:column headerText="Destination">
 											<h:outputText value="#{item.destinationName}" styleClass="pink" />
+											<h:outputText value="#{item.warehouseName}" styleClass="pink" rendered="#{item.isInbound}"/>
 										</p:column>
 										<p:column headerText="Delivery Time">
 											<h:outputText value="Expected on " styleClass="pink" rendered="#{item.deliveryDate==null}" />

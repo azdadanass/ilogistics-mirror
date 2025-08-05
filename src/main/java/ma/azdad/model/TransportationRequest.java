@@ -83,10 +83,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private String driverUsername;
 	private Integer deliveryRequestId;
 	private String deliveryRequestReference;
-	private DeliveryRequestType deliveryRequestType;
 	private String deliveryRequestSmsRef;
-	private String originName;
-	private String destinationName;
 	private String transporterName;
 	private Integer originId;
 	private Integer destinationId;
@@ -127,7 +124,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	// constructor 1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Integer deliveryRequestId,
-			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName, //
+			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName,
+			String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
@@ -139,8 +137,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
 		this.requesterUsername = requesterUsername;
 		this.requesterFullName = requesterFullName;
-		this.originName = originName;
-		this.destinationName = destinationName;
+		this.setOriginName(originName);
+		this.setDestinationName(destinationName);
+		this.setWarehouseName(warehouseName);
 
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -149,9 +148,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	// select1
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
-			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
-			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, //
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference,
+			DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
+			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, //
 			String approverFullName, Double cost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
 		super(id);
@@ -160,7 +159,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.deliveryRequestReference = deliveryRequestReference;
-		this.deliveryRequestType = deliveryRequestType;
+		this.setDeliveryRequestType(deliveryRequestType);
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
 		this.requesterUsername = requesterUsername;
 		this.requesterFullName = requesterFullName;
@@ -168,8 +167,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.neededPickupDate = neededPickupDate;
 		this.neededDeliveryDate = neededDeliveryDate;
 		this.deliveryDate = deliveryDate;
-		this.originName = originName;
-		this.destinationName = destinationName;
+		this.setOriginName(originName);
+		this.setDestinationName(destinationName);
+		this.setWarehouseName(warehouseName);
 
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -186,7 +186,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	// select3
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
 			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName //
-			, Date neededPickupDate, Date neededDeliveryDate, String originName, String destinationName, //
+			, Date neededPickupDate, Date neededDeliveryDate, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, //
 			Integer originId, Integer destinationId, Integer warehouseId) {
 		super(id);
@@ -194,15 +194,16 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.status = status;
 
 		this.deliveryRequestReference = deliveryRequestReference;
-		this.deliveryRequestType = deliveryRequestType;
+		this.setDeliveryRequestType(deliveryRequestType);
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
 		this.requesterUsername = requesterUsername;
 		this.requesterFullName = requesterFullName;
 
 		this.neededPickupDate = neededPickupDate;
 		this.neededDeliveryDate = neededDeliveryDate;
-		this.originName = originName;
-		this.destinationName = destinationName;
+		this.setOriginName(originName);
+		this.setDestinationName(destinationName);
+		this.setWarehouseName(warehouseName);
 
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -290,20 +291,38 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public String getOriginName() {
-		if (originName != null)
-			return originName;
-		if (deliveryRequest != null)
-			return !deliveryRequest.getIsOutbound() ? (originName != null ? originName : deliveryRequest.getOrigin().getName()) : deliveryRequest.getWarehouse().getName();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getOriginName() : null;
+	}
+
+	@Transient
+	public void setOriginName(String originName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setOriginName(originName);
 	}
 
 	@Transient
 	public String getDestinationName() {
-		if (destinationName != null)
-			return destinationName;
-		if (deliveryRequest != null)
-			return !deliveryRequest.getIsInbound() ? (destinationName != null ? destinationName : deliveryRequest.getDestination().getName()) : deliveryRequest.getWarehouse().getName();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getDestinationName() : null;
+	}
+
+	@Transient
+	public void setDestinationName(String destinationName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setDestinationName(destinationName);
+	}
+
+	@Transient
+	public String getWarehouseName() {
+		return deliveryRequest != null ? deliveryRequest.getWarehouseName() : null;
+	}
+
+	@Transient
+	public void setWarehouseName(String warehouseName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setWarehouseName(warehouseName);
 	}
 
 	@Transient
@@ -434,47 +453,22 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && getDeliveryRequestReference() != null)
-			result = getDeliveryRequestReference().toLowerCase().contains(query);
-		if (!result && getReference() != null)
-			result = getReference().toLowerCase().contains(query);
-		if (!result && originName != null)
-			result = originName.toLowerCase().contains(query);
-		if (!result && destinationName != null)
-			result = destinationName.toLowerCase().contains(query);
-		if (!result && transporterName != null)
-			result = transporterName.toLowerCase().contains(query);
-		if (!result && deliveryRequest != null)
-			result = deliveryRequest.filter(query);
-		return result;
+		return contains(query, getDeliveryRequestReference(), getReference(), getOriginName(), getDestinationName(), transporterName);
 	}
 
 	@Transient
 	public Boolean getIsInbound() {
-		if (deliveryRequestType != null)
-			return DeliveryRequestType.INBOUND.equals(deliveryRequestType);
-		if (deliveryRequest != null)
-			return deliveryRequest.getIsInbound();
-		return null;
+		return DeliveryRequestType.INBOUND.equals(getDeliveryRequestType());
 	}
 
 	@Transient
 	public Boolean getIsOutbound() {
-		if (deliveryRequestType != null)
-			return DeliveryRequestType.OUTBOUND.equals(deliveryRequestType);
-		if (deliveryRequest != null)
-			return deliveryRequest.getIsOutbound();
-		return null;
+		return DeliveryRequestType.OUTBOUND.equals(getDeliveryRequestType());
 	}
 
 	@Transient
 	public Boolean getIsXbound() {
-		if (deliveryRequestType != null)
-			return DeliveryRequestType.XBOUND.equals(deliveryRequestType);
-		if (deliveryRequest != null)
-			return deliveryRequest.getIsXbound();
-		return null;
+		return DeliveryRequestType.XBOUND.equals(getDeliveryRequestType());
 	}
 
 	@Transient
@@ -1004,11 +998,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public DeliveryRequestType getDeliveryRequestType() {
-		if (deliveryRequestType != null)
-			return deliveryRequestType;
-		if (deliveryRequest != null)
-			return deliveryRequest.getType();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getType() : null;
+	}
+
+	@Transient
+	public void setDeliveryRequestType(DeliveryRequestType deliveryRequestType) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setType(deliveryRequestType);
 	}
 
 	@Transient

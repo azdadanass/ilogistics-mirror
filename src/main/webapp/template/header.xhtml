@@ -390,15 +390,90 @@
 								</li>
 							</ul>
 						</li>
-						<f:subview rendered="#{sessionView.internal and (sessionView.isPM() or sessionView.isTM() or sessionView.isUser())}">
+						<f:subview rendered="#{sessionView.isDriver or sessionView.isPM() or sessionView.isTM() or sessionView.isUser()}">
 							<li class="orange">
 								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 									<i class="ace-icon fa fa-tasks"></i>
 									<span class="badge badge-grey">
-										<h:outputText value="#{transportationRequestView.countTotal()}" />
+										<h:outputText value="#{transportationJobView.countTotal() + transportationRequestView.countTotal()}" />
 									</span>
 								</a>
 								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+									<li class="dropdown-header">
+										<i class="ace-icon fa fa-check"></i>
+										<h:outputText value="Transportation Jobs" />
+									</li>
+									<li class="dropdown-content">
+										<ul class="dropdown-menu dropdown-navbar">
+											<f:subview rendered="#{sessionView.isTM()}">
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Assign (1)  " />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToAssign1()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="4" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Assign (2)  " />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToAssign2()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="5" />
+													</h:outputLink>
+												</li>
+											</f:subview>
+											<f:subview rendered="#{sessionView.isDriver()}">
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check orange " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Accept  " />
+															</span>
+															<span class="pull-right badge badge-warning">
+																<h:outputText value="#{transportationJobView.countToAccept()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="6" />
+														<f:param name="status" value="2" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" To Start  " />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToStart()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="6" />
+														<f:param name="status" value="3" />
+													</h:outputLink>
+												</li>
+											</f:subview>
+										</ul>
+									</li>
+									<f:subview rendered="#{sessionView.isUser() or sessionView.isTM() or sessionView.isPM()}">
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-check"></i>
 										<h:outputText value="Transportation Tasks" />
@@ -503,6 +578,7 @@
 											</f:subview>
 										</ul>
 									</li>
+									</f:subview>
 								</ul>
 							</li>
 						</f:subview>

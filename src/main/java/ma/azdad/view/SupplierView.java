@@ -31,6 +31,10 @@ public class SupplierView {
 	public List<Supplier> findLight() {
 		return service.findLight();
 	}
+	
+	public List<Supplier> findActive() {
+		return service.findActive();
+	}
 
 	public String findNameByPo(Integer poId) {
 		return service.findNameByPo(poId);

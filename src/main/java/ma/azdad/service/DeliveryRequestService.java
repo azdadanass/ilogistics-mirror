@@ -91,6 +91,7 @@ import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.model.Po;
 import ma.azdad.model.Project;
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Role;
 import ma.azdad.model.Severity;
@@ -705,7 +706,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		row.addElement(new TD().setWidth(tdWidth3).setStyle(tdStyle3));
 		row.addElement(new TD("Transporter").setWidth(tdWidth1).setStyle(tdStyle1));
 		row.addElement(
-				new TD(deliveryRequest.getTransporter() != null ? deliveryRequest.getTransporter().getFullName() : "")
+				new TD(deliveryRequest.getTransporter() != null ? deliveryRequest.getTransporter().getName() : "")
 						.setWidth(tdWidth2).setStyle(tdStyle2));
 		table.addElement(row);
 
@@ -3235,11 +3236,19 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			List<User> users = new ArrayList<>();
 			DeliveryRequest dn = findOne(id);
 
-			addToNotify(userService.findOneLight(dn.getRequester().getUsername()),users);
+			/*addToNotify(userService.findOneLight(dn.getRequester().getUsername()),users);
 			delegationService.findDelegateUserListByProject(dn.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername()),users));
-//			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
+            //projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
 			projectAssignmentService.findUserListAssignedToProject(dn.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername()),users));
-			dn.getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername()),users));
+			dn.getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername()),users));*/
+			/////
+			addToNotify(dn.getRequester(),users);
+			addToNotify(dn.getProject().getManager(),users);
+			dn.getProject().getManagerList().stream()
+					.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i -> addToNotify(i.getUser(),users));
+			dn.getWarehouse().getManagerList().stream().forEach(i -> addToNotify(i.getUser(),users));
+			delegationService.findDelegateUserListByProject(dn.getProjectId()).forEach(i -> addToNotify(i,users));
+			projectAssignmentService.findCompanyUserListAssignedToProject(dn.getProjectId()).forEach(i -> addToNotify(i,users));
 			List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
 			for (User user : users) {
 				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));

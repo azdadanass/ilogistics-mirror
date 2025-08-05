@@ -17,9 +17,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 @Entity
-
 public class Vehicle extends GenericModel<Integer> implements Serializable {
 
+	private Boolean active = true;
+	private String description;
 	private String category;
 	private String type;
 	private String matricule;
@@ -35,6 +36,7 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	private List<VehicleFile> fileList = new ArrayList<>();
 	private List<VehicleHistory> historyList = new ArrayList<>();
+	private List<UserVehicle> userList = new ArrayList<UserVehicle>();
 
 	// tmp
 	private Integer toolId;
@@ -65,6 +67,16 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		this.fromMyTools = fromMyTools;
 		if (fromMyTools)
 			tool = new Tool(toolMatricule);
+	}
+
+	public void addUser(UserVehicle userVehicle) {
+		userVehicle.setVehicle(this);
+		userList.add(userVehicle);
+	}
+
+	public void removeUser(UserVehicle userVehicle) {
+		userVehicle.setVehicle(null);
+		userList.remove(userVehicle);
 	}
 
 	@Transient
@@ -124,6 +136,15 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	public void setHistoryList(List<VehicleHistory> historyList) {
 		this.historyList = historyList;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<UserVehicle> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<UserVehicle> userList) {
+		this.userList = userList;
 	}
 
 	public String getMatricule() {
@@ -192,6 +213,22 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

@@ -3,9 +3,10 @@ package ma.azdad.repos;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import ma.azdad.model.TransportationJobHistory;
+import ma.azdad.model.UserVehicle;
 
 @Repository
-public interface TransportationJobHistoryRepos extends JpaRepository<TransportationJobHistory, Integer> {
+public interface UserVehicleRepos extends JpaRepository<UserVehicle, Integer> {
 
 }
+

@@ -37,12 +37,21 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String companyName = "(select b.name from Company b where a.company.id = b.id)";
 	String warehouse = "(select b from Warehouse b where b.id = a.warehouse.id)";
 	String destinationProjectName = "(select b.name from Project b where b.id = a.destinationProject.id)";
-	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
-	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
+	
+	
+	String transporterType = "(select b.type from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
+	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
+	
+	
+	
+	
+	
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.outboundType,a.sdm," //
 			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate,a.returnReason," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName
-			+ "," + warehouse + "," + destinationProjectName + "," + transporterName1 + "," + transporterName2 + "," + transportationRequestNumber
+			+ "," + warehouse + "," + destinationProjectName + "," + transporterType + "," + transporterPrivateFirstName+ "," + transporterPrivateLastName+ "," + transporterSupplierName + "," + transportationRequestNumber
 			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + ","
 			+ deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + "," + endCustomerName + ",a.project.customer.name," + destinationProjectCustomerName + ") ";
 

@@ -34,6 +34,9 @@ public class UserService {
 
 	@Autowired
 	private CacheService cacheService;
+	
+	@Autowired
+	private UserRoleService userRoleService;
 
 	public User findOne(String username) {
 		User u = repos.findById(username).get();
@@ -41,6 +44,7 @@ public class UserService {
 		Hibernate.initialize(u.getRoleList());
 		Hibernate.initialize(u.getFileList());
 		Hibernate.initialize(u.getHistoryList());
+		Hibernate.initialize(u.getTransporter());
 		return u;
 	}
 
@@ -80,12 +84,20 @@ public class UserService {
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return repos.findLightByCompany(companyId, active);
 	}
+	
+	public List<User> findActiveAndHaveAnyRole(List<Role> roleList,Boolean internal){
+		return repos.findActiveAndHaveAnyRole(roleList,internal);
+	}
+	
+	public List<User> findActiveAndHaveAnyRoleAndSupplier(List<Role> roleList,Integer supplierId){
+		return repos.findActiveAndHaveAnyRoleAndSupplier(roleList, supplierId);
+	}
 
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);
-		if (u != null) {
+		if (u != null) 
+			Hibernate.initialize(u.getTransporter());
 			Hibernate.initialize(u.getRoleList());
-		}
 			
 		return u;
 	}
@@ -111,6 +123,10 @@ public class UserService {
 	@Cacheable("userService.findLight2")
 	public List<User> findLight2( Boolean active,String username) {
 		return repos.findLight2(active,username);
+	}
+	
+	public List<User> findLight2(){
+		return repos.findLight2();
 	}
 
 	public List<User> findLight() {
@@ -464,5 +480,23 @@ public class UserService {
 		return null;
 
 	}
+	
+	public Boolean isHavingRole(String username, Role role) {
+		return userRoleService.isHavingRole(username, role);
+	}
+	
+	public Boolean isTM(String username) {
+		return isHavingRole(username, Role.ROLE_ILOGISTICS_TM);
+	}
+	
+	
+	public List<User> findActiveDriverList(Boolean internal){
+		return repos.findActiveDriverList(internal);
+	}
+	
+	public List<User> findByRoleAndActiveAndTransporter(Role role,Integer transporterId){
+		return repos.findByRoleAndActiveAndTransporter(role, transporterId);
+	}
+	
 
 }

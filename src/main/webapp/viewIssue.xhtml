@@ -85,7 +85,8 @@
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
-						<p:commandLink title="Handover" styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-info" onclick="PF('handoverDlg').show()" rendered="#{issueView.canHandover()}">
+						<p:commandLink title="Handover" styleClass="btn btn-app btn-sm btn-pink hover aa-tooltip tooltip-info" onclick="PF('handoverDlg').show()"
+							rendered="#{issueView.canHandover()}">
 							<i class="ace-icon fa fa-hand-o-right bigger-230"></i>
 							<h:outputText value="Handover" />
 						</p:commandLink>
@@ -269,67 +270,24 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<f:subview rendered="#{issueView.issue.isJrIssue}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Job Request" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputLink value="viewJobRequest.xhtml" target="blank">
-													<h:outputText value="#{issueView.issue.jobRequest.reference}" styleClass="bolder orange" />
-													<f:param name="id" value="#{issueView.issue.jobRequest.id}" />
-												</h:outputLink>
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="JR REF" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.jobRequest.smsRef}" styleClass="orange bolder" />
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="End Customer" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.jobRequest.endCustomer.name}" />
-												&nbsp;
-											</div>
-										</div>
-									</f:subview>
-									<f:subview rendered="#{issueView.issue.isTicketIssue}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Ticket" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputLink value="viewTicket.xhtml" target="blank">
-													<h:outputText value="#{issueView.issue.ticket.numero}" styleClass="bolder orange" />
-													<f:param name="id" value="#{issueView.issue.ticket.id}" />
-												</h:outputLink>
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Ticket REF" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.ticket.reference}" styleClass="orange bolder" />
-												&nbsp;
-											</div>
-										</div>
-									</f:subview>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Severity" />
+											<h:outputText value="Reference" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.issue.severity.value}" styleClass="#{issueView.issue.severity.color}" />
+											<h:outputText value="#{issueView.issue.reference}" styleClass="bolder purple" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Delivery Request" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+												<h:outputText value="#{issueView.issue.deliveryRequest.reference}" styleClass="bolder #{issueView.issue.deliveryRequest.type.color}" />
+												<f:param name="id" value="#{issueView.issue.deliveryRequest.id}" />
+											</h:outputLink>
 											&nbsp;
 										</div>
 									</div>
@@ -373,76 +331,24 @@
 							</div>
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<f:subview rendered="#{issueView.issue.isJrIssue}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="JR Status" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.jobRequest.status.value}" styleClass="#{issueView.issue.jobRequest.status.color.name}" />
-												&nbsp;
-											</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Severity" />
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Site" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.jobRequest.siteName}" styleClass="pink" />
-												&nbsp;
-											</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{issueView.issue.severity.value}" styleClass="#{issueView.issue.severity.color}" />
+											&nbsp;
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Master Plan" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputLink value="viewPlan.xhtml" target="blank">
-													<h:outputText value="#{issueView.issue.jobRequest.plan.reference}" styleClass="purple" />
-													<f:param name="id" value="#{issueView.issue.jobRequest.plan.id}" />
-												</h:outputLink>
-												&nbsp;
-											</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="DN Status" />
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Project" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.jobRequest.project.name}" styleClass="light-blue" />
-												&nbsp;
-											</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{issueView.issue.deliveryRequest.status.value}" styleClass="#{issueView.issue.deliveryRequest.status.color}" />
+											&nbsp;
 										</div>
-									</f:subview>
-									<f:subview rendered="#{issueView.issue.isTicketIssue}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Ticket Status" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.ticket.status.value}" styleClass="#{issueView.issue.ticket.status.color.name}" />
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Site" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.ticket.siteName}" styleClass="pink" />
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Project" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{issueView.issue.ticket.project.name}" styleClass="light-blue" />
-												&nbsp;
-											</div>
-										</div>
-									</f:subview>
+									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
 											<h:outputText value="Type" />

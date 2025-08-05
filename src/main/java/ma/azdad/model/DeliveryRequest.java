@@ -154,11 +154,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	// TMP
 	private LabelValue owner;
-//	private Integer projectId;
 	private Integer destinationProjectId;
 	private Integer originId;
 	private Integer destinationId;
-	private Integer transporterId;
 	private Integer outboundDeliveryRequestTransferId;
 	private Integer poId;
 
@@ -175,7 +173,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	// PERFORMANCE
 	private String ownerName;
-	private String transporterName;
 	private Boolean hasTransportationRequest;
 
 	// Queries var
@@ -235,7 +232,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			InboundType inboundType, OutboundType outboundType, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
 			Date neededDeliveryDate, String returnReason, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName,
 			Warehouse warehouse, //
-			String destinationProjectName, String transporterName1, String transporterName2, Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
+			String destinationProjectName, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
+			Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
 			Boolean containsBoqMapping, Boolean missingPo, Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, //
 			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName, String destinationProjectCustomerName) {
 		super(id);
@@ -261,7 +259,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.setCustomerName(customerName);
 		this.setSupplierName(supplierName);
 		this.warehouse = warehouse;
-		this.transporterName = transporterName1 != null ? transporterName1 : transporterName2;
+
+		this.setTransporterType(transporterType);
+		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
+		this.setTransporterPrivateLastName(transporterPrivateLastName);
+		this.setTransporterSupplierName(transporterSupplierName);
+
 		this.transportationNeeded = transportationNeeded;
 		this.hasTransportationRequest = transportationRequestNumber != null && transportationRequestNumber > 0;
 		this.smsRef = smsRef;
@@ -328,10 +331,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			originId = origin.getId();
 		if (destination != null)
 			destinationId = destination.getId();
-		if (transporterId != null)
-			transporterId = transporter.getId();
-//		if (outboundDeliveryRequestReturn != null)
-//			outboundDeliveryRequestReturnId = outboundDeliveryRequestReturn.getId();
 		if (outboundDeliveryRequestTransfer != null)
 			outboundDeliveryRequestTransferId = outboundDeliveryRequestTransfer.getId();
 		if (po != null)
@@ -1443,12 +1442,67 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 
 	@Transient
 	public Integer getTransporterId() {
-		return transporterId;
+		return transporter != null ? transporter.getId() : null;
 	}
 
 	@Transient
 	public void setTransporterId(Integer transporterId) {
-		this.transporterId = transporterId;
+		if (transporter == null || !transporterId.equals(transporter.getId()))
+			transporter = new Transporter();
+		transporter.setId(transporterId);
+	}
+
+	@Transient
+	public String getTransporterName() {
+		return transporter != null ? transporter.getName() : null;
+	}
+
+	@Transient
+	public TransporterType getTransporterType() {
+		return transporter != null ? transporter.getType() : null;
+	}
+	
+	@Transient
+	public void setTransporterType(TransporterType transporterType) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setType(transporterType);
+	}
+	
+	@Transient
+	public String getTransporterPrivateFirstName() {
+		return transporter != null ? transporter.getPrivateFirstName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateFirstName(String transporterPrivateFirstName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateFirstName(transporterPrivateFirstName);
+	}
+
+	@Transient
+	public String getTransporterPrivateLastName() {
+		return transporter != null ? transporter.getPrivateLastName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateLastName(String transporterPrivateLastName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateLastName(transporterPrivateLastName);
+	}
+
+	@Transient
+	public String getTransporterSupplierName() {
+		return transporter != null ? transporter.getSupplierName() : null;
+	}
+
+	@Transient
+	public void setTransporterSupplierName(String transporterSupplierName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setSupplierName(transporterSupplierName);
 	}
 
 	public Integer getApproximativeStoragePeriod() {
@@ -1703,8 +1757,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public String getFullType() {
 		String result = type.getValue();
 
-		if(getSubType()!=null)
-			result+=", "+getSubType();
+		if (getSubType() != null)
+			result += ", " + getSubType();
 
 		return result;
 	}
@@ -1820,11 +1874,6 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	@Transient
 	public Boolean getHasTransportationRequest() {
 		return hasTransportationRequest;
-	}
-
-	@Transient
-	public String getTransporterName() {
-		return transporterName;
 	}
 
 	@Transient

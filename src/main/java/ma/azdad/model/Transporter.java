@@ -29,94 +29,92 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	// Supplier
 	private Supplier supplier;
+	private Company company;
 
 	// Private
-	private String firstName;
-	private String lastName;
-	private String cin;
-	private String email;
-	private String phone;
+	private String privateFirstName;
+	private String privateLastName;
+	private String privateCin;
+	private String privateEmail;
+	private String privatePhone;
 
 	// tmp
-	private Integer supplierId;
-	private String supplierName;
-	private String supplierEmail;
-	private String supplierPhone;
 
 	private List<TransporterFile> fileList = new ArrayList<>();
 	private List<TransporterHistory> historyList = new ArrayList<>();
 	private List<Vehicle> vehicleList = new ArrayList<>();
-	private List<User> driverList = new ArrayList<>();
-
-	public void init() {
-		if (supplier != null)
-			supplierId = supplier.getId();
-	}
+	private List<User> userList = new ArrayList<>();
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && firstName != null)
-			result = firstName.toLowerCase().contains(query);
-		if (!result && lastName != null)
-			result = lastName.toLowerCase().contains(query);
-		if (!result && cin != null)
-			result = cin.toLowerCase().contains(query);
-		if (!result && email != null)
-			result = email.toLowerCase().contains(query);
-		if (!result && phone != null)
-			result = phone.toLowerCase().contains(query);
-		if (!result && supplierName != null)
-			result = supplierName.toLowerCase().contains(query);
-		if (!result && supplierEmail != null)
-			result = supplierEmail.toLowerCase().contains(query);
-		if (!result && supplierPhone != null)
-			result = supplierPhone.toLowerCase().contains(query);
-		return result;
+		return contains(query, getName(), getEmail(), getPhone());
 	}
 
 	public Transporter() {
 		super();
 	}
 
-	public Transporter(Integer id, TransporterType type, User user, String firstName, String lastName, String email, String phone, String supplierName, String supplierEmail, String supplierPhone) {
+	// c1
+	public Transporter(Integer id, TransporterType type, User user, //
+			String privateFirstName, String privateLastName, String privateEmail, String privatePhone, String privateCin, //
+			String supplierName, String supplierEmail, String supplierPhone, //
+			String companyName) {
 		super(id);
 		this.type = type;
 		this.user = user;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.phone = phone;
-		this.supplierName = supplierName;
-		this.supplierEmail = supplierEmail;
-		this.supplierPhone = supplierPhone;
-	}
-
-	public Transporter(Integer id, String firstName, String lastName, String supplierName) {
-		super(id);
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.supplierName = supplierName;
+		this.privateFirstName = privateFirstName;
+		this.privateLastName = privateLastName;
+		this.privateEmail = privateEmail;
+		this.privatePhone = privatePhone;
+		this.privateCin = privateCin;
+		this.setSupplierName(supplierName);
+		this.setSupplierEmail(supplierEmail);
+		this.setSupplierPhone(supplierPhone);
+		this.setCompanyName(companyName);
 	}
 
 	@Transient
 	public String getName() {
-		return TransporterType.PRIVATE.equals(type) ? getFullName() : (supplierName != null) ? supplierName : supplier.getName();
+		if (type == null)
+			return null;
+		switch (type) {
+		case INTERNAL:
+			return getCompanyName();
+		case SUPPLIER:
+			return getSupplierName();
+		case PRIVATE:
+			return privateFirstName + " " + privateLastName;
+		default:
+			return null;
+		}
 	}
 
 	@Transient
-	public String getCorrectEmail() {
-		return TransporterType.PRIVATE.equals(type) ? email : supplierEmail;
+	public String getEmail() {
+		if (type == null)
+			return null;
+		switch (type) {
+		case SUPPLIER:
+			return getSupplierEmail();
+		case PRIVATE:
+			return privateEmail;
+		default:
+			return null;
+		}
 	}
 
 	@Transient
-	public String getCorrectPhone() {
-		return TransporterType.PRIVATE.equals(type) ? phone : supplierPhone;
-	}
-
-	@Transient
-	public String getFullName() {
-		return firstName + " " + lastName;
+	public String getPhone() {
+		if (type == null)
+			return null;
+		switch (type) {
+		case SUPPLIER:
+			return getSupplierPhone();
+		case PRIVATE:
+			return privatePhone;
+		default:
+			return null;
+		}
 	}
 
 	@Column(nullable = false)
@@ -139,44 +137,13 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 		this.supplier = supplier;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	@OneToOne(fetch = FetchType.LAZY)
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getCin() {
-		return cin;
-	}
-
-	public void setCin(String cin) {
-		this.cin = cin;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
@@ -207,12 +174,12 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transporter", cascade = CascadeType.ALL)
-	public List<User> getDriverList() {
-		return driverList;
+	public List<User> getUserList() {
+		return userList;
 	}
 
-	public void setDriverList(List<User> driverList) {
-		this.driverList = driverList;
+	public void setUserList(List<User> userList) {
+		this.userList = userList;
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -224,12 +191,76 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 		this.user = user;
 	}
 
-	public Integer getSupplierId() {
-		return supplierId;
+	@Transient
+	public Integer getCompanyId() {
+		return company != null ? company.getId() : null;
 	}
 
+	@Transient
+	public void setCompanyId(Integer companyId) {
+		if (company == null || !companyId.equals(company.getId()))
+			company = new Company();
+		company.setId(companyId);
+	}
+
+	@Transient
+	public String getCompanyName() {
+		return company != null ? company.getName() : null;
+	}
+
+	@Transient
+	public void setCompanyName(String companyName) {
+		if (company == null)
+			company = new Company();
+		company.setName(companyName);
+	}
+
+	@Transient
+	public Integer getSupplierId() {
+		return supplier != null ? supplier.getId() : null;
+	}
+
+	@Transient
 	public void setSupplierId(Integer supplierId) {
-		this.supplierId = supplierId;
+		if (supplier == null || !supplierId.equals(supplier.getId()))
+			supplier = new Supplier();
+		supplier.setId(supplierId);
+	}
+
+	@Transient
+	public String getSupplierName() {
+		return supplier != null ? supplier.getName() : null;
+	}
+
+	@Transient
+	public void setSupplierName(String supplierName) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setName(supplierName);
+	}
+
+	@Transient
+	public String getSupplierPhone() {
+		return supplier != null ? supplier.getPhone() : null;
+	}
+
+	@Transient
+	public void setSupplierPhone(String supplierPhone) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setPhone(supplierPhone);
+	}
+
+	@Transient
+	public String getSupplierEmail() {
+		return supplier != null ? supplier.getEmail() : null;
+	}
+
+	@Transient
+	public void setSupplierEmail(String supplierEmail) {
+		if (supplier == null)
+			supplier = new Supplier();
+		supplier.setEmail(supplierEmail);
 	}
 
 	@Id
@@ -241,4 +272,45 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	public String getPrivateFirstName() {
+		return privateFirstName;
+	}
+
+	public void setPrivateFirstName(String privateFirstName) {
+		this.privateFirstName = privateFirstName;
+	}
+
+	public String getPrivateLastName() {
+		return privateLastName;
+	}
+
+	public void setPrivateLastName(String privateLastName) {
+		this.privateLastName = privateLastName;
+	}
+
+	public String getPrivateCin() {
+		return privateCin;
+	}
+
+	public void setPrivateCin(String privateCin) {
+		this.privateCin = privateCin;
+	}
+
+	public String getPrivateEmail() {
+		return privateEmail;
+	}
+
+	public void setPrivateEmail(String privateEmail) {
+		this.privateEmail = privateEmail;
+	}
+
+	public String getPrivatePhone() {
+		return privatePhone;
+	}
+
+	public void setPrivatePhone(String privatePhone) {
+		this.privatePhone = privatePhone;
+	}
+
 }

@@ -26,14 +26,13 @@
 	</ui:define>
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.TransporterType" var="TransporterType" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.Role" var="Role" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View Transporter" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{transporterView.transporter.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transporterView.transporter.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -87,7 +86,7 @@
 					<li>
 						<a data-toggle="tab" href="#tab3">
 							<i class="pink ace-icon fa fa-list bigger-120"></i>
-							<h:outputText value=" Driver List" />
+							<h:outputText value=" User List" />
 						</a>
 					</li>
 					<li>
@@ -108,51 +107,31 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
-									<f:subview rendered="#{TransporterType.SUPPLIER==transporterView.transporter.type}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Name" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.supplier.name}" styleClass="bolder orange" />
-												&nbsp;
-											</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Name" />
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Email" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.supplier.email}" styleClass="bolder light-blue" />
-												&nbsp;
-											</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transporterView.transporter.name}" styleClass="bolder orange" />
+											&nbsp;
 										</div>
-									</f:subview>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Email" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transporterView.transporter.email}" styleClass="bolder light-blue" />
+											&nbsp;
+										</div>
+									</div>
 									<f:subview rendered="#{TransporterType.PRIVATE==transporterView.transporter.type}">
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Name" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.fullName}" styleClass="bolder orange" />
-												&nbsp;
-											</div>
-										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name">
-												<h:outputText value="Email" />
-											</div>
-											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.email}" styleClass="bolder light-blue" />
-												&nbsp;
-											</div>
-										</div>
 										<div class="profile-info-row">
 											<div class="profile-info-name">
 												<h:outputText value="CIN" />
 											</div>
 											<div class="profile-info-value">
-												<h:outputText value="#{transporterView.transporter.cin}" styleClass="red" />
+												<h:outputText value="#{transporterView.transporter.privateCin}" styleClass="red" />
 												&nbsp;
 											</div>
 										</div>
@@ -215,6 +194,9 @@
 										<p:column headerText="Vehicle Type">
 											<h:outputText value="#{item.vehicleType.name}" styleClass="bolder green" />
 										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{item.description}" styleClass="blue aa-cut-text" />
+										</p:column>
 										<p:column headerText="Max Weight">
 											<h:outputText value="#{item.maxWeight}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
@@ -226,6 +208,15 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" m3" />
+										</p:column>
+										<p:column headerText="Status" width="100">
+											<f:subview rendered="#{!transporterView.canSaveVehicle()}">
+												<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											</f:subview>
+											<p:commandLink id="status" update="status" action="#{vehicleView.updateActive(item.id,item.active)}" rendered="#{transporterView.canSaveVehicle()}">
+												<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!item.active}" target="#{item.active}" />
+											</p:commandLink>
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
@@ -257,12 +248,12 @@
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-9 hidden-xs">
 										<i class="fa fa-list" />
-										<h:outputText value=" List Of Drivers" />
+										<h:outputText value=" List Of Users" />
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="drivers_table" value="#{transporterView.transporter.driverList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="CIN">
 											<h:outputText value="#{item.cin}" styleClass="bolder green" />
 										</p:column>
@@ -275,20 +266,29 @@
 										<p:column headerText="Job/Function">
 											<h:outputText value="#{item.job}" />
 										</p:column>
-										<p:column headerText="Company">
-											<h:outputText value="#{item.company}" />
+										<p:column headerText="Entity">
+											<h:outputText value="#{item.entityName}" />
 										</p:column>
-										<p:column headerText="Actions" style="width:150px">
+										<p:column headerText="Role TM">
+											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_TM)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Role Driver">
+											<i class="ace-icon fa #{userView.hasRole(item.username,Role.ROLE_ILOGISTICS_DRIVER)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Status">
+											<h:outputText value="#{item.active?'Active':'Inactive'}" styleClass="#{item.active?'green':'red'}" />
+										</p:column>
+										<p:column headerText="Actions" width="150">
 											<div class="action-buttons center">
 												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:param name="id" value="#{item.id}" />
+													<f:param name="username" value="#{item.username}" />
 												</h:outputLink>
 											</div>
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink title="Add New Driver" oncomplete="PF('addDriverDlg').show()">
+												<p:commandLink title="Add New User" oncomplete="PF('addUserDlg').show()">
 													<i class="fa fa-plus green" />
 												</p:commandLink>
 											</div>

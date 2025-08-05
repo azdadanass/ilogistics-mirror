@@ -258,7 +258,7 @@
 													<p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Assignator should not be null" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{issueView.findOwnerShipUserSelectionList('assignator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+														<f:selectItems value="#{issueView.findUserSelectionList('assignator')}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
 													</p:selectOneMenu>
 													<!-- <p:selectOneMenu value="#{issueView.issue.assignatorUsername}" styleClass="col-xs-12 col-sm-6" filter="true" filterMatchMode="contains" required="true"
 														requiredMessage="Issue assignement should not be null" rendered="#{CompanyType.COMPANY==issueView.issue.assignatorCompanyType}">

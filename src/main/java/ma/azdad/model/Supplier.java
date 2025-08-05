@@ -21,6 +21,7 @@ public class Supplier implements Serializable {
 	private String category;
 	private String email;
 	private String phone;
+	private Boolean active = true;
 
 	private List<PartNumberBrand> brandList = new ArrayList<PartNumberBrand>();
 
@@ -124,7 +125,13 @@ public class Supplier implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
 }

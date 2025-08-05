@@ -23,6 +23,7 @@ import ma.azdad.model.Issue;
 import ma.azdad.model.IssueComment;
 import ma.azdad.model.IssueFile;
 import ma.azdad.model.IssueStatus;
+import ma.azdad.model.ProjectManagerType;
 import ma.azdad.model.Role;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.User;
@@ -174,6 +175,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	public Boolean canViewIssue() {
 		return ((sessionView.getIsUser() || sessionView.isPM() || sessionView.getIsBuManager() || //
+				sessionView.isTheConnectedUser(issue.getAssignator()) || sessionView.isTheConnectedUser(issue.getConfirmator()) || //
 				sessionView.getIsExternalPm() && cacheView.getUserProjectList().contains(issue.getDeliveryRequest().getProject().getId()))) //
 				|| (issue.getOwnershipUser() != null && sessionView.isTheConnectedUser(issue.getOwnershipUser()));
 
@@ -224,16 +226,10 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			default:
 				break;
 			}
-			
-			if(isAddPage) {
-				// init to notify list
-				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getRequester().getUsername()));
-				addToNotify(userService.findOneLight(issue.getDeliveryRequest().getProject().getManager().getUsername()));
-				delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-//				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-				projectAssignmentService.findUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(userService.findOneLight(i.getUsername())));
-				issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i->addToNotify(userService.findOneLight(i.getUser().getUsername())));
-			}
+
+			if (isAddPage)
+				initToNotifiyList();
+				
 			step++;
 			break;
 		case 3:
@@ -243,6 +239,17 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return save();
 		}
 		return null;
+	}
+
+	private void initToNotifiyList() {
+		addToNotify(issue.getDeliveryRequest().getRequester());
+		addToNotify(issue.getDeliveryRequest().getProject().getManager());
+		issue.getDeliveryRequest().getProject().getManagerList().stream()
+				.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i -> addToNotify(i.getUser()));
+		issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> addToNotify(i.getUser()));
+		delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+		projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+
 	}
 
 	public void savePreviousStep() {
@@ -272,14 +279,25 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		return true;
 	}
 
-	public List<User> findOwnerShipUserSelectionList(String type) {
+	public List<User> findUserSelectionList(String type) {
 		CompanyType companyType = null;
+		Integer customerId = null;
+		Integer supplierId = null;
 		switch (type) {
+		case "ownershipUser":
+			companyType = issue.getOwnershipType();
+			customerId = issue.getCustomerId();
+			supplierId = issue.getSupplierId();
+			break;
 		case "confirmator":
 			companyType = issue.getConfirmatorCompanyType();
+			customerId = issue.getConfirmatorCustomerId();
+			supplierId = issue.getConfirmatorSupplierId();
 			break;
 		case "assignator":
 			companyType = issue.getAssignatorCompanyType();
+			customerId = issue.getAssignatorCustomerId();
+			supplierId = issue.getAssignatorSupplierId();
 			break;
 		}
 		if (companyType == null)
@@ -289,28 +307,67 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		case COMPANY:
 			result.add(issue.getDeliveryRequest().getRequester());
 			result.add(issue.getDeliveryRequest().getProject().getManager());
+			issue.getDeliveryRequest().getProject().getManagerList().stream()
+					.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
+					.forEach(i -> result.add(i.getUser()));
 			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
 			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
 			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
 			break;
 		case CUSTOMER:
-			if ("confirmator".equals(type))
-				userService.findLightByCustomerAndHasRole(issue.getConfirmatorCustomerId(), Role.ROLE_ILOGISTICS_PM);
-			else if ("assignator".equals(type))
-				userService.findLightByCustomerAndHasRole(issue.getAssignatorCustomerId(), Role.ROLE_ILOGISTICS_PM);
+			userService.findLightByCustomerAndHasRole(customerId, Role.ROLE_ILOGISTICS_PM);
 			break;
 		case SUPPLIER:
-			if ("confirmator".equals(type))
-				userService.findLightBySupplierAndHasRole(issue.getConfirmatorSupplierId(), Role.ROLE_ILOGISTICS_PM);
-			else if ("confirmator".equals(type))
-				userService.findLightBySupplierAndHasRole(issue.getAssignatorSupplierId(), Role.ROLE_ILOGISTICS_PM);
+			userService.findLightBySupplierAndHasRole(supplierId, Role.ROLE_ILOGISTICS_PM);
 			break;
 		default:
 			break;
 		}
 
 		return new ArrayList<User>(result);
+
 	}
+
+//	public List<User> findOwnerShipUserSelectionList(String type) {
+//		CompanyType companyType = null;
+//		Integer customerId = null;
+//		Integer supplierId = null;
+//		switch (type) {
+//		case "confirmator":
+//			companyType = issue.getConfirmatorCompanyType();
+//			customerId = issue.getConfirmatorCustomerId();
+//			supplierId = issue.getConfirmatorSupplierId();
+//			break;
+//		case "assignator":
+//			companyType = issue.getAssignatorCompanyType();
+//			customerId = issue.getAssignatorCustomerId();
+//			supplierId = issue.getAssignatorSupplierId();
+//			break;
+//		}
+//		if (companyType == null)
+//			return new ArrayList<User>();
+//		Set<User> result = new HashSet<User>();
+//		switch (companyType) {
+//		case COMPANY:
+//			result.add(issue.getDeliveryRequest().getRequester());
+//			result.add(issue.getDeliveryRequest().getProject().getManager());
+//			issue.getDeliveryRequest().getProject().getManagerList().stream().filter(i->Arrays.asList(ProjectManagerType.HARDWARE_MANAGER,ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i->result.add(i.getUser()));
+//			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
+//			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
+//			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
+//			break;
+//		case CUSTOMER:
+//			userService.findLightByCustomerAndHasRole(customerId, Role.ROLE_ILOGISTICS_PM);
+//			break;
+//		case SUPPLIER:
+//			userService.findLightBySupplierAndHasRole(supplierId, Role.ROLE_ILOGISTICS_PM);
+//			break;
+//		default:
+//			break;
+//		}
+//
+//		return new ArrayList<User>(result);
+//	}
 
 	// inplace
 	public void editAssignator() {
@@ -332,11 +389,11 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	}
 
 	public Boolean canEditAssignator() {
-		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED).contains(issue.getStatus());
+		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED, IssueStatus.CONFIRMED).contains(issue.getStatus());
 	}
 
 	public Boolean canEditConfirmator() {
-		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED, IssueStatus.CONFIRMED).contains(issue.getStatus());
+		return sessionView.isTheConnectedUser(issue.getUser1()) && Arrays.asList(IssueStatus.RAISED, IssueStatus.SUBMITTED).contains(issue.getStatus());
 	}
 
 	// to notify
@@ -439,7 +496,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		issue.addHistory(sessionView.getUser(), issue.getTmpComment());
 		issueService.save(issue);
 		deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
-		
+
 		emailService.sendIssueNotification(issue);
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + issue.getId());
@@ -606,13 +663,17 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	// open
 	public Boolean canOpen() {
-		return Arrays.asList(IssueStatus.CLOSED, IssueStatus.RESOLVED, IssueStatus.ACKNOWLEDGED).contains(issue.getStatus()) && sessionView.isTheConnectedUser(issue.getUser1());
+		return Arrays.asList(IssueStatus.CLOSED, IssueStatus.RESOLVED).contains(issue.getStatus()) && sessionView.isTheConnectedUser(issue.getUser1());
 	}
 
 	public void open() {
 		if (!canOpen())
 			return;
 		issue.setStatus(IssueStatus.SUBMITTED);
+		issue.setDate2(null);
+		issue.setUser2(null);
+		issue.setDate3(null);
+		issue.setUser3(null);
 		issue.setDate4(null);
 		issue.setUser4(null);
 		issue.setDate5(null);
@@ -637,7 +698,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 			return;
 		String oldOwnershipFullName = issue.getOwnershipUserFullName();
 		issue.setOwnershipUser(userService.findOneLight(newOwnershipUser.getUsername()));
-		issue.addHistory(sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
+		issue.addHistory("Handover", sessionView.getUser(), "Handover from " + oldOwnershipFullName + " to " + issue.getOwnershipUserFullName());
 		switch (issue.getOwnershipType()) {
 		case COMPANY:
 			issue.setCompany(companyService.findOne(issue.getCompanyId()));

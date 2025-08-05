@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import ma.azdad.utils.Color;
 
 @Entity
 public class IssueHistory extends GenericHistory<Issue> {
@@ -34,5 +37,25 @@ public class IssueHistory extends GenericHistory<Issue> {
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	@Override
+	@Transient
+	public String getStatusStyleClass() {
+		switch (status) {
+		case "Created":
+			return Color.ORANGE.getBadge();
+		case "Handover":
+			return Color.PURPLE.getBadge();
+		default:
+			try {
+				return IssueStatus.getByValue(status).getColor().getBadge();
+			} catch (Exception e) {
+				return "badge";
+			}
+		}
+
+	}
+	
+	
 
 }

@@ -32,9 +32,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View TransportationJob" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{transportationJobView.transportationJob.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transportationJobView.transportationJob.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -53,18 +51,39 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationJob.xhtml"
-							rendered="#{transportationJobView.canSaveTransportationJob()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationJob.xhtml" rendered="#{transportationJobView.canSave()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Assign" value="#{transportationJobView.assignPage}"
-							rendered="#{transportationJobView.canAssignTransportationRequestList()}">
-							<i class="ace-icon fa fa-link bigger-230"></i>
-							<h:outputText value="Assign" />
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add TR" value="assignTrList.xhtml"
+							rendered="#{transportationJobView.canAssignTrList()}">
+							<i class="ace-icon fa fa-plus bigger-230"></i>
+							<h:outputText value="Add TR" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
+						<p:commandLink title="Assign" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationJobView.initAssignList()}"
+							rendered="#{transportationJobView.canAssign()}">
+							<i class="ace-icon fa fa-link bigger-230"></i>
+							<h:outputText value="Assign" />
+						</p:commandLink>
+						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('unassignDlg').show()"
+							rendered="#{transportationJobView.canUnassign()}">
+							<i class="ace-icon fa fa-chain-broken bigger-230"></i>
+							<h:outputText value="Unassign" />
+						</p:commandLink>
+						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Accept" onclick="PF('acceptDlg').show()" rendered="#{transportationJobView.canAccept()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Accept" />
+						</p:commandLink>
+						<p:commandLink styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" title="Decline" onclick="PF('declineDlg').show()" rendered="#{transportationJobView.canDecline()}">
+							<i class="ace-icon fa fa-remove bigger-230"></i>
+							<h:outputText value="Decline" />
+						</p:commandLink>
+						<p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" onclick="PF('startDlg').show()" rendered="#{transportationJobView.canStart()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Start" />
+						</p:commandLink>
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
 							rendered="#{transportationJobView.canDeleteTransportationJob()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
@@ -104,32 +123,89 @@
 										<h:outputText value="1" />
 									</span>
 									<span class="title">
-										<h:outputText id="step1" value="#{TransportationJobStatus.NOT_STARTED.value}" />
+										<h:outputText id="step1" value="#{TransportationJobStatus.EDITED.value}" />
+										<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date1,transportationJobView.transportationJob.user1.username)}" />
+										</p:overlayPanel>
 									</span>
 								</li>
-								<li
-									class="#{TransportationJobStatus.IN_PROGRESS==transportationJobView.transportationJob.status or TransportationJobStatus.COMPLETED==transportationJobView.transportationJob.status or TransportationJobStatus.CLOSED==transportationJobView.transportationJob.status?'complete':''}">
+								<f:subview rendered="#{transportationJobView.transportationJob.date2!=null}">
+									<li class="complete">
+										<span class="step">
+											<i class="ace-icon fa fa-spinner fa-spin grey" />
+										</span>
+										<span class="title">
+											<h:outputText id="step2" value="#{TransportationJobStatus.ASSIGNED1.value}" />
+											<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date2,transportationJobView.transportationJob.user2.username)}" />
+											</p:overlayPanel>
+										</span>
+									</li>
+								</f:subview>
+								<li class="#{transportationJobView.transportationJob.date3!=null?'complete':''}">
 									<span class="step">
 										<i class="ace-icon fa fa-spinner fa-spin grey" />
 									</span>
 									<span class="title">
-										<h:outputText id="step2" value="#{TransportationJobStatus.IN_PROGRESS.value}" />
+										<h:outputText id="step3" value="#{TransportationJobStatus.ASSIGNED2.value}" />
+										<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date3,transportationJobView.transportationJob.user3.username,transportationJobView.transportationJob.transporter==null?transportationJobView.transportationJob.user1.username:transportationJobView.firstTMUsername)}" />
+										</p:overlayPanel>
 									</span>
 								</li>
-								<li class="#{TransportationJobStatus.COMPLETED==transportationJobView.transportationJob.status or TransportationJobStatus.CLOSED==transportationJobView.transportationJob.status?'complete':''}">
+								<li class="#{transportationJobView.transportationJob.date4!=null?'complete':''}">
 									<span class="step">
 										<i class="ace-icon fa fa-spinner fa-spin grey" />
 									</span>
 									<span class="title">
-										<h:outputText id="step3" value="#{TransportationJobStatus.COMPLETED.value}" />
+										<h:outputText id="step4" value="#{TransportationJobStatus.ACCEPTED.value}" />
+										<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date4,transportationJobView.transportationJob.user4.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
+										</p:overlayPanel>
 									</span>
 								</li>
-								<li class="#{TransportationJobStatus.CLOSED==transportationJobView.transportationJob.status?'complete':''}">
+								<li class="#{transportationJobView.transportationJob.date5!=null?'complete':''}">
 									<span class="step">
 										<i class="ace-icon fa fa-spinner fa-spin grey" />
 									</span>
 									<span class="title">
-										<h:outputText id="step4" value="#{TransportationJobStatus.CLOSED.value}" />
+										<h:outputText id="step5" value="#{TransportationJobStatus.STARTED.value}" />
+										<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date5,transportationJobView.transportationJob.user5.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
+										</p:overlayPanel>
+									</span>
+								</li>
+								<li class="#{transportationJobView.transportationJob.date6!=null?'complete':''}">
+									<span class="step">
+										<i class="ace-icon fa fa-spinner fa-spin grey" />
+									</span>
+									<span class="title">
+										<h:outputText id="step6" value="#{TransportationJobStatus.IN_PROGRESS.value}" />
+										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date6,transportationJobView.transportationJob.user6.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
+										</p:overlayPanel>
+									</span>
+								</li>
+								<li class="#{transportationJobView.transportationJob.date7!=null?'complete':''}">
+									<span class="step">
+										<i class="ace-icon fa fa-spinner fa-spin grey" />
+									</span>
+									<span class="title">
+										<h:outputText id="step7" value="#{TransportationJobStatus.COMPLETED.value}" />
+										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date7,transportationJobView.transportationJob.user7.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
+										</p:overlayPanel>
+									</span>
+								</li>
+								<li class="#{transportationJobView.transportationJob.date8!=null?'complete':''}">
+									<span class="step">
+										<i class="ace-icon fa fa-spinner fa-spin grey" />
+									</span>
+									<span class="title">
+										<h:outputText id="step8" value="#{TransportationJobStatus.CLOSED.value}" />
+										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username,transportationJobView.transportationJob.user1.username)}" />
+										</p:overlayPanel>
 									</span>
 								</li>
 							</ul>
@@ -314,6 +390,7 @@
 										</p:column>
 										<p:column headerText="Origin">
 											<h:outputText value="#{item.originName}" styleClass="purple" />
+											<h:outputText value="#{item.warehouseName}" styleClass="purple" rendered="#{item.isOutbound}"/>
 										</p:column>
 										<p:column headerText="Pickup Time">
 											<h:outputText value="Expected on " styleClass="purple" rendered="#{item.pickupDate==null}" />
@@ -331,6 +408,7 @@
 										</p:column>
 										<p:column headerText="Destination">
 											<h:outputText value="#{item.destinationName}" styleClass="pink" />
+											<h:outputText value="#{item.warehouseName}" styleClass="pink" rendered="#{item.isInbound}"/>
 										</p:column>
 										<p:column headerText="Delivery Time">
 											<h:outputText value="Expected on " styleClass="pink" rendered="#{item.deliveryDate==null}" />
@@ -452,7 +530,7 @@
 							<h:outputText value="Details" />
 							<span class="action-buttons center pull-right">
 								<h:outputText value="View Path List " />
-								<p:commandLink id="viewPath" update="main_tab_2,viewPath,gmap" action="#{transportationJobView.refreshMapMpdel()}">
+								<p:commandLink id="viewPath" update="main_tab_2,viewPath,gmap" action="#{transportationJobView.refreshMapModel()}">
 									<i class="fa  #{transportationJobView.viewPathList?'fa-toggle-on green':'fa-toggle-off'}" />
 									<f:setPropertyActionListener value="#{!transportationJobView.viewPathList}" target="#{transportationJobView.viewPathList}" />
 								</p:commandLink>

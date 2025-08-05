@@ -1,5 +1,7 @@
 package ma.azdad.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,10 @@ public class StopService extends GenericService<Integer, Stop, StopRepos> {
 	public Stop findOne(Integer id) {
 		Stop stop = super.findOne(id);
 		return stop;
+	}
+	
+	public List<Stop> findByTransportationJobList(List<Integer> transportationJobIdList){
+		return repos.findByTransportationJobList(transportationJobIdList);
 	}
 
 }

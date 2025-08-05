@@ -11,29 +11,68 @@ import ma.azdad.model.TransportationJobStatus;
 
 @Repository
 public interface TransportationJobRepos extends JpaRepository<TransportationJob, Integer> {
-	String transporterName1 = "(select concat(b.firstName,' ',b.lastName) from Transporter b where a.transporter.id = b.id)";
-	String transporterName2 = "(select (select c.name from Supplier c where b.supplier.id = c.id) from Transporter b where a.transporter.id = b.id)";
-	String select = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterName1 + "," + transporterName2 + ") ";
-	String select2 = "select new TransportationJob(a.id,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost, " + transporterName1 + "," + transporterName2 + ",a.driver.username,a.vehicle.matricule) ";
 
-	@Query(select + "from TransportationJob a order by a.id desc")
+	String transporterType = "(select b.type from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
+	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
+	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
+
+	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
+
+	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + ","
+			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ") ";
+	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + ","
+			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 order by a.id desc")
+	public List<TransportationJob> findByUser1(String user1Username);
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
+	public List<TransportationJob> findByUser1(String user1Username, List<TransportationJobStatus> statusList);
+
+	@Query(c1 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> find();
-	
-	@Query(select2 + "from TransportationJob a order by a.id desc")
+
+	@Query(c1 + "from TransportationJob a where a.id in (?1) order by a.id desc")
+	public List<TransportationJob> findByIdList(List<Integer> idList);
+
+	@Query(c2 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> findMobile();
 
-	@Query(select + "from TransportationJob a where a.status = ?1 order by a.id desc")
+	@Query(c1 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> find(TransportationJobStatus status);
-	
-	@Query(select2 + "from TransportationJob a where a.status = ?1 order by a.id desc")
+
+	@Query(c2 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> findMobile(TransportationJobStatus status);
 
-	@Query(select + "from TransportationJob a where a.status in (?1) order by a.id desc")
+	@Query(c1 + "from TransportationJob a where a.status in (?1) order by a.id desc")
 	public List<TransportationJob> find(List<TransportationJobStatus> status);
-	
-	@Query(select2 + "from TransportationJob a where a.status in (?1) order by a.id desc")
+
+	@Query(c2 + "from TransportationJob a where a.status in (?1) order by a.id desc")
 	public List<TransportationJob> findMobile(List<TransportationJobStatus> status);
 
 	@Query("select a.transportationJob  from TransportationRequest a where a.id in (?1) group by a.transportationJob.id")
 	public List<TransportationJob> findByTransportationRequestList(List<Integer> transportationRequestIdList);
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0 order by a.id desc")
+	public List<TransportationJob> findToAssign1(String user1Username);
+
+	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0")
+	public Long countToAssign1(String user1Username);
+
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1' order by a.id desc")
+	public List<TransportationJob> findToAssign2(Integer transporterId);
+
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED1'")
+	public Long countToAssign2(Integer transporterId);
+
+	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 order by id desc")
+	public List<TransportationJob> findByDriver(String driverUsername);
+
+	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status = ?2  order by id desc")
+	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobStatus status);
+
+	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
+	public Long countByDriver(String driverUsername, TransportationJobStatus status);
+
 }

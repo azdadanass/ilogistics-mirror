@@ -18,26 +18,25 @@ public interface UserRepos extends JpaRepository<User, String> {
 	String c3 = "select new User(a.username,a.fullName,a.email,a.internal) ";
 	String c6 = "select distinct new User(a.username,a.firstName,a.lastName,a.login,a.photo,a.email) ";
 
-
 	@Query("select new User(username,fullName,photo,email,job,phone,cin) from User ")
 	List<User> find();
-	
+
 	@Query(c3 + "from User a where a.active = ?1")
 	List<User> find(Boolean active);
-	
-	@Query(c6 +" from User a where a.active = ?1")
+
+	@Query(c6 + " from User a where a.active = ?1")
 	public List<User> findLightByStatus2(Boolean active);
-	
+
 	@Query(c3 + "from User a where  a.active = ?1 and a.username!=?2 order by a.internal desc,a.fullName asc")
-	List<User> findLight2( Boolean active,String username);
+	List<User> findLight2(Boolean active, String username);
 
 	List<User> findByInternal(Boolean internal);
 
 	@Query(c1 + "from User a where a.internal = ?1 and a.active = ?2")
 	List<User> findLight(Boolean internal, Boolean active);
-	
+
 	@Query(c1 + "from User a where (a.internal = ?1 and a.active = ?2 and a.username!=?3) or a.username='e.r.bouougri' ")
-	List<User> findLight2(Boolean internal, Boolean active,String username);
+	List<User> findLight2(Boolean internal, Boolean active, String username);
 
 	@Modifying
 	@Query("update User set password = ?2 where username = ?1")
@@ -49,8 +48,21 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query("select new User(username,fullName,photo,email,job) from User ")
 	List<User> findLight2();
 
+	@Query("select new User(a.user.username,a.user.fullName,a.user.photo,a.user.email,a.user.job,a.user.phone,a.user.cin)  from UserRole a where a.role = 'ROLE_ILOGISTICS_DRIVER' and a.user.transporter is not null and a.user.internal = ?1 and a.user.active is true")
+	List<User> findActiveDriverList(Boolean internal);
+
+	@Query("select new User(a.user.username,a.user.fullName,a.user.photo,a.user.email,a.user.job)  from UserRole a where a.role = ?1 and a.user.transporter.id = ?2 and a.user.active is true")
+	List<User> findByRoleAndActiveAndTransporter(Role role, Integer transporterId);
+
 	@Query("select new User(user.username,user.fullName) from UserRole where role = ?1")
 	List<User> findLightByRole(Role role);
+
+	@Query("select new User(user.username,user.fullName) from UserRole where role in (?1) and user.internal = ?2 and user.active is true")
+	List<User> findActiveAndHaveAnyRole(List<Role> roleList,boolean internal);
+	
+	
+	@Query("select new User(user.username,user.fullName) from UserRole where role in (?1) and user.active is true and user.supplier.id = ?2")
+	List<User> findActiveAndHaveAnyRoleAndSupplier(List<Role> roleList,Integer supplierId);
 
 	@Query("select new User(username,fullName) from User where username in (?1)")
 	List<User> findLightByUsernameList(List<String> list);
@@ -62,14 +74,14 @@ public interface UserRepos extends JpaRepository<User, String> {
 	List<User> findLightByStatus(Boolean active);
 
 	Long countByUsername(String username);
-	
+
 	User findByUsername(String username);
-	
+
 	@Query(c6 + "from User a where a.username = ?1")
 	User findByUsernameLight(String username);
-	
+
 	List<User> findByCin(String cin);
-	
+
 	User findByFullName(String fullName);
 
 	User findByLogin(String login);
@@ -82,7 +94,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query(select1 + "from User a where a.company.id = ?1 and a.active is true")
 	List<User> findActiveByCompany(Integer companyId);
-	
+
 	@Query(select1 + "from User a where a.customer.id = ?1 and a.active is true")
 	List<User> findActiveByCustomer(Integer customerId);
 
@@ -168,7 +180,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and a.user.internal = ?2")
 	List<User> findByProjectAssignment(Integer projectId, Boolean internal);
-	
+
 	@Query("select distinct a.user from ProjectAssignment a where a.project.id =?1 and current_date between a.startDate and a.endDate and a.user.active is true")
 	List<User> findByActiveAndProjectAssignment(Integer projectId);
 
@@ -198,14 +210,13 @@ public interface UserRepos extends JpaRepository<User, String> {
 
 	@Query(select1 + "from User a where a.customer.id = ?1 and (select count(*) from UserRole b where b.user.username = a.username and b.role = ?2) > 0 and a.active is true")
 	List<User> findLightByCustomerAndHasRole(Integer customerId, Role role);
-	
+
 	@Query("select new ma.azdad.mobile.model.User(a.username,a.firstName,a.lastName,a.login,a.photo,a.email) from User a where username = ?1")
 	ma.azdad.mobile.model.User findOneMobile(String username);
-	
-	
+
 	@Query("select distinct a.user from UserRole a where a.user.active is true and a.role = ?1")
 	List<User> findByRole(Role role);
-	
+
 	@Query(c1
 			+ "from User a where a.companyType = 'COMPANY' and a.company.id = ?2 and (select count(*) from ProjectAssignment b where b.user.username = a.username and b.project.id = ?1 and current_date between b.startDate and b.endDate) > 0")
 	List<User> findByAssignementAndCompany(Integer projectId, Integer companyId);
@@ -217,10 +228,10 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query(c1
 			+ "from User a where a.companyType = 'SUPPLIER' and a.supplier.id = ?2 and (select count(*) from ProjectAssignment b where b.user.username = a.username and b.project.id = ?1 and current_date between b.startDate and b.endDate) > 0")
 	List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId);
-	
+
 	@Query("select a.companyType from User a where a.username = ?1")
 	CompanyType findCompanyType(String username);
-	
+
 	@Query("select a.company.name from User a where a.username = ?1")
 	String findCompanyName(String username);
 

@@ -1,17 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-
 	<h:form>
 		<p:dialog id="loading" widgetVar="loading" modal="true" showHeader="false" resizable="false" styleClass="center" style="padding:20px">
 			<p:graphicImage value="/resources/img/loading.gif" width="300" />
 			<br />
 			<h:outputText value="Looking for google api data...please wait" styleClass="blue bolder" />
 		</p:dialog>
-
 	</h:form>
-	
-	
 	<h:form id="returnBackForm">
 		<p:dialog widgetVar="returnBackDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('returnBackDlg').hide()">
@@ -28,11 +24,11 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('returnBackDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.returnBack()}" value="Return Back" styleClass="btn" onstart="PF('returnBackDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"  update=":main_form"/>
+				<p:commandButton action="#{transportationJobView.returnBack()}" value="Return Back" styleClass="btn" onstart="PF('returnBackDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"
+					update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-
 	<h:form id="deliverForm">
 		<p:dialog widgetVar="deliverDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deliverDlg').hide()">
@@ -65,12 +61,11 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('deliverDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.deliverTransportationRequest()}" value="Deliver" onstart="PF('deliverDlg').hide();PF('loading').show()"  styleClass="btn btn-info" oncomplete="PF('loading').hide()" update=":main_form" />
+				<p:commandButton action="#{transportationJobView.deliverTransportationRequest()}" value="Deliver" onstart="PF('deliverDlg').hide();PF('loading').show()" styleClass="btn btn-info"
+					oncomplete="PF('loading').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-
-
 	<h:form id="pickupForm">
 		<p:dialog widgetVar="pickupDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('pickupDlg').hide()">
@@ -117,12 +112,11 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('pickupDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.pickupTransportationRequest()}" value="Pickup" onstart="PF('pickupDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()" styleClass="btn btn-info"  update=":main_form" />
+				<p:commandButton action="#{transportationJobView.pickupTransportationRequest()}" value="Pickup" onstart="PF('pickupDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"
+					styleClass="btn btn-info" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-
-
 	<h:form id="closeForm">
 		<p:dialog widgetVar="closeDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('closeDlg').hide()">
@@ -139,12 +133,10 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('closeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.closeTransportationJob()}" value="Close" styleClass="btn btn-success"  oncomplete="PF('closeDlg').hide()" update=":main_form" />
+				<p:commandButton action="#{transportationJobView.closeTransportationJob()}" value="Close" styleClass="btn btn-success" oncomplete="PF('closeDlg').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-	
-	
 	<h:form id="openForm">
 		<p:dialog widgetVar="openDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('openDlg').hide()">
@@ -161,11 +153,10 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('openDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.openTransportationJob()}" value="Open" styleClass="btn btn-primary"  oncomplete="PF('openDlg').hide()" update=":main_form" />
+				<p:commandButton action="#{transportationJobView.openTransportationJob()}" value="Open" styleClass="btn btn-primary" oncomplete="PF('openDlg').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-
 	<h:form id="deleteForm">
 		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">
@@ -186,7 +177,6 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	
 	<h:form id="removeTransportationRequestForm">
 		<p:dialog widgetVar="removeTransportationRequestDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('removeTransportationRequestDlg').hide()">
@@ -203,12 +193,12 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('removeTransportationRequestDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{transportationJobView.removeTransportationRequest()}" value="Remove" styleClass="btn btn-danger" onstart="PF('removeTransportationRequestDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()"  update=":main_form"/>
+				<p:commandButton action="#{transportationJobView.removeTransportationRequest()}" value="Remove" styleClass="btn btn-danger"
+					onstart="PF('removeTransportationRequestDlg').hide();PF('loading').show()" oncomplete="PF('loading').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
 	</h:form>
-
-	<h:form id="deleteTransportationJobFileForm">
+	<h:form id="deleteTransportationJobFileForm" rendered="#{transportationJobView.isViewPage}">
 		<p:dialog widgetVar="deleteTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteTransportationJobFileDlg').hide()">
 				<h:outputText value="x" />
@@ -229,8 +219,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-
-	<h:form id="addTransportationJobFileForm">
+	<h:form id="addTransportationJobFileForm" rendered="#{transportationJobView.isViewPage}">
 		<p:dialog widgetVar="uploadTransportationJobFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransportationJobFileDlg').hide()">
 				<h:outputText value="x" />
@@ -270,7 +259,6 @@
 					</h:panelGroup>
 				</div>
 			</div>
-
 			<br />
 			<br />
 			<div class="modal-footer">
@@ -278,11 +266,88 @@
 			</div>
 		</p:dialog>
 	</h:form>
-
-
-	
-
-	
-
-
+	<h:form id="acceptForm">
+		<p:dialog widgetVar="acceptDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('acceptDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check green" />
+					<h:outputText value=" Accept" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to accept this JR ?" style="margin-left: 20px" />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('acceptDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.accept()}" value="Accept" styleClass="btn btn-success" oncomplete="PF('acceptDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="declineForm">
+		<p:dialog widgetVar="declineDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('declineDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-remove red" />
+					<h:outputText value=" Decline" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to decline this JR ?" style="margin-left: 20px" />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('declineDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.decline()}" value="Decline" styleClass="btn btn-danger" oncomplete="PF('declineDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="startForm">
+		<p:dialog widgetVar="startDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('startDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-check light-blue" />
+					<h:outputText value=" Start" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to start this JR ?" style="margin-left: 20px" />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('startDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.start()}" value="Start" styleClass="btn btn-info" oncomplete="PF('startDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="unassignForm">
+		<p:dialog widgetVar="unassignDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('unassignDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-chain-broken red" />
+					<h:outputText value=" Unassign" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to unassign this item ?" style="margin-left: 20px" />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('unassignDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.unassign()}" value="Unassign" styleClass="btn btn-danger" oncomplete="PF('unassignDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

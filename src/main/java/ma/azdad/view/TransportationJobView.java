@@ -461,7 +461,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String assign() {
 		if (!validateAssign())
 			return null;
-		
+
 		for (TransportationJob transportationJob : toAssignList)
 			assign(service.findOne(transportationJob.getId()));
 		return addParameters(listPage, "faces-redirect=true", "pageIndex=" + pageIndex);
@@ -851,7 +851,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return sessionView.isTheConnectedUser(transportationJob.getDriver()) && TransportationRequestStatus.ASSIGNED.equals(status);
+		return TransportationRequestStatus.ASSIGNED.equals(status) && //
+				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
+						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
 
 	public Boolean canPickup() {
@@ -893,7 +895,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return sessionView.isTheConnectedUser(transportationJob.getDriver()) && TransportationRequestStatus.PICKEDUP.equals(status);
+		return TransportationRequestStatus.PICKEDUP.equals(status) && //
+				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
+						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
 
 	public Boolean canDeliver() {

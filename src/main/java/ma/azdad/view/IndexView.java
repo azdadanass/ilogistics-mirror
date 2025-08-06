@@ -84,7 +84,7 @@ public class IndexView implements Serializable {
 	public Boolean canAccessMenu(Integer menu) {
 		switch (menu) {
 		case 1:
-			return sessionView.getIsSE() || sessionView.getIsAdmin();
+			return sessionView.getIsSE() || sessionView.getIsAdmin() || sessionView.getIsTrAdmin();
 		case 2:
 			return sessionView.getIsUser() || sessionView.getIsPM() || sessionView.getIsWM() || sessionView.getIsLobManager() || sessionView.getIsBuManager();
 		case 3:

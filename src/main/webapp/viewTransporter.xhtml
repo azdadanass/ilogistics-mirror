@@ -38,7 +38,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-7">
+					<div class=" col-sm-offset-1 col-sm-9">
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
@@ -65,6 +65,13 @@
 							<h:outputText value="Files" />
 						</p:commandLink>
 					</div>
+					<f:subview rendered="#{transporterView.transporter.supplier!=null}">
+						<div class="col-sm-2">
+							<p:graphicImage value="#{fileUploadView.stream}" width="150" height="100">
+								<f:param name="fileName" value="#{transporterView.transporter.supplier.photo}" />
+							</p:graphicImage>
+						</div>
+					</f:subview>
 				</div>
 			</div>
 			<div class="hr dotted" />

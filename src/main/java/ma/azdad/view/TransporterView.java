@@ -50,7 +50,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected SupplierService supplierService;
-	
+
 	@Autowired
 	protected CompanyService companyService;
 
@@ -121,7 +121,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canSaveVehicle() {
-		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.isTrAdmin();
 	}
 
 	public void saveVehicle() {
@@ -135,7 +135,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canDeleteVehicle() {
-		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.isTrAdmin();
 	}
 
 	public void deleteVehicle() {
@@ -175,11 +175,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// SAVE TRANSPORTER
 	public Boolean canSaveTransporter() {
-		if (isListPage || isAddPage)
-			return sessionView.isTrAdmin();
-		else if (isViewPage || isEditPage)
-			return sessionView.isTheConnectedUser(transporter.getUser());
-		return false;
+		return sessionView.isTrAdmin();
 	}
 
 	public String saveTransporter() {
@@ -192,12 +188,12 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			transporter.setSupplier(supplierService.findOne(transporter.getSupplierId()));
 		else
 			transporter.setSupplier(null);
-		
+
 		if (TransporterType.INTERNAL.equals(transporter.getType()))
 			transporter.setCompany(companyService.findOne(transporter.getCompanyId()));
 		else
 			transporter.setCompany(null);
-		
+
 		transporter = transporterService.save(transporter);
 
 		if (!isEditPage)
@@ -228,9 +224,22 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		transporter.setPrivateEmail(UtilsFunctions.cleanString(transporter.getPrivateEmail()).replace(" ", "").toLowerCase());
 	}
 
+	// toggle status
+	public Boolean canToggle() {
+		return sessionView.isTrAdmin();
+	}
+
+	public void toggle() {
+		if (!canToggle())
+			return;
+		transporter.setActive(!transporter.getActive());
+		transporter = service.save(transporter);
+		transporter = service.findOne(transporter.getId());
+	}
+
 	// DELETE TRANSPORTER
 	public Boolean canDeleteTransporter() {
-		return sessionView.getIsTrAdmin() && sessionView.isTheConnectedUser(transporter.getUser());
+		return sessionView.isTrAdmin();
 	}
 
 	public String deleteTransporter() {

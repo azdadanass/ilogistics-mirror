@@ -64,6 +64,11 @@
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
+						<p:commandLink title="#{transporterView.transporter.active?'Disable':'Enable'}"
+							styleClass="btn btn-app btn-sm #{transporterView.transporter.active?'btn-danger':'btn-success'} hover aa-tooltip" update=":toggleForm" oncomplete="PF('toggleDlg').show()">
+							<i class="ace-icon fa fa-power-off bigger-230"></i>
+							<h:outputText value="#{transporterView.transporter.active?'Disable':'Enable'}" />
+						</p:commandLink>
 					</div>
 					<f:subview rendered="#{transporterView.transporter.supplier!=null}">
 						<div class="col-sm-2">

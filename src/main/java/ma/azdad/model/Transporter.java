@@ -23,6 +23,7 @@ import javax.persistence.Transient;
 
 public class Transporter extends GenericModel<Integer> implements Serializable {
 
+	private Boolean active = true;
 	private TransporterType type;
 
 	private User user;
@@ -311,6 +312,14 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	public void setPrivatePhone(String privatePhone) {
 		this.privatePhone = privatePhone;
+	}
+	
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 }

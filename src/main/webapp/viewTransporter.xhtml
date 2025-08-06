@@ -259,8 +259,13 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="100" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{cacheView.getPhoto(item.username)}" />
+											</p:graphicImage>
+										</p:column>
 										<p:column headerText="CIN">
 											<h:outputText value="#{item.cin}" styleClass="bolder green" />
 										</p:column>

@@ -289,12 +289,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return pickupDate != null ? pickupDate : expectedPickupDate != null ? expectedPickupDate : null;
+		return pickupDate != null ? pickupDate : plannedPickupDate != null ? plannedPickupDate : null;
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return deliveryDate != null ? deliveryDate : expectedDeliveryDate != null ? expectedDeliveryDate : null;
+		return deliveryDate != null ? deliveryDate : plannedDeliveryDate != null ? plannedDeliveryDate : null;
 	}
 
 	@Transient

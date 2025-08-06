@@ -341,7 +341,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (transportationJob.getAssignmentType() != null)
 			switch (transportationJob.getAssignmentType()) {
 			case TRANSPORTER:
-				transporterView.initLists(transporterService.findLight());
+				transporterView.initLists(transporterService.findLight(true));
 				break;
 			case INTERNAL_DRIVER:
 				userView.initLists(userService.findActiveDriverList(true));

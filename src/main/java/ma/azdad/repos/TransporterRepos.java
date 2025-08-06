@@ -11,10 +11,14 @@ import ma.azdad.model.Transporter;
 @Repository
 public interface TransporterRepos extends JpaRepository<Transporter, Integer> {
 
-	String c1 = "select new Transporter(a.id,a.type,a.user,a.privateFirstName,a.privateLastName,a.privateEmail,a.privatePhone,a.privateCin,(select b.name from Supplier b where b.id = a.supplier.id), (select b.email from Supplier b where b.id = a.supplier.id), (select b.phone from Supplier b where b.id = a.supplier.id), (select b.name from Company b where b.id = a.company.id)) ";
+	String c1 = "select new Transporter(a.id,a.active,a.type,a.user,a.privateFirstName,a.privateLastName,a.privateEmail,a.privatePhone,a.privateCin,(select b.name from Supplier b where b.id = a.supplier.id), (select b.email from Supplier b where b.id = a.supplier.id), (select b.phone from Supplier b where b.id = a.supplier.id), (select b.name from Company b where b.id = a.company.id)) ";
 	
 	@Query(c1 + "from Transporter a")
 	public List<Transporter> findLight();
+	
+	
+	@Query(c1 + "from Transporter a where a.active = ?1")
+	public List<Transporter> findLight(Boolean active);
 	
 	
 	

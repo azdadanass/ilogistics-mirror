@@ -80,6 +80,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	private Vehicle vehicle;
 	private User user;
+	private Boolean active = true;
 
 	@Override
 	@PostConstruct
@@ -97,7 +98,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	@Override
 	public void refreshList() {
 		if (isListPage)
-			list2 = list1 = transporterService.findLight();
+			list2 = list1 = transporterService.findLight(active);
 	}
 
 	public void refreshTransporter() {
@@ -277,7 +278,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// generic
 	public List<Transporter> findLight() {
-		return transporterService.findLight();
+		return transporterService.findLight(true);
 	}
 
 	// GETTERS & SETTERS
@@ -353,5 +354,15 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	
+	
 
 }

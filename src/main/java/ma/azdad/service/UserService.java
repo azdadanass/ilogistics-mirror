@@ -44,6 +44,7 @@ public class UserService {
 		Hibernate.initialize(u.getRoleList());
 		Hibernate.initialize(u.getFileList());
 		Hibernate.initialize(u.getHistoryList());
+		u.getVehicleList().forEach(i->Hibernate.initialize(i.getVehicle()));
 		Hibernate.initialize(u.getTransporter());
 		return u;
 	}

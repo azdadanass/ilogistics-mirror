@@ -32,9 +32,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View User" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{userView.user.fullName}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{userView.user.fullName}" />
 					</small>
 				</h1>
 			</div>
@@ -96,12 +94,12 @@
 							<h:outputText value=" Contact Data" styleClass="hidden-xs" />
 						</a>
 					</li>
-					<!-- <li>
+					<li>
 						<a data-toggle="tab" href="#tab4">
 							<i class="blue ace-icon fa fa-file bigger-120"></i>
 							<h:outputText value=" Attachements" />
 						</a>
-					</li> -->
+					</li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -228,6 +226,46 @@
 								</div>
 							</div>
 						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="Assigned Vehicles" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Assigned Vehicles" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="userList" value="#{userView.user.vehicleList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Matricule">
+											<h:outputText value="#{item.vehicle.correctMatricule}" styleClass="purple bolder" />
+										</p:column>
+										<p:column headerText="Vehicle Type">
+											<h:outputText value="#{item.vehicle.vehicleType.name}" styleClass="bolder green" />
+										</p:column>
+										<p:column headerText="Description">
+											<h:outputText value="#{item.vehicle.description}" styleClass="blue aa-cut-text" />
+										</p:column>
+										<p:column headerText="Max Weight">
+											<h:outputText value="#{item.vehicle.maxWeight}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" Kg" />
+										</p:column>
+										<p:column headerText="Max Volume">
+											<h:outputText value="#{item.vehicle.maxVolume}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3" />
+										</p:column>
+										<p:column headerText="Status" width="100">
+											<i class="ace-icon fa #{item.vehicle.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 						<div class="space-16" />
 						<div style="width: 90%; margin: auto;">
 							<div class="well">
@@ -349,7 +387,7 @@
 							</div>
 						</div>
 					</div>
-					<!-- <div id="tab4" class="tab-pane">
+					<div id="tab4" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="table-header col-sm-12 col-xs-12">
@@ -359,8 +397,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="fileList" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="fileList" value="#{userView.user.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -389,10 +427,6 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteFileDlg').show()" styleClass="aa-tooltip">
-													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener target="#{userView.file}" value="#{item}" />
-												</p:commandLink>
 												<p:commandLink ajax="false">
 													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
@@ -408,7 +442,7 @@
 								</div>
 							</div>
 						</div>
-					</div> -->
+					</div>
 				</div>
 			</div>
 		</h:form>

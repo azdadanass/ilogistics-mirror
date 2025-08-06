@@ -597,11 +597,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			return null;
 		Date currentDate = new Date();
 		for (TransportationRequest tr : transportationRequestList3) {
-			Date expectedPickupDate = tr.getExpectedPickupDate();
-			Date expectedDeliveryDate = tr.getExpectedDeliveryDate();
+			Date plannedPickupDate = tr.getPlannedPickupDate();
+			Date plannedDeliveryDate = tr.getPlannedDeliveryDate();
 			tr = transportationRequestService.findOne(tr.getId());
-			tr.setExpectedPickupDate(expectedPickupDate);
-			tr.setExpectedDeliveryDate(expectedDeliveryDate);
+			tr.setPlannedPickupDate(plannedPickupDate);
+			tr.setPlannedDeliveryDate(plannedDeliveryDate);
 			tr.setStatus(TransportationRequestStatus.ASSIGNED);
 			tr.setDate4(currentDate);
 			tr.setUser4(sessionView.getUser());
@@ -621,12 +621,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public Boolean validateAssignTransportationRequestList() {
 		for (TransportationRequest tr : transportationRequestList3) {
-			if (tr.getExpectedPickupDate() == null || tr.getExpectedDeliveryDate() == null) {
-				FacesContextMessages.ErrorMessages("Expected Pickup/Delivery Time should not be null");
+			if (tr.getPlannedPickupDate() == null || tr.getPlannedDeliveryDate() == null) {
+				FacesContextMessages.ErrorMessages("Planned Pickup/Delivery Time should not be null");
 				return false;
 			}
-			if (tr.getExpectedPickupDate().compareTo(tr.getExpectedDeliveryDate()) >= 0) {
-				FacesContextMessages.ErrorMessages("Expected Pickup Time should be lower than Expected Delivery Time");
+			if (tr.getPlannedPickupDate().compareTo(tr.getPlannedDeliveryDate()) >= 0) {
+				FacesContextMessages.ErrorMessages("Planned Pickup Time should be lower than Planned Delivery Time");
 				return false;
 			}
 		}

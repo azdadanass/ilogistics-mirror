@@ -1,11 +1,18 @@
 package ma.azdad.service;
 
+import java.io.File;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.hibernate.Hibernate;
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -14,11 +21,16 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestFile;
+import ma.azdad.model.TransportationRequestImage;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
+import ma.azdad.repos.TransportationRequestFileRepos;
+import ma.azdad.repos.TransportationRequestImageRepos;
 import ma.azdad.repos.TransportationRequestRepos;
+import ma.azdad.utils.Public;
 
 @Component
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
@@ -37,6 +49,15 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
+	
+	@Autowired
+	FileUploadService fileUploadService;
+	
+	@Autowired
+	TransportationRequestImageRepos transportationRequestImageRepos;
+
+	@Autowired
+	TransportationRequestFileRepos transportationRequestFileRepos;
 
 	@Autowired
 	TransportationRequestHistoryService transportationRequestHistoryService;
@@ -299,5 +320,150 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			break;
 		}
 		return null;
+	}
+	
+	//mobile
+	public ma.azdad.mobile.model.TransportationRequest findOneMobile(Integer id){
+		TransportationRequest tr = findOne(id);
+		ma.azdad.mobile.model.TransportationRequest trMobile = new ma.azdad.mobile.model.TransportationRequest(
+				tr.getId(),
+				tr.getReference(),
+				tr.getStatus(),
+				tr.getPriority(),
+				tr.getDeliveryRequest().getNumberOfItems(),
+				tr.getDeliveryRequest().getGrossWeight(),
+				tr.getDeliveryRequest().getVolume(),
+				tr.getNeededPickupDate(),
+				tr.getNeededDeliveryDate(),
+				tr.getExpectedPickupDate(),
+				tr.getPickupDate(),
+				tr.getExpectedDeliveryDate(),
+				tr.getDeliveryDate()
+		    ) ;
+		
+		if (tr.getDeliveryRequest().getOrigin() != null) {
+			trMobile.setOriginName(tr.getDeliveryRequest().getOriginName());
+			trMobile.setOriginAddress(tr.getDeliveryRequest().getOrigin().getGoogleAddress());
+			trMobile.setOriginOwner(tr.getDeliveryRequest().getOrigin().getOwnerName());
+			trMobile.setOriginPhone(tr.getDeliveryRequest().getOrigin().getPhone());
+			trMobile.setOriginPhoto(Public.getPublicUrl(tr.getDeliveryRequest().getOrigin().getUser().getPhoto()));
+			trMobile.setOriginLongitude(tr.getDeliveryRequest().getOrigin().getLongitude());
+			trMobile.setOriginLatitude(tr.getDeliveryRequest().getOrigin().getLatitude());
+		}
+		if (tr.getDeliveryRequest().getDestination() != null) {
+			trMobile.setDestinationName(tr.getDeliveryRequest().getDestinationName());
+			trMobile.setDestinationAddress(tr.getDeliveryRequest().getDestination().getGoogleAddress());
+			trMobile.setDestinationOwner(tr.getDeliveryRequest().getDestination().getOwnerName());
+			trMobile.setDestinationPhone(tr.getDeliveryRequest().getDestination().getPhone());
+			trMobile.setDestinationPhoto(Public.getPublicUrl(tr.getDeliveryRequest().getDestination().getUser().getPhoto()));
+			trMobile.setDestinationLongitude(tr.getDeliveryRequest().getDestination().getLongitude());
+			trMobile.setDestinationLatitude(tr.getDeliveryRequest().getDestination().getLatitude());
+		}
+		if (tr.getUser4() != null) {
+		    trMobile.setUser4(toMobileUser(tr.getUser4()));
+		    trMobile.setDate4(tr.getDate4());
+		}
+		if (tr.getUser5() != null) {
+		    trMobile.setUser5(toMobileUser(tr.getUser5()));
+		    trMobile.setDate5(tr.getDate5());
+		}
+		if (tr.getUser6() != null) {
+		    trMobile.setUser6(toMobileUser(tr.getUser6()));
+		    trMobile.setDate6(tr.getDate6());
+		}
+		if (tr.getUser7() != null) {
+		    trMobile.setUser7(toMobileUser(tr.getUser7()));
+		    trMobile.setDate7(tr.getDate7());
+		}
+		trMobile.setHistoryList(repos.findHistoryListMobile(id));
+
+		
+		
+		return trMobile;
+	}
+	
+	private ma.azdad.mobile.model.User toMobileUser(User user) {
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getLogin(), user.getPhoto(), user.getEmail());
+	}
+	
+	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
+		TransportationRequest job = findOne(id);
+
+		File file = fileUploadService.handleFileUploadMobile(event, "transportationRequest");
+		TransportationRequestFile modelFile = new TransportationRequestFile(file, fileType, event.getFile().getFileName(), user);
+
+		modelFile.setParent(job);
+		transportationRequestFileRepos.save(modelFile);
+		job = saveAndRefresh(job);
+
+	}
+
+	public void deleteFile(Integer idDn, Integer idFile) {
+		TransportationRequest job = findOne(idDn);
+		TransportationRequestFile file = transportationRequestFileRepos.findById(idFile).get();
+
+		try {
+			transportationRequestFileRepos.delete(file);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Iterator<TransportationRequestFile> i = job.getFileList().iterator();
+		while (i.hasNext()) {
+			TransportationRequestFile current = i.next();
+			if (current.getId().equals(file.getId())) {
+				job.getFileList().remove(current);
+				break;
+			}
+		}
+		job = saveAndRefresh(job);
+	}
+
+	public List<ma.azdad.mobile.model.TransportationRequestFile> findTrAttachments(Integer id) {
+		TransportationRequest job = findOne(id);
+		List<ma.azdad.mobile.model.TransportationRequestFile> list = new ArrayList<>();
+		for (TransportationRequestFile dnFile : job.getFileList()) {
+			list.add(new ma.azdad.mobile.model.TransportationRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
+
+		}
+		return list;
+	}
+
+	public String getContentTypeFromUrl(String url) {
+		// You can enhance this with more comprehensive detection
+		url = url.toLowerCase();
+		if (url.contains(".png"))
+			return "image/png";
+		if (url.contains(".gif"))
+			return "image/gif";
+		if (url.contains(".webp"))
+			return "image/webp";
+		return "image/jpeg"; // default
+	}
+	
+	public String uploadTaskDetailPhoto(TransportationRequest tr,String type, InputStream inputStream, String fileName, Long fileSize, Boolean showFacesMessage) throws IOException {
+
+		File file = fileUploadService.handlePhotoUpload(inputStream, fileName, fileSize, "transportationRequestImage", 400 * 1024, showFacesMessage);
+		TransportationRequestImage trm = new TransportationRequestImage(type, "files/transportationRequestImage/" + file.getName(), tr);
+		
+		TransportationRequestImage newTrm =transportationRequestImageRepos.save(trm);
+		return newTrm.getValue();
+	}
+	
+	public List<ma.azdad.mobile.model.TransportationRequestImage> findTrImages(String type,Integer id){
+		 List<TransportationRequestImage> list = transportationRequestImageRepos.findByTypeAndTransportationRequestId(type, id);
+		 List<ma.azdad.mobile.model.TransportationRequestImage> mbList = new ArrayList<>();
+		 for (TransportationRequestImage trm : list) {
+			mbList.add(new ma.azdad.mobile.model.TransportationRequestImage( trm.getId(),
+				    trm.getType(),
+				    trm.getValue(),
+				    trm.getLatitude(),
+				    trm.getLongitude(),
+				    trm.getGoogleAddress(),
+				    trm.getTakenDate(),
+				    trm.getPhoneModel()));
+		}
+		return mbList;
 	}
 }

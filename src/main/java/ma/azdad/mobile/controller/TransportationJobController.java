@@ -23,6 +23,13 @@ public class TransportationJobController {
 	@Autowired
 	TransportationJobService transportationJobService;
 	
+	@GetMapping("/findone/{key}/{id}")
+	public TransportationJob findOneLightMobile(@PathVariable String key,@PathVariable Integer id) {
+		System.out.println("/findone/{key}/{id}");
+		Token token = tokenService.getBykey(key);
+		return transportationJobService.findOneMobile(id);
+	}
+	
 	@GetMapping("/findbystatus/{key}/{state}")
 	public List<TransportationJob> findLightByWarehouseListMobile(@PathVariable String key,@PathVariable Integer state) {
 		System.out.println("/findbystatus/{key}/{state}");

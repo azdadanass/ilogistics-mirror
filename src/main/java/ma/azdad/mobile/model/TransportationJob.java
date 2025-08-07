@@ -53,7 +53,24 @@ public class TransportationJob {
 		this.totalTr = totalTr;
 		this.vehiculeMatricule = vehiculeMatricule;
 	}
+	
+	
 
+
+
+	public TransportationJob(Integer id, Date startDate, Date endDate, TransportationJobStatus status, Double realCost,
+			Double estimatedCost, Double vehiclePrice, String vehiculeMatricule, User driver) {
+		super();
+		this.id = id;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.status = status;
+		this.realCost = realCost;
+		this.estimatedCost = estimatedCost;
+		this.vehiclePrice = vehiclePrice;
+		this.vehiculeMatricule = vehiculeMatricule;
+		this.driver = driver;
+	}
 
 
 	public Integer getId() {

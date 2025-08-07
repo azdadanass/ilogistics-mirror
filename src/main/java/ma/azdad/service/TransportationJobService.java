@@ -1,14 +1,19 @@
 package ma.azdad.service;
 
+import java.io.File;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -19,12 +24,14 @@ import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
+import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
+import ma.azdad.repos.TransportationJobFileRepos;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
@@ -43,6 +50,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	FileUploadService fileUploadService;
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
@@ -55,6 +65,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	
 	@Autowired
 	TransporterService transporterService;
+	
+	@Autowired
+	TransportationJobFileRepos transportationJobFileRepos;
 	
 	@Autowired
 	VehicleService vehicleService;
@@ -410,8 +423,102 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 	}
 
-	private ma.azdad.mobile.model.User toMobileUser(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail());
+	
+	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id){
+		TransportationJob tj = findOne(id);
+		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(),
+				tj.getEstimatedCost(), tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver())) ;
+		List<ma.azdad.mobile.model.TransportationRequest> trList = new ArrayList<>();
+
+		for (TransportationRequest transportationRequest : tj.getTransportationRequestList()) {
+		    trList.add(new ma.azdad.mobile.model.TransportationRequest(
+		        transportationRequest.getId(),
+		        transportationRequest.getReference(),
+		        transportationRequest.getStatus(),
+		        transportationRequest.getNeededPickupDate(),
+		        transportationRequest.getNeededDeliveryDate(),
+		        transportationRequest.getExpectedPickupDate(),
+		        transportationRequest.getPickupDate(),
+		        transportationRequest.getExpectedDeliveryDate(),
+		        transportationRequest.getDeliveryDate(),
+		        transportationRequest.getOriginName(),
+		        transportationRequest.getDestinationName()
+		    ));
+		}
+		tjMobile.getTransportationRequestList().addAll(trList);
+		tjMobile.setHistoryList(repos.findHistoryListMobile(id));
+		
+		return tjMobile;
 	}
+
+	private ma.azdad.mobile.model.User toMobileUser(User user) {
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getLogin(), user.getPhoto(), user.getEmail());
+	}
+	
+	private ma.azdad.mobile.model.User toMobileUser2(User user) {
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getLogin(), user.getPhoto(), user.getEmail(),user.getCin(),user.getPhone());
+	}
+	
+	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
+		TransportationJob job = findOne(id);
+
+		File file = fileUploadService.handleFileUploadMobile(event, "transportationJob");
+		TransportationJobFile modelFile = new TransportationJobFile(file, fileType, event.getFile().getFileName(), user);
+
+		modelFile.setParent(job);
+		transportationJobFileRepos.save(modelFile);
+		job = saveAndRefresh(job);
+
+	}
+
+	public void deleteFile(Integer idDn, Integer idFile) {
+		TransportationJob job = findOne(idDn);
+		TransportationJobFile file = transportationJobFileRepos.findById(idFile).get();
+
+		try {
+			transportationJobFileRepos.delete(file);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Iterator<TransportationJobFile> i = job.getFileList().iterator();
+		while (i.hasNext()) {
+			TransportationJobFile current = i.next();
+			if (current.getId().equals(file.getId())) {
+				job.getFileList().remove(current);
+				break;
+			}
+		}
+		job = saveAndRefresh(job);
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJobFile> findTjAttachments(Integer id) {
+		TransportationJob job = findOne(id);
+		List<ma.azdad.mobile.model.TransportationJobFile> list = new ArrayList<>();
+		for (TransportationJobFile dnFile : job.getFileList()) {
+			list.add(new ma.azdad.mobile.model.TransportationJobFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
+
+		}
+		return list;
+	}
+
+	public String getContentTypeFromUrl(String url) {
+		// You can enhance this with more comprehensive detection
+		url = url.toLowerCase();
+		if (url.contains(".png"))
+			return "image/png";
+		if (url.contains(".gif"))
+			return "image/gif";
+		if (url.contains(".webp"))
+			return "image/webp";
+		return "image/jpeg"; // default
+	}
+	
+	
+	
+
+
 
 }

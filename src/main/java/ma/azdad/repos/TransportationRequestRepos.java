@@ -54,6 +54,9 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.status = ?1 order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(TransportationRequestStatus status);
+	
+	@Query("select new ma.azdad.mobile.model.TransportationRequestHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from TransportationRequestHistory a left join a.user as u where a.parent.id = ?1")
+	List<ma.azdad.mobile.model.TransportationRequestHistory> findHistoryListMobile(Integer id);
 
 	@Query(select2 + "from TransportationRequest a where a.status = ?1 order by a.neededPickupDate")
 	public Long count(TransportationRequestStatus status);

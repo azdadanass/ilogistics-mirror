@@ -15,6 +15,8 @@ public class User {
 	private String lastName;
 	private String photo;
 	private String email;
+	private String cin;
+	private String phone;
 
 	public User() {
 		super();
@@ -33,6 +35,21 @@ public class User {
 		this.photo = Public.getPublicUrl(photo);
 		this.email = email;
 	}
+	
+	public User(String username, String firstName, String lastName, String login,String photo,String email
+			,String cin,String phone) {
+		this.username = username;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.login = login;
+		this.photo = Public.getPublicUrl(photo);
+		this.email = email;
+		this.cin = cin;
+		this.phone = phone;
+		
+	}
+	
+	
 	
 	
 
@@ -95,4 +112,22 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public String getCin() {
+		return cin;
+	}
+
+	public void setCin(String cin) {
+		this.cin = cin;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	
 }

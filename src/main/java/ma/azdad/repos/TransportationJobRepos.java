@@ -74,5 +74,8 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
 	public Long countByDriver(String driverUsername, TransportationJobStatus status);
+	
+	@Query("select new ma.azdad.mobile.model.TransportationJobHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from TransportationJobHistory a left join a.user as u where a.parent.id = ?1")
+	List<ma.azdad.mobile.model.TransportationJobHistory> findHistoryListMobile(Integer id);
 
 }

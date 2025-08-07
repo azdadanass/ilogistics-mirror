@@ -243,12 +243,14 @@
 							<h:outputText value=" Itinerary" />
 						</a>
 					</li>
-					<li>
-						<a data-toggle="tab" href="#tab3">
-							<i class="red ace-icon fa fa-dollar bigger-120"></i>
-							<h:outputText value=" Costs" />
-						</a>
-					</li>
+					<f:subview rendered="#{sessionView.isTrAdmin}">
+						<li>
+							<a data-toggle="tab" href="#tab3">
+								<i class="red ace-icon fa fa-dollar bigger-120"></i>
+								<h:outputText value=" Costs" />
+							</a>
+						</li>
+					</f:subview>
 					<li>
 						<a data-toggle="tab" href="#tab4">
 							<i class="blue ace-icon fa fa-file bigger-120"></i>
@@ -689,90 +691,92 @@
 								style="width:100%;height:500px" />
 						</h:panelGroup>
 					</div>
-					<div id="tab3" class="tab-pane">
-						<p:messages id="costs_messages" closable="true" />
-						<div class="row">
-							<div class="col-sm-offset-1 col-sm-10">
-								<div class="table-header col-sm-12 col-xs-12">
-									<div class="col-sm-9 hidden-xs">
-										<i class="fa fa-list" />
-										<h:outputText value=" Costs Details" />
-									</div>
-									<div class="col-sm-2">
-										<div class="action-buttons center">
-											<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
-												<img src="/resources/img/xls.png" width="20" height="20" />
-												<p:dataExporter type="xls" target="costTab" fileName="costs" postProcessor="#{utilsView.excelExportation}" />
-											</h:commandLink>
+					<f:subview id="costsSubview" rendered="#{sessionView.isTrAdmin}">
+						<div id="tab3" class="tab-pane">
+							<p:messages id="costs_messages" closable="true" />
+							<div class="row">
+								<div class="col-sm-offset-1 col-sm-10">
+									<div class="table-header col-sm-12 col-xs-12">
+										<div class="col-sm-9 hidden-xs">
+											<i class="fa fa-list" />
+											<h:outputText value=" Costs Details" />
+										</div>
+										<div class="col-sm-2">
+											<div class="action-buttons center">
+												<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+													<img src="/resources/img/xls.png" width="20" height="20" />
+													<p:dataExporter type="xls" target="costTab" fileName="costs" postProcessor="#{utilsView.excelExportation}" />
+												</h:commandLink>
+											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="costTab" value="#{transportationJobView.transportationJob.transportationRequestList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-										<p:column headerText="Reference" exportable="false">
-											<h:outputLink value="viewTransportationRequest.xhtml" styleClass="#{item.deliveryRequest.type.color} bolder" target="blank">
+									<div class="col-sm-12 col-xs-12 aa-datatable-container">
+										<p:dataTable id="costTab" value="#{transportationJobView.transportationJob.transportationRequestList}" var="item" rows="20" styleClass="table table-striped table-hover"
+											paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+											<p:column headerText="Reference" exportable="false">
+												<h:outputLink value="viewTransportationRequest.xhtml" styleClass="#{item.deliveryRequest.type.color} bolder" target="blank">
+													<h:outputText value="#{item.reference}" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="Reference" styleClass="hide">
 												<h:outputText value="#{item.reference}" />
-												<f:param name="id" value="#{item.id}" />
-											</h:outputLink>
-										</p:column>
-										<p:column headerText="Reference" styleClass="hide">
-											<h:outputText value="#{item.reference}" />
-										</p:column>
-										<p:column headerText="DN" exportable="false">
-											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+											</p:column>
+											<p:column headerText="DN" exportable="false">
+												<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+													<h:outputText value="#{item.deliveryRequest.reference}" />
+													<f:param name="id" value="#{item.id}" />
+												</h:outputLink>
+											</p:column>
+											<p:column headerText="DN" styleClass="hide">
 												<h:outputText value="#{item.deliveryRequest.reference}" />
-												<f:param name="id" value="#{item.id}" />
-											</h:outputLink>
-										</p:column>
-										<p:column headerText="DN" styleClass="hide">
-											<h:outputText value="#{item.deliveryRequest.reference}" />
-										</p:column>
-										<p:column headerText="Project">
-											<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="purple" />
-										</p:column>
-										<p:column headerText="Project Manager">
-											<h:outputText value="#{cacheView.getProjectManager(item.deliveryRequest.project.id)}" styleClass="blue bolder" />
-										</p:column>
-										<p:column headerText="Transporter">
-											<h:outputText value="#{transportationJobView.transportationJob.transporter.name}" />
-										</p:column>
-										<p:column headerText="Estimated Cost" exportable="false">
-											<h:outputText value="#{item.estimatedCost}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-										</p:column>
-										<p:column headerText="Cost" exportable="false">
-											<h:outputText value="#{item.cost}" rendered="#{!transportationJobView.editCosts}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<p:inputNumber value="#{item.cost}" rendered="#{transportationJobView.editCosts}" thousandSeparator="" />
-										</p:column>
-										<p:column headerText="Cost" styleClass="hide">
-											<h:outputText value="#{item.cost}" />
-										</p:column>
-										<p:column headerText="TR Status">
-											<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
-										</p:column>
-										<f:facet name="footer">
-											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit Costs" update="costTab" partialSubmit="true" process="costTab"
-													rendered="#{transportationJobView.canEditTransportationRequestListCosts() and !transportationJobView.editCosts}">
-													<i class="fa fa-edit orange" />
-													<f:setPropertyActionListener value="true" target="#{transportationJobView.editCosts}" />
-												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Validate changes" action="#{transportationJobView.editTransportationRequestListCosts()}"
-													update="costTab,:main_form:costs_messages" partialSubmit="true" process="costTab"
-													rendered="#{transportationJobView.canEditTransportationRequestListCosts() and transportationJobView.editCosts}">
-													<i class="fa fa-save green" />
-												</p:commandLink>
-											</div>
-										</f:facet>
-									</p:dataTable>
+											</p:column>
+											<p:column headerText="Project">
+												<h:outputText value="#{item.deliveryRequest.project.name}" styleClass="purple" />
+											</p:column>
+											<p:column headerText="Project Manager">
+												<h:outputText value="#{cacheView.getProjectManager(item.deliveryRequest.project.id)}" styleClass="blue bolder" />
+											</p:column>
+											<p:column headerText="Transporter">
+												<h:outputText value="#{transportationJobView.transportationJob.transporter.name}" />
+											</p:column>
+											<p:column headerText="Estimated Cost" exportable="false">
+												<h:outputText value="#{item.estimatedCost}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Cost" exportable="false">
+												<h:outputText value="#{item.cost}" rendered="#{!transportationJobView.editCosts}">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<p:inputNumber value="#{item.cost}" rendered="#{transportationJobView.editCosts}" thousandSeparator="" />
+											</p:column>
+											<p:column headerText="Cost" styleClass="hide">
+												<h:outputText value="#{item.cost}" />
+											</p:column>
+											<p:column headerText="TR Status">
+												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+											</p:column>
+											<f:facet name="footer">
+												<div class="action-buttons center">
+													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit Costs" update=":main_form:costsSubview:costTab" partialSubmit="true" process="costTab"
+														rendered="#{transportationJobView.canEditTransportationRequestListCosts() and !transportationJobView.editCosts}">
+														<i class="fa fa-edit orange" />
+														<f:setPropertyActionListener value="true" target="#{transportationJobView.editCosts}" />
+													</p:commandLink>
+													<p:commandLink styleClass="aa-tooltip tooltip-success" title="Validate changes" action="#{transportationJobView.editTransportationRequestListCosts()}"
+														update=":main_form:costsSubview:costTab,:main_form:costsSubview:costs_messages" partialSubmit="true" process="costTab"
+														rendered="#{transportationJobView.canEditTransportationRequestListCosts() and transportationJobView.editCosts}">
+														<i class="fa fa-save green" />
+													</p:commandLink>
+												</div>
+											</f:facet>
+										</p:dataTable>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					</f:subview>
 					<div id="tab4" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">

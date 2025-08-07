@@ -203,20 +203,27 @@ public class SessionView implements Serializable {
 	public Boolean getIsTM() {
 		return isTM();
 	}
-	
+
 	public Boolean getIsTrAdmin() {
 		return user.getIsTrAdmin();
 	}
-	
+
 	public Boolean isTrAdmin() {
 		return getIsTrAdmin();
 	}
-	
-	
+
+	public Boolean getIsTrPayment() {
+		return user.getIsTrPayment();
+	}
+
+	public Boolean isTrPayment() {
+		return getIsTrPayment();
+	}
+
 	public Boolean getIsInternalTM() {
 		return getInternal() && getIsTM();
 	}
-	
+
 	public Boolean getIsExternalTM() {
 		return !getInternal() && getIsTM();
 	}
@@ -308,7 +315,5 @@ public class SessionView implements Serializable {
 	public void setRoleList(List<Role> roleList) {
 		this.roleList = roleList;
 	}
-	
-	
 
 }

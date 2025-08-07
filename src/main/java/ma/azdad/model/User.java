@@ -436,6 +436,11 @@ public class User extends GenericModel<String> implements Serializable {
 	public Boolean getIsTrAdmin() {
 		return hasRole(Role.ROLE_ILOGISTICS_TR_ADMIN);
 	}
+	
+	@Transient
+	public Boolean getIsTrPayment() {
+		return hasRole(Role.ROLE_ILOGISTICS_TR_PAYMENT);
+	}
 
 	@Transient
 	public Boolean getIsAdmin() {

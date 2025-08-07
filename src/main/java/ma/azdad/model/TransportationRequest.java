@@ -20,6 +20,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.ObjectUtils;
+
+import ma.azdad.service.UtilsFunctions;
+
 @Entity
 
 public class TransportationRequest extends GenericModel<Integer> implements Serializable, Comparable<TransportationRequest> {
@@ -289,12 +293,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return pickupDate != null ? pickupDate : plannedPickupDate != null ? plannedPickupDate : null;
+		return ObjectUtils.firstNonNull(pickupDate,expectedPickupDate,plannedPickupDate);
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return deliveryDate != null ? deliveryDate : plannedDeliveryDate != null ? plannedDeliveryDate : null;
+		return ObjectUtils.firstNonNull(deliveryDate,expectedDeliveryDate,plannedDeliveryDate);
 	}
 
 	@Transient
@@ -1166,6 +1170,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.plannedDeliveryDate = plannedDeliveryDate;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return reference;
+	}
 
 }

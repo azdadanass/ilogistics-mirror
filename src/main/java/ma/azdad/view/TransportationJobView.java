@@ -18,6 +18,8 @@ import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.timeline.TimelineEvent;
+import org.primefaces.model.timeline.TimelineModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -137,6 +139,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private Double latitude;
 	private Double longitude;
 
+	private TimelineModel timeline1;
+	private TimelineModel timeline2;
+
 	@Override
 	@PostConstruct
 	public void init() {
@@ -151,6 +156,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob = transportationJobService.findOne(id);
 			transportationJob.init();
 			refreshMapModel();
+			initTimelines();
 		} else if (isPage("assignTransportationJob")) {
 			toAssignList = service.findByIdList(TO_ASSIGN_MAP.get(key));
 			transportationJob = toAssignList.get(0);
@@ -170,6 +176,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		status = TransportationJobStatus.get(UtilsFunctions.getIntegerParameter("status"));
 		state = TransportationJobState.get(UtilsFunctions.getIntegerParameter("state"));
 		key = UtilsFunctions.getParameter("key");
+	}
+
+	private void initTimelines() {
+		String[] styles = { "aa-timeline-event-info", "aa-timeline-event-success", "aa-timeline-event-warning", "aa-timeline-event-purple", "aa-timeline-event-danger" }; // TODO
+
+		// init timeline1 (Planning Timeline)
+		timeline1 = new TimelineModel();
+		transportationJob.getTransportationRequestList()
+				.forEach(i -> timeline1.add(new TimelineEvent(i, i.getPlannedPickupDate(), i.getPlannedDeliveryDate(), false, null, styles[i.getId() % styles.length])));
+		// init timeline2 (Delivery Timeline)
+		timeline2 = new TimelineModel();
+		transportationJob.getTransportationRequestList().stream().filter(i -> i.getPickupDate() != null && i.getDeliveryDate() != null)
+				.forEach(i -> timeline2.add(new TimelineEvent(i, i.getPickupDate(), i.getDeliveryDate(), false, null, styles[i.getId() % styles.length])));
 	}
 
 	@Override
@@ -1168,6 +1187,22 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public TimelineModel getTimeline1() {
+		return timeline1;
+	}
+
+	public void setTimeline1(TimelineModel timeline1) {
+		this.timeline1 = timeline1;
+	}
+
+	public TimelineModel getTimeline2() {
+		return timeline2;
+	}
+
+	public void setTimeline2(TimelineModel timeline2) {
+		this.timeline2 = timeline2;
 	}
 
 }

@@ -1283,4 +1283,29 @@ label {
 	background-color: #d15b47 !important;
 }
 
+.aa-timeline-event-danger {
+	color: white !important;
+	background: #B22222 !important;
+}
+
+.aa-timeline-event-success {
+	color: white !important;
+	background: #85b558 !important;
+}
+
+.aa-timeline-event-warning {
+	color: white !important;
+	background: #c09853 !important;
+}
+
+.aa-timeline-event-info {
+	color: white !important;
+	background: #68adde !important;
+}
+
+.aa-timeline-event-purple {
+	color: white !important;
+	background: #a069c3 !important;
+}
+
 

@@ -323,7 +323,26 @@
 	</h:form>
 
 
-	
+	<h:form id="toggleForm">
+		<p:dialog widgetVar="toggleDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('toggleDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-power-off " />
+					<h:outputText value=" Change Status" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to change status" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('toggleDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transporterView.toggle()}" value="Toggle" styleClass="btn #{transporterView.transporter.active?'btn-danger':'btn-success'}" oncomplete="PF('toggleDlg').hide()" update=":main_form"/>
+			</div>
+		</p:dialog>
+	</h:form>	
 
 
 </ui:composition>

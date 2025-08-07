@@ -666,7 +666,8 @@
 											</li>
 											<li>
 												<span class="step">
-													<i class="ace-icon fa #{transportationRequestView.transportationRequest.state==1?'fa-truck blue':transportationRequestView.transportationRequest.state>1?'fa-check green':''} " />
+													<i
+														class="ace-icon fa #{transportationRequestView.transportationRequest.state==1?'fa-truck blue':transportationRequestView.transportationRequest.state>1?'fa-check green':''} " />
 												</span>
 											</li>
 											<li>
@@ -736,7 +737,8 @@
 						<h:panelGroup id="gmap">
 							<!-- <p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.deliveryRequest.origin.latitude}, #{transportationRequestView.transportationRequest.deliveryRequest.origin.longitude}" zoom="17" type="TERRAIN"
 								style="width:100%;height:500px" /> -->
-							<p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.originValue}" type="TERRAIN" style="width:100%;height:500px" />
+							<p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.originValue}" type="TERRAIN"
+								style="width:100%;height:500px" />
 						</h:panelGroup>
 						<div class="space-16" />
 					</div>
@@ -811,8 +813,9 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="transportationRequesthistoryList" value="#{transportationRequestView.transportationRequest.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="transportationRequesthistoryList" value="#{transportationRequestView.transportationRequest.historyList}" var="item" rows="20"
+										styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />
@@ -851,8 +854,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Transportation Request" width="100">
 											<h:outputText value="#{transportationRequestView.transportationRequest.reference}" styleClass="green bolder" />
 										</p:column>
@@ -884,8 +887,8 @@
 													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 												</p:commandLink>
-												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()" title="Show details"
-													styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()"
+													title="Show details" styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 												</p:commandLink>
 											</div>

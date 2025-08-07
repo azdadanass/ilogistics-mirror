@@ -20,6 +20,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.ObjectUtils;
+
+import ma.azdad.service.UtilsFunctions;
+
 @Entity
 
 public class TransportationRequest extends GenericModel<Integer> implements Serializable, Comparable<TransportationRequest> {
@@ -30,10 +34,18 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	// USER
 	private Date neededPickupDate;
 	private Date neededDeliveryDate;
+	
+	private Date plannedPickupDate;
+	private Date plannedDeliveryDate;
+	
 	private Date expectedPickupDate;
-	private Date pickupDate;
 	private Date expectedDeliveryDate;
+	
+	private Date pickupDate;
 	private Date deliveryDate;
+	
+	
+	
 	private DeliveryRequest deliveryRequest;
 
 	private ContactType contactType1;
@@ -281,12 +293,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return pickupDate != null ? pickupDate : expectedPickupDate != null ? expectedPickupDate : null;
+		return ObjectUtils.firstNonNull(pickupDate,expectedPickupDate,plannedPickupDate);
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return deliveryDate != null ? deliveryDate : expectedDeliveryDate != null ? expectedDeliveryDate : null;
+		return ObjectUtils.firstNonNull(deliveryDate,expectedDeliveryDate,plannedDeliveryDate);
 	}
 
 	@Transient
@@ -891,7 +903,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		if (o == null)
 			return 1;
 		Date date1 = pickupDate != null ? pickupDate : expectedPickupDate;
-		Date date2 = o.getPickupDate() != null ? o.getPickupDate() : o.getExpectedPickupDate();
+		Date date2 = o.getPickupDate() != null ? o.getPickupDate() : o.expectedPickupDate;
 		if (date1 == null && date2 == null)
 			return 0;
 		if (date1 == null)
@@ -1140,6 +1152,27 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Transient
 	public void setRequesterFullName(String requesterFullName) {
 		this.requesterFullName = requesterFullName;
+	}
+
+	public Date getPlannedPickupDate() {
+		return plannedPickupDate;
+	}
+
+	public void setPlannedPickupDate(Date plannedPickupDate) {
+		this.plannedPickupDate = plannedPickupDate;
+	}
+
+	public Date getPlannedDeliveryDate() {
+		return plannedDeliveryDate;
+	}
+
+	public void setPlannedDeliveryDate(Date plannedDeliveryDate) {
+		this.plannedDeliveryDate = plannedDeliveryDate;
+	}
+	
+	@Override
+	public String toString() {
+		return reference;
 	}
 
 }

@@ -23,7 +23,7 @@ public class TransporterService extends GenericService<Integer, Transporter, Tra
 		Hibernate.initialize(transporter.getVehicleList());
 		Hibernate.initialize(transporter.getSupplier());
 		Hibernate.initialize(transporter.getCompany());
-		transporter.getUserList().forEach(i->{
+		transporter.getUserList().forEach(i -> {
 			initialize(i.getCompany());
 			initialize(i.getCustomer());
 			initialize(i.getSupplier());
@@ -31,8 +31,10 @@ public class TransporterService extends GenericService<Integer, Transporter, Tra
 		return transporter;
 	}
 
-	public List<Transporter> findLight() {
-		return transporterRepos.findLight();
+	public List<Transporter> findLight(Boolean active) {
+		if (active == null)
+			return transporterRepos.findLight();
+		return transporterRepos.findLight(active);
 	}
 
 }

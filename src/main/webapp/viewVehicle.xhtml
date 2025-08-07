@@ -168,6 +168,7 @@
 											<p:selectOneMenu value="#{item.userUsername}" style="width: 90%" rendered="#{vehicleView.editUserList}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{vehicleView.userSelectionList}" var="user" itemLabel="#{user.fullName}" itemValue="#{user.username}" />
+												<p:ajax listener="#{vehicleView.selectUserListener(item)}" update="userList"/>
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="Email">

@@ -82,6 +82,7 @@ public class User extends GenericModel<String> implements Serializable {
 
 	private List<UserFile> fileList = new ArrayList<>();
 	private List<UserHistory> historyList = new ArrayList<>();
+	private List<UserVehicle> vehicleList = new ArrayList<UserVehicle>();
 
 	private List<UserRole> roleList = new ArrayList<>();
 
@@ -435,6 +436,11 @@ public class User extends GenericModel<String> implements Serializable {
 	public Boolean getIsTrAdmin() {
 		return hasRole(Role.ROLE_ILOGISTICS_TR_ADMIN);
 	}
+	
+	@Transient
+	public Boolean getIsTrPayment() {
+		return hasRole(Role.ROLE_ILOGISTICS_TR_PAYMENT);
+	}
 
 	@Transient
 	public Boolean getIsAdmin() {
@@ -678,13 +684,23 @@ public class User extends GenericModel<String> implements Serializable {
 		this.historyList = historyList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<UserFile> getFileList() {
 		return fileList;
 	}
 
 	public void setFileList(List<UserFile> fileList) {
 		this.fileList = fileList;
+	}
+	
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+	public List<UserVehicle> getVehicleList() {
+		return vehicleList;
+	}
+
+	public void setVehicleList(List<UserVehicle> vehicleList) {
+		this.vehicleList = vehicleList;
 	}
 
 	public Integer getCountFiles() {

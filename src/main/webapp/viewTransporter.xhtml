@@ -38,7 +38,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-7">
+					<div class=" col-sm-offset-1 col-sm-9">
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
@@ -64,7 +64,19 @@
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
+						<p:commandLink title="#{transporterView.transporter.active?'Disable':'Enable'}"
+							styleClass="btn btn-app btn-sm #{transporterView.transporter.active?'btn-danger':'btn-success'} hover aa-tooltip" update=":toggleForm" oncomplete="PF('toggleDlg').show()">
+							<i class="ace-icon fa fa-power-off bigger-230"></i>
+							<h:outputText value="#{transporterView.transporter.active?'Disable':'Enable'}" />
+						</p:commandLink>
 					</div>
+					<f:subview rendered="#{transporterView.transporter.supplier!=null}">
+						<div class="col-sm-2">
+							<p:graphicImage value="#{fileUploadView.stream}" width="150" height="100">
+								<f:param name="fileName" value="#{transporterView.transporter.supplier.photo}" />
+							</p:graphicImage>
+						</div>
+					</f:subview>
 				</div>
 			</div>
 			<div class="hr dotted" />
@@ -252,8 +264,13 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+									<p:dataTable id="users_table" value="#{transporterView.transporter.userList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Photo" width="100" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{cacheView.getPhoto(item.username)}" />
+											</p:graphicImage>
+										</p:column>
 										<p:column headerText="CIN">
 											<h:outputText value="#{item.cin}" styleClass="bolder green" />
 										</p:column>

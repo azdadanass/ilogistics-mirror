@@ -146,6 +146,11 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	// user list
 	private Boolean editUserList = false;
 	
+	public void selectUserListener(UserVehicle userVehicle) {
+		if(userVehicle.getUserUsername()!=null)
+			userVehicle.setUser(userService.findOneLight(userVehicle.getUserUsername()));
+	}
+	
 	public Boolean canEditUserList() {
 		return !editUserList && sessionView.getIsTrAdmin();
 	}

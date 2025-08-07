@@ -97,16 +97,16 @@
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Expected Pickup Time">
-												<p:calendar value="#{item.expectedPickupDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
+											<p:column headerText="Planned Pickup Time">
+												<p:calendar value="#{item.plannedPickupDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
 											</p:column>
 											<p:column headerText="Needed Delivery Time">
 												<h:outputText value="#{item.neededDeliveryDate}" styleClass="pink">
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Expected Delivery Time">
-												<p:calendar value="#{item.expectedDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm"
+											<p:column headerText="Planned Delivery Time">
+												<p:calendar value="#{item.plannedDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm"
 													rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
 											</p:column>
 											<p:column headerText="Status" width="70">

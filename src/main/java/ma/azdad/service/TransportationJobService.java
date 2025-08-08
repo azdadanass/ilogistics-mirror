@@ -384,8 +384,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findMobile(List<TransportationJobStatus> status) {
-		List<TransportationJob> list = repos.findMobile(status);
+	public List<ma.azdad.mobile.model.TransportationJob> findByUser1Mobile(List<TransportationJobStatus> status,String username) {
+		List<TransportationJob> list = repos.findByUser1Mobile(username,status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
@@ -395,8 +395,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findMobile() {
-		List<TransportationJob> list = repos.findMobile();
+	public List<ma.azdad.mobile.model.TransportationJob> findByUser1Mobile(String username) {
+		List<TransportationJob> list = repos.findByUser1Mobile(username);
+		System.out.println("tj size"+list.size());
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 
@@ -407,22 +408,64 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findMobileByStatus(Integer state) {
+	public List<ma.azdad.mobile.model.TransportationJob> findByUser1MobileByStatus(Integer state,String username) {
 		switch (state) {
 		case 0:
-			return findMobile(TransportationJobStatus.NOT_STARTED);
+			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1,
+					TransportationJobStatus.ASSIGNED2,TransportationJobStatus.ACCEPTED),username);
 		case 1:
-			return findMobile(TransportationJobStatus.IN_PROGRESS);
+			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.STARTED),username);
 		case 2:
-			return findMobile(Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.CLOSED));
+			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED),username);
 		case 3:
-			return findMobile();
+			return findByUser1Mobile(username);
+
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
+
+	public List<ma.azdad.mobile.model.TransportationJob> findByDriverMobile(List<TransportationJobStatus> status,String username) {
+		List<TransportationJob> list = repos.findByDriverMobile(username,status);
+		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
+		for (TransportationJob tj : list) {
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJob> findByDriverMobile(String username) {
+		List<TransportationJob> list = repos.findByDriverMobile(username);
+		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
+		for (TransportationJob tj : list) {
+
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationJob> findByDriverMobileByStatus(Integer state,String username) {
+		switch (state) {
+		case 0:
+			return findByDriverMobile(Arrays.asList(
+					TransportationJobStatus.ASSIGNED2,TransportationJobStatus.ACCEPTED),username);
+		case 1:
+			return findByDriverMobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.STARTED),username);
+		case 2:
+			return findByDriverMobile(Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED),username);
+		
 
 		default:
 			return new ArrayList<>();
 		}
 	}
 
+	
 	
 	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id){
 		TransportationJob tj = findOne(id);

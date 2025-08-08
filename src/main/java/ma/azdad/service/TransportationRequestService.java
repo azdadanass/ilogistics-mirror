@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
+import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
@@ -323,6 +325,114 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 	
 	//mobile
+	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {
+		List<TransportationRequest> list = repos.findLight();
+		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
+		for (TransportationRequest tj : list) {
+
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
+					tj.getId(),
+					tj.getReference(),
+					tj.getStatus(),
+					tj.getNeededPickupDate(),
+					tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(),
+					tj.getPickupDate(),
+					tj.getExpectedDeliveryDate(),
+					tj.getDeliveryDate(),
+					tj.getOriginName(),
+					tj.getDestinationName()
+				));
+
+		}
+
+		return mbList;
+	}
+	
+	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile(List<TransportationRequestStatus> status) {
+		List<TransportationRequest> list = repos.findLight(status);
+		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
+		for (TransportationRequest tj : list) {
+
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
+					tj.getId(),
+					tj.getReference(),
+					tj.getStatus(),
+					tj.getNeededPickupDate(),
+					tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(),
+					tj.getPickupDate(),
+					tj.getExpectedDeliveryDate(),
+					tj.getDeliveryDate(),
+					tj.getOriginName(),
+					tj.getDestinationName()
+				));
+
+		}
+
+		return mbList;
+	}
+	
+	
+	
+	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobile(List<TransportationRequestStatus> status,String username) {
+		List<TransportationRequest> list = repos.findLightByDriver(status,username);
+		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
+		for (TransportationRequest tj : list) {
+
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
+					tj.getId(),
+					tj.getReference(),
+					tj.getStatus(),
+					tj.getNeededPickupDate(),
+					tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(),
+					tj.getPickupDate(),
+					tj.getExpectedDeliveryDate(),
+					tj.getDeliveryDate(),
+					tj.getOriginName(),
+					tj.getDestinationName()
+				));
+
+		}
+
+		return mbList;
+	}
+
+	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobileByStatus(Integer state) {
+		switch (state) {
+		case 0:
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.APPROVED));
+		case 1:
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED));
+		case 2:
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.PICKEDUP));
+		case 3:
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED));
+		case 4:
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.CANCELED));
+		case 5:
+			return findByTmMobile();
+
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
+	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobileByStatus(Integer state,String username) {
+		switch (state) {
+		case 0:
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED),username);
+		case 2:
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.PICKEDUP),username);
+		case 3:
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED),username);
+		
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
 	public ma.azdad.mobile.model.TransportationRequest findOneMobile(Integer id){
 		TransportationRequest tr = findOne(id);
 		ma.azdad.mobile.model.TransportationRequest trMobile = new ma.azdad.mobile.model.TransportationRequest(

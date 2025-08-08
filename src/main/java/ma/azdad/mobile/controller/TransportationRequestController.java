@@ -19,6 +19,7 @@ import ma.azdad.mobile.model.Token;
 import ma.azdad.mobile.model.TransportationJob;
 import ma.azdad.mobile.model.TransportationRequest;
 import ma.azdad.mobile.model.TransportationRequestImage;
+import ma.azdad.model.Role;
 import ma.azdad.repos.TransportationRequestImageRepos;
 import ma.azdad.service.TokenService;
 import ma.azdad.service.TransportationJobService;
@@ -42,6 +43,19 @@ public class TransportationRequestController {
 		System.out.println("/findone/{key}/{id}");
 		Token token = tokenService.getBykey(key);
 		return transportationRequestService.findOneMobile(id);
+	}
+	
+	@GetMapping("/findbystatus/{key}/{state}")
+	public List<TransportationRequest> findLightByUserMobile(@PathVariable String key,
+			@PathVariable Integer state) {
+		System.out.println("/findbystatus/{key}/{state}");
+		Token token = tokenService.getBykey(key);
+		if (token.getRoleList().contains(Role.ROLE_ILOGISTICS_TM)) {
+			return transportationRequestService.findByTmMobileByStatus(state);
+		} else {
+			return transportationRequestService.findByDriverMobileByStatus(state, token.getUsername());
+
+		}
 	}
 	
 

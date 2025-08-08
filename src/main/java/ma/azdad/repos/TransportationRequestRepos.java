@@ -63,6 +63,9 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(List<TransportationRequestStatus> status);
+	
+	@Query(c1 + "from TransportationRequest a where a.status in (?1) and a.transportationJob.driver.username = ?2 order by a.neededPickupDate")
+	public List<TransportationRequest> findLightByDriver(List<TransportationRequestStatus> status,String username);
 
 	@Query(c1 + "from TransportationRequest a where a.status = ?2 and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
 	public List<TransportationRequest> findLight(String username, TransportationRequestStatus status, List<Integer> assignedProjectList);

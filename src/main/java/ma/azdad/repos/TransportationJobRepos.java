@@ -29,6 +29,12 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
 	public List<TransportationJob> findByUser1(String user1Username, List<TransportationJobStatus> statusList);
+	
+	@Query(c2 + "from TransportationJob a where a.user1.username = ?1 order by a.id desc")
+	public List<TransportationJob> findByUser1Mobile(String user1Username);
+
+	@Query(c2 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
+	public List<TransportationJob> findByUser1Mobile(String user1Username, List<TransportationJobStatus> statusList);
 
 	@Query(c1 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> find();
@@ -71,6 +77,14 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status = ?2  order by id desc")
 	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobStatus status);
+	
+	@Query(c2 + "from TransportationJob a where a.driver.username = ?1 and a.status in (?2)  order by id desc")
+	public List<TransportationJob> findByDriverMobile(String driverUsername, List<TransportationJobStatus> status);
+	
+	@Query(c2 + "from TransportationJob a where a.driver.username = ?1 order by id desc")
+	public List<TransportationJob> findByDriverMobile(String driverUsername);
+	
+	
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
 	public Long countByDriver(String driverUsername, TransportationJobStatus status);

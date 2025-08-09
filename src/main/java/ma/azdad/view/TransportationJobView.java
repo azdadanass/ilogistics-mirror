@@ -165,8 +165,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
 				changeTransportationJobAssignmentTypeListener();
 			}
-
-		}
+		}else if(isPage("startTransportationJob"))
+			transportationJob = transportationJobService.findOne(id);
 
 	}
 

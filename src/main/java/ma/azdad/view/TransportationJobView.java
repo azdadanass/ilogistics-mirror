@@ -165,7 +165,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
 				changeTransportationJobAssignmentTypeListener();
 			}
-		}else if(isPage("startTransportationJob"))
+		} else if (isPage("startTransportationJob"))
 			transportationJob = transportationJobService.findOne(id);
 
 	}
@@ -554,30 +554,31 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// start
-	public Boolean canStart() {
-		return canStart(transportationJob);
-	}
 
-	public Boolean canStart(TransportationJob transportationJob) {
+	public Boolean canStart() {
 		return service.canStart(transportationJob, sessionView.getUsername());
 	}
 
-	public void start(TransportationJob transportationJob) {
-		if (!canStart(transportationJob))
-			return;
-		service.start(transportationJob, sessionView.getUser());
+	private Boolean validateStart() {
+
+		System.out.println("validateStart : ");
+		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null).count() > 0)
+			return FacesContextMessages.ErrorMessages("Expected Pickup Date should not be null");
+
+		System.out.println("aaaaaaaaaaaaa");
+
+		return true;
 	}
 
-	public void start() {
-		if (isViewPage) {
-			start(transportationJob);
-			transportationJob = service.findOne(transportationJob.getId());
-		} else if (isListPage && pageIndex == 7) {
-			for (TransportationJob transportationJob : list4)
-				start(service.findOne(transportationJob.getId()));
-			refreshList();
-		}
+	public String start() {
+		if (!canStart())
+			return null;
+		if (!validateStart())
+			return null;
+		service.start(transportationJob, sessionView.getUser());
+		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
+
 	// GPS
 
 	public void refreshMapModel() {

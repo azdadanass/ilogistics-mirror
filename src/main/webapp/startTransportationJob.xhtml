@@ -47,11 +47,11 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<!-- <p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" action="#{transportationJobView.assignTrList()}" onclick="PF('loading').show()"
-							oncomplete="PF('loading').hide()" update="messages" title="Assign">
-							<i class="ace-icon fa fa-link bigger-230"></i>
-							<h:outputText value="Assign" />
-						</p:commandLink> -->
+						<p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" action="#{transportationJobView.start()}" update=":main_form" title="Start"
+							rendered="#{transportationJobView.canStart()}">
+							<i class="ace-icon fa fa-check bigger-230"></i>
+							<h:outputText value="Start" />
+						</p:commandLink>
 					</div>
 				</div>
 			</div>
@@ -90,17 +90,13 @@
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 												</h:outputText>
 											</p:column>
-											<p:column headerText="Planned Pickup Time">
-												<p:calendar value="#{item.plannedPickupDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
+											<p:column headerText="Expected Pickup Time">
+												<p:calendar value="#{item.expectedPickupDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" />
 											</p:column>
 											<p:column headerText="Needed Delivery Time">
 												<h:outputText value="#{item.neededDeliveryDate}" styleClass="pink">
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 												</h:outputText>
-											</p:column>
-											<p:column headerText="Planned Delivery Time">
-												<p:calendar value="#{item.plannedDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm"
-													rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
 											</p:column>
 											<p:column headerText="Status" width="70">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />

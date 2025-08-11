@@ -77,6 +77,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Hibernate.initialize(transportationJob.getPathList());
 		if (transportationJob.getTransporter() != null) {
 			Hibernate.initialize(transportationJob.getTransporter().getSupplier());
+			Hibernate.initialize(transportationJob.getTransporter().getCompany());
 			initialize(transportationJob.getTransporter().getUserList());
 		}
 

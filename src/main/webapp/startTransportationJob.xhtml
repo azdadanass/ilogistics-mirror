@@ -47,7 +47,7 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" action="#{transportationJobView.start()}" update=":main_form" title="Start"
+						<p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" action="#{transportationJobView.startTransportationJob()}" update=":main_form" title="Start"
 							rendered="#{transportationJobView.canStart()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Start" />

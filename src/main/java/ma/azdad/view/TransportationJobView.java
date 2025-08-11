@@ -35,6 +35,7 @@ import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.Vehicle;
@@ -323,15 +324,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst()
-				.orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
-				.orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
 	}
 
 	// assign
@@ -379,8 +378,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					userView.initLists(userService.findActiveDriverList(false));
 					break;
 				case ASSIGNED1:
-					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : "
-							+ userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : " + userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					System.out.println("transportationJob.getTransporterId() : " + transportationJob.getTransporterId());
 					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					break;
@@ -560,17 +558,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private Boolean validateStart() {
-
-		System.out.println("validateStart : ");
 		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Expected Pickup Date should not be null");
-
-		System.out.println("aaaaaaaaaaaaa");
-
 		return true;
 	}
 
-	public String start() {
+	public String startTransportationJob() {
 		if (!canStart())
 			return null;
 		if (!validateStart())
@@ -626,7 +619,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			tr.setDate4(currentDate);
 			tr.setUser4(sessionView.getUser());
 			tr.setTransportationJob(transportationJob);
-			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
+			tr.addHistory(new TransportationRequestHistory("Assigned", sessionView.getUser(), "Assigned To : " + transportationJob.getReference()));
+//			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
 			transportationRequestService.save(tr);
 			tr = transportationRequestService.findOne(tr.getId());
 			// emailService.transportationRequestNotification(tr);
@@ -982,8 +976,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(),
-				transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();

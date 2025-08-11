@@ -48,7 +48,7 @@ public class TransportationRequestController {
 	@GetMapping("/findbystatus/{key}/{state}")
 	public List<TransportationRequest> findLightByUserMobile(@PathVariable String key,
 			@PathVariable Integer state) {
-		System.out.println("/findbystatus/{key}/{state}");
+		System.out.println("/mobile/tr/findbystatus/{key}/{state}");
 		Token token = tokenService.getBykey(key);
 		if (token.getRoleList().contains(Role.ROLE_ILOGISTICS_TM)) {
 			return transportationRequestService.findByTmMobileByStatus(state);

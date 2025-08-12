@@ -212,6 +212,129 @@
 						</f:subview>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 3}">
+						<f:subview rendered="#{sessionView.isInternalTM}">
+							<li class="open">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-truck"></i>
+									<span class="menu-text">
+										<h:outputText value="Transportation Job" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+											<h:outputText value="New" />
+											<f:param name="state" value="5" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-spinner bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="In Progress" />
+											<f:param name="state" value="3" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
+											<h:outputText value="Completed" />
+											<f:param name="state" value="4" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 " style="margin-right: 10px" />
+											<h:outputText value="All" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
+							<li class="open">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-random"></i>
+									<span class="menu-text">
+										<h:outputText value="Transportation Request " styleClass="smaller-80"/>
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+											<h:outputText value="Pending" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="4" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-link bigger-130 blue" style="margin-right: 10px" />
+											<h:outputText value="Assigned" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="5" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-spinner bigger-130 purple" style="margin-right: 10px" />
+											<h:outputText value="In Progress" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="6" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
+											<h:outputText value="Completed" />
+											<f:param name="pageIndex" value="1" />
+											<f:param name="state" value="7" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-remove bigger-130 red" style="margin-right: 10px" />
+											<h:outputText value="Cancelled" />
+											<f:param name="pageIndex" value="3" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-list bigger-130" style="margin-right: 10px" />
+											<h:outputText value="All" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</li>
+						</f:subview>
 						<f:subview rendered="#{sessionView.isPM or sessionView.isInternalTM  or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">

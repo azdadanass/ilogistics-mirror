@@ -153,7 +153,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (isListPage)
 			switch (pageIndex) {
 			case 1:
-				if (sessionView.getInternal() || sessionView.getIsCustomerUser())
+				if(sessionView.getIsInternalTM())
+					initLists(service.find(state));
+				else if (sessionView.getInternal() || sessionView.getIsCustomerUser())
 					list2 = list1 = transportationRequestService.findLight(sessionView.getUsername(), state, cacheView.getAssignedProjectList(), sessionView.isTM());
 				else if (sessionView.getIsSupplierUser())
 					list2 = list1 = transportationRequestService.findLightBySupplierUser(state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());

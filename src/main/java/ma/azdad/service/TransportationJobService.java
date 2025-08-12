@@ -29,6 +29,7 @@ import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.TransportationJobFileRepos;
@@ -62,10 +63,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	StopService stopService;
-	
+
 	@Autowired
 	TransporterService transporterService;
-	
+
 	@Autowired
 	TransportationJobFileRepos transportationJobFileRepos;
 	
@@ -90,6 +91,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Hibernate.initialize(transportationJob.getPathList());
 		if (transportationJob.getTransporter() != null) {
 			Hibernate.initialize(transportationJob.getTransporter().getSupplier());
+			Hibernate.initialize(transportationJob.getTransporter().getCompany());
 			initialize(transportationJob.getTransporter().getUserList());
 		}
 
@@ -196,6 +198,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<TransportationJob> find(List<TransportationJobStatus> status) {
 		return repos.find(status);
 	}
+	
+	public List<TransportationJob> find(TransportationJobState state) {
+		if(state==null)
+			return repos.find();
+		return repos.find(state.getStatusList());
+	}
 
 	public void calculateTransportationRequestListCosts(TransportationJob transportationJob, Boolean setCost) {
 		Double total1 = 0.0, total2 = 0.0;
@@ -246,8 +254,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(
-				Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService
+				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());
@@ -275,11 +283,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	// workflow
-	
-	
-	
-	
-	public void assign(TransportationJob transportationJob,TransportationJobAssignmentType assignmentType,Integer transporterId,String driverUsername,Integer vehicleId,User connectedUser) {
+
+	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId, User connectedUser) {
 		transportationJob.setAssignmentType(assignmentType);
 
 		switch (transportationJob.getAssignmentType()) {
@@ -288,8 +293,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(connectedUser);
 			transportationJob.setTransporter(transporterService.findOneLight(transporterId));
-			transportationJob.addHistory(
-					new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			transportationJob.getTransportationRequestList().forEach(
+					i -> i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>")));
 			break;
 		case INTERNAL_DRIVER:
 		case EXTERNAL_DRIVER:
@@ -299,8 +305,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
-			transportationJob.addHistory(
-					new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			transportationJob.getTransportationRequestList().forEach(
+					i -> i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>")));
 			break;
 		}
 
@@ -308,8 +315,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.calculateMaxStartTime();
 		save(transportationJob);
 	}
-	
-	
+
 	public Boolean canAccept(TransportationJob transportationJob, String connectedUserUsername) {
 		return TransportationJobStatus.ASSIGNED2.equals(transportationJob.getStatus()) //
 				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getDriverUsername());
@@ -349,18 +355,17 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.addHistory(new TransportationJobHistory("Started", connectedUser));
 		save(transportationJob);
 	}
-	
+
 	private Boolean isTM(List<Role> roleList) {
 		return roleList.contains(Role.ROLE_ILOGISTICS_TM);
 	}
-	
-	
-	public Boolean canUnassign(TransportationJob transportationJob,String connectedUserUsername,List<Role> roleList) {
+
+	public Boolean canUnassign(TransportationJob transportationJob, String connectedUserUsername, List<Role> roleList) {
 		return Arrays.asList(TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2).contains(transportationJob.getStatus()) //
 				&& isTM(roleList) //
 				&& connectedUserUsername.equalsIgnoreCase(transportationJob.getUser1().getUsername());
 	}
-	
+
 	public void unassign(TransportationJob transportationJob, User connectedUser) {
 		transportationJob.setStatus(TransportationJobStatus.EDITED);
 		transportationJob.setDate2(null);
@@ -368,6 +373,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setDate3(null);
 		transportationJob.setUser3(null);
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
+		transportationJob.getTransportationRequestList().forEach(i->i.addHistory(new TransportationRequestHistory("Unassign", connectedUser)));
 		save(transportationJob);
 	}
 

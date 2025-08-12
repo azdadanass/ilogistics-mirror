@@ -95,10 +95,11 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			Hibernate.initialize(transportationRequest.getTransportationJob().getVehicle());
 			Hibernate.initialize(transportationRequest.getTransportationJob().getDriver());
 			Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter());
-			if (transportationRequest.getTransportationJob().getTransporter() != null)
+			if (transportationRequest.getTransportationJob().getTransporter() != null) {
 				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getSupplier());
+				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getCompany());
+			}
 		}
-
 		return transportationRequest;
 	}
 
@@ -114,6 +115,13 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (!isTM)
 			return null;
 		return repos.findLight(status);
+	}
+	
+	
+	public List<TransportationRequest> find(TransportationRequestState state){
+		if(state==null)
+			return repos.findLight();
+		return repos.findLight(state.getStatusList());
 	}
 
 	@Cacheable("transportationRequestService.count")

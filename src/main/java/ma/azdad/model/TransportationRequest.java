@@ -462,6 +462,16 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		if (contact2 != null)
 			contact2Username = contact2.getUsername();
 	}
+	
+	public void addHistory(TransportationRequestHistory history) {
+		history.setParent(this);
+		historyList.add(history);
+	}
+
+	public void removeHistory(TransportationRequestHistory history) {
+		history.setParent(null);
+		historyList.remove(history);
+	}
 
 	@Override
 	public boolean filter(String query) {
@@ -603,7 +613,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.fileList = fileList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL,orphanRemoval = true)
 	public List<TransportationRequestHistory> getHistoryList() {
 		return historyList;
 	}

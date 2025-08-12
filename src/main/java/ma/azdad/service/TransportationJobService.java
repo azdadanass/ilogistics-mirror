@@ -185,6 +185,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<TransportationJob> find(List<TransportationJobStatus> status) {
 		return repos.find(status);
 	}
+	
+	public List<TransportationJob> find(TransportationJobState state) {
+		if(state==null)
+			return repos.find();
+		return repos.find(state.getStatusList());
+	}
 
 	public void calculateTransportationRequestListCosts(TransportationJob transportationJob, Boolean setCost) {
 		Double total1 = 0.0, total2 = 0.0;

@@ -7,7 +7,14 @@ public enum TransportationRequestState {
 	WAITING("Waiting", Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)),
 	HANDLED("Handled", Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP)),
 	DELIVRED("Delivred", Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED)),
-	REJECTED("Rejected", Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED));
+	REJECTED("Rejected", Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)),
+	
+	PENDING("Pending", Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)),
+	ASSIGNED("Assigned", Arrays.asList(TransportationRequestStatus.ASSIGNED)),
+	IN_PROGRESS("In Progress", Arrays.asList(TransportationRequestStatus.PICKEDUP)),
+	COMPLETED("Completed", Arrays.asList(TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED)),
+	
+	;
 
 	private final String value;
 	private final List<TransportationRequestStatus> statusList;

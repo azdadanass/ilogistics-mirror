@@ -14,7 +14,11 @@ public enum TransportationJobState {
 	ASSIGNED("Assigned", Color.BLUE, Arrays.asList(TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2)), //
 	ACCEPTED("Accepted", Color.L_BLUE, Arrays.asList(TransportationJobStatus.ACCEPTED)), //
 	IN_PROGRESS("In Progress", Color.PURPLE, Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)), //
-	COMPLETED("Completed", Color.GREEN, Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED));
+	COMPLETED("Completed", Color.GREEN, Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED)),
+	NEW("New", Color.GREEN, Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1,TransportationJobStatus.ASSIGNED2)),
+	
+	
+	;
 
 	private final String value;
 	private final Color color;

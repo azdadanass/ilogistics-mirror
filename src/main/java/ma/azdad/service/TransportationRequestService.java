@@ -93,6 +93,13 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			return null;
 		return repos.findLight(status);
 	}
+	
+	
+	public List<TransportationRequest> find(TransportationRequestState state){
+		if(state==null)
+			return repos.findLight();
+		return repos.findLight(state.getStatusList());
+	}
 
 	@Cacheable("transportationRequestService.count")
 	public Long count(TransportationRequestStatus status, Boolean isTM) {

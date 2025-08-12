@@ -200,7 +200,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			else
 				switch (pageIndex) {
 				case 1:
-					list2 = list1 = transportationJobService.findByUser1(sessionView.getUsername(), state);
+//					list2 = list1 = transportationJobService.findByUser1(sessionView.getUsername(), state);
+					initLists(transportationJobService.find(state));
 					break;
 				case 4:
 					initLists(transportationJobService.findToAssign1(sessionView.getUsername()));

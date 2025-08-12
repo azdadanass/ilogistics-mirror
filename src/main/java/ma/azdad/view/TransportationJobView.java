@@ -200,7 +200,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			else
 				switch (pageIndex) {
 				case 1:
-//					list2 = list1 = transportationJobService.findByUser1(sessionView.getUsername(), state);
 					initLists(transportationJobService.find(state));
 					break;
 				case 4:
@@ -211,6 +210,18 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 6:
 					initLists(transportationJobService.findByDriver(sessionView.getUsername(), status));
+					break;
+				case 7:
+					// to accept1
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),TransportationJobStatus.ASSIGNED2));
+					break;
+				case 8:
+					// to start1
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),TransportationJobStatus.ACCEPTED));
+					break;
+				case 9:
+					// to complete1
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -519,7 +530,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isViewPage) {
 			accept(transportationJob);
 			transportationJob = service.findOne(transportationJob.getId());
-		} else if (isListPage && pageIndex == 6) {
+		} else if (isListPage && isPageIndex(6l,7l)) {
 			for (TransportationJob transportationJob : list4)
 				accept(service.findOne(transportationJob.getId()));
 			refreshList();
@@ -1041,9 +1052,21 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public Long countToStart() {
 		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
 	}
+	
+	public Long countToAccept1() {
+		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
+	}
+	
+	public Long countToStart1() {
+		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
+	}
+	
+	public Long countToComplete1() {
+		return service.countByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS));
+	}
 
 	public Long countTotal() {
-		return countToAssign1() + countToAssign2() + countToAccept() + countToStart();
+		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToAccept1() + countToStart1()+countToComplete1();
 	}
 
 	// GETTERS & SETTERS

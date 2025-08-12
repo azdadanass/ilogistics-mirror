@@ -49,7 +49,7 @@
 								<i class="ace-icon fa fa-check bigger-230"></i>
 								<h:outputText value="Assign" />
 							</p:commandLink>
-							<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Accept" onclick="PF('acceptDlg').show()" rendered="#{transportationJobView.isPageIndex(6)}">
+							<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Accept" onclick="PF('acceptDlg').show()" rendered="#{transportationJobView.isPageIndex(6,7)}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Accept" />
 						</p:commandLink>
@@ -57,10 +57,10 @@
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Decline" />
 						</p:commandLink>
-						<p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" onclick="PF('startDlg').show()" rendered="#{transportationJobView.isPageIndex(7)}">
+						<!-- <p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" onclick="PF('startDlg').show()" rendered="#{transportationJobView.isPageIndex(7)}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Start" />
-						</p:commandLink>
+						</p:commandLink> -->
 						</div>
 						<div class="col-sm-5  hidden-xs infobox-container">
 							<span class="btn btn-app btn-sm btn-warning no-hover">

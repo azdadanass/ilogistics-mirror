@@ -543,6 +543,19 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			transporter = new Transporter();
 		transporter.setSupplierName(transporterSupplierName);
 	}
+	
+	@Transient
+	public String getUser1Username(){
+		return user1!=null?user1.getUsername():null;
+	}
+
+	@Transient
+	public void setUser1Username(String user1Username){
+		if(user1==null || !user1Username.equals(user1.getUsername()))
+			user1=new User();
+		user1.setUsername(user1Username);
+	}
+
 
 	@Transient
 	public String getDriverUsername() {

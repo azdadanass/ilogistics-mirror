@@ -399,6 +399,80 @@
 									</span>
 								</a>
 								<ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
+									<f:subview rendered="#{sessionView.isInternalTM}">
+										<li class="dropdown-header">
+											<i class="ace-icon fa fa-check"></i>
+											<h:outputText value="TJ Management" />
+										</li>
+										<li class="dropdown-content">
+											<ul class="dropdown-menu dropdown-navbar">
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-link orange " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" TJ to assign" />
+															</span>
+															<span class="pull-right badge badge-warning">
+																<h:outputText value="#{transportationJobView.countToAssign1()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="4" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" TJ to accept" />
+															</span>
+															<span class="pull-right badge badge-primary">
+																<h:outputText value="#{transportationJobView.countToAccept1()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="7" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-list purple " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" TJ to start" />
+															</span>
+															<span class="pull-right badge badge-purple">
+																<h:outputText value="#{transportationJobView.countToStart1()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="8" />
+													</h:outputLink>
+												</li>
+												<li>
+													<h:outputLink value="transportationJobList.xhtml">
+														<span class="clearfix">
+															<span class="pull-left">
+																<i class="ace-icon fa fa-check green " style="font-size: 20px" />
+																&nbsp;&nbsp;
+																<h:outputText value=" TJ to complete" />
+															</span>
+															<span class="pull-right badge badge-success">
+																<h:outputText value="#{transportationJobView.countToComplete1()}" />
+															</span>
+														</span>
+														<f:param name="pageIndex" value="9" />
+													</h:outputLink>
+												</li>
+											</ul>
+										</li>
+										<li class="dropdown-header">
+											<i class="ace-icon fa fa-check"></i>
+											<h:outputText value="TR Management" />
+										</li>
+									</f:subview>
 									<li class="dropdown-header">
 										<i class="ace-icon fa fa-check"></i>
 										<h:outputText value="Transportation Jobs" />
@@ -474,110 +548,110 @@
 										</ul>
 									</li>
 									<f:subview rendered="#{sessionView.isUser() or sessionView.isTM() or sessionView.isPM()}">
-									<li class="dropdown-header">
-										<i class="ace-icon fa fa-check"></i>
-										<h:outputText value="Transportation Tasks" />
-									</li>
-									<li class="dropdown-content">
-										<ul class="dropdown-menu dropdown-navbar">
-											<f:subview rendered="#{sessionView.isUser()}">
-												<li>
-													<h:outputLink value="deliveryRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Request " />
+										<li class="dropdown-header">
+											<i class="ace-icon fa fa-check"></i>
+											<h:outputText value="Transportation Tasks" />
+										</li>
+										<li class="dropdown-content">
+											<ul class="dropdown-menu dropdown-navbar">
+												<f:subview rendered="#{sessionView.isUser()}">
+													<li>
+														<h:outputLink value="deliveryRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-check blue " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Request " />
+																</span>
+																<span class="pull-right badge badge-primary">
+																	<h:outputText value="#{deliveryRequestView.countToAddTransport()}" />
+																</span>
 															</span>
-															<span class="pull-right badge badge-primary">
-																<h:outputText value="#{deliveryRequestView.countToAddTransport()}" />
+															<f:param name="pageIndex" value="10" />
+														</h:outputLink>
+													</li>
+													<li>
+														<h:outputLink value="transportationRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Acknowledge " />
+																</span>
+																<span class="pull-right badge badge-purple">
+																	<h:outputText value="#{transportationRequestView.countToAcknowledgeRequests()}" />
+																</span>
 															</span>
-														</span>
-														<f:param name="pageIndex" value="10" />
-													</h:outputLink>
-												</li>
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check purple " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Acknowledge " />
+															<f:param name="pageIndex" value="2" />
+														</h:outputLink>
+													</li>
+												</f:subview>
+												<f:subview rendered="#{sessionView.isPM()}">
+													<li>
+														<h:outputLink value="transportationRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-check green " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Approve " />
+																</span>
+																<span class="pull-right badge badge-success">
+																	<h:outputText value="#{transportationRequestView.countToApproveRequests()}" />
+																</span>
 															</span>
-															<span class="pull-right badge badge-purple">
-																<h:outputText value="#{transportationRequestView.countToAcknowledgeRequests()}" />
+															<f:param name="pageIndex" value="3" />
+														</h:outputLink>
+													</li>
+												</f:subview>
+												<f:subview rendered="#{sessionView.isTM()}">
+													<li>
+														<h:outputLink value="transportationRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Assign " />
+																</span>
+																<span class="pull-right badge badge-primary">
+																	<h:outputText value="#{transportationRequestView.countToAssignRequests()}" />
+																</span>
 															</span>
-														</span>
-														<f:param name="pageIndex" value="2" />
-													</h:outputLink>
-												</li>
-											</f:subview>
-											<f:subview rendered="#{sessionView.isPM()}">
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-check green " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Approve " />
+															<f:param name="pageIndex" value="4" />
+														</h:outputLink>
+													</li>
+													<li>
+														<h:outputLink value="transportationRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Pick Up " />
+																</span>
+																<span class="pull-right badge badge-primary">
+																	<h:outputText value="#{transportationRequestView.countToPickupRequests()}" />
+																</span>
 															</span>
-															<span class="pull-right badge badge-success">
-																<h:outputText value="#{transportationRequestView.countToApproveRequests()}" />
+															<f:param name="pageIndex" value="5" />
+														</h:outputLink>
+													</li>
+													<li>
+														<h:outputLink value="transportationRequestList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" Deliver " />
+																</span>
+																<span class="pull-right badge badge-primary">
+																	<h:outputText value="#{transportationRequestView.countToDeliverRequests()}" />
+																</span>
 															</span>
-														</span>
-														<f:param name="pageIndex" value="3" />
-													</h:outputLink>
-												</li>
-											</f:subview>
-											<f:subview rendered="#{sessionView.isTM()}">
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Assign " />
-															</span>
-															<span class="pull-right badge badge-primary">
-																<h:outputText value="#{transportationRequestView.countToAssignRequests()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="4" />
-													</h:outputLink>
-												</li>
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Pick Up " />
-															</span>
-															<span class="pull-right badge badge-primary">
-																<h:outputText value="#{transportationRequestView.countToPickupRequests()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="5" />
-													</h:outputLink>
-												</li>
-												<li>
-													<h:outputLink value="transportationRequestList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-spinner blue " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" Deliver " />
-															</span>
-															<span class="pull-right badge badge-primary">
-																<h:outputText value="#{transportationRequestView.countToDeliverRequests()}" />
-															</span>
-														</span>
-														<f:param name="pageIndex" value="6" />
-													</h:outputLink>
-												</li>
-											</f:subview>
-										</ul>
-									</li>
+															<f:param name="pageIndex" value="6" />
+														</h:outputLink>
+													</li>
+												</f:subview>
+											</ul>
+										</li>
 									</f:subview>
 								</ul>
 							</li>

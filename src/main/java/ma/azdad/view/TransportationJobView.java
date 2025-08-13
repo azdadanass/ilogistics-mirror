@@ -232,12 +232,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					initLists(transportationJobService.findByDriver(sessionView.getUsername(), status));
 					break;
 				case 7:
-					// to accept1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2));
+					initLists(transportationJobService.findToAccept(sessionView.getUsername()));
 					break;
 				case 8:
-					// to start1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED));
+					initLists(transportationJobService.findToStart(sessionView.getUsername()));
 					break;
 				case 9:
 					// to complete1
@@ -1041,27 +1039,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Long countToAccept() {
-		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
+		return service.countToAccept(sessionView.getUsername());
 	}
 
 	public Long countToStart() {
-		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
+		return service.countToStart(sessionView.getUsername());
 	}
 
-	public Long countToAccept1() {
-		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
-	}
-
-	public Long countToStart1() {
-		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
-	}
-
-	public Long countToComplete1() {
-		return service.countByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS));
+	public Long countToComplete() {
+		return service.countToComplete(sessionView.getUsername());
 	}
 
 	public Long countTotal() {
-		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToAccept1() + countToStart1() + countToComplete1();
+		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToComplete();
 	}
 
 	// GETTERS & SETTERS

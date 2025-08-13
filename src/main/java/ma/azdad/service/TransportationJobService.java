@@ -97,6 +97,36 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return repos.findByUser1(user1Username);
 		return repos.findByUser1(user1Username, state.getStatusList());
 	}
+	
+	@Cacheable(value = "transportationJobService.findToAccept")
+	public List<TransportationJob> findToAccept(String username){
+		return repos.findToAccept(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.countToAccept")
+	public Long countToAccept(String username){
+		return repos.countToAccept(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.findToStart")
+	public List<TransportationJob> findToStart(String username){
+		return repos.findToStart(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.countToStart")
+	public Long countToStart(String username){
+		return repos.countToStart(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.findToComplete")
+	public List<TransportationJob> findToComplete(String username){
+		return repos.findToComplete(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.countToComplete")
+	public Long countToComplete(String username){
+		return repos.countToComplete(username);
+	}
 
 	@Cacheable(value = "transportationJobService.findByUser1AndStatus")
 	public List<TransportationJob> findByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus) {

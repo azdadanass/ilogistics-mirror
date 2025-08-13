@@ -458,28 +458,47 @@
 											</ul>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{sessionView.isInternalTM}">
+									<f:subview rendered="#{sessionView.isTM or sessionView.isDriver}">
 										<li class="dropdown-header">
 											<i class="ace-icon fa fa-check"></i>
 											<h:outputText value="TJ Management" />
 										</li>
 										<li class="dropdown-content">
 											<ul class="dropdown-menu dropdown-navbar">
-												<li>
-													<h:outputLink value="transportationJobList.xhtml">
-														<span class="clearfix">
-															<span class="pull-left">
-																<i class="ace-icon fa fa-link orange " style="font-size: 20px" />
-																&nbsp;&nbsp;
-																<h:outputText value=" TJ to assign" />
+												<f:subview rendered="#{sessionView.isInternalTM}">
+													<li>
+														<h:outputLink value="transportationJobList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-link orange " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" TJ to assign" />
+																</span>
+																<span class="pull-right badge badge-warning">
+																	<h:outputText value="#{transportationJobView.countToAssign1()}" />
+																</span>
 															</span>
-															<span class="pull-right badge badge-warning">
-																<h:outputText value="#{transportationJobView.countToAssign1()}" />
+															<f:param name="pageIndex" value="4" />
+														</h:outputLink>
+													</li>
+												</f:subview>
+												<f:subview rendered="#{sessionView.isExternalTM}">
+													<li>
+														<h:outputLink value="transportationJobList.xhtml">
+															<span class="clearfix">
+																<span class="pull-left">
+																	<i class="ace-icon fa fa-link orange " style="font-size: 20px" />
+																	&nbsp;&nbsp;
+																	<h:outputText value=" TJ to assign" />
+																</span>
+																<span class="pull-right badge badge-warning">
+																	<h:outputText value="#{transportationJobView.countToAssign2()}" />
+																</span>
 															</span>
-														</span>
-														<f:param name="pageIndex" value="4" />
-													</h:outputLink>
-												</li>
+															<f:param name="pageIndex" value="5" />
+														</h:outputLink>
+													</li>
+												</f:subview>
 												<li>
 													<h:outputLink value="transportationJobList.xhtml">
 														<span class="clearfix">
@@ -489,7 +508,7 @@
 																<h:outputText value=" TJ to accept" />
 															</span>
 															<span class="pull-right badge badge-primary">
-																<h:outputText value="#{transportationJobView.countToAccept1()}" />
+																<h:outputText value="#{transportationJobView.countToAccept()}" />
 															</span>
 														</span>
 														<f:param name="pageIndex" value="7" />
@@ -593,7 +612,7 @@
 																<h:outputText value=" To Accept  " />
 															</span>
 															<span class="pull-right badge badge-warning">
-																<h:outputText value="#{transportationJobView.countToAccept()}" />
+																<h:outputText value="#{transportationJobView.countToAccept2()}" />
 															</span>
 														</span>
 														<f:param name="pageIndex" value="6" />

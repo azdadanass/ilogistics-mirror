@@ -74,12 +74,12 @@ public class TransportationRequestHistoryService extends GenericService<Integer,
 	}
 
 	public void delivredNew(TransportationRequest transportationRequest, User user) {
-		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Delivred", user, null, transportationRequest));
+		transportationRequest.getHistoryList().add(new TransportationRequestHistory("Delivered", user, null, transportationRequest));
 	}
 
 	public void delivred(TransportationRequest transportationRequest, User user) {
 		try {
-			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Delivred", user, null, transportationRequest);
+			TransportationRequestHistory transportationRequestHistory = new TransportationRequestHistory("Delivered", user, null, transportationRequest);
 			save(transportationRequestHistory);
 		} catch (Exception e) {
 			log.error("error creating transportationRequestHistory History (delivred) : " + e.getMessage());

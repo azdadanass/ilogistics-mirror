@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import ma.azdad.utils.Color;
+
 @Entity
 public class TransportationRequestHistory extends GenericHistory<TransportationRequest> {
 
@@ -39,10 +41,16 @@ public class TransportationRequestHistory extends GenericHistory<TransportationR
 	@Override
 	@Transient
 	public String getStatusStyleClass() {
+//		try {
+//			return TransportationRequestStatus.getByValue(status).getBadge();
+//		} catch (Exception e) {
+//			return "badge";
+//		}
+		
 		try {
-			return TransportationRequestStatus.getByValue(status).getBadge();
+			return TransportationRequestStatus.getByValue(status).getColor();
 		} catch (Exception e) {
-			return "badge";
+			return Color.GREY.getName();
 		}
 	}
 

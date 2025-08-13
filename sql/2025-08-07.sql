@@ -1,2 +1,4 @@
 update transportation_request a set a.planned_pickup_date  = a.expected_pickup_date  where a.planned_pickup_date  is null;
 update transportation_request a set a.planned_delivery_date  = a.expected_delivery_date  where a.planned_delivery_date  is null;
+
+update vehicle v set active  = true where active  is null;

@@ -34,7 +34,7 @@ public class UserService {
 
 	@Autowired
 	private CacheService cacheService;
-	
+
 	@Autowired
 	private UserRoleService userRoleService;
 
@@ -44,40 +44,41 @@ public class UserService {
 		Hibernate.initialize(u.getRoleList());
 		Hibernate.initialize(u.getFileList());
 		Hibernate.initialize(u.getHistoryList());
-		u.getVehicleList().forEach(i->Hibernate.initialize(i.getVehicle()));
-		Hibernate.initialize(u.getTransporter());
+		u.getVehicleList().forEach(i -> Hibernate.initialize(i.getVehicle()));
+		if (u.getTransporter() != null)
+			Hibernate.initialize(u.getTransporter().getVehicleList());
 		return u;
 	}
 
 	public User findOneLight(String username) {
 		return repos.findById(username).get();
 	}
-	
+
 	public List<User> findByStatus2(Boolean active) {
 		return repos.findLightByStatus2(active);
 	}
-	
+
 	public User findByUsername(String username) {
 		User us = repos.findByUsername(username);
-		
-			if (us.getCompany() != null)
-				Hibernate.initialize(us.getCompany());
-			if (us.getCustomer() != null)
-				Hibernate.initialize(us.getCustomer());
-			if (us.getSupplier() != null)
-				Hibernate.initialize(us.getSupplier());
+
+		if (us.getCompany() != null)
+			Hibernate.initialize(us.getCompany());
+		if (us.getCustomer() != null)
+			Hibernate.initialize(us.getCustomer());
+		if (us.getSupplier() != null)
+			Hibernate.initialize(us.getSupplier());
 
 		return us;
 	}
-	
+
 	public User findByUsernameLight(String username) {
 		return repos.findByUsernameLight(username);
 	}
-	
+
 	public User findByFullName(String fullName) {
 		return repos.findByFullName(fullName);
 	}
-	
+
 	public List<User> findLightByInternalAndActive() {
 		return findLight(true, true);
 	}
@@ -85,21 +86,21 @@ public class UserService {
 	public List<User> findLightByCompany(Integer companyId, Boolean active) {
 		return repos.findLightByCompany(companyId, active);
 	}
-	
-	public List<User> findActiveAndHaveAnyRole(List<Role> roleList,Boolean internal){
-		return repos.findActiveAndHaveAnyRole(roleList,internal);
+
+	public List<User> findActiveAndHaveAnyRole(List<Role> roleList, Boolean internal) {
+		return repos.findActiveAndHaveAnyRole(roleList, internal);
 	}
-	
-	public List<User> findActiveAndHaveAnyRoleAndSupplier(List<Role> roleList,Integer supplierId){
+
+	public List<User> findActiveAndHaveAnyRoleAndSupplier(List<Role> roleList, Integer supplierId) {
 		return repos.findActiveAndHaveAnyRoleAndSupplier(roleList, supplierId);
 	}
 
 	public User findByLogin(String login) {
 		User u = repos.findByLogin(login);
-		if (u != null) 
+		if (u != null)
 			Hibernate.initialize(u.getTransporter());
-			Hibernate.initialize(u.getRoleList());
-			
+		Hibernate.initialize(u.getRoleList());
+
 		return u;
 	}
 
@@ -116,17 +117,17 @@ public class UserService {
 	public void updatePassword(String username, String password) {
 		repos.updatePassword(username, password);
 	}
-	
+
 	public List<User> findLightByActive(String username) {
-		return findLight2( true,username);
+		return findLight2(true, username);
 	}
-	
+
 	@Cacheable("userService.findLight2")
-	public List<User> findLight2( Boolean active,String username) {
-		return repos.findLight2(active,username);
+	public List<User> findLight2(Boolean active, String username) {
+		return repos.findLight2(active, username);
 	}
-	
-	public List<User> findLight2(){
+
+	public List<User> findLight2() {
 		return repos.findLight2();
 	}
 
@@ -185,7 +186,7 @@ public class UserService {
 	public List<User> findActiveByCompany(Integer companyId) {
 		return repos.findActiveByCompany(companyId);
 	}
-	
+
 	public List<User> findActiveByCustomer(Integer customerId) {
 		return repos.findActiveByCustomer(customerId);
 	}
@@ -408,43 +409,43 @@ public class UserService {
 	public List<User> findLightByCustomerAndHasRole(Integer customerId, Role role) {
 		return repos.findLightByCustomerAndHasRole(customerId, role);
 	}
-	
-	public ma.azdad.mobile.model.User findOneMobile(String username){
+
+	public ma.azdad.mobile.model.User findOneMobile(String username) {
 		return repos.findOneMobile(username);
 	}
-	
-	public List<Role> findRoleList(String username){
+
+	public List<Role> findRoleList(String username) {
 		try {
-			return findOne(username).getRoleList().stream().map(i->i.getRole()).collect(Collectors.toList());
+			return findOne(username).getRoleList().stream().map(i -> i.getRole()).collect(Collectors.toList());
 		} catch (Exception e) {
 			return new ArrayList<Role>();
 		}
 	}
-	
-	public List<User> findByRole(Role role){
+
+	public List<User> findByRole(Role role) {
 		return repos.findByRole(role);
 	}
-	
-	public User findFirstByRoleTM(){
+
+	public User findFirstByRoleTM() {
 		List<User> list = findByRole(Role.ROLE_ILOGISTICS_TM);
-		if(list.isEmpty())
+		if (list.isEmpty())
 			return null;
 		return list.get(0);
 	}
-	
-	public List<User> findByActiveAndProjectAssignment(Integer projectId){
+
+	public List<User> findByActiveAndProjectAssignment(Integer projectId) {
 		return repos.findByActiveAndProjectAssignment(projectId);
 	}
-	
-	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest){
-		Set<User> result =  new HashSet<User>();
+
+	public List<User> findHandoverUserList(DeliveryRequest deliveryRequest) {
+		Set<User> result = new HashSet<User>();
 		result.addAll(findByActiveAndProjectAssignment(deliveryRequest.getProjectId()));
 		result.addAll(findByProjectDelegation(deliveryRequest.getProjectId(), true));
 		result.add(deliveryRequest.getProject().getManager());
 		result.remove(deliveryRequest.getRequester());
 		return new ArrayList<User>(result);
 	}
-	
+
 	public List<User> findByAssignementAndCompany(Integer projectId, Integer companyId) {
 		return repos.findByAssignementAndCompany(projectId, companyId);
 	}
@@ -456,12 +457,12 @@ public class UserService {
 	public List<User> findByAssignementAndSupplier(Integer projectId, Integer supplierId) {
 		return repos.findByAssignementAndSupplier(projectId, supplierId);
 	}
-	
+
 	@Cacheable("userService.findCompanyType")
 	public CompanyType findCompanyType(String username) {
 		return repos.findCompanyType(username);
 	}
-	
+
 	@Cacheable("userService.findEntityName")
 	public String findEntityName(User user) {
 		if (user.getCompanyType() != null)
@@ -481,23 +482,21 @@ public class UserService {
 		return null;
 
 	}
-	
+
 	public Boolean isHavingRole(String username, Role role) {
 		return userRoleService.isHavingRole(username, role);
 	}
-	
+
 	public Boolean isTM(String username) {
 		return isHavingRole(username, Role.ROLE_ILOGISTICS_TM);
 	}
-	
-	
-	public List<User> findActiveDriverList(Boolean internal){
+
+	public List<User> findActiveDriverList(Boolean internal) {
 		return repos.findActiveDriverList(internal);
 	}
-	
-	public List<User> findByRoleAndActiveAndTransporter(Role role,Integer transporterId){
+
+	public List<User> findByRoleAndActiveAndTransporter(Role role, Integer transporterId) {
 		return repos.findByRoleAndActiveAndTransporter(role, transporterId);
 	}
-	
 
 }

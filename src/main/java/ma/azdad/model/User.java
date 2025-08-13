@@ -326,6 +326,17 @@ public class User extends GenericModel<String> implements Serializable {
 //			this.company = company;
 //		}
 //	}
+	
+
+	public void addVehicle(UserVehicle userVehicle) {
+		userVehicle.setUser(this);
+		vehicleList.add(userVehicle);
+	}
+
+	public void removeVehicle(UserVehicle userVehicle) {
+		userVehicle.setUser(null);
+		vehicleList.remove(userVehicle);
+	}
 
 	public void addRole(UserRole role) {
 		if (roleList.contains(role))

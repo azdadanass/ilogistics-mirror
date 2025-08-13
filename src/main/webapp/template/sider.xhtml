@@ -285,16 +285,18 @@
 								</a>
 								<b class="arrow"></b>
 								<ul class="submenu">
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Pending" />
-											<f:param name="pageIndex" value="1" />
-											<f:param name="state" value="4" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
+									<f:subview rendered="#{sessionView.isInternalTM or sessionView.isUser or sessionView.isPM}">
+										<li>
+											<h:outputLink value="transportationRequestList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-list bigger-130 orange" style="margin-right: 10px" />
+												<h:outputText value="Pending" />
+												<f:param name="pageIndex" value="1" />
+												<f:param name="state" value="4" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
 									<li>
 										<h:outputLink value="transportationRequestList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
@@ -325,15 +327,17 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-remove bigger-130 red" style="margin-right: 10px" />
-											<h:outputText value="Cancelled" />
-											<f:param name="pageIndex" value="3" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
+									<f:subview rendered="#{sessionView.isInternalTM or sessionView.isUser or sessionView.isPM}">
+										<li>
+											<h:outputLink value="transportationRequestList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-remove bigger-130 red" style="margin-right: 10px" />
+												<h:outputText value="Cancelled" />
+												<f:param name="pageIndex" value="3" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
 									<li>
 										<h:outputLink value="transportationRequestList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>

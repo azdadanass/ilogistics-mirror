@@ -97,34 +97,34 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return repos.findByUser1(user1Username);
 		return repos.findByUser1(user1Username, state.getStatusList());
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findToAccept")
-	public List<TransportationJob> findToAccept(String username){
+	public List<TransportationJob> findToAccept(String username) {
 		return repos.findToAccept(username);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.countToAccept")
-	public Long countToAccept(String username){
+	public Long countToAccept(String username) {
 		return repos.countToAccept(username);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findToStart")
-	public List<TransportationJob> findToStart(String username){
+	public List<TransportationJob> findToStart(String username) {
 		return repos.findToStart(username);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.countToStart")
-	public Long countToStart(String username){
+	public Long countToStart(String username) {
 		return repos.countToStart(username);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findToComplete")
-	public List<TransportationJob> findToComplete(String username){
+	public List<TransportationJob> findToComplete(String username) {
 		return repos.findToComplete(username);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.countToComplete")
-	public Long countToComplete(String username){
+	public Long countToComplete(String username) {
 		return repos.countToComplete(username);
 	}
 
@@ -137,7 +137,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public Long countByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus) {
 		return repos.countByUser1AndStatus(user1Username, transportationJobStatus);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findByUser1AndStatus")
 	public List<TransportationJob> findByUser1AndStatus(String user1Username, List<TransportationJobStatus> transportationJobStatusList) {
 		return repos.findByUser1AndStatus(user1Username, transportationJobStatusList);
@@ -174,14 +174,14 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return repos.findByDriver(driverUsername);
 		return repos.findByDriver(driverUsername, status);
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findByDriver")
 	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobState state) {
 		if (state == null)
 			return repos.findByDriver(driverUsername);
 		return repos.findByDriver(driverUsername, state.getStatusList());
 	}
-	
+
 	@Cacheable(value = "transportationJobService.findByTransporter")
 	public List<TransportationJob> findByTransporter(Integer transporterId, TransportationJobState state) {
 		if (state == null)
@@ -345,8 +345,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setUser2(connectedUser);
 			transportationJob.setTransporter(transporterService.findOneLight(transporterId));
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
-			transportationJob.getTransportationRequestList().forEach(
-					i -> i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>")));
+			transportationJob.getTransportationRequestList().forEach(i -> {
+				i.setTransporter(transportationJob.getTransporter());
+				i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			});
 			break;
 		case INTERNAL_DRIVER:
 		case EXTERNAL_DRIVER:
@@ -357,8 +359,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
-			transportationJob.getTransportationRequestList()
-					.forEach(i -> i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>")));
+			transportationJob.getTransportationRequestList().forEach(i -> {
+				i.setDriver(transportationJob.getDriver());
+				i.setVehicle(transportationJob.getVehicle());
+				i.setTransporter(transportationJob.getTransporter());
+				i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			});
 			break;
 		}
 

@@ -469,11 +469,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<ma.azdad.mobile.model.TransportationJob> findMobileByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findMobile(TransportationJobStatus.NOT_STARTED);
+			return findMobile(TransportationJobStatus.EDITED);
 		case 1:
 			return findMobile(TransportationJobStatus.IN_PROGRESS);
 		case 2:
-			return findMobile(Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.CLOSED));
+			return findMobile(Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.ACKNOWLEDGED));
 		case 3:
 			return findMobile();
 

@@ -264,7 +264,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Transient
 	public Date getMinExpectedDate() {
-		if (Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.CLOSED).contains(status))
+		if (Arrays.asList(TransportationJobStatus.COMPLETED, TransportationJobStatus.ACKNOWLEDGED).contains(status))
 			return null;
 		try {
 			Date minDate = null;

@@ -15,7 +15,7 @@ public class TransportationJob {
 	private String comment;
 	private Date startDate;
 	private Date endDate;
-	private TransportationJobStatus status = TransportationJobStatus.NOT_STARTED;
+	private TransportationJobStatus status = TransportationJobStatus.EDITED;
 	private Integer totalTr;
 
 	// Costs

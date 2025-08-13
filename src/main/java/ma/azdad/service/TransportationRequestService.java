@@ -109,9 +109,9 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	public List<TransportationRequest> findByPaymentStatus(TransportationRequestPaymentStatus paymentStatus, Boolean isTm, String username) {
 		if (paymentStatus == null)
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, username);
 		else
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus, username);
 
 	}
 
@@ -235,7 +235,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public void updatePaymentStatus() {
-		List<Integer> idList = repos.findIdList(TransportationJobStatus.CLOSED);
+		List<Integer> idList = repos.findIdList(TransportationJobStatus.ACKNOWLEDGED);
 		for (Integer id : idList)
 			updatePaymentStatus(id);
 	}
@@ -245,7 +245,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (TransportationRequestPaymentStatus.PAYMENT_CONFIRMED.equals(repos.getPaymentStatus(transportationRequestId)))
 			return;
 		TransportationRequestPaymentStatus paymentStatus = null;
-		if (TransportationJobStatus.CLOSED.equals(repos.getTransportationJobStatus(transportationRequestId))) {
+		if (TransportationJobStatus.ACKNOWLEDGED.equals(repos.getTransportationJobStatus(transportationRequestId))) {
 			if (UtilsFunctions.compareDoubles(totalAppLinkCost, 0.0) == 0)
 				paymentStatus = TransportationRequestPaymentStatus.PENDING;
 			else {

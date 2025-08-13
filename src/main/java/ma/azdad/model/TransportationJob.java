@@ -59,7 +59,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private User user5;
 	private User user6;
 	private User user7;
-	private User user8;
+//	private User user8;
 
 	// Costs
 	private Double realCost = 0.0;
@@ -343,13 +343,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			date7 = null;
 			user7 = null;
 			date8 = null;
-			user8 = null;
+//			user8 = null;
 		}
 
 		if (transportationRequestList.stream().filter(i -> !TransportationRequestStatus.ACKNOWLEDGED.equals(i.getStatus())).count() == 0) {
 			status = TransportationJobStatus.ACKNOWLEDGED;
-			date8 = new Date();
-			user8 = driver;
+			if (date8 == null)
+				date8 = new Date();
+//			user8 = driver;
 		}
 
 	}
@@ -759,14 +760,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.user7 = user7;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	public User getUser8() {
-		return user8;
-	}
-
-	public void setUser8(User user8) {
-		this.user8 = user8;
-	}
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	public User getUser8() {
+//		return user8;
+//	}
+//
+//	public void setUser8(User user8) {
+//		this.user8 = user8;
+//	}
 
 	@Enumerated(EnumType.STRING)
 	public TransportationJobAssignmentType getAssignmentType() {

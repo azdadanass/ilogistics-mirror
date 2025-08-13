@@ -1,14 +1,14 @@
 <div class="col-xs-3">
-	<img th:src="${photo}" class="grid_images" />
+	<img th:if="${photo != null}" th:src="${photo}" class="grid_images" />
 </div>
 <div class="col-xs-9">
-	<span class="bolder green lead" th:text="${name}"></span>
+	<span class="bolder green lead" th:if="${name != null}" th:text="${name}"></span>
 	<br />
-	<span class="bolder blue" th:text="${title}"></span>
-	<br /> <i class="ace-icon fa fa-phone middle bigger-120 orange"></i>
-	<span class="orange" th:text=${phone}></span>
-	<br /> <i class="middle bigger-120 pink bolder">@</i>
-	<span class="pink" th:text="${email}"></span>
+	<span class="bolder blue" th:if="${title != null}" th:text="${title}"></span>
+	<br /> <i class="ace-icon fa fa-phone middle bigger-120 orange" th:if="${phone != null}"></i>
+	<span class="orange" th:if="${phone != null}" th:text=${phone}></span>
+	<br /> <i class="middle bigger-120 pink bolder" th:if="${email != null}">@</i>
+	<span class="pink"  th:if="${email != null}" th:text="${email}"></span>
 	<br /> <i th:if="${date != null}" class="ace-icon fa fa-calendar middle bigger-120 red"></i>
 	<span class="red" th:if="${date != null}" th:text="${date}"></span>
 	<hr />

@@ -46,5 +46,10 @@ public class HtmlView implements Serializable {
 	public String generateOverlayPanelContent(String username) {
 		return generateOverlayPanelContent(null, username);
 	}
+	
+	
+	public String generateOverlayPanelContent(Date date) {
+		return generateOverlayPanelContentBasic(date, null,null,null,null,null);
+	}
 
 }

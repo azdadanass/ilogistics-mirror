@@ -213,6 +213,15 @@
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 3}">
 						<f:subview rendered="#{sessionView.isTM or sessionView.isDriver}">
+							<li class="active">
+								<a href="dashboard.xhtml">
+									<i class="menu-icon fa fa-tachometer"></i>
+									<span class="menu-text">
+										<h:outputText value="Dashboard " />
+									</span>
+								</a>
+								<b class="arrow"></b>
+							</li>
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-truck"></i>

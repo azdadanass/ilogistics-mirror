@@ -24,6 +24,7 @@ public class DashboardView {
 	private Long countTjToAssign = 0l;
 	private Long countTjToAccept = 0l;
 	private Long countTjToStart = 0l;
+	private Long countTjToComplete = 0l;
 	private Long countTrToAssign = 0l;
 	private Long countTrToPickup = 0l;
 	private Long countTrToDeliver = 0l;
@@ -39,6 +40,7 @@ public class DashboardView {
 				: transportationJobService.countToAssign2(sessionView.getUser().getTransporterId());
 		this.countTjToAccept = transportationJobService.countToAccept(sessionView.getUsername());
 		this.countTjToStart = transportationJobService.countToStart(sessionView.getUsername());
+		countTjToComplete = transportationJobService.countToComplete(sessionView.getUsername());
 
 	}
 
@@ -158,6 +160,14 @@ public class DashboardView {
 
 	public void setSessionView(SessionView sessionView) {
 		this.sessionView = sessionView;
+	}
+
+	public Long getCountTjToComplete() {
+		return countTjToComplete;
+	}
+
+	public void setCountTjToComplete(Long countTjToComplete) {
+		this.countTjToComplete = countTjToComplete;
 	}
 
 }

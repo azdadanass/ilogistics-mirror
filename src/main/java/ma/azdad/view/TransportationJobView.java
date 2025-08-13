@@ -651,6 +651,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			tr.setTransportationJob(transportationJob);
 			tr.addHistory(new TransportationRequestHistory("Assigned", sessionView.getUser(), "Assigned To : " + transportationJob.getReference()));
 //			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
+			if(Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus())) {
+				if(tr.getExpectedPickupDate()==null)
+					tr.setExpectedPickupDate(tr.getPlannedPickupDate());
+			}
 			transportationRequestService.save(tr);
 			tr = transportationRequestService.findOne(tr.getId());
 			// emailService.transportationRequestNotification(tr);

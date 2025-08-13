@@ -264,11 +264,13 @@
 									</li>
 								</ul>
 							</li>
+						</f:subview>
+						<f:subview rendered="#{sessionView.isTM or sessionView.isDriver or sessionView.isPM or sessionView.isUser}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-random"></i>
 									<span class="menu-text">
-										<h:outputText value="Transportation Request " styleClass="smaller-80"/>
+										<h:outputText value="Transportation Request " styleClass="smaller-80" />
 									</span>
 									<b class="arrow fa fa-angle-down"></b>
 								</a>
@@ -327,69 +329,6 @@
 										<h:outputLink value="transportationRequestList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-list bigger-130" style="margin-right: 10px" />
-											<h:outputText value="All" />
-											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</ul>
-							</li>
-						</f:subview>
-						<f:subview rendered="#{sessionView.isPM or sessionView.isUser}">
-							<li class="open">
-								<a href="#" class="dropdown-toggle">
-									<i class="menu-icon fa fa-truck"></i>
-									<span class="menu-text">
-										<h:outputText value="TR Management" />
-									</span>
-									<b class="arrow fa fa-angle-down"></b>
-								</a>
-								<b class="arrow"></b>
-								<ul class="submenu">
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-spinner bigger-130 blue" style="margin-right: 10px" />
-											<h:outputText value="Waiting Requests" />
-											<f:param name="state" value="0" />
-											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-tasks bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="Handled" />
-											<f:param name="state" value="1" />
-											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
-											<h:outputText value="Delivered Requests" />
-											<f:param name="state" value="2" />
-											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-remove bigger-130 red" style="margin-right: 10px" />
-											<h:outputText value="Rejected Requests" />
-											<f:param name="state" value="3" />
-											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationRequestList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 inverse" style="margin-right: 10px" />
 											<h:outputText value="All" />
 											<f:param name="pageIndex" value="1" />
 										</h:outputLink>

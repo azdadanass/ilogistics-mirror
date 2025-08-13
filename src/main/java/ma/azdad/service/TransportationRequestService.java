@@ -150,6 +150,18 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 //				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
 //		return null;
 	}
+	
+	public List<TransportationRequest> findByDriver(String driverUsername,TransportationRequestState state){
+		if(state==null)
+			return repos.findByDriver(driverUsername);
+		return repos.findByDriver(driverUsername,state.getStatusList());
+	}
+	
+	public List<TransportationRequest> findByTransporter(Integer transporterId,TransportationRequestState state){
+		if(state==null)
+			return repos.findByTransporter(transporterId);
+		return repos.findByTransporter(transporterId,state.getStatusList());
+	}
 
 	public List<TransportationRequest> findLightBySupplierUser(TransportationRequestState state, Integer supplierId, List<Integer> assignedProjectList) {
 		if (state == null)

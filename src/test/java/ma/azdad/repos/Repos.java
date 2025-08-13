@@ -6,20 +6,21 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.TransportationJobService;
+import ma.azdad.model.TransportationRequestState;
+import ma.azdad.service.TransportationRequestService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	
 	@Autowired
-	TransportationJobService transportationJobService;
+	TransportationRequestService transportationRequestService;
 	
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		
+		System.out.println(transportationRequestService.findByDriver("a.azdad", TransportationRequestState.ASSIGNED));
 	}
 
 }

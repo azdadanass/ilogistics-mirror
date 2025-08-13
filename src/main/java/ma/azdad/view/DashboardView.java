@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.service.TransportationJobService;
+import ma.azdad.service.TransportationRequestService;
 import ma.azdad.utils.Color;
 
 @ManagedBean
@@ -20,6 +21,9 @@ public class DashboardView {
 
 	@Autowired
 	private TransportationJobService transportationJobService;
+
+	@Autowired
+	private TransportationRequestService transportationRequestService;
 
 	private Long countTjToAssign = 0l;
 	private Long countTjToAccept = 0l;
@@ -40,8 +44,12 @@ public class DashboardView {
 				: transportationJobService.countToAssign2(sessionView.getUser().getTransporterId());
 		this.countTjToAccept = transportationJobService.countToAccept(sessionView.getUsername());
 		this.countTjToStart = transportationJobService.countToStart(sessionView.getUsername());
-		countTjToComplete = transportationJobService.countToComplete(sessionView.getUsername());
-
+		this.countTjToComplete = transportationJobService.countToComplete(sessionView.getUsername());
+		if (sessionView.getInternal())
+			this.countTrToAssign = transportationRequestService.countToAssign();
+		this.countTrToPickup = transportationRequestService.countToPickup(sessionView.getUsername());
+		this.countTrToDeliver = transportationRequestService.countToDeliver(sessionView.getUsername());
+		this.countTrToAcknowledge = transportationRequestService.countToAcknowledge(sessionView.getUsername());
 	}
 
 	public Long getReactivity() {

@@ -58,7 +58,7 @@
 										</div>
 										<div class="space-2"></div>
 										<h:outputLink value="transportationJobList.xhtml">
-											<h:outputText value="To Accept" />
+											<h:outputText value="TJ To Accept" />
 											<f:param name="pageIndex" value="7" />
 										</h:outputLink>
 									</div>
@@ -70,7 +70,7 @@
 										</div>
 										<div class="space-2"></div>
 										<h:outputLink value="transportationJobList.xhtml">
-											<h:outputText value="To Start" />
+											<h:outputText value="TJ To Start" />
 											<f:param name="pageIndex" value="8" />
 										</h:outputLink>
 									</div>
@@ -82,8 +82,59 @@
 										</div>
 										<div class="space-2"></div>
 										<h:outputLink value="transportationJobList.xhtml">
-											<h:outputText value="To Complete" />
+											<h:outputText value="TJ To Complete" />
 											<f:param name="pageIndex" value="9" />
+										</h:outputLink>
+									</div>
+								</div>
+								<hr/>
+								<div class="clearfix">
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#892e65">
+											<span class="percent">
+												<h:outputText value="#{dashboardView.countTrToAssign}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Assign" />
+											<f:param name="pageIndex" value="4" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#ffb752">
+											<span class="percent">
+												<h:outputText value="#{dashboardView.countTrToPickup}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Pickup" />
+											<f:param name="pageIndex" value="5" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#d54c7e">
+											<span class="percent">
+												<h:outputText value="#{dashboardView.countTrToDeliver}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Deliver" />
+											<f:param name="pageIndex" value="6" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#fee188">
+											<span class="percent">
+												<h:outputText value="#{dashboardView.countTrToAcknowledge}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Acknowledge" />
+											<f:param name="pageIndex" value="2" />
 										</h:outputLink>
 									</div>
 								</div>

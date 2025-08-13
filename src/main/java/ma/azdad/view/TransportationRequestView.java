@@ -183,19 +183,20 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 				}
 
 			case 2:
-				list2 = list1 = transportationRequestService.findLightByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+				initLists(service.findToAcknowledge(sessionView.getUsername()));
 				break;
 			case 3:
 				list2 = list1 = transportationRequestService.findLightByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 				break;
 			case 4:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.APPROVED, sessionView.isTM());
+				if (sessionView.getIsInternalTM())
+					initLists(service.findToAssign());
 				break;
 			case 5:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
+				initLists(service.findToPickup(sessionView.getUsername()));
 				break;
 			case 6:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
+				initLists(service.findToDeliver(sessionView.getUsername()));
 				break;
 			case 7:
 				list2 = list1 = transportationRequestService.findByPaymentStatus(paymentStatus, sessionView.isTM(), sessionView.getUsername());
@@ -590,25 +591,41 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// generic
 
-	public Long countToAcknowledgeRequests() {
-		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+	public Long countToAssign() {
+		return transportationRequestService.countToAssign();
 	}
+
+	public Long countToPickup() {
+		return transportationRequestService.countToPickup(sessionView.getUsername());
+	}
+
+	public Long countToDeliver() {
+		return transportationRequestService.countToDeliver(sessionView.getUsername());
+	}
+	
+	public Long countToAcknowledge() {
+		return transportationRequestService.countToAcknowledge(sessionView.getUsername());
+	}
+
+//	public Long countToAcknowledgeRequests() {
+//		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+//	}
 
 	public Long countToApproveRequests() {
 		return transportationRequestService.countByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 	}
 
-	public Long countToAssignRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
-	}
+//	public Long countToAssignRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
+//	}
 
-	public Long countToPickupRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
-	}
+//	public Long countToPickupRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
+//	}
 
-	public Long countToDeliverRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
-	}
+//	public Long countToDeliverRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
+//	}
 
 	@Cacheable("transportationRequestView.countToAdd")
 	public Long countToAdd() {
@@ -619,12 +636,11 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public Long countTotal() {
 		Long total = 0l;
 		if (sessionView.getIsUser())
-			total += countToAdd() + countToAcknowledgeRequests();
+			total += countToAdd() + countToAcknowledge();
 		if (sessionView.getIsPM())
 			total += countToApproveRequests();
-		if (sessionView.getIsTM())
-			total += countToAssignRequests() + countToPickupRequests() + countToDeliverRequests();
-
+		if (sessionView.getIsTM() || sessionView.getIsDriver())
+			total += countToAssign() + countToPickup() + countToDeliver();
 		return total;
 	}
 

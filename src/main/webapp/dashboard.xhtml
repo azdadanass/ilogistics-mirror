@@ -47,7 +47,7 @@
 										<div class="space-2"></div>
 										<h:outputLink value="transportationJobList.xhtml">
 											<h:outputText value="TJ to assign" />
-											<f:param name="pageIndex" value="5" />
+											<f:param name="pageIndex" value="#{sessionView.isInternalTM?'4':'5'}" />
 										</h:outputLink>
 									</div>
 									<div class="grid4 center">

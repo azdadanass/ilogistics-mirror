@@ -24,6 +24,14 @@ public class TransportationJob {
 
 	private Double vehiclePrice = 0.0;
 
+	//weights
+	private Integer numberOfItems;
+	private Double grossWeight;
+	private Double volume;
+	//distance 
+	private String estimatedDistanceText;
+	private String realDistanceText;
+
 	// TM
 	private String vehiculeMatricule;
 	private ma.azdad.mobile.model.Vehicule vehicule;
@@ -207,6 +215,60 @@ public class TransportationJob {
 	public void setVehiculeMatricule(String vehiculeMatricule) {
 		this.vehiculeMatricule = vehiculeMatricule;
 	}
+
+
+	public String getEstimatedDistanceText() {
+		return estimatedDistanceText;
+	}
+
+
+	public void setEstimatedDistanceText(String estimatedDistanceText) {
+		this.estimatedDistanceText = estimatedDistanceText;
+	}
+
+
+	public String getRealDistanceText() {
+		return realDistanceText;
+	}
+
+
+	public void setRealDistanceText(String realDistanceText) {
+		this.realDistanceText = realDistanceText;
+	}
+
+
+	public Integer getNumberOfItems() {
+		return numberOfItems;
+	}
+
+
+	public void setNumberOfItems(Integer numberOfItems) {
+		this.numberOfItems = numberOfItems;
+	}
+
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+
+	public Double getVolume() {
+		return volume;
+	}
+
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+	
+	
+	
+	
 	
 	
 	

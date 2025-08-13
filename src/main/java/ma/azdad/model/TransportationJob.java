@@ -38,7 +38,6 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private TransportationJobAssignmentType assignmentType;
 	private Double acceptLeadTime = 12.0;
 	private Double startLeadTime = 24.0;
-
 	private Date maxAcceptDate;
 	private Date maxStartDate;
 
@@ -786,5 +785,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setMaxStartDate(Date maxStartDate) {
 		this.maxStartDate = maxStartDate;
 	}
+
+
+	
 
 }

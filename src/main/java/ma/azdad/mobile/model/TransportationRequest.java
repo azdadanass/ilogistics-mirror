@@ -6,7 +6,6 @@ import java.util.List;
 
 import ma.azdad.model.Priority;
 import ma.azdad.model.TransportationRequestStatus;
-import ma.azdad.mobile.model.User;
 
 public class TransportationRequest {
 
@@ -18,6 +17,8 @@ public class TransportationRequest {
 	private Double grossWeight;
 	private Double volume;
 	
+	private String estimatedDistanceText;
+	private String realDistanceText;
 	private String destinationOwner;
 	private String destinationPhone;
 	private String destinationAddress;
@@ -48,19 +49,26 @@ public class TransportationRequest {
 	private User requester;
 
 	// TIMELINE
+	private Date date1;
+	private Date date2; 
+	private Date date3; 
+	private Date date4; 
+	private Date date5;
+	private Date date6; 
+	private Date date7; 
+	private Date date8;
+	private Date date9; 
 
-	private Date date4; // Assigned
-	private Date date5; // Picked up
-	private Date date6; // Delivered
-	private Date date7; // Acknowledged
-
+	private User user1;
+	private User user2;
+	private User user3;
 	private User user4;
 	private User user5;
 	private User user6;
 	private User user7;
-	
-	
-	private List<ma.azdad.mobile.model.TransportationRequestFile> fileList = new ArrayList<>();
+	private User user8;
+	private User user9;
+ List<ma.azdad.mobile.model.TransportationRequestFile> fileList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.TransportationRequestHistory> historyList = new ArrayList<>();
 
 	public TransportationRequest() {
@@ -413,6 +421,106 @@ public class TransportationRequest {
 	public void setHistoryList(List<ma.azdad.mobile.model.TransportationRequestHistory> historyList) {
 		this.historyList = historyList;
 	}
+
+	public String getEstimatedDistanceText() {
+		return estimatedDistanceText;
+	}
+
+	public void setEstimatedDistanceText(String estimatedDistanceText) {
+		this.estimatedDistanceText = estimatedDistanceText;
+	}
+
+	public String getRealDistanceText() {
+		return realDistanceText;
+	}
+
+	public void setRealDistanceText(String realDistanceText) {
+		this.realDistanceText = realDistanceText;
+	}
+
+	public Date getDate1() {
+		return date1;
+	}
+
+	public void setDate1(Date date1) {
+		this.date1 = date1;
+	}
+
+	public Date getDate2() {
+		return date2;
+	}
+
+	public void setDate2(Date date2) {
+		this.date2 = date2;
+	}
+
+	public Date getDate3() {
+		return date3;
+	}
+
+	public void setDate3(Date date3) {
+		this.date3 = date3;
+	}
+
+	public Date getDate8() {
+		return date8;
+	}
+
+	public void setDate8(Date date8) {
+		this.date8 = date8;
+	}
+
+	public Date getDate9() {
+		return date9;
+	}
+
+	public void setDate9(Date date9) {
+		this.date9 = date9;
+	}
+
+	public User getUser1() {
+		return user1;
+	}
+
+	public void setUser1(User user1) {
+		this.user1 = user1;
+	}
+
+	public User getUser2() {
+		return user2;
+	}
+
+	public void setUser2(User user2) {
+		this.user2 = user2;
+	}
+
+	public User getUser3() {
+		return user3;
+	}
+
+	public void setUser3(User user3) {
+		this.user3 = user3;
+	}
+
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
+	}
+
+	public User getUser9() {
+		return user9;
+	}
+
+	public void setUser9(User user9) {
+		this.user9 = user9;
+	}
+	
+	
+	
+	
 	
 	
 	

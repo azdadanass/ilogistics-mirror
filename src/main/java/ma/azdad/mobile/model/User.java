@@ -17,6 +17,7 @@ public class User {
 	private String email;
 	private String cin;
 	private String phone;
+	private String jobTitle;
 
 	public User() {
 		super();
@@ -27,13 +28,14 @@ public class User {
 		this.password = password;
 	}
 
-	public User(String username, String firstName, String lastName, String login,String photo,String email) {
+	public User(String username, String firstName, String lastName, String login,String photo,String email,String jobTitle) {
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.login = login;
 		this.photo = Public.getPublicUrl(photo);
 		this.email = email;
+		this.jobTitle = jobTitle;
 	}
 	
 	public User(String username, String firstName, String lastName, String login,String photo,String email
@@ -128,6 +130,16 @@ public class User {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+	
+	
 	
 	
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.TransportationJob;
+import ma.azdad.model.TransportationJobItinerary;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
@@ -29,6 +30,7 @@ import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
+import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationRequestFileRepos;
 import ma.azdad.repos.TransportationRequestImageRepos;
 import ma.azdad.repos.TransportationRequestRepos;
@@ -48,6 +50,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	ExpensepaymentService expensepaymentService;
+	@Autowired
+	TransportationJobItineraryRepos transportationJobItineraryRepos;
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
@@ -459,6 +463,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 				tr.getDeliveryDate()
 		    ) ;
 		
+		if(tr.getEstimatedDistance() != null) {
+			trMobile.setEstimatedDistanceText(tr.getEstimatedDistanceText());
+		}
+		
 		if (tr.getDeliveryRequest().getOrigin() != null) {
 			trMobile.setOriginName(tr.getDeliveryRequest().getOriginName());
 			trMobile.setOriginAddress(tr.getDeliveryRequest().getOrigin().getGoogleAddress());
@@ -477,6 +485,18 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			trMobile.setDestinationLongitude(tr.getDeliveryRequest().getDestination().getLongitude());
 			trMobile.setDestinationLatitude(tr.getDeliveryRequest().getDestination().getLatitude());
 		}
+		if (tr.getUser1() != null) {
+		    trMobile.setUser1(toMobileUser(tr.getUser1()));
+		    trMobile.setDate1(tr.getDate1());
+		}
+		if (tr.getUser2() != null) {
+		    trMobile.setUser2(toMobileUser(tr.getUser2()));
+		    trMobile.setDate2(tr.getDate2());
+		}
+		if (tr.getUser3() != null) {
+		    trMobile.setUser3(toMobileUser(tr.getUser3()));
+		    trMobile.setDate3(tr.getDate3());
+		}
 		if (tr.getUser4() != null) {
 		    trMobile.setUser4(toMobileUser(tr.getUser4()));
 		    trMobile.setDate4(tr.getDate4());
@@ -493,6 +513,15 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		    trMobile.setUser7(toMobileUser(tr.getUser7()));
 		    trMobile.setDate7(tr.getDate7());
 		}
+		if (tr.getUser8() != null) {
+		    trMobile.setUser8(toMobileUser(tr.getUser8()));
+		    trMobile.setDate8(tr.getDate8());
+		}
+		if (tr.getUser9() != null) {
+		    trMobile.setUser9(toMobileUser(tr.getUser9()));
+		    trMobile.setDate9(tr.getDate9());
+		}
+
 		trMobile.setHistoryList(repos.findHistoryListMobile(id));
 
 		
@@ -502,7 +531,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	
 	private ma.azdad.mobile.model.User toMobileUser(User user) {
 		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
-				user.getLogin(), user.getPhoto(), user.getEmail());
+				user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob());
 	}
 	
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {

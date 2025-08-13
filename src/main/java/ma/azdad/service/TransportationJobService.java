@@ -26,6 +26,7 @@ import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
 import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
+import ma.azdad.model.TransportationJobItinerary;
 import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
@@ -33,6 +34,7 @@ import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.TransportationJobFileRepos;
+import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
@@ -48,6 +50,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	UserRepos userRepos;
+	
+	@Autowired
+	TransportationJobItineraryRepos transportationJobItineraryRepos;
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
@@ -478,8 +483,39 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(),
 				tj.getEstimatedCost(), tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver())) ;
 		List<ma.azdad.mobile.model.TransportationRequest> trList = new ArrayList<>();
+		if(tj.getEstimatedDistance() != null) {
+			tjMobile.setEstimatedDistanceText(tj.getEstimatedDistance().toString()+" Km");
+		}
+		
+		if (Arrays.asList(
+		        TransportationJobStatus.COMPLETED,
+		        TransportationJobStatus.ACKNOWLEDGED,
+		        TransportationJobStatus.CLOSED
+		    ).contains(tj.getStatus())) {
 
+		    List<TransportationJobItinerary> list =
+		        transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(id);
+
+		    String realDist = "0 Km";
+		    if (list != null && !list.isEmpty()) {
+		        TransportationJobItinerary lastPoint = list.get(list.size() - 1);
+		        realDist = String.valueOf(lastPoint.getCumulativeDistance())+" Km";
+		        tjMobile.setRealDistanceText(realDist);
+		    }
+		}
+		double totalGrossWeight = 0.0;
+		double totalVolume = 0.0;
+		int totalItems = 0;
 		for (TransportationRequest transportationRequest : tj.getTransportationRequestList()) {
+			 if (transportationRequest.getGrossWeight() != null) {
+			        totalGrossWeight += transportationRequest.getGrossWeight();
+			    }
+			    if (transportationRequest.getVolume() != null) {
+			        totalVolume += transportationRequest.getVolume();
+			    }
+			    if (transportationRequest.getNumberOfItems() != null) {
+			        totalItems += transportationRequest.getNumberOfItems();
+			    }
 		    trList.add(new ma.azdad.mobile.model.TransportationRequest(
 		        transportationRequest.getId(),
 		        transportationRequest.getReference(),
@@ -494,6 +530,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		        transportationRequest.getDestinationName()
 		    ));
 		}
+		tjMobile.setGrossWeight(totalGrossWeight);
+		tjMobile.setVolume(totalVolume);
+		tjMobile.setNumberOfItems(totalItems);
+
 		tjMobile.getTransportationRequestList().addAll(trList);
 		tjMobile.setHistoryList(repos.findHistoryListMobile(id));
 		
@@ -502,7 +542,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	private ma.azdad.mobile.model.User toMobileUser(User user) {
 		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
-				user.getLogin(), user.getPhoto(), user.getEmail());
+				user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob());
 	}
 	
 	private ma.azdad.mobile.model.User toMobileUser2(User user) {

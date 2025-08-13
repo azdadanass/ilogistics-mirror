@@ -211,7 +211,7 @@ public interface UserRepos extends JpaRepository<User, String> {
 	@Query(select1 + "from User a where a.customer.id = ?1 and (select count(*) from UserRole b where b.user.username = a.username and b.role = ?2) > 0 and a.active is true")
 	List<User> findLightByCustomerAndHasRole(Integer customerId, Role role);
 
-	@Query("select new ma.azdad.mobile.model.User(a.username,a.firstName,a.lastName,a.login,a.photo,a.email) from User a where username = ?1")
+	@Query("select new ma.azdad.mobile.model.User(a.username,a.firstName,a.lastName,a.login,a.photo,a.email,a.job) from User a where username = ?1")
 	ma.azdad.mobile.model.User findOneMobile(String username);
 
 	@Query("select distinct a.user from UserRole a where a.user.active is true and a.role = ?1")

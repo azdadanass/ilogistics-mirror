@@ -2256,31 +2256,31 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		dnm.setDetailList(mobileDetails);
 		if (dn.getRequester() != null) {
 			dnm.setUser1(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), dn.getRequester().getLogin(),
-					dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
+					dn.getRequester().getPhoto(), dn.getRequester().getEmail(), dn.getRequester().getJob()));
 			dnm.setDate1(dn.getDate1());
 			dnm.setUser2(new ma.azdad.mobile.model.User(dn.getRequester().getUsername(), dn.getRequester().getFirstName(), dn.getRequester().getLastName(), dn.getRequester().getLogin(),
-					dn.getRequester().getPhoto(), dn.getRequester().getEmail()));
+					dn.getRequester().getPhoto(), dn.getRequester().getEmail(), dn.getRequester().getJob()));
 			if (dn.getDate2() != null)
 				dnm.setDate2(dn.getDate2());
 		}
 		if (dn.getUser3() != null)
 			dnm.setUser3(new ma.azdad.mobile.model.User(dn.getUser3().getUsername(), dn.getUser3().getFirstName(), dn.getUser3().getLastName(), dn.getUser3().getLogin(), dn.getUser3().getPhoto(),
-					dn.getUser3().getEmail()));
+					dn.getUser3().getEmail(), dn.getRequester().getJob()));
 		if (dn.getDate3() != null)
 			dnm.setDate3(dn.getDate3());
 		if (dn.getUser4() != null)
 			dnm.setUser4(new ma.azdad.mobile.model.User(dn.getUser4().getUsername(), dn.getUser4().getFirstName(), dn.getUser4().getLastName(), dn.getUser4().getLogin(), dn.getUser4().getPhoto(),
-					dn.getUser4().getEmail()));
+					dn.getUser4().getEmail(), dn.getRequester().getJob()));
 		if (dn.getDate4() != null)
 			dnm.setDate4(dn.getDate4());
 		if (dn.getUser5() != null)
 			dnm.setUser5(new ma.azdad.mobile.model.User(dn.getUser5().getUsername(), dn.getUser5().getFirstName(), dn.getUser5().getLastName(), dn.getUser5().getLogin(), dn.getUser5().getPhoto(),
-					dn.getUser5().getEmail()));
+					dn.getUser5().getEmail(), dn.getRequester().getJob()));
 		if (dn.getDate5() != null)
 			dnm.setDate5(dn.getDate5());
 		if (dn.getUser8() != null)
 			dnm.setUser8(new ma.azdad.mobile.model.User(dn.getUser8().getUsername(), dn.getUser8().getFirstName(), dn.getUser8().getLastName(), dn.getUser8().getLogin(), dn.getUser8().getPhoto(),
-					dn.getUser8().getEmail()));
+					dn.getUser8().getEmail(), dn.getRequester().getJob()));
 		if (dn.getDate8() != null)
 			dnm.setDate8(dn.getDate8());
 		return dnm;
@@ -3151,7 +3151,8 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	        user.getLastName(),
 	        user.getLogin(),
 	        user.getPhoto(),
-	        user.getEmail()
+	        user.getEmail(),
+	        user.getJob()
 	    );
 	}
 	
@@ -3212,7 +3213,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			}
 			
 			for (User user : result) {
-				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob()));
 			}
 			
 
@@ -3226,7 +3227,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				List<User> users = userService.findByStatus2(true);
 				List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
 				for (User user : users) {
-					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+					mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob()));
 				}
 				return mbList;
 		
@@ -3251,7 +3252,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			projectAssignmentService.findCompanyUserListAssignedToProject(dn.getProjectId()).forEach(i -> addToNotify(i,users));
 			List<ma.azdad.mobile.model.User> mbList = new ArrayList<>();
 			for (User user : users) {
-				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail()));
+				mbList.add(new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob()));
 			}
 			System.out.println("size list "+mbList.size());
 			return mbList;

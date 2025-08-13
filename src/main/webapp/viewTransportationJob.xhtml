@@ -32,9 +32,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View TransportationJob" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{transportationJobView.transportationJob.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transportationJobView.transportationJob.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -53,14 +51,12 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationJob.xhtml"
-							rendered="#{transportationJobView.canSave()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationJob.xhtml" rendered="#{transportationJobView.canSave()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add TR" value="assignTrList.xhtml"
-							rendered="#{transportationJobView.canAssignTrList()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Add TR" value="assignTrList.xhtml" rendered="#{transportationJobView.canAssignTrList()}">
 							<i class="ace-icon fa fa-plus bigger-230"></i>
 							<h:outputText value="Add TR" />
 							<f:param name="id" value="#{transportationJobView.id}" />
@@ -70,8 +66,7 @@
 							<i class="ace-icon fa fa-link bigger-230"></i>
 							<h:outputText value="Assign" />
 						</p:commandLink>
-						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('unassignDlg').show()"
-							rendered="#{transportationJobView.canUnassign()}">
+						<p:commandLink title="Unassign" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('unassignDlg').show()" rendered="#{transportationJobView.canUnassign()}">
 							<i class="ace-icon fa fa-chain-broken bigger-230"></i>
 							<h:outputText value="Unassign" />
 						</p:commandLink>
@@ -83,31 +78,26 @@
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Decline" />
 						</p:commandLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" value="startTransportationJob.xhtml"
-							rendered="#{transportationJobView.canStart()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" value="startTransportationJob.xhtml" rendered="#{transportationJobView.canStart()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Start" />
 							<f:param name="id" value="#{transportationJobView.id}" />
 						</h:outputLink>
-						
-						
-						
-						
 						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
 							rendered="#{transportationJobView.canDeleteTransportationJob()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-						<p:commandLink title="Close" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('closeDlg').show()"
+						<!-- <p:commandLink title="Close" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('closeDlg').show()"
 							rendered="#{transportationJobView.canCloseTransportationJob()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Close" />
-						</p:commandLink>
+						</p:commandLink> 
 						<p:commandLink title="Open" styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" onclick="PF('openDlg').show()"
 							rendered="#{transportationJobView.canOpenTransportationJob()}">
 							<i class="ace-icon fa fa-circle bigger-230"></i>
 							<h:outputText value="Open" />
-						</p:commandLink>
+						</p:commandLink>-->
 						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadTransportationJobFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
@@ -134,8 +124,7 @@
 									<span class="title">
 										<h:outputText id="step1" value="#{TransportationJobStatus.EDITED.value}" />
 										<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date1,transportationJobView.transportationJob.user1.username)}" />
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date1,transportationJobView.transportationJob.user1.username)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -147,8 +136,7 @@
 										<span class="title">
 											<h:outputText id="step2" value="#{TransportationJobStatus.ASSIGNED1.value}" />
 											<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false"
-													value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date2,transportationJobView.transportationJob.user2.username)}" />
+												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date2,transportationJobView.transportationJob.user2.username)}" />
 											</p:overlayPanel>
 										</span>
 									</li>
@@ -197,8 +185,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step6" value="#{TransportationJobStatus.IN_PROGRESS.value}" />
-										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout"
-											rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+										<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.transporter!=null}">
 											<h:outputText escape="false"
 												value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date6,transportationJobView.transportationJob.user6.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
@@ -210,8 +197,7 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step7" value="#{TransportationJobStatus.COMPLETED.value}" />
-										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout"
-											rendered="#{transportationJobView.transportationJob.date2!=null or transportationJobView.transportationJob.date3!=null}">
+										<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.transporter!=null}">
 											<h:outputText escape="false"
 												value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date7,transportationJobView.transportationJob.user7.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
@@ -222,10 +208,10 @@
 										<i class="ace-icon fa fa-spinner fa-spin grey" />
 									</span>
 									<span class="title">
-										<h:outputText id="step8" value="#{TransportationJobStatus.CLOSED.value}" />
-										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+										<h:outputText id="step8" value="#{TransportationJobStatus.ACKNOWLEDGED.value}" />
+										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.transporter!=null}">
 											<h:outputText escape="false"
-												value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username,transportationJobView.transportationJob.user1.username)}" />
+												value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username,transportationJobView.transportationJob.driver!=null?transportationJobView.transportationJob.driver.username:transportationJobView.firstDriverUsername)}" />
 										</p:overlayPanel>
 									</span>
 								</li>
@@ -602,9 +588,8 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{transportationJobView.transportationJob.stopList}" id="stopList" widgetVar="stopList" var="item" rows="50"
-												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:dataTable value="#{transportationJobView.transportationJob.stopList}" id="stopList" widgetVar="stopList" var="item" rows="50" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 												<p:column headerText="Stop">
 													<h:outputText value="#{utilsView.getLetter(rowIndexVar)}" styleClass="badge #{utilsView.getBadge(rowIndexVar)}" />
 												</p:column>
@@ -651,9 +636,8 @@
 											</div>
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable value="#{transportationJobView.transportationJob.pathList}" id="pathList" widgetVar="pathList" var="item" rows="50"
-												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:dataTable value="#{transportationJobView.transportationJob.pathList}" id="pathList" widgetVar="pathList" var="item" rows="50" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 												<p:column headerText="Path">
 													<h:outputText value="#{utilsView.getLetter(rowIndexVar)}" styleClass="badge #{utilsView.getBadge(rowIndexVar)}" />
 													<i class="fa fa-long-arrow-right" style="margin-left: 10px; margin-right: 10px" />
@@ -693,8 +677,7 @@
 						</h4>
 						<p:remoteCommand name="updateGmap" update="gmap" />
 						<h:panelGroup id="gmap">
-							<p:gmap widgetVar="map" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.firstStopValue}" type="TERRAIN"
-								style="width:100%;height:500px" />
+							<p:gmap widgetVar="map" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.firstStopValue}" type="TERRAIN" style="width:100%;height:500px" />
 						</h:panelGroup>
 					</div>
 					<f:subview id="costsSubview" rendered="#{sessionView.isTrAdmin}">
@@ -793,8 +776,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{transportationJobView.transportationJob.fileList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="files_table" value="#{transportationJobView.transportationJob.fileList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -854,9 +837,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="transportationJobhistoryList" value="#{transportationJobView.transportationJob.historyList}" var="item" rows="20"
-										styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="transportationJobhistoryList" value="#{transportationJobView.transportationJob.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />

@@ -20,6 +20,7 @@ import ma.azdad.model.ContactType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
+import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
@@ -31,6 +32,7 @@ import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.SmsService;
+import ma.azdad.service.TransportationJobService;
 import ma.azdad.service.TransportationRequestFileService;
 import ma.azdad.service.TransportationRequestHistoryService;
 import ma.azdad.service.TransportationRequestService;
@@ -85,6 +87,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected SmsService smsService;
+	
+	@Autowired
+	protected TransportationJobService transportationJobService;
 
 	private TransportationRequest transportationRequest = new TransportationRequest();
 	private TransportationRequestFile transportationRequestFile;
@@ -424,6 +429,11 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequestHistoryService.acknowledgedNew(transportationRequest);
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
+		
+		// calculate TJ Status
+		TransportationJob transportationJob = transportationJobService.findOne(transportationRequest.getTransportationJob().getId());
+		transportationJob.calculateStatus();
+		transportationJobService.save(transportationJob);
 	}
 
 	public void acknowledgeTransportationRequest() {

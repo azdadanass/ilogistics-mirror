@@ -50,7 +50,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Date date5; // started
 	private Date date6; // in_progress
 	private Date date7; // completed
-	private Date date8; // closed
+	private Date date8; // Acknowledged
 
 	private User user1;
 	private User user2;
@@ -99,8 +99,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c2
 	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
-			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
-			String driverUsername, String vehicleMatricule) {
+			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
+			String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -330,8 +330,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 		if (countTotal == countDelivered) {
 			status = TransportationJobStatus.COMPLETED;
-			date7 = new Date();
-			user7 = driver;
+			if (date7 == null) {
+				date7 = new Date();
+				user7 = driver;
+			}
 		} else if (countPicked > 0) {
 			status = TransportationJobStatus.IN_PROGRESS;
 			if (date6 == null) {
@@ -340,6 +342,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			}
 			date7 = null;
 			user7 = null;
+			date8 = null;
+			user8 = null;
+		}
+
+		if (transportationRequestList.stream().filter(i -> !TransportationRequestStatus.ACKNOWLEDGED.equals(i.getStatus())).count() == 0) {
+			status = TransportationJobStatus.ACKNOWLEDGED;
+			date8 = new Date();
+			user8 = driver;
 		}
 
 	}
@@ -543,19 +553,18 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			transporter = new Transporter();
 		transporter.setSupplierName(transporterSupplierName);
 	}
-	
+
 	@Transient
-	public String getUser1Username(){
-		return user1!=null?user1.getUsername():null;
+	public String getUser1Username() {
+		return user1 != null ? user1.getUsername() : null;
 	}
 
 	@Transient
-	public void setUser1Username(String user1Username){
-		if(user1==null || !user1Username.equals(user1.getUsername()))
-			user1=new User();
+	public void setUser1Username(String user1Username) {
+		if (user1 == null || !user1Username.equals(user1.getUsername()))
+			user1 = new User();
 		user1.setUsername(user1Username);
 	}
-
 
 	@Transient
 	public String getDriverUsername() {

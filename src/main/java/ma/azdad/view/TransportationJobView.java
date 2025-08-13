@@ -747,25 +747,25 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// CLOSE TJ
-	public Boolean canCloseTransportationJob() {
-		return canCloseTransportationJob(transportationJob);
-	}
-
-	public Boolean canCloseTransportationJob(TransportationJob transportationJob) {
-		return sessionView.isTM() && TransportationJobStatus.COMPLETED.equals(transportationJob.getStatus());
-	}
-
-	public void closeTransportationJob(TransportationJob transportationJob) {
-		if (!canCloseTransportationJob(transportationJob))
-			return;
-		if (!validateCloseTransportationJob(transportationJob))
-			return;
-		transportationJob.setStatus(TransportationJobStatus.CLOSED);
-		transportationJob.addHistory(new TransportationJobHistory(TransportationJobStatus.CLOSED.getValue(), sessionView.getUser()));
-		transportationJob = transportationJobService.save(transportationJob);
-		transportationJob = transportationJobService.findOne(transportationJob.getId());
-
-	}
+//	public Boolean canCloseTransportationJob() {
+//		return canCloseTransportationJob(transportationJob);
+//	}
+//
+//	public Boolean canCloseTransportationJob(TransportationJob transportationJob) {
+//		return sessionView.isTM() && TransportationJobStatus.COMPLETED.equals(transportationJob.getStatus());
+//	}
+//
+//	public void closeTransportationJob(TransportationJob transportationJob) {
+//		if (!canCloseTransportationJob(transportationJob))
+//			return;
+//		if (!validateCloseTransportationJob(transportationJob))
+//			return;
+//		transportationJob.setStatus(TransportationJobStatus.CLOSED);
+//		transportationJob.addHistory(new TransportationJobHistory(TransportationJobStatus.CLOSED.getValue(), sessionView.getUser()));
+//		transportationJob = transportationJobService.save(transportationJob);
+//		transportationJob = transportationJobService.findOne(transportationJob.getId());
+//
+//	}
 
 	public Boolean validateCloseTransportationJob(TransportationJob transportationJob) {
 		Double sum = 0.0;
@@ -780,72 +780,46 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	// OPEN TJ
-	public Boolean canOpenTransportationJob() {
-		return canOpenTransportationJob(transportationJob);
-	}
+//	public Boolean canOpenTransportationJob() {
+//		return canOpenTransportationJob(transportationJob);
+//	}
+//
+//	public Boolean canOpenTransportationJob(TransportationJob transportationJob) {
+//		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+//			transportationRequestService.updatePaymentStatus(tr.getId());
+//			tr = transportationRequestService.findOne(tr.getId());
+//			if (tr.getPaymentStatus() != null && !TransportationRequestPaymentStatus.PENDING.equals(tr.getPaymentStatus()))
+//				return false;
+//		}
+//
+//		return sessionView.isTM() && TransportationJobStatus.CLOSED.equals(transportationJob.getStatus());
+//	}
+//
+//	public void openTransportationJob(TransportationJob transportationJob) {
+//		if (!canOpenTransportationJob(transportationJob))
+//			return;
+//		transportationJob.setStatus(TransportationJobStatus.COMPLETED);
+//		transportationJob.addHistory(new TransportationJobHistory("Re-open", sessionView.getUser()));
+//		transportationJob = transportationJobService.save(transportationJob);
+//		transportationJob = transportationJobService.findOne(transportationJob.getId());
+//	}
+//
+//	public void openTransportationJob() {
+//		openTransportationJob(transportationJob);
+//	}
 
-	public Boolean canOpenTransportationJob(TransportationJob transportationJob) {
-		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
-			transportationRequestService.updatePaymentStatus(tr.getId());
-			tr = transportationRequestService.findOne(tr.getId());
-			if (tr.getPaymentStatus() != null && !TransportationRequestPaymentStatus.PENDING.equals(tr.getPaymentStatus()))
-				return false;
-		}
 
-		return sessionView.isTM() && TransportationJobStatus.CLOSED.equals(transportationJob.getStatus());
-	}
-
-	public void openTransportationJob(TransportationJob transportationJob) {
-		if (!canOpenTransportationJob(transportationJob))
-			return;
-		transportationJob.setStatus(TransportationJobStatus.COMPLETED);
-		transportationJob.addHistory(new TransportationJobHistory("Re-open", sessionView.getUser()));
-		transportationJob = transportationJobService.save(transportationJob);
-		transportationJob = transportationJobService.findOne(transportationJob.getId());
-	}
-
-	public void openTransportationJob() {
-		openTransportationJob(transportationJob);
-	}
-
-	// private void calculateTransportationRequestListCosts(TransportationJob
-	// transportationJob) {
-	// Double total1 = 0.0, total2 = 0.0;
-	// Boolean test = true;
-	// for (TransportationRequest tr :
-	// transportationJob.getTransportationRequestList()) {
-	// Double grossWeight =
-	// deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
-	// Double estimatedDistance = tr.getEstimatedDistance();
-	// total1 += grossWeight * estimatedDistance;
-	// total2 += estimatedDistance;
-	// if (grossWeight.equals(0.0))
-	// test = false;
-	// }
-	// for (TransportationRequest tr :
-	// transportationJob.getTransportationRequestList()) {
-	// Double grossWeight =
-	// deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
-	// Double estimatedDistance = tr.getEstimatedDistance();
-	// tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ?
-	// estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
-	// tr.setCost(transportationJob.getRealCost() * (test ? estimatedDistance *
-	// grossWeight / total1 : estimatedDistance / total2));
-	// transportationRequestService.save(tr);
-	// }
-	// }
-
-	public void closeTransportationJob() {
-		if (isViewPage) {
-			closeTransportationJob(transportationJob);
-			refreshTransportationJob();
-
-		} else if (pageIndex == 1) {
-			for (TransportationJob transportationJob : list4)
-				closeTransportationJob(transportationJobService.findOne(transportationJob.getId()));
-			refreshList();
-		}
-	}
+//	public void closeTransportationJob() {
+//		if (isViewPage) {
+//			closeTransportationJob(transportationJob);
+//			refreshTransportationJob();
+//
+//		} else if (pageIndex == 1) {
+//			for (TransportationJob transportationJob : list4)
+//				closeTransportationJob(transportationJobService.findOne(transportationJob.getId()));
+//			refreshList();
+//		}
+//	}
 
 	// RETURN BACK
 	public Boolean canReturnBack(TransportationRequestStatus status) {
@@ -877,7 +851,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return TransportationRequestStatus.ASSIGNED.equals(status) && //
+		return Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+				TransportationRequestStatus.ASSIGNED.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
@@ -921,7 +896,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return TransportationRequestStatus.PICKEDUP.equals(status) && //
+		return Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+				TransportationRequestStatus.PICKEDUP.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}

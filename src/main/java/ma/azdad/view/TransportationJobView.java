@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +40,6 @@ import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
-import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
@@ -200,8 +203,25 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			else
 				switch (pageIndex) {
 				case 1:
-					initLists(transportationJobService.find(state));
-					break;
+					if (sessionView.getIsInternalTM()) {
+						initLists(transportationJobService.find(state));
+						break;
+					} else {
+						Set<TransportationJob> result = new HashSet<TransportationJob>();
+						if (sessionView.getIsDriver())
+							result.addAll(service.findByDriver(sessionView.getUsername(), state));
+						if (sessionView.getIsExternalTM())
+							result.addAll(service.findByTransporter(sessionView.getUser().getTransporterId(), state));
+						List<TransportationJob> list = new ArrayList<TransportationJob>(result);
+						Collections.sort(list, new Comparator<TransportationJob>() {
+							@Override
+							public int compare(TransportationJob o1, TransportationJob o2) {
+								return o2.getId().compareTo(o1.getId());
+							}
+						});
+						initLists(list);
+						break;
+					}
 				case 4:
 					initLists(transportationJobService.findToAssign1(sessionView.getUsername()));
 					break;
@@ -213,15 +233,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 7:
 					// to accept1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),TransportationJobStatus.ASSIGNED2));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2));
 					break;
 				case 8:
 					// to start1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),TransportationJobStatus.ACCEPTED));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED));
 					break;
 				case 9:
 					// to complete1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS)));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -530,7 +550,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isViewPage) {
 			accept(transportationJob);
 			transportationJob = service.findOne(transportationJob.getId());
-		} else if (isListPage && isPageIndex(6l,7l)) {
+		} else if (isListPage && isPageIndex(6l, 7l)) {
 			for (TransportationJob transportationJob : list4)
 				accept(service.findOne(transportationJob.getId()));
 			refreshList();
@@ -808,7 +828,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 //		openTransportationJob(transportationJob);
 //	}
 
-
 //	public void closeTransportationJob() {
 //		if (isViewPage) {
 //			closeTransportationJob(transportationJob);
@@ -851,7 +870,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
 				TransportationRequestStatus.ASSIGNED.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
@@ -896,7 +915,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
 				TransportationRequestStatus.PICKEDUP.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
@@ -1028,21 +1047,21 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public Long countToStart() {
 		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
 	}
-	
+
 	public Long countToAccept1() {
 		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
 	}
-	
+
 	public Long countToStart1() {
 		return service.countByUser1AndStatus(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
 	}
-	
+
 	public Long countToComplete1() {
-		return service.countByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS));
+		return service.countByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS));
 	}
 
 	public Long countTotal() {
-		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToAccept1() + countToStart1()+countToComplete1();
+		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToAccept1() + countToStart1() + countToComplete1();
 	}
 
 	// GETTERS & SETTERS

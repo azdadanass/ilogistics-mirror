@@ -59,8 +59,7 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = ?2 order by a.id desc")
 	public Long countByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus);
-	
-	
+
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
 	public List<TransportationJob> findByUser1AndStatus(String user1Username, List<TransportationJobStatus> transportationJobStatusList);
 
@@ -85,6 +84,15 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status = ?2  order by id desc")
 	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobStatus status);
+
+	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status in (?2)  order by id desc")
+	public List<TransportationJob> findByDriver(String driverUsername, List<TransportationJobStatus> statusList);
+	
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 order by id desc")
+	public List<TransportationJob> findByTransporter(Integer transporterId);
+	
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status in (?2)  order by id desc")
+	public List<TransportationJob> findByTransporter(Integer transporterId, List<TransportationJobStatus> statusList);
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
 	public Long countByDriver(String driverUsername, TransportationJobStatus status);

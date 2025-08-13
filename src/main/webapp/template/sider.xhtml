@@ -212,7 +212,7 @@
 						</f:subview>
 					</f:subview>
 					<f:subview rendered="#{indexView.selectedMenu == 3}">
-						<f:subview rendered="#{sessionView.isInternalTM}">
+						<f:subview rendered="#{sessionView.isTM or sessionView.isDriver}">
 							<li class="open">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-truck"></i>
@@ -392,49 +392,6 @@
 											<i class="ace-icon fa fa-list bigger-130 inverse" style="margin-right: 10px" />
 											<h:outputText value="All" />
 											<f:param name="pageIndex" value="1" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</ul>
-							</li>
-						</f:subview>
-						<f:subview rendered="#{sessionView.isDriver}">
-							<li class="open">
-								<a href="#" class="dropdown-toggle">
-									<i class="menu-icon fa fa-random"></i>
-									<span class="menu-text">
-										<h:outputText value="TR Job " />
-									</span>
-									<b class="arrow fa fa-angle-down"></b>
-								</a>
-								<b class="arrow"></b>
-								<ul class="submenu">
-									<li>
-										<h:outputLink value="transportationJobList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-check bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="To Accept" />
-											<f:param name="pageIndex" value="6" />
-											<f:param name="status" value="2" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationJobList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-check bigger-130 blue" style="margin-right: 10px" />
-											<h:outputText value="To Start" />
-											<f:param name="pageIndex" value="6" />
-											<f:param name="status" value="3" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="transportationJobList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-list bigger-130 green" style="margin-right: 10px" />
-											<h:outputText value="All" />
-											<f:param name="pageIndex" value="6" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>

@@ -144,6 +144,20 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return repos.findByDriver(driverUsername);
 		return repos.findByDriver(driverUsername, status);
 	}
+	
+	@Cacheable(value = "transportationJobService.findByDriver")
+	public List<TransportationJob> findByDriver(String driverUsername, TransportationJobState state) {
+		if (state == null)
+			return repos.findByDriver(driverUsername);
+		return repos.findByDriver(driverUsername, state.getStatusList());
+	}
+	
+	@Cacheable(value = "transportationJobService.findByTransporter")
+	public List<TransportationJob> findByTransporter(Integer transporterId, TransportationJobState state) {
+		if (state == null)
+			return repos.findByTransporter(transporterId);
+		return repos.findByTransporter(transporterId, state.getStatusList());
+	}
 
 	@Cacheable(value = "transportationJobService.countByDriverAndStatus")
 	public Long countByDriver(String driverUsername, TransportationJobStatus status) {

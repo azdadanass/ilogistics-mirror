@@ -15,9 +15,7 @@ public enum TransportationJobStatus {
 	STARTED("Started", Color.BLUE), 
 	IN_PROGRESS("In Progress", Color.ORANGE), 
 	COMPLETED("Completed", Color.L_GREEN),
-	ACKNOWLEDGED("Acknowledged", Color.PURPLE),
-	CLOSED("Closed",Color.GREY),// to remove
-	NOT_STARTED("Not Started", Color.ORANGE); // to remove
+	ACKNOWLEDGED("Acknowledged", Color.GREY);
 
 	private final String value;
 	private final Color color;

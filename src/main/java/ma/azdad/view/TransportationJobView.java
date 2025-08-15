@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +40,6 @@ import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
-import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
@@ -200,9 +203,25 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			else
 				switch (pageIndex) {
 				case 1:
-//					list2 = list1 = transportationJobService.findByUser1(sessionView.getUsername(), state);
-					initLists(transportationJobService.find(state));
-					break;
+					if (sessionView.getIsInternalTM()) {
+						initLists(transportationJobService.find(state));
+						break;
+					} else {
+						Set<TransportationJob> result = new HashSet<TransportationJob>();
+						if (sessionView.getIsDriver())
+							result.addAll(service.findByDriver(sessionView.getUsername(), state));
+						if (sessionView.getIsExternalTM())
+							result.addAll(service.findByTransporter(sessionView.getUser().getTransporterId(), state));
+						List<TransportationJob> list = new ArrayList<TransportationJob>(result);
+						Collections.sort(list, new Comparator<TransportationJob>() {
+							@Override
+							public int compare(TransportationJob o1, TransportationJob o2) {
+								return o2.getId().compareTo(o1.getId());
+							}
+						});
+						initLists(list);
+						break;
+					}
 				case 4:
 					initLists(transportationJobService.findToAssign1(sessionView.getUsername()));
 					break;
@@ -211,6 +230,16 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 6:
 					initLists(transportationJobService.findByDriver(sessionView.getUsername(), status));
+					break;
+				case 7:
+					initLists(transportationJobService.findToAccept(sessionView.getUsername()));
+					break;
+				case 8:
+					initLists(transportationJobService.findToStart(sessionView.getUsername()));
+					break;
+				case 9:
+					// to complete1
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -242,7 +271,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isListPage || isAddPage)
 			return sessionView.isTM();
 		else if (isViewPage || isEditPage)
-			return sessionView.isTM() && !TransportationJobStatus.CLOSED.equals(transportationJob.getStatus());
+			return sessionView.isTM() && !TransportationJobStatus.ACKNOWLEDGED.equals(transportationJob.getStatus());
 		return false;
 	}
 
@@ -519,7 +548,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isViewPage) {
 			accept(transportationJob);
 			transportationJob = service.findOne(transportationJob.getId());
-		} else if (isListPage && pageIndex == 6) {
+		} else if (isListPage && isPageIndex(6l, 7l)) {
 			for (TransportationJob transportationJob : list4)
 				accept(service.findOne(transportationJob.getId()));
 			refreshList();
@@ -601,7 +630,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// ASSIGN TR List
 	public Boolean canAssignTrList() {
-		return sessionView.isTM() && !TransportationJobStatus.CLOSED.equals(transportationJob.getStatus());
+		return sessionView.isTM() && !TransportationJobStatus.ACKNOWLEDGED.equals(transportationJob.getStatus());
 	}
 
 	public String assignTrList() {
@@ -622,6 +651,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			tr.setTransportationJob(transportationJob);
 			tr.addHistory(new TransportationRequestHistory("Assigned", sessionView.getUser(), "Assigned To : " + transportationJob.getReference()));
 //			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
+			if (Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus())) {
+				if (tr.getExpectedPickupDate() == null)
+					tr.setExpectedPickupDate(tr.getPlannedPickupDate());
+			}
 			transportationRequestService.save(tr);
 			tr = transportationRequestService.findOne(tr.getId());
 			// emailService.transportationRequestNotification(tr);
@@ -735,27 +768,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return true;
 	}
 
-	// CLOSE TJ
-	public Boolean canCloseTransportationJob() {
-		return canCloseTransportationJob(transportationJob);
-	}
-
-	public Boolean canCloseTransportationJob(TransportationJob transportationJob) {
-		return sessionView.isTM() && TransportationJobStatus.COMPLETED.equals(transportationJob.getStatus());
-	}
-
-	public void closeTransportationJob(TransportationJob transportationJob) {
-		if (!canCloseTransportationJob(transportationJob))
-			return;
-		if (!validateCloseTransportationJob(transportationJob))
-			return;
-		transportationJob.setStatus(TransportationJobStatus.CLOSED);
-		transportationJob.addHistory(new TransportationJobHistory(TransportationJobStatus.CLOSED.getValue(), sessionView.getUser()));
-		transportationJob = transportationJobService.save(transportationJob);
-		transportationJob = transportationJobService.findOne(transportationJob.getId());
-
-	}
-
 	public Boolean validateCloseTransportationJob(TransportationJob transportationJob) {
 		Double sum = 0.0;
 
@@ -768,77 +780,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return true;
 	}
 
-	// OPEN TJ
-	public Boolean canOpenTransportationJob() {
-		return canOpenTransportationJob(transportationJob);
-	}
-
-	public Boolean canOpenTransportationJob(TransportationJob transportationJob) {
-		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
-			transportationRequestService.updatePaymentStatus(tr.getId());
-			tr = transportationRequestService.findOne(tr.getId());
-			if (tr.getPaymentStatus() != null && !TransportationRequestPaymentStatus.PENDING.equals(tr.getPaymentStatus()))
-				return false;
-		}
-
-		return sessionView.isTM() && TransportationJobStatus.CLOSED.equals(transportationJob.getStatus());
-	}
-
-	public void openTransportationJob(TransportationJob transportationJob) {
-		if (!canOpenTransportationJob(transportationJob))
-			return;
-		transportationJob.setStatus(TransportationJobStatus.COMPLETED);
-		transportationJob.addHistory(new TransportationJobHistory("Re-open", sessionView.getUser()));
-		transportationJob = transportationJobService.save(transportationJob);
-		transportationJob = transportationJobService.findOne(transportationJob.getId());
-	}
-
-	public void openTransportationJob() {
-		openTransportationJob(transportationJob);
-	}
-
-	// private void calculateTransportationRequestListCosts(TransportationJob
-	// transportationJob) {
-	// Double total1 = 0.0, total2 = 0.0;
-	// Boolean test = true;
-	// for (TransportationRequest tr :
-	// transportationJob.getTransportationRequestList()) {
-	// Double grossWeight =
-	// deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
-	// Double estimatedDistance = tr.getEstimatedDistance();
-	// total1 += grossWeight * estimatedDistance;
-	// total2 += estimatedDistance;
-	// if (grossWeight.equals(0.0))
-	// test = false;
-	// }
-	// for (TransportationRequest tr :
-	// transportationJob.getTransportationRequestList()) {
-	// Double grossWeight =
-	// deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
-	// Double estimatedDistance = tr.getEstimatedDistance();
-	// tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ?
-	// estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
-	// tr.setCost(transportationJob.getRealCost() * (test ? estimatedDistance *
-	// grossWeight / total1 : estimatedDistance / total2));
-	// transportationRequestService.save(tr);
-	// }
-	// }
-
-	public void closeTransportationJob() {
-		if (isViewPage) {
-			closeTransportationJob(transportationJob);
-			refreshTransportationJob();
-
-		} else if (pageIndex == 1) {
-			for (TransportationJob transportationJob : list4)
-				closeTransportationJob(transportationJobService.findOne(transportationJob.getId()));
-			refreshList();
-		}
-	}
-
 	// RETURN BACK
 	public Boolean canReturnBack(TransportationRequestStatus status) {
-		return !TransportationJobStatus.CLOSED.equals(transportationJob.getStatus()) && sessionView.isTM()
+		return !TransportationJobStatus.ACKNOWLEDGED.equals(transportationJob.getStatus()) && sessionView.isTM()
 				&& Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED).contains(status);
 	}
 
@@ -866,7 +810,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return TransportationRequestStatus.ASSIGNED.equals(status) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+				TransportationRequestStatus.ASSIGNED.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
@@ -910,7 +855,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return TransportationRequestStatus.PICKEDUP.equals(status) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+				TransportationRequestStatus.PICKEDUP.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
 						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
@@ -1035,15 +981,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Long countToAccept() {
-		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ASSIGNED2);
+		return service.countToAccept(sessionView.getUsername());
 	}
 
 	public Long countToStart() {
-		return service.countByDriver(sessionView.getUsername(), TransportationJobStatus.ACCEPTED);
+		return service.countToStart(sessionView.getUsername());
+	}
+
+	public Long countToComplete() {
+		return service.countToComplete(sessionView.getUsername());
 	}
 
 	public Long countTotal() {
-		return countToAssign1() + countToAssign2() + countToAccept() + countToStart();
+		return countToAssign1() + countToAssign2() + countToAccept() + countToStart() + countToComplete();
 	}
 
 	// GETTERS & SETTERS

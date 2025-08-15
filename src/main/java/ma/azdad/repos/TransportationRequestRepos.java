@@ -20,16 +20,12 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	String originName = "(select b.name from Site b where a.deliveryRequest.origin.id = b.id)";
 	String destinationName = "(select b.name from Site b where a.deliveryRequest.destination.id = b.id)";
 	String warehouseName = "(select b.name from Warehouse b where a.deliveryRequest.warehouse.id = b.id)";
-	
-	
-	
+
 	String transporterType = "(select b.type from Transporter b where b.id = a.transportationJob.transporter.id)";
 	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transportationJob.transporter.id)";
 	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transportationJob.transporter.id)";
 	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transportationJob.transporter.id)";
-	
-	
-	
+
 	String approverFullName = " (select b.fullName from User b where b.username = a.user3.username) ";
 
 	String originId = "(select b.id from Site b where a.deliveryRequest.origin.id = b.id)";
@@ -37,16 +33,21 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	String warehouseId = "(select b.id from Warehouse b where a.deliveryRequest.warehouse.id = b.id)";
 	String destinationProjectName = "(select b.name from Project b where b.id = a.deliveryRequest.destinationProject.id)";
 
-	String c1 = "select new  TransportationRequest(a.id,a.reference,a.status,a.neededPickupDate,a.neededDeliveryDate,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName," + originName + ", " + destinationName+ ", " + warehouseName + ", " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + ","
-			+ transporterSupplierName + ")";
+	String c1 = "select new  TransportationRequest(a.id,a.reference,a.status,a.neededPickupDate,a.neededDeliveryDate,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,"
+			+ originName + ", " + destinationName + ", " + warehouseName + ", " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ ") ";
 
-	String select1 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,a.deliveryDate," + originName + "," + destinationName+ ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName
-			+ "," + transporterSupplierName + "," + approverFullName + ",a.cost,a.totalAppLinkCost,a.paymentStatus," + destinationProjectName + ") ";
+	String select1 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,a.deliveryDate,"
+			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ "," + approverFullName + ",a.cost,a.totalAppLinkCost,a.paymentStatus," + destinationProjectName + ") ";
 	String select2 = "select count(*) ";
-	String select3 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate," + originName + "," + destinationName+ ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + ","
-			+ transporterSupplierName + "," + originId + "," + destinationId + "," + warehouseId + ") ";
+	String select3 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,"
+			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ "," + originId + "," + destinationId + "," + warehouseId + ") ";
 
-	@Query(c1 + "from TransportationRequest a" + " where a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2 or a.deliveryRequest.project.costcenter.lob.manager.username = ?2 or a.deliveryRequest.project.id in (?1)" + " order by a.neededPickupDate")
+	@Query(c1 + "from TransportationRequest a"
+			+ " where a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2 or a.deliveryRequest.project.costcenter.lob.manager.username = ?2 or a.deliveryRequest.project.id in (?1)"
+			+ " order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(List<Integer> assignedProjectList, String username);
 
 	@Query(c1 + "from TransportationRequest a order by a.neededPickupDate")
@@ -61,16 +62,42 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(select2 + "from TransportationRequest a where a.status = ?1 order by a.neededPickupDate")
 	public Long count(TransportationRequestStatus status);
 
+	@Query(c1 + "from TransportationRequest a where a.status = 'APPROVED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAssign();
+
+	@Query("select count(*) from TransportationRequest a where a.status = 'APPROVED' order by a.neededPickupDate")
+	public Long countToAssign();
+
+	@Query(c1 + "from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToPickup(String username);
+
+	@Query("select count(*) from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED' order by a.neededPickupDate")
+	public Long countToPickup(String username);
+
+	@Query(c1 + "from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'PICKEDUP' order by a.neededPickupDate")
+	public List<TransportationRequest> findToDeliver(String username);
+
+	@Query(" select count(*)from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'PICKEDUP' order by a.neededPickupDate")
+	public Long countToDeliver(String username);
+
+	@Query(c1 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAcknowledge(String username);
+
+	@Query("select count(*) from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	public Long countToAcknowledge(String username);
+
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(List<TransportationRequestStatus> status);
 	
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) and a.transportationJob.driver.username = ?2 order by a.neededPickupDate")
 	public List<TransportationRequest> findLightByDriver(List<TransportationRequestStatus> status,String username);
 
-	@Query(c1 + "from TransportationRequest a where a.status = ?2 and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
+	@Query(c1
+			+ "from TransportationRequest a where a.status = ?2 and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
 	public List<TransportationRequest> findLight(String username, TransportationRequestStatus status, List<Integer> assignedProjectList);
 
-	@Query(c1 + "from TransportationRequest a where a.status in (?2) and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
+	@Query(c1
+			+ "from TransportationRequest a where a.status in (?2) and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
 	public List<TransportationRequest> findLight(String username, List<TransportationRequestStatus> status, List<Integer> assignedProjectList);
 
 	@Query(c1 + "from TransportationRequest a where a.deliveryRequest.deliverToSupplier.id = ?1 and a.deliveryRequest.destinationProject.id in (?2)")
@@ -81,6 +108,18 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = ?2 order by a.neededPickupDate")
 	public List<TransportationRequest> findLightByRequester(String username, TransportationRequestStatus status);
+
+	@Query(c1 + "from TransportationRequest a where a.driver.username = ?1 order by a.neededPickupDate")
+	public List<TransportationRequest> findByDriver(String driverUsername);
+
+	@Query(c1 + "from TransportationRequest a where a.driver.username = ?1 and a.status in (?2) order by a.neededPickupDate")
+	public List<TransportationRequest> findByDriver(String driverUsername, List<TransportationRequestStatus> statusList);
+
+	@Query(c1 + "from TransportationRequest a where a.transporter.id = ?1 order by a.neededPickupDate")
+	public List<TransportationRequest> findByTransporter(Integer transporterId);
+
+	@Query(c1 + "from TransportationRequest a where a.transporter.id = ?1 and a.status in (?2) order by a.neededPickupDate")
+	public List<TransportationRequest> findByTransporter(Integer transporterId, List<TransportationRequestStatus> statusList);
 
 	@Query(select2 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = ?2 order by a.neededPickupDate")
 	public Long countByRequester(String username, TransportationRequestStatus status);
@@ -93,13 +132,13 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query("from TransportationRequest where deliveryRequest.id = ?1")
 	public TransportationRequest findByDeliveryRequest(Integer deliveryRequestId);
-	
+
 	@Query("select id from TransportationRequest where deliveryRequest.id = ?1")
 	public Integer findIdByDeliveryRequest(Integer deliveryRequestId);
 
 	@Query("select a from TransportationRequest a where a.id in (select b.id from TransportationRequest b where b.deliveryRequest.origin.id = ?1) or a.id in (select b.id from TransportationRequest b where b.deliveryRequest.destination.id = ?1)")
 	public List<TransportationRequest> findAssociatedWithSite(Integer siteId);
-	
+
 	public Integer countByTransportationJob(TransportationJob transportationJob);
 
 	// TR PAYMENT LISTS
@@ -112,7 +151,8 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2 ")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, TransportationRequestPaymentStatus paymentStatus);
 
-	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2  and (a.deliveryRequest.requester.username = ?3 or a.deliveryRequest.project.manager.username = ?3)")
+	@Query(select1
+			+ "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2  and (a.deliveryRequest.requester.username = ?3 or a.deliveryRequest.project.manager.username = ?3)")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, TransportationRequestPaymentStatus paymentStatus, String username);
 
 	// @Query(select1 + "from TransportationRequest a where

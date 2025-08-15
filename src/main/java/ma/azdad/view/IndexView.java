@@ -101,7 +101,9 @@ public class IndexView implements Serializable {
 		switch (selectedMenu) {
 		case 1:
 			if (canAccessMenu(1))
-				return addParameters(sessionView.getIsAdmin() ? "warehouseList.xhtml" : sessionView.getIsPM() ? "projectList.xhtml" :sessionView.getIsTrAdmin()?"transporterList.xhtml": "partNumberList.xhtml", "faces-redirect=true");
+				return addParameters(
+						sessionView.getIsAdmin() ? "warehouseList.xhtml" : sessionView.getIsPM() ? "projectList.xhtml" : sessionView.getIsTrAdmin() ? "transporterList.xhtml" : "partNumberList.xhtml",
+						"faces-redirect=true");
 			return null;
 		case 2:
 			if (canAccessMenu(2))
@@ -109,7 +111,8 @@ public class IndexView implements Serializable {
 			return null;
 		case 3:
 			if (canAccessMenu(3))
-				return addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
+				return sessionView.getIsTM() || sessionView.getIsDriver() ? "dashboard.xhtml?faces-redirect=true"
+						: addParameters("transportationRequestList.xhtml", "faces-redirect=true", "state=0", "pageIndex=1");
 			return null;
 		case 4:
 			if (canAccessMenu(4))

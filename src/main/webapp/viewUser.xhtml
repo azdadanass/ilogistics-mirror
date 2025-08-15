@@ -236,10 +236,15 @@
 									<h:outputText value=" Assigned Vehicles" />
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="userList" value="#{userView.user.vehicleList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+									<p:dataTable id="vehicleList" value="#{userView.user.vehicleList}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
 										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="Matricule">
-											<h:outputText value="#{item.vehicle.correctMatricule}" styleClass="purple bolder" />
+											<h:outputText value="#{item.vehicleMatricule}" styleClass="bolder purple" rendered="#{!userView.editVehicleList}" />
+											<p:selectOneMenu value="#{item.vehicleId}" style="width: 90%" rendered="#{userView.editVehicleList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{userView.vehicleSelectionList}" var="vehicle" itemLabel="#{vehicle.matricule}" itemValue="#{vehicle.id}" />
+												<p:ajax listener="#{userView.selectVehicleListener(item)}" update="vehicleList" />
+											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="Vehicle Type">
 											<h:outputText value="#{item.vehicle.vehicleType.name}" styleClass="bolder green" />
@@ -259,9 +264,43 @@
 											</h:outputText>
 											<h:outputText value=" m3" />
 										</p:column>
-										<p:column headerText="Status" width="100">
-											<i class="ace-icon fa #{item.vehicle.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										<p:column headerText="Vehicle Status" width="100">
+											<h:outputText value="#{item.vehicle.active?'Active':'Inactive'}" styleClass="#{item.vehicle.active?'green':'red'}"/>
 										</p:column>
+										
+										<p:column headerText="Status" width="100">
+											<p:commandLink id="status" update="status" disabled="#{!userView.editVehicleList}" >
+												<i class="ace-icon fa #{item.active?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!item.active}" target="#{item.active}" />
+											</p:commandLink>
+										</p:column>
+										
+										<p:column headerText="Actions" styleClass="center" width="100">
+											<div class="action-buttons center">
+												<p:commandLink title="Remove row" action="#{vehicleView.deleteUser(item)}" update="userList" partialSubmit="true" process="userList" rendered="#{vehicleView.canDeleteUser()}">
+													<i class="ace-icon fa fa-remove bigger-130 red" />
+												</p:commandLink>
+												<h:outputLink value="#{userView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
+													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
+													<f:param name="username" value="#{item.userUsername}" />
+												</h:outputLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" update="vehicleList" partialSubmit="true" process="vehicleList" rendered="#{userView.canEditVehicleList()}">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{userView.editVehicleList}" />
+												</p:commandLink>
+												<p:commandLink title="Add New Item" action="#{userView.addVehicle()}" update="vehicleList" partialSubmit="true" process="vehicleList" rendered="#{userView.canAddVehicle()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+												<p:commandLink title="Save" action="#{userView.saveVehicleList()}" update="vehicleList,:main_form:messages" partialSubmit="true" process="vehicleList"
+													rendered="#{userView.canSaveVehicleList()}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
 									</p:dataTable>
 								</div>
 							</div>

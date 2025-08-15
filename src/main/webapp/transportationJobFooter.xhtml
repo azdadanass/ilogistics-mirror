@@ -117,7 +117,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="closeForm">
+	<!-- <h:form id="closeForm">
 		<p:dialog widgetVar="closeDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('closeDlg').hide()">
 				<h:outputText value="x" />
@@ -136,7 +136,7 @@
 				<p:commandButton action="#{transportationJobView.closeTransportationJob()}" value="Close" styleClass="btn btn-success" oncomplete="PF('closeDlg').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
-	</h:form>
+	</h:form> 
 	<h:form id="openForm">
 		<p:dialog widgetVar="openDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('openDlg').hide()">
@@ -156,7 +156,7 @@
 				<p:commandButton action="#{transportationJobView.openTransportationJob()}" value="Open" styleClass="btn btn-primary" oncomplete="PF('openDlg').hide()" update=":main_form" />
 			</div>
 		</p:dialog>
-	</h:form>
+	</h:form> -->
 	<h:form id="deleteForm">
 		<p:dialog widgetVar="deleteDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteDlg').hide()">

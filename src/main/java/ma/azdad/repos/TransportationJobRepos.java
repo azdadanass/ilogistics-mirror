@@ -19,10 +19,10 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
 
-	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + ","
-			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ") ";
-	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + ","
-			+ transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
+	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + ","
+			+ transporterPrivateLastName + "," + transporterSupplierName + ") ";
+	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.realCost,a.estimatedCost,a.transporter.id, " + transporterType + "," + transporterPrivateFirstName + ","
+			+ transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
 
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 order by a.id desc")
 	public List<TransportationJob> findByUser1(String user1Username);
@@ -60,7 +60,38 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query("select a.transportationJob  from TransportationRequest a where a.id in (?1) group by a.transportationJob.id")
 	public List<TransportationJob> findByTransportationRequestList(List<Integer> transportationRequestIdList);
 
-	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0 order by a.id desc")
+	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED2' order by a.id desc")
+	public List<TransportationJob> findToAccept(String username);
+
+	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED2' order by a.id desc")
+	public Long countToAccept(String username);
+
+	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ACCEPTED' order by a.id desc")
+	public List<TransportationJob> findToStart(String username);
+
+	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ACCEPTED' order by a.id desc")
+	public Long countToStart(String username);
+
+	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
+	public List<TransportationJob> findToComplete(String username);
+
+	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
+	public Long countToComplete(String username);
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = ?2 order by a.id desc")
+	public List<TransportationJob> findByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus);
+
+	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = ?2 order by a.id desc")
+	public Long countByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus);
+
+	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
+	public List<TransportationJob> findByUser1AndStatus(String user1Username, List<TransportationJobStatus> transportationJobStatusList);
+
+	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
+	public Long countByUser1AndStatus(String user1Username, List<TransportationJobStatus> transportationJobStatusList);
+
+	@Query(c1
+			+ "from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0 order by a.id desc")
 	public List<TransportationJob> findToAssign1(String user1Username);
 
 	@Query("select count(*) from TransportationJob a where a.user1.username = ?1 and a.status = 'EDITED' and (select count(*) from TransportationRequest b where b.transportationJob.id = a.id) > 0")
@@ -85,6 +116,15 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	public List<TransportationJob> findByDriverMobile(String driverUsername);
 	
 	
+
+	@Query(c1 + "from TransportationJob a where a.driver.username = ?1 and a.status in (?2)  order by id desc")
+	public List<TransportationJob> findByDriver(String driverUsername, List<TransportationJobStatus> statusList);
+
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 order by id desc")
+	public List<TransportationJob> findByTransporter(Integer transporterId);
+
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status in (?2)  order by id desc")
+	public List<TransportationJob> findByTransporter(Integer transporterId, List<TransportationJobStatus> statusList);
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and a.status = ?2")
 	public Long countByDriver(String driverUsername, TransportationJobStatus status);

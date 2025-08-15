@@ -2,8 +2,13 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -20,6 +25,7 @@ import ma.azdad.model.ContactType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
+import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
@@ -31,6 +37,7 @@ import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.SmsService;
+import ma.azdad.service.TransportationJobService;
 import ma.azdad.service.TransportationRequestFileService;
 import ma.azdad.service.TransportationRequestHistoryService;
 import ma.azdad.service.TransportationRequestService;
@@ -85,6 +92,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected SmsService smsService;
+
+	@Autowired
+	protected TransportationJobService transportationJobService;
 
 	private TransportationRequest transportationRequest = new TransportationRequest();
 	private TransportationRequestFile transportationRequestFile;
@@ -153,27 +163,40 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (isListPage)
 			switch (pageIndex) {
 			case 1:
-				if(sessionView.getIsInternalTM())
+				if (sessionView.getIsInternalTM()) {
 					initLists(service.find(state));
-				else if (sessionView.getInternal() || sessionView.getIsCustomerUser())
-					list2 = list1 = transportationRequestService.findLight(sessionView.getUsername(), state, cacheView.getAssignedProjectList(), sessionView.isTM());
-				else if (sessionView.getIsSupplierUser())
-					list2 = list1 = transportationRequestService.findLightBySupplierUser(state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList());
-				break;
+					break;
+				} else {
+					Set<TransportationRequest> result = new HashSet<TransportationRequest>();
+					if (sessionView.getInternal() || sessionView.getIsCustomerUser())
+						result.addAll(transportationRequestService.findLight(sessionView.getUsername(), state, cacheView.getAssignedProjectList(), sessionView.isTM()));
+					if (sessionView.getIsSupplierUser())
+						result.addAll(transportationRequestService.findLightBySupplierUser(state, sessionView.getUser().getSupplierId(), cacheView.getAssignedProjectList()));
+					if (sessionView.getIsDriver())
+						result.addAll(transportationRequestService.findByDriver(sessionView.getUsername(), state));
+					if (sessionView.getIsExternalTM())
+						result.addAll(transportationRequestService.findByTransporter(sessionView.getUser().getTransporterId(), state));
+					List<TransportationRequest> list = new ArrayList<TransportationRequest>(result);
+					Collections.sort(list);
+					initLists(list);
+					break;
+				}
+
 			case 2:
-				list2 = list1 = transportationRequestService.findLightByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+				initLists(service.findToAcknowledge(sessionView.getUsername()));
 				break;
 			case 3:
 				list2 = list1 = transportationRequestService.findLightByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 				break;
 			case 4:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.APPROVED, sessionView.isTM());
+				if (sessionView.getIsInternalTM())
+					initLists(service.findToAssign());
 				break;
 			case 5:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
+				initLists(service.findToPickup(sessionView.getUsername()));
 				break;
 			case 6:
-				list2 = list1 = transportationRequestService.findLight(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
+				initLists(service.findToDeliver(sessionView.getUsername()));
 				break;
 			case 7:
 				list2 = list1 = transportationRequestService.findByPaymentStatus(paymentStatus, sessionView.isTM(), sessionView.getUsername());
@@ -201,8 +224,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			test = test || cacheView.getAssignedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || cacheView.getDelegatedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername());
-			test = test || (transportationRequest.getDeliveryRequest().getWarehouse() != null
-					&& cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
+			test = test
+					|| (transportationRequest.getDeliveryRequest().getWarehouse() != null && cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
 			test = test || sessionView.isTM();
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getCostcenter().getLob().getManager().getUsername());
 			if (!test)
@@ -215,9 +238,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (isListPage || isAddPage)
 			return sessionView.isUser() || sessionView.getIsPm();
 		else if (isViewPage || isEditPage)
-			return ( sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester()) || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager())  ) 
-					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)
-							.contains(transportationRequest.getStatus());
+			return (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
+					|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager()))
+					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(transportationRequest.getStatus());
 		return false;
 	}
 
@@ -254,9 +277,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequest = transportationRequestService.save(transportationRequest);
 
 		if (!isEditPage)
-			transportationRequestHistoryService.created(transportationRequest,sessionView.getUser());
+			transportationRequestHistoryService.created(transportationRequest, sessionView.getUser());
 		else
-			transportationRequestHistoryService.edited(transportationRequest,sessionView.getUser());
+			transportationRequestHistoryService.edited(transportationRequest, sessionView.getUser());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationRequest.getId());
 	}
@@ -275,7 +298,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	 */
 	public Boolean canRequestTransportationRequest() {
 		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) //
-				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester()) || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager())) //
+				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
+						|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager())) //
 				&& Arrays.asList(DeliveryRequestStatus.REQUESTED, DeliveryRequestStatus.APPROVED1, DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.DELIVRED,
 						DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getDeliveryRequest().getStatus());
 	}
@@ -286,7 +310,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		transportationRequest.setStatus(TransportationRequestStatus.REQUESTED);
 		transportationRequest.setDate2(new Date());
-		transportationRequestHistoryService.requestedNew(transportationRequest,sessionView.getUser());
+		transportationRequestHistoryService.requestedNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
 
@@ -410,8 +434,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	}
 
 	public Boolean canAcknowledgeTransportationRequest(TransportationRequest transportationRequest) {
-		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus())
-				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public void acknowledgeTransportationRequest(TransportationRequest transportationRequest) {
@@ -424,6 +447,11 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		transportationRequestHistoryService.acknowledgedNew(transportationRequest);
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
+
+		// calculate TJ Status
+		TransportationJob transportationJob = transportationJobService.findOne(transportationRequest.getTransportationJob().getId());
+		transportationJob.calculateStatus();
+		transportationJobService.save(transportationJob);
 	}
 
 	public void acknowledgeTransportationRequest() {
@@ -467,8 +495,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelTransportationRequest() {
-		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)
-				.contains(transportationRequest.getStatus())
+		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 						|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername()));
 
@@ -510,8 +537,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// DELETE TRANSPORTATIONREQUEST
 	public Boolean canDeleteTransportationRequest() {
-		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus())
-				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public String deleteTransportationRequest() {
@@ -531,8 +557,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(),
-				sessionView.getUser(), transportationRequest);
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();
@@ -565,25 +591,41 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// generic
 
-	public Long countToAcknowledgeRequests() {
-		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+	public Long countToAssign() {
+		return transportationRequestService.countToAssign();
 	}
+
+	public Long countToPickup() {
+		return transportationRequestService.countToPickup(sessionView.getUsername());
+	}
+
+	public Long countToDeliver() {
+		return transportationRequestService.countToDeliver(sessionView.getUsername());
+	}
+	
+	public Long countToAcknowledge() {
+		return transportationRequestService.countToAcknowledge(sessionView.getUsername());
+	}
+
+//	public Long countToAcknowledgeRequests() {
+//		return transportationRequestService.countByRequester(sessionView.getUsername(), TransportationRequestStatus.DELIVERED);
+//	}
 
 	public Long countToApproveRequests() {
 		return transportationRequestService.countByProjectManager(sessionView.getUsername(), TransportationRequestStatus.REQUESTED);
 	}
 
-	public Long countToAssignRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
-	}
+//	public Long countToAssignRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.APPROVED, sessionView.isTM());
+//	}
 
-	public Long countToPickupRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
-	}
+//	public Long countToPickupRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.ASSIGNED, sessionView.isTM());
+//	}
 
-	public Long countToDeliverRequests() {
-		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
-	}
+//	public Long countToDeliverRequests() {
+//		return transportationRequestService.count(TransportationRequestStatus.PICKEDUP, sessionView.isTM());
+//	}
 
 	@Cacheable("transportationRequestView.countToAdd")
 	public Long countToAdd() {
@@ -594,12 +636,11 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public Long countTotal() {
 		Long total = 0l;
 		if (sessionView.getIsUser())
-			total += countToAdd() + countToAcknowledgeRequests();
+			total += countToAdd() + countToAcknowledge();
 		if (sessionView.getIsPM())
 			total += countToApproveRequests();
-		if (sessionView.getIsTM())
-			total += countToAssignRequests() + countToPickupRequests() + countToDeliverRequests();
-
+		if (sessionView.getIsTM() || sessionView.getIsDriver())
+			total += countToAssign() + countToPickup() + countToDeliver();
 		return total;
 	}
 

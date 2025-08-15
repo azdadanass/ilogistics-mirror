@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -22,15 +23,17 @@ import ma.azdad.model.CompanyType;
 import ma.azdad.model.Conversation;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Role;
-import ma.azdad.model.Team;
 import ma.azdad.model.User;
 import ma.azdad.model.UserFile;
+import ma.azdad.model.UserVehicle;
+import ma.azdad.model.Vehicle;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UserRoleService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -59,6 +62,9 @@ public class UserView {
 
 	@Autowired
 	protected UserRoleService userRoleService;
+	
+	@Autowired
+	protected VehicleService vehicleService;
 
 	private String toNotifyUserUsername;
 	private Integer toNotifyExternalResourceId;
@@ -323,12 +329,70 @@ public class UserView {
 		refreshUser();
 	}
 
+	// vehicle list
+	private Boolean editVehicleList = false;
+
+	public void selectVehicleListener(UserVehicle userVehicle) {
+		if (userVehicle.getVehicleId() != null)
+			userVehicle.setVehicle(vehicleService.findOneLight(userVehicle.getVehicleId()));
+	}
+
+	public Boolean canEditVehicleList() {
+		return !editVehicleList && sessionView.getIsTrAdmin();
+	}
+
+	public Boolean canAddVehicle() {
+		return editVehicleList && sessionView.getIsTrAdmin();
+	}
+
+	public void addVehicle() {
+		if (canAddVehicle())
+			user.addVehicle(new UserVehicle());
+	}
+
+	public Boolean canDeleteVehicle() {
+		return editVehicleList && sessionView.getIsTrAdmin();
+	}
+
+	public void deleteVehicle(UserVehicle userVehicle) {
+		if (canDeleteVehicle())
+			user.removeVehicle(userVehicle);
+	}
+
+	public Boolean canSaveVehicleList() {
+		return editVehicleList && sessionView.getIsTrAdmin();
+	}
+
+	private Boolean validateVehicleList() {
+		if (user.getVehicleList().stream().filter(i -> i.getVehicleId() == null).count() > 0)
+			return FacesContextMessages.ErrorMessages("Vehicle should not be null");
+		if (user.getVehicleList().stream().map(i -> i.getVehicle()).distinct().count() < user.getVehicleList().size())
+			return FacesContextMessages.ErrorMessages("Duplicate Vehicle !");
+
+		return true;
+	}
+
+	public void saveVehicleList() {
+		if (!canSaveVehicleList())
+			return;
+		if (!validateVehicleList())
+			return;
+		user.getVehicleList().forEach(i -> i.setVehicle(vehicleService.findOneLight(i.getVehicleId())));
+		userService.save(user);
+		user = userService.findOne(user.getUsername());
+		editVehicleList = false;
+	}
+
+	public List<Vehicle> getVehicleSelectionList() {
+		return user.getTransporter().getVehicleList().stream().filter(i -> i.getActive()).collect(Collectors.toList());
+	}
+
 	// generic
 	public List<User> findLight() {
 		return userService.findLight();
 	}
-	
-	public List<User> findLight2(){
+
+	public List<User> findLight2() {
 		return userService.findLight2();
 	}
 
@@ -699,5 +763,12 @@ public class UserView {
 		this.sortBy = sortBy;
 	}
 
-	
+	public Boolean getEditVehicleList() {
+		return editVehicleList;
+	}
+
+	public void setEditVehicleList(Boolean editVehicleList) {
+		this.editVehicleList = editVehicleList;
+	}
+
 }

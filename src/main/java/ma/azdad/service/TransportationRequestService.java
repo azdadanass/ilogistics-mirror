@@ -120,10 +120,9 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			return null;
 		return repos.findLight(status);
 	}
-	
-	
-	public List<TransportationRequest> find(TransportationRequestState state){
-		if(state==null)
+
+	public List<TransportationRequest> find(TransportationRequestState state) {
+		if (state == null)
 			return repos.findLight();
 		return repos.findLight(state.getStatusList());
 	}
@@ -137,11 +136,42 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	public List<TransportationRequest> findByPaymentStatus(TransportationRequestPaymentStatus paymentStatus, Boolean isTm, String username) {
 		if (paymentStatus == null)
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED) : repos.findByPaymentStatus(TransportationJobStatus.CLOSED, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, username);
 		else
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus)
-					: repos.findByPaymentStatus(TransportationJobStatus.CLOSED, paymentStatus, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus, username);
 
+	}
+
+	public List<TransportationRequest> findToAssign() {
+		return repos.findToAssign();
+	}
+
+	public Long countToAssign() {
+		return repos.countToAssign();
+	}
+	
+	public List<TransportationRequest> findToPickup(String username) {
+		return repos.findToPickup(username);
+	}
+
+	public Long countToPickup(String username) {
+		return repos.countToPickup(username);
+	}
+	
+	public List<TransportationRequest> findToDeliver(String username) {
+		return repos.findToDeliver(username);
+	}
+
+	public Long countToDeliver(String username) {
+		return repos.countToDeliver(username);
+	}
+	
+	public List<TransportationRequest> findToAcknowledge(String username) {
+		return repos.findToAcknowledge(username);
+	}
+
+	public Long countToAcknowledge(String username) {
+		return repos.countToAcknowledge(username);
 	}
 
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
@@ -176,6 +206,18 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 //			else
 //				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
 //		return null;
+	}
+
+	public List<TransportationRequest> findByDriver(String driverUsername, TransportationRequestState state) {
+		if (state == null)
+			return repos.findByDriver(driverUsername);
+		return repos.findByDriver(driverUsername, state.getStatusList());
+	}
+
+	public List<TransportationRequest> findByTransporter(Integer transporterId, TransportationRequestState state) {
+		if (state == null)
+			return repos.findByTransporter(transporterId);
+		return repos.findByTransporter(transporterId, state.getStatusList());
 	}
 
 	public List<TransportationRequest> findLightBySupplierUser(TransportationRequestState state, Integer supplierId, List<Integer> assignedProjectList) {
@@ -220,7 +262,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public void updatePaymentStatus() {
-		List<Integer> idList = repos.findIdList(TransportationJobStatus.CLOSED);
+		List<Integer> idList = repos.findIdList(TransportationJobStatus.ACKNOWLEDGED);
 		for (Integer id : idList)
 			updatePaymentStatus(id);
 	}
@@ -230,7 +272,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (TransportationRequestPaymentStatus.PAYMENT_CONFIRMED.equals(repos.getPaymentStatus(transportationRequestId)))
 			return;
 		TransportationRequestPaymentStatus paymentStatus = null;
-		if (TransportationJobStatus.CLOSED.equals(repos.getTransportationJobStatus(transportationRequestId))) {
+		if (TransportationJobStatus.ACKNOWLEDGED.equals(repos.getTransportationJobStatus(transportationRequestId))) {
 			if (UtilsFunctions.compareDoubles(totalAppLinkCost, 0.0) == 0)
 				paymentStatus = TransportationRequestPaymentStatus.PENDING;
 			else {

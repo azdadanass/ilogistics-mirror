@@ -24,7 +24,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{vehicleTypeView.id == null?'Add New':'Edit'} VehicleType" />
+				<h:outputText value="#{vehicleTypeView.id == null?'Add New':'Edit'} Vehicle Type" />
 			</li>
 		</ul>
 	</ui:define>
@@ -34,7 +34,7 @@
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa #{vehicleTypeView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{vehicleTypeView.id == null?'Add New':'Edit'} VehicleType" />
+					<h:outputText value=" #{vehicleTypeView.id == null?'Add New':'Edit'} Vehicle Type" />
 				</h1>
 			</div>
 			<div class="row">
@@ -90,6 +90,29 @@
 										</label>
 										<div class="col-xs-9 col-sm-9">
 											<p:inputNumber value="#{vehicleTypeView.vehicleType.price}" thousandSeparator="" required="true" requiredMessage="Price should not be null" placeholder="Price / Km"/>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Gross Weight" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{vehicleTypeView.vehicleType.grossWeight}" placeholder="Kg" minValue="0" decimalSeparator="." thousandSeparator="" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Max Volume" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{vehicleTypeView.vehicleType.maxVolume}" placeholder="m3" minValue="0" decimalSeparator="." thousandSeparator="" />
 										</div>
 									</div>
 								</div>

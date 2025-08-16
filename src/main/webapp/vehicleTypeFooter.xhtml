@@ -22,5 +22,34 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	
+	<h:form id="uploadImageForm">
+		<p:dialog widgetVar="uploadImageDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('uploadImageDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-picture-o blue" />
+					<h:outputText value=" Upload Image" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{vehicleTypeView.handlePhotoUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="false"
+							update="messages,:main_form:image" sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" style="margin: auto;width: 80%">
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('uploadImageDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
 
 </ui:composition>

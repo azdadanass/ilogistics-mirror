@@ -1,19 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml" xmlns:pe="http://primefaces.org/ui/extensions">
-
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+	xmlns:pe="http://primefaces.org/ui/extensions">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -27,7 +24,6 @@
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
@@ -47,37 +43,57 @@
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditVehicleType.xhtml" rendered="#{vehicleTypeView.canSaveVehicleType()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditVehicleType.xhtml"
+							rendered="#{vehicleTypeView.canSaveVehicleType()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{vehicleTypeView.id}" />
 						</h:outputLink>
-
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{vehicleTypeView.canDeleteVehicleType()}">
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
+							rendered="#{vehicleTypeView.canDeleteVehicleType()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-
 						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadVehicleTypeFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-
 					</div>
 				</div>
 			</div>
 			<div class="hr dotted" />
+			<div class="user-profile row">
+				<div class="col-xs-12 col-sm-3 center">
+					<div class="profile-picture">
+						<p:graphicImage id="image" value="#{fileView.stream}" styleClass="editable img-responsive editable-click editable-empty aa-avatar" onclick="PF('uploadImageDlg').show()"
+							rendered="#{vehicleTypeView.canUploadPhoto()}">
+							<f:param name="fileName" value="#{vehicleTypeView.vehicleType.image}" />
+						</p:graphicImage>
+					</div>
+					<div class="space-4" />
+					<div class="width-80 label label-info label-xlg arrowed-in arrowed-in-right">
+						<div class="inline position-relative">
+							<a href="#" class="user-title-label dropdown-toggle" data-toggle="dropdown">
+								<h:panelGroup id="activeIcon">
+									<i class="ace-icon fa fa-circle light-green" />
+								</h:panelGroup>
+								&nbsp;
+								<span class="white">
+									<h:outputText value="#{vehicleTypeView.vehicleType.name}" />
+								</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="space-16" />
 			<div class="tabbable">
 				<ul class="nav nav-tabs padding-18">
@@ -103,9 +119,17 @@
 										<div class="profile-info-name">
 											<h:outputText value="Name" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{vehicleTypeView.vehicleType.name}" styleClass="bolder orange" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Gross Weight" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleTypeView.vehicleType.grossWeight} Kg" />
 											&nbsp;
 										</div>
 									</div>
@@ -117,12 +141,20 @@
 										<div class="profile-info-name">
 											<h:outputText value="Price" />
 										</div>
-
 										<div class="profile-info-value">
 											<h:outputText value="#{vehicleTypeView.vehicleType.price}">
-											<f:convertNumber type="number" maxFractionDigits="2" />
+												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
-											<h:outputText value=" MAD / Km"/>
+											<h:outputText value=" MAD / Km" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Max Volume" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleTypeView.vehicleType.maxVolume} m3" />
 											&nbsp;
 										</div>
 									</div>
@@ -150,15 +182,13 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="vehicleTypehistoryList" value="#{vehicleTypeView.vehicleType.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
-										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
-
+									<p:dataTable id="vehicleTypehistoryList" value="#{vehicleTypeView.vehicleType.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="#{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />
 											</span>
 										</p:column>
-
 										<p:column headerText="Date" width="90" styleClass="center">
 											<f:subview rendered="#{item.date==null}">
 												<i class="ace-icon fa fa-spinner fa-spin orange bigger-200 " />
@@ -167,14 +197,12 @@
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 										</p:column>
-
 										<p:column headerText="User" width="120">
 											<h:outputText id="user" value="#{item.user.fullName}" styleClass="purple bolder" />
 											<p:overlayPanel for="user" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
 												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user)}" />
 											</p:overlayPanel>
 										</p:column>
-
 										<p:column headerText="Description" width="400">
 											<h:outputText value="#{item.description}" escape="false" styleClass="aa-cut-text" />
 										</p:column>

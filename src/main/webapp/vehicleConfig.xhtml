@@ -92,17 +92,23 @@
 									<p:dataTable value="#{vehicleTypeView.list2}" filteredValue="#{vehicleTypeView.list3}" rowKey="#{item.id}" selection="#{vehicleTypeView.list4}" id="main_tab"
 										widgetVar="main_tab" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
-										<p:ajax event="filter" oncomplete="panelUpdaters()" process="@this" />
-										<p:ajax event="rowSelect" oncomplete="panelUpdaters()" process="@this" />
-										<p:ajax event="rowUnselect" oncomplete="panelUpdaters()" process="@this" />
-										<p:ajax event="rowSelectCheckbox" oncomplete="panelUpdaters()" process="@this" />
-										<p:ajax event="rowUnselectCheckbox" oncomplete="panelUpdaters()" process="@this" />
-										<p:ajax event="toggleSelect" oncomplete="panelUpdaters()" process="@this" />
-										<p:column headerText="Numero" sortBy="#{item.idStr}">
-											<h:outputText value="#{item.idStr}" styleClass="bolder purple" />
+										<p:column headerText="Logo" width="5%" styleClass="hidden-xs" exportable="false">
+											<img src="#{item.image}" class="img-circle aa-datatable-photo" />
 										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" styleClass="bolder orange" />
+										</p:column>
+										<p:column headerText="Gross Weight">
+											<h:outputText value="#{item.grossWeight}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" Kg"/>
+										</p:column>
+										<p:column headerText="Max Volume">
+											<h:outputText value="#{item.grossWeight}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3"/>
 										</p:column>
 										<p:column headerText="Price">
 											<h:outputText value="#{item.price}">
@@ -118,6 +124,13 @@
 												</h:outputLink>
 											</div>
 										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<h:outputLink value="#{vehicleTypeView.addEditPage}" title="Add New Vehicle Type" rendered="#{vehicleTypeView.canSaveVehicleType()}">
+													<i class="fa fa-plus green" />
+												</h:outputLink>
+											</div>
+										</f:facet>
 									</p:dataTable>
 								</div>
 							</div>
@@ -168,6 +181,9 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" exportable="false">
 											<div class="action-buttons center">
+												<p:commandLink title="View Type List" update=":brandTypeListForm" oncomplete="PF('brandTypeListDlg').show()" action="#{vehicleBrandView.refreshModel(item.id)}">
+													<i class="ace-icon fa fa-list bigger-130 green" />
+												</p:commandLink>
 												<h:outputLink value="#{vehicleBrandView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 													<f:param name="id" value="#{item.id}" />
@@ -188,6 +204,47 @@
 					</div>
 				</div>
 			</div>
+		</h:form>
+		<h:form id="brandTypeListForm">
+			<p:dialog widgetVar="brandTypeListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+				<button type="button" class="bootbox-close-button close" onclick="PF('brandTypeListDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-plus green" />
+						<h:outputText value=" Brand Type List" />
+					</h4>
+				</div>
+				<div class="modal-body" style="width: 100%">
+					<p:messages id="messages" closable="true" />
+					<div class="row">
+						<div class="col-sm-offset-1 col-sm-10">
+							<div class="table-header col-sm-12 col-xs-12">
+								<i class="fa fa-list" />
+								<h:outputText value=" Brand Type List" />
+							</div>
+							<div class="col-sm-12 col-xs-12 aa-datatable-container">
+								<p:dataTable value="#{vehicleBrandView.model.brandTypeList}" rowKey="#{item.id}" id="brandTypelist" var="item" rows="20" styleClass="table table-striped table-hover center"
+									paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:column headerText="Photo" width="100" styleClass="hidden-xs" exportable="false">
+										<img src="#{item.image}" class="img-circle aa-datatable-photo" />
+									</p:column>
+									<p:column headerText="Name">
+										<h:outputText value="#{item.name}" styleClass="bolder blue" />
+									</p:column>
+									<p:column headerText="Description">
+										<h:outputText value="#{item.description}" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<p:commandButton onclick="PF('brandTypeListDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				</div>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>

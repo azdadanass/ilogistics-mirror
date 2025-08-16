@@ -155,7 +155,7 @@ public class VehicleBrandView extends GenericView<Integer, VehicleBrand, Vehicle
 	}
 
 	public Boolean canUploadBrandTypePhoto() {
-		return canSaveBrandTypeList();
+		return sessionView.getIsTrAdmin();
 	}
 
 	public void handleBrandTypePhotoUpload(FileUploadEvent event) throws IOException {

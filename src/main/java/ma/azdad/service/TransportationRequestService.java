@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.TransportationJob;
@@ -508,6 +509,17 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if(tr.getEstimatedDistance() != null) {
 			trMobile.setEstimatedDistanceText(tr.getEstimatedDistanceText());
 		}
+		if(tr.getTransportationJob().getVehicle() != null) {
+			trMobile.setVehicule(new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicle().getCategory()
+					, tr.getTransportationJob().getVehicle().getType(), tr.getTransportationJob().getVehicleMatricule()));
+		}
+		if(tr.getTransportationJob().getDriver() != null) {
+			 trMobile.setDriver(toMobileUser2(tr.getTransportationJob().getDriver()));}
+		if(tr.getDeliveryRequest() != null) {
+			trMobile.setDnRef(tr.getDeliveryRequestReference());
+			trMobile.setDnType(tr.getDeliveryRequestType().getValue());
+			trMobile.setDnProject(tr.getDeliveryRequest().getProjectName());
+		}
 		
 		if (tr.getDeliveryRequest().getOrigin() != null) {
 			trMobile.setOriginName(tr.getDeliveryRequest().getOriginName());
@@ -574,6 +586,11 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	private ma.azdad.mobile.model.User toMobileUser(User user) {
 		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
 				user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob());
+	}
+	
+	private ma.azdad.mobile.model.User toMobileUser2(User user) {
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
+				user.getLogin(), user.getPhoto(), user.getEmail(),user.getCin(),user.getPhone());
 	}
 	
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {

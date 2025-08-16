@@ -33,7 +33,13 @@ public class TransportationRequest {
 	private Double originLongitude = -6.8678663;
 
 	
+	//dn
+	private String dnRef;
+	private String dnType;
+	private String dnProject;
 
+
+	
 
 	// USER
 	private Date neededPickupDate;
@@ -68,7 +74,11 @@ public class TransportationRequest {
 	private User user7;
 	private User user8;
 	private User user9;
- List<ma.azdad.mobile.model.TransportationRequestFile> fileList = new ArrayList<>();
+	
+	private ma.azdad.mobile.model.User driver;
+	private ma.azdad.mobile.model.Vehicule vehicule;
+
+	List<ma.azdad.mobile.model.TransportationRequestFile> fileList = new ArrayList<>();
 	private List<ma.azdad.mobile.model.TransportationRequestHistory> historyList = new ArrayList<>();
 
 	public TransportationRequest() {
@@ -517,6 +527,51 @@ public class TransportationRequest {
 	public void setUser9(User user9) {
 		this.user9 = user9;
 	}
+
+	public ma.azdad.mobile.model.User getDriver() {
+		return driver;
+	}
+
+	public void setDriver(ma.azdad.mobile.model.User driver) {
+		this.driver = driver;
+	}
+
+	public String getDnRef() {
+		return dnRef;
+	}
+
+	public void setDnRef(String dnRef) {
+		this.dnRef = dnRef;
+	}
+
+	public String getDnType() {
+		return dnType;
+	}
+
+	public void setDnType(String dnType) {
+		this.dnType = dnType;
+	}
+
+	public String getDnProject() {
+		return dnProject;
+	}
+
+	public void setDnProject(String dnProject) {
+		this.dnProject = dnProject;
+	}
+
+	public ma.azdad.mobile.model.Vehicule getVehicule() {
+		return vehicule;
+	}
+
+	public void setVehicule(ma.azdad.mobile.model.Vehicule vehicule) {
+		this.vehicule = vehicule;
+	}
+	
+	
+	
+
+	
 	
 	
 	

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ma.azdad.mobile.model.Stop;
 import ma.azdad.mobile.model.Token;
 import ma.azdad.mobile.model.TransportationJob;
 import ma.azdad.model.Role;
@@ -42,6 +43,14 @@ public class TransportationJobController {
 			return transportationJobService.findByDriverMobileByStatus(state, token.getUsername());
 
 		}
+	}
+	
+	@GetMapping("/findtjstops/{key}/{id}")
+	public List<Stop> findTjStops(@PathVariable String key,
+			@PathVariable Integer id) {
+		System.out.println("/mobile/tj/findtjstops/{key}/{id}");
+		Token token = tokenService.getBykey(key);
+		return transportationJobService.findTjStopsMobile(id);
 	}
 
 }

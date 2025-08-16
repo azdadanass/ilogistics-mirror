@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
@@ -499,7 +500,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		case 1:
 			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.STARTED),username);
 		case 2:
-			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED),username);
+			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.COMPLETED),username);
 		case 3:
 			return findByUser1Mobile(username);
 
@@ -540,7 +541,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		case 1:
 			return findByDriverMobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS,TransportationJobStatus.STARTED),username);
 		case 2:
-			return findByDriverMobile(Arrays.asList(TransportationJobStatus.COMPLETED,TransportationJobStatus.CLOSED),username);
+			return findByDriverMobile(Arrays.asList(TransportationJobStatus.COMPLETED),username);
 		
 
 		default:
@@ -548,7 +549,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 	}
 
-	
+	public List<ma.azdad.mobile.model.Stop> findTjStopsMobile(Integer id){
+		TransportationJob tj = findOne(id);
+		List<Stop> stops = tj.getStopList();
+		List<ma.azdad.mobile.model.Stop> stopsMobile = new ArrayList<>();
+
+		for (Stop stop : stops) {
+			stopsMobile.add(new ma.azdad.mobile.model.Stop(stop.getId(), stop.getDate(), stop.getPlaceName(), stop.getType().getValue()));
+		}
+		return stopsMobile;
+	}
 	
 	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id){
 		TransportationJob tj = findOne(id);
@@ -561,8 +571,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		
 		if (Arrays.asList(
 		        TransportationJobStatus.COMPLETED,
-		        TransportationJobStatus.ACKNOWLEDGED,
-		        TransportationJobStatus.CLOSED
+		        TransportationJobStatus.ACKNOWLEDGED
 		    ).contains(tj.getStatus())) {
 
 		    List<TransportationJobItinerary> list =
@@ -605,6 +614,39 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		tjMobile.setGrossWeight(totalGrossWeight);
 		tjMobile.setVolume(totalVolume);
 		tjMobile.setNumberOfItems(totalItems);
+		if(tj.getVehicle() != null) {
+			tjMobile.setVehicule(new Vehicule(tj.getVehicleId(), tj.getVehicle().getCategory(), 
+					tj.getVehicle().getType(), tj.getVehicleMatricule()));
+		}
+		
+		if (tj.getUser1() != null) {
+			tjMobile.setUser1(toMobileUser(tj.getUser1()));
+			tjMobile.setDate1(tj.getDate1());
+		}
+		if (tj.getUser2() != null) {
+			tjMobile.setUser2(toMobileUser(tj.getUser2()));
+			tjMobile.setDate2(tj.getDate2());
+		}
+		if (tj.getUser3() != null) {
+			tjMobile.setUser3(toMobileUser(tj.getUser3()));
+			tjMobile.setDate3(tj.getDate3());
+		}
+		if (tj.getUser4() != null) {
+			tjMobile.setUser4(toMobileUser(tj.getUser4()));
+			tjMobile.setDate4(tj.getDate4());
+		}
+		if (tj.getUser5() != null) {
+			tjMobile.setUser5(toMobileUser(tj.getUser5()));
+			tjMobile.setDate5(tj.getDate5());
+		}
+		if (tj.getUser6() != null) {
+			tjMobile.setUser6(toMobileUser(tj.getUser6()));
+			tjMobile.setDate6(tj.getDate6());
+		}
+		if (tj.getUser7() != null) {
+			tjMobile.setUser7(toMobileUser(tj.getUser7()));
+			tjMobile.setDate7(tj.getDate7());
+		}
 
 		tjMobile.getTransportationRequestList().addAll(trList);
 		tjMobile.setHistoryList(repos.findHistoryListMobile(id));

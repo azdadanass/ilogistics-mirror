@@ -49,8 +49,8 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	@Override
 	public void refreshList() {
-		if (isListPage)
-			list2 = list1 = vehicleTypeService.findAll();
+		if (isPage("vehicleConfig"))
+			initLists(vehicleTypeService.findAll());
 	}
 
 	public void refreshVehicleType() {

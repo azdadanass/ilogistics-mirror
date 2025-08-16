@@ -82,7 +82,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c1
 	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
-			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
+			String user1Photo,Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -90,6 +90,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
+		this.setUser1Photo(user1Photo);
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -99,8 +100,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	// c2
 	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
-			Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, String driverUsername,
-			String vehicleMatricule) {
+			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName,
+			String transporterSupplierName, String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -108,6 +109,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
+		this.setUser1Photo(user1Photo);
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
 		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
@@ -566,6 +568,19 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			user1 = new User();
 		user1.setUsername(user1Username);
 	}
+	
+	@Transient
+	public String getUser1Photo(){
+		return user1!=null?user1.getPhoto():null;
+	}
+
+	@Transient
+	public void setUser1Photo(String user1Photo){
+		if(user1==null)
+			user1=new User();
+		user1.setPhoto(user1Photo);
+	}
+
 
 	@Transient
 	public String getDriverUsername() {

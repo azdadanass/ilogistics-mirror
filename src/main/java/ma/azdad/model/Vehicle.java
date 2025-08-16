@@ -33,6 +33,7 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	private Transporter transporter;
 	private Tool tool;
 	private VehicleType vehicleType;
+	private VehicleBrandType brandType;
 
 	private List<VehicleFile> fileList = new ArrayList<>();
 	private List<VehicleHistory> historyList = new ArrayList<>();
@@ -180,6 +181,54 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
+	public Integer getBrandTypeId() {
+		return brandType != null ? brandType.getId() : null;
+	}
+
+	@Transient
+	public void setBrandTypeId(Integer brandTypeId) {
+		if (brandType == null || !brandTypeId.equals(brandType.getId()))
+			brandType = new VehicleBrandType();
+		brandType.setId(brandTypeId);
+	}
+
+	@Transient
+	public String getBrandTypeName() {
+		return brandType != null ? brandType.getName() : null;
+	}
+
+	@Transient
+	public void setBrandTypeName(String brandTypeName) {
+		if (brandType == null)
+			brandType = new VehicleBrandType();
+		brandType.setName(brandTypeName);
+	}
+
+	@Transient
+	public Integer getBrandId() {
+		return brandType != null ? brandType.getBrandId() : null;
+	}
+
+	@Transient
+	public void setBrandId(Integer brandId) {
+		if (brandType == null)
+			brandType = new VehicleBrandType();
+		brandType.setBrandId(brandId);
+	}
+
+	@Transient
+	public String getBrandName() {
+		return brandType != null ? brandType.getBrandName() : null;
+	}
+
+	@Transient
+	public void setBrandName(String brandName) {
+		if (brandType == null)
+			brandType = new VehicleBrandType();
+		brandType.setBrandName(brandName);
+	}
+
+	@Transient
 	public Integer getToolId() {
 		return toolId;
 	}
@@ -229,6 +278,15 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY/* ,optional = false */) // for after
+	public VehicleBrandType getBrandType() {
+		return brandType;
+	}
+
+	public void setBrandType(VehicleBrandType brandType) {
+		this.brandType = brandType;
 	}
 
 }

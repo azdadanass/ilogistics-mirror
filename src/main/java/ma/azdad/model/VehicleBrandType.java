@@ -27,6 +27,30 @@ public class VehicleBrandType extends GenericModel<Integer> {
 	public String getIdentifierName() {
 		return this.name;
 	}
+	
+	@Transient
+	public Integer getBrandId(){
+		return brand!=null?brand.getId():null;
+	}
+
+	@Transient
+	public void setBrandId(Integer brandId){
+		if(brand==null || !brandId.equals(brand.getId()))
+			brand=new VehicleBrand();
+		brand.setId(brandId);
+	}
+	
+	@Transient
+	public String getBrandName(){
+		return brand!=null?brand.getName():null;
+	}
+
+	@Transient
+	public void setBrandName(String brandName){
+		if(brand==null)
+			brand=new VehicleBrand();
+		brand.setName(brandName);
+	}
 
 	// getters & setters
 

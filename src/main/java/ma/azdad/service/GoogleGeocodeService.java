@@ -1,13 +1,18 @@
 package ma.azdad.service;
 
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.DriverLocation;
 import ma.azdad.model.GenericPlace;
+import ma.azdad.model.Localizable;
 import ma.azdad.model.Site;
+import ma.azdad.repos.DriverLocationRepo;
 import ma.azdad.repos.SiteRepos;
 
 @Component
@@ -27,6 +32,9 @@ public class GoogleGeocodeService extends GenericService<Integer, Site, SiteRepo
 
 	@Autowired
 	SiteRepos siteRepos;
+	
+	@Autowired
+	DriverLocationRepo driverLocationRepo;
 
 	public void updateGoogleGeocodeData(Site site) {
 		System.out.println("--------------------------------------------");
@@ -40,6 +48,31 @@ public class GoogleGeocodeService extends GenericService<Integer, Site, SiteRepo
 	public void updateGoogleGeocodeDataAsync(Site site) {
 		synchronized (GoogleGeocodeService.class) {
 			updateGoogleGeocodeData(site);
+		}
+	}
+	
+	public void updateGoogleGeocodeData(DriverLocation userLocation) {
+		System.out.println("--------------------------------------------");
+		GenericPlace place = getGoogleGeocodeData(userLocation);
+		if (place.getGoogleAddress() != null)
+			driverLocationRepo.updateGoogleGeocodeData2(
+				    userLocation.getId(),
+				    userLocation.getLatitude(),
+				    userLocation.getLongitude(),
+				    place.getGoogleAddress(),
+				    place.getGoogleCity(),
+				    place.getGoogleRegion(),
+				    new Date()
+				);
+
+		System.out.println("--------------------------------------------");
+	}
+
+	
+	@Async
+	public void updateGoogleGeocodeDataAsync(DriverLocation userLocation) {
+		synchronized (GoogleGeocodeService.class) {
+			updateGoogleGeocodeData(userLocation);
 		}
 	}
 
@@ -114,5 +147,58 @@ public class GoogleGeocodeService extends GenericService<Integer, Site, SiteRepo
 		}
 		return place;
 	}
+	
+	
+	public static GenericPlace getGoogleGeocodeData(Localizable localizable) {
+		GenericPlace place = new  GenericPlace();
+		try {
+			String url;
+			JSONObject json;
+			Boolean retry = false;
+			int k = 0;
+			do {
+				url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + localizable.getLatitude() + "," + localizable.getLongitude() + "&sensor=true&key=" + API_KEYS[currentApiKey];
+				System.out.println(url);
+				json = JsonReader.readJsonFromUrl(url);
+				if ("OVER_QUERY_LIMIT".equals(json.getString("status"))) {
+					currentApiKey = (++currentApiKey) % API_KEYS.length;
+					retry = true;
+				} else
+					retry = false;
+			} while (retry && ++k < API_KEYS.length);
+			if (k >= API_KEYS.length) // none of the keys is working
+				return place;
+			JSONObject firstResult = json.getJSONArray("results").getJSONObject(0);
+			String formattedAddress = null, city = null, region = null;
+			try {
+				formattedAddress = firstResult.get("formatted_address").toString();
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
+			try {
+				JSONArray addressComponentArray = firstResult.getJSONArray("address_components");
+				for (int i = 0; i < addressComponentArray.length(); i++) {
+					JSONObject addressComponent = addressComponentArray.getJSONObject(i);
+					String types = addressComponent.getJSONArray("types").toString();
+					if (city == null && types.contains("\"locality\""))
+						city = addressComponent.getString("long_name");
+					if (region == null && types.contains("\"administrative_area_level_1\""))
+						region = addressComponent.getString("long_name");
+				}
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
+			System.out.println("formattedAddress\t" + formattedAddress);
+			System.out.println("city\t" + city);
+			System.out.println("region\t" + region);
+			place.setGoogleAddress(formattedAddress);
+			place.setGoogleCity(city);
+			place.setGoogleRegion(region);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+		return place;
+	}
+
 
 }

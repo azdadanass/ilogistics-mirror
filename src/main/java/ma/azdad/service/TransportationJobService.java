@@ -2,6 +2,7 @@ package ma.azdad.service;
 
 import java.io.File;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.mobile.model.Vehicule;
+import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
@@ -34,6 +36,7 @@ import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
+import ma.azdad.repos.DriverLocationRepo;
 import ma.azdad.repos.TransportationJobFileRepos;
 import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationJobRepos;
@@ -52,6 +55,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	@Autowired
 	UserRepos userRepos;
 	
+	DriverLocationRepo driverLocationRepo;
+	
+	@Autowired
+	TransportationJobRepos transportationJobRepos;
+	
 	@Autowired
 	TransportationJobItineraryRepos transportationJobItineraryRepos;
 
@@ -60,6 +68,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	
 	@Autowired
 	FileUploadService fileUploadService;
+	
+	@Autowired
+	GoogleGeocodeService googleGeocodeService;
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
@@ -717,6 +728,83 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		if (url.contains(".webp"))
 			return "image/webp";
 		return "image/jpeg"; // default
+	}
+	
+	public void updateDriverLocation(Double lat, Double lng, ma.azdad.mobile.model.User us) {
+	    List<DriverLocation> locations = driverLocationRepo.findByUser(us.getUsername());
+	    User user = userService.findByUsername(us.getUsername());
+	    //il reste check de profile driver !!!!!!!!!!!!!!!!!!!!
+	    if(user.getIsDriver())
+	    if (locations == null || locations.isEmpty()) {
+	        DriverLocation userLocation = new DriverLocation(new Date(), lat, lng, user);
+	        userLocation = driverLocationRepo.save(userLocation);
+	        //hadi hiya li at3merlina les info de user si nexiste pas f base donnés
+	        googleGeocodeService.updateGoogleGeocodeDataAsync(userLocation);
+	        
+	    } else {
+	    	DriverLocation lastLocation = locations.get(locations.size() - 1);
+	        double distanceKm = haversineDistance(
+	            lastLocation.getLatitude(), lastLocation.getLongitude(),
+	            lat, lng
+	        );
+	        if (distanceKm >= 5.0) {
+	            lastLocation.setLatitude(lat);
+	            lastLocation.setLongitude(lng);
+	            //hadi adir m�j les cordonnées si user exist déja et distance > 5km
+	            googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
+	           
+	        } else {
+	            System.out.println("Distance < 5km � skipping update");
+	        }
+	    }
+	}
+	
+	public void updateJobItinerary(Double lat, Double lng, ma.azdad.mobile.model.User us) {
+	   
+	    User user = userService.findByUsername(us.getUsername());
+	    if(user.getIsDriver()) {
+	    List<TransportationJob> jobs = transportationJobRepos.find(Arrays.asList(TransportationJobStatus.STARTED,TransportationJobStatus.IN_PROGRESS),us.getUsername());
+	    for (TransportationJob transportationJob : jobs) {
+			List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(transportationJob.getId());
+			if(!locations.isEmpty()) {
+			TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+	        double distanceKm = haversineDistance(
+	            lastLocation.getLatitude(), lastLocation.getLongitude(),
+	            lat, lng
+	        );
+	        if (distanceKm >= 5.0) {
+	        	TransportationJobItinerary location = new TransportationJobItinerary(new Date(), lat, lng, transportationJob,transportationJob.getStatus());
+	        	
+	            transportationJobItineraryRepos.save(location);
+	           
+	        } else {
+	            System.out.println("Distance < 5km � skipping update");
+	        }
+			}else {
+				TransportationJobItinerary location = new TransportationJobItinerary(new Date(), lat, lng, transportationJob,transportationJob.getStatus());
+				transportationJobItineraryRepos.save(location);
+			}
+	       
+		}
+	    
+	    }
+	    	
+	}
+
+
+	
+	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
+	    final int EARTH_RADIUS_KM = 6371;
+
+	    double dLat = Math.toRadians(lat2 - lat1);
+	    double dLon = Math.toRadians(lon2 - lon1);
+
+	    double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    return EARTH_RADIUS_KM * c;
 	}
 	
 	

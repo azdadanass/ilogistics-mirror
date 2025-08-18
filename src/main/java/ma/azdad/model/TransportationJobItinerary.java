@@ -32,21 +32,45 @@ public class TransportationJobItinerary implements Localizable{
     
     private Double distanceFromPrevious;
     private Double cumulativeDistance;
+    
+    private TransportationJobStatus transportationJobStatus;
+    private TransportationRequestStatus transportationRequestStatus;
+
+    
 
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TransportationJob transportationJob;
+    private TransportationRequest transportationRequest;
+
     
     public TransportationJobItinerary() {}
 
-    public TransportationJobItinerary(Date timestamp, Double latitude, Double longitude, TransportationJob transportationJob) {
+    public TransportationJobItinerary(Date timestamp, Double latitude, Double longitude, TransportationJob transportationJob,TransportationJobStatus status) {
         this.timestamp = timestamp;
         this.latitude = latitude;
         this.longitude = longitude;
         this.transportationJob = transportationJob;
+        this.transportationJobStatus = status;
     }
+    
+    public TransportationJobItinerary(Integer id, Date timestamp, Double latitude, Double longitude,
+			TransportationJob transportationJob, TransportationRequest transportationRequest,TransportationJobStatus transportationJobStatus
+			,TransportationRequestStatus transportationRequestStatus) {
+		super();
+		this.id = id;
+		this.timestamp = timestamp;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.transportationJob = transportationJob;
+		this.transportationRequest = transportationRequest;
+        this.transportationJobStatus = transportationJobStatus;
+        this.transportationRequestStatus = transportationRequestStatus;
 
-    public Integer getId() { return id; }
+
+	}
+
+	public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
     public Date getTimestamp() { return timestamp; }
@@ -91,7 +115,30 @@ public class TransportationJobItinerary implements Localizable{
 	public void setCumulativeDistance(Double cumulativeDistance) {
 		this.cumulativeDistance = cumulativeDistance;
 	}
-	
+
+	public TransportationRequest getTransportationRequest() {
+		return transportationRequest;
+	}
+
+	public void setTransportationRequest(TransportationRequest transportationRequest) {
+		this.transportationRequest = transportationRequest;
+	}
+
+	public TransportationJobStatus getTransportationJobStatus() {
+		return transportationJobStatus;
+	}
+
+	public void setTransportationJobStatus(TransportationJobStatus transportationJobStatus) {
+		this.transportationJobStatus = transportationJobStatus;
+	}
+
+	public TransportationRequestStatus getTransportationRequestStatus() {
+		return transportationRequestStatus;
+	}
+
+	public void setTransportationRequestStatus(TransportationRequestStatus transportationRequestStatus) {
+		this.transportationRequestStatus = transportationRequestStatus;
+	}
 	
 
 }

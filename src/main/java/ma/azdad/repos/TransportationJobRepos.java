@@ -47,6 +47,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query(c1 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> find(TransportationJobStatus status);
+	
+	@Query(c2 + "from TransportationJob a where a.status in (?1) and a.driver.username = ?2 order by a.id desc")
+	public List<TransportationJob> find(List<TransportationJobStatus> status,String username);
 
 	@Query(c2 + "from TransportationJob a where a.status = ?1 order by a.id desc")
 	public List<TransportationJob> findMobile(TransportationJobStatus status);

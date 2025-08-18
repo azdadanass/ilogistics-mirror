@@ -1,10 +1,13 @@
 package ma.azdad.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -49,8 +52,8 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	@Override
 	public void refreshList() {
-		if (isListPage)
-			list2 = list1 = vehicleTypeService.findAll();
+		if (isPage("vehicleConfig"))
+			initLists(vehicleTypeService.findAll());
 	}
 
 	public void refreshVehicleType() {
@@ -69,11 +72,7 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	// SAVE VEHICLETYPE
 	public Boolean canSaveVehicleType() {
-		if (isListPage || isAddPage)
-			return sessionView.isTM();
-		else if (isViewPage || isEditPage)
-			return sessionView.isTM();
-		return false;
+		return sessionView.isTrAdmin();
 	}
 
 	public String saveVehicleType() {
@@ -93,6 +92,19 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	public Boolean validateVehicleType() {
 		return true;
+	}
+
+	// photos
+	public Boolean canUploadPhoto() {
+		return sessionView.isTrAdmin();
+	}
+
+	public void handlePhotoUpload(FileUploadEvent event) throws IOException {
+		File file = fileUploadView.handleFileUpload(event, getClassName2());
+		vehicleType.setImage("files/" + getClassName2() + "/" + file.getName());
+		synchronized (VehicleBrandView.class) {
+			vehicleType = service.saveAndRefresh(vehicleType);
+		}
 	}
 
 	// DELETE VEHICLETYPE
@@ -118,9 +130,6 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 	}
 
 	// GETTERS & SETTERS
-
-
-
 
 	public VehicleTypeService getVehicleTypeService() {
 		return vehicleTypeService;

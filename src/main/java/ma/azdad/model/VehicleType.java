@@ -11,24 +11,26 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-
 public class VehicleType extends GenericModel<Integer> implements Serializable {
 
 	private String name;
 	private Double price;
 	private String comment;
+	private String image  = "files/no-image.png";
+	private Double grossWeight = 0.0;
+	private Double maxVolume = 0.0;
+
+	private VehicleBrandType brandType;
 
 	private List<VehicleTypeHistory> historyList = new ArrayList<>();
 
 	@Override
 	public boolean filter(String query) {
-		boolean result = super.filter(query);
-		if (!result && name != null)
-			result = name.toLowerCase().contains(query);
-		return result;
+		return contains(query, name, comment);
 	}
 
 	public String getName() {
@@ -73,6 +75,39 @@ public class VehicleType extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public VehicleBrandType getBrandType() {
+		return brandType;
+	}
+
+	public void setBrandType(VehicleBrandType brandType) {
+		this.brandType = brandType;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Double getGrossWeight() {
+		return grossWeight;
+	}
+
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
+	public Double getMaxVolume() {
+		return maxVolume;
+	}
+
+	public void setMaxVolume(Double maxVolume) {
+		this.maxVolume = maxVolume;
 	}
 
 }

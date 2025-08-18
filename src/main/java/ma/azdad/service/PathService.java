@@ -27,6 +27,10 @@ public class PathService extends GenericService<Integer, Path, PathRepos> {
 	public static Path getNewPath(GenericPlace from, GenericPlace to) {
 		return getNewPath(from, to, i++ < 2450 ? key1 : key2);
 	}
+	
+	public static Double getDistance(Double fromLat, Double fromLng,Double toLat, Double toLng) {
+		return getDistance(fromLat,fromLng, toLat,toLng, i++ < 2450 ? key1 : key2);
+	}
 
 	public static Path getNewPath(GenericPlace from, GenericPlace to, String apiKey) {
 		JSONObject json;
@@ -52,6 +56,29 @@ public class PathService extends GenericService<Integer, Path, PathRepos> {
 				return new Path();
 			}
 		}
+	}
+	
+	public static Double getDistance(Double fromLat, Double fromLng,Double toLat, Double toLng, String apiKey) {
+		JSONObject json;
+		try {
+			json = JsonReader.readJsonFromUrl("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" 
+		+ fromLat+","+fromLng + "&destinations=" + toLat+","+toLng + "&key=" + apiKey);
+			JSONObject firstRow = json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
+			System.out.println(firstRow);
+			System.out.println(firstRow.getJSONObject("duration").get("text"));
+			System.out.println(firstRow.getJSONObject("duration").get("value"));
+			System.out.println(firstRow.getJSONObject("distance").get("text"));
+			System.out.println(firstRow.getJSONObject("distance").get("value"));
+			/*Double estimatedDuration = Double.valueOf(firstRow.getJSONObject("duration").get("value").toString());
+			String estimatedDurationText = firstRow.getJSONObject("duration").get("text").toString();*/
+			Double estimatedDistance = Double.valueOf(firstRow.getJSONObject("distance").get("value").toString()) / 1000.0;
+			//String estimatedDistanceText = firstRow.getJSONObject("distance").get("text").toString();
+			return estimatedDistance;
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+			
+		}
+		return null;
 	}
 
 }

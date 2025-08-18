@@ -30,8 +30,8 @@ public class TransportationJobItinerary implements Localizable{
     @Column(name = "google_region")
     private String googleRegion;
     
-    private Double distanceFromPrevious;
-    private Double cumulativeDistance;
+    private Double distanceFromPrevious = 0d;
+    private Double cumulativeDistance = 0d;
     
     private TransportationJobStatus transportationJobStatus;
     private TransportationRequestStatus transportationRequestStatus;

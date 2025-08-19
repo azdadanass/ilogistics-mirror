@@ -36,8 +36,7 @@ public class TransportationJobItinerary implements Localizable{
     private TransportationJobStatus transportationJobStatus;
     private TransportationRequestStatus transportationRequestStatus;
 
-    
-
+  
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TransportationJob transportationJob;

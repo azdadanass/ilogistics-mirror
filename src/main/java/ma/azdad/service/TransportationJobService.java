@@ -832,6 +832,59 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
+	
+	public Double calculateRealProductiveDist(Integer jobId) {
+	    List<TransportationJobItinerary> orderedItineraries =
+	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+
+	    double realProductive = 0d;
+	    boolean carryingGoods = false;
+
+	    for (TransportationJobItinerary point : orderedItineraries) {
+	        double dist = point.getDistanceFromPrevious();
+
+	        // Check if state changes
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+	            carryingGoods = true;
+	        }
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+	            carryingGoods = false;
+	        }
+
+	        // Add distance only when carrying goods
+	        if (carryingGoods) {
+	            realProductive += dist;
+	        }
+	    }
+	    return realProductive;
+	}
+
+	public Double calculateRealNonProductiveDist(Integer jobId) {
+	    List<TransportationJobItinerary> orderedItineraries =
+	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+
+	    double realNonProductive = 0d;
+	    boolean carryingGoods = false;
+
+	    for (TransportationJobItinerary point : orderedItineraries) {
+	        double dist = point.getDistanceFromPrevious();
+
+	        // Check if state changes
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+	            carryingGoods = true;
+	        }
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+	            carryingGoods = false;
+	        }
+
+	        // Add distance only when NOT carrying goods
+	        if (!carryingGoods) {
+	            realNonProductive += dist;
+	        }
+	    }
+	    return realNonProductive;
+	}
+
 
 	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int EARTH_RADIUS_KM = 6371;
@@ -845,5 +898,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		return EARTH_RADIUS_KM * c;
 	}
+	
+	
 
 }

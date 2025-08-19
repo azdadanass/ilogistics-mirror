@@ -2,6 +2,7 @@ package ma.azdad.view;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -165,7 +166,14 @@ public class VehicleBrandView extends GenericView<Integer, VehicleBrand, Vehicle
 			model = service.saveAndRefresh(model);
 		}
 	}
-
+	
+	// generic
+	
+	public List<VehicleBrand> findAll(){
+		return service.findAll();
+	}
+	
+	
 	// getters & setters
 	public VehicleBrand getModel() {
 		return model;

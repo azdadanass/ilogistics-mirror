@@ -125,6 +125,36 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+								<h:outputText value="Brand" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu value="#{transporterView.vehicle.brandId}" required="true" requiredMessage="Brand should not be null" converter="#{genericSecuredConverter}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{vehicleBrandView.findAll()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+									<p:ajax update="brandType"/>
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-transportername">
+								<h:outputText value="Brand Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<h:selectOneMenu id="brandType" value="#{transporterView.vehicle.brandTypeId}" required="true" requiredMessage="Brand Type  should not be null" converter="#{genericSecuredConverter}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{vehicleBrandTypeView.findByBrand(transporterView.vehicle.brandId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
 				</div>
 				<hr />
 				<h:panelGroup id="panel1">

@@ -21,14 +21,16 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	private Boolean active = true;
 	private String description;
-	private String category;
-	private String type;
+	
+	
 	private String matricule;
 	private Boolean fromMyTools = false;
 	private Boolean geolocalised = false;
 
-	private Double maxWeight = 0.0;
-	private Double maxVolume = 0.0;
+//	private String type;
+//	private String category;
+//	private Double maxWeight = 0.0;
+//	private Double maxVolume = 0.0;
 
 	private Transporter transporter;
 	private Tool tool;
@@ -79,6 +81,44 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		userVehicle.setVehicle(null);
 		userList.remove(userVehicle);
 	}
+	
+	@Transient
+	public Double getMaxWeight(){
+		return vehicleType!=null?vehicleType.getMaxWeight():null;
+	}
+
+	@Transient
+	public void setMaxWeight(Double vehicleTypeMaxWeight){
+		if(vehicleType==null)
+			vehicleType=new VehicleType();
+		vehicleType.setMaxWeight(vehicleTypeMaxWeight);
+	}
+	
+	@Transient
+	public Double getMaxVolume(){
+		return vehicleType!=null?vehicleType.getMaxVolume():null;
+	}
+
+	@Transient
+	public void setMaxVolume(Double vehicleTypeMaxVolume){
+		if(vehicleType==null)
+			vehicleType=new VehicleType();
+		vehicleType.setMaxVolume(vehicleTypeMaxVolume);
+	}
+	
+	@Transient
+	public String getTypeName(){
+		return vehicleType!=null?vehicleType.getName():null;
+	}
+
+	@Transient
+	public void setTypeName(String vehicleTypeName){
+		if(vehicleType==null)
+			vehicleType=new VehicleType();
+		vehicleType.setName(vehicleTypeName);
+	}
+
+
 
 	@Transient
 	public String getCorrectMatricule() {
@@ -156,21 +196,21 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		this.matricule = matricule;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
+//	public String getType() {
+//		return type;
+//	}
+//
+//	public void setType(String type) {
+//		this.type = type;
+//	}
+//
+//	public String getCategory() {
+//		return category;
+//	}
+//
+//	public void setCategory(String category) {
+//		this.category = category;
+//	}
 
 	public Boolean getGeolocalised() {
 		return geolocalised;
@@ -238,21 +278,21 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		this.toolId = toolId;
 	}
 
-	public Double getMaxWeight() {
-		return maxWeight;
-	}
-
-	public void setMaxWeight(Double maxWeight) {
-		this.maxWeight = maxWeight;
-	}
-
-	public Double getMaxVolume() {
-		return maxVolume;
-	}
-
-	public void setMaxVolume(Double maxVolume) {
-		this.maxVolume = maxVolume;
-	}
+//	public Double getMaxWeight() {
+//		return maxWeight;
+//	}
+//
+//	public void setMaxWeight(Double maxWeight) {
+//		this.maxWeight = maxWeight;
+//	}
+//
+//	public Double getMaxVolume() {
+//		return maxVolume;
+//	}
+//
+//	public void setMaxVolume(Double maxVolume) {
+//		this.maxVolume = maxVolume;
+//	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

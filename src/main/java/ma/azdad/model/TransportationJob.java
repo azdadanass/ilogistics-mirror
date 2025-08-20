@@ -636,6 +636,19 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			vehicle = new Vehicle();
 		vehicle.setMatricule(vehicleMatricule);
 	}
+	
+	@Transient
+	public String getVehicleTypeName(){
+		return vehicle!=null?vehicle.getTypeName():null;
+	}
+
+	@Transient
+	public void setVehicleTypeName(String vehicleTypeName){
+		if(vehicle==null)
+			vehicle=new Vehicle();
+		vehicle.setTypeName(vehicleTypeName);
+	}
+
 
 	@Transient
 	public Integer getVehicleId() {

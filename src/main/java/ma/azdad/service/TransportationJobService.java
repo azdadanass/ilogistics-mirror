@@ -609,7 +609,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		tjMobile.setVolume(totalVolume);
 		tjMobile.setNumberOfItems(totalItems);
 		if (tj.getVehicle() != null) {
-			tjMobile.setVehicule(new Vehicule(tj.getVehicleId(), tj.getVehicle().getCategory(), tj.getVehicle().getType(), tj.getVehicleMatricule()));
+			tjMobile.setVehicule(new Vehicule(tj.getVehicleId(), tj.getVehicleTypeName(), tj.getVehicleMatricule()));
 		}
 
 		if (tj.getUser1() != null) {

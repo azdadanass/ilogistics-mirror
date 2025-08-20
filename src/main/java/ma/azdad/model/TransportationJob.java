@@ -155,6 +155,26 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public boolean filter(String query) {
 		return contains(query, reference, comment, getTransporterName());
 	}
+	
+	@Transient
+	public Double getGrossWeight() {
+		return transportationRequestList.stream().filter(i->i.getGrossWeight()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+	}
+
+	@Transient
+	public Double getNetWeight() {
+		return transportationRequestList.stream().filter(i->i.getNetWeight()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+	}
+
+	@Transient
+	public Double getVolume() {
+		return transportationRequestList.stream().filter(i->i.getVolume()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+	}
+
+	@Transient
+	public Integer getNumberOfItems() {
+		return transportationRequestList.stream().filter(i->i.getNumberOfItems()!=null).mapToInt(i->i.getNumberOfItems()).sum();
+	}
 
 	@Transient
 	public String getEstimatedDuration() {

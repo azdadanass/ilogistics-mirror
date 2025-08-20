@@ -143,9 +143,8 @@
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
 												<p:dataTable id="transporterList" widgetVar="transporterList" value="#{transporterView.list2}" filteredValue="#{transporterView.list3}" rowKey="#{item.id}"
-													selection="#{transportationJobView.transportationJob.transporter}" var="item" rows="5" styleClass="table table-striped table-hover center"
-													paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
-													rowSelectMode="checkbox">
+													selection="#{transportationJobView.transportationJob.transporter}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
 													<p:column headerText="Name">
 														<h:outputText value="#{item.name}" styleClass="bolder orange" />
@@ -194,8 +193,8 @@
 											</div>
 											<div class="col-sm-12 col-xs-12 aa-datatable-container">
 												<p:dataTable id="driverList" widgetVar="driverList" value="#{userView.list2}" filteredValue="#{userView.list3}" rowKey="#{item.username}"
-													selection="#{transportationJobView.transportationJob.driver}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-													paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+													selection="#{transportationJobView.transportationJob.driver}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+													paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 													<p:ajax event="rowSelectRadio" update=":main_form:vehicleListPanel" />
 													<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
 													<p:column headerText="Photo" width="80" exportable="false" styleClass="hidden-xs">
@@ -205,6 +204,9 @@
 													</p:column>
 													<p:column headerText="Full Name">
 														<h:outputText value="#{item.fullName}" styleClass="bolder green" />
+													</p:column>
+													<p:column headerText="Transporter">
+														<h:outputText value="#{item.transporterName}" styleClass="bolder pink" />
 													</p:column>
 													<p:column headerText="Email">
 														<h:outputText value="#{item.email}" styleClass="blue" />
@@ -231,8 +233,8 @@
 												</div>
 												<div class="col-sm-12 col-xs-12 aa-datatable-container">
 													<p:dataTable id="vehicleList" widgetVar="vehicleList" value="#{transportationJobView.vehicleSelectionList}" rowKey="#{item.id}"
-														selection="#{transportationJobView.transportationJob.vehicle}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
-														paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+														selection="#{transportationJobView.transportationJob.vehicle}" var="item" rows="5" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true"
+														paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
 														<p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
 														<p:column headerText="Matricule">
 															<h:outputText value="#{item.correctMatricule}" styleClass="purple bolder" />
@@ -260,8 +262,8 @@
 								</h:panelGroup>
 							</h:panelGroup>
 							<div class="space-16"></div>
-							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.latitude}, #{transportationJobView.longitude}" zoom="10"
-								type="TERRAIN" style="width:80%;height:400px;margin:auto" />
+							<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.latitude}, #{transportationJobView.longitude}" zoom="10" type="TERRAIN"
+								style="width:80%;height:400px;margin:auto" />
 							<div class="space-16" />
 						</div>
 						<div class="row"></div>

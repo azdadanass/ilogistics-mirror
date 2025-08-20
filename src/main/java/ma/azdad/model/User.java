@@ -158,6 +158,24 @@ public class User extends GenericModel<String> implements Serializable {
 		setCustomerName(customerName);
 		setSupplierName(supplierName);
 	}
+	
+	
+	public User(String username, String fullName, String photo, String email, String job, String phone, String cin, //
+			TransporterType transporterType,String transporterCompanyName,String transporterSupplierName,String transporterPrivateFirstName,String transporterPrivateLastName) {
+		super();
+		this.username = username;
+		this.fullName = fullName;
+		this.photo = photo;
+		this.email = email;
+		this.job = job;
+		this.phone = phone;
+		this.cin = cin;
+		this.setTransporterType(transporterType);
+		this.setTransporterCompanyName(transporterCompanyName);
+		this.setTransporterSupplierName(transporterSupplierName);
+		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
+		this.setTransporterPrivateLastName(transporterPrivateLastName);
+	}
 
 	@Override
 	public int hashCode() {
@@ -204,6 +222,72 @@ public class User extends GenericModel<String> implements Serializable {
 			transporter=new Transporter();
 		transporter.setId(transporterId);
 	}
+	
+	@Transient
+	public String getTransporterName(){
+		return transporter!=null?transporter.getName():null;
+	}
+
+	@Transient
+	public String getTransporterCompanyName(){
+		return transporter!=null?transporter.getCompanyName():null;
+	}
+
+	@Transient
+	public void setTransporterCompanyName(String transporterCompanyName){
+		if(transporter==null)
+			transporter=new Transporter();
+		transporter.setCompanyName(transporterCompanyName);
+	}
+	
+	@Transient
+	public String getTransporterSupplierName(){
+		return transporter!=null?transporter.getSupplierName():null;
+	}
+
+	@Transient
+	public void setTransporterSupplierName(String transporterSupplierName){
+		if(transporter==null)
+			transporter=new Transporter();
+		transporter.setSupplierName(transporterSupplierName);
+	}
+
+	@Transient
+	public TransporterType getTransporterType(){
+		return transporter!=null?transporter.getType():null;
+	}
+
+	@Transient
+	public void setTransporterType(TransporterType transporterType){
+		if(transporter==null)
+			transporter=new Transporter();
+		transporter.setType(transporterType);
+	}
+
+	@Transient
+	public String getTransporterPrivateFirstName(){
+		return transporter!=null?transporter.getPrivateFirstName():null;
+	}
+
+	@Transient
+	public void setTransporterPrivateFirstName(String transporterPrivateFirstName){
+		if(transporter==null)
+			transporter=new Transporter();
+		transporter.setPrivateFirstName(transporterPrivateFirstName);
+	}
+	@Transient
+	public String getTransporterPrivateLastName(){
+		return transporter!=null?transporter.getPrivateLastName():null;
+	}
+
+	@Transient
+	public void setTransporterPrivateLastName(String transporterPrivateLastName){
+		if(transporter==null)
+			transporter=new Transporter();
+		transporter.setPrivateLastName(transporterPrivateLastName);
+	}
+
+
 
 	@Transient
 	public String getPublicPhoto() {

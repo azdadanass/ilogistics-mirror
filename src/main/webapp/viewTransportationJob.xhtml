@@ -38,7 +38,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-7">
+					<div class=" col-sm-offset-1 col-sm-5">
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
@@ -102,6 +102,57 @@
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
+					</div>
+					<div class="col-sm-5 hidden-xs infobox-container">
+						<div class="row">
+							<div class="infobox infobox-blue">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-list" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Number Of Items" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationJobView.transportationJob.numberOfItems}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-purple">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-anchor" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Gross Weight" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationJobView.transportationJob.grossWeight}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" Kg" />
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-orange">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-cube" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Volume" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationJobView.transportationJob.volume}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" m3" />
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

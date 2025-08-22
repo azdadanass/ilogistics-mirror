@@ -176,7 +176,9 @@
 													<i class="fa fa-list" />
 													<h:outputText value=" Sort By " style="margin-right:20px" />
 													<h:selectOneMenu value="#{userView.sortBy}">
-														<f:selectItem itemLabel="Full Name" itemValue="Full Name" />
+														<f:selectItem itemLabel="Pending TR" itemValue="Pending TR" />
+														<f:selectItem itemLabel="Distance to site" itemValue="Distance to site" />
+														<f:selectItem itemLabel="Reactivity" itemValue="Reactivity" />
 														<p:ajax listener="#{userView.sort()}" update="driverList" />
 													</h:selectOneMenu>
 												</div>
@@ -216,6 +218,15 @@
 													</p:column>
 													<p:column headerText="CIN">
 														<h:outputText value="#{item.cin}" styleClass="bolder purple" />
+													</p:column>
+													<p:column headerText="Pending TR" styleClass="#{userView.sortBy=='Pending TR'?'aa-background-blue':''}">
+														<h:outputText value="#{item.countPendingTr}" styleClass="bolder" />
+													</p:column>
+													<p:column headerText="Distance To Site" styleClass="#{userView.sortBy=='Distance to site'?'aa-background-blue':''}">
+														<h:outputText value="#{item.distance}">
+															<f:convertNumber type="number" maxFractionDigits="0" />
+														</h:outputText>
+														<h:outputText value=" Km" rendered="#{item.distance!=null}" />
 													</p:column>
 												</p:dataTable>
 											</div>

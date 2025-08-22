@@ -40,6 +40,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Double startLeadTime = 24.0;
 	private Date maxAcceptDate;
 	private Date maxStartDate;
+	private Double firstLatitude;
+	private Double firstLongitude;
 
 	// timeline
 	private Date date1; // edited
@@ -80,8 +82,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
-			String user1Photo,Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double firstLatitude,Double firstLongitude, //
+			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -89,6 +91,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
+		this.firstLatitude = firstLatitude;
+		this.firstLongitude = firstLongitude;
 		this.setUser1Photo(user1Photo);
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
@@ -98,9 +102,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, //
-			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName,
-			String transporterSupplierName, String driverUsername, String vehicleMatricule) {
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double firstLatitude,Double firstLongitude, //
+			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
+			String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
@@ -108,6 +112,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.status = status;
 		this.realCost = realCost;
 		this.estimatedCost = estimatedCost;
+		this.firstLatitude = firstLatitude;
+		this.firstLongitude = firstLongitude;
 		this.setUser1Photo(user1Photo);
 		this.setTransporterId(transporterId);
 		this.setTransporterType(transporterType);
@@ -155,25 +161,25 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public boolean filter(String query) {
 		return contains(query, reference, comment, getTransporterName());
 	}
-	
+
 	@Transient
 	public Double getGrossWeight() {
-		return transportationRequestList.stream().filter(i->i.getGrossWeight()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getGrossWeight() != null).mapToDouble(i -> i.getGrossWeight()).sum();
 	}
 
 	@Transient
 	public Double getNetWeight() {
-		return transportationRequestList.stream().filter(i->i.getNetWeight()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getNetWeight() != null).mapToDouble(i -> i.getGrossWeight()).sum();
 	}
 
 	@Transient
 	public Double getVolume() {
-		return transportationRequestList.stream().filter(i->i.getVolume()!=null).mapToDouble(i->i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getVolume() != null).mapToDouble(i -> i.getGrossWeight()).sum();
 	}
 
 	@Transient
 	public Integer getNumberOfItems() {
-		return transportationRequestList.stream().filter(i->i.getNumberOfItems()!=null).mapToInt(i->i.getNumberOfItems()).sum();
+		return transportationRequestList.stream().filter(i -> i.getNumberOfItems() != null).mapToInt(i -> i.getNumberOfItems()).sum();
 	}
 
 	@Transient
@@ -258,6 +264,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		}
 		stopList = new ArrayList<>(map.values());
 		Collections.sort(stopList);
+		if (!stopList.isEmpty()) {
+			firstLatitude = stopList.get(0).getPlace().getLatitude();
+			firstLongitude = stopList.get(0).getPlace().getLongitude();
+		}
 	}
 
 	public void generatePathList() {
@@ -587,19 +597,18 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			user1 = new User();
 		user1.setUsername(user1Username);
 	}
-	
+
 	@Transient
-	public String getUser1Photo(){
-		return user1!=null?user1.getPhoto():null;
+	public String getUser1Photo() {
+		return user1 != null ? user1.getPhoto() : null;
 	}
 
 	@Transient
-	public void setUser1Photo(String user1Photo){
-		if(user1==null)
-			user1=new User();
+	public void setUser1Photo(String user1Photo) {
+		if (user1 == null)
+			user1 = new User();
 		user1.setPhoto(user1Photo);
 	}
-
 
 	@Transient
 	public String getDriverUsername() {
@@ -636,19 +645,18 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			vehicle = new Vehicle();
 		vehicle.setMatricule(vehicleMatricule);
 	}
-	
+
 	@Transient
-	public String getVehicleTypeName(){
-		return vehicle!=null?vehicle.getTypeName():null;
+	public String getVehicleTypeName() {
+		return vehicle != null ? vehicle.getTypeName() : null;
 	}
 
 	@Transient
-	public void setVehicleTypeName(String vehicleTypeName){
-		if(vehicle==null)
-			vehicle=new Vehicle();
+	public void setVehicleTypeName(String vehicleTypeName) {
+		if (vehicle == null)
+			vehicle = new Vehicle();
 		vehicle.setTypeName(vehicleTypeName);
 	}
-
 
 	@Transient
 	public Integer getVehicleId() {
@@ -857,7 +865,20 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.maxStartDate = maxStartDate;
 	}
 
+	public Double getFirstLatitude() {
+		return firstLatitude;
+	}
 
-	
+	public void setFirstLatitude(Double firstLatitude) {
+		this.firstLatitude = firstLatitude;
+	}
+
+	public Double getFirstLongitude() {
+		return firstLongitude;
+	}
+
+	public void setFirstLongitude(Double firstLongitude) {
+		this.firstLongitude = firstLongitude;
+	}
 
 }

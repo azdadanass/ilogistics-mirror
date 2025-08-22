@@ -1,7 +1,6 @@
 package ma.azdad.repos;
 
 import java.util.Date;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +14,7 @@ import ma.azdad.model.DriverLocation;
 public interface DriverLocationRepo extends JpaRepository<DriverLocation, Integer> {
 
     //  Derni�re localisation d�un chauffeur par son username
-    DriverLocation findTopByDriverOrderByDateDesc(String driverUsername);
+    DriverLocation findTopByDriverUsernameOrderByDateDesc(String driverUsername);
 
     //  Liste des localisations d�un chauffeur tri�es du plus r�cent au plus ancien 
     List<DriverLocation> findByDriverOrderByDateDesc(String driverUsername);

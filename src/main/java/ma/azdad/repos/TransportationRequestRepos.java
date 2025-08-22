@@ -55,7 +55,7 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.status = ?1 order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(TransportationRequestStatus status);
-	
+
 	@Query("select new ma.azdad.mobile.model.TransportationRequestHistory(a.id,a.date,a.status,a.description,u.fullName,u.photo) from TransportationRequestHistory a left join a.user as u where a.parent.id = ?1")
 	List<ma.azdad.mobile.model.TransportationRequestHistory> findHistoryListMobile(Integer id);
 
@@ -88,12 +88,12 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(List<TransportationRequestStatus> status);
-	
+
 	@Query(c1 + "from TransportationRequest a where a.transportationJob.id = ?1")
 	public List<TransportationRequest> findLightByJob(Integer id);
-	
+
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) and a.transportationJob.driver.username = ?2 order by a.neededPickupDate")
-	public List<TransportationRequest> findLightByDriver(List<TransportationRequestStatus> status,String username);
+	public List<TransportationRequest> findLightByDriver(List<TransportationRequestStatus> status, String username);
 
 	@Query(c1
 			+ "from TransportationRequest a where a.status = ?2 and (a.deliveryRequest.requester.username = ?1 or (a.deliveryRequest.project.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.manager.username = ?1 or a.deliveryRequest.project.costcenter.lob.bu.director.username = ?1)  or a.deliveryRequest.project.id in (?3))")
@@ -224,4 +224,6 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query("select a.id from TransportationRequest a where a.transportationJob.status = ?1")
 	public List<Integer> findIdList(TransportationJobStatus transportationJobStatus);
 
+	@Query("select count(*) from TransportationRequest a where a.driver.username = ?1 and a.status in (?2)")
+	Long countByDriverAndStatus(String username, List<TransportationRequestStatus> statusList);
 }

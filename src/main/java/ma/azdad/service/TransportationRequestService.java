@@ -175,6 +175,15 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return repos.countToAcknowledge(username);
 	}
 
+	@Cacheable("transportationRequestService.countByDriverAndStatus")
+	public Long countByDriverAndStatus(String username, List<TransportationRequestStatus> statusList) {
+		return repos.countByDriverAndStatus(username, statusList);
+	}
+	
+	public Long countPendingByDriver(String username) {
+		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,TransportationRequestStatus.APPROVED,TransportationRequestStatus.ASSIGNED,TransportationRequestStatus.PICKEDUP));
+	}
+
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
 		if (state == null)
 			if (isTM)

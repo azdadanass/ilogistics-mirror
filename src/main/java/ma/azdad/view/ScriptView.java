@@ -22,6 +22,7 @@ import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PoService;
 import ma.azdad.service.ProjectCrossService;
 import ma.azdad.service.TransportationJobService;
+import ma.azdad.service.UserService;
 
 @ManagedBean
 @Component
@@ -64,7 +65,10 @@ public class ScriptView {
 	DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
 	
 	@Autowired
-	TransportationJobService transportationJobService;	
+	TransportationJobService transportationJobService;
+	
+	@Autowired
+	UserService userService;
 
 	@Autowired
 	EmailService emailService;
@@ -232,6 +236,11 @@ public class ScriptView {
 		if (!canExecute)
 			return;
 		transportationJobService.generateReferenceScript();
+	}
+	
+	public void updateReactivityScript() {
+		log.info("updateReactivityScript");
+		userService.updateReactivityScript();
 	}
 
 	// GETTERS & SETTERS

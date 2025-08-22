@@ -38,8 +38,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private TransportationJobAssignmentType assignmentType;
 	private Double acceptLeadTime = 12.0;
 	private Double startLeadTime = 24.0;
+
 	private Date maxAcceptDate;
 	private Date maxStartDate;
+
 	private Double firstLatitude;
 	private Double firstLongitude;
 
@@ -82,7 +84,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double firstLatitude,Double firstLongitude, //
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double firstLatitude,
+			Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
@@ -102,7 +105,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost,Double firstLatitude,Double firstLongitude, //
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double firstLatitude,
+			Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String driverUsername, String vehicleMatricule) {
 		super(id);

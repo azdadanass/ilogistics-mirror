@@ -103,7 +103,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		if (transportationJob.getTransportationRequestList() != null)
 			for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 				Hibernate.initialize(tr.getHistoryList());
-				tr.getDeliveryRequest().getDetailList().forEach(i->initialize(i.getPacking().getDetailList()));
+				tr.getDeliveryRequest().getDetailList().forEach(i -> initialize(i.getPacking().getDetailList()));
 			}
 		Hibernate.initialize(transportationJob.getStopList());
 		Hibernate.initialize(transportationJob.getPathList());
@@ -465,6 +465,32 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
 		transportationJob.getTransportationRequestList().forEach(i -> i.addHistory(new TransportationRequestHistory("Unassign", connectedUser)));
 		save(transportationJob);
+	}
+
+	// reactivity & performance
+
+	public Long getAcceptPerformance(String username) {
+		Long countAcceptedWithinDeadLine = ObjectUtils.firstNonNull(repos.countAcceptedWithinDeadLineByDriver(username), 0l);
+		Long countAccepted = ObjectUtils.firstNonNull(repos.countAcceptedByDriver(username), 0l);
+		if (countAccepted == 0)
+			return 0l;
+		return countAcceptedWithinDeadLine * 100 / countAccepted;
+	}
+
+	public Long getStartPerformance(String username) {
+		Long countStartedWithinDeadLine = ObjectUtils.firstNonNull(repos.countStartedWithinDeadLineByDriver(username), 0l);
+		Long countStarted = ObjectUtils.firstNonNull(repos.countStartedByDriver(username), 0l);
+		if (countStarted == 0)
+			return 0l;
+		return countStartedWithinDeadLine * 100 / countStarted;
+	}
+
+	public Long getReactivity(String username) {
+		return getReactivity(getAcceptPerformance(username), getStartPerformance(username));
+	}
+
+	public Long getReactivity(Long acceptPerfomance, Long startPerfomance) {
+		return (acceptPerfomance + startPerfomance) / 2;
 	}
 
 	// mobile

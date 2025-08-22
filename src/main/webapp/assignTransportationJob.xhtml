@@ -177,8 +177,8 @@
 													<h:outputText value=" Sort By " style="margin-right:20px" />
 													<h:selectOneMenu value="#{userView.sortBy}">
 														<f:selectItem itemLabel="Pending TR" itemValue="Pending TR" />
-														<f:selectItem itemLabel="Distance to site" itemValue="Distance to site" />
 														<f:selectItem itemLabel="Reactivity" itemValue="Reactivity" />
+														<f:selectItem itemLabel="Distance to site" itemValue="Distance to site" />
 														<p:ajax listener="#{userView.sort()}" update="driverList" />
 													</h:selectOneMenu>
 												</div>
@@ -221,6 +221,12 @@
 													</p:column>
 													<p:column headerText="Pending TR" styleClass="#{userView.sortBy=='Pending TR'?'aa-background-blue':''}">
 														<h:outputText value="#{item.countPendingTr}" styleClass="bolder" />
+													</p:column>
+													<p:column headerText="Reactivity" styleClass="#{userView.sortBy=='Reactivity'?'aa-background-blue':''}">
+														<h:outputText value="#{item.reactivity}">
+															<f:convertNumber type="number" maxFractionDigits="0" />
+														</h:outputText>
+														<h:outputText value=" %" />
 													</p:column>
 													<p:column headerText="Distance To Site" styleClass="#{userView.sortBy=='Distance to site'?'aa-background-blue':''}">
 														<h:outputText value="#{item.distance}">

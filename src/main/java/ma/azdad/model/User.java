@@ -167,7 +167,7 @@ public class User extends GenericModel<String> implements Serializable {
 		setSupplierName(supplierName);
 	}
 
-	public User(String username, String fullName, String photo, String email, String job, String phone, String cin, //
+	public User(String username, String fullName, String photo, String email, String job, String phone, String cin,Long reactivity, //
 			TransporterType transporterType, String transporterCompanyName, String transporterSupplierName, String transporterPrivateFirstName, String transporterPrivateLastName) {
 		super();
 		this.username = username;
@@ -177,6 +177,7 @@ public class User extends GenericModel<String> implements Serializable {
 		this.job = job;
 		this.phone = phone;
 		this.cin = cin;
+		this.reactivity = reactivity;
 		this.setTransporterType(transporterType);
 		this.setTransporterCompanyName(transporterCompanyName);
 		this.setTransporterSupplierName(transporterSupplierName);

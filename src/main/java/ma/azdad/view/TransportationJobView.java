@@ -404,12 +404,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						
-						System.out.println(u.getLatitude());
-						System.out.println(u.getLongitude());
-						System.out.println(transportationJob.getFirstLatitude());
-						System.out.println(transportationJob.getFirstLongitude());
-						
 						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(),u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});

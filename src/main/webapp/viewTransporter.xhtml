@@ -65,7 +65,7 @@
 							<h:outputText value="Files" />
 						</p:commandLink>
 						<p:commandLink title="#{transporterView.transporter.active?'Disable':'Enable'}" styleClass="btn btn-app btn-sm #{transporterView.transporter.active?'btn-danger':'btn-success'} hover aa-tooltip"
-							update=":toggleForm" oncomplete="PF('toggleDlg').show()">
+							update=":toggleForm" oncomplete="PF('toggleDlg').show()" rendered="#{transporterView.canToggle()}">
 							<i class="ace-icon fa fa-power-off bigger-230"></i>
 							<h:outputText value="#{transporterView.transporter.active?'Disable':'Enable'}" />
 						</p:commandLink>
@@ -238,7 +238,7 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete" update=":deleteVehicleForm" oncomplete="PF('deleteVehicleDlg').show()">
+												<p:commandLink title="Delete" update=":deleteVehicleForm" oncomplete="PF('deleteVehicleDlg').show()" rendered="#{transporterView.canDeleteVehicle()}">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener value="#{item}" target="#{transporterView.vehicle}" />
 												</p:commandLink>
@@ -250,7 +250,8 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink title="Add New Vehicle" action="#{transporterView.initVehicle()}" update=":addEditVehicleForm" oncomplete="PF('addEditVehicleDlg').show()">
+												<p:commandLink title="Add New Vehicle" action="#{transporterView.initVehicle()}" update=":addEditVehicleForm" oncomplete="PF('addEditVehicleDlg').show()"
+													rendered="#{transporterView.canSaveVehicle()}">
 													<i class="fa fa-plus green" />
 												</p:commandLink>
 											</div>
@@ -311,7 +312,7 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink title="Add New User" oncomplete="PF('addUserDlg').show()">
+												<p:commandLink title="Add New User" oncomplete="PF('addUserDlg').show()" rendered="#{transporterView.canAddUser()}">
 													<i class="fa fa-plus green" />
 												</p:commandLink>
 											</div>

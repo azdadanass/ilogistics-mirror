@@ -534,7 +534,7 @@ public class User extends GenericModel<String> implements Serializable {
 	}
 
 	@Transient
-	public Boolean getIsTrAdmin() {
+	public Boolean getIsInternalTrAdmin() {
 		return hasRole(Role.ROLE_ILOGISTICS_TR_ADMIN);
 	}
 

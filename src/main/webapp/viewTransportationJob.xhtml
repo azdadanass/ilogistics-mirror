@@ -286,7 +286,7 @@
 							<h:outputText value=" Itinerary" />
 						</a>
 					</li>
-					<f:subview rendered="#{sessionView.isTrAdmin}">
+					<f:subview rendered="#{sessionView.isInternalTrAdmin}">
 						<li>
 							<a data-toggle="tab" href="#tab3">
 								<i class="red ace-icon fa fa-dollar bigger-120"></i>
@@ -731,7 +731,7 @@
 							<p:gmap widgetVar="map" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.firstStopValue}" type="TERRAIN" style="width:100%;height:500px" />
 						</h:panelGroup>
 					</div>
-					<f:subview id="costsSubview" rendered="#{sessionView.isTrAdmin}">
+					<f:subview id="costsSubview" rendered="#{sessionView.isInternalTrAdmin}">
 						<div id="tab3" class="tab-pane">
 							<p:messages id="costs_messages" closable="true" />
 							<div class="row">

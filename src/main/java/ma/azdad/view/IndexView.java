@@ -84,7 +84,7 @@ public class IndexView implements Serializable {
 	public Boolean canAccessMenu(Integer menu) {
 		switch (menu) {
 		case 1:
-			return sessionView.getIsSE() || sessionView.getIsAdmin() || sessionView.getIsTrAdmin();
+			return sessionView.getIsSE() || sessionView.getIsAdmin() || sessionView.getIsPM() || sessionView.getIsInternalTrAdmin() || sessionView.getIsExternalTrAdmin();
 		case 2:
 			return sessionView.getIsUser() || sessionView.getIsPM() || sessionView.getIsWM() || sessionView.getIsLobManager() || sessionView.getIsBuManager();
 		case 3:
@@ -101,9 +101,17 @@ public class IndexView implements Serializable {
 		switch (selectedMenu) {
 		case 1:
 			if (canAccessMenu(1))
-				return addParameters(
-						sessionView.getIsAdmin() ? "warehouseList.xhtml" : sessionView.getIsPM() ? "projectList.xhtml" : sessionView.getIsTrAdmin() ? "transporterList.xhtml" : "partNumberList.xhtml",
-						"faces-redirect=true");
+				if (sessionView.getIsSE())
+					return addParameters("partNumberList.xhtml", "faces-redirect=true");
+				else if (sessionView.getIsAdmin())
+					return addParameters("warehouseList.xhtml", "faces-redirect=true");
+				else if (sessionView.getIsPM())
+					return addParameters("projectList.xhtml", "faces-redirect=true");
+				else if (sessionView.getIsInternalTrAdmin())
+					return addParameters("transporterList.xhtml", "faces-redirect=true");
+				else if (sessionView.getIsExternalTrAdmin())
+					return addParameters("viewTransporter.xhtml", "faces-redirect=true", "id=" + sessionView.getUser().getTransporterId());
+
 			return null;
 		case 2:
 			if (canAccessMenu(2))

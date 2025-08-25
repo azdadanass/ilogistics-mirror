@@ -350,11 +350,11 @@ public class UserView {
 	}
 
 	public Boolean canEditVehicleList() {
-		return !editVehicleList && sessionView.getIsTrAdmin();
+		return !editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public Boolean canAddVehicle() {
-		return editVehicleList && sessionView.getIsTrAdmin();
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public void addVehicle() {
@@ -363,7 +363,7 @@ public class UserView {
 	}
 
 	public Boolean canDeleteVehicle() {
-		return editVehicleList && sessionView.getIsTrAdmin();
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public void deleteVehicle(UserVehicle userVehicle) {
@@ -372,7 +372,7 @@ public class UserView {
 	}
 
 	public Boolean canSaveVehicleList() {
-		return editVehicleList && sessionView.getIsTrAdmin();
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	private Boolean validateVehicleList() {

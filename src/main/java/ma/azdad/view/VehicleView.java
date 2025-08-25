@@ -152,11 +152,11 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	}
 	
 	public Boolean canEditUserList() {
-		return !editUserList && sessionView.getIsTrAdmin();
+		return !editUserList && sessionView.getIsInternalTrAdmin();
 	}
 
 	public Boolean canAddUser() {
-		return editUserList && sessionView.getIsTrAdmin();
+		return editUserList && sessionView.getIsInternalTrAdmin();
 	}
 
 	public void addUser() {
@@ -165,7 +165,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	}
 
 	public Boolean canDeleteUser() {
-		return editUserList && sessionView.getIsTrAdmin();
+		return editUserList && sessionView.getIsInternalTrAdmin();
 	}
 
 	public void deleteUser(UserVehicle userVehicle) {
@@ -174,7 +174,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	}
 
 	public Boolean canSaveUserList() {
-		return editUserList && sessionView.getIsTrAdmin();
+		return editUserList && sessionView.getIsInternalTrAdmin();
 	}
 
 	private Boolean validateUserList() {

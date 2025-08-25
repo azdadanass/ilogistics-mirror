@@ -32,26 +32,27 @@
 				<ul class="nav nav-list">
 					<f:subview rendered="#{indexView.selectedMenu == 1}">
 						<li class="open">
-							<a href="#" class="dropdown-toggle">
-								<i class="menu-icon fa fa-gears"></i>
-								<span class="menu-text">
-									<h:outputText value="Administration" />
-								</span>
-								<b class="arrow fa fa-angle-down"></b>
-							</a>
-							<b class="arrow"></b>
-							<ul class="submenu">
-								<f:subview rendered="#{sessionView.isSE}">
-									<li>
-										<h:outputLink value="partNumberList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-database bigger-130 green" style="margin-right: 10px" />
-											<h:outputText value="Part Number List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
-								<!-- <f:subview rendered="#{sessionView.isAdmin}">
+							<f:subview rendered="#{sessionView.isSE or sessionView.isAdmin or sessionView.isUser or sessionView.isPM}">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-gears"></i>
+									<span class="menu-text">
+										<h:outputText value="Administration" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<f:subview rendered="#{sessionView.isSE}">
+										<li>
+											<h:outputLink value="partNumberList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-database bigger-130 green" style="margin-right: 10px" />
+												<h:outputText value="Part Number List" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
+									<!-- <f:subview rendered="#{sessionView.isAdmin}">
 									<li>
 										<h:outputLink value="partNumberPricingList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
@@ -61,36 +62,36 @@
 										<b class="arrow"></b>
 									</li>
 								</f:subview> -->
-								<f:subview rendered="#{sessionView.isAdmin}">
-									<li>
-										<h:outputLink value="partNumberConfiguration.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-gears bigger-130 orange" style="margin-right: 10px" />
-											<h:outputText value="PN Config" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="warehouseList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-home bigger-130 blue" style="margin-right: 10px" />
-											<h:outputText value="Warehouse List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
-								<f:subview rendered="#{sessionView.isUser or sessionView.isPM}">
-									<li>
-										<h:outputLink value="siteCategoryList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-map-marker bigger-130 red" style="margin-right: 10px" />
-											<h:outputText value="Site List" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
-								<f:subview rendered="#{sessionView.isPM}">
-									<!-- <li>
+									<f:subview rendered="#{sessionView.isAdmin}">
+										<li>
+											<h:outputLink value="partNumberConfiguration.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-gears bigger-130 orange" style="margin-right: 10px" />
+												<h:outputText value="PN Config" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+										<li>
+											<h:outputLink value="warehouseList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-home bigger-130 blue" style="margin-right: 10px" />
+												<h:outputText value="Warehouse List" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{sessionView.isUser or sessionView.isPM}">
+										<li>
+											<h:outputLink value="siteCategoryList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-map-marker bigger-130 red" style="margin-right: 10px" />
+												<h:outputText value="Site List" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
+									<f:subview rendered="#{sessionView.isPM}">
+										<!-- <li>
 										<h:outputLink value="assignmentList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-users bigger-130 orange" style="margin-right: 10px" />
@@ -98,25 +99,26 @@
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li> -->
-									<li>
-										<h:outputLink value="projectList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-gears bigger-130 light-blue" style="margin-right: 10px" />
-											<h:outputText value="Project Config" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-									<li>
-										<h:outputLink value="projectAssignmentList.xhtml">
-											<i class="menu-icon fa fa-caret-right"></i>
-											<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
-											<h:outputText value="Project Assignments" />
-										</h:outputLink>
-										<b class="arrow"></b>
-									</li>
-								</f:subview>
-							</ul>
-							<f:subview rendered="#{sessionView.isTrAdmin}">
+										<li>
+											<h:outputLink value="projectList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-gears bigger-130 light-blue" style="margin-right: 10px" />
+												<h:outputText value="Project Config" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+										<li>
+											<h:outputLink value="projectAssignmentList.xhtml">
+												<i class="menu-icon fa fa-caret-right"></i>
+												<i class="ace-icon fa fa-check bigger-130 green" style="margin-right: 10px" />
+												<h:outputText value="Project Assignments" />
+											</h:outputLink>
+											<b class="arrow"></b>
+										</li>
+									</f:subview>
+								</ul>
+							</f:subview>
+							<f:subview rendered="#{sessionView.isInternalTrAdmin}">
 								<a href="#" class="dropdown-toggle">
 									<i class="menu-icon fa fa-gears"></i>
 									<span class="menu-text">
@@ -139,6 +141,27 @@
 											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-truck bigger-130 pink" style="margin-right: 10px" />
 											<h:outputText value="Transporter List" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+								</ul>
+							</f:subview>
+							<f:subview rendered="#{sessionView.isExternalTrAdmin}">
+								<a href="#" class="dropdown-toggle">
+									<i class="menu-icon fa fa-gears"></i>
+									<span class="menu-text">
+										<h:outputText value="Transport" />
+									</span>
+									<b class="arrow fa fa-angle-down"></b>
+								</a>
+								<b class="arrow"></b>
+								<ul class="submenu">
+									<li>
+										<h:outputLink value="viewTransporter.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-truck bigger-130 pink" style="margin-right: 10px" />
+											<h:outputText value="Transporter" />
+											<f:param name="id" value="#{sessionView.user.transporterId}" />
 										</h:outputLink>
 										<b class="arrow"></b>
 									</li>

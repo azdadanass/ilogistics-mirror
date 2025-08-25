@@ -51,7 +51,7 @@ public class VehicleBrandView extends GenericView<Integer, VehicleBrand, Vehicle
 
 	// save
 	public Boolean canSave() {
-		return sessionView.getIsTrAdmin();
+		return sessionView.getIsInternalTrAdmin();
 	}
 
 	public String save() {
@@ -109,11 +109,11 @@ public class VehicleBrandView extends GenericView<Integer, VehicleBrand, Vehicle
 	private Boolean editBrandTypeList = false;
 
 	public Boolean canEditBrandTypeList() {
-		return !editBrandTypeList && sessionView.getIsTrAdmin();
+		return !editBrandTypeList && sessionView.getIsInternalTrAdmin();
 	}
 
 	public Boolean canSaveBrandTypeList() {
-		return editBrandTypeList && sessionView.getIsTrAdmin();
+		return editBrandTypeList && sessionView.getIsInternalTrAdmin();
 	}
 
 	private Boolean validateBrandTypeList() {
@@ -156,7 +156,7 @@ public class VehicleBrandView extends GenericView<Integer, VehicleBrand, Vehicle
 	}
 
 	public Boolean canUploadBrandTypePhoto() {
-		return sessionView.getIsTrAdmin();
+		return sessionView.getIsInternalTrAdmin();
 	}
 
 	public void handleBrandTypePhotoUpload(FileUploadEvent event) throws IOException {

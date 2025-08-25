@@ -72,7 +72,7 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	// SAVE VEHICLETYPE
 	public Boolean canSaveVehicleType() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin();
 	}
 
 	public String saveVehicleType() {
@@ -96,7 +96,7 @@ public class VehicleTypeView extends GenericView<Integer, VehicleType, VehicleTy
 
 	// photos
 	public Boolean canUploadPhoto() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin();
 	}
 
 	public void handlePhotoUpload(FileUploadEvent event) throws IOException {

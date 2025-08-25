@@ -126,7 +126,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canSaveVehicle() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
 	}
 
 	public void saveVehicle() {
@@ -143,7 +143,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public Boolean canDeleteVehicle() {
-		return sessionView.isTrAdmin();
+		return canSaveVehicle();
 	}
 
 	public void deleteVehicle() {
@@ -158,6 +158,11 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	// Driver MANAGEMENT
+	public Boolean canAddUser() {
+		return sessionView.isInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
+	}
+	
+	
 	public void addUser() {
 		if (!transporter.getUserList().contains(user)) {
 			user = userService.findOneLight(user.getUsername());
@@ -183,7 +188,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// SAVE TRANSPORTER
 	public Boolean canSaveTransporter() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin();
 	}
 
 	public String saveTransporter() {
@@ -234,7 +239,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// toggle status
 	public Boolean canToggle() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin();
 	}
 
 	public void toggle() {
@@ -247,7 +252,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// DELETE TRANSPORTER
 	public Boolean canDeleteTransporter() {
-		return sessionView.isTrAdmin();
+		return sessionView.isInternalTrAdmin();
 	}
 
 	public String deleteTransporter() {

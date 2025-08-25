@@ -85,8 +85,8 @@
 												<h:outputText value="#{item.destinationName}" styleClass="pink" />
 												<h:outputText value="#{item.warehouseName}" styleClass="pink" rendered="#{item.isInbound}" />
 											</p:column>
-											<p:column headerText="Needed Pickup Time">
-												<h:outputText value="#{item.neededPickupDate}" styleClass="purple">
+											<p:column headerText="Planned Pickup Time">
+												<h:outputText value="#{item.plannedPickupDate}" styleClass="purple">
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 												</h:outputText>
 											</p:column>

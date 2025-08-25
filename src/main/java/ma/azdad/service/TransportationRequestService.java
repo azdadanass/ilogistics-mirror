@@ -56,10 +56,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	TransportationRequestService transportationRequestService;
-	
+
 	@Autowired
 	FileUploadService fileUploadService;
-	
+
 	@Autowired
 	TransportationRequestImageRepos transportationRequestImageRepos;
 
@@ -150,7 +150,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countToAssign() {
 		return repos.countToAssign();
 	}
-	
+
 	public List<TransportationRequest> findToPickup(String username) {
 		return repos.findToPickup(username);
 	}
@@ -158,7 +158,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countToPickup(String username) {
 		return repos.countToPickup(username);
 	}
-	
+
 	public List<TransportationRequest> findToDeliver(String username) {
 		return repos.findToDeliver(username);
 	}
@@ -166,13 +166,22 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countToDeliver(String username) {
 		return repos.countToDeliver(username);
 	}
-	
+
 	public List<TransportationRequest> findToAcknowledge(String username) {
 		return repos.findToAcknowledge(username);
 	}
 
 	public Long countToAcknowledge(String username) {
 		return repos.countToAcknowledge(username);
+	}
+
+	@Cacheable("transportationRequestService.countByDriverAndStatus")
+	public Long countByDriverAndStatus(String username, List<TransportationRequestStatus> statusList) {
+		return repos.countByDriverAndStatus(username, statusList);
+	}
+	
+	public Long countPendingByDriver(String username) {
+		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,TransportationRequestStatus.APPROVED,TransportationRequestStatus.ASSIGNED,TransportationRequestStatus.PICKEDUP));
 	}
 
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
@@ -378,76 +387,41 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		}
 		return null;
 	}
-	
-	//mobile
+
+	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {
 		List<TransportationRequest> list = repos.findLight();
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
-					tj.getId(),
-					tj.getReference(),
-					tj.getStatus(),
-					tj.getNeededPickupDate(),
-					tj.getNeededDeliveryDate(),
-					tj.getExpectedPickupDate(),
-					tj.getPickupDate(),
-					tj.getExpectedDeliveryDate(),
-					tj.getDeliveryDate(),
-					tj.getOriginName(),
-					tj.getDestinationName()
-				));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
+					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
 		return mbList;
 	}
-	
+
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile(List<TransportationRequestStatus> status) {
 		List<TransportationRequest> list = repos.findLight(status);
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
-					tj.getId(),
-					tj.getReference(),
-					tj.getStatus(),
-					tj.getNeededPickupDate(),
-					tj.getNeededDeliveryDate(),
-					tj.getExpectedPickupDate(),
-					tj.getPickupDate(),
-					tj.getExpectedDeliveryDate(),
-					tj.getDeliveryDate(),
-					tj.getOriginName(),
-					tj.getDestinationName()
-				));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
+					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
 		return mbList;
 	}
-	
-	
-	
-	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobile(List<TransportationRequestStatus> status,String username) {
-		List<TransportationRequest> list = repos.findLightByDriver(status,username);
+
+	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobile(List<TransportationRequestStatus> status, String username) {
+		List<TransportationRequest> list = repos.findLightByDriver(status, username);
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(
-					tj.getId(),
-					tj.getReference(),
-					tj.getStatus(),
-					tj.getNeededPickupDate(),
-					tj.getNeededDeliveryDate(),
-					tj.getExpectedPickupDate(),
-					tj.getPickupDate(),
-					tj.getExpectedDeliveryDate(),
-					tj.getDeliveryDate(),
-					tj.getOriginName(),
-					tj.getDestinationName()
-				));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
+					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
@@ -457,13 +431,13 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobileByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.APPROVED));
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.APPROVED));
 		case 1:
 			return findByTmMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED));
 		case 2:
 			return findByTmMobile(Arrays.asList(TransportationRequestStatus.PICKEDUP));
 		case 3:
-			return findByTmMobile(Arrays.asList(TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED));
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		case 4:
 			return findByTmMobile(Arrays.asList(TransportationRequestStatus.CANCELED));
 		case 5:
@@ -473,54 +447,42 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			return new ArrayList<>();
 		}
 	}
-	
-	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobileByStatus(Integer state,String username) {
+
+	public List<ma.azdad.mobile.model.TransportationRequest> findByDriverMobileByStatus(Integer state, String username) {
 		switch (state) {
 		case 0:
-			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED),username);
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED), username);
 		case 2:
-			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.PICKEDUP),username);
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.PICKEDUP), username);
 		case 3:
-			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED),username);
-		
+			return findByDriverMobile(Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED), username);
+
 		default:
 			return new ArrayList<>();
 		}
 	}
-	
-	public ma.azdad.mobile.model.TransportationRequest findOneMobile(Integer id){
+
+	public ma.azdad.mobile.model.TransportationRequest findOneMobile(Integer id) {
 		TransportationRequest tr = findOne(id);
-		ma.azdad.mobile.model.TransportationRequest trMobile = new ma.azdad.mobile.model.TransportationRequest(
-				tr.getId(),
-				tr.getReference(),
-				tr.getStatus(),
-				tr.getPriority(),
-				tr.getDeliveryRequest().getNumberOfItems(),
-				tr.getDeliveryRequest().getGrossWeight(),
-				tr.getDeliveryRequest().getVolume(),
-				tr.getNeededPickupDate(),
-				tr.getNeededDeliveryDate(),
-				tr.getExpectedPickupDate(),
-				tr.getPickupDate(),
-				tr.getExpectedDeliveryDate(),
-				tr.getDeliveryDate()
-		    ) ;
-		
-		if(tr.getEstimatedDistance() != null) {
+		ma.azdad.mobile.model.TransportationRequest trMobile = new ma.azdad.mobile.model.TransportationRequest(tr.getId(), tr.getReference(), tr.getStatus(), tr.getPriority(),
+				tr.getDeliveryRequest().getNumberOfItems(), tr.getDeliveryRequest().getGrossWeight(), tr.getDeliveryRequest().getVolume(), tr.getNeededPickupDate(), tr.getNeededDeliveryDate(),
+				tr.getExpectedPickupDate(), tr.getPickupDate(), tr.getExpectedDeliveryDate(), tr.getDeliveryDate());
+
+		if (tr.getEstimatedDistance() != null) {
 			trMobile.setEstimatedDistanceText(tr.getEstimatedDistanceText());
 		}
-		if(tr.getTransportationJob().getVehicle() != null) {
-			trMobile.setVehicule(new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicle().getCategory()
-					, tr.getTransportationJob().getVehicle().getType(), tr.getTransportationJob().getVehicleMatricule()));
+		if (tr.getTransportationJob().getVehicle() != null) {
+			trMobile.setVehicule(new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicleTypeName(), tr.getTransportationJob().getVehicleMatricule()));
 		}
-		if(tr.getTransportationJob().getDriver() != null) {
-			 trMobile.setDriver(toMobileUser2(tr.getTransportationJob().getDriver()));}
-		if(tr.getDeliveryRequest() != null) {
+		if (tr.getTransportationJob().getDriver() != null) {
+			trMobile.setDriver(toMobileUser2(tr.getTransportationJob().getDriver()));
+		}
+		if (tr.getDeliveryRequest() != null) {
 			trMobile.setDnRef(tr.getDeliveryRequestReference());
 			trMobile.setDnType(tr.getDeliveryRequestType().getValue());
 			trMobile.setDnProject(tr.getDeliveryRequest().getProjectName());
 		}
-		
+
 		if (tr.getDeliveryRequest().getOrigin() != null) {
 			trMobile.setOriginName(tr.getDeliveryRequest().getOriginName());
 			trMobile.setOriginAddress(tr.getDeliveryRequest().getOrigin().getGoogleAddress());
@@ -540,59 +502,55 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			trMobile.setDestinationLatitude(tr.getDeliveryRequest().getDestination().getLatitude());
 		}
 		if (tr.getUser1() != null) {
-		    trMobile.setUser1(toMobileUser(tr.getUser1()));
-		    trMobile.setDate1(tr.getDate1());
+			trMobile.setUser1(toMobileUser(tr.getUser1()));
+			trMobile.setDate1(tr.getDate1());
 		}
 		if (tr.getUser2() != null) {
-		    trMobile.setUser2(toMobileUser(tr.getUser2()));
-		    trMobile.setDate2(tr.getDate2());
+			trMobile.setUser2(toMobileUser(tr.getUser2()));
+			trMobile.setDate2(tr.getDate2());
 		}
 		if (tr.getUser3() != null) {
-		    trMobile.setUser3(toMobileUser(tr.getUser3()));
-		    trMobile.setDate3(tr.getDate3());
+			trMobile.setUser3(toMobileUser(tr.getUser3()));
+			trMobile.setDate3(tr.getDate3());
 		}
 		if (tr.getUser4() != null) {
-		    trMobile.setUser4(toMobileUser(tr.getUser4()));
-		    trMobile.setDate4(tr.getDate4());
+			trMobile.setUser4(toMobileUser(tr.getUser4()));
+			trMobile.setDate4(tr.getDate4());
 		}
 		if (tr.getUser5() != null) {
-		    trMobile.setUser5(toMobileUser(tr.getUser5()));
-		    trMobile.setDate5(tr.getDate5());
+			trMobile.setUser5(toMobileUser(tr.getUser5()));
+			trMobile.setDate5(tr.getDate5());
 		}
 		if (tr.getUser6() != null) {
-		    trMobile.setUser6(toMobileUser(tr.getUser6()));
-		    trMobile.setDate6(tr.getDate6());
+			trMobile.setUser6(toMobileUser(tr.getUser6()));
+			trMobile.setDate6(tr.getDate6());
 		}
 		if (tr.getUser7() != null) {
-		    trMobile.setUser7(toMobileUser(tr.getUser7()));
-		    trMobile.setDate7(tr.getDate7());
+			trMobile.setUser7(toMobileUser(tr.getUser7()));
+			trMobile.setDate7(tr.getDate7());
 		}
 		if (tr.getUser8() != null) {
-		    trMobile.setUser8(toMobileUser(tr.getUser8()));
-		    trMobile.setDate8(tr.getDate8());
+			trMobile.setUser8(toMobileUser(tr.getUser8()));
+			trMobile.setDate8(tr.getDate8());
 		}
 		if (tr.getUser9() != null) {
-		    trMobile.setUser9(toMobileUser(tr.getUser9()));
-		    trMobile.setDate9(tr.getDate9());
+			trMobile.setUser9(toMobileUser(tr.getUser9()));
+			trMobile.setDate9(tr.getDate9());
 		}
 
 		trMobile.setHistoryList(repos.findHistoryListMobile(id));
 
-		
-		
 		return trMobile;
 	}
-	
+
 	private ma.azdad.mobile.model.User toMobileUser(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
-				user.getLogin(), user.getPhoto(), user.getEmail(),user.getJob());
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getJob());
 	}
-	
+
 	private ma.azdad.mobile.model.User toMobileUser2(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(),
-				user.getLogin(), user.getPhoto(), user.getEmail(),user.getCin(),user.getPhone());
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(), user.getPhone());
 	}
-	
+
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
 		TransportationRequest job = findOne(id);
 
@@ -630,7 +588,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		TransportationRequest job = findOne(id);
 		List<ma.azdad.mobile.model.TransportationRequestFile> list = new ArrayList<>();
 		for (TransportationRequestFile dnFile : job.getFileList()) {
-			list.add(new ma.azdad.mobile.model.TransportationRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
+			list.add(new ma.azdad.mobile.model.TransportationRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(),
+					dnFile.getName()));
 
 		}
 		return list;
@@ -647,28 +606,22 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			return "image/webp";
 		return "image/jpeg"; // default
 	}
-	
-	public String uploadTaskDetailPhoto(TransportationRequest tr,String type, InputStream inputStream, String fileName, Long fileSize, Boolean showFacesMessage) throws IOException {
+
+	public String uploadTaskDetailPhoto(TransportationRequest tr, String type, InputStream inputStream, String fileName, Long fileSize, Boolean showFacesMessage) throws IOException {
 
 		File file = fileUploadService.handlePhotoUpload(inputStream, fileName, fileSize, "transportationRequestImage", 400 * 1024, showFacesMessage);
 		TransportationRequestImage trm = new TransportationRequestImage(type, "files/transportationRequestImage/" + file.getName(), tr);
-		
-		TransportationRequestImage newTrm =transportationRequestImageRepos.save(trm);
+
+		TransportationRequestImage newTrm = transportationRequestImageRepos.save(trm);
 		return newTrm.getValue();
 	}
-	
-	public List<ma.azdad.mobile.model.TransportationRequestImage> findTrImages(String type,Integer id){
-		 List<TransportationRequestImage> list = transportationRequestImageRepos.findByTypeAndTransportationRequestId(type, id);
-		 List<ma.azdad.mobile.model.TransportationRequestImage> mbList = new ArrayList<>();
-		 for (TransportationRequestImage trm : list) {
-			mbList.add(new ma.azdad.mobile.model.TransportationRequestImage( trm.getId(),
-				    trm.getType(),
-				    trm.getValue(),
-				    trm.getLatitude(),
-				    trm.getLongitude(),
-				    trm.getGoogleAddress(),
-				    trm.getTakenDate(),
-				    trm.getPhoneModel()));
+
+	public List<ma.azdad.mobile.model.TransportationRequestImage> findTrImages(String type, Integer id) {
+		List<TransportationRequestImage> list = transportationRequestImageRepos.findByTypeAndTransportationRequestId(type, id);
+		List<ma.azdad.mobile.model.TransportationRequestImage> mbList = new ArrayList<>();
+		for (TransportationRequestImage trm : list) {
+			mbList.add(new ma.azdad.mobile.model.TransportationRequestImage(trm.getId(), trm.getType(), trm.getValue(), trm.getLatitude(), trm.getLongitude(), trm.getGoogleAddress(),
+					trm.getTakenDate(), trm.getPhoneModel()));
 		}
 		return mbList;
 	}

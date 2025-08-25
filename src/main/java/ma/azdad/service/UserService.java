@@ -37,6 +37,11 @@ public class UserService {
 
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Autowired
+	private TransportationJobService transportationJobService;
+	
+	
 
 	public User findOne(String username) {
 		User u = repos.findById(username).get();
@@ -497,6 +502,16 @@ public class UserService {
 
 	public List<User> findByRoleAndActiveAndTransporter(Role role, Integer transporterId) {
 		return repos.findByRoleAndActiveAndTransporter(role, transporterId);
+	}
+	
+	public void updateReactivity(String username) {
+		User user= findOneLight(username);
+		user.setReactivity(transportationJobService.getReactivity(user.getUsername()));
+		save(user);
+	}
+
+	public void updateReactivityScript() {
+		repos.findByRole(Role.ROLE_ILOGISTICS_DRIVER).forEach(u->updateReactivity(u.getUsername()));
 	}
 
 }

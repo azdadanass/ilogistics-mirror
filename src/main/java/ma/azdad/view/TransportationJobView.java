@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.DeliveryRequestStatus;
+import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
@@ -44,6 +45,7 @@ import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.DriverLocationService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PathService;
@@ -118,6 +120,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	@Autowired
 	protected UserView userView;
+
+	@Autowired
+	protected DriverLocationService driverLocationService;
 
 	private TransportationJob transportationJob = new TransportationJob();
 	private TransportationJobFile transportationJobFile;
@@ -393,13 +398,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				break;
 			case INTERNAL_DRIVER:
 				userView.initLists(userService.findActiveDriverList(true));
-//				teamView.getList1().forEach(t -> {
-//					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
-//					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
-//					if (t.getTeamLeaderLatitude() != null)
-//						t.setDistance(UtilsFunctions.calculateDistance(t.getTeamLeaderLatitude(), t.getTeamLeaderLongitude(), jobRequest.getSiteLatitude(), jobRequest.getSiteLongitude()));
-//
-//				});
+				userView.getList1().forEach(u -> {
+					u.setCountPendingTr(transportationRequestService.countPendingByDriver(u.getUsername()));
+					DriverLocation driverLocation = driverLocationService.getLastLocation(u.getUsername());
+					if (driverLocation != null) {
+						u.setLatitude(driverLocation.getLatitude());
+						u.setLongitude(driverLocation.getLongitude());
+						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(),u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+					}
+				});
 				refreshMapModel();
 				break;
 			case EXTERNAL_DRIVER:
@@ -408,21 +415,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					userView.initLists(userService.findActiveDriverList(false));
 					break;
 				case ASSIGNED1:
-					System.out.println("init user list ROLE_ILOGISTICS_DRIVER : " + userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
-					System.out.println("transportationJob.getTransporterId() : " + transportationJob.getTransporterId());
 					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
 					break;
 				default:
 					break;
 				}
-
-//				teamView.getList1().forEach(t -> {
-//					t.setCountTotalJr(countByTeamAndProject(t.getId(), jobRequest.getProjectId()));
-//					t.setCountPendingJr(countPendingByTeamAndProject(t.getId(), jobRequest.getProjectId()));
-//					if (t.getTeamLeaderLatitude() != null)
-//						t.setDistance(UtilsFunctions.calculateDistance(t.getTeamLeaderLatitude(), t.getTeamLeaderLongitude(), jobRequest.getSiteLatitude(), jobRequest.getSiteLongitude()));
-//
-//				});
+				userView.getList1().forEach(u -> {
+					u.setCountPendingTr(transportationRequestService.countPendingByDriver(u.getUsername()));
+					DriverLocation driverLocation = driverLocationService.getLastLocation(u.getUsername());
+					if (driverLocation != null) {
+						u.setLatitude(driverLocation.getLatitude());
+						u.setLongitude(driverLocation.getLongitude());
+					}
+				});
 				refreshMapModel();
 				break;
 			default:

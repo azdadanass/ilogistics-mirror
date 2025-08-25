@@ -31,6 +31,7 @@ import ma.azdad.service.TransporterHistoryService;
 import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.service.VehicleBrandTypeService;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -74,6 +75,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected UserService userService;
+	
+	@Autowired
+	protected VehicleBrandTypeService vehicleBrandTypeService;
 
 	private Transporter transporter = new Transporter();
 	private TransporterFile transporterFile;
@@ -130,6 +134,9 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			return;
 		if (vehicle.getFromMyTools())
 			vehicle.setTool(toolService.findOne(vehicle.getToolId()));
+		
+		
+		vehicle.setBrandType(vehicleBrandTypeService.findOneLight(vehicle.getBrandTypeId()));
 		vehicleService.save(vehicle);
 		refreshTransporter();
 		RequestContext.getCurrentInstance().execute("PF('addEditVehicleDlg').hide()");

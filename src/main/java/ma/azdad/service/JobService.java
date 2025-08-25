@@ -1,5 +1,7 @@
 package ma.azdad.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @Transactional
 public class JobService {
+	final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	PartNumberService partNumberService;
@@ -39,6 +42,9 @@ public class JobService {
 
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	UserService userService;
 
 	@Async
 	@Scheduled(cron = "0 34 19 * * *")
@@ -133,5 +139,11 @@ public class JobService {
 //	public void automaticFillOutboundSerialNumberScript() {
 //		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(200);
 //	}
+	
+	@Scheduled(cron = "00 10 05 * * *")
+	public void updateReactivityScript() {
+		log.info("updateReactivityScript Script");
+		userService.updateReactivityScript();
+	}
 
 }

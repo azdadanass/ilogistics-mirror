@@ -72,13 +72,14 @@ public class User extends GenericModel<String> implements Serializable {
 	private Transporter transporter;
 
 	// gps
-	private Double latitude;
-	private Double longitude;
 
 	private User user;
 	private Date date;
 
 	private Integer countFiles = 0;
+
+	private Long reactivity;
+	private Long performance;
 
 	private List<UserFile> fileList = new ArrayList<>();
 	private List<UserHistory> historyList = new ArrayList<>();
@@ -94,7 +95,14 @@ public class User extends GenericModel<String> implements Serializable {
 //	private Boolean isTM = false;
 //	private Boolean isAdmin = false;
 
+	private Long countPendingTr;
+	private Double distance;
+
 	private User lineManager;
+
+	// Transient
+	private Double latitude;
+	private Double longitude;
 
 	public User() {
 
@@ -159,6 +167,24 @@ public class User extends GenericModel<String> implements Serializable {
 		setSupplierName(supplierName);
 	}
 
+	public User(String username, String fullName, String photo, String email, String job, String phone, String cin,Long reactivity, //
+			TransporterType transporterType, String transporterCompanyName, String transporterSupplierName, String transporterPrivateFirstName, String transporterPrivateLastName) {
+		super();
+		this.username = username;
+		this.fullName = fullName;
+		this.photo = photo;
+		this.email = email;
+		this.job = job;
+		this.phone = phone;
+		this.cin = cin;
+		this.reactivity = reactivity;
+		this.setTransporterType(transporterType);
+		this.setTransporterCompanyName(transporterCompanyName);
+		this.setTransporterSupplierName(transporterSupplierName);
+		this.setTransporterPrivateFirstName(transporterPrivateFirstName);
+		this.setTransporterPrivateLastName(transporterPrivateLastName);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -192,17 +218,82 @@ public class User extends GenericModel<String> implements Serializable {
 	protected Boolean contains(Date date, String query) {
 		return date != null && UtilsFunctions.getFormattedDate(date).toLowerCase().contains(query);
 	}
-	
+
 	@Transient
-	public Integer getTransporterId(){
-		return transporter!=null?transporter.getId():null;
+	public Integer getTransporterId() {
+		return transporter != null ? transporter.getId() : null;
 	}
 
 	@Transient
-	public void setTransporterId(Integer transporterId){
-		if(transporter==null || !transporterId.equals(transporter.getId()))
-			transporter=new Transporter();
+	public void setTransporterId(Integer transporterId) {
+		if (transporter == null || !transporterId.equals(transporter.getId()))
+			transporter = new Transporter();
 		transporter.setId(transporterId);
+	}
+
+	@Transient
+	public String getTransporterName() {
+		return transporter != null ? transporter.getName() : null;
+	}
+
+	@Transient
+	public String getTransporterCompanyName() {
+		return transporter != null ? transporter.getCompanyName() : null;
+	}
+
+	@Transient
+	public void setTransporterCompanyName(String transporterCompanyName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setCompanyName(transporterCompanyName);
+	}
+
+	@Transient
+	public String getTransporterSupplierName() {
+		return transporter != null ? transporter.getSupplierName() : null;
+	}
+
+	@Transient
+	public void setTransporterSupplierName(String transporterSupplierName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setSupplierName(transporterSupplierName);
+	}
+
+	@Transient
+	public TransporterType getTransporterType() {
+		return transporter != null ? transporter.getType() : null;
+	}
+
+	@Transient
+	public void setTransporterType(TransporterType transporterType) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setType(transporterType);
+	}
+
+	@Transient
+	public String getTransporterPrivateFirstName() {
+		return transporter != null ? transporter.getPrivateFirstName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateFirstName(String transporterPrivateFirstName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateFirstName(transporterPrivateFirstName);
+	}
+
+	@Transient
+	public String getTransporterPrivateLastName() {
+		return transporter != null ? transporter.getPrivateLastName() : null;
+	}
+
+	@Transient
+	public void setTransporterPrivateLastName(String transporterPrivateLastName) {
+		if (transporter == null)
+			transporter = new Transporter();
+		transporter.setPrivateLastName(transporterPrivateLastName);
 	}
 
 	@Transient
@@ -326,7 +417,6 @@ public class User extends GenericModel<String> implements Serializable {
 //			this.company = company;
 //		}
 //	}
-	
 
 	public void addVehicle(UserVehicle userVehicle) {
 		userVehicle.setUser(this);
@@ -437,17 +527,17 @@ public class User extends GenericModel<String> implements Serializable {
 	public Boolean getIsTM() {
 		return hasRole(Role.ROLE_ILOGISTICS_TM);
 	}
-	
+
 	@Transient
 	public Boolean getIsDriver() {
 		return hasRole(Role.ROLE_ILOGISTICS_DRIVER);
 	}
-	
+
 	@Transient
 	public Boolean getIsTrAdmin() {
 		return hasRole(Role.ROLE_ILOGISTICS_TR_ADMIN);
 	}
-	
+
 	@Transient
 	public Boolean getIsTrPayment() {
 		return hasRole(Role.ROLE_ILOGISTICS_TR_PAYMENT);
@@ -703,8 +793,7 @@ public class User extends GenericModel<String> implements Serializable {
 	public void setFileList(List<UserFile> fileList) {
 		this.fileList = fileList;
 	}
-	
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
 	public List<UserVehicle> getVehicleList() {
 		return vehicleList;
@@ -890,20 +979,60 @@ public class User extends GenericModel<String> implements Serializable {
 		this.totpSecret = totpSecret;
 	}
 
+	@Transient
 	public Double getLatitude() {
 		return latitude;
 	}
 
+	@Transient
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 
+	@Transient
 	public Double getLongitude() {
 		return longitude;
 	}
 
+	@Transient
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public Long getReactivity() {
+		return reactivity;
+	}
+
+	public void setReactivity(Long reactivity) {
+		this.reactivity = reactivity;
+	}
+
+	public Long getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(Long performance) {
+		this.performance = performance;
+	}
+
+	@Transient
+	public Long getCountPendingTr() {
+		return countPendingTr;
+	}
+
+	@Transient
+	public void setCountPendingTr(Long countPendingTr) {
+		this.countPendingTr = countPendingTr;
+	}
+
+	@Transient
+	public Double getDistance() {
+		return distance;
+	}
+
+	@Transient
+	public void setDistance(Double distance) {
+		this.distance = distance;
 	}
 
 }

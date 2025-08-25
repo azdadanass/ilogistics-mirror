@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
 import ma.azdad.model.TransportationRequestState;
+import ma.azdad.service.DriverLocationService;
 import ma.azdad.service.TransportationRequestService;
 
 @Rollback(false)
@@ -14,13 +15,13 @@ public class Repos extends GenericTest {
 
 	
 	@Autowired
-	TransportationRequestService transportationRequestService;
+	DriverLocationService driverLocationService;
 	
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		System.out.println(transportationRequestService.findByDriver("a.azdad", TransportationRequestState.ASSIGNED));
+		System.out.println(driverLocationService.getLastLocation("a.azdad").getLatitude());
 	}
 
 }

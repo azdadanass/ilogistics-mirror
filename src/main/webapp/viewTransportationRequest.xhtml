@@ -21,7 +21,7 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="View TransportationRequest" />
+				<h:outputText value="View Transportation Request" />
 			</li>
 		</ul>
 	</ui:define>
@@ -32,13 +32,13 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View TransportationRequest" />
-					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transportationRequestView.transportationRequest.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transportationRequestView.transportationRequest.reference}" />
 					</small>
 				</h1>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-7">
+					<div class=" col-sm-offset-1 col-sm-5">
 						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
@@ -103,6 +103,57 @@
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
+					</div>
+					<div class="col-sm-5 hidden-xs infobox-container">
+						<div class="row">
+							<div class="infobox infobox-blue">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-list" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Number Of Items" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationRequestView.transportationRequest.numberOfItems}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-purple">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-anchor" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Gross Weight" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationRequestView.transportationRequest.grossWeight}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" Kg" />
+									</div>
+								</div>
+							</div>
+							<div class="infobox infobox-orange">
+								<div class="infobox-icon">
+									<i class="ace-icon fa fa-cube" />
+								</div>
+								<div class="infobox-data">
+									<span class="infobox-data-number">
+										<h:outputText value="Volume" />
+									</span>
+									<div class="infobox-content">
+										<h:outputText value="#{transportationRequestView.transportationRequest.volume}">
+											<f:convertNumber type="number" maxFractionDigits="2" />
+										</h:outputText>
+										<h:outputText value=" m3" />
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -62,7 +62,7 @@ public class UserView {
 
 	@Autowired
 	protected UserRoleService userRoleService;
-	
+
 	@Autowired
 	protected VehicleService vehicleService;
 
@@ -87,7 +87,7 @@ public class UserView {
 	private Integer parent;
 	private Boolean filterByUser = true;
 
-	private String sortBy = "Full Name";
+	private String sortBy = "Pending TR";
 
 	@PostConstruct
 	public void init() {
@@ -116,8 +116,20 @@ public class UserView {
 			@Override
 			public int compare(User o1, User o2) {
 				switch (sortBy) {
-				case "Full Name":
-					return o1.getFullName().compareTo(o2.getFullName());
+				case "Pending TR":
+					if (o1.getCountPendingTr() == null)
+						return -1;
+					if (o2.getCountPendingTr() == null)
+						return 1;
+					return o1.getCountPendingTr().compareTo(o2.getCountPendingTr());
+				case "Distance to site":
+					if (o1.getDistance() == null)
+						return -1;
+					if (o2.getDistance() == null)
+						return 1;
+					return o1.getDistance().compareTo(o2.getDistance());
+				case "Reactivity":
+					return o1.getReactivity().compareTo(o2.getReactivity());
 				}
 				return 1;
 			}

@@ -446,6 +446,18 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.addHistory(new TransportationJobHistory("Started", connectedUser));
 		save(transportationJob);
 	}
+	
+	public void startMobile(Integer id, User connectedUser,Double lat,Double lng) {
+		TransportationJob transportationJob = findOne(id);
+		start(transportationJob,connectedUser);
+		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
+		transportationJobItineraryRepos.save(tItinerary);
+	}
+	
+	public Double startDistance(Integer jobId) {
+		
+		return 0d;
+	}
 
 	private Boolean isTM(List<Role> roleList) {
 		return roleList.contains(Role.ROLE_ILOGISTICS_TM);

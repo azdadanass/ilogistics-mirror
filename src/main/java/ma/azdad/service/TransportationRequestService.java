@@ -217,6 +217,56 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 //				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
 //		return null;
 	}
+	
+	
+	public TransportationRequest pickup(TransportationRequest transportationRequest, User connectedUser) {
+		transportationRequest.setStatus(TransportationRequestStatus.PICKEDUP);
+		transportationRequest.setDate5(new Date());
+		transportationRequest.setUser5(connectedUser);
+		transportationRequest = transportationRequestService.save(transportationRequest);
+		transportationRequestHistoryService.pickedup(transportationRequest, connectedUser);
+		return transportationRequest;
+		
+	}
+	
+	public void pickupMobile(Integer id, User connectedUser,Double lat,Double lng) {
+		TransportationRequest transportationRequest = findOne(id);
+		pickup(transportationRequest,connectedUser);
+		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
+				,transportationRequest, transportationRequest.getTransportationJobStatus(),TransportationRequestStatus.PICKEDUP);
+		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
+				transportationRequest.getTransportationJob().getId());
+		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+		Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
+		tItinerary.setCumulativeDistance(distance + tItinerary.getCumulativeDistance());
+		tItinerary.setDistanceFromPrevious(distance);
+		transportationJobItineraryRepos.save(tItinerary);
+	}
+	
+	public TransportationRequest deliver(TransportationRequest transportationRequest, User connectedUser) {
+		transportationRequest.setStatus(TransportationRequestStatus.DELIVERED);
+		transportationRequest.setDate6(new Date());
+		transportationRequest.setUser6(connectedUser);
+		transportationRequest = transportationRequestService.save(transportationRequest);
+		transportationRequestHistoryService.delivred(transportationRequest, connectedUser);
+		return transportationRequest;
+		
+	}
+	
+	public void deliverMobile(Integer id, User connectedUser,Double lat,Double lng) {
+		TransportationRequest transportationRequest = findOne(id);
+		deliver(transportationRequest,connectedUser);
+		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
+				,transportationRequest, transportationRequest.getTransportationJobStatus(),TransportationRequestStatus.DELIVERED);
+		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
+				transportationRequest.getTransportationJob().getId());
+		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+		Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
+		tItinerary.setCumulativeDistance(distance + tItinerary.getCumulativeDistance());
+		tItinerary.setDistanceFromPrevious(distance);
+		transportationJobItineraryRepos.save(tItinerary);
+	}
+
 
 	public List<TransportationRequest> findByDriver(String driverUsername, TransportationRequestState state) {
 		if (state == null)

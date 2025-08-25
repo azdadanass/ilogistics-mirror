@@ -387,14 +387,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			return;
 		if (!validatePickupTransportationRequest())
 			return;
-
-		transportationRequest.setStatus(TransportationRequestStatus.PICKEDUP);
-		transportationRequest.setDate5(new Date());
-		transportationRequest.setUser5(sessionView.getUser());
-		// transportationRequest.setTransporter(transporterService.findOne(transportationRequest.getTransporterId()));
-		// transportationRequest.setVehicle(vehicleService.findOne(transportationRequest.getVehicleId()));
-		transportationRequest = transportationRequestService.save(transportationRequest);
-		transportationRequestHistoryService.pickedup(transportationRequest, sessionView.getUser());
+		transportationRequest = transportationRequestService.pickup(transportationRequest,sessionView.getUser());
 		refreshTransportationRequest();
 	}
 
@@ -419,12 +412,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (!canDeliverTransportationRequest())
 			return;
 
-		transportationRequest.setStatus(TransportationRequestStatus.DELIVERED);
-		transportationRequest.setDate6(new Date());
-		transportationRequest.setUser6(sessionView.getUser());
-		transportationRequest = transportationRequestService.save(transportationRequest);
-		transportationRequestHistoryService.delivred(transportationRequest, sessionView.getUser());
-
+		transportationRequestService.deliver(transportationRequest, sessionView.getUser());
 		refreshTransportationRequest();
 	}
 

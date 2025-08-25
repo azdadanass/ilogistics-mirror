@@ -53,11 +53,10 @@ public class TransportationJobItinerary implements Localizable{
         this.transportationJobStatus = status;
     }
     
-    public TransportationJobItinerary(Integer id, Date timestamp, Double latitude, Double longitude,
+    public TransportationJobItinerary(Date timestamp, Double latitude, Double longitude,
 			TransportationJob transportationJob, TransportationRequest transportationRequest,TransportationJobStatus transportationJobStatus
 			,TransportationRequestStatus transportationRequestStatus) {
 		super();
-		this.id = id;
 		this.timestamp = timestamp;
 		this.latitude = latitude;
 		this.longitude = longitude;

@@ -107,7 +107,7 @@ public class TransportationJobController {
 	            @PathVariable String key,
 	            @PathVariable Double lat,
 	            @PathVariable Double lng) {
-			System.out.println("/jobLocation/");
+			System.out.println("/jobItinerary/");
 			Token token = tokenService.getBykey(key);
 	       
 	        transportationJobService.updateJobItinerary(lat, lng, token.getUser());

@@ -53,7 +53,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	UserRepos userRepos;
-
+	
+	@Autowired
 	DriverLocationRepo driverLocationRepo;
 
 	@Autowired

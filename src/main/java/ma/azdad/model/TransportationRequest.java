@@ -1188,7 +1188,6 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		return reference;
 	}
 	
-	@Column(nullable = false)
 	public String getQrKey() {
 		return qrKey;
 	}

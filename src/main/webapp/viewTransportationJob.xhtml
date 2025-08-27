@@ -314,10 +314,19 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Reference" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transportationJobView.transportationJob.reference}" styleClass="bolder blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Transporter" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationJobView.transportationJob.transporter.name}" styleClass="bolder blue" />
+											<h:outputText value="#{transportationJobView.transportationJob.transporter.name}" styleClass="bolder purple" />
 											&nbsp;
 										</div>
 									</div>

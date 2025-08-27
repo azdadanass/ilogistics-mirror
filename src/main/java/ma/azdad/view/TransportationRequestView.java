@@ -107,6 +107,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	private TransportationRequestState state;
 	private TransportationRequestPaymentStatus paymentStatus;
+	
+	private String downloadPath;
 
 	@Override
 	@PostConstruct
@@ -233,6 +235,10 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			if (!test)
 				cacheView.accessDenied();
 		}
+	}
+	
+	public void generateStamp() {
+		downloadPath = service.generateStamp(transportationRequest);
 	}
 
 	// SAVE TRANSPORTATIONREQUEST
@@ -753,5 +759,111 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public void setPaymentStatus(TransportationRequestPaymentStatus paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
+
+	public TransportationRequestHistoryService getTransportationRequestHistoryService() {
+		return transportationRequestHistoryService;
+	}
+
+	public void setTransportationRequestHistoryService(TransportationRequestHistoryService transportationRequestHistoryService) {
+		this.transportationRequestHistoryService = transportationRequestHistoryService;
+	}
+
+	public CacheView getCacheView() {
+		return cacheView;
+	}
+
+	public void setCacheView(CacheView cacheView) {
+		this.cacheView = cacheView;
+	}
+
+	public SessionView getSessionView() {
+		return sessionView;
+	}
+
+	public void setSessionView(SessionView sessionView) {
+		this.sessionView = sessionView;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public ExternalResourceService getExternalResourceService() {
+		return externalResourceService;
+	}
+
+	public void setExternalResourceService(ExternalResourceService externalResourceService) {
+		this.externalResourceService = externalResourceService;
+	}
+
+	public DeliveryRequestService getDeliveryRequestService() {
+		return deliveryRequestService;
+	}
+
+	public void setDeliveryRequestService(DeliveryRequestService deliveryRequestService) {
+		this.deliveryRequestService = deliveryRequestService;
+	}
+
+	public MapService getMapService() {
+		return mapService;
+	}
+
+	public void setMapService(MapService mapService) {
+		this.mapService = mapService;
+	}
+
+	public TransporterService getTransporterService() {
+		return transporterService;
+	}
+
+	public void setTransporterService(TransporterService transporterService) {
+		this.transporterService = transporterService;
+	}
+
+	public VehicleService getVehicleService() {
+		return vehicleService;
+	}
+
+	public void setVehicleService(VehicleService vehicleService) {
+		this.vehicleService = vehicleService;
+	}
+
+	public OldEmailService getEmailService() {
+		return emailService;
+	}
+
+	public void setEmailService(OldEmailService emailService) {
+		this.emailService = emailService;
+	}
+
+	public SmsService getSmsService() {
+		return smsService;
+	}
+
+	public void setSmsService(SmsService smsService) {
+		this.smsService = smsService;
+	}
+
+	public TransportationJobService getTransportationJobService() {
+		return transportationJobService;
+	}
+
+	public void setTransportationJobService(TransportationJobService transportationJobService) {
+		this.transportationJobService = transportationJobService;
+	}
+
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
+	}
+	
+	
 
 }

@@ -1,7 +1,7 @@
 package ma.azdad.service;
 
 import java.io.File;
-
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -12,11 +12,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.RectangleReadOnly;
+import com.itextpdf.text.pdf.BarcodeQRCode;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DeliveryRequestStatus;
@@ -35,10 +52,14 @@ import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationRequestFileRepos;
 import ma.azdad.repos.TransportationRequestImageRepos;
 import ma.azdad.repos.TransportationRequestRepos;
+import ma.azdad.utils.App;
 import ma.azdad.utils.Public;
 
 @Component
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
+	
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
 
 	@Autowired
 	TransportationRequestRepos repos;
@@ -396,6 +417,93 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		});
 	}
 
+	
+	public String generateStamp(TransportationRequest transportationRequest) {
+		String downloadPath = "temp/stamp_" + transportationRequest.getReference() + ".pdf";
+		try {
+			Document document = new Document(new RectangleReadOnly(284, 171), 5, 5, 5, 5); // 100mm * 60mm
+			Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 15);
+			Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
+			Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9);
+			float[] pointColumnWidths = { 158F, 300F };
+			PdfPTable table1 = new PdfPTable(pointColumnWidths);
+			table1.setTotalWidth(290);
+			table1.setLockedWidth(true);
+			PdfPCell cell1, cell2;
+			Phrase phrase;
+			Paragraph paragraph;
+			PdfPTable table2 = new PdfPTable(2);
+
+			PdfWriter.getInstance(document, new FileOutputStream(UtilsFunctions.path() + downloadPath));
+
+			document.open();
+
+			paragraph = new Paragraph(transportationRequest.getReference() + " | Creation Date : "
+					+ (transportationRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationRequest.getDate1()) : ""), titleFont);
+			paragraph.setAlignment(Element.ALIGN_CENTER);
+			paragraph.setSpacingAfter(10f);
+			document.add(paragraph);
+
+			// qrcode Cell
+			BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/tr/" + transportationRequest.getId() + "/" + transportationRequest.getQrKey(), 100, 100, null);
+			Image qrcodeImage = barcodeQrcode.getImage();
+			qrcodeImage.scaleToFit(95, 95);
+			// qrcodeImage.scalePercent(100);
+			Image logo = null;
+			if ("gcom".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/gcom.png");
+			else if ("orange".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
+			logo.scaleToFit(50, 60);
+			logo.setAlignment(Element.ALIGN_CENTER);
+			cell1 = new PdfPCell();
+			cell1.setBorder(Rectangle.NO_BORDER);
+			cell1.addElement(qrcodeImage);
+			cell1.addElement(logo);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(cell1);
+
+			phrase = new Phrase();
+			phrase.add(new Chunk("# Of Items : ", boldFont));
+			phrase.add(new Chunk(String.valueOf(transportationRequest.getNumberOfItems()), normalFont));
+			phrase.add(new Chunk("\nTransporter : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationRequest.getTransporterName(), ""), 70), normalFont));
+			phrase.add(new Chunk("\nDriver : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationRequest.getDriverFullName(), ""), 25), normalFont));
+			phrase.add(new Chunk("\nVehicle : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationRequest.getVehicleMatricule(), ""), 25), normalFont));
+			cell1 = new PdfPCell();
+			cell1.setPadding(3f);
+			cell1.setLeading(0, 1f);
+			cell1.addElement(phrase);
+
+			phrase = new Phrase();
+			phrase.add(new Chunk("Gross Weight\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(transportationRequest.getGrossWeight()) + " Kg", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			phrase = new Phrase();
+			phrase.add(new Chunk("Volume\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(transportationRequest.getVolume()) + " m3", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			cell1.addElement(table2);
+			cell1.setBorder(Rectangle.LEFT);
+			table1.addCell(cell1);
+			document.add(table1);
+
+			document.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return downloadPath;
+	}
+	
 	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {
 		List<TransportationRequest> list = repos.findLight();

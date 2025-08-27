@@ -1081,6 +1081,13 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 			return transportationJob.getDriver().getFullName();
 		return null;
 	}
+	
+	@Transient
+	public String getDriverFullName() {
+		if (transportationJob != null)
+			return transportationJob.getDriver().getFullName();
+		return null;
+	}
 
 	@Transient
 	public String getDriverPhone() {

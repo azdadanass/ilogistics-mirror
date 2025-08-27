@@ -150,6 +150,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private TimelineModel timeline1;
 	private TimelineModel timeline2;
+	
+	private String downloadPath;
 
 	@Override
 	@PostConstruct
@@ -371,6 +373,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			return null;
 		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
 				.orElse(null);
+	}
+	
+	public void generateStamp() {
+		downloadPath = service.generateStamp(transportationJob);
 	}
 
 	// assign
@@ -1160,6 +1166,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void setTimeline2(TimelineModel timeline2) {
 		this.timeline2 = timeline2;
+	}
+	
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
 	}
 
 }

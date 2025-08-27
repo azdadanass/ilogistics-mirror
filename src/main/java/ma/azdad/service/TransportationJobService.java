@@ -1,7 +1,7 @@
 package ma.azdad.service;
 
 import java.io.File;
-
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,14 +12,32 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.RectangleReadOnly;
+import com.itextpdf.text.pdf.BarcodeQRCode;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import ma.azdad.mobile.model.Vehicule;
+import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
@@ -41,10 +59,14 @@ import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
+import ma.azdad.utils.App;
 import ma.azdad.utils.FacesContextMessages;
 
 @Component
 public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {
+
+	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
+	private String erp;
 
 	private final TransportationRequestRepos transportationRequestRepos;
 
@@ -336,8 +358,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService
-				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(
+				Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());
@@ -366,7 +388,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	// workflow
 
-	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId, User connectedUser) {
+	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId,
+			User connectedUser) {
 		transportationJob.setAssignmentType(assignmentType);
 
 		switch (transportationJob.getAssignmentType()) {
@@ -375,10 +398,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(connectedUser);
 			transportationJob.setTransporter(transporterService.findOneLight(transporterId));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			transportationJob.addHistory(
+					new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setTransporter(transportationJob.getTransporter());
-				i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+				i.addHistory(
+						new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			});
 			break;
 		case INTERNAL_DRIVER:
@@ -389,7 +414,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
-			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			transportationJob
+					.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setDriver(transportationJob.getDriver());
 				i.setVehicle(transportationJob.getVehicle());
@@ -492,13 +518,98 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public Long getReactivity(Long acceptPerfomance, Long startPerfomance) {
 		return (acceptPerfomance + startPerfomance) / 2;
 	}
-	
-	
+
 	public void generateQrKeyScript() {
-		repos.findWithoutQrKey().forEach(i->{
+		repos.findWithoutQrKey().forEach(i -> {
 			i.setQrKey(UtilsFunctions.generateQrKey());
 			save(i);
 		});
+	}
+
+	public String generateStamp(TransportationJob transportationJob) {
+		String downloadPath = "temp/stamp_" + transportationJob.getReference() + ".pdf";
+		try {
+			Document document = new Document(new RectangleReadOnly(284, 171), 5, 5, 5, 5); // 100mm * 60mm
+			Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 15);
+			Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 9);
+			Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9);
+			float[] pointColumnWidths = { 158F, 300F };
+			PdfPTable table1 = new PdfPTable(pointColumnWidths);
+			table1.setTotalWidth(290);
+			table1.setLockedWidth(true);
+			PdfPCell cell1, cell2;
+			Phrase phrase;
+			Paragraph paragraph;
+			PdfPTable table2 = new PdfPTable(2);
+
+			PdfWriter.getInstance(document, new FileOutputStream(UtilsFunctions.path() + downloadPath));
+
+			document.open();
+
+			paragraph = new Paragraph(transportationJob.getReference() + " | Creation Date : "
+					+ (transportationJob.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationJob.getDate1()) : ""), titleFont);
+			paragraph.setAlignment(Element.ALIGN_CENTER);
+			paragraph.setSpacingAfter(10f);
+			document.add(paragraph);
+
+			// qrcode Cell
+			BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/tj/" + transportationJob.getId() + "/" + transportationJob.getQrKey(), 100, 100, null);
+			Image qrcodeImage = barcodeQrcode.getImage();
+			qrcodeImage.scaleToFit(95, 95);
+			// qrcodeImage.scalePercent(100);
+			Image logo = null;
+			if ("gcom".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/gcom.png");
+			else if ("orange".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
+			logo.scaleToFit(50, 60);
+			logo.setAlignment(Element.ALIGN_CENTER);
+			cell1 = new PdfPCell();
+			cell1.setBorder(Rectangle.NO_BORDER);
+			cell1.addElement(qrcodeImage);
+			cell1.addElement(logo);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(cell1);
+
+			phrase = new Phrase();
+			phrase.add(new Chunk("# Of Items : ", boldFont));
+			phrase.add(new Chunk(String.valueOf(transportationJob.getNumberOfItems()), normalFont));
+			phrase.add(new Chunk("\nTransporter : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationJob.getTransporterName(), ""), 70), normalFont));
+			phrase.add(new Chunk("\nDriver : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationJob.getDriverFullName(), ""), 25), normalFont));
+			phrase.add(new Chunk("\nVehicle : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(ObjectUtils.firstNonNull(transportationJob.getVehicleMatricule(), ""), 25), normalFont));
+			cell1 = new PdfPCell();
+			cell1.setPadding(3f);
+			cell1.setLeading(0, 1f);
+			cell1.addElement(phrase);
+
+			phrase = new Phrase();
+			phrase.add(new Chunk("Gross Weight\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(transportationJob.getGrossWeight()) + " Kg", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			phrase = new Phrase();
+			phrase.add(new Chunk("Volume\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(transportationJob.getVolume()) + " m3", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			cell1.addElement(table2);
+			cell1.setBorder(Rectangle.LEFT);
+			table1.addCell(cell1);
+			document.add(table1);
+
+			document.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return downloadPath;
 	}
 
 	// mobile
@@ -541,7 +652,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<ma.azdad.mobile.model.TransportationJob> findByUser1MobileByStatus(Integer state, String username) {
 		switch (state) {
 		case 0:
-			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED), username);
+			return findByUser1Mobile(
+					Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED),
+					username);
 		case 1:
 			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.STARTED), username);
 		case 2:
@@ -604,8 +717,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id) {
 		TransportationJob tj = findOne(id);
-		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
-				tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver()));
+		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(),
+				tj.getEstimatedCost(), tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver()));
 		List<ma.azdad.mobile.model.TransportationRequest> trList = new ArrayList<>();
 		if (tj.getEstimatedDistance() != null) {
 			tjMobile.setEstimatedDistanceText(tj.getEstimatedDistance().toString() + " Km");
@@ -636,8 +749,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				totalItems += transportationRequest.getNumberOfItems();
 			}
 			trList.add(new ma.azdad.mobile.model.TransportationRequest(transportationRequest.getId(), transportationRequest.getReference(), transportationRequest.getStatus(),
-					transportationRequest.getNeededPickupDate(), transportationRequest.getNeededDeliveryDate(), transportationRequest.getExpectedPickupDate(), transportationRequest.getPickupDate(),
-					transportationRequest.getExpectedDeliveryDate(), transportationRequest.getDeliveryDate(), transportationRequest.getOriginName(), transportationRequest.getDestinationName()));
+					transportationRequest.getNeededPickupDate(), transportationRequest.getNeededDeliveryDate(), transportationRequest.getExpectedPickupDate(),
+					transportationRequest.getPickupDate(), transportationRequest.getExpectedDeliveryDate(), transportationRequest.getDeliveryDate(),
+					transportationRequest.getOriginName(), transportationRequest.getDestinationName()));
 		}
 		tjMobile.setGrossWeight(totalGrossWeight);
 		tjMobile.setVolume(totalVolume);
@@ -686,7 +800,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	private ma.azdad.mobile.model.User toMobileUser2(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(), user.getPhone());
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(),
+				user.getPhone());
 	}
 
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
@@ -726,7 +841,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		TransportationJob job = findOne(id);
 		List<ma.azdad.mobile.model.TransportationJobFile> list = new ArrayList<>();
 		for (TransportationJobFile dnFile : job.getFileList()) {
-			list.add(new ma.azdad.mobile.model.TransportationJobFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
+			list.add(new ma.azdad.mobile.model.TransportationJobFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(),
+					dnFile.getName()));
 
 		}
 		return list;

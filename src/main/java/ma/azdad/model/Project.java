@@ -23,9 +23,11 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 
-public class Project extends GenericModel<Integer> {
+public class Project extends GenericModel<Integer> implements Serializable {
 
 	private Integer id;
 	private String name;
@@ -506,6 +508,7 @@ public class Project extends GenericModel<Integer> {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
 	public Currency getCurrency() {
 		return currency;
 	}

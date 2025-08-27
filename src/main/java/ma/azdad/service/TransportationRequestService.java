@@ -53,7 +53,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	ExpensepaymentService expensepaymentService;
 	@Autowired
 	TransportationJobItineraryRepos transportationJobItineraryRepos;
-
+	@Autowired
+	UserService userService;
 	@Autowired
 	TransportationRequestService transportationRequestService;
 
@@ -229,11 +230,12 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		
 	}
 	
-	public void pickupMobile(Integer id, User connectedUser,Double lat,Double lng) {
-		TransportationRequest transportationRequest = findOne(id);
-		pickup(transportationRequest,connectedUser);
+	public void pickupMobile(Integer id, String username,Double lat,Double lng) {
+		TransportationRequest transportationRequest = transportationRequestService.findOne(id);
+		User user = userService.findByUsername(username);
+		transportationRequest = pickup(transportationRequest,user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
-				,transportationRequest, transportationRequest.getTransportationJobStatus(),TransportationRequestStatus.PICKEDUP);
+				,transportationRequest, TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.PICKEDUP);
 		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
 				transportationRequest.getTransportationJob().getId());
 		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
@@ -253,16 +255,17 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		
 	}
 	
-	public void deliverMobile(Integer id, User connectedUser,Double lat,Double lng) {
+	public void deliverMobile(Integer id, String username,Double lat,Double lng) {
 		TransportationRequest transportationRequest = findOne(id);
-		deliver(transportationRequest,connectedUser);
+		User user = userService.findByUsername(username);
+		transportationRequest = deliver(transportationRequest,user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
-				,transportationRequest, transportationRequest.getTransportationJobStatus(),TransportationRequestStatus.DELIVERED);
+				,transportationRequest,  TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.DELIVERED);
 		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
 				transportationRequest.getTransportationJob().getId());
 		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
 		Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-		tItinerary.setCumulativeDistance(distance + tItinerary.getCumulativeDistance());
+		tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
 		tItinerary.setDistanceFromPrevious(distance);
 		transportationJobItineraryRepos.save(tItinerary);
 	}

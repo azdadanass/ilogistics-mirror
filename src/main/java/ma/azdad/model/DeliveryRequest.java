@@ -1,5 +1,6 @@
 package ma.azdad.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,7 +38,7 @@ import ma.azdad.utils.Public;
 
 @Entity
 
-public class DeliveryRequest extends GenericModel<Integer> implements Comparable<DeliveryRequest> {
+public class DeliveryRequest extends GenericModel<Integer> implements Comparable<DeliveryRequest> ,Serializable {
 
 	private String reference;
 	private String description;

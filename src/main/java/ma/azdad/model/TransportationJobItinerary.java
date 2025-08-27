@@ -1,11 +1,13 @@
 package ma.azdad.model;
 
 import javax.persistence.*;
+
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "transportation_job_itinerary")
-public class TransportationJobItinerary implements Localizable{
+public class TransportationJobItinerary implements Localizable,Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,13 +35,16 @@ public class TransportationJobItinerary implements Localizable{
     private Double distanceFromPrevious = 0d;
     private Double cumulativeDistance = 0d;
     
+	@Enumerated(EnumType.STRING)
     private TransportationJobStatus transportationJobStatus;
+	@Enumerated(EnumType.STRING)
     private TransportationRequestStatus transportationRequestStatus;
 
   
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TransportationJob transportationJob;
+	@ManyToOne(fetch = FetchType.LAZY, optional = true)
     private TransportationRequest transportationRequest;
 
     

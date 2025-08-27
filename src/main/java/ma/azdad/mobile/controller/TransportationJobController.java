@@ -57,6 +57,13 @@ public class TransportationJobController {
 
 		}
 	}
+	@GetMapping("/start/{key}/{id}/{lat}/{lng}")
+	public void start(@PathVariable String key,@PathVariable Integer id,@PathVariable Double lat,
+            @PathVariable Double lng) {
+		System.out.println("/mobile/tj/start/{key}");
+		Token token = tokenService.getBykey(key);
+		transportationJobService.startMobile(id, token.getUsername(), lat, lng);
+	}
 	
 	@GetMapping("/findtjstops/{key}/{id}")
 	public List<Stop> findTjStops(@PathVariable String key,

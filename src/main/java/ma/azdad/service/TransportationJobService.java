@@ -447,17 +447,38 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		save(transportationJob);
 	}
 	
-	public void startMobile(Integer id, User connectedUser,Double lat,Double lng) {
+	public void startMobile(Integer id, String username,Double lat,Double lng) {
+		User user = userService.findByUsername(username);
 		TransportationJob transportationJob = findOne(id);
-		start(transportationJob,connectedUser);
+		start(transportationJob,user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
 	}
 	
 	public Double startDistance(Integer jobId) {
-		
-		return 0d;
+	    List<TransportationJobItinerary> pickup = transportationJobItineraryRepos
+	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
+
+	    if (pickup != null && !pickup.isEmpty()) {
+	        return pickup.get(0).getCumulativeDistance();
+	    }
+
+	    return 0d; 
 	}
+	
+	public Double ongoingDistance(Integer jobId) {
+	    List<TransportationJobItinerary> delivery = transportationJobItineraryRepos
+	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
+
+	    if (delivery != null && !delivery.isEmpty()) {
+	        Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
+	        return lastCumulative - startDistance(jobId);
+	    }
+
+	    return 0d; 
+	}
+
+
 
 	private Boolean isTM(List<Role> roleList) {
 		return roleList.contains(Role.ROLE_ILOGISTICS_TM);

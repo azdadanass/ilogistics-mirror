@@ -58,6 +58,22 @@ public class TransportationRequestController {
 		}
 	}
 	
+	@GetMapping("/pickup/{key}/{id}/{lat}/{lng}")
+	public void pickup(@PathVariable String key,@PathVariable Integer id,@PathVariable Double lat,
+            @PathVariable Double lng) {
+		System.out.println("/mobile/tr/pickup/{key}");
+		Token token = tokenService.getBykey(key);
+		transportationRequestService.pickupMobile(id, token.getUsername(), lat, lng);
+	}
+	
+	@GetMapping("/deliver/{key}/{id}/{lat}/{lng}")
+	public void deliver(@PathVariable String key,@PathVariable Integer id,@PathVariable Double lat,
+            @PathVariable Double lng) {
+		System.out.println("/mobile/tr/deliver/{key}");
+		Token token = tokenService.getBykey(key);
+		transportationRequestService.deliverMobile(id, token.getUsername(), lat, lng);
+	}
+	
 
 	@RequestMapping(value = "/uploadphoto/{id}/{type}/{key}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String uploadTaskDetailPhoto(

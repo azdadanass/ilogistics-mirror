@@ -1,5 +1,6 @@
 package ma.azdad.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "e_general_data")
-public class UserData extends GenericModel<Integer> {
+public class UserData extends GenericModel<Integer> implements Serializable {
 
 	private String firstName;
 	private String lastName;

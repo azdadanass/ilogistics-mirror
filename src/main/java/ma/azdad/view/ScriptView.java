@@ -256,6 +256,13 @@ public class ScriptView {
 		transportationRequestService.generateQrKeyScript();
 	}
 	
+	public void generateTjQrKeyScript() {
+		if (!canExecute)
+			return;
+		log.info("generateTjQrKeyScript");
+		transportationJobService.generateQrKeyScript();
+	}
+	
 	
 
 	// GETTERS & SETTERS

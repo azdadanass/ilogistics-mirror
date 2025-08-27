@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.map.MapModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -225,8 +226,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			test = test || cacheView.getAssignedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || cacheView.getDelegatedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername());
-			test = test
-					|| (transportationRequest.getDeliveryRequest().getWarehouse() != null && cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
+			test = test || (transportationRequest.getDeliveryRequest().getWarehouse() != null
+					&& cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
 			test = test || sessionView.isTM();
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getCostcenter().getLob().getManager().getUsername());
 			if (!test)
@@ -241,7 +242,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		else if (isViewPage || isEditPage)
 			return (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 					|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager()))
-					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(transportationRequest.getStatus());
+					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)
+							.contains(transportationRequest.getStatus());
 		return false;
 	}
 
@@ -274,8 +276,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		if (transportationRequest.getReference() == null)
 			transportationRequest.generateReference();
-		
-		if(transportationRequest.getQrKey()==null)
+
+		if (StringUtils.isBlank(transportationRequest.getQrKey()))
 			transportationRequest.setQrKey(UtilsFunctions.generateQrKey());
 
 		transportationRequest = transportationRequestService.save(transportationRequest);
@@ -438,7 +440,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	}
 
 	public Boolean canAcknowledgeTransportationRequest(TransportationRequest transportationRequest) {
-		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus())
+				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public void acknowledgeTransportationRequest(TransportationRequest transportationRequest) {
@@ -499,7 +502,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelTransportationRequest() {
-		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())
+		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)
+				.contains(transportationRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 						|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername()));
 
@@ -541,7 +545,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// DELETE TRANSPORTATIONREQUEST
 	public Boolean canDeleteTransportationRequest() {
-		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus())
+				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public String deleteTransportationRequest() {
@@ -561,8 +566,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(),
-				transportationRequest);
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(),
+				sessionView.getUser(), transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();
@@ -606,7 +611,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public Long countToDeliver() {
 		return transportationRequestService.countToDeliver(sessionView.getUsername());
 	}
-	
+
 	public Long countToAcknowledge() {
 		return transportationRequestService.countToAcknowledge(sessionView.getUsername());
 	}

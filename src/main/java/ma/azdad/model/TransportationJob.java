@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import ma.azdad.service.PathService;
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 
 @Entity
 
@@ -44,6 +45,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	private Double firstLatitude;
 	private Double firstLongitude;
+	
+	private String qrKey;
 
 	// timeline
 	private Date date1; // edited
@@ -883,6 +886,24 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setFirstLongitude(Double firstLongitude) {
 		this.firstLongitude = firstLongitude;
+	}
+
+	public String getQrKey() {
+		return qrKey;
+	}
+
+	public void setQrKey(String qrKey) {
+		this.qrKey = qrKey;
+	}
+	
+	@Transient
+	public String getQrImageLink() {
+		return App.QR.getLink() + "/img/tj/" + id + "/" + qrKey;
+	}
+
+	@Transient
+	public String getQrLink() {
+		return App.QR.getLink() + "/tj/" + id + "/" + qrKey;
 	}
 
 }

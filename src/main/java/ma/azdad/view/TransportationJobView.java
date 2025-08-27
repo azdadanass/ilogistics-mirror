@@ -244,7 +244,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 9:
 					// to complete1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),
+							Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -304,6 +305,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.setDate1(new Date());
 		transportationJob.setUser1(sessionView.getUser());
 		transportationJob.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
+		if (isAddPage)
+			transportationJob.setQrKey(UtilsFunctions.generateQrKey());
 		transportationJob = transportationJobService.save(transportationJob);
 		if (isAddPage) {
 			transportationJob.generateReference();
@@ -359,13 +362,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst()
+				.orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
+				.orElse(null);
 	}
 
 	// assign
@@ -404,7 +409,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(),u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+						u.setDistance(
+								UtilsFunctions.calculateDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
 				refreshMapModel();
@@ -928,7 +934,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();

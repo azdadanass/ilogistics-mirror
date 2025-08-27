@@ -145,5 +145,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1  and date5 is not null and date5 < maxStartDate")
 	Long countStartedWithinDeadLineByDriver(String driverUsername);
+	
+	
+	@Query("from TransportationJob where qrKey is null")
+	List<TransportationJob> findWithoutQrKey();
 
 }

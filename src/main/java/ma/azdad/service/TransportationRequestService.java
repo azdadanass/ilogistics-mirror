@@ -387,6 +387,14 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		}
 		return null;
 	}
+	
+	
+	public void generateQrKeyScript() {
+		repos.findWithoutQrKey().forEach(i->{
+			i.setQrKey(UtilsFunctions.generateQrKey());
+			save(i);
+		});
+	}
 
 	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {
@@ -625,4 +633,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		}
 		return mbList;
 	}
+	
+	
+	
 }

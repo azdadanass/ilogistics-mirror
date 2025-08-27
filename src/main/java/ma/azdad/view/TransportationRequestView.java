@@ -43,6 +43,7 @@ import ma.azdad.service.TransportationRequestHistoryService;
 import ma.azdad.service.TransportationRequestService;
 import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -273,6 +274,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		if (transportationRequest.getReference() == null)
 			transportationRequest.generateReference();
+		
+		if(transportationRequest.getQrKey()==null)
+			transportationRequest.setQrKey(UtilsFunctions.generateQrKey());
 
 		transportationRequest = transportationRequestService.save(transportationRequest);
 

@@ -780,7 +780,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			sum += tr.getCost();
 
 		if (UtilsFunctions.compareDoubles(transportationJob.getRealCost(), sum, 2) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR COsts should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
+			return FacesContextMessages.ErrorMessages("Total TR Costs should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
 
 		return true;
 	}

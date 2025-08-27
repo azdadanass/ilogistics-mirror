@@ -23,6 +23,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.ObjectUtils;
 
 import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 
 @Entity
 
@@ -43,6 +44,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	
 	private Date pickupDate;
 	private Date deliveryDate;
+	
+	private String qrKey;
 	
 	
 	
@@ -1183,6 +1186,25 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Override
 	public String toString() {
 		return reference;
+	}
+	
+	@Column(nullable = false)
+	public String getQrKey() {
+		return qrKey;
+	}
+
+	public void setQrKey(String qrKey) {
+		this.qrKey = qrKey;
+	}
+	
+	@Transient
+	public String getQrImageLink() {
+		return App.QR.getLink() + "/img/tr/" + id + "/" + qrKey;
+	}
+
+	@Transient
+	public String getQrLink() {
+		return App.QR.getLink() + "/tr/" + id + "/" + qrKey;
 	}
 
 }

@@ -22,6 +22,7 @@ import ma.azdad.service.PartNumberService;
 import ma.azdad.service.PoService;
 import ma.azdad.service.ProjectCrossService;
 import ma.azdad.service.TransportationJobService;
+import ma.azdad.service.TransportationRequestService;
 import ma.azdad.service.UserService;
 
 @ManagedBean
@@ -66,6 +67,9 @@ public class ScriptView {
 	
 	@Autowired
 	TransportationJobService transportationJobService;
+	
+	@Autowired
+	TransportationRequestService transportationRequestService;
 	
 	@Autowired
 	UserService userService;
@@ -239,9 +243,20 @@ public class ScriptView {
 	}
 	
 	public void updateReactivityScript() {
+		if (!canExecute)
+			return;
 		log.info("updateReactivityScript");
 		userService.updateReactivityScript();
 	}
+	
+	public void generateTrQrKeyScript() {
+		if (!canExecute)
+			return;
+		log.info("generateTrQrKeyScript");
+		transportationRequestService.generateQrKeyScript();
+	}
+	
+	
 
 	// GETTERS & SETTERS
 	public Integer getInboundDeliveryRequestId() {

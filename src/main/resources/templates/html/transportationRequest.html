@@ -34,11 +34,11 @@
 		</tr>
 		<tr>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Origin</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${transportationRequest.originName}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isInbound or transportationRequest.isXbound}" th:text="${transportationRequest.originName}"></td>
 			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isOutbound}" th:text="${transportationRequest.warehouseName}"></td>
 			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
 			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination</td>
-			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isOutbound or transportationRequest.isXbound}"
 				th:text="${transportationRequest.destinationName}"></td>
 				<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isInbound}" th:text="${transportationRequest.warehouseName}"></td>
 		</tr>

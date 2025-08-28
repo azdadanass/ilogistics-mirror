@@ -42,12 +42,13 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.DriverLocationService;
+import ma.azdad.service.EmailService;
 import ma.azdad.service.MapService;
-import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PathService;
 import ma.azdad.service.SmsService;
 import ma.azdad.service.StopService;
@@ -60,7 +61,9 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.Mail;
 import ma.azdad.utils.Public;
+import ma.azdad.utils.TemplateType;
 
 @ManagedBean
 @Component
@@ -109,8 +112,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	@Autowired
 	protected UserService userService;
 
+//	@Autowired
+//	protected OldEmailService emailService;
+
 	@Autowired
-	protected OldEmailService emailService;
+	protected EmailService emailService;
 
 	@Autowired
 	protected SmsService smsService;
@@ -150,7 +156,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private TimelineModel timeline1;
 	private TimelineModel timeline2;
-	
+
 	private String downloadPath;
 
 	@Override
@@ -374,7 +380,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
 				.orElse(null);
 	}
-	
+
 	public void generateStamp() {
 		downloadPath = service.generateStamp(transportationJob);
 	}
@@ -848,7 +854,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationRequestHistoryService.pickedupNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
-		emailService.transportationRequestNotification(transportationRequest);
+//		emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 
 		updateCalculableFields();
@@ -893,7 +899,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationRequestHistoryService.delivredNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
-		emailService.transportationRequestNotification(transportationRequest);
+//		emailService.transportationRequestNotification(transportationRequest);
 		smsService.sendSms(transportationRequest);
 
 		updateCalculableFields();
@@ -987,6 +993,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 		return true;
 	}
+
+	
 
 	// counts
 
@@ -1167,7 +1175,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setTimeline2(TimelineModel timeline2) {
 		this.timeline2 = timeline2;
 	}
-	
+
 	public String getDownloadPath() {
 		return downloadPath;
 	}

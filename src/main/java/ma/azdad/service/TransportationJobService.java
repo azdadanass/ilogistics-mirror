@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Vehicule;
-import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
@@ -61,6 +59,8 @@ import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.App;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.Mail;
+import ma.azdad.utils.TemplateType;
 
 @Component
 public class TransportationJobService extends GenericService<Integer, TransportationJob, TransportationJobRepos> {
@@ -110,6 +110,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	VehicleService vehicleService;
+	
+	@Autowired
+	EmailService emailService;
 
 	TransportationJobService(UserService userService, TransportationRequestRepos transportationRequestRepos) {
 		this.userService = userService;
@@ -428,6 +431,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.calculateMaxAcceptTime();
 		transportationJob.calculateMaxStartTime();
 		save(transportationJob);
+		
+		sendNotification(transportationJob);
 	}
 
 	public Boolean canAccept(TransportationJob transportationJob, String connectedUserUsername) {
@@ -442,6 +447,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setUser4(connectedUser);
 		transportationJob.addHistory(new TransportationJobHistory("Accepted", connectedUser));
 		save(transportationJob);
+		sendNotification(transportationJob);
 	}
 
 	public Boolean canDecline(TransportationJob transportationJob, String connectedUserUsername) {
@@ -470,6 +476,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setUser5(connectedUser);
 		transportationJob.addHistory(new TransportationJobHistory("Started", connectedUser));
 		save(transportationJob);
+		sendNotification(transportationJob);
 	}
 
 	private Boolean isTM(List<Role> roleList) {
@@ -610,6 +617,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 		return downloadPath;
+	}
+
+	// notification
+	public void sendNotification(TransportationJob transportationJob) {
+		User toUser = transportationJob.getUser1();
+		String subject = transportationJob.getReference() + " has been " + transportationJob.getStatus().getValue();
+		Mail mail = new Mail(toUser.getEmail(), subject, "transportationJob.html", TemplateType.HTML);
+		mail.addParameter("transportationJob", transportationJob);
+		mail.addParameter("toUser", toUser);
+		emailService.generateAndSend(mail);
 	}
 
 	// mobile

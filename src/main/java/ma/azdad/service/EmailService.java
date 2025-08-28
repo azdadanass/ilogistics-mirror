@@ -72,13 +72,20 @@ public class EmailService {
 			sendDeliveryRequestDeliveryOverdueNotification(deliveryRequestService.findOne(id));
 	}
 
+	@Async
+	public void generateAndSend(Mail mail) {
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
+
 	public void sendDeliveryRequestDeliveryOverdueNotification(DeliveryRequest deliveryRequest) {
 		User toUser = deliveryRequest.getRequester();
 		String subject = deliveryRequest.getType().getValue() + " " + deliveryRequest.getReference() + " Overdue";
 		Mail mail = new Mail(toUser.getEmail(), subject, "deliveryRequest.html", TemplateType.HTML);
 		mail.addCc(deliveryRequest.getProject().getManagerEmail());
 		deliveryRequest.getWarehouse().getManagerList().forEach(i -> mail.addCc(i.getUser().getEmail()));
-		deliveryRequest.getProject().getManagerList().stream().filter(i -> ProjectManagerType.HARDWARE_MANAGER.equals(i.getType())).forEach(i -> mail.addCc(i.getUser().getEmail()));
+		deliveryRequest.getProject().getManagerList().stream().filter(i -> ProjectManagerType.HARDWARE_MANAGER.equals(i.getType()))
+				.forEach(i -> mail.addCc(i.getUser().getEmail()));
 		mail.addParameter("deliveryRequest", deliveryRequest);
 		mail.addParameter("toUser", toUser);
 		mail.generateMessageFromTemplate(thymeLeafService);
@@ -92,9 +99,9 @@ public class EmailService {
 	}
 
 	public void sendDeliveryRequestPendingAcknowledgementNotification(DeliveryRequest deliveryRequest) {
-		if(dayoffService.isDayoff(new Date()))
+		if (dayoffService.isDayoff(new Date()))
 			return;
-		
+
 		Date deliveryDate = deliveryRequest.getDate4();
 		Date currentDate = UtilsFunctions.getCurrentDate();
 		Long totalDaysoff = dayoffService.countBetweenDates(deliveryDate, currentDate);
@@ -106,7 +113,8 @@ public class EmailService {
 		mail.addCc(deliveryRequest.getToUserEmail());
 		mail.addCc(deliveryRequest.getProject().getManagerEmail());
 		deliveryRequest.getWarehouse().getManagerList().forEach(i -> mail.addCc(i.getUser().getEmail()));
-		deliveryRequest.getProject().getManagerList().stream().filter(i -> ProjectManagerType.HARDWARE_MANAGER.equals(i.getType())).forEach(i -> mail.addCc(i.getUser().getEmail()));
+		deliveryRequest.getProject().getManagerList().stream().filter(i -> ProjectManagerType.HARDWARE_MANAGER.equals(i.getType()))
+				.forEach(i -> mail.addCc(i.getUser().getEmail()));
 		mail.addParameter("deliveryRequest", deliveryRequest);
 		mail.addParameter("toUser", toUser);
 		mail.generateMessageFromTemplate(thymeLeafService);

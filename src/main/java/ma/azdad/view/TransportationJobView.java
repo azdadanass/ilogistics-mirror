@@ -854,6 +854,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationRequestHistoryService.pickedupNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
+		transportationRequestService.sendNotification(transportationRequest);
 //		emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 
@@ -899,6 +900,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationRequestHistoryService.delivredNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
+		transportationRequestService.sendNotification(transportationRequest);
 //		emailService.transportationRequestNotification(transportationRequest);
 		smsService.sendSms(transportationRequest);
 

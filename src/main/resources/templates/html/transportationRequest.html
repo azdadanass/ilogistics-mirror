@@ -1,0 +1,65 @@
+<html>
+<style type="text/css">
+.header {
+	line-height: 28px;
+	margin-bottom: 16px;
+	margin-top: 18px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #CCC;
+	font-size: 17px;
+}
+</style>
+<body style="padding-top: 40px; background-color: #fff; font-family: 'Arial'; font-size: 12px;">
+	<div style='text-align: center; margin: 20px 0px 10px 0px'>
+		<a th:href="${transportationRequest.qrLink}" style='text-align: right; margin: 20px 0px 10px 0px;'>
+			<img height='100' width='100' style='width: 100px; height: 100px' th:src="${transportationRequest.qrImageLink}" />
+		</a>
+	</div>
+	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
+		Dear
+		<span th:text="${toUser.fullName}"></span>
+		, <br /> Kindly be informed that the TR below has been
+		<span th:text="${transportationRequest.status.value}" th:style="'color:'+${transportationRequest.status.colorCode}"></span>
+		<br />
+	</div>
+	<br />
+	<table style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Reference</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+				th:text="${transportationRequest.reference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Status</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${transportationRequest.status.value}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Origin</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${transportationRequest.originName}"></td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isOutbound}" th:text="${transportationRequest.warehouseName}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Destination</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+				th:text="${transportationRequest.destinationName}"></td>
+				<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:if="${transportationRequest.isInbound}" th:text="${transportationRequest.warehouseName}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Priority</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+				th:text="${transportationRequest.priority.value}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Important</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+				th:text="${transportationRequest.important ? 'Yes' : 'No'}"></td>
+		</tr>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>TJ</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;'
+				th:text="${transportationRequest.transportationJob.reference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>TJ Status</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${transportationRequest.transportationJob.status.value}"></td>
+		</tr>
+	</table>
+	<br />
+</body>
+</html>

@@ -350,6 +350,21 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Origin Site" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputLink value="viewSite.xhtml" target="blank"
+												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
+												<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
+												<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
+											</h:outputLink>
+											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="blue"
+												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Priority" />
 										</div>
 										<div class="profile-info-value">
@@ -367,21 +382,6 @@
 												<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.reference}" styleClass="bolder green" />
 												<f:param name="id" value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
 											</h:outputLink>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Origin Site" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputLink value="viewSite.xhtml" target="blank"
-												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
-												<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
-											</h:outputLink>
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="blue"
-												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}" />
 											&nbsp;
 										</div>
 									</div>
@@ -411,16 +411,6 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Important" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.important?'Yes':'No'}"
-												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.important?'green':'grey'}" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
 											<h:outputText value="Destination Site" />
 										</div>
 										<div class="profile-info-value">
@@ -431,6 +421,16 @@
 											</h:outputLink>
 											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="purple"
 												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Important" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.important?'Yes':'No'}"
+												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.important?'green':'grey'}" />
 											&nbsp;
 										</div>
 									</div>

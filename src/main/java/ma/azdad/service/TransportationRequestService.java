@@ -38,8 +38,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
-import ma.azdad.model.TransportationJob;
-import ma.azdad.model.TransportationJobItinerary;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
@@ -53,7 +51,9 @@ import ma.azdad.repos.TransportationRequestFileRepos;
 import ma.azdad.repos.TransportationRequestImageRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.utils.App;
+import ma.azdad.utils.Mail;
 import ma.azdad.utils.Public;
+import ma.azdad.utils.TemplateType;
 
 @Component
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
@@ -92,6 +92,9 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	FileReaderService fileReaderService;
+	
+	@Autowired
+	EmailService emailService;
 
 	@Override
 	public TransportationRequest save(TransportationRequest a) {
@@ -503,6 +506,17 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 		return downloadPath;
 	}
+	
+	// notification
+	public void sendNotification(TransportationRequest transportationRequest) {
+		User toUser = transportationRequest.getTransportationJob().getUser1();
+		String subject = transportationRequest.getReference() + " has been " + transportationRequest.getStatus().getValue();
+		Mail mail = new Mail(toUser.getEmail(), subject, "transportationRequest.html", TemplateType.HTML);
+		mail.addParameter("transportationRequest", transportationRequest);
+		mail.addParameter("toUser", toUser);
+		emailService.generateAndSend(mail);
+	}
+	
 	
 	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {

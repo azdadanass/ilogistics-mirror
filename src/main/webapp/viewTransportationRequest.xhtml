@@ -108,6 +108,11 @@
 							<i class="ace-icon fa fa-qrcode bigger-230"></i>
 							<h:outputText value="Label" />
 						</p:commandLink>
+						<h:outputLink value="addEditIssue.xhtml" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" title="Add Issue" rendered="#{issueView.canSave()}">
+							<i class="ace-icon fa fa-plus bigger-230"></i>
+							<h:outputText value="Add" styleClass="smaller-80" />
+							<f:param name="transportationRequestId" value="#{transportationRequestView.transportationRequest.id}" />
+						</h:outputLink>
 					</div>
 					<div class="col-sm-5 hidden-xs infobox-container">
 						<div class="row">

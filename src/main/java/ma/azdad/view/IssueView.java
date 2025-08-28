@@ -38,6 +38,7 @@ import ma.azdad.service.IssueService;
 import ma.azdad.service.ProjectAssignmentService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SupplierService;
+import ma.azdad.service.TransportationRequestService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.FacesContextMessages;
@@ -58,6 +59,9 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	@Autowired
 	private DeliveryRequestService deliveryRequestService;
+
+	@Autowired
+	private TransportationRequestView transportationRequestView;
 
 	@Autowired
 	private CompanyService companyService;
@@ -89,10 +93,14 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	@Autowired
 	private ProjectAssignmentService projectAssignmentService;
 
+	@Autowired
+	private TransportationRequestService transportationRequestService;
+
 	private Issue issue = new Issue();
 	private IssueFile issueFile;
 
 	private Integer deliveryRequestId;
+	private Integer transportationRequestId;
 	private Integer projectId;
 
 	private int step = 1;
@@ -104,7 +112,10 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		if (isListPage)
 			refreshList();
 		else if (isAddPage) {
-			issue = new Issue(deliveryRequestService.findOne(deliveryRequestId));
+			if (deliveryRequestId != null)
+				issue = new Issue(deliveryRequestService.findOne(deliveryRequestId));
+			else if (transportationRequestId != null)
+				issue = new Issue(transportationRequestService.findOne(transportationRequestId));
 			comment = new IssueComment("Creation Comment", sessionView.getUser());
 			issue.addComment(comment);
 		} else if (isEditPage) {
@@ -129,6 +140,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	protected void initParameters() {
 		super.initParameters();
 		deliveryRequestId = UtilsFunctions.getIntegerParameter("deliveryRequestId");
+		transportationRequestId = UtilsFunctions.getIntegerParameter("transportationRequestId");
 	}
 
 	@Override
@@ -183,13 +195,20 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 	// save
 	public Boolean canSave() {
-		if ("/viewDeliveryRequest.xhtml".equals(currentPath))
+		if (isPage("viewDeliveryRequest"))
 			return sessionView.isTheConnectedUser(deliveryRequestView.getDeliveryRequest().getRequester(), deliveryRequestView.getDeliveryRequest().getProject().getManager()) //
 					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(deliveryRequestView.getDeliveryRequest().getProject().getId()));
-		else if (isAddPage)
-			return sessionView.isTheConnectedUser(issue.getDeliveryRequest().getRequester(), issue.getDeliveryRequest().getProject().getManager()) //
-					|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(issue.getDeliveryRequest().getProject().getId()));
-		else if (isViewPage || isEditPage)
+		else if (isPage("viewTransportationRequest"))
+			return sessionView.isTheConnectedUser(transportationRequestView.getTransportationRequest().getDeliveryRequest().getRequester()) //
+					|| sessionView.isTheConnectedUser(transportationRequestView.getTransportationRequest().getDriver());
+		else if (isAddPage) {
+			if (deliveryRequestId != null)
+				return sessionView.isTheConnectedUser(issue.getDeliveryRequest().getRequester(), issue.getDeliveryRequest().getProject().getManager()) //
+						|| (sessionView.getIsExternalPM() && cacheView.getAssignedProjectList().contains(issue.getDeliveryRequest().getProject().getId()));
+			else if (transportationRequestId != null)
+				return sessionView.isTheConnectedUser(issue.getTransportationRequest().getDeliveryRequest().getRequester()) //
+						|| sessionView.isTheConnectedUser(issue.getTransportationRequest().getDriver());
+		} else if (isViewPage || isEditPage)
 			return IssueStatus.RAISED.equals(issue.getStatus()) && issue.getUser1() != null && sessionView.isTheConnectedUser(issue.getUser1());
 		return false;
 	}
@@ -229,7 +248,7 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 			if (isAddPage)
 				initToNotifiyList();
-				
+
 			step++;
 			break;
 		case 3:
@@ -242,14 +261,17 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 	}
 
 	private void initToNotifiyList() {
-		addToNotify(issue.getDeliveryRequest().getRequester());
-		addToNotify(issue.getDeliveryRequest().getProject().getManager());
-		issue.getDeliveryRequest().getProject().getManagerList().stream()
-				.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType())).forEach(i -> addToNotify(i.getUser()));
-		issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> addToNotify(i.getUser()));
-		delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(i));
-		projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+		if (deliveryRequestId != null) {
+			addToNotify(issue.getDeliveryRequest().getRequester());
+			addToNotify(issue.getDeliveryRequest().getProject().getManager());
+			issue.getDeliveryRequest().getProject().getManagerList().stream()
+					.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
+					.forEach(i -> addToNotify(i.getUser()));
+			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> addToNotify(i.getUser()));
+			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> addToNotify(i));
+			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> addToNotify(i));
 
+		}
 	}
 
 	public void savePreviousStep() {
@@ -270,7 +292,8 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 
 		issue = issueService.save(issue);
 
-		deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
+		if (deliveryRequestId != null)
+			deliveryRequestService.updateCountIssues(issue.getDeliveryRequest().getId());
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + issue.getId());
 	}
@@ -305,14 +328,32 @@ public class IssueView extends GenericView<Integer, Issue, IssueRepos, IssueServ
 		Set<User> result = new HashSet<User>();
 		switch (companyType) {
 		case COMPANY:
-			result.add(issue.getDeliveryRequest().getRequester());
-			result.add(issue.getDeliveryRequest().getProject().getManager());
-			issue.getDeliveryRequest().getProject().getManagerList().stream()
-					.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
-					.forEach(i -> result.add(i.getUser()));
-			issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
-			delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
-			projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
+			switch (issue.getParentType()) {
+			case DN:
+				result.add(issue.getDeliveryRequest().getRequester());
+				result.add(issue.getDeliveryRequest().getProject().getManager());
+				issue.getDeliveryRequest().getProject().getManagerList().stream()
+						.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
+						.forEach(i -> result.add(i.getUser()));
+				issue.getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
+				delegationService.findDelegateUserListByProject(issue.getProjectId()).forEach(i -> result.add(i));
+				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getProjectId()).forEach(i -> result.add(i));
+				break;
+			case TR:
+				result.add(issue.getTransportationRequest().getDeliveryRequest().getRequester());
+				result.add(issue.getTransportationRequest().getDeliveryRequest().getProject().getManager());
+				issue.getTransportationRequest().getDeliveryRequest().getProject().getManagerList().stream()
+						.filter(i -> Arrays.asList(ProjectManagerType.HARDWARE_MANAGER, ProjectManagerType.QUALITY_MANAGER).contains(i.getType()))
+						.forEach(i -> result.add(i.getUser()));
+				if (issue.getTransportationRequest().getDeliveryRequest().getWarehouse() != null)
+					issue.getTransportationRequest().getDeliveryRequest().getWarehouse().getManagerList().stream().forEach(i -> result.add(i.getUser()));
+				delegationService.findDelegateUserListByProject(issue.getTransportationRequest().getDeliveryRequest().getProjectId()).forEach(i -> result.add(i));
+				projectAssignmentService.findCompanyUserListAssignedToProject(issue.getTransportationRequest().getDeliveryRequest().getProjectId()).forEach(i -> result.add(i));
+				break;
+			default:
+				break;
+			}
+
 			break;
 		case CUSTOMER:
 			userService.findLightByCustomerAndHasRole(customerId, Role.ROLE_ILOGISTICS_PM);

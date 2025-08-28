@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.extensions.component.switchcase.Switch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -220,7 +221,18 @@ public class IssueCategoryView extends GenericView<Integer, IssueCategory, Issue
 
 	@Cacheable("issueCategoryView.findByProjectAndParenType")
 	public List<IssueCategory> findByProjectAndParenType(Issue issue) {
-		return service.findByProjectAndParenType(issue.getDeliveryRequest().getProject().getId(), IssueParentType.DN);
+		Integer projectId = null;
+		switch (issue.getParentType()) {
+		case DN:
+			projectId = issue.getDeliveryRequest().getProject().getId();
+			break;
+		case TR:
+			projectId = issue.getTransportationRequest().getDeliveryRequest().getProject().getId();
+			break;
+		default:
+			break;
+		}
+		return service.findByProjectAndParenType(projectId, issue.getParentType());
 	}
 
 	// getters & setters

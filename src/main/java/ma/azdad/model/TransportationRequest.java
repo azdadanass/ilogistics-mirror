@@ -22,7 +22,6 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.App;
 
 @Entity
@@ -92,6 +91,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private User user7;
 	private User user8;
 	private User user9;
+	
+	
 
 	// TM
 	private Integer vehicleId;
@@ -111,6 +112,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	private List<TransportationRequestFile> fileList = new ArrayList<>();
 	private List<TransportationRequestHistory> historyList = new ArrayList<>();
+	private List<Issue> issueList = new ArrayList<>();
 
 	public void clearTimeLine() {
 		rejectionReason = null;
@@ -1211,6 +1213,15 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Transient
 	public String getQrLink() {
 		return App.QR.getLink() + "/tr/" + id + "/" + qrKey;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
+	public List<Issue> getIssueList() {
+		return issueList;
+	}
+
+	public void setIssueList(List<Issue> issueList) {
+		this.issueList = issueList;
 	}
 
 }

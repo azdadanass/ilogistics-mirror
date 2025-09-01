@@ -80,7 +80,8 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{issueView.issue.deliveryRequest.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" />
+											<p:inputText value="#{issueView.issue.deliveryRequest.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{issueView.issue.isDnIssue}"/>
+											<p:inputText value="#{issueView.issue.transportationRequest.reference}" styleClass="col-xs-12 col-sm-6" readonly="true" rendered="#{issueView.issue.isTrIssue}"/>
 											<br />
 										</div>
 									</div>
@@ -94,7 +95,8 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{issueView.issue.deliveryRequest.status.value}" styleClass="col-xs-12 col-sm-6 #{issueView.issue.deliveryRequest.status.color}" readonly="true" />
+											<p:inputText value="#{issueView.issue.deliveryRequest.status.value}" styleClass="col-xs-12 col-sm-6 #{issueView.issue.deliveryRequest.status.color}" readonly="true" rendered="#{issueView.issue.isDnIssue}"/>
+											<p:inputText value="#{issueView.issue.transportationRequest.status.value}" styleClass="col-xs-12 col-sm-6 #{issueView.issue.transportationRequest.status.color}" readonly="true" rendered="#{issueView.issue.isTrIssue}"/>
 											<br />
 										</div>
 									</div>
@@ -108,7 +110,8 @@
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{issueView.issue.deliveryRequest.project.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" />
+											<p:inputText value="#{issueView.issue.deliveryRequest.project.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isDnIssue}"/>
+											<p:inputText value="#{issueView.issue.transportationRequest.deliveryRequest.project.name}" styleClass="col-xs-12 col-sm-6 " readonly="true" rendered="#{issueView.issue.isTrIssue}"/>
 											<br />
 										</div>
 									</div>

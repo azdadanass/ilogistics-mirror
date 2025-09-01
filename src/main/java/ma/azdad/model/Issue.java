@@ -81,6 +81,7 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	private User user7;
 
 	private DeliveryRequest deliveryRequest;
+	private TransportationRequest transportationRequest;
 
 	private List<IssueFile> fileList = new ArrayList<>();
 	private List<IssueHistory> historyList = new ArrayList<>();
@@ -100,7 +101,8 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	// c1
 	public Issue(Integer id, IssueStatus status, Severity severity, IssueCategory category, IssueType type, Boolean blocking, //
 			CompanyType ownershipType, Integer companyId, String companyName, Integer customerId, String customerName, Integer supplierId, String supplierName, //
-			Integer deliveryRequestId, String deliveryRequestReference,DeliveryRequestType deliveryRequestType,DeliveryRequestStatus deliveryRequestStatus, Integer projectId, String projectName) {
+			Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType, DeliveryRequestStatus deliveryRequestStatus, Integer projectId,
+			String projectName) {
 		super(id);
 		this.status = status;
 		this.severity = severity;
@@ -126,6 +128,22 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 		super();
 		this.parentType = IssueParentType.DN;
 		this.deliveryRequest = deliveryRequest;
+	}
+
+	public Issue(TransportationRequest transportationRequest) {
+		super();
+		this.parentType = IssueParentType.TR;
+		this.transportationRequest = transportationRequest;
+	}
+
+	@Transient
+	public Boolean getIsDnIssue() {
+		return IssueParentType.DN.equals(parentType);
+	}
+
+	@Transient
+	public Boolean getIsTrIssue() {
+		return IssueParentType.TR.equals(parentType);
 	}
 
 	@Override
@@ -181,10 +199,10 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 			commentGroupList.add(new CommentGroup<>(UtilsFunctions.getDate(dateStr), map.get(dateStr)));
 		Collections.sort(commentGroupList);
 	}
-	
+
 	@Transient
 	public String getReference() {
-		return "IS"+ String.format("%06d", id);
+		return "IS" + String.format("%06d", id);
 	}
 
 	@Transient
@@ -201,28 +219,28 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 			return null;
 		}
 	}
-	
+
 	@Transient
-	public DeliveryRequestType getDeliveryRequestType(){
-		return deliveryRequest!=null?deliveryRequest.getType():null;
+	public DeliveryRequestType getDeliveryRequestType() {
+		return deliveryRequest != null ? deliveryRequest.getType() : null;
 	}
 
 	@Transient
-	public void setDeliveryRequestType(DeliveryRequestType deliveryRequestType){
-		if(deliveryRequest==null)
-			deliveryRequest=new DeliveryRequest();
+	public void setDeliveryRequestType(DeliveryRequestType deliveryRequestType) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setType(deliveryRequestType);
 	}
-	
+
 	@Transient
-	public DeliveryRequestStatus getDeliveryRequestStatus(){
-		return deliveryRequest!=null?deliveryRequest.getStatus():null;
+	public DeliveryRequestStatus getDeliveryRequestStatus() {
+		return deliveryRequest != null ? deliveryRequest.getStatus() : null;
 	}
 
 	@Transient
-	public void setDeliveryRequestStatus(DeliveryRequestStatus deliveryRequestStatus){
-		if(deliveryRequest==null)
-			deliveryRequest=new DeliveryRequest();
+	public void setDeliveryRequestStatus(DeliveryRequestStatus deliveryRequestStatus) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setStatus(deliveryRequestStatus);
 	}
 
@@ -269,7 +287,14 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public Project getProject() {
-		return deliveryRequest == null ? null : deliveryRequest.getProject();
+		switch (parentType) {
+		case DN:
+			return deliveryRequest == null ? null : deliveryRequest.getProject();
+		case TR:
+			return transportationRequest == null ? null : transportationRequest.getDeliveryRequest().getProject();
+		default:
+			return null;
+		}
 	}
 
 	@Transient
@@ -873,8 +898,7 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	public void setAssignatorCompanyType(CompanyType assignatorCompanyType) {
 		this.assignatorCompanyType = assignatorCompanyType;
 	}
-	
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	public Customer getAssignatorCustomer() {
 		return assignatorCustomer;
@@ -892,7 +916,7 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 	public void setAssignatorSupplier(Supplier assignatorSupplier) {
 		this.assignatorSupplier = assignatorSupplier;
 	}
-	
+
 	@Transient
 	public Integer getAssignatorCustomerId() {
 		return assignatorCustomer != null ? assignatorCustomer.getId() : null;
@@ -1010,12 +1034,45 @@ public class Issue extends GenericModel<Integer> implements Serializable {
 		this.deliveryRequest = deliveryRequest;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	public TransportationRequest getTransportationRequest() {
+		return transportationRequest;
+	}
+
+	public void setTransportationRequest(TransportationRequest transportationRequest) {
+		this.transportationRequest = transportationRequest;
+	}
+
 	public Integer getCountFiles() {
 		return countFiles;
 	}
 
 	public void setCountFiles(Integer countFiles) {
 		this.countFiles = countFiles;
+	}
+
+	@Transient
+	public String getTransportationRequestReference() {
+		return transportationRequest != null ? transportationRequest.getReference() : null;
+	}
+
+	@Transient
+	public void setTransportationRequestReference(String transportationRequestReference) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
+		transportationRequest.setReference(transportationRequestReference);
+	}
+
+	@Transient
+	public Integer getTransportationRequestId() {
+		return transportationRequest != null ? transportationRequest.getId() : null;
+	}
+
+	@Transient
+	public void setTransportationRequestId(Integer transportationRequestId) {
+		if (transportationRequest == null || !transportationRequestId.equals(transportationRequest.getId()))
+			transportationRequest = new TransportationRequest();
+		transportationRequest.setId(transportationRequestId);
 	}
 
 }

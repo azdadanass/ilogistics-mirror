@@ -281,12 +281,17 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Delivery Request" />
+											<h:outputText value="#{issueView.issue.parentType.value}" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
+											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank" rendered="#{issueView.issue.isDnIssue}">
 												<h:outputText value="#{issueView.issue.deliveryRequest.reference}" styleClass="bolder #{issueView.issue.deliveryRequest.type.color}" />
 												<f:param name="id" value="#{issueView.issue.deliveryRequest.id}" />
+											</h:outputLink>
+											
+												<h:outputLink value="viewTransportationRequest.xhtml" target="blank" rendered="#{issueView.issue.isTrIssue}">
+												<h:outputText value="#{issueView.issue.transportationRequest.reference}" styleClass="bolder #{issueView.issue.transportationRequest.deliveryRequest.type.color}" />
+												<f:param name="id" value="#{issueView.issue.transportationRequest.id}" />
 											</h:outputLink>
 											&nbsp;
 										</div>
@@ -342,10 +347,11 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="DN Status" />
+											<h:outputText value="#{issueView.issue.parentType.value} Status" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{issueView.issue.deliveryRequest.status.value}" styleClass="#{issueView.issue.deliveryRequest.status.color}" />
+											<h:outputText value="#{issueView.issue.deliveryRequest.status.value}" styleClass="#{issueView.issue.deliveryRequest.status.color}" rendered="#{issueView.issue.isDnIssue}"/>
+											<h:outputText value="#{issueView.issue.transportationRequest.status.value}" styleClass="#{issueView.issue.transportationRequest.status.color}" rendered="#{issueView.issue.isTrIssue}"/>
 											&nbsp;
 										</div>
 									</div>

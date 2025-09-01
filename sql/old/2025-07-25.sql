@@ -28,3 +28,7 @@ update transportation_job set status = 'STARTED' where status  = 'NOT_STARTED';
 
 update transportation_job tj set date7=(select max(tr.delivery_date) from transportation_request tr where tr.transportation_job_id = tj.id and tr.delivery_date is not null) ,user7_username  = driver_username  where status=  'COMPLETED';
 
+
+update transportation_job tj set date6 = date7 where date6  is null and date7 is not null;
+update transportation_job tj set user6_username  = user7_username  where user6_username  is null and user7_username  is not null;
+

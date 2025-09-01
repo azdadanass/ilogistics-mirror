@@ -42,12 +42,13 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.DriverLocationService;
+import ma.azdad.service.EmailService;
 import ma.azdad.service.MapService;
-import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PathService;
 import ma.azdad.service.RouteAppService;
 import ma.azdad.service.SmsService;
@@ -61,7 +62,9 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.Mail;
 import ma.azdad.utils.Public;
+import ma.azdad.utils.TemplateType;
 
 @ManagedBean
 @Component
@@ -114,8 +117,11 @@ public class TransportationJobView
 	@Autowired
 	protected UserService userService;
 
+//	@Autowired
+//	protected OldEmailService emailService;
+
 	@Autowired
-	protected OldEmailService emailService;
+	protected EmailService emailService;
 
 	@Autowired
 	protected SmsService smsService;
@@ -166,6 +172,8 @@ public class TransportationJobView
 
 	private TimelineModel timeline1;
 	private TimelineModel timeline2;
+
+	private String downloadPath;
 
 	@Override
 	@PostConstruct
@@ -357,8 +365,9 @@ public class TransportationJobView
 //		}
 		transportationJob.setDate1(new Date());
 		transportationJob.setUser1(sessionView.getUser());
-		transportationJob
-				.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
+		transportationJob.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
+		if (isAddPage)
+			transportationJob.setQrKey(UtilsFunctions.generateQrKey());
 		transportationJob = transportationJobService.save(transportationJob);
 		if (isAddPage) {
 			transportationJob.generateReference();
@@ -414,15 +423,19 @@ public class TransportationJobView
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername())
-				.filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst()
+				.orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername())
-				.filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
+				.orElse(null);
+	}
+
+	public void generateStamp() {
+		downloadPath = service.generateStamp(transportationJob);
 	}
 
 	// assign
@@ -462,8 +475,8 @@ public class TransportationJobView
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(), u.getLongitude(),
-								transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+						u.setDistance(
+								UtilsFunctions.calculateDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
 				refreshMapModel();
@@ -854,8 +867,7 @@ public class TransportationJobView
 			sum += tr.getCost();
 
 		if (UtilsFunctions.compareDoubles(transportationJob.getRealCost(), sum, 2) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR COsts should be equal to Real Cost : "
-					+ UtilsFunctions.formatDouble(transportationJob.getRealCost()));
+			return FacesContextMessages.ErrorMessages("Total TR Costs should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
 
 		return true;
 	}
@@ -914,7 +926,8 @@ public class TransportationJobView
 		transportationRequestHistoryService.pickedupNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
-		emailService.transportationRequestNotification(transportationRequest);
+		transportationRequestService.sendNotification(transportationRequest);
+//		emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 
 		updateCalculableFields();
@@ -961,7 +974,8 @@ public class TransportationJobView
 		transportationRequestHistoryService.delivredNew(transportationRequest, sessionView.getUser());
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
-		emailService.transportationRequestNotification(transportationRequest);
+		transportationRequestService.sendNotification(transportationRequest);
+//		emailService.transportationRequestNotification(transportationRequest);
 		smsService.sendSms(transportationRequest);
 
 		updateCalculableFields();
@@ -1008,8 +1022,8 @@ public class TransportationJobView
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType,
-				event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();
@@ -1056,6 +1070,8 @@ public class TransportationJobView
 
 		return true;
 	}
+
+	
 
 	// counts
 
@@ -1235,6 +1251,14 @@ public class TransportationJobView
 
 	public void setTimeline2(TimelineModel timeline2) {
 		this.timeline2 = timeline2;
+	}
+
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
 	}
 
 }

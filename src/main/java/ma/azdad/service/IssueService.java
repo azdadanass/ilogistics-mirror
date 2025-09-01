@@ -31,17 +31,31 @@ public class IssueService extends GenericService<Integer, Issue, IssueRepos> {
 	public Issue findOne(Integer id) {
 		Issue issue = super.findOne(id);
 
-		initialize(issue.getDeliveryRequest().getProject().getCustomer());
-		if (issue.getDeliveryRequest().getWarehouse() != null)
-			issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i -> initialize(i.getUser()));
+		switch (issue.getParentType()) {
+		case DN:
+			initialize(issue.getDeliveryRequest().getProject().getCustomer());
+			if (issue.getDeliveryRequest().getWarehouse() != null)
+				issue.getDeliveryRequest().getWarehouse().getManagerList().forEach(i -> initialize(i.getUser()));
+			initialize(issue.getDeliveryRequest().getProject().getManager());
+			issue.getDeliveryRequest().getProject().getManagerList().forEach(i->initialize(i.getUser()));
+			break;
+		case TR:
+			initialize(issue.getTransportationRequest().getDeliveryRequest().getProject().getCustomer());
+			if (issue.getTransportationRequest().getDeliveryRequest().getWarehouse() != null)
+				issue.getTransportationRequest().getDeliveryRequest().getWarehouse().getManagerList().forEach(i -> initialize(i.getUser()));
+			initialize(issue.getTransportationRequest().getDeliveryRequest().getProject().getManager());
+			issue.getTransportationRequest().getDeliveryRequest().getProject().getManagerList().forEach(i->initialize(i.getUser()));
+			break;
+
+		default:
+			break;
+		}
+		
+		
 		initialize(issue.getAssignatorSupplier());
 		initialize(issue.getAssignator());
-
 		initialize(issue.getConfirmatorSupplier());
 		initialize(issue.getConfirmator());
-		
-		initialize(issue.getDeliveryRequest().getProject().getManager());
-		issue.getDeliveryRequest().getProject().getManagerList().forEach(i->initialize(i.getUser()));
 		
 		Hibernate.initialize(issue.getFileList());
 		Hibernate.initialize(issue.getHistoryList());

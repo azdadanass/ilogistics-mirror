@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import ma.azdad.service.UtilsFunctions;
+import ma.azdad.utils.App;
 
 @Entity
 
@@ -43,6 +43,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	
 	private Date pickupDate;
 	private Date deliveryDate;
+	
+	private String qrKey;
 	
 	
 	
@@ -89,6 +91,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private User user7;
 	private User user8;
 	private User user9;
+	
+	
 
 	// TM
 	private Integer vehicleId;
@@ -108,6 +112,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	private List<TransportationRequestFile> fileList = new ArrayList<>();
 	private List<TransportationRequestHistory> historyList = new ArrayList<>();
+	private List<Issue> issueList = new ArrayList<>();
 
 	public void clearTimeLine() {
 		rejectionReason = null;
@@ -1078,6 +1083,13 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 			return transportationJob.getDriver().getFullName();
 		return null;
 	}
+	
+	@Transient
+	public String getDriverFullName() {
+		if (transportationJob != null)
+			return transportationJob.getDriver().getFullName();
+		return null;
+	}
 
 	@Transient
 	public String getDriverPhone() {
@@ -1183,6 +1195,33 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Override
 	public String toString() {
 		return reference;
+	}
+	
+	public String getQrKey() {
+		return qrKey;
+	}
+
+	public void setQrKey(String qrKey) {
+		this.qrKey = qrKey;
+	}
+	
+	@Transient
+	public String getQrImageLink() {
+		return App.QR.getLink() + "/img/tr/" + id + "/" + qrKey;
+	}
+
+	@Transient
+	public String getQrLink() {
+		return App.QR.getLink() + "/tr/" + id + "/" + qrKey;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
+	public List<Issue> getIssueList() {
+		return issueList;
+	}
+
+	public void setIssueList(List<Issue> issueList) {
+		this.issueList = issueList;
 	}
 
 }

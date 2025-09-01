@@ -350,4 +350,26 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="stampForm">
+		<p:dialog widgetVar="stampDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('stampDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-stamp blue" />
+					<h:outputText value=" Stamp" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to print this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('stampDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<h:outputLink styleClass="btn btn-info" value="#{transportationJobView.downloadPath}" style="margin-left: 20px" target="blank">
+					<h:outputText value="Print" />
+				</h:outputLink>
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

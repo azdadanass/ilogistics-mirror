@@ -1,0 +1,67 @@
+<html>
+<style type="text/css">
+.header {
+	line-height: 28px;
+	margin-bottom: 16px;
+	margin-top: 18px;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #CCC;
+	font-size: 17px;
+}
+</style>
+<body style="padding-top: 40px; background-color: #fff; font-family: 'Arial'; font-size: 12px;">
+	<div style='text-align: center; margin: 20px 0px 10px 0px'>
+		<a th:href="${transportationJob.qrLink}" style='text-align: right; margin: 20px 0px 10px 0px;'>
+			<img height='100' width='100' style='width: 100px; height: 100px' th:src="${transportationJob.qrImageLink}" />
+		</a>
+	</div>
+	<div style="width: 90%; margin: auto; font-family: 'Arial'; font-size: 12px; clear: right;">
+		Dear
+		<span th:text="${toUser.fullName}"></span>
+		, <br /> Kindly be informed that the TJ below has been
+		<span th:text="${transportationJob.status.value}" th:style="'color:'+${transportationJob.status.color.colorCode}"></span>
+		<br />
+	</div>
+	<br />
+	<table style='border: 1px solid #ddd; border-spacing: 0; border-collapse: collapse; width: 90%; margin: auto; font-size: 12px;'>
+		<tr>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Reference</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px; color: #69aa46'
+				th:text="${transportationJob.reference}"></td>
+			<td width='4%' style='border-top: 1px solid #fff; border-bottom: 1px solid #fff;'></td>
+			<td width='12%' style='background-color: #edf3f4; color: #336199; border: 1px solid #ddd; padding: 6px; text-align: right;'>Status</td>
+			<td width='36%' style='border: 1px solid #ddd; border-bottom: 1px dotted #d5e4f1; border-top: 1px dotted #d5e4f1; padding: 6px;' th:text="${transportationJob.status.value}"></td>
+		</tr>
+	</table>
+	<h4 class="header" style="color: #478fca">TR List</h4>
+	<table
+		style="border: 2px solid #307ecc; border-spacing: 0; border-collapse: collapse; width: 80%; margin: auto; margin-top: 20px; text-align: center; font-family: 'Arial'; font-size: 12px;">
+		<tr>
+			<th colspan='6' style='background-color: #307ecc; color: #fff; padding: 10px'>TR List</th>
+		</tr>
+		<tr style='background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6); font-weight: bold; color: #333333'>
+			<th style='border: 1px solid #ddd; padding: 8px'>TR Reference</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Requester</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Origin</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Pickup Time</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Destination</th>
+			<th style='border: 1px solid #ddd; padding: 8px'>Delivery Time</th>
+		</tr>
+		<tr th:each="tr : ${transportationJob.transportationRequestList}" style='background-color: #F9F9F9;'>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${tr.reference}"></td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${tr.requesterFullName}"></td>
+			<td style='border: 1px solid #ddd; padding: 8px'>
+				<span th:text="${tr.originName}"></span>
+				<span th:text="${tr.warehouseName}" th:if="${tr.isOutbound}"></span>
+			</td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${tr.startDate}"></td>
+			<td style='border: 1px solid #ddd; padding: 8px'>
+				<span th:text="${tr.destinationName}"></span>
+				<span th:text="${tr.warehouseName}" th:if="${tr.isInbound}"></span>
+			</td>
+			<td style='border: 1px solid #ddd; padding: 8px' th:text="${tr.endDate}"></td>
+		</tr>
+	</table>
+	<br />
+</body>
+</html>

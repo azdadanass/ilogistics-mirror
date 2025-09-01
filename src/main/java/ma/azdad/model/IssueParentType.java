@@ -7,7 +7,8 @@ import ma.azdad.utils.Color;
 public enum IssueParentType {
 	JR("JR", Color.ORANGE),
 	TICKET("Ticket", Color.PINK),
-	DN("DN", Color.GREEN);
+	DN("DN", Color.GREEN),
+	TR("TR", Color.PURPLE),;
 
 	private final String value;
 	private final Color color;

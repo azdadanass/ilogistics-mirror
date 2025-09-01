@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.map.MapModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ import ma.azdad.service.TransportationRequestHistoryService;
 import ma.azdad.service.TransportationRequestService;
 import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -105,6 +107,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	private TransportationRequestState state;
 	private TransportationRequestPaymentStatus paymentStatus;
+	
+	private String downloadPath;
 
 	@Override
 	@PostConstruct
@@ -224,13 +228,17 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			test = test || cacheView.getAssignedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || cacheView.getDelegatedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername());
-			test = test
-					|| (transportationRequest.getDeliveryRequest().getWarehouse() != null && cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
+			test = test || (transportationRequest.getDeliveryRequest().getWarehouse() != null
+					&& cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
 			test = test || sessionView.isTM();
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getCostcenter().getLob().getManager().getUsername());
 			if (!test)
 				cacheView.accessDenied();
 		}
+	}
+	
+	public void generateStamp() {
+		downloadPath = service.generateStamp(transportationRequest);
 	}
 
 	// SAVE TRANSPORTATIONREQUEST
@@ -240,7 +248,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		else if (isViewPage || isEditPage)
 			return (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 					|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager()))
-					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(transportationRequest.getStatus());
+					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)
+							.contains(transportationRequest.getStatus());
 		return false;
 	}
 
@@ -273,6 +282,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		if (transportationRequest.getReference() == null)
 			transportationRequest.generateReference();
+
+		if (StringUtils.isBlank(transportationRequest.getQrKey()))
+			transportationRequest.setQrKey(UtilsFunctions.generateQrKey());
 
 		transportationRequest = transportationRequestService.save(transportationRequest);
 
@@ -422,7 +434,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	}
 
 	public Boolean canAcknowledgeTransportationRequest(TransportationRequest transportationRequest) {
-		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus())
+				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public void acknowledgeTransportationRequest(TransportationRequest transportationRequest) {
@@ -483,7 +496,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelTransportationRequest() {
-		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())
+		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)
+				.contains(transportationRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 						|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername()));
 
@@ -525,7 +539,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// DELETE TRANSPORTATIONREQUEST
 	public Boolean canDeleteTransportationRequest() {
-		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus())
+				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public String deleteTransportationRequest() {
@@ -545,8 +560,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(),
-				transportationRequest);
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(),
+				sessionView.getUser(), transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();
@@ -590,7 +605,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public Long countToDeliver() {
 		return transportationRequestService.countToDeliver(sessionView.getUsername());
 	}
-	
+
 	public Long countToAcknowledge() {
 		return transportationRequestService.countToAcknowledge(sessionView.getUsername());
 	}
@@ -732,5 +747,111 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public void setPaymentStatus(TransportationRequestPaymentStatus paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
+
+	public TransportationRequestHistoryService getTransportationRequestHistoryService() {
+		return transportationRequestHistoryService;
+	}
+
+	public void setTransportationRequestHistoryService(TransportationRequestHistoryService transportationRequestHistoryService) {
+		this.transportationRequestHistoryService = transportationRequestHistoryService;
+	}
+
+	public CacheView getCacheView() {
+		return cacheView;
+	}
+
+	public void setCacheView(CacheView cacheView) {
+		this.cacheView = cacheView;
+	}
+
+	public SessionView getSessionView() {
+		return sessionView;
+	}
+
+	public void setSessionView(SessionView sessionView) {
+		this.sessionView = sessionView;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public ExternalResourceService getExternalResourceService() {
+		return externalResourceService;
+	}
+
+	public void setExternalResourceService(ExternalResourceService externalResourceService) {
+		this.externalResourceService = externalResourceService;
+	}
+
+	public DeliveryRequestService getDeliveryRequestService() {
+		return deliveryRequestService;
+	}
+
+	public void setDeliveryRequestService(DeliveryRequestService deliveryRequestService) {
+		this.deliveryRequestService = deliveryRequestService;
+	}
+
+	public MapService getMapService() {
+		return mapService;
+	}
+
+	public void setMapService(MapService mapService) {
+		this.mapService = mapService;
+	}
+
+	public TransporterService getTransporterService() {
+		return transporterService;
+	}
+
+	public void setTransporterService(TransporterService transporterService) {
+		this.transporterService = transporterService;
+	}
+
+	public VehicleService getVehicleService() {
+		return vehicleService;
+	}
+
+	public void setVehicleService(VehicleService vehicleService) {
+		this.vehicleService = vehicleService;
+	}
+
+	public OldEmailService getEmailService() {
+		return emailService;
+	}
+
+	public void setEmailService(OldEmailService emailService) {
+		this.emailService = emailService;
+	}
+
+	public SmsService getSmsService() {
+		return smsService;
+	}
+
+	public void setSmsService(SmsService smsService) {
+		this.smsService = smsService;
+	}
+
+	public TransportationJobService getTransportationJobService() {
+		return transportationJobService;
+	}
+
+	public void setTransportationJobService(TransportationJobService transportationJobService) {
+		this.transportationJobService = transportationJobService;
+	}
+
+	public String getDownloadPath() {
+		return downloadPath;
+	}
+
+	public void setDownloadPath(String downloadPath) {
+		this.downloadPath = downloadPath;
+	}
+	
+	
 
 }

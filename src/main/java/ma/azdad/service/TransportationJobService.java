@@ -668,7 +668,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<TransportationJob> list = repos.findMobile(status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
-			System.out.println("driver : " + tj.getDriver());
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
 					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
@@ -676,8 +675,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findByUser1Mobile(List<TransportationJobStatus> status, String username) {
-		List<TransportationJob> list = repos.findByUser1Mobile(username, status);
+	public List<ma.azdad.mobile.model.TransportationJob> findByInternalTmMobile(List<TransportationJobStatus> status) {
+		List<TransportationJob> list = repos.findByInternalTmMobile(status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
@@ -687,8 +686,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findByUser1Mobile(String username) {
-		List<TransportationJob> list = repos.findByUser1Mobile(username);
+	public List<ma.azdad.mobile.model.TransportationJob> findMobile() {
+		List<TransportationJob> list = repos.findMobile();
 		System.out.println("tj size" + list.size());
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
@@ -700,18 +699,17 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		return mbList;
 	}
 
-	public List<ma.azdad.mobile.model.TransportationJob> findByUser1MobileByStatus(Integer state, String username) {
+	public List<ma.azdad.mobile.model.TransportationJob> findByInternalTmByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findByUser1Mobile(
-					Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED),
-					username);
+			return findByInternalTmMobile(
+					Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED));
 		case 1:
-			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.STARTED), username);
+			return findByInternalTmMobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.STARTED));
 		case 2:
-			return findByUser1Mobile(Arrays.asList(TransportationJobStatus.COMPLETED), username);
+			return findByInternalTmMobile(Arrays.asList(TransportationJobStatus.COMPLETED));
 		case 3:
-			return findByUser1Mobile(username);
+			return findMobile();
 
 		default:
 			return new ArrayList<>();

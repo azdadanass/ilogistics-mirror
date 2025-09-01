@@ -33,8 +33,8 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query(c2 + "from TransportationJob a where a.user1.username = ?1 order by a.id desc")
 	public List<TransportationJob> findByUser1Mobile(String user1Username);
 
-	@Query(c2 + "from TransportationJob a where a.user1.username = ?1 and a.status in (?2) order by a.id desc")
-	public List<TransportationJob> findByUser1Mobile(String user1Username, List<TransportationJobStatus> statusList);
+	@Query(c2 + "from TransportationJob a where a.status in (?1) order by a.id desc")
+	public List<TransportationJob> findByInternalTmMobile(List<TransportationJobStatus> statusList);
 
 	@Query(c1 + "from TransportationJob a order by a.id desc")
 	public List<TransportationJob> find();

@@ -616,7 +616,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobileByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.APPROVED));
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
+					TransportationRequestStatus.APPROVED));
 		case 1:
 			return findByTmMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED));
 		case 2:

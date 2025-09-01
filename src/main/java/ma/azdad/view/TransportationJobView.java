@@ -49,6 +49,7 @@ import ma.azdad.service.DriverLocationService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.PathService;
+import ma.azdad.service.RouteAppService;
 import ma.azdad.service.SmsService;
 import ma.azdad.service.StopService;
 import ma.azdad.service.TransportationJobFileService;
@@ -65,13 +66,17 @@ import ma.azdad.utils.Public;
 @ManagedBean
 @Component
 @Scope("view")
-public class TransportationJobView extends GenericView<Integer, TransportationJob, TransportationJobRepos, TransportationJobService> {
+public class TransportationJobView
+		extends GenericView<Integer, TransportationJob, TransportationJobRepos, TransportationJobService> {
 
 	@Autowired
 	private SessionView sessionView;
 
 	@Autowired
 	protected TransportationJobService transportationJobService;
+	
+	@Autowired
+	RouteAppService routeAppService;
 
 	@Autowired
 	protected CacheView cacheView;
@@ -133,6 +138,17 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private TransportationRequest transportationRequest;
 
+	private List<Path> optimizedPaths = new ArrayList<>();
+	private boolean optimizing = false;
+
+	public List<Path> getOptimizedPaths() {
+		return optimizedPaths;
+	}
+
+	public boolean isOptimizing() {
+		return optimizing;
+	}
+
 	private MapModel mapModel;
 	private Marker marker;
 	private Boolean viewPathList = false;
@@ -188,16 +204,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private void initTimelines() {
-		String[] styles = { "aa-timeline-event-info", "aa-timeline-event-success", "aa-timeline-event-warning", "aa-timeline-event-purple", "aa-timeline-event-danger" }; // TODO
+		String[] styles = { "aa-timeline-event-info", "aa-timeline-event-success", "aa-timeline-event-warning",
+				"aa-timeline-event-purple", "aa-timeline-event-danger" }; // TODO
 
 		// init timeline1 (Planning Timeline)
 		timeline1 = new TimelineModel();
-		transportationJob.getTransportationRequestList()
-				.forEach(i -> timeline1.add(new TimelineEvent(i, i.getPlannedPickupDate(), i.getPlannedDeliveryDate(), false, null, styles[i.getId() % styles.length])));
+		transportationJob.getTransportationRequestList().forEach(i -> timeline1.add(new TimelineEvent(i,
+				i.getPlannedPickupDate(), i.getPlannedDeliveryDate(), false, null, styles[i.getId() % styles.length])));
 		// init timeline2 (Delivery Timeline)
 		timeline2 = new TimelineModel();
-		transportationJob.getTransportationRequestList().stream().filter(i -> i.getPickupDate() != null && i.getDeliveryDate() != null)
-				.forEach(i -> timeline2.add(new TimelineEvent(i, i.getPickupDate(), i.getDeliveryDate(), false, null, styles[i.getId() % styles.length])));
+		transportationJob.getTransportationRequestList().stream()
+				.filter(i -> i.getPickupDate() != null && i.getDeliveryDate() != null)
+				.forEach(i -> timeline2.add(new TimelineEvent(i, i.getPickupDate(), i.getDeliveryDate(), false, null,
+						styles[i.getId() % styles.length])));
 	}
 
 	@Override
@@ -244,7 +263,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 9:
 					// to complete1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),
+							Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -257,8 +277,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private void refreshTransportationRequestList() {
 		System.out.println("refreshTransportationRequestList");
-		transportationRequestList2 = transportationRequestList1 = transportationRequestService.findByNotHavingTransportationJob(TransportationRequestStatus.APPROVED,
-				Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED, DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
+		transportationRequestList2 = transportationRequestList1 = transportationRequestService
+				.findByNotHavingTransportationJob(TransportationRequestStatus.APPROVED,
+						Arrays.asList(DeliveryRequestStatus.APPROVED2, DeliveryRequestStatus.PARTIALLY_DELIVRED,
+								DeliveryRequestStatus.DELIVRED, DeliveryRequestStatus.ACKNOWLEDGED));
 		System.out.println("transportationRequestList2 : " + transportationRequestList2);
 	}
 
@@ -270,6 +292,38 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		// if (false)
 		// cacheView.accessDenied();
 	}
+	
+	// M�THODE D'APER�U D'OPTIMISATION 
+    public void loadOptimizationPreview() {
+        optimizing = true;
+        optimizedPaths = new ArrayList<>();
+        try {
+            Integer jobId = (transportationJob != null) ? transportationJob.getId() : null;
+            String driverUsername = (transportationJob != null && transportationJob.getDriver() != null)
+                    ? transportationJob.getDriver().getUsername()   // <-- username (String)
+                    : null;
+
+            if (jobId == null) {
+                FacesContextMessages.ErrorMessages("Job introuvable.");
+                return;
+            }
+
+            // renvoie juste la liste 
+            optimizedPaths = routeAppService.buildAndPersistPathsForJob(
+                    jobId,
+                    driverUsername,   
+                    50.0,            
+                    true,            
+                    true             
+            );
+            if (optimizedPaths == null) optimizedPaths = new ArrayList<>();
+        } catch (Exception e) {
+            optimizedPaths = new ArrayList<>();
+            FacesContextMessages.ErrorMessages("Optimisation �chou�e : " + e.getMessage());
+        } finally {
+            optimizing = false;
+        }
+    }
 
 	// SAVE TRANSPORTATIONJOB
 	public Boolean canSave() {
@@ -303,7 +357,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 //		}
 		transportationJob.setDate1(new Date());
 		transportationJob.setUser1(sessionView.getUser());
-		transportationJob.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
+		transportationJob
+				.addHistory(new TransportationJobHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
 		transportationJob = transportationJobService.save(transportationJob);
 		if (isAddPage) {
 			transportationJob.generateReference();
@@ -359,18 +414,21 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername())
+				.filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername())
+				.filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
 	}
 
 	// assign
 	public void initAssign() {
-		if ((isViewPage && TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus())) || (isListPage && pageIndex == 5))
+		if ((isViewPage && TransportationJobStatus.ASSIGNED1.equals(transportationJob.getStatus()))
+				|| (isListPage && pageIndex == 5))
 			transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
 		if (!sessionView.getInternal())
 			transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
@@ -404,7 +462,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(),u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(), u.getLongitude(),
+								transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
 				refreshMapModel();
@@ -415,7 +474,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					userView.initLists(userService.findActiveDriverList(false));
 					break;
 				case ASSIGNED1:
-					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER, transportationJob.getTransporterId()));
+					userView.initLists(userService.findByRoleAndActiveAndTransporter(Role.ROLE_ILOGISTICS_DRIVER,
+							transportationJob.getTransporterId()));
 					break;
 				default:
 					break;
@@ -450,9 +510,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private Boolean validateAssign() {
-		if (TransportationJobAssignmentType.TRANSPORTER.equals(transportationJob.getAssignmentType()) && transportationJob.getTransporter() == null)
+		if (TransportationJobAssignmentType.TRANSPORTER.equals(transportationJob.getAssignmentType())
+				&& transportationJob.getTransporter() == null)
 			return FacesContextMessages.ErrorMessages("Transporter should not be null");
-		else if (Arrays.asList(TransportationJobAssignmentType.INTERNAL_DRIVER, TransportationJobAssignmentType.EXTERNAL_DRIVER).contains(transportationJob.getAssignmentType())) {
+		else if (Arrays
+				.asList(TransportationJobAssignmentType.INTERNAL_DRIVER,
+						TransportationJobAssignmentType.EXTERNAL_DRIVER)
+				.contains(transportationJob.getAssignmentType())) {
 			if (transportationJob.getDriver() == null)
 				return FacesContextMessages.ErrorMessages("Driver should not be null");
 			if (transportationJob.getVehicle() == null)
@@ -469,8 +533,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (this.transportationJob.getAcceptLeadTime() != null)
 			transportationJob.setAcceptLeadTime(this.transportationJob.getAcceptLeadTime());
 
-		service.assign(transportationJob, this.transportationJob.getAssignmentType(), this.transportationJob.getTransporterId(), //
-				this.transportationJob.getDriverUsername(), this.transportationJob.getVehicleId(), sessionView.getUser());
+		service.assign(transportationJob, this.transportationJob.getAssignmentType(),
+				this.transportationJob.getTransporterId(), //
+				this.transportationJob.getDriverUsername(), this.transportationJob.getVehicleId(),
+				sessionView.getUser());
 //		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
 //
 //		switch (transportationJob.getAssignmentType()) {
@@ -593,7 +659,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private Boolean validateStart() {
-		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null).count() > 0)
+		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null)
+				.count() > 0)
 			return FacesContextMessages.ErrorMessages("Expected Pickup Date should not be null");
 		return true;
 	}
@@ -613,7 +680,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (isViewPage)
 			mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
 		if (isPage("assignTransportationJob")) {
-			List<Stop> stopList = stopService.findByTransportationJobList(toAssignList.stream().map(i -> i.getId()).collect(Collectors.toList()));
+			List<Stop> stopList = stopService.findByTransportationJobList(
+					toAssignList.stream().map(i -> i.getId()).collect(Collectors.toList()));
 			// init center latitude,longitude
 			if (!stopList.isEmpty()) {
 				latitude = stopList.get(0).getPlace().getLatitude();
@@ -654,9 +722,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			tr.setDate4(currentDate);
 			tr.setUser4(sessionView.getUser());
 			tr.setTransportationJob(transportationJob);
-			tr.addHistory(new TransportationRequestHistory("Assigned", sessionView.getUser(), "Assigned To : " + transportationJob.getReference()));
+			tr.addHistory(new TransportationRequestHistory("Assigned", sessionView.getUser(),
+					"Assigned To : " + transportationJob.getReference()));
 //			transportationRequestHistoryService.assignedNew(tr, sessionView.getUser());
-			if (Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus())) {
+			if (Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS,
+					TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus())) {
 				if (tr.getExpectedPickupDate() == null)
 					tr.setExpectedPickupDate(tr.getPlannedPickupDate());
 			}
@@ -683,7 +753,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				return false;
 			}
 		}
-		if (!transportationJobService.validateTransportationRequestListDates(transportationJob, transportationRequestList3)) {
+		if (!transportationJobService.validateTransportationRequestListDates(transportationJob,
+				transportationRequestList3)) {
 			FacesContextMessages.ErrorMessages("At same time, they can not be different sites");
 			return false;
 		}
@@ -726,7 +797,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public Boolean validateUpdateExpectedPickupDate(TransportationRequest transportationRequest) {
-		if (transportationRequest.getExpectedPickupDate().compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
+		if (transportationRequest.getExpectedPickupDate()
+				.compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
 			FacesContextMessages.ErrorMessages("Expected Pickup Time should be lower than Expected Delivery Time");
 			return false;
 		}
@@ -757,11 +829,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public Boolean validateUpdateExpectedDeliveryDate(TransportationRequest transportationRequest) {
 		if (transportationRequest.getPickupDate() == null) {
-			if (transportationRequest.getExpectedPickupDate().compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
+			if (transportationRequest.getExpectedPickupDate()
+					.compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
 				FacesContextMessages.ErrorMessages("Expected Pick Up Time should be lower than Expected Delivery Time");
 				return false;
 			}
-		} else if (transportationRequest.getPickupDate().compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
+		} else if (transportationRequest.getPickupDate()
+				.compareTo(transportationRequest.getExpectedDeliveryDate()) >= 0) {
 			FacesContextMessages.ErrorMessages("Pick Up Time should be lower than Expected Delivery Time");
 			return false;
 		}
@@ -780,7 +854,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			sum += tr.getCost();
 
 		if (UtilsFunctions.compareDoubles(transportationJob.getRealCost(), sum, 2) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR COsts should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
+			return FacesContextMessages.ErrorMessages("Total TR COsts should be equal to Real Cost : "
+					+ UtilsFunctions.formatDouble(transportationJob.getRealCost()));
 
 		return true;
 	}
@@ -788,7 +863,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	// RETURN BACK
 	public Boolean canReturnBack(TransportationRequestStatus status) {
 		return !TransportationJobStatus.ACKNOWLEDGED.equals(transportationJob.getStatus()) && sessionView.isTM()
-				&& Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED).contains(status);
+				&& Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED)
+						.contains(status);
 	}
 
 	public Boolean canReturnBack() {
@@ -815,10 +891,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// PICK UP
 	public Boolean canPickup(TransportationRequestStatus status) {
-		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS,
+				TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
 				TransportationRequestStatus.ASSIGNED.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
-						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
+						(sessionView.getIsInternalTM()
+								&& sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
 
 	public Boolean canPickup() {
@@ -860,10 +938,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELIVER
 	public Boolean canDeliver(TransportationRequestStatus status) {
-		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
+		return Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS,
+				TransportationJobStatus.COMPLETED).contains(transportationJob.getStatus()) && //
 				TransportationRequestStatus.PICKEDUP.equals(status) && //
 				(sessionView.isTheConnectedUser(transportationJob.getDriver()) || //
-						(sessionView.getIsInternalTM() && sessionView.isTheConnectedUser(transportationJob.getUser1())));
+						(sessionView.getIsInternalTM()
+								&& sessionView.isTheConnectedUser(transportationJob.getUser1())));
 	}
 
 	public Boolean canDeliver() {
@@ -928,7 +1008,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType,
+				event.getFile().getFileName(), sessionView.getUser(), transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();
@@ -970,7 +1051,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		}
 
 		if (UtilsFunctions.compareDoubles(transportationJob.getRealCost(), sum, 2) != 0)
-			return FacesContextMessages.ErrorMessages("Total Costs should be equal to Real Cost : " + UtilsFunctions.formatDouble(transportationJob.getRealCost()));
+			return FacesContextMessages.ErrorMessages("Total Costs should be equal to Real Cost : "
+					+ UtilsFunctions.formatDouble(transportationJob.getRealCost()));
 
 		return true;
 	}

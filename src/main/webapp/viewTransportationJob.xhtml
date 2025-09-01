@@ -721,6 +721,16 @@
 								</f:subview>
 							</h:panelGroup>
 						</div>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="View Map " target="blank" value="map3.html">
+							<i class="ace-icon fa fa-map-marker bigger-230"></i>
+							<f:param name="jobId" value="#{transportationJobView.id}" />
+							<h:outputText value="Drivers" />
+						</h:outputLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip tooltip-success" title="View Map " target="blank" value="map2.html">
+							<i class="ace-icon fa fa-map-marker bigger-230"></i>
+							<f:param name="jobId" value="#{transportationJobView.id}" />
+							<h:outputText value="Itinerary" />
+						</h:outputLink>
 						<div class="space-16" />
 						<h4 class="header blue bolder smaller">
 							<i class="ace-icon fa fa-map-marker"></i>

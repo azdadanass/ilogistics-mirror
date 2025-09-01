@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Itinéraire précis du Job</title>
+<style>
+html, body, #map {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+#controls {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 1000;
+	background: white;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+#controls label {
+	display: block;
+	margin: 5px 0;
+	cursor: pointer;
+}
+#legend {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	z-index: 1000;
+	background: white;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	font-size: 12px;
+}
+.legend-item {
+	display: flex;
+	align-items: center;
+	margin: 3px 0;
+}
+.legend-color {
+	width: 20px;
+	height: 3px;
+	margin-right: 8px;
+	border-radius: 2px;
+}
+</style>
+</head>
+<body>
+	<div id="map"></div>
+	
+	<div id="controls">
+		<label>
+			<input type="checkbox" id="showActual" checked> Itinéraire réel
+		</label>
+		<label>
+			<input type="checkbox" id="showEstimated" checked> Itinéraire estimé
+		</label>
+	</div>
+
+	<div id="legend">
+		<div class="legend-item">
+			<div class="legend-color" style="background-color: #007bff;"></div>
+			<span>Itinéraire réel</span>
+		</div>
+		<div class="legend-item">
+			<div class="legend-color" style="background-color: #28a745;"></div>
+			<span>Itinéraire estimé</span>
+		</div>
+		<div class="legend-item">
+			<div style="width: 16px; height: 16px; margin-right: 8px;">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#28a745">
+					<path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
+					<rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
+					<rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
+					<rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
+					<rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
+				</svg>
+			</div>
+			<span>Site arrivé</span>
+		</div>
+		<div class="legend-item">
+			<div style="width: 16px; height: 16px; margin-right: 8px;">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#dc3545">
+					<path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
+					<rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
+					<rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
+					<rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
+					<rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
+				</svg>
+			</div>
+			<span>Site non arrivé</span>
+		</div>
+	</div>
+
+	<script>
+let map;
+let directionsService;
+let directionsRenderer;
+let estimatedDirectionsRenderer;
+const MAX_WAYPOINTS = 23;
+
+// Store polylines and markers for toggling visibility
+let actualPolylines = [];
+let estimatedPolylines = [];
+let estimatedMarkers = [];
+let actualPoints = []; // store real itinerary points for distance check
+
+function getJobIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("jobId");
+}
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 6,
+    center: { lat: 33.6, lng: -7.6 },
+  });
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: false,
+    polylineOptions: {
+      strokeColor: '#007bff',
+      strokeWeight: 4
+    }
+  });
+
+  estimatedDirectionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: true, // We'll create custom markers
+    polylineOptions: {
+      strokeColor: '#28a745',
+      strokeWeight: 3,
+      strokeOpacity: 0.8
+    }
+  });
+
+  // Setup toggle controls
+  setupControls();
+  
+  // Load both itineraries
+  showActualItinerary();
+  showEstimatedItinerary();
+}
+
+function setupControls() {
+  const showActualCheckbox = document.getElementById('showActual');
+  const showEstimatedCheckbox = document.getElementById('showEstimated');
+
+  showActualCheckbox.addEventListener('change', function() {
+    toggleActualRoute(this.checked);
+  });
+
+  showEstimatedCheckbox.addEventListener('change', function() {
+    toggleEstimatedRoute(this.checked);
+  });
+}
+
+function toggleActualRoute(visible) {
+  if (visible) {
+    directionsRenderer.setMap(map);
+    actualPolylines.forEach(polyline => polyline.setMap(map));
+  } else {
+    directionsRenderer.setMap(null);
+    actualPolylines.forEach(polyline => polyline.setMap(null));
+  }
+}
+
+function toggleEstimatedRoute(visible) {
+  if (visible) {
+    estimatedDirectionsRenderer.setMap(map);
+    estimatedPolylines.forEach(polyline => polyline.setMap(map));
+    estimatedMarkers.forEach(marker => marker.setMap(map));
+  } else {
+    estimatedDirectionsRenderer.setMap(null);
+    estimatedPolylines.forEach(polyline => polyline.setMap(null));
+    estimatedMarkers.forEach(marker => marker.setMap(null));
+  }
+}
+
+function showActualItinerary() {
+  const jobId = getJobIdFromURL();
+  if (!jobId) {
+    console.error("Aucun jobId trouvé dans l'URL.");
+    return;
+  }
+
+  fetch(`/api/job/itenerary/${jobId}`)
+    .then(response => response.json())
+    .then(points => {
+      actualPoints = points; // keep globally for estimated comparison
+
+      if (!points || points.length < 2) {
+        console.warn("Pas assez de points pour tracer l'itinéraire réel.");
+        return;
+      }
+
+      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
+      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
+
+      let waypointList = points.slice(1, -1);
+      if (waypointList.length > MAX_WAYPOINTS) {
+        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
+        waypointList = waypointList.filter((_, i) => i % factor === 0);
+      }
+
+      const waypoints = waypointList.map(p => ({
+        location: new google.maps.LatLng(p.latitude, p.longitude),
+        stopover: true,
+      }));
+
+      const request = {
+        origin,
+        destination,
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Erreur lors du fetch de l'itinéraire réel :", err);
+    });
+}
+
+function showEstimatedItinerary() {
+  const jobId = getJobIdFromURL();
+  if (!jobId) {
+    console.error("Aucun jobId trouvé dans l'URL.");
+    return;
+  }
+
+  fetch(`/api/job/estimated-itenerary/${jobId}`)
+    .then(response => response.json())
+    .then(points => {
+      if (!points || points.length < 2) {
+        console.warn("Pas assez de points pour tracer l'itinéraire estimé.");
+        return;
+      }
+
+      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
+      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
+
+      let waypointList = points.slice(1, -1);
+      if (waypointList.length > MAX_WAYPOINTS) {
+        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
+        waypointList = waypointList.filter((_, i) => i % factor === 0);
+      }
+
+      const waypoints = waypointList.map(p => ({
+        location: new google.maps.LatLng(p.latitude, p.longitude),
+        stopover: true,
+      }));
+
+      const request = {
+        origin,
+        destination,
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          estimatedDirectionsRenderer.setDirections(result);
+
+          // Create custom markers for estimated route
+          points.forEach((point, index) => {
+            let isWithin5km = false;
+            let nearestDistKm = null;
+
+            if (actualPoints && actualPoints.length > 0) {
+              const estLatLng = new google.maps.LatLng(point.latitude, point.longitude);
+              for (let ap of actualPoints) {
+                const actLatLng = new google.maps.LatLng(ap.latitude, ap.longitude);
+                const distMeters = google.maps.geometry.spherical.computeDistanceBetween(estLatLng, actLatLng);
+                const distKm = distMeters / 1000.0;
+                if (nearestDistKm === null || distKm < nearestDistKm) nearestDistKm = distKm;
+                if (distMeters <= 5000) {
+                  isWithin5km = true;
+                  break;
+                }
+              }
+            }
+
+            const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
+            const markerColor = (isArrived || isWithin5km) ? '#28a745' : '#dc3545';
+            const statusText = (isArrived || isWithin5km) ? 'Arrivé (réel < 5km)' : 'Non arrivé';
+
+            const marker = new google.maps.Marker({
+              position: new google.maps.LatLng(point.latitude, point.longitude),
+              map: map,
+              title: `Site estimé ${index + 1} - ${statusText}`,
+              icon: {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${markerColor}">
+                    <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
+                    <rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
+                    <rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
+                    <rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
+                    <rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
+                  </svg>
+                `),
+                scaledSize: new google.maps.Size(24, 24),
+                anchor: new google.maps.Point(12, 24)
+              },
+              zIndex: 1000 + index
+            });
+
+            estimatedMarkers.push(marker);
+
+            // Info window
+            const infoWindow = new google.maps.InfoWindow({
+              content: `
+                <div>
+                  <h6>Site estimé ${index + 1}</h6>
+                  <p><strong>Statut:</strong> <span style="color: ${markerColor}; font-weight: bold;">${statusText}</span></p>
+                  <p>Lat: ${point.latitude.toFixed(6)}</p>
+                  <p>Lng: ${point.longitude.toFixed(6)}</p>
+                  ${nearestDistKm !== null ? `<p>Distance au plus proche réel: ${nearestDistKm.toFixed(2)} km</p>` : ''}
+                  ${point.timestamp ? `<p>Temps estimé: ${new Date(point.timestamp).toLocaleString()}</p>` : ''}
+                  ${point.arrivalTime && isArrived ? `<p>Temps d'arrivée: ${new Date(point.arrivalTime).toLocaleString()}</p>` : ''}
+                </div>
+              `
+            });
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+          });
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
+    });
+}
+
+window.initMap = initMap;
+</script>
+
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&libraries=geometry&callback=initMap">
+  </script>
+</body>
+</html>

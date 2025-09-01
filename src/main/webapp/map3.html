@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Carte des chauffeurs</title>
+  <style>
+    html, body, #map {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Legend styling */
+    .legend {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .legend div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .legend span.color {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div><span class="color" style="background: green;"></span> Mis à jour < 24h</div>
+    <div><span class="color" style="background: blue;"></span> Mis à jour < 48h</div>
+    <div><span class="color" style="background: red;"></span> Mis à jour > 48h</div>
+  </div>
+
+ <script>
+let map;
+let markers = [];
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 6,
+    center: { lat: 33.6, lng: -7.6 },
+  });
+
+  fetchDriversLocations();
+  setInterval(fetchDriversLocations, 300000); // Refresh every 5 mins
+}
+
+function fetchDriversLocations() {
+  fetch('/api/driver-locations/drivers')
+    .then(response => {
+      if (!response.ok) throw new Error("Erreur lors de la récupération des chauffeurs");
+      return response.json();
+    })
+    .then(locations => {
+      clearMarkers();
+      locations.forEach(location => {
+        if (location.latitude && location.longitude) {
+          const position = { lat: location.latitude, lng: location.longitude };
+
+          const borderColor = getBorderColor(location.date);
+          const userIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+
+          // Create PNG icon dynamically
+          createPngIcon(userIconUrl, borderColor, (iconUrl) => {
+            const marker = new google.maps.Marker({
+              position: position,
+              map: map,
+              icon: {
+                url: iconUrl,
+                scaledSize: new google.maps.Size(60, 60),
+                anchor: new google.maps.Point(30, 30)
+              },
+              title: location.username || "Chauffeur inconnu"
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: `
+                <div style="display:flex;align-items:center;">
+                  <img src="${userIconUrl}" style="width:50px;height:50px;border-radius:50%;margin-right:10px;" />
+                  <div>
+                    <strong>${location.username || 'Chauffeur inconnu'}</strong><br/>
+                    <span>Latitude: ${location.latitude.toFixed(5)}</span><br/>
+                    <span>Longitude: ${location.longitude.toFixed(5)}</span><br/>
+                    <span>Date: ${new Date(location.date).toLocaleString()}</span>
+                  </div>
+                </div>
+              `
+            });
+
+            marker.addListener("click", () => infoWindow.open(map, marker));
+            markers.push(marker);
+          });
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Erreur fetch des positions :", err);
+    });
+}
+
+function getBorderColor(dateString) {
+  const now = new Date();
+  const lastDate = new Date(dateString);
+  const diffHours = (now - lastDate) / (1000 * 60 * 60);
+
+  if (diffHours < 24) return "green";
+  if (diffHours < 48) return "blue";
+  return "red";
+}
+
+// Generate PNG with border using Canvas
+function createPngIcon(imageUrl, borderColor, callback) {
+  const size = 60;
+  const border = 5;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  // Border circle
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
+  ctx.fillStyle = borderColor;
+  ctx.fill();
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; 
+  img.onload = () => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+    ctx.clip();
+    ctx.drawImage(img, border, border, size - border * 2, size - border * 2);
+    ctx.restore();
+
+    callback(canvas.toDataURL("image/png"));
+  };
+  img.src = imageUrl;
+}
+
+function clearMarkers() {
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+}
+
+window.initMap = initMap;
+</script>
+
+  <script
+    async
+    defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&callback=initMap">
+  </script>
+</body>
+</html>

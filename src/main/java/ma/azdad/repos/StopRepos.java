@@ -14,5 +14,8 @@ public interface StopRepos extends JpaRepository<Stop, Integer> {
 	
 	@Query("from Stop where transportationJob.id in (?1)")
 	List<Stop> findByTransportationJobList(List<Integer> transportationJobIdList);
+	
+    List<Stop> findByTransportationJobIdOrderByDateAsc(Integer jobId);
+
 
 }

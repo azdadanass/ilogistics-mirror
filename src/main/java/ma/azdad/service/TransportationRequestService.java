@@ -38,6 +38,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
+import ma.azdad.model.TransportationJobItinerary;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;

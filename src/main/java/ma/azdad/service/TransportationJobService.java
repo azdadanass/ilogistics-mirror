@@ -668,8 +668,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<TransportationJob> list = repos.findMobile(status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
+			ma.azdad.mobile.model.User user = null;
+			if(tj.getDriverUsername() != null) {
+				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
+			}
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
-					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;
@@ -679,8 +683,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<TransportationJob> list = repos.findByInternalTmMobile(status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
+			ma.azdad.mobile.model.User user = null;
+			if(tj.getDriverUsername() != null) {
+				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
+			}
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
-					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;
@@ -691,9 +699,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		System.out.println("tj size" + list.size());
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
-
+			ma.azdad.mobile.model.User user = null;
+			if(tj.getDriverUsername() != null) {
+				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
+			}
 			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
-					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;

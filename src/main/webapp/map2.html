@@ -70,28 +70,16 @@ html, body, #map {
 			<span>Itinéraire estimé</span>
 		</div>
 		<div class="legend-item">
-			<div style="width: 16px; height: 16px; margin-right: 8px;">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#28a745">
-					<path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
-					<rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
-					<rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
-					<rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
-					<rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
-				</svg>
-			</div>
-			<span>Site arrivé</span>
+			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #dc3545; border-radius: 50%;"></div>
+			<span>Points réels</span>
 		</div>
 		<div class="legend-item">
-			<div style="width: 16px; height: 16px; margin-right: 8px;">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#dc3545">
-					<path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
-					<rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
-					<rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
-					<rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
-					<rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
-				</svg>
-			</div>
-			<span>Site non arrivé</span>
+			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+			<span>Sites estimés arrivés</span>
+		</div>
+		<div class="legend-item">
+			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+			<span>Sites estimés non arrivés</span>
 		</div>
 	</div>
 
@@ -106,6 +94,7 @@ const MAX_WAYPOINTS = 23;
 let actualPolylines = [];
 let estimatedPolylines = [];
 let estimatedMarkers = [];
+let actualMarkers = [];
 let actualPoints = []; // store real itinerary points for distance check
 
 function getJobIdFromURL() {
@@ -122,7 +111,7 @@ function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
     map: map,
-    suppressMarkers: false,
+    suppressMarkers: true, // We'll create custom markers for real itinerary too
     polylineOptions: {
       strokeColor: '#007bff',
       strokeWeight: 4
@@ -164,9 +153,11 @@ function toggleActualRoute(visible) {
   if (visible) {
     directionsRenderer.setMap(map);
     actualPolylines.forEach(polyline => polyline.setMap(map));
+    actualMarkers.forEach(marker => marker.setMap(map));
   } else {
     directionsRenderer.setMap(null);
     actualPolylines.forEach(polyline => polyline.setMap(null));
+    actualMarkers.forEach(marker => marker.setMap(null));
   }
 }
 
@@ -180,6 +171,31 @@ function toggleEstimatedRoute(visible) {
     estimatedPolylines.forEach(polyline => polyline.setMap(null));
     estimatedMarkers.forEach(marker => marker.setMap(null));
   }
+}
+
+function createSimplePointIcon(color, size = 8) {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${size * 2}" height="${size * 2}" viewBox="0 0 ${size * 2} ${size * 2}">
+        <circle cx="${size}" cy="${size}" r="${size - 1}" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      </svg>
+    `),
+    scaledSize: new google.maps.Size(size * 2, size * 2),
+    anchor: new google.maps.Point(size, size)
+  };
+}
+
+function createAlphabetIcon(letter, color, size = 24) {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <rect x="2" y="2" width="${size - 4}" height="${size - 4}" rx="4" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+        <text x="${size/2}" y="${size/2 + 6}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">${letter}</text>
+      </svg>
+    `),
+    scaledSize: new google.maps.Size(size, size),
+    anchor: new google.maps.Point(size/2, size)
+  };
 }
 
 function showActualItinerary() {
@@ -224,6 +240,34 @@ function showActualItinerary() {
       directionsService.route(request, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           directionsRenderer.setDirections(result);
+
+          // Create simple point markers for actual route
+          points.forEach((point, index) => {
+            const marker = new google.maps.Marker({
+              position: new google.maps.LatLng(point.latitude, point.longitude),
+              map: map,
+              title: `Point réel ${index + 1}`,
+              icon: createSimplePointIcon('#dc3545'),
+              zIndex: 500 + index
+            });
+
+            actualMarkers.push(marker);
+
+            // Info window for actual points
+            const infoWindow = new google.maps.InfoWindow({
+              content: `
+                <div>
+                  <h6>Point réel ${index + 1}</h6>
+                  <p>Lat: ${point.latitude.toFixed(6)}</p>
+                  <p>Lng: ${point.longitude.toFixed(6)}</p>
+                  ${point.timestamp ? `<p>Temps: ${new Date(point.timestamp).toLocaleString()}</p>` : ''}
+                </div>
+              `
+            });
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+          });
         }
       });
     })
@@ -273,7 +317,7 @@ function showEstimatedItinerary() {
         if (status === google.maps.DirectionsStatus.OK) {
           estimatedDirectionsRenderer.setDirections(result);
 
-          // Create custom markers for estimated route
+          // Create alphabetic markers for estimated route
           points.forEach((point, index) => {
             let isWithin5km = false;
             let nearestDistKm = null;
@@ -295,24 +339,15 @@ function showEstimatedItinerary() {
             const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
             const markerColor = (isArrived || isWithin5km) ? '#28a745' : '#dc3545';
             const statusText = (isArrived || isWithin5km) ? 'Arrivé (réel < 5km)' : 'Non arrivé';
+            
+            // Convert index to letter (A, B, C, ... Z, AA, AB, etc.)
+            const letter = getAlphabetLetter(index);
 
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(point.latitude, point.longitude),
               map: map,
-              title: `Site estimé ${index + 1} - ${statusText}`,
-              icon: {
-                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="${markerColor}">
-                    <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2Z" stroke="#ffffff" stroke-width="2"/>
-                    <rect x="8" y="8" width="3" height="3" fill="#ffffff"/>
-                    <rect x="13" y="8" width="3" height="3" fill="#ffffff"/>
-                    <rect x="8" y="13" width="3" height="3" fill="#ffffff"/>
-                    <rect x="13" y="13" width="3" height="3" fill="#ffffff"/>
-                  </svg>
-                `),
-                scaledSize: new google.maps.Size(24, 24),
-                anchor: new google.maps.Point(12, 24)
-              },
+              title: `Site estimé ${letter} - ${statusText}`,
+              icon: createAlphabetIcon(letter, markerColor),
               zIndex: 1000 + index
             });
 
@@ -322,7 +357,7 @@ function showEstimatedItinerary() {
             const infoWindow = new google.maps.InfoWindow({
               content: `
                 <div>
-                  <h6>Site estimé ${index + 1}</h6>
+                  <h6>Site estimé ${letter}</h6>
                   <p><strong>Statut:</strong> <span style="color: ${markerColor}; font-weight: bold;">${statusText}</span></p>
                   <p>Lat: ${point.latitude.toFixed(6)}</p>
                   <p>Lng: ${point.longitude.toFixed(6)}</p>
@@ -342,6 +377,18 @@ function showEstimatedItinerary() {
     .catch(err => {
       console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
     });
+}
+
+function getAlphabetLetter(index) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (index < 26) {
+    return alphabet[index];
+  } else {
+    // For more than 26 points, use AA, AB, AC, etc.
+    const firstLetter = alphabet[Math.floor(index / 26) - 1];
+    const secondLetter = alphabet[index % 26];
+    return firstLetter + secondLetter;
+  }
 }
 
 window.initMap = initMap;

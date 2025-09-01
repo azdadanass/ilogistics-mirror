@@ -75,10 +75,17 @@ function fetchDriversLocations() {
           const position = { lat: location.latitude, lng: location.longitude };
 
           const borderColor = getBorderColor(location.date);
-          const userIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+          
+          // Default icon URL
+          const defaultIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+          
+          // Use user's imageUrl if available, otherwise use default
+          const imageUrl = location.imageUrl && location.imageUrl.trim() !== "" 
+            ? location.imageUrl 
+            : defaultIconUrl;
 
           // Create PNG icon dynamically
-          createPngIcon(userIconUrl, borderColor, (iconUrl) => {
+          createPngIcon(imageUrl, borderColor, (iconUrl) => {
             const marker = new google.maps.Marker({
               position: position,
               map: map,
@@ -93,7 +100,7 @@ function fetchDriversLocations() {
             const infoWindow = new google.maps.InfoWindow({
               content: `
                 <div style="display:flex;align-items:center;">
-                  <img src="${userIconUrl}" style="width:50px;height:50px;border-radius:50%;margin-right:10px;" />
+                  <img src="${imageUrl}" style="width:50px;height:50px;border-radius:50%;margin-right:10px;" onerror="this.src='${defaultIconUrl}'" />
                   <div>
                     <strong>${location.username || 'Chauffeur inconnu'}</strong><br/>
                     <span>Latitude: ${location.latitude.toFixed(5)}</span><br/>
@@ -152,6 +159,24 @@ function createPngIcon(imageUrl, borderColor, callback) {
 
     callback(canvas.toDataURL("image/png"));
   };
+  
+  // Handle image load error - fallback to default icon
+  img.onerror = () => {
+    const defaultImg = new Image();
+    defaultImg.crossOrigin = "anonymous";
+    defaultImg.onload = () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+      ctx.clip();
+      ctx.drawImage(defaultImg, border, border, size - border * 2, size - border * 2);
+      ctx.restore();
+
+      callback(canvas.toDataURL("image/png"));
+    };
+    defaultImg.src = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+  };
+  
   img.src = imageUrl;
 }
 

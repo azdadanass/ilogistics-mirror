@@ -91,6 +91,8 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.transportationJob.id = ?1")
 	public List<TransportationRequest> findLightByJob(Integer id);
+	
+	public List<TransportationRequest> findByTransportationJobId(Integer id);
 
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) and a.transportationJob.driver.username = ?2 order by a.neededPickupDate")
 	public List<TransportationRequest> findLightByDriver(List<TransportationRequestStatus> status, String username);

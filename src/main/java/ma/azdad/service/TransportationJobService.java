@@ -52,6 +52,7 @@ import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.DriverLocationRepo;
+import ma.azdad.repos.StopRepos;
 import ma.azdad.repos.TransportationJobFileRepos;
 import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationJobRepos;
@@ -81,6 +82,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;
+	
 
 	@Autowired
 	TransportationJobItineraryRepos transportationJobItineraryRepos;
@@ -102,6 +104,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	StopService stopService;
+	
+	@Autowired
+	StopRepos stopRepos;
 
 	@Autowired
 	TransporterService transporterService;
@@ -1043,6 +1048,94 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 		return realNonProductive;
 	}
+	
+	public Double calculateEstimatedProductiveDist(Integer jobId) {
+	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+
+	    double estimatedProd = 0d;
+	    boolean carryingGoods = false;
+
+	    Double lastLat = null;
+	    Double lastLng = null;
+
+	    for (Stop stop : stops) {
+	        double lat = stop.getSite().getLatitude();
+	        double lng = stop.getSite().getLongitude();
+
+	        if (lastLat != null && lastLng != null) {
+	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+
+	            if (carryingGoods) {
+	                estimatedProd += dist;
+	            }
+	        }
+
+	        // Update carrying state based on stop type
+	        switch (stop.getType()) {
+	            case PICKUP:
+	                carryingGoods = true;
+	                break;
+	            case DELIVERY:
+	                carryingGoods = false;
+	                break;
+	            case DELIVERY_AND_PICKUP:
+	                // delivery first (drop goods)
+	                carryingGoods = false;
+	                // then pickup again (start carrying new goods)
+	                carryingGoods = true;
+	                break;
+	        }
+
+	        lastLat = lat;
+	        lastLng = lng;
+	    }
+
+	    return estimatedProd;
+	}
+
+	public Double calculateEstimatedNonProductiveDist(Integer jobId) {
+	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+
+	    double estimatedNonProd = 0d;
+	    boolean carryingGoods = false;
+
+	    Double lastLat = null;
+	    Double lastLng = null;
+
+	    for (Stop stop : stops) {
+	        double lat = stop.getSite().getLatitude();
+	        double lng = stop.getSite().getLongitude();
+
+	        if (lastLat != null && lastLng != null) {
+	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+
+	            if (!carryingGoods) {
+	                estimatedNonProd += dist;
+	            }
+	        }
+
+	        // Update carrying state based on stop type
+	        switch (stop.getType()) {
+	            case PICKUP:
+	                carryingGoods = true;
+	                break;
+	            case DELIVERY:
+	                carryingGoods = false;
+	                break;
+	            case DELIVERY_AND_PICKUP:
+	                carryingGoods = false; // drop current load
+	                carryingGoods = true;  // immediately pick up again
+	                break;
+	        }
+
+	        lastLat = lat;
+	        lastLng = lng;
+	    }
+
+	    return estimatedNonProd;
+	}
+
+
 
 	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int EARTH_RADIUS_KM = 6371;

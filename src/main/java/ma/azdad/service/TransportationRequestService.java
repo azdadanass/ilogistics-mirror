@@ -657,10 +657,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (tr.getEstimatedDistance() != null) {
 			trMobile.setEstimatedDistanceText(tr.getEstimatedDistanceText());
 		}
-		if (tr.getTransportationJob().getVehicle() != null) {
+		if (tr.getTransportationJob() != null && tr.getTransportationJob().getVehicle() != null) {
 			trMobile.setVehicule(new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicleTypeName(), tr.getTransportationJob().getVehicleMatricule()));
 		}
-		if (tr.getTransportationJob().getDriver() != null) {
+		if (tr.getTransportationJob() != null && tr.getTransportationJob().getDriver() != null) {
 			trMobile.setDriver(toMobileUser2(tr.getTransportationJob().getDriver()));
 		}
 		if (tr.getDeliveryRequest() != null) {

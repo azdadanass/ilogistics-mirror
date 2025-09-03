@@ -104,6 +104,12 @@
 											</h:outputText>
 											<h:outputText value=" Kg"/>
 										</p:column>
+										<p:column headerText="Max Weight">
+											<h:outputText value="#{item.maxWeight}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" Kg"/>
+										</p:column>
 										<p:column headerText="Max Volume">
 											<h:outputText value="#{item.grossWeight}">
 												<f:convertNumber type="number" maxFractionDigits="2" />

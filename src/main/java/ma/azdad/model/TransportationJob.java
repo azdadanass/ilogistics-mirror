@@ -45,7 +45,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	private Double firstLatitude;
 	private Double firstLongitude;
-	
+
 	private String qrKey;
 
 	// timeline
@@ -68,8 +68,16 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 //	private User user8;
 
 	// Costs
-	private Double realCost = 0.0;
-	private Double estimatedCost = 0.0; // Calculable
+	private Double cost = 0.0; // = startCost+itineraryCost+handlingCost
+	private Double startCost = 0.0;
+	private Double itineraryCost = 0.0;
+	private Double handlingCost = 0.0;
+
+	private Double estimatedCost = 0.0; 
+	private Double estimatedStartCost = 0.0;
+	private Double estimatedItineraryCost = 0.0;
+	
+
 	private Double vehiclePrice = 0.0;
 
 	private Transporter transporter;
@@ -87,15 +95,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double firstLatitude,
-			Double firstLongitude, //
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
-		this.realCost = realCost;
+		this.cost = cost;
 		this.estimatedCost = estimatedCost;
 		this.firstLatitude = firstLatitude;
 		this.firstLongitude = firstLongitude;
@@ -108,8 +115,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double realCost, Double estimatedCost, Double firstLatitude,
-			Double firstLongitude, //
+	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String driverUsername, String vehicleMatricule) {
 		super(id);
@@ -117,7 +123,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
-		this.realCost = realCost;
+		this.cost = cost;
 		this.estimatedCost = estimatedCost;
 		this.firstLatitude = firstLatitude;
 		this.firstLongitude = firstLongitude;
@@ -133,6 +139,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void init() {
 		Collections.sort(transportationRequestList);
+	}
+	
+	public void calculateCost() {
+		this.cost = this.startCost + this.itineraryCost + this.handlingCost;
+	}
+	
+	public void calculateEstimatedCost() {
+		this.estimatedCost = this.estimatedStartCost + this.estimatedItineraryCost;
 	}
 
 	public void addHistory(TransportationJobHistory history) {
@@ -225,8 +239,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		}
 	}
 
-	public void calculateEstimatedCost() {
-		estimatedCost = getEstimatedDistance() * vehiclePrice;
+	public void calculateEstimatedItineraryCost() {
+		estimatedItineraryCost = getEstimatedDistance() * vehiclePrice;
+		calculateEstimatedCost();
 	}
 
 	@Transient
@@ -291,7 +306,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			pathList.add(path);
 		}
 
-		calculateEstimatedCost();
+		calculateEstimatedItineraryCost();
 
 	}
 
@@ -421,12 +436,12 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.endDate = endDate;
 	}
 
-	public Double getRealCost() {
-		return realCost;
+	public Double getCost() {
+		return cost;
 	}
 
-	public void setRealCost(Double realCost) {
-		this.realCost = realCost;
+	public void setCost(Double cost) {
+		this.cost = cost;
 	}
 
 	public Double getEstimatedCost() {
@@ -895,7 +910,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setQrKey(String qrKey) {
 		this.qrKey = qrKey;
 	}
-	
+
 	@Transient
 	public String getQrImageLink() {
 		return App.QR.getLink() + "/img/tj/" + id + "/" + qrKey;
@@ -904,6 +919,46 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	@Transient
 	public String getQrLink() {
 		return App.QR.getLink() + "/tj/" + id + "/" + qrKey;
+	}
+
+	public Double getStartCost() {
+		return startCost;
+	}
+
+	public void setStartCost(Double startCost) {
+		this.startCost = startCost;
+	}
+
+	public Double getItineraryCost() {
+		return itineraryCost;
+	}
+
+	public void setItineraryCost(Double itineraryCost) {
+		this.itineraryCost = itineraryCost;
+	}
+
+	public Double getHandlingCost() {
+		return handlingCost;
+	}
+
+	public void setHandlingCost(Double handlingCost) {
+		this.handlingCost = handlingCost;
+	}
+
+	public Double getEstimatedItineraryCost() {
+		return estimatedItineraryCost;
+	}
+
+	public void setEstimatedItineraryCost(Double estimatedItineraryCost) {
+		this.estimatedItineraryCost = estimatedItineraryCost;
+	}
+
+	public Double getEstimatedStartCost() {
+		return estimatedStartCost;
+	}
+
+	public void setEstimatedStartCost(Double estimatedStartCost) {
+		this.estimatedStartCost = estimatedStartCost;
 	}
 
 }

@@ -798,8 +798,8 @@ public class DeliveryRequestDetail extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Double getNetWeight() {
-		if (partNumber != null)
-			return quantity * partNumber.getNetWeight();
+		if (packing != null)
+			return (quantity / packing.getQuantity()) * packing.getNetWeight();
 		return 0.0;
 	}
 

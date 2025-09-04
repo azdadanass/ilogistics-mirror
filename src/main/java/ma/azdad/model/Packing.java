@@ -23,6 +23,7 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 	private Boolean active = true;
 	private Integer totalItems = 0;
 	private Double grossWeight = 0.0;
+	private Double netWeight = 0.0;
 	private Double volume = 0.0;
 
 	private PartNumber partNumber;
@@ -50,12 +51,15 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 	public void calculateFields() {
 		totalItems = 0;
 		grossWeight = 0.0;
+		netWeight = 0.0;
 		volume = 0.0;
 
 		for (PackingDetail packingDetail : detailList) {
 			totalItems += packingDetail.getQuantity();
 			if (packingDetail.getGrossWeight() != null)
 				grossWeight += packingDetail.getQuantity() * packingDetail.getGrossWeight();
+			if (packingDetail.getNetWeight() != null)
+				grossWeight += packingDetail.getQuantity() * packingDetail.getNetWeight();
 			if (packingDetail.getVolume() != null)
 				volume += packingDetail.getQuantity() * packingDetail.getVolume();
 		}
@@ -82,7 +86,7 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 			partNumber = new PartNumber();
 		partNumber.setName(partNumberName);
 	}
-	
+
 	@Transient
 	public String getPartNumberDescription() {
 		return partNumber != null ? partNumber.getDescription() : null;
@@ -94,16 +98,16 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 			partNumber = new PartNumber();
 		partNumber.setDescription(partNumberDescription);
 	}
-	
+
 	@Transient
-	public String getPartNumberBrandName(){
-		return partNumber!=null?partNumber.getBrandName():null;
+	public String getPartNumberBrandName() {
+		return partNumber != null ? partNumber.getBrandName() : null;
 	}
 
 	@Transient
-	public void setPartNumberBrandName(String partNumberBrandName){
-		if(partNumber==null)
-			partNumber=new PartNumber();
+	public void setPartNumberBrandName(String partNumberBrandName) {
+		if (partNumber == null)
+			partNumber = new PartNumber();
 		partNumber.setBrandName(partNumberBrandName);
 	}
 
@@ -163,6 +167,14 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 
 	public void setGrossWeight(Double grossWeight) {
 		this.grossWeight = grossWeight;
+	}
+
+	public Double getNetWeight() {
+		return netWeight;
+	}
+
+	public void setNetWeight(Double netWeight) {
+		this.netWeight = netWeight;
 	}
 
 	public Double getVolume() {

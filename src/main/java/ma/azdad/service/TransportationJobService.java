@@ -339,7 +339,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Double estimatedDistance = tr.getEstimatedDistance();
 			tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
 			if (setCost)
-				tr.setCost(transportationJob.getRealCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+				tr.setCost(transportationJob.getCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
 			transportationRequestService.save(tr);
 		}
 	}
@@ -679,7 +679,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if(tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
 					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
@@ -694,7 +694,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if(tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
 					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
@@ -710,7 +710,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if(tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
 					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
@@ -738,7 +738,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<TransportationJob> list = repos.findByDriverMobile(username, status);
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
 					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
@@ -750,7 +750,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(), tj.getEstimatedCost(),
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
 					toMobileUser(userService.findByUsernameLight(tj.getDriverUsername())), transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
@@ -784,7 +784,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id) {
 		TransportationJob tj = findOne(id);
-		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getRealCost(),
+		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(),
 				tj.getEstimatedCost(), tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver()));
 		List<ma.azdad.mobile.model.TransportationRequest> trList = new ArrayList<>();
 		if (tj.getEstimatedDistance() != null) {

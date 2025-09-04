@@ -126,7 +126,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		else if (isAddPage) {
 			if (deliveryRequestId != null) {
 				DeliveryRequest dr = deliveryRequestService.findOne(deliveryRequestId);
-				if (deliveryRequestService.canAddTrasnport(dr, sessionView.getUsername())) {
+				if (deliveryRequestService.canAddTransport(dr, sessionView.getUsername())) {
 					transportationRequest.setDeliveryRequestId(deliveryRequestId);
 					transportationRequest.setDeliveryRequest(dr);
 				}

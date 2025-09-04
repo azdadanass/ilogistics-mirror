@@ -34,20 +34,18 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	// USER
 	private Date neededPickupDate;
 	private Date neededDeliveryDate;
-	
+
 	private Date plannedPickupDate;
 	private Date plannedDeliveryDate;
-	
+
 	private Date expectedPickupDate;
 	private Date expectedDeliveryDate;
-	
+
 	private Date pickupDate;
 	private Date deliveryDate;
-	
+
 	private String qrKey;
-	
-	
-	
+
 	private DeliveryRequest deliveryRequest;
 
 	private ContactType contactType1;
@@ -60,9 +58,20 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private Double estimatedDistance = 0.0;
 	private String estimatedDistanceText;
 	private String rejectionReason;
+
+	private Double realDistance = 0.0;
+
 	private Double estimatedCost = 0.0;
-	private Double cost = 0.0; // MAD
+	private Double estimatedItineraryCost;
+	private Double estimatedStartCost;
+
+	private Double cost = 0.0; // = startCost+itineraryCost+handlingCost
+	private Double startCost = 0.0;
+	private Double itineraryCost = 0.0;
+	private Double handlingCost = 0.0;
+
 	private Double totalAppLinkCost = 0.0; // MAD
+
 	private TransportationRequestPaymentStatus paymentStatus;
 
 	private Transporter transporter;
@@ -91,8 +100,6 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private User user7;
 	private User user8;
 	private User user9;
-	
-	
 
 	// TM
 	private Integer vehicleId;
@@ -141,8 +148,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	// constructor 1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Integer deliveryRequestId,
-			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName,
-			String warehouseName, //
+			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
@@ -165,8 +171,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	// select1
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference,
-			DeliveryRequestType deliveryRequestType, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
+			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
 			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, //
 			String approverFullName, Double cost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
@@ -230,6 +236,10 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.originId = originId;
 		this.destinationId = destinationId;
 		this.warehouseId = warehouseId;
+	}
+
+	public void calculateCost() {
+		this.cost = this.startCost + this.itineraryCost + this.handlingCost;
 	}
 
 	@Transient
@@ -298,12 +308,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return ObjectUtils.firstNonNull(pickupDate,expectedPickupDate,plannedPickupDate);
+		return ObjectUtils.firstNonNull(pickupDate, expectedPickupDate, plannedPickupDate);
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return ObjectUtils.firstNonNull(deliveryDate,expectedDeliveryDate,plannedDeliveryDate);
+		return ObjectUtils.firstNonNull(deliveryDate, expectedDeliveryDate, plannedDeliveryDate);
 	}
 
 	@Transient
@@ -467,7 +477,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		if (contact2 != null)
 			contact2Username = contact2.getUsername();
 	}
-	
+
 	public void addHistory(TransportationRequestHistory history) {
 		history.setParent(this);
 		historyList.add(history);
@@ -618,7 +628,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.fileList = fileList;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL,orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<TransportationRequestHistory> getHistoryList() {
 		return historyList;
 	}
@@ -1083,7 +1093,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 			return transportationJob.getDriver().getFullName();
 		return null;
 	}
-	
+
 	@Transient
 	public String getDriverFullName() {
 		if (transportationJob != null)
@@ -1191,12 +1201,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void setPlannedDeliveryDate(Date plannedDeliveryDate) {
 		this.plannedDeliveryDate = plannedDeliveryDate;
 	}
-	
+
 	@Override
 	public String toString() {
 		return reference;
 	}
-	
+
 	public String getQrKey() {
 		return qrKey;
 	}
@@ -1204,7 +1214,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void setQrKey(String qrKey) {
 		this.qrKey = qrKey;
 	}
-	
+
 	@Transient
 	public String getQrImageLink() {
 		return App.QR.getLink() + "/img/tr/" + id + "/" + qrKey;
@@ -1214,7 +1224,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public String getQrLink() {
 		return App.QR.getLink() + "/tr/" + id + "/" + qrKey;
 	}
-	
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "deliveryRequest", cascade = CascadeType.ALL)
 	public List<Issue> getIssueList() {
 		return issueList;
@@ -1222,6 +1232,54 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setIssueList(List<Issue> issueList) {
 		this.issueList = issueList;
+	}
+
+	public Double getEstimatedItineraryCost() {
+		return estimatedItineraryCost;
+	}
+
+	public void setEstimatedItineraryCost(Double estimatedItineraryCost) {
+		this.estimatedItineraryCost = estimatedItineraryCost;
+	}
+
+	public Double getEstimatedStartCost() {
+		return estimatedStartCost;
+	}
+
+	public void setEstimatedStartCost(Double estimatedStartCost) {
+		this.estimatedStartCost = estimatedStartCost;
+	}
+
+	public Double getStartCost() {
+		return startCost;
+	}
+
+	public void setStartCost(Double startCost) {
+		this.startCost = startCost;
+	}
+
+	public Double getItineraryCost() {
+		return itineraryCost;
+	}
+
+	public void setItineraryCost(Double itineraryCost) {
+		this.itineraryCost = itineraryCost;
+	}
+
+	public Double getHandlingCost() {
+		return handlingCost;
+	}
+
+	public void setHandlingCost(Double handlingCost) {
+		this.handlingCost = handlingCost;
+	}
+
+	public Double getRealDistance() {
+		return realDistance;
+	}
+
+	public void setRealDistance(Double realDistance) {
+		this.realDistance = realDistance;
 	}
 
 }

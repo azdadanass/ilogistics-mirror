@@ -372,4 +372,96 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="editCostsForm" rendered="#{transportationJobView.isViewPage}">
+		<p:dialog widgetVar="editCostsDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('editCostsDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header" style="margin-bottom: 20px">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-dollar green" />
+					<h:outputText value=" Edit Costs" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Start Cost" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputNumber value="#{transportationJobView.transportationJob.startCost}" decimalSeparator="." thousandSeparator="" minValue="0" required="true"
+									requiredMessage="Start Cost should not be null">
+									<p:ajax event="keyup" listener="#{transportationJobView.transportationJob.calculateCost()}" update="cost" />
+								</p:inputNumber>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Itinerary Cost" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputNumber value="#{transportationJobView.transportationJob.itineraryCost}" decimalSeparator="." thousandSeparator="" minValue="0" required="true"
+									requiredMessage="Start Cost should not be null">
+									<p:ajax event="keyup" listener="#{transportationJobView.transportationJob.calculateCost()}" update="cost" />
+								</p:inputNumber>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Handling Cost" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputNumber value="#{transportationJobView.transportationJob.handlingCost}" decimalSeparator="." thousandSeparator="" minValue="0" required="true"
+									requiredMessage="Start Cost should not be null">
+									<p:ajax event="keyup" listener="#{transportationJobView.transportationJob.calculateCost()}" update="cost" />
+								</p:inputNumber>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-4" />
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Total Cost" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputText id="cost" value="#{transportationJobView.transportationJob.cost}" readonly="true" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="space-16" />
+				<div class="row">
+					<h:panelGroup id="fileUploadPanel">
+						<p:fileUpload fileUploadListener="#{transportationJobView.handleFileUpload}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update="messages,:main_form:files_table"
+							sizeLimit="20000000" fileLimit="5" allowTypes="/(\.|\/)(gif|jpe?g|png|pdf|xlsx?|docx?|eml|mp4|txt|conf)$/" styleClass="#{transportationJobView.transportationJobFileType==null?'hide':''}"
+							style="margin: auto;width: 80%">
+							<f:attribute name="beanName" value="#{transportationJobView.className2}" />
+						</p:fileUpload>
+						<p:growl id="messages" showDetail="true" />
+					</h:panelGroup>
+				</div>
+			</div>
+			<br />
+			<br />
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('editCostsDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.editCosts()}" value="Edit" styleClass="btn btn-success" oncomplete="PF('editCostsDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

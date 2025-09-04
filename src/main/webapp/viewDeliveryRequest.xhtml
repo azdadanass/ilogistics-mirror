@@ -112,7 +112,7 @@
 							<f:param name="id" value="#{deliveryRequestView.id}" />
 						</h:outputLink>
 						<p:commandLink title="Add Transportation Request" action="#{deliveryRequestView.addTransport()}" styleClass="btn btn-app btn-sm btn-purple  hover aa-tooltip tooltip-purple"
-							rendered="#{deliveryRequestView.canAddTrasnport()}">
+							rendered="#{deliveryRequestView.canAddTransport()}" update="messages">
 							<i class="ace-icon fa fa-truck bigger-230"></i>
 							<h:outputText value="Add" />
 						</p:commandLink>
@@ -131,8 +131,7 @@
 							<h:outputText value="Print" />
 							<f:param name="id" value="#{deliveryRequestView.deliveryRequest.id}" />
 						</h:outputLink> -->
-						<p:commandLink title="Print" action="#{deliveryRequestView.generatePdf2()}" update="printForm2" oncomplete="PF('printDlg2').show()" 
-						rendered="#{deliveryRequestView.canGeneratePdf()}"
+						<p:commandLink title="Print" action="#{deliveryRequestView.generatePdf2()}" update="printForm2" oncomplete="PF('printDlg2').show()" rendered="#{deliveryRequestView.canGeneratePdf()}"
 							styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info">
 							<i class="ace-icon fa fa-print bigger-230"></i>
 							<h:outputText value="Print" />
@@ -1922,16 +1921,16 @@
 											<h:outputText value="#{item.serialNumber}" styleClass="green bolder"
 												rendered="#{!deliveryRequestSerialNumberView.editMode or (item.inboundStockRow != null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound) }" />
 											<p:inputText value="#{item.serialNumber}" readonly="#{item.outboundDeliveryRequest!=null}"
-												rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}" >
+												rendered="#{deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isInbound}">
 												<p:ajax event="keyup" listener="#{item.changeSerialNumberListener()}" update="entryMode" />
-												</p:inputText>
+											</p:inputText>
 											<p:selectOneMenu value="#{item.serialNumber}" filter="true" filterMatchMode="contains" style="width:100px"
 												rendered="#{item.inboundStockRow == null and deliveryRequestSerialNumberView.editMode and deliveryRequestView.deliveryRequest.isOutbound}">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{deliveryRequestSerialNumberView.findRemainingByPartNumberAndInboundDeliveryRequestAndStatusAndLocationAndPackingDetail(item)}" var="i" itemLabel="#{i.serialNumber}"
 													itemValue="#{i.serialNumber}" />
 												<p:ajax listener="#{deliveryRequestSerialNumberView.selectSerialNumberListener(item,deliveryRequestView.deliveryRequest)}" update="serialNumberList" />
-												<p:ajax listener="#{item.changeSerialNumberListener()}" update="entryMode"/>
+												<p:ajax listener="#{item.changeSerialNumberListener()}" update="entryMode" />
 											</p:selectOneMenu>
 										</p:column>
 										<p:column headerText="Box Id">

@@ -80,12 +80,9 @@ import ma.azdad.model.InboundType;
 import ma.azdad.model.Issue;
 import ma.azdad.model.IssueCategory;
 import ma.azdad.model.IssueComment;
-import ma.azdad.model.IssueHistory;
 import ma.azdad.model.IssueParentType;
 import ma.azdad.model.IssueStatus;
 import ma.azdad.model.IssueType;
-import ma.azdad.model.JobRequest;
-import ma.azdad.model.JobRequestStatus;
 import ma.azdad.model.OutboundType;
 import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
@@ -1763,11 +1760,14 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	}
 
 	public Double getGrossWeight(Integer deliveryRequestId) {
-		Double d = deliveryRequestRepos.getGrossWeight(deliveryRequestId);
-		return d != null ? d : 0.0;
+		return ObjectUtils.firstNonNull(deliveryRequestRepos.getGrossWeight(deliveryRequestId),0.0);
+	}
+	
+	public Double getVolume(Integer deliveryRequestId) {
+		return ObjectUtils.firstNonNull(deliveryRequestRepos.getVolume(deliveryRequestId),0.0);
 	}
 
-	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
+	public Boolean canAddTransport(DeliveryRequest deliveryRequest, String connectedUser) {
 		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded()
 				&& (connectedUser.equals(deliveryRequest.getRequester().getUsername())
 						|| connectedUser.equals(deliveryRequest.getProject().getManager().getUsername()))

@@ -89,14 +89,7 @@ public class UserVehicle extends GenericModel<Integer> {
 
 	@Transient
 	public String getVehicleMatricule() {
-		return vehicle != null ? vehicle.getMatricule() : null;
-	}
-
-	@Transient
-	public void setVehicleMatricule(String vehicleMatricule) {
-		if (vehicle == null)
-			vehicle = new Vehicle();
-		vehicle.setMatricule(vehicleMatricule);
+		return vehicle != null ? vehicle.getCorrectMatricule() : null;
 	}
 
 	// getters & setters

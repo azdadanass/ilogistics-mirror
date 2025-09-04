@@ -59,6 +59,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private String estimatedDistanceText;
 	private String rejectionReason;
 
+	private Double realDistance = 0.0;
+
 	private Double estimatedCost = 0.0;
 	private Double estimatedItineraryCost;
 	private Double estimatedStartCost;
@@ -1270,6 +1272,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setHandlingCost(Double handlingCost) {
 		this.handlingCost = handlingCost;
+	}
+
+	public Double getRealDistance() {
+		return realDistance;
+	}
+
+	public void setRealDistance(Double realDistance) {
+		this.realDistance = realDistance;
 	}
 
 }

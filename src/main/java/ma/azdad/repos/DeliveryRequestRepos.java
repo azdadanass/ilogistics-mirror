@@ -37,23 +37,19 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	String companyName = "(select b.name from Company b where a.company.id = b.id)";
 	String warehouse = "(select b from Warehouse b where b.id = a.warehouse.id)";
 	String destinationProjectName = "(select b.name from Project b where b.id = a.destinationProject.id)";
-	
-	
+
 	String transporterType = "(select b.type from Transporter b where b.id = a.transporter.id)";
 	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
 	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
 	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
-	
-	
-	
-	
-	
+
 	String transportationRequestNumber = "(select count(*) from TransportationRequest b where b.deliveryRequest.id = a.id)";
 	String c1 = "select new DeliveryRequest(id,description,referenceNumber,reference,priority,a.requester,a.project,a.type,a.inboundType,a.outboundType,a.sdm," //
 			+ "a.status,a.originNumber,a.date4,a.neededDeliveryDate,a.returnReason," + originName + "," + destinationName + ",a.ownerType," + customerName + "," + supplierName + "," + companyName
-			+ "," + warehouse + "," + destinationProjectName + "," + transporterType + "," + transporterPrivateFirstName+ "," + transporterPrivateLastName+ "," + transporterSupplierName + "," + transportationRequestNumber
-			+ ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType," + deliverToCompanyName + ","
-			+ deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + "," + endCustomerName + ",a.project.customer.name," + destinationProjectCustomerName + ") ";
+			+ "," + warehouse + "," + destinationProjectName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ","
+			+ transportationRequestNumber + ",a.transportationNeeded,a.smsRef,a.containsBoqMapping,a.missingPo,a.missingOutboundDeliveryNote," + poNumero + ",a.deliverToCompanyType,"
+			+ deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + "," + endCustomerName + ",a.project.customer.name,"
+			+ destinationProjectCustomerName + ") ";
 
 	String c2 = "select new DeliveryRequest(a.id,a.reference,a.type,a.status,a.date4,a.requester.username,a.requester.photo,a.warehouse.name,a.project.name,a.destinationProject.name,"//
 			+ "a.deliverToCompanyType," + deliverToCompanyName + "," + deliverToCustomerName + "," + deliverToSupplierName + "," + toUserFullName + ")";
@@ -294,8 +290,14 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("from DeliveryRequest where type = ?1 and referenceNumber = ?2")
 	public DeliveryRequest findByTypeAndReferenceNumber(DeliveryRequestType type, Integer referenceNumber);
 
-	@Query("select sum(a.quantity * a.partNumber.grossWeight) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
+//	@Query("select sum(a.quantity * a.partNumber.grossWeight) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
+//	public Double getGrossWeight(Integer deliveryRequestId);
+
+	@Query("select sum((a.quantity /a.packing.quantity) * a.packing.grossWeight) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
 	public Double getGrossWeight(Integer deliveryRequestId);
+
+	@Query("select sum((a.quantity /a.packing.quantity) * a.packing.volume) from DeliveryRequestDetail a where a.deliveryRequest.id = ?1")
+	public Double getVolume(Integer deliveryRequestId);
 
 	// correction destination project
 	@Query("from DeliveryRequest a where a.type = ?1 and a.project.type = ?2 and a.destinationProject is null")

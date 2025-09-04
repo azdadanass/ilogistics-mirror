@@ -154,7 +154,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private MapModel mapModel;
 	private Marker marker;
 	private Boolean viewPathList = false;
-	private Boolean editTrListCosts = false;
 
 	private static Map<String, List<Integer>> TO_ASSIGN_MAP = new HashMap<String, List<Integer>>();
 	private List<TransportationJob> toAssignList = new ArrayList<TransportationJob>();
@@ -1009,51 +1008,53 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		if (!canEditCosts())
 			return;
 		transportationJob.calculateCost();
+		calculateTrListCosts();
 		transportationJobService.save(transportationJob);
 		transportationJob = transportationJobService.findOne(transportationJob.getId());
 	}
-	
-	public void initEditTrListCosts() {
-		if(transportationJob.getTransportationRequestList().size()==1) {
-			TransportationRequest tr = transportationJob.getTransportationRequestList().get(0);
-			tr.setStartCost(transportationJob.getStartCost());
-			tr.setItineraryCost(transportationJob.getItineraryCost());
-			tr.setHandlingCost(transportationJob.getHandlingCost());
-		}
+
+	public void calculateTrListCosts() {
+		Double total = transportationJob.getTransportationRequestList().stream().mapToDouble(tr -> deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getRealDistance()).sum();
+		transportationJob.getTransportationRequestList().forEach(tr -> {
+			Double proportion = deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getRealDistance() / total;
+			tr.setStartCost(proportion * transportationJob.getStartCost());
+			tr.setItineraryCost(proportion * transportationJob.getItineraryCost());
+			tr.setHandlingCost(proportion * transportationJob.getHandlingCost());
+		});
 	}
 
-	public void editTrListCosts() {
-		if (!canEditCosts())
-			return;
-		if (!validateEditTrListCosts())
-			return;
+//	public void editTrListCosts() {
+//		if (!canEditCosts())
+//			return;
+//		if (!validateEditTrListCosts())
+//			return;
+//
+//		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
+//			tr.calculateCost();
+//			transportationRequestService.save(tr);
+//		}
+//
+//		editTrListCosts = false;
+//	}
 
-		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
-			tr.calculateCost();
-			transportationRequestService.save(tr);
-		}
-
-		editTrListCosts = false;
-	}
-
-	public Boolean validateEditTrListCosts() {
-
-		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getStartCost() == null).count() > 0)
-			return FacesContextMessages.ErrorMessages("Start Cost should not be null");
-		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getItineraryCost() == null).count() > 0)
-			return FacesContextMessages.ErrorMessages("Itinerary Cost should not be null");
-		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getHandlingCost() == null).count() > 0)
-			return FacesContextMessages.ErrorMessages("Handling Cost should not be null");
-
-		if (UtilsFunctions.compareDoubles(transportationJob.getStartCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getStartCost()).sum()) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR start costs should be equal to TJ start cost");
-		if (UtilsFunctions.compareDoubles(transportationJob.getItineraryCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getItineraryCost()).sum()) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR itinerary costs should be equal to TJ itinerary cost");
-		if (UtilsFunctions.compareDoubles(transportationJob.getHandlingCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getHandlingCost()).sum()) != 0)
-			return FacesContextMessages.ErrorMessages("Total TR handling costs should be equal to TJ handling cost");
-
-		return true;
-	}
+//	public Boolean validateEditTrListCosts() {
+//
+//		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getStartCost() == null).count() > 0)
+//			return FacesContextMessages.ErrorMessages("Start Cost should not be null");
+//		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getItineraryCost() == null).count() > 0)
+//			return FacesContextMessages.ErrorMessages("Itinerary Cost should not be null");
+//		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getHandlingCost() == null).count() > 0)
+//			return FacesContextMessages.ErrorMessages("Handling Cost should not be null");
+//
+//		if (UtilsFunctions.compareDoubles(transportationJob.getStartCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getStartCost()).sum()) != 0)
+//			return FacesContextMessages.ErrorMessages("Total TR start costs should be equal to TJ start cost");
+//		if (UtilsFunctions.compareDoubles(transportationJob.getItineraryCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getItineraryCost()).sum()) != 0)
+//			return FacesContextMessages.ErrorMessages("Total TR itinerary costs should be equal to TJ itinerary cost");
+//		if (UtilsFunctions.compareDoubles(transportationJob.getHandlingCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getHandlingCost()).sum()) != 0)
+//			return FacesContextMessages.ErrorMessages("Total TR handling costs should be equal to TJ handling cost");
+//
+//		return true;
+//	}
 
 	// counts
 
@@ -1195,13 +1196,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		this.viewPathList = viewPathList;
 	}
 
-	public Boolean getEditTrListCosts() {
-		return editTrListCosts;
-	}
-
-	public void setEditTrListCosts(Boolean editTrListCosts) {
-		this.editTrListCosts = editTrListCosts;
-	}
+//	public Boolean getEditTrListCosts() {
+//		return editTrListCosts;
+//	}
+//
+//	public void setEditTrListCosts(Boolean editTrListCosts) {
+//		this.editTrListCosts = editTrListCosts;
+//	}
 
 	public Double getLatitude() {
 		return latitude;

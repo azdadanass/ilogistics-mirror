@@ -868,28 +868,37 @@
 												</h:outputText>
 											</p:column>
 											<p:column headerText="Start Cost" exportable="false">
-												<h:outputText value="#{item.startCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="green">
+												<h:outputText value="#{item.startCost}" styleClass="green">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<!-- <h:outputText value="#{item.startCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="green">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<p:inputNumber value="#{item.startCost}" rendered="#{transportationJobView.editTrListCosts}" thousandSeparator="">
 													<p:ajax event="keyup" listener="#{item.calculateCost()}" update="cost" />
-												</p:inputNumber>
+												</p:inputNumber> -->
 											</p:column>
 											<p:column headerText="Itinerary Cost" exportable="false">
-												<h:outputText value="#{item.itineraryCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="blue">
+												<h:outputText value="#{item.itineraryCost}" styleClass="blue">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<!-- <h:outputText value="#{item.itineraryCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="blue">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<p:inputNumber value="#{item.itineraryCost}" rendered="#{transportationJobView.editTrListCosts}" thousandSeparator="">
 													<p:ajax event="keyup" listener="#{item.calculateCost()}" update="cost" />
-												</p:inputNumber>
+												</p:inputNumber> -->
 											</p:column>
 											<p:column headerText="Handling Cost" exportable="false">
-												<h:outputText value="#{item.handlingCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="orange">
+												<h:outputText value="#{item.handlingCost}" styleClass="orange">
+													<f:convertNumber type="number" maxFractionDigits="2" />
+												</h:outputText>
+												<!-- <h:outputText value="#{item.handlingCost}" rendered="#{!transportationJobView.editTrListCosts}" styleClass="orange">
 													<f:convertNumber type="number" maxFractionDigits="2" />
 												</h:outputText>
 												<p:inputNumber value="#{item.handlingCost}" rendered="#{transportationJobView.editTrListCosts}" thousandSeparator="">
 													<p:ajax event="keyup" listener="#{item.calculateCost()}" update="cost" />
-												</p:inputNumber>
+												</p:inputNumber> -->
 											</p:column>
 											<p:column headerText="Total Cost" exportable="false">
 												<h:outputText id="cost" value="#{item.cost}" styleClass="bolder purple">
@@ -899,7 +908,7 @@
 											<p:column headerText="TR Status">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 											</p:column>
-											<f:facet name="footer">
+											<!-- <f:facet name="footer">
 												<div class="action-buttons center">
 													<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit Costs" update=":main_form:costsSubview:costTab" partialSubmit="true" process="costTab"
 														rendered="#{transportationJobView.canEditCosts() and !transportationJobView.editTrListCosts}">
@@ -912,7 +921,7 @@
 														<i class="fa fa-save green" />
 													</p:commandLink>
 												</div>
-											</f:facet>
+											</f:facet> -->
 										</p:dataTable>
 									</div>
 								</div>

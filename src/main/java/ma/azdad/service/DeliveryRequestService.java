@@ -1767,7 +1767,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return d != null ? d : 0.0;
 	}
 
-	public Boolean canAddTrasnport(DeliveryRequest deliveryRequest, String connectedUser) {
+	public Boolean canAddTransport(DeliveryRequest deliveryRequest, String connectedUser) {
 		return deliveryRequest.getTransportationNeeded() != null && deliveryRequest.getTransportationNeeded()
 				&& (connectedUser.equals(deliveryRequest.getRequester().getUsername())
 						|| connectedUser.equals(deliveryRequest.getProject().getManager().getUsername()))

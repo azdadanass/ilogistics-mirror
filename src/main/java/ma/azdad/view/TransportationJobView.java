@@ -35,6 +35,7 @@ import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
+import ma.azdad.model.TransportationJobCapacity;
 import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobState;
@@ -44,7 +45,9 @@ import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
+import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationJobRepos;
+import ma.azdad.service.CapacityService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.DriverLocationService;
 import ma.azdad.service.EmailService;
@@ -79,6 +82,9 @@ public class TransportationJobView
 	protected TransportationJobService transportationJobService;
 	
 	@Autowired
+	CapacityService capacityService;
+	
+	@Autowired
 	RouteAppService routeAppService;
 
 	@Autowired
@@ -86,7 +92,10 @@ public class TransportationJobView
 
 	@Autowired
 	protected TransportationJobFileService transportationJobFileService;
-
+	
+	@Autowired
+	TransportationJobCapacityRepos transportationJobCapacityRepos;
+	
 	@Autowired
 	protected TransportationRequestHistoryService transportationRequestHistoryService;
 
@@ -535,8 +544,26 @@ public class TransportationJobView
 			if (transportationJob.getVehicle() == null)
 				return FacesContextMessages.ErrorMessages("Vehicle should not be null");
 		}
+		Double maxCumulativeWeight = transportationJobCapacityRepos.
+				findMaxCumulativeWeightByTransportationJobIdAndType(transportationJob.getId(), "Planned");
+		Double maxCumulativeVolume = transportationJobCapacityRepos.
+				findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Planned");
+		Double maxVehiculeWeight = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxWeight();
+		Double maxVehiculeVolume = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxVolume();
+		if(maxVehiculeVolume < maxCumulativeVolume) {
+			 return FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle,"
+			 		+ " Please change the assigned vehicle.");
+			
+		}
+        if(maxVehiculeWeight < maxCumulativeWeight) {
+        	return FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle,"
+			 		+ " Please change the assigned vehicle.");
+        	
+		}
 		return true;
 	}
+	
+	
 
 	public void assign(TransportationJob transportationJob) {
 		if (!canAssign(transportationJob))
@@ -751,6 +778,10 @@ public class TransportationJobView
 
 		refreshTransportationJob();
 		updateCalculableFields();
+		capacityService.calculatePlannedCapacities(transportationJob.getId());
+		
+		
+		
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
@@ -771,6 +802,41 @@ public class TransportationJobView
 			FacesContextMessages.ErrorMessages("At same time, they can not be different sites");
 			return false;
 		}
+		if(this.transportationJob.getStatus().equals(TransportationJobStatus.ASSIGNED2) ||
+				this.transportationJob.getStatus().equals(TransportationJobStatus.ASSIGNED1)
+				) {
+			
+			Double maxVehiculeWeight = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxWeight();
+			Double maxVehiculeVolume = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxVolume();
+			 // Simulate planned capacities including new requests
+	        List<TransportationJobCapacity> simulatedList =
+	                capacityService.simulatePlannedCapacities(transportationJob.getId(), transportationRequestList3);
+
+	        // Find max cumulative weight & volume from the simulated list
+	        double maxCumulativeWeight = simulatedList.stream()
+	                .mapToDouble(TransportationJobCapacity::getCumulativeWeight)
+	                .max()
+	                .orElse(0d);
+
+	        double maxCumulativeVolume = simulatedList.stream()
+	                .mapToDouble(TransportationJobCapacity::getCumulativeVolume)
+	                .max()
+	                .orElse(0d);
+
+	        if (maxVehiculeVolume < maxCumulativeVolume) {
+	             FacesContextMessages.ErrorMessages(
+	                    "This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle, " +
+	                            "Please change the assigned vehicle.");
+	            return false;
+	        }
+
+	        if (maxVehiculeWeight < maxCumulativeWeight) {
+	             FacesContextMessages.ErrorMessages(
+	                    "This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle, " +
+	                            "Please change the assigned vehicle.");
+	             return false;
+	        }
+		}
 		return true;
 	}
 
@@ -789,6 +855,7 @@ public class TransportationJobView
 		transportationRequestService.save(transportationRequest);
 		refreshTransportationJob();
 		updateCalculableFields();
+		capacityService.calculatePlannedCapacities(transportationJob.getId());
 	}
 
 	// UPDATE Expected Times
@@ -927,6 +994,7 @@ public class TransportationJobView
 		transportationRequestService.save(transportationRequest);
 		transportationRequest = transportationRequestService.findOne(transportationRequest.getId());
 		transportationRequestService.sendNotification(transportationRequest);
+		capacityService.pickupVolumeAndWeight(transportationRequest.getId());
 //		emailService.transportationRequestNotification(transportationRequest);
 		// smsService.sendSms(transportationRequest);
 
@@ -946,6 +1014,37 @@ public class TransportationJobView
 			FacesContextMessages.ErrorMessages("At same time, they can not be different sites");
 			return false;
 		}
+		Double maxCumulativeWeight = transportationJobCapacityRepos
+		        .findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		if (maxCumulativeWeight == null) {
+		    maxCumulativeWeight = 0d;
+		}
+
+		Double maxCumulativeVolume = transportationJobCapacityRepos
+		        .findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		if (maxCumulativeVolume == null) {
+		    maxCumulativeVolume = 0d;
+		}
+
+		// Vehicle limits
+		Double maxVehiculeWeight = vehicleService
+		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
+		        .getMaxWeight();
+		Double maxVehiculeVolume = vehicleService
+		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
+		        .getMaxVolume();
+
+		// Validation BEFORE inserting pickup
+		if (maxCumulativeVolume + (transportationRequest.getVolume() != null ? transportationRequest.getVolume() : 0d) > maxVehiculeVolume) {
+		    return FacesContextMessages.ErrorMessages(
+		        "Pickup of this TR could not be completed as you will be exceeding the maximum Volume of the vehicle.");
+		}
+
+		if (maxCumulativeWeight + (transportationRequest.getGrossWeight() != null ? transportationRequest.getGrossWeight() : 0d) > maxVehiculeWeight) {
+		    return FacesContextMessages.ErrorMessages(
+		        "Pickup of this TR could not be completed as you will be exceeding the maximum Weight of the vehicle.");
+		}
+
 		return true;
 	}
 

@@ -27,11 +27,13 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
 import ma.azdad.model.TransportationJob;
+import ma.azdad.model.TransportationJobCapacity;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ExternalResourceService;
@@ -64,6 +66,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected SessionView sessionView;
+	
+	@Autowired
+	protected TransportationJobCapacityRepos transportationJobCapacityRepos;
 
 	@Autowired
 	protected UserService userService;
@@ -407,6 +412,35 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (transportationRequest.getPickupDate().compareTo(transportationRequest.getExpectedDeliveryDate()) > 0) {
 			FacesContextMessages.ErrorMessages("Expected Delivery Time should not be lower than Pickup Time");
 			return false;
+		}
+		Double maxCumulativeWeight = transportationJobCapacityRepos
+		        .findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		if (maxCumulativeWeight == null) {
+		    maxCumulativeWeight = 0d;
+		}
+
+		Double maxCumulativeVolume = transportationJobCapacityRepos
+		        .findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		if (maxCumulativeVolume == null) {
+		    maxCumulativeVolume = 0d;
+		}
+		// Vehicle limits
+		Double maxVehiculeWeight = vehicleService
+		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
+		        .getMaxWeight();
+		Double maxVehiculeVolume = vehicleService
+		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
+		        .getMaxVolume();
+
+		// Validation BEFORE inserting pickup
+		if (maxCumulativeVolume + (transportationRequest.getVolume() != null ? transportationRequest.getVolume() : 0d) > maxVehiculeVolume) {
+		    return FacesContextMessages.ErrorMessages(
+		        "Pickup of this TR could not be completed as you will be exceeding the maximum Volume of the vehicle.");
+		}
+
+		if (maxCumulativeWeight + (transportationRequest.getGrossWeight() != null ? transportationRequest.getGrossWeight() : 0d) > maxVehiculeWeight) {
+		    return FacesContextMessages.ErrorMessages(
+		        "Pickup of this TR could not be completed as you will be exceeding the maximum Weight of the vehicle.");
 		}
 
 		return true;

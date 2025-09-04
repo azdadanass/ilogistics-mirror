@@ -52,9 +52,22 @@ public class JobIteneraryController {
     	List<TransportationJobItineraryDto> locations = new ArrayList<>();
     	List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
     	for (Stop stop : stops) {
-    		locations.add(new TransportationJobItineraryDto(jobId, stop.getSite().getLatitude(), stop.getSite().getLongitude(),
-    				null, stop.getDate(), null));
-		}
+    	    double lat = stop.getSite() != null ? stop.getSite().getLatitude()
+    	               : stop.getWarehouse() != null ? stop.getWarehouse().getLatitude() : 0.0;
+
+    	    double lng = stop.getSite() != null ? stop.getSite().getLongitude()
+    	               : stop.getWarehouse() != null ? stop.getWarehouse().getLongitude() : 0.0;
+
+    	    locations.add(new TransportationJobItineraryDto(
+    	        jobId,
+    	        lat,
+    	        lng,
+    	        null,
+    	        stop.getDate(),
+    	        null
+    	    ));
+    	}
+
         if (stops == null) {
             return ResponseEntity.notFound().build();
         }

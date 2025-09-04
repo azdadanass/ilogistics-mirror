@@ -36,6 +36,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ma.azdad.mobile.model.Vehicule;
+import ma.azdad.model.DeliveryRequestDetail;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.Path;
 import ma.azdad.model.TransportationJobItinerary;
@@ -67,6 +68,9 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	CapacityService capacityService;
 
 	@Autowired
 	AcceptanceService acceptanceService;
@@ -133,6 +137,19 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			}
 		}
 		return transportationRequest;
+	}
+	
+	public List<TransportationRequest> findByTransportationJobId(Integer id){
+		List<TransportationRequest> list = repos.findByTransportationJobId(id);
+		for (TransportationRequest transportationRequest : list) {
+			Hibernate.initialize(transportationRequest.getDeliveryRequest());
+			for (DeliveryRequestDetail detail : transportationRequest.getDeliveryRequest().getDetailList()) {
+				Hibernate.initialize(detail);
+				Hibernate.initialize(detail.getPacking());
+			}
+		}
+		return list;
+		
 	}
 
 	public List<TransportationRequest> findByNotHavingTransportationJob(TransportationRequestStatus status, List<DeliveryRequestStatus> deliveryRequestStatus) {
@@ -251,6 +268,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		transportationRequest.setDate5(new Date());
 		transportationRequest.setUser5(connectedUser);
 		transportationRequest = transportationRequestService.save(transportationRequest);
+		capacityService.pickupVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.pickedup(transportationRequest, connectedUser);
 		return transportationRequest;
 		
@@ -276,6 +294,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		transportationRequest.setDate6(new Date());
 		transportationRequest.setUser6(connectedUser);
 		transportationRequest = transportationRequestService.save(transportationRequest);
+		capacityService.deliverVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.delivred(transportationRequest, connectedUser);
 		return transportationRequest;
 		

@@ -53,6 +53,7 @@ import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.DriverLocationRepo;
 import ma.azdad.repos.StopRepos;
+import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationJobFileRepos;
 import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.repos.TransportationJobRepos;
@@ -399,6 +400,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId,
 			User connectedUser) {
+		
 		transportationJob.setAssignmentType(assignmentType);
 
 		switch (transportationJob.getAssignmentType()) {
@@ -1059,8 +1061,19 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    Double lastLng = null;
 
 	    for (Stop stop : stops) {
-	        double lat = stop.getSite().getLatitude();
-	        double lng = stop.getSite().getLongitude();
+	        double lat;
+	        double lng;
+
+	        if (stop.getSite() != null) {
+	            lat = stop.getSite().getLatitude();
+	            lng = stop.getSite().getLongitude();
+	        } else if (stop.getWarehouse() != null) {
+	            lat = stop.getWarehouse().getLatitude();
+	            lng = stop.getWarehouse().getLongitude();
+	        } else {
+	            lat = 0.0;
+	            lng = 0.0;
+	        }
 
 	        if (lastLat != null && lastLng != null) {
 	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);

@@ -1,0 +1,1 @@
+update transportation_request set real_distance = 0 where real_distance is null;

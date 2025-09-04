@@ -14,6 +14,8 @@ public interface TransportationJobItineraryRepos extends JpaRepository<Transport
 
 	List<TransportationJobItinerary> findByTransportationJobIdAndTransportationRequestStatus(Integer jobId,TransportationRequestStatus status);
 
+	List<TransportationJobItinerary> findByTransportationRequestIdAndTransportationRequestStatus(Integer jobId,TransportationRequestStatus status);
+
 	
 	
 

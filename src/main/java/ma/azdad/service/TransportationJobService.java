@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
@@ -52,6 +53,7 @@ import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.DriverLocationRepo;
+import ma.azdad.repos.PathRepos;
 import ma.azdad.repos.StopRepos;
 import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationJobFileRepos;
@@ -102,6 +104,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	PathService pathService;
+	
 
 	@Autowired
 	StopService stopService;
@@ -495,28 +498,24 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJobItineraryRepos.save(tItinerary);
 	}
 	
-	public Double startDistance(Integer jobId) {
-	    List<TransportationJobItinerary> pickup = transportationJobItineraryRepos
-	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
+	public Double getEstimatedDeliveryDistance(Integer jobId) {
+	    TransportationJob job = findOne(jobId);
 
-	    if (pickup != null && !pickup.isEmpty()) {
-	        return pickup.get(0).getCumulativeDistance();
+	    if (job == null || job.getPathList() == null || job.getPathList().isEmpty()) {
+	        return 0.0;
 	    }
 
-	    return 0d; 
+	    return job.getPathList().stream()
+	            .map(Path::getEstimatedDistance)
+	            .filter(Objects::nonNull)
+	            .mapToDouble(Double::doubleValue)
+	            .sum();
 	}
+
+
+
 	
-	public Double ongoingDistance(Integer jobId) {
-	    List<TransportationJobItinerary> delivery = transportationJobItineraryRepos
-	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
-
-	    if (delivery != null && !delivery.isEmpty()) {
-	        Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
-	        return lastCumulative - startDistance(jobId);
-	    }
-
-	    return 0d; 
-	}
+	
 
 
 
@@ -1000,6 +999,31 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
+	
+	
+	public Double startDistance(Integer jobId) {
+	    List<TransportationJobItinerary> pickup = transportationJobItineraryRepos
+	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
+
+	    if (pickup != null && !pickup.isEmpty()) {
+	        return pickup.get(0).getCumulativeDistance();
+	    }
+
+	    return 0d; 
+	}
+	
+	public Double ongoingDistance(Integer jobId) {
+	    List<TransportationJobItinerary> delivery = transportationJobItineraryRepos
+	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
+
+	    if (delivery != null && !delivery.isEmpty()) {
+	        Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
+	        return lastCumulative - startDistance(jobId);
+	    }
+
+	    return 0d; 
+	}
+
 
 	public Double calculateRealProductiveDist(Integer jobId) {
 		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);

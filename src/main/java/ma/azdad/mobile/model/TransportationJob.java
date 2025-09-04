@@ -1,13 +1,21 @@
 package ma.azdad.mobile.model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.persistence.Transient;
+import javax.transaction.Transactional;
 
 import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
+import ma.azdad.service.UtilsFunctions;
 
 public class TransportationJob {
 
@@ -28,6 +36,7 @@ public class TransportationJob {
 	private Integer numberOfItems;
 	private Double grossWeight;
 	private Double volume;
+	
 	//distance 
 	private String estimatedDistanceText;
 	private String realDistanceText;
@@ -100,6 +109,103 @@ public class TransportationJob {
 		this.vehiculeMatricule = vehiculeMatricule;
 		this.driver = driver;
 	}
+	
+	
+	@Transient
+	public String getPlannedStartTime() {
+	    if (startDate == null || transportationRequestList == null || transportationRequestList.isEmpty()) {
+	        return "";
+	    }
+	    Date earliestPickup = transportationRequestList.stream()
+	            .map(tr -> tr.getExpectedPickupDate())
+	            .filter(Objects::nonNull)
+	            .min(Date::compareTo)
+	            .orElse(null);
+
+	    if (earliestPickup == null) {
+	        return "";
+	    }
+	    long daysDiff = UtilsFunctions.getDateDifference(startDate, earliestPickup);
+
+	    return daysDiff + " days";
+	}
+	
+	@Transient
+	public String getRealStartTime() {
+	    if (startDate == null || transportationRequestList == null || transportationRequestList.isEmpty()) {
+	        return "";
+	    }
+
+	    Date earliestPickup = transportationRequestList.stream()
+	            .map(tr -> tr.getPickupDate())  
+	            .filter(Objects::nonNull)
+	            .min(Date::compareTo)
+	            .orElse(null);
+
+	    if (earliestPickup == null) {
+	        return "";
+	    }
+
+	    long daysDiff = UtilsFunctions.getDateDifference(startDate, earliestPickup);
+
+	    return daysDiff + " days";
+	}
+	
+	@Transient
+	public String getPlannedDeliveryTime() {
+	    if (transportationRequestList == null || transportationRequestList.isEmpty()) {
+	        return "";
+	    }
+
+	    Date earliestPickup = transportationRequestList.stream()
+	            .map(tr -> tr.getExpectedPickupDate())
+	            .filter(Objects::nonNull)
+	            .min(Date::compareTo)
+	            .orElse(null);
+
+	    Date latestDelivery = transportationRequestList.stream()
+	            .map(tr -> tr.getExpectedDeliveryDate())
+	            .filter(Objects::nonNull)
+	            .max(Date::compareTo)
+	            .orElse(null);
+
+	    if (earliestPickup == null || latestDelivery == null) {
+	        return "";
+	    }
+
+	    long daysDiff = UtilsFunctions.getDateDifference(earliestPickup, latestDelivery);
+
+	    return daysDiff + " days";
+	}
+	
+	@Transient
+	public String getRealDeliveryTime() {
+	    if (transportationRequestList == null || transportationRequestList.isEmpty()) {
+	        return "";
+	    }
+
+	    Date earliestPickup = transportationRequestList.stream()
+	            .map(tr -> tr.getPickupDate())
+	            .filter(Objects::nonNull)
+	            .min(Date::compareTo)
+	            .orElse(null);
+
+	    Date latestDelivery = transportationRequestList.stream()
+	            .map(tr -> tr.getDeliveryDate())
+	            .filter(Objects::nonNull)
+	            .max(Date::compareTo)
+	            .orElse(null);
+
+	    if (earliestPickup == null || latestDelivery == null) {
+	        return "";
+	    }
+
+	    long daysDiff = UtilsFunctions.getDateDifference(earliestPickup, latestDelivery);
+
+	    return daysDiff + " days";
+	}
+
+
 
 
 	public Integer getId() {
@@ -251,7 +357,6 @@ public class TransportationJob {
 	public String getRealDistanceText() {
 		return realDistanceText;
 	}
-
 
 	public void setRealDistanceText(String realDistanceText) {
 		this.realDistanceText = realDistanceText;

@@ -293,12 +293,39 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		transportationRequest.setStatus(TransportationRequestStatus.DELIVERED);
 		transportationRequest.setDate6(new Date());
 		transportationRequest.setUser6(connectedUser);
+		transportationRequest.setRealDistance(getDistanceForTR(transportationRequest.getId()));
 		transportationRequest = transportationRequestService.save(transportationRequest);
 		capacityService.deliverVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.delivred(transportationRequest, connectedUser);
 		return transportationRequest;
 		
 	}
+	
+	public Double getDistanceForTR(Integer requestId) {
+	    // get pickup stops
+	    List<TransportationJobItinerary> pickupStops = transportationJobItineraryRepos
+	            .findByTransportationRequestIdAndTransportationRequestStatus(requestId, TransportationRequestStatus.PICKEDUP);
+
+	    // get delivery stops
+	    List<TransportationJobItinerary> deliveryStops = transportationJobItineraryRepos
+	            .findByTransportationRequestIdAndTransportationRequestStatus(requestId, TransportationRequestStatus.DELIVERED);
+
+	    if (pickupStops == null || pickupStops.isEmpty() || deliveryStops == null || deliveryStops.isEmpty()) {
+	        return 0.0;
+	    }
+
+	    // assume first pickup and last delivery
+	    Double pickupCumul = pickupStops.get(0).getCumulativeDistance();
+	    Double deliveryCumul = deliveryStops.get(deliveryStops.size() - 1).getCumulativeDistance();
+
+	    if (pickupCumul == null || deliveryCumul == null) {
+	        return 0.0;
+	    }
+
+	    return deliveryCumul - pickupCumul;
+	}
+
+	
 	
 	public void deliverMobile(Integer id, String username,Double lat,Double lng) {
 		TransportationRequest transportationRequest = findOne(id);

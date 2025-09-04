@@ -125,9 +125,9 @@ public class TransportationJob {
 	    if (earliestPickup == null) {
 	        return "";
 	    }
-	    long daysDiff = UtilsFunctions.getDateDifference(startDate, earliestPickup);
+	    return UtilsFunctions.getDateDifferenceDaysHoursMinutes(startDate, earliestPickup);
 
-	    return daysDiff + " days";
+	   
 	}
 	
 	@Transient
@@ -146,9 +146,7 @@ public class TransportationJob {
 	        return "";
 	    }
 
-	    long daysDiff = UtilsFunctions.getDateDifference(startDate, earliestPickup);
-
-	    return daysDiff + " days";
+	    return UtilsFunctions.getDateDifferenceDaysHoursMinutes(startDate, earliestPickup);
 	}
 	
 	@Transient
@@ -173,9 +171,9 @@ public class TransportationJob {
 	        return "";
 	    }
 
-	    long daysDiff = UtilsFunctions.getDateDifference(earliestPickup, latestDelivery);
+	   return UtilsFunctions.getDateDifferenceDaysHoursMinutes(earliestPickup, latestDelivery);
 
-	    return daysDiff + " days";
+	    
 	}
 	
 	@Transient
@@ -200,9 +198,8 @@ public class TransportationJob {
 	        return "";
 	    }
 
-	    long daysDiff = UtilsFunctions.getDateDifference(earliestPickup, latestDelivery);
+		   return UtilsFunctions.getDateDifferenceDaysHoursMinutes(earliestPickup, latestDelivery);
 
-	    return daysDiff + " days";
 	}
 
 

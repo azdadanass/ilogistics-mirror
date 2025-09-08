@@ -464,4 +464,25 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="recalculateTrListCostsForm">
+		<p:dialog widgetVar="recalculateTrListCostsDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('recalculateTrListCostsDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-dollar red" />
+					<h:outputText value=" Recalculate Costs" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to reacalculate costs ?" style="margin-left: 20px" />
+				<br />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('recalculateTrListCostsDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.recalculateTrListCosts()}" value="Recalculate" styleClass="btn btn-danger" oncomplete="PF('recalculateTrListCostsDlg').hide()" update=":main_form" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

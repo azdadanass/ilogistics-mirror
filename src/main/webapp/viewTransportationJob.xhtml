@@ -93,6 +93,13 @@
 							<i class="ace-icon fa fa-dollar bigger-230"></i>
 							<h:outputText value="Costs" />
 						</p:commandLink>
+						
+						<p:commandLink styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" title="Recalculate Costs" update=":recalculateTrListCostsForm" oncomplete="PF('recalculateTrListCostsDlg').show()"
+							rendered="#{transportationJobView.canRecalculateTrListCosts()}">
+							<i class="ace-icon fa fa-dollar bigger-230"></i>
+							<h:outputText value="Re Tr Costs"  styleClass="smaller-80"/>
+						</p:commandLink>
+						
 						<!-- <p:commandLink title="Close" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('closeDlg').show()"
 							rendered="#{transportationJobView.canCloseTransportationJob()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>

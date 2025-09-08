@@ -59,7 +59,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private String estimatedDistanceText;
 	private String rejectionReason;
 
-	private Double realDistance = 0.0;
+	private Double realDistance;
 
 	private Double estimatedCost = 0.0;
 	private Double estimatedItineraryCost;
@@ -255,6 +255,11 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Transient
+	public Double getDistance() {
+		return ObjectUtils.firstNonNull(realDistance, estimatedDistance, 0.0);
 	}
 
 	@Transient

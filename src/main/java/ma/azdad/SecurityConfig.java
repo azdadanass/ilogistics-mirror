@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().cacheControl().disable();
 		http.headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/javax.faces.resource/**", "/resources/**", "/login.xhtml", "/blank", "/rest/**", "/mobile/**", "/passwordReset.xhtml", "/favicon.ico", "/.well-known/**", "/ad.xhtml", "/git.txt").permitAll() //
+		http.authorizeRequests().antMatchers("/javax.faces.resource/**", "/resources/**", "/login.xhtml", "/blank", "/rest/**", "/mobile/**","/map**", "/passwordReset.xhtml", "/favicon.ico", "/.well-known/**", "/ad.xhtml", "/git.txt").permitAll() //
 				.antMatchers(getPages("Warehouse", "Brand")).hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole()) //
 				.antMatchers("/partNumberConfiguration.xhtml").hasRole(Role.ROLE_ILOGISTICS_ADMIN.getRole()) //
 				.antMatchers(getPages("PartNumber")).hasAnyRole(Role.ROLE_ILOGISTICS_SE.getRole(), Role.ROLE_ILOGISTICS_WM.getRole(), Role.ROLE_ILOGISTICS_PM.getRole()) //

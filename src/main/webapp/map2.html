@@ -205,7 +205,7 @@ function showActualItinerary() {
     return;
   }
 
-  fetch(`/api/job/itenerary/${jobId}`)
+  fetch(`/api/job/itinerary/${jobId}`)
     .then(response => response.json())
     .then(points => {
       actualPoints = points; // keep globally for estimated comparison
@@ -283,7 +283,7 @@ function showEstimatedItinerary() {
     return;
   }
 
-  fetch(`/api/job/estimated-itenerary/${jobId}`)
+  fetch(`/api/job/estimated-itinerary/${jobId}`)
     .then(response => response.json())
     .then(points => {
       if (!points || points.length < 2) {

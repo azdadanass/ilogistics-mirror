@@ -38,7 +38,7 @@ public class JobIteneraryController {
 	@Autowired
 	private StopRepos stopRepos;
 
-    @GetMapping("/itenerary/{jobId}")
+    @GetMapping("/itinerary/{jobId}")
     public ResponseEntity<List<TransportationJobItineraryDto>> getJobItenerary(@PathVariable Integer jobId) {
     	List<TransportationJobItineraryDto> locations = itineraryService.getJobItinerary(jobId);
         if (locations == null) {
@@ -47,7 +47,7 @@ public class JobIteneraryController {
         return ResponseEntity.ok(locations);
     }
     
-    @GetMapping("/estimated-itenerary/{jobId}")
+    @GetMapping("/estimated-itinerary/{jobId}")
     public ResponseEntity<List<TransportationJobItineraryDto>> getEstimatedJobItenerary(@PathVariable Integer jobId) {
     	List<TransportationJobItineraryDto> locations = new ArrayList<>();
     	List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);

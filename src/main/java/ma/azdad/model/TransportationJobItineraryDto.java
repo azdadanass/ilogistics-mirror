@@ -2,6 +2,8 @@ package ma.azdad.model;
 
 import java.util.Date;
 
+import ma.azdad.utils.Public;
+
 public class TransportationJobItineraryDto {
 		private Integer id;
 	    private double latitude;
@@ -9,6 +11,7 @@ public class TransportationJobItineraryDto {
 	    private String username;
 	    private Date date;
 	    private String imageUrl;
+	    private String imageUrlMobile;
 
 
 	    public TransportationJobItineraryDto() {}
@@ -20,6 +23,7 @@ public class TransportationJobItineraryDto {
 	        this.username = username;
 	        this.date = date;
 	        this.imageUrl = imageUrl;
+	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
 	    }
 
 	    // Getters and Setters
@@ -71,6 +75,16 @@ public class TransportationJobItineraryDto {
 		public void setImageUrl(String imageUrl) {
 			this.imageUrl = imageUrl;
 		}
+
+		public String getImageUrlMobile() {
+			return imageUrlMobile;
+		}
+
+		public void setImageUrlMobile(String imageUrlMobile) {
+			this.imageUrlMobile = imageUrlMobile;
+		}
+		
+		
 	    
 
 }

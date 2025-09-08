@@ -618,6 +618,26 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		emailService.generateAndSend(mail);
 	}
 	
+	public void sendPendingAckNotification() {
+		List<User> userList = repos.findToAcknowledgeUserList();
+		userList.forEach(this::sendPendingAckNotification);
+	}
+	
+	private void sendPendingAckNotification(User toUser) {
+		List<TransportationRequest> list = repos.findToAcknowledge2(toUser.getUsername());
+		String subject = "Delivered TR pending acknoledgement ";
+		Mail mail = new Mail(toUser.getEmail(), subject, "trPendingAck.html", TemplateType.HTML);
+		mail.addParameter("transportationRequestList", list);
+		mail.addParameter("toUser", toUser);
+		emailService.generateAndSendNonAsync(mail);
+		try {
+			Thread.sleep(3*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {

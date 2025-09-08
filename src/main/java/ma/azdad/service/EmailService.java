@@ -77,6 +77,11 @@ public class EmailService {
 		mail.generateMessageFromTemplate(thymeLeafService);
 		send(mail);
 	}
+	
+	public void generateAndSendNonAsync(Mail mail) {
+		mail.generateMessageFromTemplate(thymeLeafService);
+		send(mail);
+	}
 
 	public void sendDeliveryRequestDeliveryOverdueNotification(DeliveryRequest deliveryRequest) {
 		User toUser = deliveryRequest.getRequester();

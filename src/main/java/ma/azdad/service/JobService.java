@@ -145,5 +145,11 @@ public class JobService {
 		log.info("updateReactivityScript Script");
 		userService.updateReactivityScript();
 	}
+	
+	@Scheduled(cron = "00 30 06 * * *")
+	public void sendPendingAckNotification() {
+		log.info("sendPendingAckNotification");
+		transportationRequestService.sendPendingAckNotification();
+	}
 
 }

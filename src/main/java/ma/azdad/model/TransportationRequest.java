@@ -146,7 +146,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		super();
 	}
 
-	// constructor 1
+	// c1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Integer deliveryRequestId,
 			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
@@ -169,7 +169,24 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.setTransporterPrivateLastName(transporterPrivateLastName);
 		this.setTransporterSupplierName(transporterSupplierName);
 	}
-
+	
+	// c2
+	public TransportationRequest(Integer id,String reference,TransportationRequestStatus status,Date pickupDate,Date deliveryDate, //
+			DeliveryRequestType deliveryRequestType,String originName, String destinationName, String warehouseName
+			) {
+		super(id);
+		this.reference = reference;
+		this.status = status;
+		this.pickupDate = pickupDate;
+		this.deliveryDate = deliveryDate;
+		this.setDeliveryRequestType(deliveryRequestType);
+		this.setOriginName(originName);
+		this.setDestinationName(destinationName);
+		this.setWarehouseName(warehouseName);
+	}
+	
+	
+	
 	// select1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
 			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //

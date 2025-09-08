@@ -13,6 +13,7 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 
 @Repository
 public interface TransportationRequestRepos extends JpaRepository<TransportationRequest, Integer> {
@@ -34,16 +35,18 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	String destinationProjectName = "(select b.name from Project b where b.id = a.deliveryRequest.destinationProject.id)";
 
 	String c1 = "select new  TransportationRequest(a.id,a.reference,a.status,a.neededPickupDate,a.neededDeliveryDate,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,"
-			+ originName + ", " + destinationName + ", " + warehouseName + ", " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + ","
-			+ transporterSupplierName + ") ";
+			+ originName + ", " + destinationName + ", " + warehouseName + ", " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ ") ";
+
+	String c2 = "select new TransportationRequest(a.id,a.reference,a.status,a.pickupDate,a.deliveryDate,a.deliveryRequest.type," + originName + "," + destinationName + "," + warehouseName + ")";
 
 	String select1 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,a.deliveryDate,"
-			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + ","
-			+ transporterSupplierName + "," + approverFullName + ",a.cost,a.totalAppLinkCost,a.paymentStatus," + destinationProjectName + ") ";
+			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ "," + approverFullName + ",a.cost,a.totalAppLinkCost,a.paymentStatus," + destinationProjectName + ") ";
 	String select2 = "select count(*) ";
 	String select3 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,"
-			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + ","
-			+ transporterSupplierName + "," + originId + "," + destinationId + "," + warehouseId + ") ";
+			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
+			+ "," + originId + "," + destinationId + "," + warehouseId + ") ";
 
 	@Query(c1 + "from TransportationRequest a"
 			+ " where a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2 or a.deliveryRequest.project.costcenter.lob.manager.username = ?2 or a.deliveryRequest.project.id in (?1)"
@@ -83,6 +86,12 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(c1 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
 	public List<TransportationRequest> findToAcknowledge(String username);
 
+	@Query(c2 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAcknowledge2(String username);
+
+	@Query("select distinct a.deliveryRequest.requester from TransportationRequest a where a.status = 'DELIVERED' ")
+	public List<User> findToAcknowledgeUserList();
+
 	@Query("select count(*) from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
 	public Long countToAcknowledge(String username);
 
@@ -91,7 +100,7 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query(c1 + "from TransportationRequest a where a.transportationJob.id = ?1")
 	public List<TransportationRequest> findLightByJob(Integer id);
-	
+
 	public List<TransportationRequest> findByTransportationJobId(Integer id);
 
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) and a.transportationJob.driver.username = ?2 order by a.neededPickupDate")
@@ -150,8 +159,7 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 ")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus);
 
-	@Query(select1
-			+ "from TransportationRequest a where a.transportationJob.status = ?1 and (a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2) ")
+	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and (a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2) ")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, String username);
 
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2 ")

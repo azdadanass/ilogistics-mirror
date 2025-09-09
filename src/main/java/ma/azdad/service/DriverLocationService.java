@@ -22,25 +22,11 @@ public class DriverLocationService {
 	}
 
 	public List<DriverLocationDto> getDriversLocation() {
-	    List<DriverLocation> locations = driverLocationRepo.findAll(); // ou ta query custom
+		List<DriverLocation> locations = driverLocationRepo.findAll(); // or your custom query
 
-	    return locations.stream()
-	        .map(loc -> {
-	            String photoUrl = loc.getDriver() != null ? loc.getDriver().getPhoto() : null;
-
-	            System.out.println("Driver: " 
-	                + (loc.getDriver() != null ? loc.getDriver().getUsername() : "unknown") 
-	                + " | Photo URL: " + photoUrl);
-
-	            return new DriverLocationDto(
-	                loc.getLatitude(),
-	                loc.getLongitude(),
-	                loc.getDriver() != null ? loc.getDriver().getUsername() : null,
-	                loc.getDate(),
-	                photoUrl
-	            );
-	        })
-	        .collect(Collectors.toList());
+		return locations.stream()
+				.map(loc -> new DriverLocationDto(loc.getLatitude(), loc.getLongitude(), loc.getDriver() != null ? loc.getDriver().getUsername() : null, loc.getDate(), loc.getDriver().getPhoto()))
+				.collect(Collectors.toList());
 	}
 
 }

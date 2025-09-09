@@ -137,18 +137,6 @@
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Cost">
-								<h:outputText value="#{item.cost}" styleClass="bolder #{item.cost le item.estimatedCost?'green':'red'}">
-									<f:convertNumber type="number" maxFractionDigits="2" />
-								</h:outputText>
-								<h:outputText value=" MAD" styleClass="bolder #{item.cost le item.estimatedCost?'green':'red'}" />
-							</p:column>
-							<p:column headerText="Estimated Cost">
-								<h:outputText value="#{item.estimatedCost}" styleClass="pink">
-									<f:convertNumber type="number" maxFractionDigits="2" />
-								</h:outputText>
-								<h:outputText value=" MAD" styleClass="pink" />
-							</p:column>
 							<p:column headerText="Status">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.status.color.badge}" />
 							</p:column>

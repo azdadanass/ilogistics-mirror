@@ -1,1 +1,1 @@
-update transportation_request set real_distance = 0 where real_distance is null;
+update vehicle_type set max_weight  = gross_weight where (max_weight is null or max_weight  = 0);

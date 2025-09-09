@@ -21,7 +21,6 @@ public class VehicleType extends GenericModel<Integer> implements Serializable {
 	private Double price;
 	private String comment;
 	private String image = "files/no-image.png";
-	private Double grossWeight = 0.0;
 	private Double maxWeight = 0.0;
 	private Double maxVolume = 0.0;
 
@@ -95,14 +94,6 @@ public class VehicleType extends GenericModel<Integer> implements Serializable {
 		this.image = image;
 	}
 
-	public Double getGrossWeight() {
-		return grossWeight;
-	}
-
-	public void setGrossWeight(Double grossWeight) {
-		this.grossWeight = grossWeight;
-	}
-
 	public Double getMaxVolume() {
 		return maxVolume;
 	}
@@ -118,7 +109,5 @@ public class VehicleType extends GenericModel<Integer> implements Serializable {
 	public void setMaxWeight(Double maxWeight) {
 		this.maxWeight = maxWeight;
 	}
-	
-	
 
 }

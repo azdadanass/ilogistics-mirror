@@ -73,14 +73,6 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 		vehicle = vehicleService.findOne(vehicle.getId());
 	}
 
-	/*
-	 * Redirection
-	 */
-	@Override
-	public void redirect() {
-		if (false)
-			cacheView.accessDenied();
-	}
 
 	// SAVE VEHICLE
 	public Boolean canSaveVehicle() {
@@ -145,12 +137,12 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 
 	// user list
 	private Boolean editUserList = false;
-	
+
 	public void selectUserListener(UserVehicle userVehicle) {
-		if(userVehicle.getUserUsername()!=null)
+		if (userVehicle.getUserUsername() != null)
 			userVehicle.setUser(userService.findOneLight(userVehicle.getUserUsername()));
 	}
-	
+
 	public Boolean canEditUserList() {
 		return !editUserList && sessionView.getIsInternalTrAdmin();
 	}
@@ -180,7 +172,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	private Boolean validateUserList() {
 		if (vehicle.getUserList().stream().filter(i -> i.getUserUsername() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Driver should not be null");
-		if (vehicle.getUserList().stream().map(i->i.getUser()).distinct().count() < vehicle.getUserList().size())
+		if (vehicle.getUserList().stream().map(i -> i.getUser()).distinct().count() < vehicle.getUserList().size())
 			return FacesContextMessages.ErrorMessages("Duplicate driver !");
 
 		return true;
@@ -205,7 +197,7 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleService.findLightByTransporter(transporterId);
 	}
-	
+
 	public void updateActive(Integer id, Boolean active) {
 		vehicleService.updateActive(id, active);
 	}

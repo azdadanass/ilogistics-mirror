@@ -268,6 +268,16 @@
 									<li>
 										<h:outputLink value="transportationJobList.xhtml">
 											<i class="menu-icon fa fa-caret-right"></i>
+											<i class="ace-icon fa fa-check bigger-130 light-blue" style="margin-right: 10px" />
+											<h:outputText value="Accepted" />
+											<f:param name="state" value="2" />
+											<f:param name="pageIndex" value="1" />
+										</h:outputLink>
+										<b class="arrow"></b>
+									</li>
+									<li>
+										<h:outputLink value="transportationJobList.xhtml">
+											<i class="menu-icon fa fa-caret-right"></i>
 											<i class="ace-icon fa fa-spinner bigger-130 purple" style="margin-right: 10px" />
 											<h:outputText value="In Progress" />
 											<f:param name="state" value="3" />

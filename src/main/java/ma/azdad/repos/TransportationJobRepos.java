@@ -16,11 +16,12 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	String transporterPrivateFirstName = "(select b.privateFirstName from Transporter b where b.id = a.transporter.id)";
 	String transporterPrivateLastName = "(select b.privateLastName from Transporter b where b.id = a.transporter.id)";
 	String transporterSupplierName = "(select b.supplier.name from Transporter b where b.id = a.transporter.id)";
+	String transporterCompanyName = "(select b.company.name from Transporter b where b.id = a.transporter.id)";
 
 	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
 
 	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
-			+ transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ") ";
+			+ transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + "," + transporterCompanyName + ") ";
 	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
 			+ transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
 

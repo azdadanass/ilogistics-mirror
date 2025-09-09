@@ -15,10 +15,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.event.map.PointSelectEvent;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
@@ -202,8 +205,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				transportationJob.setAssignmentType(TransportationJobAssignmentType.EXTERNAL_DRIVER);
 				changeTransportationJobAssignmentTypeListener();
 			}
-		} else if (isPage("startTransportationJob"))
+		} else if (isPage("startTransportationJob")) {
 			transportationJob = transportationJobService.findOne(id);
+			refreshMapModel();
+		}
 
 	}
 
@@ -667,6 +672,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private Boolean validateStart() {
+		if(transportationJob.getStartLatitude()==null||transportationJob.getStartLongitude()==null)
+			return FacesContextMessages.ErrorMessages("Please select the start position from the map");
+		
 		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Expected Pickup Date should not be null");
 		return true;
@@ -681,12 +689,19 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
 
+	public void onPointSelect(PointSelectEvent event) {
+		LatLng latlng = event.getLatLng();
+		FacesContextMessages.InfoMessages("Point Selected : " + latlng.getLat() + " " + latlng.getLng());
+		transportationJob.setStartLatitude(latlng.getLat());
+		transportationJob.setStartLongitude(latlng.getLng());
+	}
+
 	// GPS
 
 	public void refreshMapModel() {
-		if (isViewPage)
+		if (isViewPage || isPage("startTransportationJob"))
 			mapModel = mapService.generate(transportationJob.getStopList(), viewPathList);
-		if (isPage("assignTransportationJob")) {
+		else if (isPage("assignTransportationJob")) {
 			List<Stop> stopList = stopService.findByTransportationJobList(toAssignList.stream().map(i -> i.getId()).collect(Collectors.toList()));
 			// init center latitude,longitude
 			if (!stopList.isEmpty()) {
@@ -1104,9 +1119,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 						|| (UtilsFunctions.compareDoubles(transportationJob.getHandlingCost(),
 								transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getHandlingCost()).sum()) != 0));
 	}
-	
+
 	public void recalculateTrListCosts() {
-		if(!canRecalculateTrListCosts())
+		if (!canRecalculateTrListCosts())
 			return;
 		calculateTrListCosts();
 		transportationJobService.save(transportationJob);

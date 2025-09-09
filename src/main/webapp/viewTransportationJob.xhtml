@@ -707,7 +707,7 @@
 								</f:subview>
 							</h:panelGroup>
 						</div>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="View Map " target="blank" value="map3.html"
+						<!-- <h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="View Map " target="blank" value="map3.html"
 							rendered="#{sessionView.username == 'r.bouougri' or sessionView.username == 'm.bougri'}">
 							<i class="ace-icon fa fa-map-marker bigger-230"></i>
 							<f:param name="jobId" value="#{transportationJobView.id}" />
@@ -718,15 +718,30 @@
 							<i class="ace-icon fa fa-map-marker bigger-230"></i>
 							<f:param name="jobId" value="#{transportationJobView.id}" />
 							<h:outputText value="Itinerary" />
-						</h:outputLink>
+						</h:outputLink> -->
+						<!-- <p:remoteCommand name="updateGmap" update="gmap" />
+						<h:panelGroup id="gmap">
+							<p:gmap widgetVar="map" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.firstStopValue}" type="TERRAIN" style="width:100%;height:500px" />
+						</h:panelGroup> -->
 						<div class="space-16" />
 						<h4 class="header blue bolder smaller">
 							<i class="ace-icon fa fa-map-marker"></i>
-							<h:outputText value=" Map" />
+							<h:outputText value=" Itinerary" />
 						</h4>
-						<p:remoteCommand name="updateGmap" update="gmap" />
 						<h:panelGroup id="gmap">
-							<p:gmap widgetVar="map" model="#{transportationJobView.mapModel}" center="#{transportationJobView.transportationJob.firstStopValue}" type="TERRAIN" style="width:100%;height:500px" />
+    						<iframe src="#{request.contextPath}/map2.html?jobId=#{transportationJobView.transportationJob.id}"
+            					style="width:100%; height:500px; border:none;">
+    						</iframe>
+						</h:panelGroup>
+						<div class="space-16" />
+						<h4 class="header blue bolder smaller">
+						<i class="ace-icon fa fa-car"></i>
+							<h:outputText value=" Drivers" />
+						</h4>
+						<h:panelGroup id="gmap2">
+    						<iframe src="#{request.contextPath}/map3.html?jobId=#{transportationJobView.transportationJob.id}"
+            					style="width:100%; height:500px; border:none;">
+    						</iframe>
 						</h:panelGroup>
 					</div>
 					<f:subview id="costsSubview" rendered="#{sessionView.isTrPayment}">

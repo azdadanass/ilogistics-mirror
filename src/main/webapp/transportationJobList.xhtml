@@ -118,7 +118,7 @@
 							<p:column selectionMode="multiple" styleClass="ace aa-checkbox-column" rendered="#{transportationJobView.isPageIndex(4,5,6,7)}" />
 							<p:column headerText="Photo" width="100" exportable="false">
 								<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
-									<f:param name="fileName" value="#{cacheView.getPhoto(item.user1Photo)}" />
+									<f:param name="fileName" value="#{item.user1Photo}" />
 								</p:graphicImage>
 							</p:column>
 							<p:column headerText="Reference" sortBy="#{item.reference}">

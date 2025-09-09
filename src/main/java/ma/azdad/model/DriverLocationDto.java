@@ -2,6 +2,8 @@ package ma.azdad.model;
 
 import java.util.Date;
 
+import ma.azdad.utils.Public;
+
 public class DriverLocationDto {
 
     private double latitude;
@@ -18,7 +20,7 @@ public class DriverLocationDto {
         this.longitude = longitude;
         this.username = username;
         this.date = date;
-        this.imageUrl = imageUrl;
+        this.imageUrl = Public.getPublicUrl(imageUrl);
     }
 
     // Getters and Setters

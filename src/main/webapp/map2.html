@@ -9,79 +9,229 @@ html, body, #map {
 	margin: 0;
 	padding: 0;
 }
-#controls {
+
+.draggable-panel {
 	position: absolute;
-	top: 10px;
-	left: 10px;
 	z-index: 1000;
 	background: white;
-	padding: 10px;
-	border-radius: 5px;
-	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+	user-select: none;
+	transition: all 0.3s ease;
 }
-#controls label {
-	display: block;
-	margin: 5px 0;
+
+.draggable-panel:hover {
+	box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+}
+
+.panel-header {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 12px 15px;
+	border-radius: 8px 8px 0 0;
+	cursor: move;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.panel-content {
+	padding: 15px;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.collapse-btn {
+	background: rgba(255,255,255,0.2);
+	border: none;
+	color: white;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
 	cursor: pointer;
-}
-#legend {
-	position: absolute;
-	bottom: 10px;
-	left: 10px;
-	z-index: 1000;
-	background: white;
-	padding: 10px;
-	border-radius: 5px;
-	box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s ease;
 	font-size: 12px;
 }
+
+.collapse-btn:hover {
+	background: rgba(255,255,255,0.3);
+}
+
+.collapsed .panel-content {
+	display: none;
+}
+
+.collapsed {
+	border-radius: 8px;
+}
+
+.collapsed .panel-header {
+	border-radius: 8px;
+}
+
+#controls {
+	top: 10px;
+	left: 10px;
+	min-width: 200px;
+}
+
+#legend {
+	bottom: 10px;
+	left: 10px;
+	min-width: 220px;
+}
+
+#controls label {
+	display: flex;
+	align-items: center;
+	margin: 8px 0;
+	cursor: pointer;
+	padding: 5px;
+	border-radius: 4px;
+	transition: background 0.2s ease;
+}
+
+#controls label:hover {
+	background: rgba(102, 126, 234, 0.1);
+}
+
+#controls input[type="checkbox"] {
+	margin-right: 10px;
+	transform: scale(1.2);
+}
+
 .legend-item {
 	display: flex;
 	align-items: center;
-	margin: 3px 0;
+	margin: 8px 0;
+	padding: 4px 0;
 }
+
 .legend-color {
 	width: 20px;
 	height: 3px;
-	margin-right: 8px;
+	margin-right: 12px;
 	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.legend-icon {
+	margin-right: 12px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.panel-minimize {
+	position: fixed;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 10px;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+	display: none;
+	z-index: 1001;
+	transition: all 0.3s ease;
+}
+
+.panel-minimize:hover {
+	transform: translateY(-50%) scale(1.1);
+}
+
+.panel-minimize.show {
+	display: block;
+}
+
+.resize-handle {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 20px;
+	height: 20px;
+	cursor: se-resize;
+	background: linear-gradient(135deg, transparent 0%, transparent 30%, #ccc 30%, #ccc 35%, transparent 35%, transparent 65%, #ccc 65%, #ccc 70%, transparent 70%);
+}
+
+@media (max-width: 768px) {
+	.draggable-panel {
+		position: fixed !important;
+		max-width: 90vw;
+	}
+	
+	#controls {
+		top: 5px !important;
+		left: 5px !important;
+	}
+	
+	#legend {
+		bottom: 5px !important;
+		left: 5px !important;
+	}
 }
 </style>
 </head>
 <body>
 	<div id="map"></div>
-	
-	<div id="controls">
-		<label>
-			<input type="checkbox" id="showActual" checked> Itinéraire réel
-		</label>
-		<label>
-			<input type="checkbox" id="showEstimated" checked> Itinéraire estimé
-		</label>
+
+	<div id="controls" class="draggable-panel collapsed">
+		<div class="panel-header">
+			<span>🎛️ Contrôles</span>
+			<button class="collapse-btn" onclick="togglePanel('controls')">−</button>
+		</div>
+		<div class="panel-content">
+			<label>
+				<input type="checkbox" id="showActual" checked> 
+				<span>Itinéraire réel</span>
+			</label>
+			<label>
+				<input type="checkbox" id="showEstimated" checked> 
+				<span>Itinéraire estimé</span>
+			</label>
+		</div>
+		<div class="resize-handle"></div>
 	</div>
 
-	<div id="legend">
-		<div class="legend-item">
-			<div class="legend-color" style="background-color: #007bff;"></div>
-			<span>Itinéraire réel</span>
+	<div id="legend" class="draggable-panel collapsed">
+		<div class="panel-header">
+			<span>📍 Légende</span>
+			<button class="collapse-btn" onclick="togglePanel('legend')">−</button>
 		</div>
-		<div class="legend-item">
-			<div class="legend-color" style="background-color: #28a745;"></div>
-			<span>Itinéraire estimé</span>
+		<div class="panel-content">
+			<div class="legend-item">
+				<div class="legend-color" style="background-color: #007bff;"></div>
+				<span>Itinéraire réel</span>
+			</div>
+			<div class="legend-item">
+				<div class="legend-color" style="background-color: #28a745;"></div>
+				<span>Itinéraire estimé</span>
+			</div>
+			<div class="legend-item">
+				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
+				<span>Points réels</span>
+			</div>
+			<div class="legend-item">
+				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+				<span>Sites estimés arrivés</span>
+			</div>
+			<div class="legend-item">
+				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+				<span>Sites estimés non arrivés</span>
+			</div>
 		</div>
-		<div class="legend-item">
-			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #dc3545; border-radius: 50%;"></div>
-			<span>Points réels</span>
-		</div>
-		<div class="legend-item">
-			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-			<span>Sites estimés arrivés</span>
-		</div>
-		<div class="legend-item">
-			<div style="width: 16px; height: 16px; margin-right: 8px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-			<span>Sites estimés non arrivés</span>
-		</div>
+		<div class="resize-handle"></div>
 	</div>
+
+	<button id="restorePanels" class="panel-minimize">
+		<span style="font-size: 18px;">⚙️</span>
+	</button>
 
 	<script>
 let map;
@@ -97,6 +247,11 @@ let estimatedMarkers = [];
 let actualMarkers = [];
 let actualPoints = []; // store real itinerary points for distance check
 
+// Panel management
+let draggedPanel = null;
+let isDragging = false;
+let dragOffset = { x: 0, y: 0 };
+
 function getJobIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("jobId");
@@ -111,7 +266,7 @@ function initMap() {
   directionsService = new google.maps.DirectionsService();
   directionsRenderer = new google.maps.DirectionsRenderer({
     map: map,
-    suppressMarkers: true, // We'll create custom markers for real itinerary too
+    suppressMarkers: true,
     polylineOptions: {
       strokeColor: '#007bff',
       strokeWeight: 4
@@ -120,7 +275,7 @@ function initMap() {
 
   estimatedDirectionsRenderer = new google.maps.DirectionsRenderer({
     map: map,
-    suppressMarkers: true, // We'll create custom markers
+    suppressMarkers: true,
     polylineOptions: {
       strokeColor: '#28a745',
       strokeWeight: 3,
@@ -128,10 +283,9 @@ function initMap() {
     }
   });
 
-  // Setup toggle controls
   setupControls();
+  setupDragAndDrop();
   
-  // Load both itineraries
   showActualItinerary();
   showEstimatedItinerary();
 }
@@ -147,6 +301,90 @@ function setupControls() {
   showEstimatedCheckbox.addEventListener('change', function() {
     toggleEstimatedRoute(this.checked);
   });
+
+  document.getElementById('restorePanels').addEventListener('click', restoreAllPanels);
+}
+
+function setupDragAndDrop() {
+  const panels = document.querySelectorAll('.draggable-panel');
+  
+  panels.forEach(panel => {
+    const header = panel.querySelector('.panel-header');
+    
+    header.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('collapse-btn')) return;
+      
+      draggedPanel = panel;
+      isDragging = true;
+      
+      const rect = panel.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      
+      panel.style.transition = 'none';
+      document.body.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging && draggedPanel) {
+      const x = e.clientX - dragOffset.x;
+      const y = e.clientY - dragOffset.y;
+      
+      // Keep panels within viewport
+      const maxX = window.innerWidth - draggedPanel.offsetWidth;
+      const maxY = window.innerHeight - draggedPanel.offsetHeight;
+      
+      draggedPanel.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
+      draggedPanel.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+      draggedPanel.style.bottom = 'auto';
+      draggedPanel.style.right = 'auto';
+    }
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isDragging && draggedPanel) {
+      draggedPanel.style.transition = 'all 0.3s ease';
+      document.body.style.cursor = 'default';
+    }
+    isDragging = false;
+    draggedPanel = null;
+  });
+}
+
+function togglePanel(panelId) {
+  const panel = document.getElementById(panelId);
+  const btn = panel.querySelector('.collapse-btn');
+  const restoreBtn = document.getElementById('restorePanels');
+  
+  panel.classList.toggle('collapsed');
+  
+  if (panel.classList.contains('collapsed')) {
+    btn.innerHTML = '+';
+    restoreBtn.classList.add('show');
+  } else {
+    btn.innerHTML = '−';
+  }
+  
+  // Check if any panels are collapsed
+  const collapsedPanels = document.querySelectorAll('.draggable-panel.collapsed');
+  if (collapsedPanels.length === 0) {
+    restoreBtn.classList.remove('show');
+  }
+}
+
+function restoreAllPanels() {
+  const panels = document.querySelectorAll('.draggable-panel');
+  const restoreBtn = document.getElementById('restorePanels');
+  
+  panels.forEach(panel => {
+    panel.classList.remove('collapsed');
+    const btn = panel.querySelector('.collapse-btn');
+    btn.innerHTML = '−';
+  });
+  
+  restoreBtn.classList.remove('show');
 }
 
 function toggleActualRoute(visible) {
@@ -208,7 +446,7 @@ function showActualItinerary() {
   fetch(`/api/job/itinerary/${jobId}`)
     .then(response => response.json())
     .then(points => {
-      actualPoints = points; // keep globally for estimated comparison
+      actualPoints = points;
 
       if (!points || points.length < 2) {
         console.warn("Pas assez de points pour tracer l'itinéraire réel.");
@@ -241,7 +479,6 @@ function showActualItinerary() {
         if (status === google.maps.DirectionsStatus.OK) {
           directionsRenderer.setDirections(result);
 
-          // Create simple point markers for actual route
           points.forEach((point, index) => {
             const marker = new google.maps.Marker({
               position: new google.maps.LatLng(point.latitude, point.longitude),
@@ -253,7 +490,6 @@ function showActualItinerary() {
 
             actualMarkers.push(marker);
 
-            // Info window for actual points
             const infoWindow = new google.maps.InfoWindow({
               content: `
                 <div>
@@ -317,7 +553,6 @@ function showEstimatedItinerary() {
         if (status === google.maps.DirectionsStatus.OK) {
           estimatedDirectionsRenderer.setDirections(result);
 
-          // Create alphabetic markers for estimated route
           points.forEach((point, index) => {
             let isWithin5km = false;
             let nearestDistKm = null;
@@ -340,7 +575,6 @@ function showEstimatedItinerary() {
             const markerColor = (isArrived || isWithin5km) ? '#28a745' : '#dc3545';
             const statusText = (isArrived || isWithin5km) ? 'Arrivé (réel < 5km)' : 'Non arrivé';
             
-            // Convert index to letter (A, B, C, ... Z, AA, AB, etc.)
             const letter = getAlphabetLetter(index);
 
             const marker = new google.maps.Marker({
@@ -353,7 +587,6 @@ function showEstimatedItinerary() {
 
             estimatedMarkers.push(marker);
 
-            // Info window
             const infoWindow = new google.maps.InfoWindow({
               content: `
                 <div>
@@ -384,7 +617,6 @@ function getAlphabetLetter(index) {
   if (index < 26) {
     return alphabet[index];
   } else {
-    // For more than 26 points, use AA, AB, AC, etc.
     const firstLetter = alphabet[Math.floor(index / 26) - 1];
     const secondLetter = alphabet[index % 26];
     return firstLetter + secondLetter;

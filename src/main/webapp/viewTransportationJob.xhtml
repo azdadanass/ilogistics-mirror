@@ -338,10 +338,81 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Priority" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transportationJobView.transportationJob.priority.value}" styleClass="#{transportationJobView.transportationJob.priority.color}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Transporter" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transportationJobView.transportationJob.transporter.name} " styleClass="bolder green" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Driver" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{transportationJobView.transportationJob.driver.fullName} " styleClass="bolder green" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned Start Date" />
+										</div>
+										<div class="profile-info-value light-blue">
+											<h:outputText value="#{transportationJobView.transportationJob.plannedStartDate}" styleClass="bolder">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned End Date" />
+										</div>
+										<div class="profile-info-value light-blue">
+											<h:outputText value="#{transportationJobView.transportationJob.plannedEndDate}" styleClass="bolder">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="REF" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{transportationJobView.transportationJob.ref}" styleClass="bolder blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Important" />
+										</div>
+										<div class="profile-info-value">
+											<i class="ace-icon fa #{transportationJobView.transportationJob.important?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Vehicle" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value=" #{transportationJobView.transportationJob.vehicle.correctMatricule}" styleClass="bolder orange" />
 											&nbsp;
 										</div>
 									</div>
@@ -354,28 +425,6 @@
 											<h:outputText value="#{transportationJobView.transportationJob.startDate}" styleClass="bolder">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6">
-								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Transporter" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationJobView.transportationJob.transporter.name}" styleClass="bolder purple" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Vehicle" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value=" #{transportationJobView.transportationJob.vehicle.correctMatricule}" styleClass="bolder orange" />
 											&nbsp;
 										</div>
 									</div>
@@ -500,6 +549,45 @@
 													<f:setPropertyActionListener value="#{item}" target="#{transportationJobView.transportationRequest}" />
 												</p:commandLink>
 											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<h4 class="header blue bolder smaller">
+							<h:outputText value="To Notify List" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" To Notify List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{deliveryRequestView.deliveryRequest.toNotifyList}" var="item" rows="50" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.photo}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Full Name">
+											<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+										</p:column>
+										<p:column headerText="Type" width="100">
+											<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+										</p:column>
+										<p:column headerText="Email">
+											<h:outputText value="#{item.email}" styleClass="light-blue" />
+										</p:column>
+										<p:column headerText="Phone">
+											<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+										</p:column>
+										<p:column headerText="Notify By Email ?">
+											<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Notify By SMS ?">
+											<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
 										</p:column>
 									</p:dataTable>
 								</div>

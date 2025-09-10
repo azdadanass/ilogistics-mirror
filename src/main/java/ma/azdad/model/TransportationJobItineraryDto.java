@@ -12,6 +12,7 @@ public class TransportationJobItineraryDto {
 	    private Date date;
 	    private String imageUrl;
 	    private String imageUrlMobile;
+	    private String siteName;
 
 
 	    public TransportationJobItineraryDto() {}
@@ -23,6 +24,17 @@ public class TransportationJobItineraryDto {
 	        this.username = username;
 	        this.date = date;
 	        this.imageUrl = imageUrl;
+	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
+	    }
+	    
+	    public TransportationJobItineraryDto(Integer id,double latitude, double longitude, String username, Date date,String imageUrl,String siteName) {
+	        this.id = id;
+	    	this.latitude = latitude;
+	        this.longitude = longitude;
+	        this.username = username;
+	        this.date = date;
+	        this.imageUrl = imageUrl;
+	        this.siteName = siteName;
 	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
 	    }
 
@@ -83,6 +95,16 @@ public class TransportationJobItineraryDto {
 		public void setImageUrlMobile(String imageUrlMobile) {
 			this.imageUrlMobile = imageUrlMobile;
 		}
+
+		public String getSiteName() {
+			return siteName;
+		}
+
+		public void setSiteName(String siteName) {
+			this.siteName = siteName;
+		}
+		
+		
 		
 		
 	    

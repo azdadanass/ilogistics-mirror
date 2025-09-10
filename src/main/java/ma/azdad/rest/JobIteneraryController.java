@@ -57,6 +57,9 @@ public class JobIteneraryController {
 
     	    double lng = stop.getSite() != null ? stop.getSite().getLongitude()
     	               : stop.getWarehouse() != null ? stop.getWarehouse().getLongitude() : 0.0;
+    	    
+    	    String name = stop.getSite() != null ? stop.getSite().getName()
+                    : stop.getWarehouse() != null ? stop.getWarehouse().getName() : "Unknown";
 
     	    locations.add(new TransportationJobItineraryDto(
     	        jobId,
@@ -64,7 +67,8 @@ public class JobIteneraryController {
     	        lng,
     	        null,
     	        stop.getDate(),
-    	        null
+    	        null,
+    	        name
     	    ));
     	}
 

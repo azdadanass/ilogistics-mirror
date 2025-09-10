@@ -32,6 +32,9 @@ import ma.azdad.utils.App;
 public class TransportationJob extends GenericModel<Integer> implements Serializable {
 
 	private String reference;
+	private String ref;
+	private Boolean important = false;
+	private Priority priority;
 	private String comment;
 	private Date startDate; // Calculable
 	private Date endDate; // Calculable
@@ -39,6 +42,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private TransportationJobAssignmentType assignmentType;
 	private Double acceptLeadTime = 12.0;
 	private Double startLeadTime = 24.0;
+	private Date plannedStartDate;
+	private Date plannedEndDate;
+	private Double plannedStartCost = 0.0;
+	private Double plannedItineraryCost = 0.0;
+	private Double plannedHandlingCost = 0.0;
 
 	private Date maxAcceptDate;
 	private Date maxStartDate;
@@ -91,6 +99,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private List<TransportationRequest> transportationRequestList = new ArrayList<>();
 	private List<Stop> stopList = new ArrayList<>();
 	private List<Path> pathList = new ArrayList<>();
+	private List<ToNotify> toNotifyList = new ArrayList<>();
 
 	public TransportationJob() {
 		super();
@@ -991,6 +1000,80 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setStartLongitude(Double startLongitude) {
 		this.startLongitude = startLongitude;
+	}
+
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
+
+	public Boolean getImportant() {
+		return important;
+	}
+
+	public void setImportant(Boolean important) {
+		this.important = important;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	public Date getPlannedStartDate() {
+		return plannedStartDate;
+	}
+
+	public void setPlannedStartDate(Date plannedStartDate) {
+		this.plannedStartDate = plannedStartDate;
+	}
+
+	public Date getPlannedEndDate() {
+		return plannedEndDate;
+	}
+
+	public void setPlannedEndDate(Date plannedEndDate) {
+		this.plannedEndDate = plannedEndDate;
+	}
+
+	public Double getPlannedStartCost() {
+		return plannedStartCost;
+	}
+
+	public void setPlannedStartCost(Double plannedStartCost) {
+		this.plannedStartCost = plannedStartCost;
+	}
+
+	public Double getPlannedItineraryCost() {
+		return plannedItineraryCost;
+	}
+
+	public void setPlannedItineraryCost(Double plannedItineraryCost) {
+		this.plannedItineraryCost = plannedItineraryCost;
+	}
+
+	public Double getPlannedHandlingCost() {
+		return plannedHandlingCost;
+	}
+
+	public void setPlannedHandlingCost(Double plannedHandlingCost) {
+		this.plannedHandlingCost = plannedHandlingCost;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transportationJob", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ToNotify> getToNotifyList() {
+		return toNotifyList;
+	}
+
+	public void setToNotifyList(List<ToNotify> toNotifyList) {
+		this.toNotifyList = toNotifyList;
 	}
 
 }

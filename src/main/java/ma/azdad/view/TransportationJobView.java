@@ -15,9 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -36,6 +34,7 @@ import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
+import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
 import ma.azdad.model.TransportationJobCapacity;
@@ -46,6 +45,7 @@ import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
 import ma.azdad.model.TransportationRequestStatus;
+import ma.azdad.model.User;
 import ma.azdad.model.Vehicle;
 import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationJobRepos;
@@ -154,6 +154,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	private List<Path> optimizedPaths = new ArrayList<>();
 	private boolean optimizing = false;
+
+	private int step = 1;
 
 	public List<Path> getOptimizedPaths() {
 		return optimizedPaths;
@@ -337,6 +339,63 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		else if (isViewPage || isEditPage)
 			return sessionView.isTM() && !TransportationJobStatus.ACKNOWLEDGED.equals(transportationJob.getStatus());
 		return false;
+	}
+
+	public String saveNextStep() {
+		if (!canSave())
+			return addParameters(listPage, "faces-redirect=true");
+		switch (step) {
+		case 1:
+			System.out.println("step1");
+			step++;
+			break;
+		case 2:
+			System.out.println("step1");
+			step++;
+			break;
+		case 3:
+			System.out.println("step1");
+			step++;
+			if (isAddPage)
+				initToNotifiyList();
+			break;
+		case 4:
+			System.out.println("step1");
+			step++;
+			break;
+		case 5:
+			return save();
+
+		}
+		return null;
+	}
+
+	private void initToNotifiyList() {
+		addToNotify(sessionView.getUser());
+	}
+
+	public void savePreviousStep() {
+		if (step > 1)
+			step--;
+	}
+
+	// to notify
+	private String toNotifyUserUsername;
+
+	public void addToNotifyItem() {
+		System.out.println("addToNotifyItem");
+		addToNotify(userService.findOne(toNotifyUserUsername));
+		System.out.println(transportationJob.getToNotifyList());
+	}
+
+	public void addToNotify(User user) {
+		if (transportationJob.getToNotifyList().stream().filter(i -> i.getInternalResource().getUsername().equals(user.getUsername())).count() == 0)
+			transportationJob.getToNotifyList().add(new ToNotify(user, transportationJob));
+	}
+
+	public void removeToNotifyItem(int index) {
+		transportationJob.getToNotifyList().get(index).setDeliveryRequest(null);
+		transportationJob.getToNotifyList().remove(index);
 	}
 
 	public String save() {
@@ -672,9 +731,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	private Boolean validateStart() {
-		if(transportationJob.getStartLatitude()==null||transportationJob.getStartLongitude()==null)
+		if (transportationJob.getStartLatitude() == null || transportationJob.getStartLongitude() == null)
 			return FacesContextMessages.ErrorMessages("Please select the start position from the map");
-		
+
 		if (transportationJob.getTransportationRequestList().stream().filter(i -> i.getExpectedPickupDate() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Expected Pickup Date should not be null");
 		return true;
@@ -1349,4 +1408,21 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		this.downloadPath = downloadPath;
 	}
 
+	public int getStep() {
+		return step;
+	}
+
+	public void setStep(int step) {
+		this.step = step;
+	}
+
+	public String getToNotifyUserUsername() {
+		return toNotifyUserUsername;
+	}
+
+	public void setToNotifyUserUsername(String toNotifyUserUsername) {
+		this.toNotifyUserUsername = toNotifyUserUsername;
+	}
+
+	
 }

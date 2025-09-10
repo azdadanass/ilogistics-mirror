@@ -2,20 +2,16 @@
 <ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
-
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
-
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
+		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
 	</ui:define>
-
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
-
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
 			<li>
@@ -25,133 +21,344 @@
 				</a>
 			</li>
 			<li class="active">
-				<h:outputText value="#{transportationJobView.id == null?'Add New':'Edit'} TransportationJob" />
+				<h:outputText value="#{transportationJobView.id == null?'Add New':'Edit'} Issue" />
 			</li>
 		</ul>
 	</ui:define>
-
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.Priority" var="Priority" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
-			<div class="page-header hidden-xs">
-				<h1>
-					<i class="ace-icon fa #{transportationJobView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-					<h:outputText value=" #{transportationJobView.id == null?'Add New':'Edit'} TransportationJob" />
-				</h1>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<div class=" col-sm-offset-1 col-sm-6">
-						<h:outputLink styleClass="btn btn-app btn-sm btn-inverse hover aa-tooltip" title="Return to Home " value="index.xhtml">
-							<i class="ace-icon fa fa-home bigger-230"></i>
-							<h:outputText value="Home" />
-						</h:outputLink>
-
-						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
-							<i class="ace-icon fa fa-refresh bigger-230"></i>
-							<h:outputText value="Reload" />
-						</h:outputLink>
-
-						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip tooltip-grey" title="Previous Page" value="javascript: window.history.go(-1)">
-							<i class="ace-icon fa fa-undo bigger-230"></i>
-							<h:outputText value="Back" />
-						</h:outputLink>
-
-						<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" action="#{transportationJobView.save()}" update="messages" title="Save">
-							<i class="ace-icon fa fa-save bigger-230"></i>
-							<h:outputText value="Save" />
-						</p:commandLink>
-					</div>
+			<div class="widget-box">
+				<div class="widget-header widget-header-blue widget-header-flat">
+					<h4 class="widget-title lighter">
+						<i class="ace-icon fa #{transportationJobView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+						<h:outputText value=" #{transportationJobView.id == null?'Add New':'Edit'} SR" />
+					</h4>
 				</div>
-			</div>
-			<div class="hr dotted" />
-			<div class="space-16" />
-			<div class="row">
-				<div class="col-sm-offset-1 col-sm-10">
-					<div class="tab-content profile-edit-tab-content">
-						<div class="tab-pane in active">
-							<p:messages id="messages" closable="true" />
-							<h4 class="header blue bolder smaller">
-								<h:outputText value="General informations" />
-							</h4>
-							<div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Real Cost (MAD)" />
+				<div class="widget-body">
+					<div class="widget-main">
+						<h:panelGroup id="nav-wizard">
+							<ul class="nav nav-wizard">
+								<li class="#{transportationJobView.step==1?'active':''}">
+									<a href="#">
+										<h:outputText value="General Informations" />
+									</a>
+								</li>
+								<li class="#{transportationJobView.step==2?'active':''}">
+									<a href="#">
+										<h:outputText value="Planning" />
+									</a>
+								</li>
+								<li class="#{transportationJobView.step==3?'active':''}">
+									<a href="#">
+										<h:outputText value="Budgeting" />
+									</a>
+								</li>
+								<li class="#{transportationJobView.step==4?'active':''}">
+									<a href="#">
+										<h:outputText value="Notification list" />
+									</a>
+								</li>
+								<li class="#{transportationJobView.step==5?'active':''}">
+									<a href="#">
+										<h:outputText value="Summary" />
+									</a>
+								</li>
+							</ul>
+						</h:panelGroup>
+						<hr />
+						<p:messages id="messages" closable="true" />
+						<h:panelGroup id="steps">
+							<f:subview id="step1" rendered="#{transportationJobView.step==1}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" General informations" />
+								</h3>
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="REF" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber value="#{transportationJobView.transportationJob.cost}" thousandSeparator="" required="true" requiredMessage="Real Cost should not be null" />
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputText value="#{transportationJobView.transportationJob.ref}" required="true" requiredMessage="REF should not be null" styleClass="col-xs-12 col-sm-6" />
+											<br />
 										</div>
 									</div>
 								</div>
-							</div>
-							<!-- <div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Transporter" />
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Priority" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu value="#{transportationJobView.transportationJob.transporterId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Transporter should not be null"
-												styleClass="col-xs-12 col-sm-6" disabled="#{!transportationJobView.isAddPage}">
-												<f:selectItems value="#{transporterView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
-												<p:ajax update="vehicle,driver" />
-											</p:selectOneMenu>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<h:selectOneMenu value="#{transportationJobView.transportationJob.priority}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Severity should not be null">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{Priority.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
+											<br />
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Vehicle " />
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Important" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="vehicle" value="#{transportationJobView.transportationJob.vehicleId}" filter="true" filterMatchMode="contains" required="true"
-												requiredMessage="Vehicle should not be null" styleClass="col-sm-6" disabled="#{!transportationJobView.isAddPage}">
-												<f:selectItems value="#{vehicleView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.correctMatricule}" itemValue="#{item.id}" />
-											</p:selectOneMenu>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:commandLink id="important" update="important" partialSubmit="true" process="@this">
+												<i class="ace-icon fa #{transportationJobView.transportationJob.important?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener value="#{!transportationJobView.transportationJob.important}" target="#{transportationJobView.transportationJob.important}" />
+											</p:commandLink>
+											<br />
 										</div>
 									</div>
 								</div>
-							</div>
-							<div class="space-4" />
-							<div class="row">
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Driver " />
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Description" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:selectOneMenu id="driver" value="#{transportationJobView.transportationJob.driverUsername}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Driver should not be null"
-												styleClass="col-xs-12 col-sm-6">
-												<f:selectItems value="#{userView.findLightByTransporter(transportationJobView.transportationJob.transporterId)}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
-											</p:selectOneMenu>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputTextarea value="#{transportationJobView.transportationJob.ref}" styleClass="col-xs-12 col-sm-6" />
+											<br />
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<div class="form-group">
-										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
-											<h:outputText value="Real Cost (MAD)" />
+								<div class="space-8" />
+							</f:subview>
+							<f:subview id="step2" rendered="#{transportationJobView.step==2}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" Planning" />
+								</h3>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Planned Start Date" />
 										</label>
-										<div class="col-xs-9 col-sm-9">
-											<p:inputNumber value="#{transportationJobView.transportationJob.cost}" thousandSeparator="" required="true" requiredMessage="Real Cost should not be null" />
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:calendar value="#{transportationJobView.transportationJob.plannedStartDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+												requiredMessage="Planned Start Date should not be null">
+												<p:ajax event="dateSelect" update="plannedEndDate" />
+											</p:calendar>
+											<br />
 										</div>
 									</div>
 								</div>
-							</div> -->
-							<h4 class="header blue bolder smaller">
-								<h:outputText value="Comment" />
-							</h4>
-							<div class="row center">
-								<p:inputTextarea value="#{transportationJobView.transportationJob.comment}" style="width: 90%" />
-							</div>
-							<div class="space-16" />
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Planned End Date" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:calendar id="plannedEndDate" value="#{transportationJobView.transportationJob.plannedEndDate}" mindate="#{transportationJobView.transportationJob.plannedStartDate}"
+												pattern="yyyy-MM-dd HH:mm" navigator="true" required="true" requiredMessage="Planned End Date should not be null" />
+											<br />
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step3" rendered="#{transportationJobView.step==3}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-list-alt" />
+									<h:outputText value=" Budgeting" />
+								</h3>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Planned Staring cost" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputNumber value="#{transportationJobView.transportationJob.plannedStartCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Planned Itinerary cost" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputNumber value="#{transportationJobView.transportationJob.plannedItineraryCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-xs-12 col-sm-3">
+										<label class="control-label pull-right">
+											<h:outputText value="Planned Handling cost" />
+										</label>
+									</div>
+									<div class="col-xs-12 col-sm-9">
+										<div class="clearfix">
+											<p:inputNumber value="#{transportationJobView.transportationJob.plannedHandlingCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<br />
+										</div>
+									</div>
+								</div>
+								<div class="space-8" />
+							</f:subview>
+							<f:subview id="step4" rendered="#{transportationJobView.step==4}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-envelope" />
+									<h:outputText value=" My Notification List" />
+								</h3>
+								<div class="space-8" />
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<i class="fa fa-list" />
+											<h:outputText value=" Notification List" />
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="notification_tab" value="#{transportationJobView.transportationJob.toNotifyList}" var="item" styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
+													<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+														<f:param name="fileName" value="#{item.photo}" />
+													</p:graphicImage>
+												</p:column>
+												<p:column headerText="Full Name">
+													<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+												</p:column>
+												<p:column headerText="Type" width="100">
+													<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+												</p:column>
+												<p:column headerText="Entity">
+													<h:outputText value="#{userView.findCompanyType(item.internalResource.username).value}" styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
+													<h:outputText value=" / " />
+													<h:outputText value="#{userView.findEntityName(item.internalResource)}" styleClass="bolder #{userView.findCompanyType(item.internalResource.username).color.name}" />
+												</p:column>
+												<p:column headerText="Email">
+													<h:outputText value="#{item.email}" styleClass="light-blue" />
+												</p:column>
+												<p:column headerText="Phone">
+													<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+												</p:column>
+												<p:column headerText="Notify By Email ?">
+													<p:commandLink id="notifyByEmail" update="notifyByEmail" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyByEmail}" target="#{item.notifyByEmail}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Notify By SMS ?">
+													<p:commandLink id="notifyBySms" update="notifyBySms" partialSubmit="true" process="@this">
+														<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyBySms}" target="#{item.notifyBySms}" />
+													</p:commandLink>
+												</p:column>
+												<p:column headerText="Actions" styleClass="center" width="100">
+													<div class="action-buttons center">
+														<p:commandLink title="Remove row" action="#{transportationJobView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true" process="notification_tab">
+															<i class="ace-icon fa fa-remove bigger-130 red" />
+														</p:commandLink>
+													</div>
+												</p:column>
+												<f:facet name="footer">
+													<div class="action-buttons center">
+														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()" partialSubmit="true"
+															process="notification_tab">
+															<i class="fa fa-plus green" />
+														</p:commandLink>
+													</div>
+												</f:facet>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
+							</f:subview>
+							<f:subview id="step5" rendered="#{transportationJobView.step==5}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-envelope" />
+									<h:outputText value=" Summary" />
+								</h3>
+								<div class="row"></div>
+								<div class="space-8" />
+							</f:subview>
+						</h:panelGroup>
+						<hr />
+						<div class="wizard-actions">
+							<p:commandButton value="Back" action="#{transportationJobView.savePreviousStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-prev" icon="fa fa-arrow-left" />
+							<p:commandButton id="next" widgetVar="nextButton" value="#{transportationJobView.step==5?'Finish':'Next'}" action="#{transportationJobView.saveNextStep()}"
+								update="messages,nav-wizard,steps,next" styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
+							<p:ajaxStatus>
+								<f:facet name="start">
+									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />
+								</f:facet>
+								<f:facet name="complete">
+									<h:outputText value="" />
+								</f:facet>
+							</p:ajaxStatus>
 						</div>
-						<div class="row"></div>
+						<div class="space-16" />
 					</div>
 				</div>
 			</div>
 		</h:form>
+		<h:form id="addToNotifyItemForm">
+			<p:dialog widgetVar="addToNotifyItemDlg" modal="true" closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close" onclick="PF('addToNotifyItemDlg').hide()">
+					<h:outputText value="x" />
+				</button>
+				<div class="modal-header">
+					<h4 class="modal-title">
+						<i class="ace-icon fa fa-plus green" />
+						<h:outputText value=" Add" />
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-xs-12 col-sm-3">
+							<label class="control-label pull-right">
+								<h:outputText value="To Notify Resource " />
+							</label>
+						</div>
+						<div class="col-xs-12 col-sm-9">
+							<div class="clearfix">
+								<p:selectOneMenu value="#{transportationJobView.toNotifyUserUsername}" style="width:200px" filter="true" filterMatchMode="contains" required="true"
+									requiredMessage="To notify item should not be null" converter="#{genericSecuredConverter}">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+								</p:selectOneMenu>
+								<br />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<p:commandButton onclick="PF('addToNotifyItemDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+					<p:commandButton action="#{transportationJobView.addToNotifyItem()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addToNotifyItemDlg').hide()"
+						update=":main_form:step4:notification_tab,:main_form:messages" />
+				</div>
+			</p:dialog>
+		</h:form>
+		<f:event type="preRenderView" listener="#{transportationJobView.redirect()}" />
+		<ui:include src="transportationJobFooter.xhtml" />
 	</ui:define>
 </ui:composition>

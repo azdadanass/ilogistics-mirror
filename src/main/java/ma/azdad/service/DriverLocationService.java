@@ -16,9 +16,27 @@ public class DriverLocationService {
 
 	@Autowired
 	private DriverLocationRepo driverLocationRepo;
-
+	
 	public DriverLocation getLastLocation(String driverUsername) {
-		return driverLocationRepo.findTopByDriverUsernameOrderByDateDesc(driverUsername);
+		
+	   return  driverLocationRepo.findTopByDriverUsernameOrderByDateDesc(driverUsername);
+	   
+	}
+
+	public DriverLocationDto getLastLocationDto(String driverUsername) {
+	    DriverLocation loc = driverLocationRepo.findTopByDriverUsernameOrderByDateDesc(driverUsername);
+
+	    if (loc == null) {
+	        return null; 
+	    }
+
+	    return new DriverLocationDto(
+	        loc.getLatitude(),
+	        loc.getLongitude(),
+	        loc.getDriver() != null ? loc.getDriver().getUsername() : null,
+	        loc.getDate(),
+	        loc.getDriver() != null ? loc.getDriver().getPhoto() : null
+	    );
 	}
 
 	public List<DriverLocationDto> getDriversLocation() {

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Itinéraire précis du Job</title>
+<title>Itinéraire précis du Job avec Position Chauffeur</title>
 <style>
 html, body, #map {
 	height: 100%;
@@ -125,6 +125,14 @@ html, body, #map {
 	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
+.legend-driver {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	margin-right: 12px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
 .panel-minimize {
 	position: fixed;
 	top: 50%;
@@ -160,6 +168,24 @@ html, body, #map {
 	background: linear-gradient(135deg, transparent 0%, transparent 30%, #ccc 30%, #ccc 35%, transparent 35%, transparent 65%, #ccc 65%, #ccc 70%, transparent 70%);
 }
 
+.legend-section {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.legend-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+.legend-title {
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 8px;
+	font-size: 13px;
+}
+
 @media (max-width: 768px) {
 	.draggable-panel {
 		position: fixed !important;
@@ -182,52 +208,80 @@ html, body, #map {
 	<div id="map"></div>
 
 	<div id="controls" class="draggable-panel collapsed">
-		<div class="panel-header">
-			<span>🎛️ Contrôles</span>
-			<button class="collapse-btn" onclick="togglePanel('controls')">−</button>
-		</div>
-		<div class="panel-content">
-			<label>
-				<input type="checkbox" id="showActual" checked> 
-				<span>Itinéraire réel</span>
-			</label>
-			<label>
-				<input type="checkbox" id="showEstimated" checked> 
-				<span>Itinéraire estimé</span>
-			</label>
-		</div>
-		<div class="resize-handle"></div>
-	</div>
+    <div class="panel-header">
+        <span>🎛️ Controls</span>
+        <button class="collapse-btn" onclick="togglePanel('controls')">−</button>
+    </div>
+    <div class="panel-content">
+        <label>
+            <input type="checkbox" id="showActual" checked> 
+            <span>Actual Route</span>
+        </label>
+        <label>
+            <input type="checkbox" id="showEstimated" checked> 
+            <span>Estimated Route</span>
+        </label>
+        <label>
+            <input type="checkbox" id="showDriver" checked> 
+            <span>Driver Position</span>
+        </label>
+    </div>
+    <div class="resize-handle"></div>
+</div>
 
-	<div id="legend" class="draggable-panel collapsed">
-		<div class="panel-header">
-			<span>📍 Légende</span>
-			<button class="collapse-btn" onclick="togglePanel('legend')">−</button>
-		</div>
-		<div class="panel-content">
-			<div class="legend-item">
-				<div class="legend-color" style="background-color: #007bff;"></div>
-				<span>Itinéraire réel</span>
-			</div>
-			<div class="legend-item">
-				<div class="legend-color" style="background-color: #28a745;"></div>
-				<span>Itinéraire estimé</span>
-			</div>
-			<div class="legend-item">
-				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
-				<span>Points réels</span>
-			</div>
-			<div class="legend-item">
-				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-				<span>Sites estimés arrivés</span>
-			</div>
-			<div class="legend-item">
-				<div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-				<span>Sites estimés non arrivés</span>
-			</div>
-		</div>
-		<div class="resize-handle"></div>
-	</div>
+<div id="legend" class="draggable-panel collapsed">
+    <div class="panel-header">
+        <span>📍 Legend</span>
+        <button class="collapse-btn" onclick="togglePanel('legend')">−</button>
+    </div>
+    <div class="panel-content">
+        <div class="legend-section">
+            <div class="legend-title">Routes</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #007bff;"></div>
+                <span>Actual Route</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #28a745;"></div>
+                <span>Estimated Route</span>
+            </div>
+        </div>
+        
+        <div class="legend-section">
+            <div class="legend-title">Stop Points</div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
+                <span>Actual Points</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+                <span>Estimated Arrived Sites</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+                <span>Estimated Non-Arrived Sites</span>
+            </div>
+        </div>
+        
+        <div class="legend-section">
+            <div class="legend-title">Driver Position</div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: green;"></div>
+                <span>Driver GPS &lt; 24h</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: blue;"></div>
+                <span>Driver GPS &lt; 48h</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: red;"></div>
+                <span>Driver GPS &gt; 48h</span>
+            </div>
+        </div>
+    </div>
+    <div class="resize-handle"></div>
+</div>
+
 
 	<button id="restorePanels" class="panel-minimize">
 		<span style="font-size: 18px;">⚙️</span>
@@ -246,6 +300,7 @@ let estimatedPolylines = [];
 let estimatedMarkers = [];
 let actualMarkers = [];
 let actualPoints = []; // store real itinerary points for distance check
+let driverMarker = null; // store driver marker
 
 // Panel management
 let draggedPanel = null;
@@ -255,6 +310,11 @@ let dragOffset = { x: 0, y: 0 };
 function getJobIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get("jobId");
+}
+
+function getUsernameFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("username");
 }
 
 function initMap() {
@@ -288,11 +348,16 @@ function initMap() {
   
   showActualItinerary();
   showEstimatedItinerary();
+  showDriverLocation();
+  
+  // Refresh driver location every 5 minutes
+  setInterval(showDriverLocation, 300000);
 }
 
 function setupControls() {
   const showActualCheckbox = document.getElementById('showActual');
   const showEstimatedCheckbox = document.getElementById('showEstimated');
+  const showDriverCheckbox = document.getElementById('showDriver');
 
   showActualCheckbox.addEventListener('change', function() {
     toggleActualRoute(this.checked);
@@ -300,6 +365,10 @@ function setupControls() {
 
   showEstimatedCheckbox.addEventListener('change', function() {
     toggleEstimatedRoute(this.checked);
+  });
+
+  showDriverCheckbox.addEventListener('change', function() {
+    toggleDriverLocation(this.checked);
   });
 
   document.getElementById('restorePanels').addEventListener('click', restoreAllPanels);
@@ -411,6 +480,12 @@ function toggleEstimatedRoute(visible) {
   }
 }
 
+function toggleDriverLocation(visible) {
+  if (driverMarker) {
+    driverMarker.setMap(visible ? map : null);
+  }
+}
+
 function createSimplePointIcon(color, size = 8) {
   return {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
@@ -434,6 +509,64 @@ function createAlphabetIcon(letter, color, size = 24) {
     scaledSize: new google.maps.Size(size, size),
     anchor: new google.maps.Point(size/2, size)
   };
+}
+
+function getBorderColor(dateString) {
+  const now = new Date();
+  const lastDate = new Date(dateString);
+  const diffHours = (now - lastDate) / (1000 * 60 * 60);
+
+  if (diffHours < 24) return "green";
+  if (diffHours < 48) return "blue";
+  return "red";
+}
+
+// Generate PNG with border using Canvas
+function createPngIcon(imageUrl, borderColor, callback) {
+  const size = 60;
+  const border = 5;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  // Border circle
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
+  ctx.fillStyle = borderColor;
+  ctx.fill();
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; 
+  img.onload = () => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+    ctx.clip();
+    ctx.drawImage(img, border, border, size - border * 2, size - border * 2);
+    ctx.restore();
+
+    callback(canvas.toDataURL("image/png"));
+  };
+  
+  // Handle image load error - fallback to default icon
+  img.onerror = () => {
+    const defaultImg = new Image();
+    defaultImg.crossOrigin = "anonymous";
+    defaultImg.onload = () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+      ctx.clip();
+      ctx.drawImage(defaultImg, border, border, size - border * 2, size - border * 2);
+      ctx.restore();
+
+      callback(canvas.toDataURL("image/png"));
+    };
+    defaultImg.src = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+  };
+  
+  img.src = imageUrl;
 }
 
 function showActualItinerary() {
@@ -493,7 +626,7 @@ function showActualItinerary() {
             const infoWindow = new google.maps.InfoWindow({
               content: `
                 <div>
-                  <h6>Point réel ${index + 1}</h6>
+                  <h6>Real Point ${index + 1}</h6>
                   <p>Lat: ${point.latitude.toFixed(6)}</p>
                   <p>Lng: ${point.longitude.toFixed(6)}</p>
                   ${point.timestamp ? `<p>Temps: ${new Date(point.timestamp).toLocaleString()}</p>` : ''}
@@ -573,7 +706,9 @@ function showEstimatedItinerary() {
 
             const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
             const markerColor = (isArrived || isWithin5km) ? '#28a745' : '#dc3545';
-            const statusText = (isArrived || isWithin5km) ? 'Arrivé (réel < 5km)' : 'Non arrivé';
+            const statusText = (isArrived || isWithin5km) 
+            ? 'Arrived (within 5km)' 
+            : 'Not arrived';
             
             const letter = getAlphabetLetter(index);
 
@@ -588,18 +723,59 @@ function showEstimatedItinerary() {
             estimatedMarkers.push(marker);
 
             const infoWindow = new google.maps.InfoWindow({
-              content: `
-                <div>
-                  <h6>Site estimé ${letter}</h6>
-                  <p><strong>Statut:</strong> <span style="color: ${markerColor}; font-weight: bold;">${statusText}</span></p>
-                  <p>Lat: ${point.latitude.toFixed(6)}</p>
-                  <p>Lng: ${point.longitude.toFixed(6)}</p>
-                  ${nearestDistKm !== null ? `<p>Distance au plus proche réel: ${nearestDistKm.toFixed(2)} km</p>` : ''}
-                  ${point.timestamp ? `<p>Temps estimé: ${new Date(point.timestamp).toLocaleString()}</p>` : ''}
-                  ${point.arrivalTime && isArrived ? `<p>Temps d'arrivée: ${new Date(point.arrivalTime).toLocaleString()}</p>` : ''}
-                </div>
-              `
-            });
+            	  content: `
+            	    <div style="
+            	      font-family: Arial, sans-serif; 
+            	      font-size: 13px; 
+            	      max-width: 260px; 
+            	      border-radius: 8px; 
+            	      padding: 10px 12px; 
+            	      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            	      background: #fff;
+            	    ">
+            	      <h3 style="
+            	        margin: 0 0 8px 0; 
+            	        font-size: 16px; 
+            	        color: #2c3e50; 
+            	        border-bottom: 1px solid #eee; 
+            	        padding-bottom: 6px;
+            	      ">
+            	        📍 ${point.siteName || "Unknown"}
+            	      </h3>
+
+            	      <p style="margin: 6px 0;">
+            	        <strong>Status:</strong> 
+            	        <span style="color: ${markerColor}; font-weight: bold;">
+            	          ${statusText}
+            	        </span>
+            	      </p>
+
+            	      <p style="margin: 6px 0; color: #555;">
+            	        <strong>Latitude:</strong> ${point.latitude.toFixed(6)}<br>
+            	        <strong>Longitude:</strong> ${point.longitude.toFixed(6)}
+            	      </p>
+
+            	      ${nearestDistKm !== null ? `
+            	        <p style="margin: 6px 0; color: #333;">
+            	          <strong>Nearest real point:</strong> ${nearestDistKm.toFixed(2)} km
+            	        </p>` : ''}
+
+            	      ${point.timestamp ? `
+            	        <p style="margin: 6px 0; color: #333;">
+            	          <strong>Estimated Time:</strong><br> 
+            	          ${new Date(point.timestamp).toLocaleString()}
+            	        </p>` : ''}
+
+            	      ${point.arrivalTime && isArrived ? `
+            	        <p style="margin: 6px 0; color: #333;">
+            	          <strong>Arrival Time:</strong><br> 
+            	          ${new Date(point.arrivalTime).toLocaleString()}
+            	        </p>` : ''}
+            	    </div>
+            	  `
+            	});
+
+
             marker.addListener('click', () => {
               infoWindow.open(map, marker);
             });
@@ -609,6 +785,101 @@ function showEstimatedItinerary() {
     })
     .catch(err => {
       console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
+    });
+}
+
+function showDriverLocation() {
+  const username = getUsernameFromURL();
+  if (!username) {
+    console.warn("Aucun username trouvé dans l'URL pour afficher la position du chauffeur.");
+    return;
+  }
+
+  fetch(`/api/driver-locations/last/${username}`)
+    .then(response => {
+      if (!response.ok) throw new Error("Erreur lors de la récupération de la position du chauffeur");
+      return response.json();
+    })
+    .then(location => {
+      // Remove existing driver marker
+      if (driverMarker) {
+        driverMarker.setMap(null);
+      }
+
+      if (location && location.latitude && location.longitude) {
+        const position = { lat: location.latitude, lng: location.longitude };
+        const borderColor = getBorderColor(location.date);
+        
+        // Default icon URL
+        const defaultIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+        
+        // Use user's imageUrl if available, otherwise use default
+        const imageUrl = location.imageUrl && location.imageUrl.trim() !== "" 
+          ? location.imageUrl 
+          : defaultIconUrl;
+
+        // Create PNG icon dynamically
+        createPngIcon(imageUrl, borderColor, (iconUrl) => {
+          driverMarker = new google.maps.Marker({
+            position: position,
+            map: map,
+            icon: {
+              url: iconUrl,
+              scaledSize: new google.maps.Size(60, 60),
+              anchor: new google.maps.Point(30, 30)
+            },
+            title: location.username || "Chauffeur inconnu",
+            zIndex: 2000
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+        	  content: `
+        	    <div style="
+        	      display: flex; 
+        	      align-items: center; 
+        	      font-family: Arial, sans-serif; 
+        	      font-size: 13px; 
+        	      background: #fff; 
+        	      border-radius: 10px; 
+        	      padding: 10px; 
+        	      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        	      max-width: 280px;
+        	    ">
+        	      <img 
+        	        src="${imageUrl}" 
+        	        onerror="this.src='${defaultIconUrl}'" 
+        	        style="
+        	          width: 60px; 
+        	          height: 60px; 
+        	          border-radius: 50%; 
+        	          object-fit: cover; 
+        	          margin-right: 12px; 
+        	          border: 2px solid #eee;
+        	        " 
+        	      />
+        	      <div style="flex: 1;">
+        	        <p style="margin: 0; font-size: 15px; font-weight: bold; color: #2c3e50;">
+        	          👤 ${location.username || 'Chauffeur inconnu'}
+        	        </p>
+        	        <p style="margin: 4px 0; color: #555;">
+        	          🧭 <strong>Lat:</strong> ${location.latitude.toFixed(5)} <br/>
+        	          🧭 <strong>Lng:</strong> ${location.longitude.toFixed(5)}
+        	        </p>
+        	        <p style="margin: 4px 0; color: #777; font-size: 12px;">
+        	          ⏰ ${new Date(location.date).toLocaleString()}
+        	        </p>
+        	      </div>
+        	    </div>
+        	  `
+        	});
+
+
+          driverMarker.addListener("click", () => infoWindow.open(map, driverMarker));
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Erreur fetch de la position du chauffeur :", err);
     });
 }
 
@@ -627,7 +898,7 @@ window.initMap = initMap;
 </script>
 
 	<script async defer
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&libraries=geometry&callback=initMap">
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&libraries=geometry,places&region=MA&callback=initMap">
   </script>
 </body>
 </html>

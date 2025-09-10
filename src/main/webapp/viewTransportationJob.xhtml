@@ -729,11 +729,11 @@
 							<h:outputText value=" Itinerary" />
 						</h4>
 						<h:panelGroup id="gmap">
-    						<iframe src="#{request.contextPath}/map2.html?jobId=#{transportationJobView.transportationJob.id}"
+    						<iframe src="#{request.contextPath}/map2.html?jobId=#{transportationJobView.transportationJob.id}&amp;username=#{transportationJobView.transportationJob.driverUsername}"
             					style="width:100%; height:500px; border:none;">
     						</iframe>
 						</h:panelGroup>
-						<div class="space-16" />
+						<!-- <div class="space-16" />
 						<h4 class="header blue bolder smaller">
 						<i class="ace-icon fa fa-car"></i>
 							<h:outputText value=" Drivers" />
@@ -742,7 +742,7 @@
     						<iframe src="#{request.contextPath}/map3.html?jobId=#{transportationJobView.transportationJob.id}"
             					style="width:100%; height:500px; border:none;">
     						</iframe>
-						</h:panelGroup>
+						</h:panelGroup> -->
 					</div>
 					<f:subview id="costsSubview" rendered="#{sessionView.isTrPayment}">
 						<div id="tab3" class="tab-pane">

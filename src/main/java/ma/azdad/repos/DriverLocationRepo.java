@@ -13,10 +13,8 @@ import ma.azdad.model.DriverLocation;
 @Repository
 public interface DriverLocationRepo extends JpaRepository<DriverLocation, Integer> {
 
-    //  Derni�re localisation d�un chauffeur par son username
     DriverLocation findTopByDriverUsernameOrderByDateDesc(String driverUsername);
 
-    //  Liste des localisations d�un chauffeur tri�es du plus r�cent au plus ancien 
     List<DriverLocation> findByDriverOrderByDateDesc(String driverUsername);
     
     @Query("SELECT d FROM DriverLocation d JOIN FETCH d.driver")

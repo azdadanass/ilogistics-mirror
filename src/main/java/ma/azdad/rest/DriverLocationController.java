@@ -21,8 +21,8 @@ public class DriverLocationController {
     private DriverLocationService driverLocationService;
 
     @GetMapping("/last/{username}")
-    public ResponseEntity<DriverLocation> getLastLocation(@PathVariable String username) {
-        DriverLocation location = driverLocationService.getLastLocation(username);
+    public ResponseEntity<DriverLocationDto> getLastLocation(@PathVariable String username) {
+    	DriverLocationDto location = driverLocationService.getLastLocationDto(username);
         if (location == null) {
             return ResponseEntity.notFound().build();
         }

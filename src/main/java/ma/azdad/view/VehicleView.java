@@ -59,6 +59,11 @@ public class VehicleView extends GenericView<Integer, Vehicle, VehicleRepos, Veh
 			vehicle = vehicleService.findOne(id);
 		else if (isViewPage)
 			vehicle = vehicleService.findOne(id);
+		
+		
+		System.out.println("isEditPage "+isEditPage);
+		System.out.println("aaaaa : "+vehicle.getMatricule());
+		System.out.println("bbbbb : "+vehicle.getCorrectMatricule());
 
 	}
 

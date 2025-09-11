@@ -76,7 +76,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private User user5;
 	private User user6;
 	private User user7;
-//	private User user8;
+	private User user8;
 
 	// Costs
 	private Double cost = 0.0; // = startCost+itineraryCost+handlingCost
@@ -870,14 +870,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.user7 = user7;
 	}
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	public User getUser8() {
-//		return user8;
-//	}
-//
-//	public void setUser8(User user8) {
-//		this.user8 = user8;
-//	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
+	}
 
 	@Enumerated(EnumType.STRING)
 	public TransportationJobAssignmentType getAssignmentType() {

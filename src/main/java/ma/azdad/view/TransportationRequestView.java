@@ -27,7 +27,6 @@ import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
 import ma.azdad.model.TransportationJob;
-import ma.azdad.model.TransportationJobCapacity;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
@@ -486,6 +485,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		// calculate TJ Status
 		TransportationJob transportationJob = transportationJobService.findOne(transportationRequest.getTransportationJob().getId());
 		transportationJob.calculateStatus();
+		transportationJob.setUser8(sessionView.getUser());
 		transportationJobService.save(transportationJob);
 	}
 

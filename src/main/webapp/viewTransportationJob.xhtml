@@ -519,6 +519,11 @@
 									<p:dataTable value="#{transportationJobView.transportationJob.transportationRequestList}" id="main_tab" widgetVar="main_tab" var="item" rows="50"
 										styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Photo" width="100" exportable="false">
+											<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+												<f:param name="fileName" value="#{item.requesterPhoto}" />
+											</p:graphicImage>
+										</p:column>
 										<p:column headerText="Reference" width="100">
 											<h:outputLink value="viewTransportationRequest.xhtml" styleClass="#{item.deliveryRequest.type.color} bolder" target="blank">
 												<h:outputText value="#{item.reference}" />

@@ -169,11 +169,10 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.setTransporterPrivateLastName(transporterPrivateLastName);
 		this.setTransporterSupplierName(transporterSupplierName);
 	}
-	
+
 	// c2
-	public TransportationRequest(Integer id,String reference,TransportationRequestStatus status,Date pickupDate,Date deliveryDate, //
-			DeliveryRequestType deliveryRequestType,String originName, String destinationName, String warehouseName
-			) {
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date pickupDate, Date deliveryDate, //
+			DeliveryRequestType deliveryRequestType, String originName, String destinationName, String warehouseName) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
@@ -184,9 +183,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.setDestinationName(destinationName);
 		this.setWarehouseName(warehouseName);
 	}
-	
-	
-	
+
 	// select1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Integer deliveryRequestId, String deliveryRequestReference, DeliveryRequestType deliveryRequestType,
 			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
@@ -1192,6 +1189,18 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Transient
 	public void setRequesterUsername(String requesterUsername) {
 		this.requesterUsername = requesterUsername;
+	}
+
+	@Transient
+	public String getRequesterPhoto() {
+		return deliveryRequest != null ? deliveryRequest.getRequesterPhoto() : null;
+	}
+
+	@Transient
+	public void setRequesterPhoto(String requesterPhoto) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setRequesterPhoto(requesterPhoto);
 	}
 
 	@Transient

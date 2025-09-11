@@ -1424,5 +1424,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		this.toNotifyUserUsername = toNotifyUserUsername;
 	}
 
-	
+	public TransportationJobState getState() {
+		return state;
+	}
+
+	public void setState(TransportationJobState state) {
+		this.state = state;
+	}
+
 }

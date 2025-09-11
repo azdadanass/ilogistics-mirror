@@ -106,11 +106,15 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+	public TransportationJob(Integer id, String reference,String ref,Priority priority,Date plannedStartDate,Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String transporterCompanyName) {
 		super(id);
 		this.reference = reference;
+		this.ref = ref;
+		this.priority = priority;
+		this.plannedStartDate = plannedStartDate;
+		this.plannedEndDate = plannedEndDate;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
@@ -128,11 +132,15 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+	public TransportationJob(Integer id, String reference,String ref,Priority priority,Date plannedStartDate,Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
+		this.ref = ref;
+		this.priority = priority;
+		this.plannedStartDate = plannedStartDate;
+		this.plannedEndDate = plannedEndDate;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;

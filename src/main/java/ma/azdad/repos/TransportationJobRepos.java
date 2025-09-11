@@ -1,11 +1,13 @@
 package ma.azdad.repos;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import ma.azdad.model.Priority;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobStatus;
 
@@ -20,9 +22,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	String vehicleMatricule = "(select b.matricule from Vehicle b where b.id = a.vehicle.id)";
 
-	String c1 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
+	String c1 = "select new TransportationJob(a.id,a.reference,a.ref,a.priority,a.plannedStartDate,a.plannedEndDate,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
 			+ transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + "," + transporterCompanyName + ") ";
-	String c2 = "select new TransportationJob(a.id,a.reference,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
+	String c2 = "select new TransportationJob(a.id,a.reference,a.ref,a.priority,a.plannedStartDate,a.plannedEndDate,a.startDate,a.endDate,a.status,a.cost,a.estimatedCost,a.firstLatitude,a.firstLongitude,a.user1.photo,a.transporter.id, "
 			+ transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName + ",a.driver.username," + vehicleMatricule + ") ";
 
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 order by a.id desc")

@@ -65,7 +65,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected SessionView sessionView;
-	
+
 	@Autowired
 	protected TransportationJobCapacityRepos transportationJobCapacityRepos;
 
@@ -111,7 +111,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	private TransportationRequestState state;
 	private TransportationRequestPaymentStatus paymentStatus;
-	
+
 	private String downloadPath;
 
 	@Override
@@ -232,15 +232,15 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			test = test || cacheView.getAssignedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || cacheView.getDelegatedProjectList().contains(transportationRequest.getDeliveryRequest().getProject().getId());
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername());
-			test = test || (transportationRequest.getDeliveryRequest().getWarehouse() != null
-					&& cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
+			test = test
+					|| (transportationRequest.getDeliveryRequest().getWarehouse() != null && cacheView.getWarehouseList().contains(transportationRequest.getDeliveryRequest().getWarehouse().getId()));
 			test = test || sessionView.isTM();
 			test = test || sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getCostcenter().getLob().getManager().getUsername());
 			if (!test)
 				cacheView.accessDenied();
 		}
 	}
-	
+
 	public void generateStamp() {
 		downloadPath = service.generateStamp(transportationRequest);
 	}
@@ -252,8 +252,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		else if (isViewPage || isEditPage)
 			return (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 					|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager()))
-					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED)
-							.contains(transportationRequest.getStatus());
+					&& Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(transportationRequest.getStatus());
 		return false;
 	}
 
@@ -403,7 +402,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			return;
 		if (!validatePickupTransportationRequest())
 			return;
-		transportationRequest = transportationRequestService.pickup(transportationRequest,sessionView.getUser());
+		transportationRequest = transportationRequestService.pickup(transportationRequest, sessionView.getUser());
 		refreshTransportationRequest();
 	}
 
@@ -412,34 +411,26 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			FacesContextMessages.ErrorMessages("Expected Delivery Time should not be lower than Pickup Time");
 			return false;
 		}
-		Double maxCumulativeWeight = transportationJobCapacityRepos
-		        .findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		Double maxCumulativeWeight = transportationJobCapacityRepos.findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
 		if (maxCumulativeWeight == null) {
-		    maxCumulativeWeight = 0d;
+			maxCumulativeWeight = 0d;
 		}
 
-		Double maxCumulativeVolume = transportationJobCapacityRepos
-		        .findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
 		if (maxCumulativeVolume == null) {
-		    maxCumulativeVolume = 0d;
+			maxCumulativeVolume = 0d;
 		}
 		// Vehicle limits
-		Double maxVehiculeWeight = vehicleService
-		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
-		        .getMaxWeight();
-		Double maxVehiculeVolume = vehicleService
-		        .findOne(transportationRequest.getTransportationJob().getVehicleId())
-		        .getMaxVolume();
+		Double maxVehiculeWeight = vehicleService.findOne(transportationRequest.getTransportationJob().getVehicleId()).getMaxWeight();
+		Double maxVehiculeVolume = vehicleService.findOne(transportationRequest.getTransportationJob().getVehicleId()).getMaxVolume();
 
 		// Validation BEFORE inserting pickup
 		if (maxCumulativeVolume + (transportationRequest.getVolume() != null ? transportationRequest.getVolume() : 0d) > maxVehiculeVolume) {
-		    return FacesContextMessages.ErrorMessages(
-		        "Pickup of this TR could not be completed as you will be exceeding the maximum Volume of the vehicle.");
+			return FacesContextMessages.ErrorMessages("Pickup of this TR could not be completed as you will be exceeding the maximum Volume of the vehicle.");
 		}
 
 		if (maxCumulativeWeight + (transportationRequest.getGrossWeight() != null ? transportationRequest.getGrossWeight() : 0d) > maxVehiculeWeight) {
-		    return FacesContextMessages.ErrorMessages(
-		        "Pickup of this TR could not be completed as you will be exceeding the maximum Weight of the vehicle.");
+			return FacesContextMessages.ErrorMessages("Pickup of this TR could not be completed as you will be exceeding the maximum Weight of the vehicle.");
 		}
 
 		return true;
@@ -467,8 +458,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	}
 
 	public Boolean canAcknowledgeTransportationRequest(TransportationRequest transportationRequest) {
-		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus())
-				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.DELIVERED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public void acknowledgeTransportationRequest(TransportationRequest transportationRequest) {
@@ -485,7 +475,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		// calculate TJ Status
 		TransportationJob transportationJob = transportationJobService.findOne(transportationRequest.getTransportationJob().getId());
 		transportationJob.calculateStatus();
-		transportationJob.setUser8(sessionView.getUser());
+		if (transportationJob.getDate8() != null)
+			transportationJob.setUser8(sessionView.getUser());
 		transportationJobService.save(transportationJob);
 	}
 
@@ -530,8 +521,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// CANCEL DELIVERY REQUEST
 	public Boolean canCancelTransportationRequest() {
-		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED)
-				.contains(transportationRequest.getStatus())
+		return Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())
 				&& (sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester())
 						|| sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getProject().getManager().getUsername()));
 
@@ -573,8 +563,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	// DELETE TRANSPORTATIONREQUEST
 	public Boolean canDeleteTransportationRequest() {
-		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus())
-				&& sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
+		return TransportationRequestStatus.EDITED.equals(transportationRequest.getStatus()) && sessionView.isTheConnectedUser(transportationRequest.getDeliveryRequest().getRequester());
 	}
 
 	public String deleteTransportationRequest() {
@@ -594,8 +583,8 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(),
-				sessionView.getUser(), transportationRequest);
+		TransportationRequestFile transportationRequestFile = new TransportationRequestFile(file, transportationRequestFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationRequest);
 		transportationRequestFileService.save(transportationRequestFile);
 		synchronized (TransportationRequestView.class) {
 			refreshTransportationRequest();
@@ -885,7 +874,5 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public void setDownloadPath(String downloadPath) {
 		this.downloadPath = downloadPath;
 	}
-	
-	
 
 }

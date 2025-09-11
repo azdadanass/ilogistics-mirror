@@ -275,8 +275,8 @@
 									</span>
 									<span class="title">
 										<h:outputText id="step8" value="#{TransportationJobStatus.ACKNOWLEDGED.value}" />
-										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.transporter!=null}">
-											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,null)}" />
+										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout" rendered="#{transportationJobView.transportationJob.user8!=null}">
+											<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.date8,transportationJobView.transportationJob.user8.username)}" />
 										</p:overlayPanel>
 									</span>
 								</li>

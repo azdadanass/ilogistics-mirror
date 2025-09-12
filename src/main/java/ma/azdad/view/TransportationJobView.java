@@ -871,6 +871,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void removeTransportationRequest() {
 		if (!canRemoveTransportationRequest(transportationRequest))
 			return;
+		
+		transportationRequest.setPlannedPickupDate(null);
+		transportationRequest.setPlannedDeliveryDate(null);
+		
+		transportationRequest.setExpectedPickupDate(null);
+		transportationRequest.setExpectedDeliveryDate(null);
+		
 		transportationRequest.setStatus(TransportationRequestStatus.APPROVED);
 		transportationRequest.setUser4(null);
 		transportationRequest.setDate4(null);

@@ -523,7 +523,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setDate3(null);
 		transportationJob.setUser3(null);
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
-		transportationJob.getTransportationRequestList().forEach(i -> i.addHistory(new TransportationRequestHistory("Unassign", connectedUser)));
+		transportationJob.getTransportationRequestList().forEach(i -> {
+			i.setExpectedPickupDate(null);
+			i.setExpectedDeliveryDate(null);
+			i.addHistory(new TransportationRequestHistory("Unassign", connectedUser));
+		});
 		save(transportationJob);
 	}
 

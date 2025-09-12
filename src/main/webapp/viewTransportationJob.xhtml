@@ -885,6 +885,154 @@
 						<div id="tab3" class="tab-pane">
 							<p:messages id="costs_messages" closable="true" />
 							<div class="row">
+								<table width="100%" style="margin: 10px" class="table table-bordered">
+									<tr>
+										<th colspan="4" style="background: #438eb9; color: white">
+											<h:outputText value="Estimation Vs real" styleClass="bolder" />
+										</th>
+									</tr>
+									<tr>
+										<td width="20%">
+											<h:outputText value="Total Estimated Cost" />
+										</td>
+										<td width="30%">
+											<h:outputText value="#{transportationJobView.transportationJob.estimatedCost}" styleClass="bolder purple">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</td>
+										<td width="20%">
+											<h:outputText value="Total Cost" />
+										</td>
+										<td width="30%">
+											<h:outputText value="#{transportationJobView.transportationJob.cost}" styleClass="bolder blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<h:outputText value="Estimation Vs real" />
+										</td>
+										<td>
+											<h:outputText value="#{(transportationJobView.transportationJob.cost - transportationJobView.transportationJob.estimatedCost)/transportationJobView.transportationJob.cost}"
+												styleClass="bolder">
+												<f:convertNumber type="percent" />
+											</h:outputText>
+										</td>
+										<td>
+											<h:outputText value="Total paid Cost" />
+										</td>
+										<td>
+											<h:outputText value="#{transportationJobView.transportationJob.paidCost}" styleClass="bolder green">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="row">
+								<table width="100%" style="margin: 10px">
+									<tr>
+										<td width="33%">
+											<table class="table table-bordered" style="width: 80%; margin: auto">
+												<tr>
+													<th colspan="2" style="background: #85b558; color: white">
+														<h:outputText value="Cost Planning" />
+													</th>
+												</tr>
+												<tr>
+													<td width="60%">
+														<h:outputText value="Price / Km" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value=" #{transportationJobView.transportationJob.vehiclePrice} MAD / Km" styleClass="badge badge-primary" />
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Estimated Start Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.estimatedStartCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Estimated Itinerary Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.estimatedItineraryCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Total Estimated Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.estimatedCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+											</table>
+										</td>
+										<td width="33%">
+											<table class="table table-bordered" style="width: 80%; margin: auto">
+												<tr>
+													<th colspan="2" style="background: #2a8bcb; color: white">
+														<h:outputText value="Cost (Actual)" />
+													</th>
+												</tr>
+												<tr>
+													<td width="60%">
+														<h:outputText value="Start cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.startCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Itinerary Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.itineraryCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Handling Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.handlingCost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<h:outputText value="Total Cost" />
+													</td>
+													<td style="text-align: right">
+														<h:outputText value="#{transportationJobView.transportationJob.cost}">
+															<f:convertNumber type="number" maxFractionDigits="2" />
+														</h:outputText>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<!-- <div class="row">
 								<div class="col-xs-12 col-sm-6">
 									<div class="profile-user-info profile-user-info-striped">
 										<div class="profile-info-row">
@@ -979,14 +1127,14 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="space-16" />
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">
 										<div class="col-sm-9 hidden-xs">
 											<i class="fa fa-list" />
-											<h:outputText value=" Costs Details" />
+											<h:outputText value=" Paid Cost" />
 										</div>
 										<div class="col-sm-2">
 											<div class="action-buttons center">

@@ -68,7 +68,9 @@ public class JobIteneraryController {
     	        null,
     	        stop.getDate(),
     	        null,
-    	        name
+    	        name,
+    	        stop.getExpected(),
+    	        stop.getType().getValue()
     	    ));
     	}
 

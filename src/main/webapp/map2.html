@@ -84,6 +84,8 @@ html, body, #map {
 	bottom: 10px;
 	left: 10px;
 	min-width: 220px;
+	display: flex;
+    flex-direction: column-reverse; 
 }
 
 #controls label {
@@ -279,6 +281,7 @@ html, body, #map {
             </div>
         </div>
     </div>
+   
     <div class="resize-handle"></div>
 </div>
 
@@ -705,77 +708,70 @@ function showEstimatedItinerary() {
             }
 
             const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
-            const markerColor = (isArrived || isWithin5km) ? '#28a745' : '#dc3545';
-            const statusText = (isArrived || isWithin5km) 
-            ? 'Arrived (within 5km)' 
-            : 'Not arrived';
-            
+            const markerColor = (!point.expected) ? '#28a745' : '#dc3545';
+            const dateColor = point.expected ? '#dc3545' : '#28a745'; // red if expected, green if not
+
+
             const letter = getAlphabetLetter(index);
 
             const marker = new google.maps.Marker({
-              position: new google.maps.LatLng(point.latitude, point.longitude),
-              map: map,
-              title: `Site estimé ${letter} - ${statusText}`,
-              icon: createAlphabetIcon(letter, markerColor),
-              zIndex: 1000 + index
+                position: new google.maps.LatLng(point.latitude, point.longitude),
+                map: map,
+                title: point.siteName || "Unknown", // Just the site name
+                icon: createAlphabetIcon(letter, markerColor),
+                zIndex: 1000 + index
             });
 
             estimatedMarkers.push(marker);
 
+            // Format date function
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `${day}/${month}/${year} ${hours}h:${minutes}`;
+            }
+
+            // Create date display string
+            let dateDisplay = '';
+            if (point.date) {
+                const formattedDate = formatDate(point.date);
+                const expectedText = point.expected ? 'Expected ' : '';
+                dateDisplay = `${point.type} : ${expectedText}${formattedDate}`;
+            }
+
             const infoWindow = new google.maps.InfoWindow({
-            	  content: `
-            	    <div style="
-            	      font-family: Arial, sans-serif; 
-            	      font-size: 13px; 
-            	      max-width: 260px; 
-            	      border-radius: 8px; 
-            	      padding: 10px 12px; 
-            	      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            	      background: #fff;
-            	    ">
-            	      <h3 style="
-            	        margin: 0 0 8px 0; 
-            	        font-size: 16px; 
-            	        color: #2c3e50; 
-            	        border-bottom: 1px solid #eee; 
-            	        padding-bottom: 6px;
-            	      ">
-            	        📍 ${point.siteName || "Unknown"}
-            	      </h3>
+                content: `
+                <div style="
+                    font-family: Arial, sans-serif;
+                    font-size: 13px;
+                    max-width: 260px;
+                    border-radius: 8px;
+                    padding: 10px 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    background: #fff;
+                ">
+                    <h3 style="
+                        margin: 0 0 8px 0;
+                        font-size: 16px;
+                        color: #2c3e50;
+                        border-bottom: 1px solid #eee;
+                        padding-bottom: 6px;
+                    ">
+                        📍 ${point.siteName || "Unknown"}
+                    </h3>
+                    
+                    ${dateDisplay ? `
+                            <p style="margin: 6px 0; font-weight: bold;">
+                                <strong style="color: ${dateColor};">${dateDisplay}</strong>
+                            </p>` : ''}
 
-            	      <p style="margin: 6px 0;">
-            	        <strong>Status:</strong> 
-            	        <span style="color: ${markerColor}; font-weight: bold;">
-            	          ${statusText}
-            	        </span>
-            	      </p>
-
-            	      <p style="margin: 6px 0; color: #555;">
-            	        <strong>Latitude:</strong> ${point.latitude.toFixed(6)}<br>
-            	        <strong>Longitude:</strong> ${point.longitude.toFixed(6)}
-            	      </p>
-
-            	      ${nearestDistKm !== null ? `
-            	        <p style="margin: 6px 0; color: #333;">
-            	          <strong>Nearest real point:</strong> ${nearestDistKm.toFixed(2)} km
-            	        </p>` : ''}
-
-            	      ${point.timestamp ? `
-            	        <p style="margin: 6px 0; color: #333;">
-            	          <strong>Estimated Time:</strong><br> 
-            	          ${new Date(point.timestamp).toLocaleString()}
-            	        </p>` : ''}
-
-            	      ${point.arrivalTime && isArrived ? `
-            	        <p style="margin: 6px 0; color: #333;">
-            	          <strong>Arrival Time:</strong><br> 
-            	          ${new Date(point.arrivalTime).toLocaleString()}
-            	        </p>` : ''}
-            	    </div>
-            	  `
-            	});
-
-
+                </div>
+                `
+            });
             marker.addListener('click', () => {
               infoWindow.open(map, marker);
             });

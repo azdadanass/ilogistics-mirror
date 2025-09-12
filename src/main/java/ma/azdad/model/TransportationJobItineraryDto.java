@@ -13,6 +13,8 @@ public class TransportationJobItineraryDto {
 	    private String imageUrl;
 	    private String imageUrlMobile;
 	    private String siteName;
+	    private Boolean expected;
+	    private String type;
 
 
 	    public TransportationJobItineraryDto() {}
@@ -27,7 +29,8 @@ public class TransportationJobItineraryDto {
 	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
 	    }
 	    
-	    public TransportationJobItineraryDto(Integer id,double latitude, double longitude, String username, Date date,String imageUrl,String siteName) {
+	    public TransportationJobItineraryDto(Integer id,double latitude, double longitude, String username, Date date,String imageUrl,
+	    		String siteName,Boolean expected,String type) {
 	        this.id = id;
 	    	this.latitude = latitude;
 	        this.longitude = longitude;
@@ -35,6 +38,8 @@ public class TransportationJobItineraryDto {
 	        this.date = date;
 	        this.imageUrl = imageUrl;
 	        this.siteName = siteName;
+	        this.expected = expected;
+	        this.type = type;
 	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
 	    }
 
@@ -103,6 +108,26 @@ public class TransportationJobItineraryDto {
 		public void setSiteName(String siteName) {
 			this.siteName = siteName;
 		}
+
+		public Boolean getExpected() {
+			return expected;
+		}
+
+		public void setExpected(Boolean expected) {
+			this.expected = expected;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+		
+		
+		
+		
 		
 		
 		

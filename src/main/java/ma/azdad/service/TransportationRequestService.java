@@ -70,6 +70,9 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	DeliveryRequestService deliveryRequestService;
 	
 	@Autowired
+	TransportationJobService transportationJobService;
+	
+	@Autowired
 	CapacityService capacityService;
 
 	@Autowired
@@ -268,6 +271,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		transportationRequest.setDate5(new Date());
 		transportationRequest.setUser5(connectedUser);
 		transportationRequest = transportationRequestService.save(transportationRequest);
+		transportationJobService.calculateAndSaveTrStartDistance(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 		capacityService.pickupVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.pickedup(transportationRequest, connectedUser);
 		return transportationRequest;
@@ -295,6 +299,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		transportationRequest.setUser6(connectedUser);
 		transportationRequest.setRealDistance(getDistanceForTR(transportationRequest.getId()));
 		transportationRequest = transportationRequestService.save(transportationRequest);
+		transportationJobService.calculateAndSaveTrStartDistance(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 		capacityService.deliverVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.delivred(transportationRequest, connectedUser);
 		return transportationRequest;

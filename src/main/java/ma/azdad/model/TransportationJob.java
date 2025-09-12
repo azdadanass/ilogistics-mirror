@@ -55,7 +55,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private Double firstLongitude;
 
 	private Double startLatitude; // if web start
-	private Double startLongitude; // if web start
+	private Double startLongitude;
+	private Double startDistance;// if web start
 
 	private String qrKey;
 
@@ -1073,6 +1074,15 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setPlannedHandlingCost(Double plannedHandlingCost) {
 		this.plannedHandlingCost = plannedHandlingCost;
+	}
+	
+
+	public Double getStartDistance() {
+		return startDistance;
+	}
+
+	public void setStartDistance(Double startDistance) {
+		this.startDistance = startDistance;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transportationJob", cascade = CascadeType.ALL, orphanRemoval = true)

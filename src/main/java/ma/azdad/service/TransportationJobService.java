@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -491,10 +492,64 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public void startMobile(Integer id, String username, Double lat, Double lng) {
 		User user = userService.findByUsername(username);
 		TransportationJob transportationJob = findOne(id);
+		transportationJob.setStartLongitude(lng);
+		transportationJob.setStartLatitude(lat);
 		start(transportationJob, user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
 	}
+	
+	public void calculateAndSaveTrStartDistance(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return;
+	    }
+
+	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(requestId)) {
+	            index = i;
+	            break;
+	        }
+	    }
+	    if (index == -1) return;
+
+	    double fromLat, fromLng;
+	    double toLat = request.getDeliveryRequest().getOrigin().getLatitude();
+	    double toLng = request.getDeliveryRequest().getOrigin().getLongitude();
+
+	    double startDistance;
+
+	    if (index == 0) {
+	        // --- First TR → from job start ---
+	        fromLat = job.getStartLatitude();
+	        fromLng = job.getStartLongitude();
+
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+
+	        // Save into job
+	        job.setStartDistance(startDistance);
+	        save(job); // persist job
+	    } else {
+	        // --- Other TRs → from previous TR’s destination ---
+	        TransportationRequest prev = requests.get(index - 1);
+	        fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	        fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+	    }
+
+	    // Save into request
+	    request.setStartDistance(startDistance);
+	    transportationRequestService.save(request); // persist request
+	}
+
+
 
 	public Double getEstimatedDeliveryDistance(Integer jobId) {
 		TransportationJob job = findOne(jobId);
@@ -921,7 +976,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if (locations == null || locations.isEmpty()) {
 				DriverLocation userLocation = new DriverLocation(new Date(), lat, lng, user);
 				userLocation = driverLocationRepo.save(userLocation);
-				// hadi hiya li at3merlina les info de user si nexiste pas f base donnés
+				// hadi hiya li at3merlina les info de user si nexiste pas f base donnÃ©s
 				googleGeocodeService.updateGoogleGeocodeDataAsync(userLocation);
 
 			} else {
@@ -930,11 +985,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				if (distanceKm >= 5.0) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
-					// hadi adir m�j les cordonnées si user exist déja et distance > 5km
+					// hadi adir mï¿½j les cordonnÃ©es si user exist dÃ©ja et distance > 5km
 					googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
 
 				} else {
-					System.out.println("Distance < 5km � skipping update");
+					System.out.println("Distance < 5km ï¿½ skipping update");
 				}
 			}
 	}
@@ -966,7 +1021,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 						transportationJobItineraryRepos.save(location);
 
 					} else {
-						System.out.println("Distance < 5km � skipping update");
+						System.out.println("Distance < 5km ï¿½ skipping update");
 					}
 				} else {
 					List<TransportationRequest> list = transportationRequestRepos.findLightByJob(transportationJob.getId());
@@ -987,7 +1042,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	}
 
-	public Double startDistance(Integer jobId) {
+	public Double realStartDistance(Integer jobId) {
 		List<TransportationJobItinerary> pickup = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
 
 		if (pickup != null && !pickup.isEmpty()) {
@@ -996,13 +1051,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		return 0d;
 	}
+	
+	
+
 
 	public Double ongoingDistance(Integer jobId) {
 		List<TransportationJobItinerary> delivery = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
 
 		if (delivery != null && !delivery.isEmpty()) {
 			Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
-			return lastCumulative - startDistance(jobId);
+			return lastCumulative - realStartDistance(jobId);
 		}
 
 		return 0d;

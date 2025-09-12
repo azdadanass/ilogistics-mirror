@@ -24,6 +24,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.TransportationJobState" var="TransportationJobState" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -50,14 +51,14 @@
 								<h:outputText value="Assign" />
 							</p:commandLink>
 							<p:commandLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" title="Accept" onclick="PF('acceptDlg').show()" rendered="#{transportationJobView.isPageIndex(6,7)}">
-							<i class="ace-icon fa fa-check bigger-230"></i>
-							<h:outputText value="Accept" />
-						</p:commandLink>
-						<p:commandLink styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" title="Decline" onclick="PF('declineDlg').show()" rendered="#{transportationJobView.isPageIndex(6)}">
-							<i class="ace-icon fa fa-remove bigger-230"></i>
-							<h:outputText value="Decline" />
-						</p:commandLink>
-						<!-- <p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" onclick="PF('startDlg').show()" rendered="#{transportationJobView.isPageIndex(7)}">
+								<i class="ace-icon fa fa-check bigger-230"></i>
+								<h:outputText value="Accept" />
+							</p:commandLink>
+							<p:commandLink styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip" title="Decline" onclick="PF('declineDlg').show()" rendered="#{transportationJobView.isPageIndex(6)}">
+								<i class="ace-icon fa fa-remove bigger-230"></i>
+								<h:outputText value="Decline" />
+							</p:commandLink>
+							<!-- <p:commandLink styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" title="Start" onclick="PF('startDlg').show()" rendered="#{transportationJobView.isPageIndex(7)}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Start" />
 						</p:commandLink> -->
@@ -121,18 +122,34 @@
 									<f:param name="fileName" value="#{item.user1Photo}" />
 								</p:graphicImage>
 							</p:column>
-							<p:column headerText="Reference" sortBy="#{item.reference}">
+							<p:column headerText="Reference" sortBy="#{item.id}">
 								<h:outputText value="#{item.reference}" styleClass="bolder purple" />
 							</p:column>
-							<p:column headerText="Transporter">
-								<h:outputText value="#{item.transporterName}" styleClass="bolder orange"/>
+							<p:column headerText="REF">
+								<h:outputText value="#{item.ref}" />
 							</p:column>
-							<p:column headerText="Start Date" sortBy="#{item.startDate}">
+							<p:column headerText="Priority">
+								<h:outputText value="#{item.priority.value}" styleClass="#{item.priority.color}" />
+							</p:column>
+							<p:column headerText="Transporter">
+								<h:outputText value="#{item.transporterName}" styleClass="bolder orange" />
+							</p:column>
+							<p:column headerText="Planned Start Date" sortBy="#{item.plannedStartDate}" rendered="#{TransportationJobState.NEW==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or transportationJobView.isPageIndex(4,7,8)}">
+								<h:outputText value="#{item.plannedStartDate}" styleClass="blue">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Planned End Date" sortBy="#{item.plannedEndDate}" rendered="#{TransportationJobState.NEW==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or transportationJobView.isPageIndex(4,7,8)}">
+								<h:outputText value="#{item.plannedEndDate}" styleClass="green">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Start Date" sortBy="#{item.startDate}" rendered="#{!(TransportationJobState.NEW==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or transportationJobView.isPageIndex(4,7,8))}">
 								<h:outputText value="#{item.startDate}" styleClass="blue">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="End Date" sortBy="#{item.endDate}">
+							<p:column headerText="End Date" sortBy="#{item.endDate}" rendered="#{!(TransportationJobState.NEW==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or TransportationJobState.ACCEPTED==transportationJobView.state or transportationJobView.isPageIndex(4,7,8))}">
 								<h:outputText value="#{item.endDate}" styleClass="green">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 								</h:outputText>

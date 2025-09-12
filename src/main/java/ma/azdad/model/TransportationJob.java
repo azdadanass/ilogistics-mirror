@@ -32,6 +32,9 @@ import ma.azdad.utils.App;
 public class TransportationJob extends GenericModel<Integer> implements Serializable {
 
 	private String reference;
+	private String ref;
+	private Boolean important = false;
+	private Priority priority;
 	private String comment;
 	private Date startDate; // Calculable
 	private Date endDate; // Calculable
@@ -39,6 +42,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private TransportationJobAssignmentType assignmentType;
 	private Double acceptLeadTime = 12.0;
 	private Double startLeadTime = 24.0;
+	private Date plannedStartDate;
+	private Date plannedEndDate;
+	private Double plannedStartCost = 0.0;
+	private Double plannedItineraryCost = 0.0;
+	private Double plannedHandlingCost = 0.0;
 
 	private Date maxAcceptDate;
 	private Date maxStartDate;
@@ -68,7 +76,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private User user5;
 	private User user6;
 	private User user7;
-//	private User user8;
+	private User user8;
 
 	// Costs
 	private Double cost = 0.0; // = startCost+itineraryCost+handlingCost
@@ -91,17 +99,22 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	private List<TransportationRequest> transportationRequestList = new ArrayList<>();
 	private List<Stop> stopList = new ArrayList<>();
 	private List<Path> pathList = new ArrayList<>();
+	private List<ToNotify> toNotifyList = new ArrayList<>();
 
 	public TransportationJob() {
 		super();
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+	public TransportationJob(Integer id, String reference,String ref,Priority priority,Date plannedStartDate,Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String transporterCompanyName) {
 		super(id);
 		this.reference = reference;
+		this.ref = ref;
+		this.priority = priority;
+		this.plannedStartDate = plannedStartDate;
+		this.plannedEndDate = plannedEndDate;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
@@ -119,11 +132,15 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+	public TransportationJob(Integer id, String reference,String ref,Priority priority,Date plannedStartDate,Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
 			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
+		this.ref = ref;
+		this.priority = priority;
+		this.plannedStartDate = plannedStartDate;
+		this.plannedEndDate = plannedEndDate;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.status = status;
@@ -853,14 +870,14 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		this.user7 = user7;
 	}
 
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	public User getUser8() {
-//		return user8;
-//	}
-//
-//	public void setUser8(User user8) {
-//		this.user8 = user8;
-//	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	public User getUser8() {
+		return user8;
+	}
+
+	public void setUser8(User user8) {
+		this.user8 = user8;
+	}
 
 	@Enumerated(EnumType.STRING)
 	public TransportationJobAssignmentType getAssignmentType() {
@@ -991,6 +1008,80 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setStartLongitude(Double startLongitude) {
 		this.startLongitude = startLongitude;
+	}
+
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
+	}
+
+	public Boolean getImportant() {
+		return important;
+	}
+
+	public void setImportant(Boolean important) {
+		this.important = important;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	public Date getPlannedStartDate() {
+		return plannedStartDate;
+	}
+
+	public void setPlannedStartDate(Date plannedStartDate) {
+		this.plannedStartDate = plannedStartDate;
+	}
+
+	public Date getPlannedEndDate() {
+		return plannedEndDate;
+	}
+
+	public void setPlannedEndDate(Date plannedEndDate) {
+		this.plannedEndDate = plannedEndDate;
+	}
+
+	public Double getPlannedStartCost() {
+		return plannedStartCost;
+	}
+
+	public void setPlannedStartCost(Double plannedStartCost) {
+		this.plannedStartCost = plannedStartCost;
+	}
+
+	public Double getPlannedItineraryCost() {
+		return plannedItineraryCost;
+	}
+
+	public void setPlannedItineraryCost(Double plannedItineraryCost) {
+		this.plannedItineraryCost = plannedItineraryCost;
+	}
+
+	public Double getPlannedHandlingCost() {
+		return plannedHandlingCost;
+	}
+
+	public void setPlannedHandlingCost(Double plannedHandlingCost) {
+		this.plannedHandlingCost = plannedHandlingCost;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transportationJob", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ToNotify> getToNotifyList() {
+		return toNotifyList;
+	}
+
+	public void setToNotifyList(List<ToNotify> toNotifyList) {
+		this.toNotifyList = toNotifyList;
 	}
 
 }

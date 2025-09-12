@@ -79,13 +79,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	UserRepos userRepos;
-	
+
 	@Autowired
 	DriverLocationRepo driverLocationRepo;
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;
-	
 
 	@Autowired
 	TransportationJobItineraryRepos transportationJobItineraryRepos;
@@ -104,11 +103,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	PathService pathService;
-	
 
 	@Autowired
 	StopService stopService;
-	
+
 	@Autowired
 	StopRepos stopRepos;
 
@@ -120,7 +118,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	VehicleService vehicleService;
-	
+
 	@Autowired
 	EmailService emailService;
 
@@ -135,6 +133,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Hibernate.initialize(transportationJob.getFileList());
 		Hibernate.initialize(transportationJob.getHistoryList());
 		Hibernate.initialize(transportationJob.getTransportationRequestList());
+		Hibernate.initialize(transportationJob.getToNotifyList());
 		if (transportationJob.getTransportationRequestList() != null)
 			for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 				Hibernate.initialize(tr.getHistoryList());
@@ -147,6 +146,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Hibernate.initialize(transportationJob.getTransporter().getCompany());
 			initialize(transportationJob.getTransporter().getUserList());
 		}
+		if (transportationJob.getVehicle() != null)
+			if (transportationJob.getVehicle().getBrandType() != null)
+				initialize(transportationJob.getVehicle().getBrandType().getBrand());
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
@@ -371,8 +373,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Transactional
 	public void correctExistingTransportationRequestList() {
-		List<TransportationRequest> list = transportationRequestService.findByNotHavingTransportationJob(
-				Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
+		List<TransportationRequest> list = transportationRequestService
+				.findByNotHavingTransportationJob(Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED));
 		for (TransportationRequest transportationRequest : list) {
 			TransportationJob tj = new TransportationJob();
 			tj.setTransporter(transportationRequest.getTransporter());
@@ -401,9 +403,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	// workflow
 
-	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId,
-			User connectedUser) {
-		
+	public void assign(TransportationJob transportationJob, TransportationJobAssignmentType assignmentType, Integer transporterId, String driverUsername, Integer vehicleId, User connectedUser) {
+
 		transportationJob.setAssignmentType(assignmentType);
 
 		switch (transportationJob.getAssignmentType()) {
@@ -412,12 +413,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDate2(new Date());
 			transportationJob.setUser2(connectedUser);
 			transportationJob.setTransporter(transporterService.findOneLight(transporterId));
-			transportationJob.addHistory(
-					new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setTransporter(transportationJob.getTransporter());
-				i.addHistory(
-						new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
+				i.addHistory(new TransportationRequestHistory("Assigned", connectedUser, "Assigned to transporter <b class='blue'>" + transportationJob.getTransporterName() + "</b>"));
 			});
 			break;
 		case INTERNAL_DRIVER:
@@ -428,8 +427,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
-			transportationJob
-					.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
+			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setDriver(transportationJob.getDriver());
 				i.setVehicle(transportationJob.getVehicle());
@@ -442,7 +440,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.calculateMaxAcceptTime();
 		transportationJob.calculateMaxStartTime();
 		save(transportationJob);
-		
+
 		sendNotification(transportationJob);
 	}
 
@@ -489,35 +487,24 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		save(transportationJob);
 		sendNotification(transportationJob);
 	}
-	
-	public void startMobile(Integer id, String username,Double lat,Double lng) {
+
+	public void startMobile(Integer id, String username, Double lat, Double lng) {
 		User user = userService.findByUsername(username);
 		TransportationJob transportationJob = findOne(id);
-		start(transportationJob,user);
+		start(transportationJob, user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
 	}
-	
+
 	public Double getEstimatedDeliveryDistance(Integer jobId) {
-	    TransportationJob job = findOne(jobId);
+		TransportationJob job = findOne(jobId);
 
-	    if (job == null || job.getPathList() == null || job.getPathList().isEmpty()) {
-	        return 0.0;
-	    }
+		if (job == null || job.getPathList() == null || job.getPathList().isEmpty()) {
+			return 0.0;
+		}
 
-	    return job.getPathList().stream()
-	            .map(Path::getEstimatedDistance)
-	            .filter(Objects::nonNull)
-	            .mapToDouble(Double::doubleValue)
-	            .sum();
+		return job.getPathList().stream().map(Path::getEstimatedDistance).filter(Objects::nonNull).mapToDouble(Double::doubleValue).sum();
 	}
-
-
-
-	
-	
-
-
 
 	private Boolean isTM(List<Role> roleList) {
 		return roleList.contains(Role.ROLE_ILOGISTICS_TM);
@@ -536,7 +523,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setDate3(null);
 		transportationJob.setUser3(null);
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
-		transportationJob.getTransportationRequestList().forEach(i -> i.addHistory(new TransportationRequestHistory("Unassign", connectedUser)));
+		transportationJob.getTransportationRequestList().forEach(i -> {
+			i.setExpectedPickupDate(null);
+			i.setExpectedDeliveryDate(null);
+			i.addHistory(new TransportationRequestHistory("Unassign", connectedUser));
+		});
 		save(transportationJob);
 	}
 
@@ -593,8 +584,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 			document.open();
 
-			paragraph = new Paragraph(transportationJob.getReference() + " | Creation Date : "
-					+ (transportationJob.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationJob.getDate1()) : ""), titleFont);
+			paragraph = new Paragraph(
+					transportationJob.getReference() + " | Creation Date : " + (transportationJob.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationJob.getDate1()) : ""), titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -675,11 +666,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 			ma.azdad.mobile.model.User user = null;
-			if(tj.getDriverUsername() != null) {
+			if (tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
-					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(), user,
+					transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;
@@ -690,11 +681,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 			ma.azdad.mobile.model.User user = null;
-			if(tj.getDriverUsername() != null) {
+			if (tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
-					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(), user,
+					transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;
@@ -706,11 +697,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		List<ma.azdad.mobile.model.TransportationJob> mbList = new ArrayList<>();
 		for (TransportationJob tj : list) {
 			ma.azdad.mobile.model.User user = null;
-			if(tj.getDriverUsername() != null) {
+			if (tj.getDriverUsername() != null) {
 				user = toMobileUser(userService.findByUsernameLight(tj.getDriverUsername()));
 			}
-			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
-					user, transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
+			mbList.add(new ma.azdad.mobile.model.TransportationJob(tj.getId(), tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(), user,
+					transportationRequestRepos.countByTransportationJob(tj), tj.getVehicleMatricule()));
 		}
 
 		return mbList;
@@ -719,8 +710,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<ma.azdad.mobile.model.TransportationJob> findByInternalTmByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findByInternalTmMobile(
-					Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED));
+			return findByInternalTmMobile(Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED));
 		case 1:
 			return findByInternalTmMobile(Arrays.asList(TransportationJobStatus.IN_PROGRESS, TransportationJobStatus.STARTED));
 		case 2:
@@ -783,8 +773,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public ma.azdad.mobile.model.TransportationJob findOneMobile(Integer id) {
 		TransportationJob tj = findOne(id);
-		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(),
-				tj.getEstimatedCost(), tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver()));
+		ma.azdad.mobile.model.TransportationJob tjMobile = new ma.azdad.mobile.model.TransportationJob(id, tj.getStartDate(), tj.getEndDate(), tj.getStatus(), tj.getCost(), tj.getEstimatedCost(),
+				tj.getVehiclePrice(), tj.getVehicleMatricule(), toMobileUser2(tj.getDriver()));
 		List<ma.azdad.mobile.model.TransportationRequest> trList = new ArrayList<>();
 		if (tj.getEstimatedDistance() != null) {
 			tjMobile.setEstimatedDistanceText(tj.getEstimatedDistance().toString() + " Km");
@@ -815,9 +805,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				totalItems += transportationRequest.getNumberOfItems();
 			}
 			trList.add(new ma.azdad.mobile.model.TransportationRequest(transportationRequest.getId(), transportationRequest.getReference(), transportationRequest.getStatus(),
-					transportationRequest.getNeededPickupDate(), transportationRequest.getNeededDeliveryDate(), transportationRequest.getExpectedPickupDate(),
-					transportationRequest.getPickupDate(), transportationRequest.getExpectedDeliveryDate(), transportationRequest.getDeliveryDate(),
-					transportationRequest.getOriginName(), transportationRequest.getDestinationName()));
+					transportationRequest.getNeededPickupDate(), transportationRequest.getNeededDeliveryDate(), transportationRequest.getExpectedPickupDate(), transportationRequest.getPickupDate(),
+					transportationRequest.getExpectedDeliveryDate(), transportationRequest.getDeliveryDate(), transportationRequest.getOriginName(), transportationRequest.getDestinationName()));
 		}
 		tjMobile.setGrossWeight(totalGrossWeight);
 		tjMobile.setVolume(totalVolume);
@@ -866,8 +855,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	private ma.azdad.mobile.model.User toMobileUser2(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(),
-				user.getPhone());
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(), user.getPhone());
 	}
 
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
@@ -907,8 +895,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		TransportationJob job = findOne(id);
 		List<ma.azdad.mobile.model.TransportationJobFile> list = new ArrayList<>();
 		for (TransportationJobFile dnFile : job.getFileList()) {
-			list.add(new ma.azdad.mobile.model.TransportationJobFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(),
-					dnFile.getName()));
+			list.add(new ma.azdad.mobile.model.TransportationJobFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(), dnFile.getName()));
 
 		}
 		return list;
@@ -999,31 +986,27 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
-	
-	
+
 	public Double startDistance(Integer jobId) {
-	    List<TransportationJobItinerary> pickup = transportationJobItineraryRepos
-	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
+		List<TransportationJobItinerary> pickup = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
 
-	    if (pickup != null && !pickup.isEmpty()) {
-	        return pickup.get(0).getCumulativeDistance();
-	    }
+		if (pickup != null && !pickup.isEmpty()) {
+			return pickup.get(0).getCumulativeDistance();
+		}
 
-	    return 0d; 
+		return 0d;
 	}
-	
+
 	public Double ongoingDistance(Integer jobId) {
-	    List<TransportationJobItinerary> delivery = transportationJobItineraryRepos
-	            .findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
+		List<TransportationJobItinerary> delivery = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
 
-	    if (delivery != null && !delivery.isEmpty()) {
-	        Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
-	        return lastCumulative - startDistance(jobId);
-	    }
+		if (delivery != null && !delivery.isEmpty()) {
+			Double lastCumulative = delivery.get(delivery.size() - 1).getCumulativeDistance();
+			return lastCumulative - startDistance(jobId);
+		}
 
-	    return 0d; 
+		return 0d;
 	}
-
 
 	public Double calculateRealProductiveDist(Integer jobId) {
 		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
@@ -1074,105 +1057,103 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 		return realNonProductive;
 	}
-	
+
 	public Double calculateEstimatedProductiveDist(Integer jobId) {
-	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-	    double estimatedProd = 0d;
-	    boolean carryingGoods = false;
+		double estimatedProd = 0d;
+		boolean carryingGoods = false;
 
-	    Double lastLat = null;
-	    Double lastLng = null;
+		Double lastLat = null;
+		Double lastLng = null;
 
-	    for (Stop stop : stops) {
-	        double lat;
-	        double lng;
+		for (Stop stop : stops) {
+			double lat;
+			double lng;
 
-	        if (stop.getSite() != null) {
-	            lat = stop.getSite().getLatitude();
-	            lng = stop.getSite().getLongitude();
-	        } else if (stop.getWarehouse() != null) {
-	            lat = stop.getWarehouse().getLatitude();
-	            lng = stop.getWarehouse().getLongitude();
-	        } else {
-	            lat = 0.0;
-	            lng = 0.0;
-	        }
+			if (stop.getSite() != null) {
+				lat = stop.getSite().getLatitude();
+				lng = stop.getSite().getLongitude();
+			} else if (stop.getWarehouse() != null) {
+				lat = stop.getWarehouse().getLatitude();
+				lng = stop.getWarehouse().getLongitude();
+			} else {
+				lat = 0.0;
+				lng = 0.0;
+			}
 
-	        if (lastLat != null && lastLng != null) {
-	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+			if (lastLat != null && lastLng != null) {
+				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-	            if (carryingGoods) {
-	                estimatedProd += dist;
-	            }
-	        }
+				if (carryingGoods) {
+					estimatedProd += dist;
+				}
+			}
 
-	        // Update carrying state based on stop type
-	        switch (stop.getType()) {
-	            case PICKUP:
-	                carryingGoods = true;
-	                break;
-	            case DELIVERY:
-	                carryingGoods = false;
-	                break;
-	            case DELIVERY_AND_PICKUP:
-	                // delivery first (drop goods)
-	                carryingGoods = false;
-	                // then pickup again (start carrying new goods)
-	                carryingGoods = true;
-	                break;
-	        }
+			// Update carrying state based on stop type
+			switch (stop.getType()) {
+			case PICKUP:
+				carryingGoods = true;
+				break;
+			case DELIVERY:
+				carryingGoods = false;
+				break;
+			case DELIVERY_AND_PICKUP:
+				// delivery first (drop goods)
+				carryingGoods = false;
+				// then pickup again (start carrying new goods)
+				carryingGoods = true;
+				break;
+			}
 
-	        lastLat = lat;
-	        lastLng = lng;
-	    }
+			lastLat = lat;
+			lastLng = lng;
+		}
 
-	    return estimatedProd;
+		return estimatedProd;
 	}
 
 	public Double calculateEstimatedNonProductiveDist(Integer jobId) {
-	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-	    double estimatedNonProd = 0d;
-	    boolean carryingGoods = false;
+		double estimatedNonProd = 0d;
+		boolean carryingGoods = false;
 
-	    Double lastLat = null;
-	    Double lastLng = null;
+		Double lastLat = null;
+		Double lastLng = null;
 
-	    for (Stop stop : stops) {
-	        double lat = stop.getSite().getLatitude();
-	        double lng = stop.getSite().getLongitude();
+		for (Stop stop : stops) {
+			double lat = stop.getSite().getLatitude();
+			double lng = stop.getSite().getLongitude();
 
-	        if (lastLat != null && lastLng != null) {
-	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+			if (lastLat != null && lastLng != null) {
+				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-	            if (!carryingGoods) {
-	                estimatedNonProd += dist;
-	            }
-	        }
+				if (!carryingGoods) {
+					estimatedNonProd += dist;
+				}
+			}
 
-	        // Update carrying state based on stop type
-	        switch (stop.getType()) {
-	            case PICKUP:
-	                carryingGoods = true;
-	                break;
-	            case DELIVERY:
-	                carryingGoods = false;
-	                break;
-	            case DELIVERY_AND_PICKUP:
-	                carryingGoods = false; // drop current load
-	                carryingGoods = true;  // immediately pick up again
-	                break;
-	        }
+			// Update carrying state based on stop type
+			switch (stop.getType()) {
+			case PICKUP:
+				carryingGoods = true;
+				break;
+			case DELIVERY:
+				carryingGoods = false;
+				break;
+			case DELIVERY_AND_PICKUP:
+				carryingGoods = false; // drop current load
+				carryingGoods = true; // immediately pick up again
+				break;
+			}
 
-	        lastLat = lat;
-	        lastLng = lng;
-	    }
+			lastLat = lat;
+			lastLng = lng;
+		}
 
-	    return estimatedNonProd;
+		return estimatedNonProd;
 	}
-
-
 
 	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int EARTH_RADIUS_KM = 6371;

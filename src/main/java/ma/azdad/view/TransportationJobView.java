@@ -871,13 +871,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void removeTransportationRequest() {
 		if (!canRemoveTransportationRequest(transportationRequest))
 			return;
-		
+
 		transportationRequest.setPlannedPickupDate(null);
 		transportationRequest.setPlannedDeliveryDate(null);
-		
+
 		transportationRequest.setExpectedPickupDate(null);
 		transportationRequest.setExpectedDeliveryDate(null);
-		
+
 		transportationRequest.setStatus(TransportationRequestStatus.APPROVED);
 		transportationRequest.setUser4(null);
 		transportationRequest.setDate4(null);
@@ -1112,7 +1112,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELETE TRANSPORTATIONJOB
 	public Boolean canDeleteTransportationJob() {
-		return TransportationJobStatus.EDITED.equals(transportationJob.getStatus()) //
+		return Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED, TransportationJobStatus.STARTED)
+				.contains(transportationJob.getStatus()) //
 				&& sessionView.isTM() //
 				&& sessionView.isTheConnectedUser(transportationJob.getUser1()) //
 				&& transportationJob.getTransportationRequestList().isEmpty();

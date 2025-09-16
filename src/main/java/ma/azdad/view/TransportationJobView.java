@@ -196,6 +196,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			refreshTransportationRequestList();
 		} else if (isViewPage) {
 			transportationJob = transportationJobService.findOne(id);
+			transportationJob = transportationJobService.initCalculableFields(transportationJob);
 			transportationJob.init();
 			refreshMapModel();
 			initTimelines();

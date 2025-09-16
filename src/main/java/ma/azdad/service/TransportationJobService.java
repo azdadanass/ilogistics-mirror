@@ -44,6 +44,7 @@ import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
+import ma.azdad.model.TransportationJobCapacity;
 import ma.azdad.model.TransportationJobFile;
 import ma.azdad.model.TransportationJobHistory;
 import ma.azdad.model.TransportationJobItinerary;
@@ -80,9 +81,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	UserRepos userRepos;
+	
+	@Autowired
+	CapacityService capacityService;
 
 	@Autowired
 	DriverLocationRepo driverLocationRepo;
+	
+	@Autowired
+	TransportationJobCapacityRepos transportationJobCapacityRepos;
 
 	@Autowired
 	TransportationJobRepos transportationJobRepos;
@@ -155,6 +162,40 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Hibernate.initialize(transportationJob.getDriver());
 		return transportationJob;
 	}
+	
+	public TransportationJob initCalculableFields(TransportationJob transportationJob) {
+		List<TransportationJobCapacity> simulatedList = capacityService.simulatePlannedCapacities(transportationJob.getId(), transportationJob.getTransportationRequestList());
+		List<TransportationJobItinerary> list = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(transportationJob.getId());
+		 Double maxCumulativeWeight = transportationJobCapacityRepos
+		            .findMaxCumulativeWeightByTransportationJobIdAndType(transportationJob.getId(), "Real");
+		 Double maxCumulativeVolume = transportationJobCapacityRepos
+		            .findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Real");
+		 if(!list.isEmpty()) {
+		TransportationJobItinerary firstPoint = list.get(0);
+		TransportationJobItinerary lastPoint = list.get(list.size() - 1);
+		transportationJob.setTotalDistanceTravelled(lastPoint.getCumulativeDistance());
+		transportationJob.setTotalItineraryDuration(UtilsFunctions.getDateDifferenceDaysHoursMinutes(firstPoint.getTimestamp(), lastPoint.getTimestamp()));
+		}else {
+			transportationJob.setTotalDistanceTravelled(0d);
+			transportationJob.setTotalItineraryDuration(null);
+		}
+		
+		transportationJob.setPlannedEffectiveDistance(calculateEstimatedProductiveDist(transportationJob.getId()));
+		transportationJob.setPlannedNonEffectiveDistance(calculateEstimatedNonProductiveDist(transportationJob.getId()));
+		transportationJob.setPlannedMaxVolume(simulatedList.stream().mapToDouble(TransportationJobCapacity::getCumulativeVolume).max().orElse(0d));
+		transportationJob.setPlannedMaxWeight(simulatedList.stream().mapToDouble(TransportationJobCapacity::getCumulativeWeight).max().orElse(0d));
+		transportationJob.setStartingDistance(realStartDistance(transportationJob.getId()));
+		
+		transportationJob.setEffectiveTraveledDistance(calculateRealProductiveDist(transportationJob.getId()));
+		transportationJob.setNonEffectiveTraveledDistance(calculateRealNonProductiveDist(transportationJob.getId()));
+		transportationJob.setItineratyMaxVolume(maxCumulativeVolume != null?maxCumulativeVolume:0d);
+		transportationJob.setItineratyMaxWeight(maxCumulativeWeight != null?maxCumulativeWeight:0d);
+
+		return transportationJob;
+		
+	}
+	
+	
 
 	public List<TransportationJob> find() {
 		return repos.find();
@@ -1041,6 +1082,17 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
+	
+	public Double plannedStartDistance(TransportationJob job) {
+
+		if (job.getStopList() != null && !job.getStopList().isEmpty()) {
+			return PathService.getDistance(job.getFirstLatitude(), job.getFirstLongitude(), job.getStopList().get(0).getSite()!=null?
+					job.getStopList().get(0).getSite().getLatitude():job.getStopList().get(0).getWarehouse().getLatitude(), job.getStopList().get(0).getSite()!=null?
+							job.getStopList().get(0).getSite().getLongitude():job.getStopList().get(0).getWarehouse().getLongitude());
+		}
+
+		return 0d;
+	}
 
 	public Double realStartDistance(Integer jobId) {
 		List<TransportationJobItinerary> pickup = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.PICKEDUP);
@@ -1181,8 +1233,20 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Double lastLng = null;
 
 		for (Stop stop : stops) {
-			double lat = stop.getSite().getLatitude();
-			double lng = stop.getSite().getLongitude();
+			double lat;
+			double lng;
+
+			if (stop.getSite() != null) {
+				lat = stop.getSite().getLatitude();
+				lng = stop.getSite().getLongitude();
+			} else if (stop.getWarehouse() != null) {
+				lat = stop.getWarehouse().getLatitude();
+				lng = stop.getWarehouse().getLongitude();
+			} else {
+				lat = 0.0;
+				lng = 0.0;
+			}
+
 
 			if (lastLat != null && lastLng != null) {
 				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);

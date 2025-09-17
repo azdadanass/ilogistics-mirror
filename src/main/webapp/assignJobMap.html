@@ -165,6 +165,15 @@ function getTypeFromURL() {
 	  const params = new URLSearchParams(window.location.search);
 	  return params.get("type");
 	}
+	
+function getInternalFromURL() {
+	  const params = new URLSearchParams(window.location.search);
+	  return params.get("internal");
+	}
+function getSupIdFromURL() {
+	  const params = new URLSearchParams(window.location.search);
+	  return params.get("supId");
+	}
 
 
 function initMap() {
@@ -270,7 +279,19 @@ function fetchDriversLocations() {
 	    console.error("Aucun type trouvé dans l'URL.");
 	    return;
 	  }
-  fetch(`/api/driver-locations/drivers/${jobId}/${type}`)
+	  const internal = getInternalFromURL();
+	  if (!internal) {
+		    console.error("Aucun type trouvé dans l'URL.");
+		    return;
+		  }
+	  const supId = getSupIdFromURL();
+
+	  if (!supId) {
+		    console.error("Aucun type trouvé dans l'URL.");
+		    return;
+		  }
+	  
+  fetch(`/api/driver-locations/drivers/${jobId}/${type}/${internal}/${supId}`)
     .then(response => {
       if (!response.ok) throw new Error("Erreur lors de la récupération des chauffeurs");
       return response.json();

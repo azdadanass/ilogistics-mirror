@@ -1,68 +1,85 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
-		<script src="https://maps.google.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&amp;region=MA" type="text/javascript" />
+		<script
+			src="https://maps.google.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&amp;region=MA"
+			type="text/javascript" />
 	</ui:define>
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
-			<li>
-				<i class="ace-icon fa fa-home" />
-				<a href="#">
-					<h:outputText value="Main Menu" />
-				</a>
-			</li>
-			<li class="active">
-				<h:outputText value="View Transportation Request" />
-			</li>
+			<li><i class="ace-icon fa fa-home" /> <a href="#"> <h:outputText
+						value="Main Menu" />
+			</a></li>
+			<li class="active"><h:outputText
+					value="View Transportation Request" /></li>
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-		<p:importEnum type="ma.azdad.model.TransportationRequestStatus" var="TransportationRequestStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.TransportationRequestStatus"
+			var="TransportationRequestStatus" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View TransportationRequest" />
-					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{transportationRequestView.transportationRequest.reference}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText
+							value=" #{transportationRequestView.transportationRequest.reference}" />
 					</small>
 				</h1>
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
 					<div class=" col-sm-offset-1 col-sm-5">
-						<h:outputLink styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" title="Return to Home " value="index.xhtml">
+						<h:outputLink
+							styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success"
+							title="Return to Home " value="index.xhtml">
 							<i class="ace-icon fa fa-home bigger-230"></i>
 							<h:outputText value="Home" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info" title="Reload page">
+						<h:outputLink
+							styleClass="btn btn-app btn-sm btn-primary hover aa-tooltip tooltip-info"
+							title="Reload page">
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
+						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip"
+							title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditTransportationRequest.xhtml"
+						<h:outputLink
+							styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning"
+							title="Edit" value="addEditTransportationRequest.xhtml"
 							rendered="#{transportationRequestView.canSaveTransportationRequest()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{transportationRequestView.id}" />
 						</h:outputLink>
-						<p:commandLink title="Request" styleClass="btn btn-app btn-sm btn-info hover aa-tooltip" onclick="PF('requestDlg').show()"
+						<p:commandLink title="Request"
+							styleClass="btn btn-app btn-sm btn-info hover aa-tooltip"
+							onclick="PF('requestDlg').show()"
 							rendered="#{transportationRequestView.canRequestTransportationRequest()}">
 							<i class="ace-icon fa fa-external-link bigger-230"></i>
 							<h:outputText value="Request" />
 						</p:commandLink>
-						<p:commandLink title="Approve" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip" onclick="PF('approveDlg').show()"
+						<p:commandLink title="Approve"
+							styleClass="btn btn-app btn-sm btn-success hover aa-tooltip"
+							onclick="PF('approveDlg').show()"
 							rendered="#{transportationRequestView.canApproveTransportationRequest()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Approve" />
@@ -79,39 +96,54 @@
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Deliver" />
 						</p:commandLink> -->
-						<p:commandLink title="Acknowledge" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip" onclick="PF('acknowledgeDlg').show()"
+						<p:commandLink title="Acknowledge"
+							styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip"
+							onclick="PF('acknowledgeDlg').show()"
 							rendered="#{transportationRequestView.canAcknowledgeTransportationRequest()}">
 							<i class="ace-icon fa fa-check bigger-230"></i>
 							<h:outputText value="Acknow" />
 						</p:commandLink>
-						<p:commandLink title="Reject" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('rejectDlg').show()"
+						<p:commandLink title="Reject"
+							styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error"
+							onclick="PF('rejectDlg').show()"
 							rendered="#{transportationRequestView.canRejectTransportationRequest()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Reject" />
 						</p:commandLink>
-						<p:commandLink title="Cancel" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('cancelDlg').show()"
+						<p:commandLink title="Cancel"
+							styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error"
+							onclick="PF('cancelDlg').show()"
 							rendered="#{transportationRequestView.canCancelTransportationRequest()}">
 							<i class="ace-icon fa fa-remove bigger-230"></i>
 							<h:outputText value="Cancel" />
 						</p:commandLink>
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
+						<p:commandLink title="Delete"
+							styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error"
+							onclick="PF('deleteDlg').show()"
 							rendered="#{transportationRequestView.canDeleteTransportationRequest()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
-						<p:commandLink title="Add Files" styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success" onclick="PF('uploadTransportationRequestFileDlg').show()">
+						<p:commandLink title="Add Files"
+							styleClass="btn btn-app btn-sm btn-success hover aa-tooltip tooltip-success"
+							onclick="PF('uploadTransportationRequestFileDlg').show()">
 							<i class="ace-icon fa fa-file bigger-230"></i>
 							<h:outputText value="Files" />
 						</p:commandLink>
-						<p:commandLink title="Generate Label" action="#{transportationRequestView.generateStamp()}" update=":stampForm" oncomplete="PF('stampDlg').show()"
+						<p:commandLink title="Generate Label"
+							action="#{transportationRequestView.generateStamp()}"
+							update=":stampForm" oncomplete="PF('stampDlg').show()"
 							styleClass="btn btn-app btn-sm btn-warning  hover aa-tooltip tooltip-purple">
 							<i class="ace-icon fa fa-qrcode bigger-230"></i>
 							<h:outputText value="Label" />
 						</p:commandLink>
-						<h:outputLink value="addEditIssue.xhtml" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" title="Add Issue" rendered="#{issueView.canSave()}">
+						<h:outputLink value="addEditIssue.xhtml"
+							styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error"
+							title="Add Issue" rendered="#{issueView.canSave()}">
 							<i class="ace-icon fa fa-plus bigger-230"></i>
 							<h:outputText value="Add" styleClass="smaller-80" />
-							<f:param name="transportationRequestId" value="#{transportationRequestView.transportationRequest.id}" />
+							<f:param name="transportationRequestId"
+								value="#{transportationRequestView.transportationRequest.id}" />
 						</h:outputLink>
 					</div>
 					<div class="col-sm-5 hidden-xs infobox-container">
@@ -121,11 +153,12 @@
 									<i class="ace-icon fa fa-list" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number">
-										<h:outputText value="Number Of Items" />
+									<span class="infobox-data-number"> <h:outputText
+											value="Number Of Items" />
 									</span>
 									<div class="infobox-content">
-										<h:outputText value="#{transportationRequestView.transportationRequest.numberOfItems}">
+										<h:outputText
+											value="#{transportationRequestView.transportationRequest.numberOfItems}">
 											<f:convertNumber type="number" maxFractionDigits="2" />
 										</h:outputText>
 									</div>
@@ -136,11 +169,12 @@
 									<i class="ace-icon fa fa-anchor" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number">
-										<h:outputText value="Gross Weight" />
+									<span class="infobox-data-number"> <h:outputText
+											value="Gross Weight" />
 									</span>
 									<div class="infobox-content">
-										<h:outputText value="#{transportationRequestView.transportationRequest.grossWeight}">
+										<h:outputText
+											value="#{transportationRequestView.transportationRequest.grossWeight}">
 											<f:convertNumber type="number" maxFractionDigits="2" />
 										</h:outputText>
 										<h:outputText value=" Kg" />
@@ -152,11 +186,12 @@
 									<i class="ace-icon fa fa-cube" />
 								</div>
 								<div class="infobox-data">
-									<span class="infobox-data-number">
-										<h:outputText value="Volume" />
+									<span class="infobox-data-number"> <h:outputText
+											value="Volume" />
 									</span>
 									<div class="infobox-content">
-										<h:outputText value="#{transportationRequestView.transportationRequest.volume}">
+										<h:outputText
+											value="#{transportationRequestView.transportationRequest.volume}">
 											<f:convertNumber type="number" maxFractionDigits="2" />
 										</h:outputText>
 										<h:outputText value=" m3" />
@@ -179,131 +214,142 @@
 						</div>
 						<div class="widget-body">
 							<ul class="steps">
-								<li class="complete">
-									<span class="step">
-										<h:outputText value="1" />
-									</span>
-									<span class="title">
-										<h:outputText id="step1" value="#{TransportationRequestStatus.EDITED.value}" />
-									</span>
-									<p:overlayPanel for="step1" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+								<li class="complete"><span class="step"> <h:outputText
+											value="1" />
+								</span> <span class="title"> <h:outputText id="step1"
+											value="#{TransportationRequestStatus.EDITED.value}" />
+								</span> <p:overlayPanel for="step1"
+										style="text-align: left;width:350px" showEvent="mouseover"
+										hideEvent="mouseout">
 										<h:outputText escape="false"
 											value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date1,transportationRequestView.transportationRequest.user1.username,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
-									</p:overlayPanel>
-								</li>
-								<f:subview rendered="#{transportationRequestView.transportationRequest.date2!=null || transportationRequestView.transportationRequest.date9==null}">
-									<li class="#{transportationRequestView.transportationRequest.date2!=null?'complete':''}">
-										<span class="step">
-											<i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span>
-										<span class="title">
-											<h:outputText id="step2" value="#{TransportationRequestStatus.REQUESTED.value}" />
-										</span>
-										<p:overlayPanel for="step2" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									</p:overlayPanel></li>
+								<f:subview
+									rendered="#{transportationRequestView.transportationRequest.date2!=null || transportationRequestView.transportationRequest.date9==null}">
+									<li
+										class="#{transportationRequestView.transportationRequest.date2!=null?'complete':''}">
+										<span class="step"> <i
+											class="ace-icon fa fa-spinner fa-spin grey" />
+									</span> <span class="title"> <h:outputText id="step2"
+												value="#{TransportationRequestStatus.REQUESTED.value}" />
+									</span> <p:overlayPanel for="step2"
+											style="text-align: left;width:350px" showEvent="mouseover"
+											hideEvent="mouseout">
 											<h:outputText escape="false"
 												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date2,transportationRequestView.transportationRequest.user2.username,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 										</p:overlayPanel>
 									</li>
 								</f:subview>
-								<f:subview rendered="#{transportationRequestView.transportationRequest.date8==null}">
-									<f:subview rendered="#{transportationRequestView.transportationRequest.date3!=null || transportationRequestView.transportationRequest.date9==null}">
-										<li class="#{transportationRequestView.transportationRequest.date3!=null?'complete':''}">
-											<span class="step">
-												<i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span>
-											<span class="title">
-												<h:outputText id="step3" value="#{TransportationRequestStatus.APPROVED.value}" />
-												<p:overlayPanel for="step3" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+								<f:subview
+									rendered="#{transportationRequestView.transportationRequest.date8==null}">
+									<f:subview
+										rendered="#{transportationRequestView.transportationRequest.date3!=null || transportationRequestView.transportationRequest.date9==null}">
+										<li
+											class="#{transportationRequestView.transportationRequest.date3!=null?'complete':''}">
+											<span class="step"> <i
+												class="ace-icon fa fa-spinner fa-spin grey" />
+										</span> <span class="title"> <h:outputText id="step3"
+													value="#{TransportationRequestStatus.APPROVED.value}" /> <p:overlayPanel
+													for="step3" style="text-align: left;width:350px"
+													showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date3,transportationRequestView.transportationRequest.user3.username,transportationRequestView.transportationRequest.deliveryRequest.project.manager.username)}" />
 												</p:overlayPanel>
-											</span>
+										</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{transportationRequestView.transportationRequest.date4!=null || transportationRequestView.transportationRequest.date9==null}">
-										<li class="#{transportationRequestView.transportationRequest.date4!=null?'complete':''}">
-											<span class="step">
-												<i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span>
-											<span class="title">
-												<h:outputText id="step4" value="#{TransportationRequestStatus.ASSIGNED.value}" />
-												<p:overlayPanel for="step4" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<f:subview
+										rendered="#{transportationRequestView.transportationRequest.date4!=null || transportationRequestView.transportationRequest.date9==null}">
+										<li
+											class="#{transportationRequestView.transportationRequest.date4!=null?'complete':''}">
+											<span class="step"> <i
+												class="ace-icon fa fa-spinner fa-spin grey" />
+										</span> <span class="title"> <h:outputText id="step4"
+													value="#{TransportationRequestStatus.ASSIGNED.value}" /> <p:overlayPanel
+													for="step4" style="text-align: left;width:350px"
+													showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date4,transportationRequestView.transportationRequest.user4.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
-											</span>
+										</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{transportationRequestView.transportationRequest.date5!=null || transportationRequestView.transportationRequest.date9==null}">
-										<li class="#{transportationRequestView.transportationRequest.date5!=null?'complete':''}">
-											<span class="step">
-												<i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span>
-											<span class="title">
-												<h:outputText id="step5" value="#{TransportationRequestStatus.PICKEDUP.value}" />
-												<p:overlayPanel for="step5" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<f:subview
+										rendered="#{transportationRequestView.transportationRequest.date5!=null || transportationRequestView.transportationRequest.date9==null}">
+										<li
+											class="#{transportationRequestView.transportationRequest.date5!=null?'complete':''}">
+											<span class="step"> <i
+												class="ace-icon fa fa-spinner fa-spin grey" />
+										</span> <span class="title"> <h:outputText id="step5"
+													value="#{TransportationRequestStatus.PICKEDUP.value}" /> <p:overlayPanel
+													for="step5" style="text-align: left;width:350px"
+													showEvent="mouseover" hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date5,transportationRequestView.transportationRequest.user5.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
-											</span>
+										</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{transportationRequestView.transportationRequest.date6!=null || transportationRequestView.transportationRequest.date9==null}">
-										<li class="#{transportationRequestView.transportationRequest.date6!=null?'complete':''}">
-											<span class="step">
-												<i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span>
-											<span class="title">
-												<h:outputText id="step6" value="#{TransportationRequestStatus.DELIVERED.value}" />
-												<p:overlayPanel for="step6" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<f:subview
+										rendered="#{transportationRequestView.transportationRequest.date6!=null || transportationRequestView.transportationRequest.date9==null}">
+										<li
+											class="#{transportationRequestView.transportationRequest.date6!=null?'complete':''}">
+											<span class="step"> <i
+												class="ace-icon fa fa-spinner fa-spin grey" />
+										</span> <span class="title"> <h:outputText id="step6"
+													value="#{TransportationRequestStatus.DELIVERED.value}" />
+												<p:overlayPanel for="step6"
+													style="text-align: left;width:350px" showEvent="mouseover"
+													hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date6,transportationRequestView.transportationRequest.user6.username,userView.findFirstByRoleTM().username)}" />
 												</p:overlayPanel>
-											</span>
+										</span>
 										</li>
 									</f:subview>
-									<f:subview rendered="#{transportationRequestView.transportationRequest.date7!=null || transportationRequestView.transportationRequest.date9==null}">
-										<li class="#{transportationRequestView.transportationRequest.date7!=null?'complete':''}">
-											<span class="step">
-												<i class="ace-icon fa fa-spinner fa-spin grey" />
-											</span>
-											<span class="title">
-												<h:outputText id="step7" value="#{TransportationRequestStatus.ACKNOWLEDGED.value}" />
-												<p:overlayPanel for="step7" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+									<f:subview
+										rendered="#{transportationRequestView.transportationRequest.date7!=null || transportationRequestView.transportationRequest.date9==null}">
+										<li
+											class="#{transportationRequestView.transportationRequest.date7!=null?'complete':''}">
+											<span class="step"> <i
+												class="ace-icon fa fa-spinner fa-spin grey" />
+										</span> <span class="title"> <h:outputText id="step7"
+													value="#{TransportationRequestStatus.ACKNOWLEDGED.value}" />
+												<p:overlayPanel for="step7"
+													style="text-align: left;width:350px" showEvent="mouseover"
+													hideEvent="mouseout">
 													<h:outputText escape="false"
 														value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date7,transportationRequestView.transportationRequest.deliveryRequest.requester.username)}" />
 												</p:overlayPanel>
-											</span>
+										</span>
 										</li>
 									</f:subview>
 								</f:subview>
-								<f:subview rendered="#{transportationRequestView.transportationRequest.date8!=null}">
-									<li class="error">
-										<span class="step">
-											<i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span>
-										<span class="title">
-											<h:outputText id="step8" value="#{TransportationRequestStatus.REJECTED.value}" />
-										</span>
-										<p:overlayPanel for="step8" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+								<f:subview
+									rendered="#{transportationRequestView.transportationRequest.date8!=null}">
+									<li class="error"><span class="step"> <i
+											class="ace-icon fa fa-spinner fa-spin grey" />
+									</span> <span class="title"> <h:outputText id="step8"
+												value="#{TransportationRequestStatus.REJECTED.value}" />
+									</span> <p:overlayPanel for="step8"
+											style="text-align: left;width:350px" showEvent="mouseover"
+											hideEvent="mouseout">
 											<h:outputText escape="false"
 												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date8,transportationRequestView.transportationRequest.user8.username)}" />
-										</p:overlayPanel>
-									</li>
+										</p:overlayPanel></li>
 								</f:subview>
-								<f:subview rendered="#{transportationRequestView.transportationRequest.date9!=null}">
-									<li class="error">
-										<span class="step">
-											<i class="ace-icon fa fa-spinner fa-spin grey" />
-										</span>
-										<span class="title">
-											<h:outputText id="step9" value="#{TransportationRequestStatus.CANCELED.value}" />
-										</span>
-										<p:overlayPanel for="step9" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+								<f:subview
+									rendered="#{transportationRequestView.transportationRequest.date9!=null}">
+									<li class="error"><span class="step"> <i
+											class="ace-icon fa fa-spinner fa-spin grey" />
+									</span> <span class="title"> <h:outputText id="step9"
+												value="#{TransportationRequestStatus.CANCELED.value}" />
+									</span> <p:overlayPanel for="step9"
+											style="text-align: left;width:350px" showEvent="mouseover"
+											hideEvent="mouseout">
 											<h:outputText escape="false"
 												value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.date9,transportationRequestView.transportationRequest.user9.username)}" />
-										</p:overlayPanel>
-									</li>
+										</p:overlayPanel></li>
 								</f:subview>
 							</ul>
 						</div>
@@ -313,34 +359,31 @@
 			<div class="space-16" />
 			<div class="tabbable">
 				<ul class="nav nav-tabs padding-18">
-					<li class="active">
-						<a data-toggle="tab" href="#tab1">
-							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
-							<h:outputText value=" Informations" styleClass="hidden-xs" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab2">
-							<i class="blue ace-icon fa fa-file bigger-120"></i>
-							<h:outputText value=" Attachements" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab3">
-							<i class="orange ace-icon fa fa-clock-o bigger-120"></i>
-							<h:outputText value=" History" />
-						</a>
-					</li>
-					<li>
-						<a data-toggle="tab" href="#tab4">
-							<i class="red ace-icon fa fa-dollar bigger-120"></i>
-							<h:outputText value=" Associated Costs" />
-						</a>
-					</li>
+					<li class="active"><a data-toggle="tab" href="#tab1"> <i
+							class="green ace-icon fa fa-list-alt bigger-120"></i> <h:outputText
+								value=" Informations" styleClass="hidden-xs" />
+					</a></li>
+					<li><a data-toggle="tab" href="#tab2"> <i
+							class="blue ace-icon fa fa-file bigger-120"></i> <h:outputText
+								value=" Attachements" />
+					</a></li>
+					<li><a data-toggle="tab" href="#tab3"> <i
+							class="orange ace-icon fa fa-clock-o bigger-120"></i> <h:outputText
+								value=" History" />
+					</a></li>
+					<li><a data-toggle="tab" href="#tab4"> <i
+							class="red ace-icon fa fa-dollar bigger-120"></i> <h:outputText
+								value=" Associated Costs" />
+					</a></li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
 						<p:messages id="messages" closable="true" />
+						<div class="space-8" />
+						<h4 class="header blue bolder smaller">
+							<i class="ace-icon fa fa-info"></i>
+							<h:outputText value=" General Informations" />
+						</h4>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
@@ -349,7 +392,9 @@
 											<h:outputText value="Reference" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.reference}" styleClass="bolder blue" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.reference}"
+												styleClass="bolder blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -360,10 +405,14 @@
 										<div class="profile-info-value">
 											<h:outputLink value="viewSite.xhtml" target="blank"
 												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
-												<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
+												<h:outputText
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
+												<f:param name="id"
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
 											</h:outputLink>
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="blue"
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}"
+												styleClass="blue"
 												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}" />
 											&nbsp;
 										</div>
@@ -373,8 +422,36 @@
 											<h:outputText value="Priority" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.priority.value}"
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.priority.value}"
 												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.priority.color}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Delivery Request" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputLink value="viewDeliveryRequest.xhtml"
+												target="blank">
+												<h:outputText
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.reference}"
+													styleClass="bolder #{transportationRequestView.transportationRequest.deliveryRequest.type.color}" />
+												<f:param name="id"
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.id}" />
+											</h:outputLink>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Project" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.project.name}"
+												styleClass="bolder purple" />
 											&nbsp;
 										</div>
 									</div>
@@ -384,23 +461,44 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputLink value="viewTransportationJob.xhtml">
-												<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.reference}" styleClass="bolder green" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
+												<h:outputText
+													value="#{transportationRequestView.transportationRequest.transportationJob.reference}"
+													styleClass="bolder green" />
+												<f:param name="id"
+													value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
 											</h:outputLink>
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Needed Pickup Date" />
+											<h:outputText value="Transporter" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.neededPickupDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.transporter.name} "
+												styleClass="bolder green" />
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Driver" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText id="driver"
+												value="#{transportationRequestView.transportationRequest.transportationJob.driver.fullName} "
+												styleClass="bolder green" />
+											<p:overlayPanel for="driver"
+												style="text-align: left;width:350px" showEvent="mouseover"
+												hideEvent="mouseout">
+												<h:outputText escape="false"
+													value="#{htmlView.generateOverlayPanelContent(transportationRequestView.transportationRequest.transportationJob.driver.username)}" />
+											</p:overlayPanel>
+											&nbsp;
+										</div>
+									</div>
+
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -410,7 +508,9 @@
 											<h:outputText value="Status" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.status.value}" styleClass="#{transportationRequestView.transportationRequest.status.color}" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.status.value}"
+												styleClass="#{transportationRequestView.transportationRequest.status.color}" />
 											&nbsp;
 										</div>
 									</div>
@@ -421,10 +521,14 @@
 										<div class="profile-info-value">
 											<h:outputLink value="viewSite.xhtml" target="blank"
 												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
-												<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.name}" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.id}" />
+												<h:outputText
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.name}" />
+												<f:param name="id"
+													value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.id}" />
 											</h:outputLink>
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="purple"
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}"
+												styleClass="purple"
 												rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound}" />
 											&nbsp;
 										</div>
@@ -434,17 +538,184 @@
 											<h:outputText value="Important" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.important?'Yes':'No'}"
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.important?'Yes':'No'}"
 												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.important?'green':'grey'}" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Needed Delivery Date" />
+											<h:outputText value="DN Type" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.neededDeliveryDate}">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.type.value}"
+												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.type.color}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="DN Ref" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryRequest.smsRef}"
+												styleClass="bolder orange" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Transportation Job Status" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.status.value}"
+												styleClass="bolder #{transportationRequestView.transportationRequest.transportationJob.status.color}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Transporter Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.transporter.type.value} "
+												styleClass="#{transportationRequestView.transportationRequest.transportationJob.transporter.type.color}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Vehicle" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText id="vehicle"
+												value=" #{transportationRequestView.transportationRequest.transportationJob.vehicle.correctMatricule}"
+												styleClass="bolder orange" />
+											<p:overlayPanel for="vehicle"
+												style="text-align: left;width:400px;" showEvent="mouseover"
+												hideEvent="mouseout">
+												<div class="col-xs-4 center">
+													<p:graphicImage value="#{fileUploadView.stream}"
+														styleClass="grid_images">
+														<f:param name="fileName"
+															value="#{transportationRequestView.transportationRequest.transportationJob.vehicle.vehicleType.image}" />
+													</p:graphicImage>
+													<br /> <span class="bolder green smaller-80"> <h:outputText
+															value="#{transportationRequestView.transportationRequest.transportationJob.vehicle.correctMatricule}" />
+													</span>
+												</div>
+												<div class="col-xs-8">
+													<i
+														class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+													<span class="bolder blue"> <h:outputText
+															value="Brand : #{transportationRequestView.transportationRequest.transportationJob.vehicle.brandType.brand.name}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+													<span class="pink"> <h:outputText
+															value="Brand Type : #{transportationRequestView.transportationRequest.transportationJob.vehicle.brandType.name}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+													<span class="green"> <h:outputText
+															value="Max Weight : #{transportationRequestView.transportationRequest.transportationJob.vehicle.vehicleType.maxWeight} Kg" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+													<span class="orange"> <h:outputText
+															value="Max Volume : #{transportationRequestView.transportationRequest.transportationJob.vehicle.vehicleType.maxVolume} m3" />
+													</span>
+													<hr />
+												</div>
+											</p:overlayPanel>
+											&nbsp;
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						<div class="space-8" />
+						<h4 class="header blue bolder smaller">
+							<i class="ace-icon fa fa-calendar"></i>
+							<h:outputText value=" Planning" />
+						</h4>
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Needed Pickup Date" />
+										</div>
+										<div class="profile-info-value bolder orange">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.neededPickupDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned Pickup Date" />
+										</div>
+										<div class="profile-info-value bolder blue">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Pickup Date" />
+										</div>
+										<div class="profile-info-value bolder green">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.pickupDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Needed Delivery Date" />
+										</div>
+										<div class="profile-info-value bolder orange">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.neededDeliveryDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Expected Delivery Date" />
+										</div>
+										<div class="profile-info-value bolder blue">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Delivery Date" />
+										</div>
+										<div class="profile-info-value bolder green">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -453,113 +724,192 @@
 								</div>
 							</div>
 						</div>
-						<div class="space-8" />
 						<h4 class="header blue bolder smaller">
 							<i class="ace-icon fa fa-list"></i>
-							<h:outputText value=" Delivery Details" />
+							<h:outputText value=" Delivery  Details" />
 						</h4>
 						<div class="row">
-							<div class="col-xs-12 col-sm-6">
-								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Delivery Request" />
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-8 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" Details" />
+									</div>
+									<div class="col-sm-2">
+										<div class="action-buttons center">
+											<h:commandLink styleClass="aa-tooltip tooltip-success"
+												title="Export to excel">
+												<img src="/resources/img/xls.png" width="20" height="20" />
+												<p:dataExporter type="xls" target="main_tab"
+													fileName="detailList"
+													postProcessor="#{utilsView.excelExportation}" />
+											</h:commandLink>
 										</div>
-										<div class="profile-info-value">
-											<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
-												<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.reference}"
-													styleClass="bolder #{transportationRequestView.transportationRequest.deliveryRequest.type.color}" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.id}" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable
+										value="#{transportationRequestView.transportationRequest.deliveryRequest.detailList}"
+										id="main_tab" widgetVar="main_tab" var="item" rows="50"
+										styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+										rowIndexVar="rowIndexVar">
+										<p:column headerText="PN Photo" styleClass="center" width="50">
+											<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+												<f:param name="fileName" value="#{item.partNumber.image}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Part Number" width="150">
+											<h:outputLink id="pn" value="viewPartNumber.xhtml"
+												target="blank">
+												<h:outputText value="#{item.partNumber.name}"
+													styleClass="bolder green" />
+												<f:param name="id" value="#{item.partNumber.id}" />
 											</h:outputLink>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DN Project" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.project.name}" styleClass="bolder purple" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Gross Weight" />
-										</div>
-										<div class="profile-info-value bolder blue">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.grossWeight}">
+											<p:overlayPanel for="pn"
+												style="text-align: left;width:600px;background-color:#e4e6e9"
+												showEvent="mouseover" hideEvent="mouseout">
+												<div class="col-xs-4 center">
+													<p:graphicImage value="#{fileUploadView.stream}"
+														styleClass="grid_images">
+														<f:param name="fileName" value="#{item.partNumber.image}" />
+													</p:graphicImage>
+													<br /> <span class="bolder green smaller-80"> <h:outputText
+															value="#{item.partNumber.name}" />
+													</span>
+												</div>
+												<div class="col-xs-8">
+													<i
+														class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+													<span class="bolder blue"> <h:outputText
+															value="Industry : #{item.partNumber.industryName}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+													<span class="pink"> <h:outputText
+															value="Category : #{item.partNumber.categoryName}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+													<span class="green"> <h:outputText
+															value="Type : #{item.partNumber.typeName}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+													<span class="orange"> <h:outputText
+															value="Brand : #{item.partNumber.brandName}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 light-blue"></i>
+													<span class="light-blue"> <h:outputText
+															value="Unit/Kit : #{item.partNumber.unit?'Unit':'Kit'}" />
+													</span> <br /> <i
+														class="ace-icon fa fa-caret-right middle bigger-120 purple"></i>
+													<span class="purple"> <h:outputText
+															value="Description : #{item.partNumber.description}" />
+													</span>
+													<hr />
+												</div>
+											</p:overlayPanel>
+										</p:column>
+										<p:column headerText="Part Number" styleClass="hide">
+											<h:outputText value="#{item.partNumber.name}" />
+										</p:column>
+										
+										<p:column headerText="Description" width="200">
+											<h:outputText value="#{item.partNumber.description}"
+												styleClass="blue aa-cut-text" />
+										</p:column>
+										
+										<p:column headerText="Unit Type" width="70">
+											<h:outputText value=" #{item.partNumber.unitType}"
+												styleClass="bolder pink" />
+										</p:column>
+										
+										<p:column headerText="Packing" width="70">
+											<h:outputText value="#{item.packing.name}"
+												styleClass="bolder light-blue" />
+										</p:column>
+										<p:column headerText="Packing Quantity" width="60">
+											<h:outputText
+												value="#{item.quantity / item.packing.quantity}"
+												styleClass="bolder blue">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="Gross Weight" width="60"
+											>
+											<h:outputText value="#{item.grossWeight}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" Kg" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Volume" />
-										</div>
-										<div class="profile-info-value bolder blue">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.volume}">
+										</p:column>
+										<p:column headerText="Volume" width="60"
+											styleClass="#{deliveryRequestView.isLightViewPage?'hide':''}">
+											<h:outputText value="#{item.volume}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" m3" />
-											&nbsp;
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-xs-12 col-sm-6">
-								<div class="profile-user-info profile-user-info-striped">
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DN Type" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.type.value}"
-												styleClass="#{transportationRequestView.transportationRequest.deliveryRequest.type.color}" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="DN REF" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.smsRef}" styleClass="bolder orange" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Net Weight" />
-										</div>
-										<div class="profile-info-value bolder blue">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.netWeight}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											<h:outputText value=" Kg" />
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Number Of Items" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.numberOfItems}">
-												<f:convertNumber type="number" maxFractionDigits="2" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
+										</p:column>
+										
+									</p:dataTable>
 								</div>
 							</div>
 						</div>
-						<h4 class="header blue bolder smaller">
-							<i class="ace-icon fa fa-list"></i>
-							<h:outputText value=" Transportation  Details" />
-						</h4>
+						<div class="space-8" />
+						<div class="row">
+							
+							<div class="col-sm-12">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-12">
+										<i class="fa fa-list" />
+										<h:outputText value=" Packing" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="packingDetailSummaryList" value="#{transportationRequestView.transportationRequest.deliveryRequest.packingDetailSummaryList}" rows="40" var="item" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+										<p:column headerText="Type" styleClass="center" width="50">
+											<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+												<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.type,item.parent.partNumber.partNumberClass)}" />
+											</p:graphicImage>
+										</p:column>
+										<p:column headerText="Dimension">
+											<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" />
+										</p:column>
+										<p:column headerText="GW">
+											<h:outputText value="#{item.grossWeight} Kg" />
+										</p:column>
+										<p:column headerText="Volume">
+											<h:outputText value="#{item.volume} m3" />
+										</p:column>
+										<p:column headerText="Quantity">
+											<h:outputText value="#{item.tmpQuantity}" />
+										</p:column>
+										<p:column headerText="Packing Options">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Flammable" rendered="#{item.flammable}">
+													<i class="ace-icon fa fa-fire bigger-130 orange" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Fragile" rendered="#{item.fragile}">
+													<i class="ace-icon fa fa-glass bigger-130 light-blue" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Min Storage Temperature : #{item.minStorageTemperature}°" rendered="#{item.minStorageTemperature!=null}">
+													<i class="ace-icon fa fa-thermometer-empty bigger-130 blue" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Max Storage Temperature : #{item.maxStorageTemperature}°" rendered="#{item.maxStorageTemperature!=null}">
+													<i class="ace-icon fa fa-thermometer-full bigger-130 red" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip" title="HAS SN" rendered="#{item.hasSerialnumber}">
+													<i class="ace-icon fa fa-barcode bigger-130 purple" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip" title="Storage Humidity : #{item.storageHumidity}" rendered="#{item.storageHumidity!=null}">
+													<i class="ace-icon fa fa-tint bigger-130 pink" />
+												</p:commandLink>
+											</div>
+										</p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="profile-user-info profile-user-info-striped">
@@ -568,7 +918,8 @@
 											<h:outputText value="Distance" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.estimatedDistanceText}" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.estimatedDistanceText}" />
 											&nbsp;
 										</div>
 									</div>
@@ -577,7 +928,8 @@
 											<h:outputText value="Transporter" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.transporter.name}" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.transporter.name}" />
 											&nbsp;
 										</div>
 									</div>
@@ -586,7 +938,8 @@
 											<h:outputText value="Expected Pickup Time" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -597,7 +950,8 @@
 											<h:outputText value="Expected Delivery Time" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -608,11 +962,17 @@
 											<h:outputText value="Transportation Job" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputLink value="viewTransportationJob.xhtml" target="blank" rendered="#{sessionView.isTM}">
-												<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.idStr}" styleClass="blue" />
-												<f:param name="id" value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
+											<h:outputLink value="viewTransportationJob.xhtml"
+												target="blank" rendered="#{sessionView.isTM}">
+												<h:outputText
+													value="#{transportationRequestView.transportationRequest.transportationJob.idStr}"
+													styleClass="blue" />
+												<f:param name="id"
+													value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
 											</h:outputLink>
-											<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.idStr}" styleClass="blue" rendered="#{!sessionView.isTM}" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.idStr}"
+												styleClass="blue" rendered="#{!sessionView.isTM}" />
 											&nbsp;
 										</div>
 									</div>
@@ -625,7 +985,8 @@
 											<h:outputText value="Estimated Tr Time" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.estimatedDurationText}" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.estimatedDurationText}" />
 											&nbsp;
 										</div>
 									</div>
@@ -644,7 +1005,8 @@
 											<h:outputText value="Pickup Time" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.pickupDate}">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.pickupDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -655,7 +1017,8 @@
 											<h:outputText value="Delivery Time" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.deliveryDate}">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -666,7 +1029,8 @@
 											<h:outputText value="Job Status" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{transportationRequestView.transportationRequest.transportationJob.status.value}"
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.transportationJob.status.value}"
 												styleClass="bolder #{transportationRequestView.transportationRequest.transportationJob.status.color}" />
 											&nbsp;
 										</div>
@@ -680,120 +1044,137 @@
 								<div class="widget-box transparent ">
 									<div class="widget-body">
 										<ul class="steps">
-											<li>
-												<span class="step">
-													<i
-														class="ace-icon fa #{transportationRequestView.transportationRequest.state==0?'fa-truck grey':transportationRequestView.transportationRequest.state>0?'fa-check green':'fa-remove red'}  " />
-												</span>
+											<li><span class="step"> <i
+													class="ace-icon fa #{transportationRequestView.transportationRequest.state==0?'fa-truck grey':transportationRequestView.transportationRequest.state>0?'fa-check green':'fa-remove red'}  " />
+											</span>
 												<div class="title">
-													<div class="widget-box ui-sortable-handle" style="margin: auto; width: 200px">
+													<div class="widget-box ui-sortable-handle"
+														style="margin: auto; width: 200px">
 														<div class="widget-body ">
 															<div class="widget-main">
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/adress.jpg" width="20" />
+																		<h:graphicImage value="/resources/img/tr/adress.jpg"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
 																		<h:outputLink value="viewSite.xhtml" target="blank"
 																			rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
-																			<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
-																			<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
+																			<h:outputText
+																				value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.name}" />
+																			<f:param name="id"
+																				value="#{transportationRequestView.transportationRequest.deliveryRequest.origin.id}" />
 																		</h:outputLink>
-																		<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="blue"
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}"
+																			styleClass="blue"
 																			rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/gps.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/gps.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.originValue}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.originValue}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/user.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/user.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.originContactName}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.originContactName}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/phone.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/phone.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.originContactPhone}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.originContactPhone}" />
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
-												</div>
-											</li>
-											<li>
-												<span class="step">
-													<i class="ace-icon fa #{transportationRequestView.transportationRequest.state==1?'fa-truck blue':transportationRequestView.transportationRequest.state>1?'fa-check green':''} " />
-												</span>
-											</li>
-											<li>
-												<span class="step">
-													<i class="ace-icon fa #{transportationRequestView.transportationRequest.state==2?'fa-truck green':transportationRequestView.transportationRequest.state==-1?'':''} " />
-												</span>
+												</div></li>
+											<li><span class="step"> <i
+													class="ace-icon fa #{transportationRequestView.transportationRequest.state==1?'fa-truck blue':transportationRequestView.transportationRequest.state>1?'fa-check green':''} " />
+											</span></li>
+											<li><span class="step"> <i
+													class="ace-icon fa #{transportationRequestView.transportationRequest.state==2?'fa-truck green':transportationRequestView.transportationRequest.state==-1?'':''} " />
+											</span>
 												<div class="title">
-													<div class="widget-box ui-sortable-handle" style="margin: auto; width: 200px">
+													<div class="widget-box ui-sortable-handle"
+														style="margin: auto; width: 200px">
 														<div class="widget-body ">
 															<div class="widget-main">
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/adress.jpg" width="20" />
+																		<h:graphicImage value="/resources/img/tr/adress.jpg"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
 																		<h:outputLink value="viewSite.xhtml" target="blank"
 																			rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound  }">
-																			<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.name}" />
-																			<f:param name="id" value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.id}" />
+																			<h:outputText
+																				value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.name}" />
+																			<f:param name="id"
+																				value="#{transportationRequestView.transportationRequest.deliveryRequest.destination.id}" />
 																		</h:outputLink>
-																		<h:outputText value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}" styleClass="blue"
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}"
+																			styleClass="blue"
 																			rendered="#{transportationRequestView.transportationRequest.deliveryRequest.isInbound}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/gps.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/gps.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.destinationValue}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.destinationValue}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/user.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/user.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.destinationContactName}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.destinationContactName}" />
 																	</div>
 																</div>
 																<div class="space-4" />
 																<div class="row">
 																	<div class="col-sm-3">
-																		<h:graphicImage value="/resources/img/tr/phone.png" width="20" />
+																		<h:graphicImage value="/resources/img/tr/phone.png"
+																			width="20" />
 																	</div>
 																	<div class="col-sm-9" style="text-align: left">
-																		<h:outputText value="#{transportationRequestView.transportationRequest.destinationContactPhone}" />
+																		<h:outputText
+																			value="#{transportationRequestView.transportationRequest.destinationContactPhone}" />
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
-												</div>
-											</li>
+												</div></li>
 										</ul>
 									</div>
 								</div>
@@ -807,7 +1188,10 @@
 						<h:panelGroup id="gmap">
 							<!-- <p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.deliveryRequest.origin.latitude}, #{transportationRequestView.transportationRequest.deliveryRequest.origin.longitude}" zoom="17" type="TERRAIN"
 								style="width:100%;height:500px" /> -->
-							<p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.originValue}" type="TERRAIN" style="width:100%;height:500px" />
+							<p:gmap widgetVar="map"
+								model="#{transportationRequestView.mapModel}"
+								center="#{transportationRequestView.transportationRequest.originValue}"
+								type="TERRAIN" style="width:100%;height:500px" />
 						</h:panelGroup>
 						<div class="space-16" />
 					</div>
@@ -821,10 +1205,16 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{transportationRequestView.transportationRequest.fileList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="files_table"
+										value="#{transportationRequestView.transportationRequest.fileList}"
+										var="item" rows="20"
+										styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
-											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
+											<h:outputText value="#{item.parentModelName}"
+												styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
 										<p:column headerText="Name">
 											<h:outputText value="#{item.name}" />
@@ -840,29 +1230,46 @@
 										<p:column headerText="File Size" width="80">
 											<h:outputText value="#{item.size}" />
 										</p:column>
-										<p:column headerText="File Type" width="100" styleClass="center">
-											<img src="#{item.fileExtensionImage}" style="border: none; border-radius: 0" width="20" height="20" />
+										<p:column headerText="File Type" width="100"
+											styleClass="center">
+											<img src="#{item.fileExtensionImage}"
+												style="border: none; border-radius: 0" width="20"
+												height="20" />
 										</p:column>
 										<p:column headerText="Added By" styleClass="center">
-											<p:graphicImage id="photo" value="#{item.user.photo}" styleClass="img-circle aa-datatable-photo" />
-											<p:overlayPanel for="photo" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-												<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
+											<p:graphicImage id="photo" value="#{item.user.photo}"
+												styleClass="img-circle aa-datatable-photo" />
+											<p:overlayPanel for="photo"
+												style="text-align: left;width:350px" showEvent="mouseover"
+												hideEvent="mouseout">
+												<h:outputText escape="false"
+													value="#{htmlView.generateOverlayPanelContent(item.user.username)}" />
 											</p:overlayPanel>
 										</p:column>
-										<p:column headerText="Actions" width="150" style="text-align : center;">
+										<p:column headerText="Actions" width="150"
+											style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Delete File" oncomplete="PF('deleteTransportationRequestFileDlg').show()" styleClass="aa-tooltip">
+												<p:commandLink title="Delete File"
+													oncomplete="PF('deleteTransportationRequestFileDlg').show()"
+													styleClass="aa-tooltip">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
-													<f:setPropertyActionListener target="#{transportationRequestView.transportationRequestFileId}" value="#{item.id}" />
+													<f:setPropertyActionListener
+														target="#{transportationRequestView.transportationRequestFileId}"
+														value="#{item.id}" />
 												</p:commandLink>
 												<p:commandLink ajax="false">
-													<p:fileDownload value="#{fileView.getStreamedContent(item.link,item.name)}" />
+													<p:fileDownload
+														value="#{fileView.getStreamedContent(item.link,item.name)}" />
 													<i class="ace-icon fa fa-save bigger-130 green" />
 												</p:commandLink>
-												<p:commandLink title="View" oncomplete="PF('fileDlg').show()" update=":fileForm">
+												<p:commandLink title="View"
+													oncomplete="PF('fileDlg').show()" update=":fileForm">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-													<f:setPropertyActionListener target="#{fileView.file}" value="#{item}" />
-													<f:setPropertyActionListener target="#{transportationRequestView.transportationRequestFile}" value="#{item}" />
+													<f:setPropertyActionListener target="#{fileView.file}"
+														value="#{item}" />
+													<f:setPropertyActionListener
+														target="#{transportationRequestView.transportationRequestFile}"
+														value="#{item}" />
 												</p:commandLink>
 											</div>
 										</p:column>
@@ -876,17 +1283,16 @@
 							<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 								<div class="timeline-container timeline-style2">
 									<div class="timeline-items">
-										<ui:repeat var="item" value="#{transportationRequestView.transportationRequest.historyList}" varStatus="varStatus">
+										<ui:repeat var="item"
+											value="#{transportationRequestView.transportationRequest.historyList}"
+											varStatus="varStatus">
 											<div class="timeline-item clearfix">
 												<div class="timeline-info">
-													<i class="timeline-indicator btn btn-info no-hover"></i>
-													<br />
-													<span class="pink">
-														<h:outputText value="#{item.date}">
+													<i class="timeline-indicator btn btn-info no-hover"></i> <br />
+													<span class="pink"> <h:outputText
+															value="#{item.date}">
 															<f:convertDateTime pattern="yyyy-MM-dd" />
-														</h:outputText>
-														<br />
-														<h:outputText value="#{item.date}">
+														</h:outputText> <br /> <h:outputText value="#{item.date}">
 															<f:convertDateTime pattern="HH:mm" />
 														</h:outputText>
 													</span>
@@ -895,25 +1301,28 @@
 													<div class="widget-box transparent">
 														<div class="widget-header widget-header-small">
 															<h5 class="widget-title smaller">
-																<a href="#" class="blue">
-																	<h:outputText value="#{item.status}" styleClass="#{item.statusStyleClass} bolder" />
+																<a href="#" class="blue"> <h:outputText
+																		value="#{item.status}"
+																		styleClass="#{item.statusStyleClass} bolder" />
 																</a>
 															</h5>
 														</div>
 														<div class="widget-body">
 															<div class="widget-main">
-																<div class="row col-xs-6" >
+																<div class="row col-xs-6">
 																	<div class="col-xs-2">
-																		<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
-																			<f:param name="fileName" value="#{cacheView.getPhoto(item.user.username)}" />
+																		<p:graphicImage value="#{fileUploadView.stream}"
+																			styleClass="grid_images">
+																			<f:param name="fileName"
+																				value="#{cacheView.getPhoto(item.user.username)}" />
 																		</p:graphicImage>
 																	</div>
 																	<div class="col-xs-9">
-																		<span class="bolder green lead smaller-90">
-																			<h:outputText value="#{item.user.fullName}" />
-																		</span>
-																		<br />
-																		<h:outputText value="#{item.description}" escape="false" styleClass="aa-cut-text" />
+																		<span class="bolder green lead smaller-90"> <h:outputText
+																				value="#{item.user.fullName}" />
+																		</span> <br />
+																		<h:outputText value="#{item.description}"
+																			escape="false" styleClass="aa-cut-text" />
 																	</div>
 																</div>
 															</div>
@@ -976,13 +1385,19 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+									<p:dataTable value="#{appLinkView.list2}" var="item" rows="20"
+										styleClass="table table-striped table-hover"
+										paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom"
 										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Transportation Request" width="100">
-											<h:outputText value="#{transportationRequestView.transportationRequest.reference}" styleClass="green bolder" />
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.reference}"
+												styleClass="green bolder" />
 										</p:column>
 										<p:column headerText="Cost Type" width="150">
-											<h:outputText value="#{item.costType.value}" styleClass="red bolder" />
+											<h:outputText value="#{item.costType.value}"
+												styleClass="red bolder" />
 										</p:column>
 										<p:column headerText="Start Date" width="80">
 											<h:outputText value="#{item.startDate}">
@@ -1000,17 +1415,29 @@
 											</h:outputText>
 										</p:column>
 										<p:column headerText="System" width="100">
-											<h:outputText value="Ibuy" rendered="#{item.acceptanceId!=null}" styleClass="bolder blue" />
-											<h:outputText value="Iexpense" rendered="#{item.expensepaymentId!=null}" styleClass="bolder green" />
+											<h:outputText value="Ibuy"
+												rendered="#{item.acceptanceId!=null}"
+												styleClass="bolder blue" />
+											<h:outputText value="Iexpense"
+												rendered="#{item.expensepaymentId!=null}"
+												styleClass="bolder green" />
 										</p:column>
 										<p:column headerText="Actions" width="70">
 											<div class="action-buttons center">
-												<p:commandLink action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}" update=":acceptanceForm" oncomplete="PF('acceptanceDlg').show()" title="Show details"
-													styleClass="aa-tooltip tooltip-info" rendered="#{item.acceptanceId!=null}">
+												<p:commandLink
+													action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}"
+													update=":acceptanceForm"
+													oncomplete="PF('acceptanceDlg').show()"
+													title="Show details" styleClass="aa-tooltip tooltip-info"
+													rendered="#{item.acceptanceId!=null}">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 												</p:commandLink>
-												<p:commandLink action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}" update=":expensepaymentForm" oncomplete="PF('expensepaymentDlg').show()" title="Show details"
-													styleClass="aa-tooltip tooltip-info" rendered="#{item.expensepaymentId!=null}">
+												<p:commandLink
+													action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}"
+													update=":expensepaymentForm"
+													oncomplete="PF('expensepaymentDlg').show()"
+													title="Show details" styleClass="aa-tooltip tooltip-info"
+													rendered="#{item.expensepaymentId!=null}">
 													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 												</p:commandLink>
 											</div>
@@ -1023,7 +1450,8 @@
 				</div>
 			</div>
 		</h:form>
-		<f:event type="preRenderView" listener="#{transportationRequestView.redirect}" />
+		<f:event type="preRenderView"
+			listener="#{transportationRequestView.redirect}" />
 		<ui:include src="transportationRequestFooter.xhtml" />
 		<ui:include src="acceptanceFooter.xhtml" />
 		<ui:include src="expensepaymentFooter.xhtml" />

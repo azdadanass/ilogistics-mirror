@@ -29,9 +29,12 @@ public class DriverLocationController {
         return ResponseEntity.ok(location);
     }
     
-    @GetMapping("/drivers")
-    public ResponseEntity<List<DriverLocationDto>> getDriversLocation() {
-    	List<DriverLocationDto> locations = driverLocationService.getDriversLocation();
+    @GetMapping("/drivers/{jobId}/{type}")
+    public ResponseEntity<List<DriverLocationDto>> getDriversLocation(@PathVariable Integer jobId,@PathVariable String type) {
+    	System.out.println(" jobId :"+jobId);
+    	List<DriverLocationDto> locations = driverLocationService.getDriversLocation(jobId,type);
+    	System.out.println("size : "+locations.size());
+
         if (locations == null) {
             return ResponseEntity.notFound().build();
         }

@@ -529,7 +529,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						u.setDistance(UtilsFunctions.calculateDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+						u.setDistance(pathService.getDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
 				refreshMapModel();

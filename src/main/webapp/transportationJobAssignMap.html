@@ -828,104 +828,120 @@ function showEstimatedItinerary() {
 }
 
 function showDriverLocation() {
-	const jobId = getJobIdFromURL();
+	  const jobId = getJobIdFromURL();
 	  if (!jobId) {
-	    console.warn("Aucun joId trouvé dans l'URL pour afficher la position du chauffeur.");
+	    console.warn("Aucun jobId trouvé dans l'URL pour afficher la position du chauffeur.");
 	    return;
 	  }
-  const type = getTypeFromURL();
-  if (!type) {
-    console.warn("Aucun type trouvé dans l'URL pour afficher la position du chauffeur.");
-    return;
-  }
 
-  fetch(`/api/driver-locations/drivers/${jobId}/${type}`)
-    .then(response => {
-      if (!response.ok) throw new Error("Erreur lors de la récupération de la position du chauffeur");
-      return response.json();
-    })
-    .then(location => {
-      // Remove existing driver marker
-      if (driverMarker) {
-        driverMarker.setMap(null);
-      }
+	  const type = getTypeFromURL();
+	  if (!type) {
+	    console.warn("Aucun type trouvé dans l'URL pour afficher la position du chauffeur.");
+	    return;
+	  }
 
-      if (location && location.latitude && location.longitude) {
-        const position = { lat: location.latitude, lng: location.longitude };
-        const borderColor = getBorderColor(location.date);
-        
-        // Default icon URL
-        const defaultIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
-        
-        // Use user's imageUrl if available, otherwise use default
-        const imageUrl = location.imageUrl && location.imageUrl.trim() !== "" 
-          ? location.imageUrl 
-          : defaultIconUrl;
+	  fetch(`/api/driver-locations/drivers/${jobId}/${type}`)
+	    .then(response => {
+	      if (!response.ok) throw new Error("Erreur lors de la récupération de la position du chauffeur");
+	      return response.json();
+	    })
+	    .then(locations => {
+	      console.warn("Full location object:", locations);
 
-        // Create PNG icon dynamically
-        createPngIcon(imageUrl, borderColor, (iconUrl) => {
-          driverMarker = new google.maps.Marker({
-            position: position,
-            map: map,
-            icon: {
-              url: iconUrl,
-              scaledSize: new google.maps.Size(60, 60),
-              anchor: new google.maps.Point(30, 30)
-            },
-            title: location.username || "Chauffeur inconnu",
-            zIndex: 2000
-          });
+	      // Always handle array responses
+	      const location = Array.isArray(locations) && locations.length > 0 ? locations[0] : null;
 
-          const infoWindow = new google.maps.InfoWindow({
-        	  content: `
-        	    <div style="
-        	      display: flex; 
-        	      align-items: center; 
-        	      font-family: Arial, sans-serif; 
-        	      font-size: 13px; 
-        	      background: #fff; 
-        	      border-radius: 10px; 
-        	      padding: 10px; 
-        	      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        	      max-width: 280px;
-        	    ">
-        	      <img 
-        	        src="${imageUrl}" 
-        	        onerror="this.src='${defaultIconUrl}'" 
-        	        style="
-        	          width: 60px; 
-        	          height: 60px; 
-        	          border-radius: 50%; 
-        	          object-fit: cover; 
-        	          margin-right: 12px; 
-        	          border: 2px solid #eee;
-        	        " 
-        	      />
-        	      <div style="flex: 1;">
-        	        <p style="margin: 0; font-size: 15px; font-weight: bold; color: #2c3e50;">
-        	          👤 ${location.username || 'Chauffeur inconnu'}
-        	        </p>
-        	        <p style="margin: 4px 0; color: #555;">
-        	          🧭 <strong>Lat:</strong> ${location.latitude.toFixed(5)} <br/>
-        	          🧭 <strong>Lng:</strong> ${location.longitude.toFixed(5)}
-        	        </p>
-        	        <p style="margin: 4px 0; color: #777; font-size: 12px;">
-        	          ⏰ ${new Date(location.date).toLocaleString()}
-        	        </p>
-        	      </div>
-        	    </div>
-        	  `
-        	});
+	      if (!location) {
+	        console.warn("Aucun chauffeur trouvé.");
+	        return;
+	      }
 
+	      // Remove existing driver marker
+	      if (driverMarker) {
+	        driverMarker.setMap(null);
+	      }
 
-          driverMarker.addListener("click", () => infoWindow.open(map, driverMarker));
-        });
-      }
-    })
-    .catch(err => {
-      console.error("Erreur fetch de la position du chauffeur :", err);
-    });
-}
+	      if (location.latitude && location.longitude) {
+	        const position = { lat: location.latitude, lng: location.longitude };
+	        const borderColor = getBorderColor(location.date);
+
+	        // Default icon URL
+	        const defaultIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+
+	        // Use user's imageUrl if available, otherwise use default
+	        const imageUrl =
+	          location.imageUrl && location.imageUrl.trim() !== ""
+	            ? location.imageUrl
+	            : defaultIconUrl;
+
+	        // Create PNG icon dynamically
+	        createPngIcon(imageUrl, borderColor, (iconUrl) => {
+	          driverMarker = new google.maps.Marker({
+	            position: position,
+	            map: map,
+	            icon: {
+	              url: iconUrl,
+	              scaledSize: new google.maps.Size(60, 60),
+	              anchor: new google.maps.Point(30, 30)
+	            },
+	            title: location.username || "Chauffeur inconnu",
+	            zIndex: 2000
+	          });
+
+	          const infoWindow = new google.maps.InfoWindow({
+	            content: `
+	              <div style="
+	                display: flex; 
+	                align-items: center; 
+	                font-family: Arial, sans-serif; 
+	                font-size: 13px; 
+	                background: #fff; 
+	                border-radius: 10px; 
+	                padding: 10px; 
+	                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+	                max-width: 280px;
+	              ">
+	                <img 
+	                  src="${imageUrl}" 
+	                  onerror="this.src='${defaultIconUrl}'" 
+	                  style="
+	                    width: 60px; 
+	                    height: 60px; 
+	                    border-radius: 50%; 
+	                    object-fit: cover; 
+	                    margin-right: 12px; 
+	                    border: 2px solid #eee;
+	                  " 
+	                />
+	                <div style="flex: 1;">
+	                  <p style="margin: 0; font-size: 15px; font-weight: bold; color: #2c3e50;">
+	                    👤 ${location.username || 'Chauffeur inconnu'}
+	                  </p>
+	                  <p style="margin: 4px 0; color: #555;">
+	                    🧭 <strong>Lat:</strong> ${location.latitude.toFixed(5)} <br/>
+	                    🧭 <strong>Lng:</strong> ${location.longitude.toFixed(5)}
+	                  </p>
+	                  <p style="margin: 4px 0; color: #777; font-size: 12px;">
+	                    ⏰ ${new Date(location.date).toLocaleString()}
+	                  </p>
+	                </div>
+	              </div>
+	            `
+	          });
+
+	          driverMarker.addListener("click", () => infoWindow.open(map, driverMarker));
+
+	          // 👀 Center map on driver
+	          map.setCenter(position);
+	          map.setZoom(14);
+	        });
+	      }
+	    })
+	    .catch(err => {
+	      console.error("Erreur fetch de la position du chauffeur :", err);
+	    });
+	}
+
 
 function getAlphabetLetter(index) {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

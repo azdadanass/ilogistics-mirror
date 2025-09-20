@@ -58,6 +58,12 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private Double estimatedDistance = 0.0;
 	private String estimatedDistanceText;
 	private String rejectionReason;
+	
+	private Integer plannedPickupDuration;
+	private Integer plannedDeliveryDuration;
+	private Integer pickupDuration;
+	private Integer deliveryDuration;
+
 
 	private Double realDistance;
 	private Double startDistance;
@@ -330,12 +336,26 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return ObjectUtils.firstNonNull(pickupDate, expectedPickupDate, plannedPickupDate);
+		return ObjectUtils.firstNonNull(pickupDate, plannedPickupDate , expectedPickupDate);
+	}
+	
+	@Transient
+	public Integer getPickupDuration2() {
+		if(pickupDuration != null)
+			return pickupDuration;
+		return plannedPickupDuration;
+	}
+	
+	@Transient
+	public Integer getDeliveryDuration2() {
+		if(deliveryDuration != null)
+			return deliveryDuration;
+		return plannedDeliveryDuration;
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return ObjectUtils.firstNonNull(deliveryDate, expectedDeliveryDate, plannedDeliveryDate);
+		return ObjectUtils.firstNonNull(deliveryDate, plannedDeliveryDate, expectedDeliveryDate);
 	}
 
 	@Transient
@@ -1323,6 +1343,42 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void setStartDistance(Double startDistance) {
 		this.startDistance = startDistance;
 	}
+
+	public Integer getPlannedPickupDuration() {
+		return plannedPickupDuration;
+	}
+
+	public void setPlannedPickupDuration(Integer plannedPickupDuration) {
+		this.plannedPickupDuration = plannedPickupDuration;
+	}
+
+	public Integer getPlannedDeliveryDuration() {
+		return plannedDeliveryDuration;
+	}
+
+	public void setPlannedDeliveryDuration(Integer plannedDeliveryDuration) {
+		this.plannedDeliveryDuration = plannedDeliveryDuration;
+	}
+
+	public Integer getDeliveryDuration() {
+		return deliveryDuration;
+	}
+
+	public void setDeliveryDuration(Integer deliveryDuration) {
+		this.deliveryDuration = deliveryDuration;
+	}
+
+	public Integer getPickupDuration() {
+		return pickupDuration;
+	}
+
+	public void setPickupDuration(Integer pickupDuration) {
+		this.pickupDuration = pickupDuration;
+	}
+	
+	
+	
+	
 	
 	
 

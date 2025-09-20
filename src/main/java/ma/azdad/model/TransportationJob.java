@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,6 +54,9 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	private Double firstLatitude;
 	private Double firstLongitude;
+	
+	private Double plannedStartLatitude;
+	private Double plannedStartLongitude;
 
 	private Double startLatitude; // if web start
 	private Double startLongitude;
@@ -251,21 +255,58 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Transient
 	public String getPlannedStartDuration() {
-		if (plannedStartDate != null && !getTransportationRequestList().isEmpty())
-			return UtilsFunctions.getDateDifferenceDaysHoursMinutes(plannedStartDate,
-					getTransportationRequestList().get(0).getExpectedPickupDate());
-		else
-			return null;
+		if (getStopList() != null && !getStopList().isEmpty()) {
+
+	        Double startLat = (plannedStartLatitude != null) ? plannedStartLatitude : getFirstLatitude();
+	        Double startLng = (plannedStartLongitude != null) ? plannedStartLongitude : getFirstLongitude();
+
+	        Double stopLat = getStopList().get(0).getSite() != null
+	                ? getStopList().get(0).getSite().getLatitude()
+	                : getStopList().get(0).getWarehouse().getLatitude();
+
+	        Double stopLng = getStopList().get(0).getSite() != null
+	                ? getStopList().get(0).getSite().getLongitude()
+	                : getStopList().get(0).getWarehouse().getLongitude();
+
+	        return PathService.getDuration(startLat, startLng, stopLat, stopLng);
+	    }
+
+	    return "";
 	}
 
 	@Transient
 	public String getEstimatedDuration() {
-		try {
-			return UtilsFunctions.getDateDifferenceDaysHoursMinutes(plannedStartDate, plannedEndDate);
-		} catch (Exception e) {
-			return null;
-		}
+	    if (getStopList() != null && getStopList().size() > 1) {
+	        try {
+	            // first stop
+	            Double firstLat = getStopList().get(0).getSite() != null
+	                    ? getStopList().get(0).getSite().getLatitude()
+	                    : getStopList().get(0).getWarehouse().getLatitude();
+
+	            Double firstLng = getStopList().get(0).getSite() != null
+	                    ? getStopList().get(0).getSite().getLongitude()
+	                    : getStopList().get(0).getWarehouse().getLongitude();
+
+	            // last stop
+	            int lastIndex = getStopList().size() - 1;
+	            Double lastLat = getStopList().get(lastIndex).getSite() != null
+	                    ? getStopList().get(lastIndex).getSite().getLatitude()
+	                    : getStopList().get(lastIndex).getWarehouse().getLatitude();
+
+	            Double lastLng = getStopList().get(lastIndex).getSite() != null
+	                    ? getStopList().get(lastIndex).getSite().getLongitude()
+	                    : getStopList().get(lastIndex).getWarehouse().getLongitude();
+
+	            // use path service to compute duration
+	            return PathService.getDuration(firstLat, firstLng, lastLat, lastLng);
+	        } catch (Exception e) {
+	            return null;
+	        }
+	    }
+
+	    return "";
 	}
+
 	// Distance MANAGEMENT
 
 	@Transient
@@ -297,16 +338,25 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Transient
 	public Double getPlannedStartingDistance() {
-		if (getStopList() != null && !getStopList().isEmpty()) {
-			return PathService.getDistance(getFirstLatitude(), getFirstLongitude(),
-					getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude()
-							: getStopList().get(0).getWarehouse().getLatitude(),
-					getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude()
-							: getStopList().get(0).getWarehouse().getLongitude());
-		}
+	    if (getStopList() != null && !getStopList().isEmpty()) {
 
-		return 0d;
+	        Double startLat = (plannedStartLatitude != null) ? plannedStartLatitude : getFirstLatitude();
+	        Double startLng = (plannedStartLongitude != null) ? plannedStartLongitude : getFirstLongitude();
+
+	        Double stopLat = getStopList().get(0).getSite() != null
+	                ? getStopList().get(0).getSite().getLatitude()
+	                : getStopList().get(0).getWarehouse().getLatitude();
+
+	        Double stopLng = getStopList().get(0).getSite() != null
+	                ? getStopList().get(0).getSite().getLongitude()
+	                : getStopList().get(0).getWarehouse().getLongitude();
+
+	        return PathService.getDistance(startLat, startLng, stopLat, stopLng);
+	    }
+
+	    return 0d;
 	}
+
 
 	@Transient
 	public Double getPlannedTotalDistance() {
@@ -316,7 +366,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	@Transient
 	public Double getCurrentVsPlannedDistPercentage() {
 
-		return getTotalDistanceTravelled() / getPlannedTotalDistance();
+		return getTotalDistanceTravelled() !=null ? getTotalDistanceTravelled():0d / getPlannedTotalDistance();
 	}
 
 	@Transient
@@ -363,6 +413,20 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		return stopList.size();
 	}
 
+	@Transient
+	public Integer getTotalStopsDuration() {
+	    if (getStopList() == null || getStopList().isEmpty()) {
+	        return 0;
+	    }
+
+	    return getStopList().stream()
+	            .map(Stop::getDuration)
+	            .filter(Objects::nonNull)
+	            .mapToInt(Integer::intValue)
+	            .sum();
+	}
+
+	
 	@Transient
 	public Double getPlannedMaxVolume() {
 		return plannedMaxVolume;
@@ -476,6 +540,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void generateStopList() {
 		Map<String, Stop> map = new HashMap<>();
+		Map<Date, Integer> map2 = new HashMap<>();
 		for (TransportationRequest tr : transportationRequestList) {
 			Stop s1 = map.get(tr.getStartDate());
 			Stop s2 = map.get(tr.getEndDate());
@@ -496,9 +561,66 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 			String date1 = UtilsFunctions.getFormattedDateTime(tr.getStartDate());
 			String date2 = UtilsFunctions.getFormattedDateTime(tr.getEndDate());
+			System.out.println("tr "+tr.getOriginName());
+        	System.out.println("tr "+tr.getDestinationName());
 
-			map.put(date1, new Stop(tr.getStartDate(), type1, expected1, site1, warehouse1, this));
-			map.put(date2, new Stop(tr.getEndDate(), type2, expected2, site2, warehouse2, this));
+			  // ----- PICKUP STOP -----
+	            s1 = new Stop(tr.getStartDate(), type1, expected1, site1, warehouse1, this);
+	            s1.setDuration(tr.getPickupDuration2() != null ? tr.getPickupDuration2() : 0);
+	            Integer siteId = map2.get(tr.getStartDate());
+	            if(siteId != null && siteId.equals(s1.getPlace().id())) {
+	            	  // filter requests that match by destination or warehouse
+	                int totalDuration = transportationRequestList.stream()
+	                    .filter(req -> {
+	                        Integer destId = (req.getDeliveryRequest().getOrigin() != null)
+	                                ? req.getDeliveryRequest().getOrigin().getId()
+	                                : (req.getDeliveryRequest().getWarehouse() != null
+	                                    ? req.getDeliveryRequest().getWarehouse().getId()
+	                                    : null);
+	                        return destId != null && destId.equals(siteId);
+	                    })
+	                    .mapToInt(req -> {
+	                        Integer d = req.getPickupDuration2();
+	                        return d != null ? d : 0;
+	                    })
+	                    .sum();
+
+	                // set summed duration
+	                s2.setDuration(totalDuration);
+	            }
+	            map.put(date1, s1);
+	            map2.put(tr.getStartDate(), s1.getPlace().id());
+	       
+
+	        // ----- DELIVERY STOP -----
+	            s2 = new Stop(tr.getEndDate(), type2, expected2, site2, warehouse2, this);
+	            s2.setDuration(tr.getDeliveryDuration2() != null ? tr.getDeliveryDuration2() : 0);
+	            
+	            Integer siteId2 = map2.get(tr.getEndDate());
+	            if(siteId2 != null && siteId2.equals(s2.getPlace().id())) {
+	            	  // filter requests that match by destination or warehouse
+	                int totalDuration = transportationRequestList.stream()
+	                    .filter(req -> {
+	                        Integer destId = (req.getDeliveryRequest().getDestination() != null)
+	                                ? req.getDeliveryRequest().getDestination().getId()
+	                                : (req.getDeliveryRequest().getWarehouse() != null
+	                                    ? req.getDeliveryRequest().getWarehouse().getId()
+	                                    : null);
+	                        return destId != null && destId.equals(siteId2);
+	                    })
+	                    .mapToInt(req -> {
+	                        Integer d = req.getDeliveryDuration2();
+	                        return d != null ? d : 0;
+	                    })
+	                    .sum();
+
+	                // set summed duration
+	                s2.setDuration(totalDuration);
+	            }
+	            map.put(date2, s2);
+	            map2.put(tr.getEndDate(), s2.getPlace().id());
+	           
+	        
 		}
 		stopList = new ArrayList<>(map.values());
 		Collections.sort(stopList);
@@ -1277,6 +1399,23 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	public void setStartDistance(Double startDistance) {
 		this.startDistance = startDistance;
+	}
+	
+
+	public Double getPlannedStartLatitude() {
+		return plannedStartLatitude;
+	}
+
+	public void setPlannedStartLatitude(Double plannedStartLatitude) {
+		this.plannedStartLatitude = plannedStartLatitude;
+	}
+
+	public Double getPlannedStartLongitude() {
+		return plannedStartLongitude;
+	}
+
+	public void setPlannedStartLongitude(Double plannedStartLongitude) {
+		this.plannedStartLongitude = plannedStartLongitude;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "transportationJob", cascade = CascadeType.ALL, orphanRemoval = true)

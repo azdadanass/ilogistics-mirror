@@ -1022,15 +1022,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 			} else {
 				DriverLocation lastLocation = locations.get(locations.size() - 1);
-				double distanceKm = haversineDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-				if (distanceKm >= 5.0) {
+				double distanceKm = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
+				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(lastLocation.getDate(), new Date()) > 3) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
 					// hadi adir mï¿½j les cordonnÃ©es si user exist dÃ©ja et distance > 5km
 					googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
 
 				} else {
-					System.out.println("Distance < 5km ï¿½ skipping update");
+					System.out.println("Distance < 5km or Last Update < 3 days ï¿½ skipping update");
 				}
 			}
 	}
@@ -1119,163 +1119,165 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	public Double calculateRealProductiveDist(Integer jobId) {
-		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+	    List<TransportationJobItinerary> orderedItineraries =
+	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
 
-		double realProductive = 0d;
-		boolean carryingGoods = false;
+	    double realProductive = 0d;
+	    int loadCount = 0; // number of active loads still onboard
 
-		for (TransportationJobItinerary point : orderedItineraries) {
-			double dist = point.getDistanceFromPrevious();
+	    for (TransportationJobItinerary point : orderedItineraries) {
+	        double dist = point.getDistanceFromPrevious();
 
-			// Check if state changes
-			if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
-				carryingGoods = true;
-			}
-			if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
-				carryingGoods = false;
-			}
+	        // Count distance only if carrying goods
+	        if (loadCount > 0) {
+	            realProductive += dist;
+	        }
 
-			// Add distance only when carrying goods
-			if (carryingGoods) {
-				realProductive += dist;
-			}
-		}
-		return realProductive;
+	        // Update load count based on request status
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+	            loadCount++;
+	        } else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+	            if (loadCount > 0) loadCount--;
+	        }
+	    }
+
+	    return realProductive;
 	}
 
 	public Double calculateRealNonProductiveDist(Integer jobId) {
-		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+	    List<TransportationJobItinerary> orderedItineraries =
+	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
 
-		double realNonProductive = 0d;
-		boolean carryingGoods = false;
+	    double realNonProductive = 0d;
+	    int loadCount = 0; // number of active loads still onboard
 
-		for (TransportationJobItinerary point : orderedItineraries) {
-			double dist = point.getDistanceFromPrevious();
+	    for (TransportationJobItinerary point : orderedItineraries) {
+	        double dist = point.getDistanceFromPrevious();
 
-			// Check if state changes
-			if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
-				carryingGoods = true;
-			}
-			if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
-				carryingGoods = false;
-			}
+	        // Count distance only if NOT carrying goods
+	        if (loadCount == 0) {
+	            realNonProductive += dist;
+	        }
 
-			// Add distance only when NOT carrying goods
-			if (!carryingGoods) {
-				realNonProductive += dist;
-			}
-		}
-		return realNonProductive;
+	        // Update load count based on request status
+	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+	            loadCount++;
+	        } else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+	            if (loadCount > 0) loadCount--;
+	        }
+	    }
+
+	    return realNonProductive;
 	}
+
 
 	public Double calculateEstimatedProductiveDist(Integer jobId) {
-		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-		double estimatedProd = 0d;
-		boolean carryingGoods = false;
+	    double estimatedProd = 0d;
+	    int loadCount = 0; // track how many pickups are still active
 
-		Double lastLat = null;
-		Double lastLng = null;
+	    Double lastLat = null;
+	    Double lastLng = null;
 
-		for (Stop stop : stops) {
-			double lat;
-			double lng;
+	    for (Stop stop : stops) {
+	        double lat;
+	        double lng;
 
-			if (stop.getSite() != null) {
-				lat = stop.getSite().getLatitude();
-				lng = stop.getSite().getLongitude();
-			} else if (stop.getWarehouse() != null) {
-				lat = stop.getWarehouse().getLatitude();
-				lng = stop.getWarehouse().getLongitude();
-			} else {
-				lat = 0.0;
-				lng = 0.0;
-			}
+	        if (stop.getSite() != null) {
+	            lat = stop.getSite().getLatitude();
+	            lng = stop.getSite().getLongitude();
+	        } else if (stop.getWarehouse() != null) {
+	            lat = stop.getWarehouse().getLatitude();
+	            lng = stop.getWarehouse().getLongitude();
+	        } else {
+	            lat = 0.0;
+	            lng = 0.0;
+	        }
 
-			if (lastLat != null && lastLng != null) {
-				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+	        if (lastLat != null && lastLng != null) {
+	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-				if (carryingGoods) {
-					estimatedProd += dist;
-				}
-			}
+	            if (loadCount > 0) { // productive distance only if carrying goods
+	                estimatedProd += dist;
+	            }
+	        }
 
-			// Update carrying state based on stop type
-			switch (stop.getType()) {
-			case PICKUP:
-				carryingGoods = true;
-				break;
-			case DELIVERY:
-				carryingGoods = false;
-				break;
-			case DELIVERY_AND_PICKUP:
-				// delivery first (drop goods)
-				carryingGoods = false;
-				// then pickup again (start carrying new goods)
-				carryingGoods = true;
-				break;
-			}
+	        // Update load count based on stop type
+	        switch (stop.getType()) {
+	            case PICKUP:
+	                loadCount++;
+	                break;
+	            case DELIVERY:
+	                if (loadCount > 0) loadCount--;
+	                break;
+	            case DELIVERY_AND_PICKUP:
+	                if (loadCount > 0) loadCount--; // first deliver
+	                loadCount++; // then pickup again
+	                break;
+	        }
 
-			lastLat = lat;
-			lastLng = lng;
-		}
+	        lastLat = lat;
+	        lastLng = lng;
+	    }
 
-		return estimatedProd;
+	    return estimatedProd;
 	}
+
 
 	public Double calculateEstimatedNonProductiveDist(Integer jobId) {
-		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-		double estimatedNonProd = 0d;
-		boolean carryingGoods = false;
+	    double estimatedNonProd = 0d;
+	    int loadCount = 0; // track active pickups still onboard
 
-		Double lastLat = null;
-		Double lastLng = null;
+	    Double lastLat = null;
+	    Double lastLng = null;
 
-		for (Stop stop : stops) {
-			double lat;
-			double lng;
+	    for (Stop stop : stops) {
+	        double lat;
+	        double lng;
 
-			if (stop.getSite() != null) {
-				lat = stop.getSite().getLatitude();
-				lng = stop.getSite().getLongitude();
-			} else if (stop.getWarehouse() != null) {
-				lat = stop.getWarehouse().getLatitude();
-				lng = stop.getWarehouse().getLongitude();
-			} else {
-				lat = 0.0;
-				lng = 0.0;
-			}
+	        if (stop.getSite() != null) {
+	            lat = stop.getSite().getLatitude();
+	            lng = stop.getSite().getLongitude();
+	        } else if (stop.getWarehouse() != null) {
+	            lat = stop.getWarehouse().getLatitude();
+	            lng = stop.getWarehouse().getLongitude();
+	        } else {
+	            lat = 0.0;
+	            lng = 0.0;
+	        }
 
+	        if (lastLat != null && lastLng != null) {
+	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-			if (lastLat != null && lastLng != null) {
-				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+	            if (loadCount == 0) { // only count as non-productive if carrying nothing
+	                estimatedNonProd += dist;
+	            }
+	        }
 
-				if (!carryingGoods) {
-					estimatedNonProd += dist;
-				}
-			}
+	        // Update load count based on stop type
+	        switch (stop.getType()) {
+	            case PICKUP:
+	                loadCount++;
+	                break;
+	            case DELIVERY:
+	                if (loadCount > 0) loadCount--;
+	                break;
+	            case DELIVERY_AND_PICKUP:
+	                if (loadCount > 0) loadCount--; // deliver first
+	                loadCount++; // then pickup again
+	                break;
+	        }
 
-			// Update carrying state based on stop type
-			switch (stop.getType()) {
-			case PICKUP:
-				carryingGoods = true;
-				break;
-			case DELIVERY:
-				carryingGoods = false;
-				break;
-			case DELIVERY_AND_PICKUP:
-				carryingGoods = false; // drop current load
-				carryingGoods = true; // immediately pick up again
-				break;
-			}
+	        lastLat = lat;
+	        lastLng = lng;
+	    }
 
-			lastLat = lat;
-			lastLng = lng;
-		}
-
-		return estimatedNonProd;
+	    return estimatedNonProd;
 	}
+
 
 	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int EARTH_RADIUS_KM = 6371;

@@ -25,6 +25,9 @@ public class Stop extends GenericModel<Integer> implements Serializable, Compara
 	private Site site;
 	private Warehouse warehouse;
 	private TransportationJob transportationJob;
+	private Integer duration;
+
+	
 
 	public Stop() {
 		super();
@@ -135,7 +138,17 @@ public class Stop extends GenericModel<Integer> implements Serializable, Compara
 		return id;
 	}
 
+	public Integer getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Integer duration) {
+		this.duration = duration;
+	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	
 }

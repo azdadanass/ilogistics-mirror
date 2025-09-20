@@ -647,6 +647,15 @@
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText> -->
 										</p:column>
+										<p:column headerText="Pickup Duration">
+											<h:outputText
+												value="Planned "
+												styleClass="blue" rendered="#{item.pickupDuration==null}" />
+											<h:outputText value="#{item.pickupDuration2} Min"
+												styleClass="blue bolder">
+											</h:outputText>
+											
+										</p:column>
 										<p:column headerText="Destination">
 											<h:outputText value="#{item.destinationName}"
 												styleClass="pink" />
@@ -673,6 +682,15 @@
 											<h:outputText value="#{item.deliveryDate}" styleClass="pink bolder">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText> -->
+										</p:column>
+											<p:column headerText="Delivery Duration">
+											<h:outputText
+												value="Planned "
+												styleClass="green" rendered="#{item.deliveryDuration==null}" />
+											<h:outputText value="#{item.deliveryDuration2} Min"
+												styleClass="green bolder">
+											</h:outputText>
+											
 										</p:column>
 										<p:column headerText="Status" width="100">
 											<h:outputText value="#{item.status.value}"
@@ -884,9 +902,13 @@
 										</div>
 										<div class="profile-info-value bolder blue">
 											<h:outputText
-												value="#{transportationJobView.transportationJob.firstLatitude}, #{transportationJobView.transportationJob.firstLongitude}" />
+												value="#{transportationJobView.transportationJob.plannedStartLatitude != null 
+           										   ? transportationJobView.transportationJob.plannedStartLatitude : transportationJobView.transportationJob.firstLatitude}, 
+          											  #{transportationJobView.transportationJob.plannedStartLongitude != null 
+             											 ? transportationJobView.transportationJob.plannedStartLongitude : transportationJobView.transportationJob.firstLongitude}" />
 											&nbsp;
 										</div>
+
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
@@ -973,7 +995,7 @@
 											<h:outputText value="Total stops duration" />
 										</div>
 										<div class="profile-info-value bolder orange">
-											<h:outputText value="Unkown" />
+											<h:outputText value="#{transportationJobView.transportationJob.totalStopsDuration} Min" />
 											&nbsp;
 										</div>
 									</div>
@@ -993,7 +1015,7 @@
 										</div>
 										<div class="profile-info-value bolder red">
 											<h:outputText
-												value="#{transportationJobView.transportationJob.plannedNonEffectiveDistance}">
+												value="#{transportationJobView.transportationJob.plannedNonEffectiveDistance+transportationJobView.transportationJob.plannedStartingDistance}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" Km" />
@@ -1107,7 +1129,7 @@
 											<h:outputText value="Total Stops Duration" />
 										</div>
 										<div class="profile-info-value bolder orange">
-											<h:outputText value="Unknown" />
+											<h:outputText value="#{transportationJobView.transportationJob.totalItineraryDuration!=null?transportationJobView.transportationJob.totalStopsDuration:'Unkown'}" />
 											&nbsp;
 										</div>
 									</div>
@@ -1259,6 +1281,13 @@
 												<p:column headerText="Status">
 													<i
 														class="fa fa-circle #{item.expected?'red':'green' } bigger-150" />
+												</p:column>
+												<p:column headerText="Duration">
+													<h:outputText value="Expected  "
+														rendered="#{item.expected}" styleClass="red" />
+													<h:outputText value="#{item.duration} Min"
+														styleClass="#{item.expected?'red':'green'}">
+													</h:outputText>
 												</p:column>
 												<p:column headerText="Date">
 													<h:outputText value="Expected on "

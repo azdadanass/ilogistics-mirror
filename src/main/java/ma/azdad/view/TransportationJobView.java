@@ -529,7 +529,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
-						u.setDistance(pathService.getDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
+						u.setDistance(PathService.getDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
 				refreshMapModel();
@@ -607,7 +607,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			transportationJob.setStartLeadTime(this.transportationJob.getStartLeadTime());
 		if (this.transportationJob.getAcceptLeadTime() != null)
 			transportationJob.setAcceptLeadTime(this.transportationJob.getAcceptLeadTime());
-
+		if(this.transportationJob.getPlannedStartLatitude() != null)
+			transportationJob.setPlannedStartLatitude(this.transportationJob.getPlannedStartLatitude());
+		if(this.transportationJob.getPlannedStartLongitude() != null)
+			transportationJob.setPlannedStartLongitude(this.transportationJob.getPlannedStartLongitude());
 		service.assign(transportationJob, this.transportationJob.getAssignmentType(), this.transportationJob.getTransporterId(), //
 				this.transportationJob.getDriverUsername(), this.transportationJob.getVehicleId(), sessionView.getUser());
 //		transportationJob.setAssignmentType(this.transportationJob.getAssignmentType());
@@ -796,9 +799,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		for (TransportationRequest tr : transportationRequestList3) {
 			Date plannedPickupDate = tr.getPlannedPickupDate();
 			Date plannedDeliveryDate = tr.getPlannedDeliveryDate();
+			Integer plannedPickupDuration =  tr.getPlannedPickupDuration();
+			Integer plannedDeliveryDuration =  tr.getPlannedDeliveryDuration();
+
 			tr = transportationRequestService.findOne(tr.getId());
 			tr.setPlannedPickupDate(plannedPickupDate);
 			tr.setPlannedDeliveryDate(plannedDeliveryDate);
+			tr.setPlannedPickupDuration(plannedPickupDuration);
+			tr.setPlannedDeliveryDuration(plannedDeliveryDuration);
 			tr.setStatus(TransportationRequestStatus.ASSIGNED);
 			tr.setDate4(currentDate);
 			tr.setUser4(sessionView.getUser());

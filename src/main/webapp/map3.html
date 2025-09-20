@@ -141,6 +141,10 @@
         <span class="legend-color" style="background: red; border-color: red;"></span>
         <span class="legend-text">Driver GPS &gt; 48h</span>
       </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background: #0066FF; border-color: #0066FF;"></span>
+        <span class="legend-text">Start Position</span>
+      </div>
     </div>
   </div>
 
@@ -152,6 +156,7 @@
  <script>
 let map;
 let markers = [];
+let selectedMarker = null; // Track the blue selected marker
 
 // Dragging functionality
 let isDragging = false;
@@ -192,7 +197,50 @@ function initMap() {
 	  // fetch drivers linked to this jobId
 	  fetchDriversLocations();
 	  setInterval(() => fetchDriversLocations(), 300000); // Refresh every 5 mins
+
+	  // 🔹 Listen for click and send lat/lng back with blue marker
+	  map.addListener("click", function (e) {
+	    const lat = e.latLng.lat();
+	    const lng = e.latLng.lng();
+
+	    // Remove previous selected marker if it exists
+	    if (selectedMarker) {
+	      selectedMarker.setMap(null);
+	    }
+
+	    // Create blue marker at selected position
+	    selectedMarker = new google.maps.Marker({
+	      position: { lat, lng },
+	      map: map,
+	      icon: {
+	        path: google.maps.SymbolPath.CIRCLE,
+	        scale: 12,
+	        fillColor: '#0066FF',
+	        fillOpacity: 1,
+	        strokeColor: '#003399',
+	        strokeWeight: 3
+	      },
+	      title: 'Selected Location'
+	    });
+
+	    // Add info window to blue marker
+	    const infoWindow = new google.maps.InfoWindow({
+	      content: `
+	        <div>
+	          <strong>Selected Location</strong><br/>
+	          <span>Latitude: ${lat.toFixed(6)}</span><br/>
+	          <span>Longitude: ${lng.toFixed(6)}</span>
+	        </div>
+	      `
+	    });
+
+	    selectedMarker.addListener("click", () => infoWindow.open(map, selectedMarker));
+
+	    // Send coordinates to parent
+	    window.parent.postMessage({ lat: lat, lng: lng }, "*");
+	  });
 	}
+
 
 function initLegend() {
   const legend = document.getElementById('legend');

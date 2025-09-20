@@ -33,6 +33,21 @@ public class TransportationJobItineraryService {
             ))
             .collect(Collectors.toList());
     }
+    
+    public List<TransportationJobItineraryDto> getRequestItinerary(Integer id) {
+        List<TransportationJobItinerary> locations = repos.findByTransportationRequestIdOrderByTimestampAsc(id);  
+
+        return locations.stream()
+            .map(loc -> new TransportationJobItineraryDto(
+                loc.getId(),
+                loc.getLatitude(),
+                loc.getLongitude(),
+                loc.getTransportationJob().getDriver() != null ? loc.getTransportationJob().getDriver().getUsername() : null,
+                loc.getTimestamp(),
+                loc.getTransportationJob().getDriver().getPhoto()
+            ))
+            .collect(Collectors.toList());
+    }
 
     public void savePoint(TransportationJobItinerary point) {
         repos.save(point);

@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Itinéraire précis du Job avec Position Chauffeur</title>
+<style>
+html, body, #map {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.draggable-panel {
+	position: absolute;
+	z-index: 1000;
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+	user-select: none;
+	transition: all 0.3s ease;
+}
+
+.draggable-panel:hover {
+	box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+}
+
+.panel-header {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 12px 15px;
+	border-radius: 8px 8px 0 0;
+	cursor: move;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 600;
+	font-size: 14px;
+}
+
+.panel-content {
+	padding: 15px;
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.collapse-btn {
+	background: rgba(255,255,255,0.2);
+	border: none;
+	color: white;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.2s ease;
+	font-size: 12px;
+}
+
+.collapse-btn:hover {
+	background: rgba(255,255,255,0.3);
+}
+
+.collapsed .panel-content {
+	display: none;
+}
+
+.collapsed {
+	border-radius: 8px;
+}
+
+.collapsed .panel-header {
+	border-radius: 8px;
+}
+
+#controls {
+	top: 10px;
+	left: 10px;
+	min-width: 200px;
+}
+
+#legend {
+	bottom: 10px;
+	left: 10px;
+	min-width: 220px;
+	display: flex;
+    flex-direction: column-reverse; 
+}
+
+#controls label {
+	display: flex;
+	align-items: center;
+	margin: 8px 0;
+	cursor: pointer;
+	padding: 5px;
+	border-radius: 4px;
+	transition: background 0.2s ease;
+}
+
+#controls label:hover {
+	background: rgba(102, 126, 234, 0.1);
+}
+
+#controls input[type="checkbox"] {
+	margin-right: 10px;
+	transform: scale(1.2);
+}
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	margin: 8px 0;
+	padding: 4px 0;
+}
+
+.legend-color {
+	width: 20px;
+	height: 3px;
+	margin-right: 12px;
+	border-radius: 2px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.legend-icon {
+	margin-right: 12px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.legend-driver {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	margin-right: 12px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.panel-minimize {
+	position: fixed;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 10px;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+	display: none;
+	z-index: 1001;
+	transition: all 0.3s ease;
+}
+
+.panel-minimize:hover {
+	transform: translateY(-50%) scale(1.1);
+}
+
+.panel-minimize.show {
+	display: block;
+}
+
+.resize-handle {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 20px;
+	height: 20px;
+	cursor: se-resize;
+	background: linear-gradient(135deg, transparent 0%, transparent 30%, #ccc 30%, #ccc 35%, transparent 35%, transparent 65%, #ccc 65%, #ccc 70%, transparent 70%);
+}
+
+.legend-section {
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #eee;
+}
+
+.legend-section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+.legend-title {
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 8px;
+	font-size: 13px;
+}
+
+@media (max-width: 768px) {
+	.draggable-panel {
+		position: fixed !important;
+		max-width: 90vw;
+	}
+	
+	#controls {
+		top: 5px !important;
+		left: 5px !important;
+	}
+	
+	#legend {
+		bottom: 5px !important;
+		left: 5px !important;
+	}
+}
+</style>
+</head>
+<body>
+	<div id="map"></div>
+
+	<div id="controls" class="draggable-panel collapsed">
+    <div class="panel-header">
+        <span>🎛️ Controls</span>
+        <button class="collapse-btn" onclick="togglePanel('controls')">−</button>
+    </div>
+    <div class="panel-content">
+        <label>
+            <input type="checkbox" id="showActual" checked> 
+            <span>Actual Route</span>
+        </label>
+        <label>
+            <input type="checkbox" id="showEstimated" checked> 
+            <span>Estimated Route</span>
+        </label>
+        <label>
+            <input type="checkbox" id="showDriver" checked> 
+            <span>Driver Position</span>
+        </label>
+    </div>
+    <div class="resize-handle"></div>
+</div>
+
+<div id="legend" class="draggable-panel collapsed">
+    <div class="panel-header">
+        <span>📍 Legend</span>
+        <button class="collapse-btn" onclick="togglePanel('legend')">−</button>
+    </div>
+    <div class="panel-content">
+        <div class="legend-section">
+            <div class="legend-title">Routes</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #007bff;"></div>
+                <span>Actual Route</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #28a745;"></div>
+                <span>Estimated Route</span>
+            </div>
+        </div>
+        
+        <div class="legend-section">
+            <div class="legend-title">Stop Points</div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
+                <span>Actual Points</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+                <span>Estimated Arrived Sites</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+                <span>Estimated Non-Arrived Sites</span>
+            </div>
+        </div>
+        
+        <div class="legend-section">
+            <div class="legend-title">Driver Position</div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: green;"></div>
+                <span>Driver GPS &lt; 24h</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: blue;"></div>
+                <span>Driver GPS &lt; 48h</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-driver" style="background: red;"></div>
+                <span>Driver GPS &gt; 48h</span>
+            </div>
+        </div>
+    </div>
+   
+    <div class="resize-handle"></div>
+</div>
+
+
+	<button id="restorePanels" class="panel-minimize">
+		<span style="font-size: 18px;">⚙️</span>
+	</button>
+
+	<script>
+let map;
+let directionsService;
+let directionsRenderer;
+let estimatedDirectionsRenderer;
+const MAX_WAYPOINTS = 23;
+
+// Store polylines and markers for toggling visibility
+let actualPolylines = [];
+let estimatedPolylines = [];
+let estimatedMarkers = [];
+let actualMarkers = [];
+let actualPoints = []; // store real itinerary points for distance check
+let driverMarker = null; // store driver marker
+
+// Panel management
+let draggedPanel = null;
+let isDragging = false;
+let dragOffset = { x: 0, y: 0 };
+
+function getJobIdFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("jobId");
+}
+
+function getUsernameFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("username");
+}
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 6,
+    center: { lat: 33.6, lng: -7.6 },
+  });
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: true,
+    polylineOptions: {
+      strokeColor: '#007bff',
+      strokeWeight: 4
+    }
+  });
+
+  estimatedDirectionsRenderer = new google.maps.DirectionsRenderer({
+    map: map,
+    suppressMarkers: true,
+    polylineOptions: {
+      strokeColor: '#28a745',
+      strokeWeight: 3,
+      strokeOpacity: 0.8
+    }
+  });
+
+  setupControls();
+  setupDragAndDrop();
+  
+  showActualItinerary();
+  showEstimatedItinerary();
+  showDriverLocation();
+  
+  // Refresh driver location every 5 minutes
+  setInterval(showDriverLocation, 300000);
+}
+
+function setupControls() {
+  const showActualCheckbox = document.getElementById('showActual');
+  const showEstimatedCheckbox = document.getElementById('showEstimated');
+  const showDriverCheckbox = document.getElementById('showDriver');
+
+  showActualCheckbox.addEventListener('change', function() {
+    toggleActualRoute(this.checked);
+  });
+
+  showEstimatedCheckbox.addEventListener('change', function() {
+    toggleEstimatedRoute(this.checked);
+  });
+
+  showDriverCheckbox.addEventListener('change', function() {
+    toggleDriverLocation(this.checked);
+  });
+
+  document.getElementById('restorePanels').addEventListener('click', restoreAllPanels);
+}
+
+function setupDragAndDrop() {
+  const panels = document.querySelectorAll('.draggable-panel');
+  
+  panels.forEach(panel => {
+    const header = panel.querySelector('.panel-header');
+    
+    header.addEventListener('mousedown', (e) => {
+      if (e.target.classList.contains('collapse-btn')) return;
+      
+      draggedPanel = panel;
+      isDragging = true;
+      
+      const rect = panel.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      
+      panel.style.transition = 'none';
+      document.body.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging && draggedPanel) {
+      const x = e.clientX - dragOffset.x;
+      const y = e.clientY - dragOffset.y;
+      
+      // Keep panels within viewport
+      const maxX = window.innerWidth - draggedPanel.offsetWidth;
+      const maxY = window.innerHeight - draggedPanel.offsetHeight;
+      
+      draggedPanel.style.left = Math.max(0, Math.min(x, maxX)) + 'px';
+      draggedPanel.style.top = Math.max(0, Math.min(y, maxY)) + 'px';
+      draggedPanel.style.bottom = 'auto';
+      draggedPanel.style.right = 'auto';
+    }
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isDragging && draggedPanel) {
+      draggedPanel.style.transition = 'all 0.3s ease';
+      document.body.style.cursor = 'default';
+    }
+    isDragging = false;
+    draggedPanel = null;
+  });
+}
+
+function togglePanel(panelId) {
+  const panel = document.getElementById(panelId);
+  const btn = panel.querySelector('.collapse-btn');
+  const restoreBtn = document.getElementById('restorePanels');
+  
+  panel.classList.toggle('collapsed');
+  
+  if (panel.classList.contains('collapsed')) {
+    btn.innerHTML = '+';
+    restoreBtn.classList.add('show');
+  } else {
+    btn.innerHTML = '−';
+  }
+  
+  // Check if any panels are collapsed
+  const collapsedPanels = document.querySelectorAll('.draggable-panel.collapsed');
+  if (collapsedPanels.length === 0) {
+    restoreBtn.classList.remove('show');
+  }
+}
+
+function restoreAllPanels() {
+  const panels = document.querySelectorAll('.draggable-panel');
+  const restoreBtn = document.getElementById('restorePanels');
+  
+  panels.forEach(panel => {
+    panel.classList.remove('collapsed');
+    const btn = panel.querySelector('.collapse-btn');
+    btn.innerHTML = '−';
+  });
+  
+  restoreBtn.classList.remove('show');
+}
+
+function toggleActualRoute(visible) {
+  if (visible) {
+    directionsRenderer.setMap(map);
+    actualPolylines.forEach(polyline => polyline.setMap(map));
+    actualMarkers.forEach(marker => marker.setMap(map));
+  } else {
+    directionsRenderer.setMap(null);
+    actualPolylines.forEach(polyline => polyline.setMap(null));
+    actualMarkers.forEach(marker => marker.setMap(null));
+  }
+}
+
+function toggleEstimatedRoute(visible) {
+  if (visible) {
+    estimatedDirectionsRenderer.setMap(map);
+    estimatedPolylines.forEach(polyline => polyline.setMap(map));
+    estimatedMarkers.forEach(marker => marker.setMap(map));
+  } else {
+    estimatedDirectionsRenderer.setMap(null);
+    estimatedPolylines.forEach(polyline => polyline.setMap(null));
+    estimatedMarkers.forEach(marker => marker.setMap(null));
+  }
+}
+
+function toggleDriverLocation(visible) {
+  if (driverMarker) {
+    driverMarker.setMap(visible ? map : null);
+  }
+}
+
+function createSimplePointIcon(color, size = 8) {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${size * 2}" height="${size * 2}" viewBox="0 0 ${size * 2} ${size * 2}">
+        <circle cx="${size}" cy="${size}" r="${size - 1}" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+      </svg>
+    `),
+    scaledSize: new google.maps.Size(size * 2, size * 2),
+    anchor: new google.maps.Point(size, size)
+  };
+}
+
+function createAlphabetIcon(letter, color, size = 24) {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+        <rect x="2" y="2" width="${size - 4}" height="${size - 4}" rx="4" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+        <text x="${size/2}" y="${size/2 + 6}" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">${letter}</text>
+      </svg>
+    `),
+    scaledSize: new google.maps.Size(size, size),
+    anchor: new google.maps.Point(size/2, size)
+  };
+}
+
+function getBorderColor(dateString) {
+  const now = new Date();
+  const lastDate = new Date(dateString);
+  const diffHours = (now - lastDate) / (1000 * 60 * 60);
+
+  if (diffHours < 24) return "green";
+  if (diffHours < 48) return "blue";
+  return "red";
+}
+
+// Generate PNG with border using Canvas
+function createPngIcon(imageUrl, borderColor, callback) {
+  const size = 60;
+  const border = 5;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  // Border circle
+  ctx.beginPath();
+  ctx.arc(size / 2, size / 2, size / 2 - 1, 0, 2 * Math.PI);
+  ctx.fillStyle = borderColor;
+  ctx.fill();
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; 
+  img.onload = () => {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+    ctx.clip();
+    ctx.drawImage(img, border, border, size - border * 2, size - border * 2);
+    ctx.restore();
+
+    callback(canvas.toDataURL("image/png"));
+  };
+  
+  // Handle image load error - fallback to default icon
+  img.onerror = () => {
+    const defaultImg = new Image();
+    defaultImg.crossOrigin = "anonymous";
+    defaultImg.onload = () => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2 - border, 0, 2 * Math.PI);
+      ctx.clip();
+      ctx.drawImage(defaultImg, border, border, size - border * 2, size - border * 2);
+      ctx.restore();
+
+      callback(canvas.toDataURL("image/png"));
+    };
+    defaultImg.src = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+  };
+  
+  img.src = imageUrl;
+}
+
+function showActualItinerary() {
+  const jobId = getJobIdFromURL();
+  if (!jobId) {
+    console.error("Aucun jobId trouvé dans l'URL.");
+    return;
+  }
+
+  fetch(`/api/job/itinerary/tr/${jobId}`)
+    .then(response => response.json())
+    .then(points => {
+      actualPoints = points;
+
+      if (!points || points.length < 2) {
+        console.warn("Pas assez de points pour tracer l'itinéraire réel.");
+        return;
+      }
+
+      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
+      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
+
+      let waypointList = points.slice(1, -1);
+      if (waypointList.length > MAX_WAYPOINTS) {
+        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
+        waypointList = waypointList.filter((_, i) => i % factor === 0);
+      }
+
+      const waypoints = waypointList.map(p => ({
+        location: new google.maps.LatLng(p.latitude, p.longitude),
+        stopover: true,
+      }));
+
+      const request = {
+        origin,
+        destination,
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+
+          points.forEach((point, index) => {
+            const marker = new google.maps.Marker({
+              position: new google.maps.LatLng(point.latitude, point.longitude),
+              map: map,
+              title: `Point réel ${index + 1}`,
+              icon: createSimplePointIcon('#dc3545'),
+              zIndex: 500 + index
+            });
+
+            actualMarkers.push(marker);
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: `
+                <div>
+                  <h6>Real Point ${index + 1}</h6>
+                  <p>Lat: ${point.latitude.toFixed(6)}</p>
+                  <p>Lng: ${point.longitude.toFixed(6)}</p>
+                  ${point.timestamp ? `<p>Temps: ${new Date(point.timestamp).toLocaleString()}</p>` : ''}
+                </div>
+              `
+            });
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+          });
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Erreur lors du fetch de l'itinéraire réel :", err);
+    });
+}
+
+function showEstimatedItinerary() {
+  const jobId = getJobIdFromURL();
+  if (!jobId) {
+    console.error("Aucun jobId trouvé dans l'URL.");
+    return;
+  }
+
+  fetch(`/api/job/estimated-itinerary/tr/${jobId}`)
+    .then(response => response.json())
+    .then(points => {
+      if (!points || points.length < 2) {
+        console.warn("Pas assez de points pour tracer l'itinéraire estimé.");
+        return;
+      }
+
+      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
+      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
+
+      let waypointList = points.slice(1, -1);
+      if (waypointList.length > MAX_WAYPOINTS) {
+        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
+        waypointList = waypointList.filter((_, i) => i % factor === 0);
+      }
+
+      const waypoints = waypointList.map(p => ({
+        location: new google.maps.LatLng(p.latitude, p.longitude),
+        stopover: true,
+      }));
+
+      const request = {
+        origin,
+        destination,
+        waypoints,
+        travelMode: google.maps.TravelMode.DRIVING,
+        optimizeWaypoints: false,
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          estimatedDirectionsRenderer.setDirections(result);
+
+          points.forEach((point, index) => {
+            let isWithin5km = false;
+            let nearestDistKm = null;
+
+            if (actualPoints && actualPoints.length > 0) {
+              const estLatLng = new google.maps.LatLng(point.latitude, point.longitude);
+              for (let ap of actualPoints) {
+                const actLatLng = new google.maps.LatLng(ap.latitude, ap.longitude);
+                const distMeters = google.maps.geometry.spherical.computeDistanceBetween(estLatLng, actLatLng);
+                const distKm = distMeters / 1000.0;
+                if (nearestDistKm === null || distKm < nearestDistKm) nearestDistKm = distKm;
+                if (distMeters <= 5000) {
+                  isWithin5km = true;
+                  break;
+                }
+              }
+            }
+
+            const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
+            const markerColor = (!point.expected) ? '#28a745' : '#dc3545';
+            const dateColor = point.expected ? '#dc3545' : '#28a745'; // red if expected, green if not
+
+
+            const letter = getAlphabetLetter(index);
+
+            const marker = new google.maps.Marker({
+                position: new google.maps.LatLng(point.latitude, point.longitude),
+                map: map,
+                title: point.siteName || "Unknown", // Just the site name
+                icon: createAlphabetIcon(letter, markerColor),
+                zIndex: 1000 + index
+            });
+
+            estimatedMarkers.push(marker);
+
+            // Format date function
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `${day}/${month}/${year} ${hours}h:${minutes}`;
+            }
+
+            // Create date display string
+            let dateDisplay = '';
+            if (point.date) {
+                const formattedDate = formatDate(point.date);
+                const expectedText = point.expected ? 'Expected ' : '';
+                dateDisplay = `${point.type} : ${expectedText}${formattedDate}`;
+            }
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                <div style="
+                    font-family: Arial, sans-serif;
+                    font-size: 13px;
+                    max-width: 260px;
+                    border-radius: 8px;
+                    padding: 10px 12px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    background: #fff;
+                ">
+                    <h3 style="
+                        margin: 0 0 8px 0;
+                        font-size: 16px;
+                        color: #2c3e50;
+                        border-bottom: 1px solid #eee;
+                        padding-bottom: 6px;
+                    ">
+                        📍 ${point.siteName || "Unknown"}
+                    </h3>
+                    
+                    ${dateDisplay ? `
+                            <p style="margin: 6px 0; font-weight: bold;">
+                                <strong style="color: ${dateColor};">${dateDisplay}</strong>
+                            </p>` : ''}
+
+                </div>
+                `
+            });
+            marker.addListener('click', () => {
+              infoWindow.open(map, marker);
+            });
+          });
+        }
+      });
+    })
+    .catch(err => {
+      console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
+    });
+}
+
+function showDriverLocation() {
+  const username = getUsernameFromURL();
+  if (!username) {
+    console.warn("Aucun username trouvé dans l'URL pour afficher la position du chauffeur.");
+    return;
+  }
+
+  fetch(`/api/driver-locations/last/${username}`)
+    .then(response => {
+      if (!response.ok) throw new Error("Erreur lors de la récupération de la position du chauffeur");
+      return response.json();
+    })
+    .then(location => {
+      // Remove existing driver marker
+      if (driverMarker) {
+        driverMarker.setMap(null);
+      }
+
+      if (location && location.latitude && location.longitude) {
+        const position = { lat: location.latitude, lng: location.longitude };
+        const borderColor = getBorderColor(location.date);
+        
+        // Default icon URL
+        const defaultIconUrl = "https://cdn-icons-png.flaticon.com/512/149/149072.png";
+        
+        // Use user's imageUrl if available, otherwise use default
+        const imageUrl = location.imageUrl && location.imageUrl.trim() !== "" 
+          ? location.imageUrl 
+          : defaultIconUrl;
+
+        // Create PNG icon dynamically
+        createPngIcon(imageUrl, borderColor, (iconUrl) => {
+          driverMarker = new google.maps.Marker({
+            position: position,
+            map: map,
+            icon: {
+              url: iconUrl,
+              scaledSize: new google.maps.Size(60, 60),
+              anchor: new google.maps.Point(30, 30)
+            },
+            title: location.username || "Chauffeur inconnu",
+            zIndex: 2000
+          });
+
+          const infoWindow = new google.maps.InfoWindow({
+        	  content: `
+        	    <div style="
+        	      display: flex; 
+        	      align-items: center; 
+        	      font-family: Arial, sans-serif; 
+        	      font-size: 13px; 
+        	      background: #fff; 
+        	      border-radius: 10px; 
+        	      padding: 10px; 
+        	      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        	      max-width: 280px;
+        	    ">
+        	      <img 
+        	        src="${imageUrl}" 
+        	        onerror="this.src='${defaultIconUrl}'" 
+        	        style="
+        	          width: 60px; 
+        	          height: 60px; 
+        	          border-radius: 50%; 
+        	          object-fit: cover; 
+        	          margin-right: 12px; 
+        	          border: 2px solid #eee;
+        	        " 
+        	      />
+        	      <div style="flex: 1;">
+        	        <p style="margin: 0; font-size: 15px; font-weight: bold; color: #2c3e50;">
+        	          👤 ${location.username || 'Chauffeur inconnu'}
+        	        </p>
+        	        <p style="margin: 4px 0; color: #555;">
+        	          🧭 <strong>Lat:</strong> ${location.latitude.toFixed(5)} <br/>
+        	          🧭 <strong>Lng:</strong> ${location.longitude.toFixed(5)}
+        	        </p>
+        	        <p style="margin: 4px 0; color: #777; font-size: 12px;">
+        	          ⏰ ${new Date(location.date).toLocaleString()}
+        	        </p>
+        	      </div>
+        	    </div>
+        	  `
+        	});
+
+
+          driverMarker.addListener("click", () => infoWindow.open(map, driverMarker));
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Erreur fetch de la position du chauffeur :", err);
+    });
+}
+
+function getAlphabetLetter(index) {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if (index < 26) {
+    return alphabet[index];
+  } else {
+    const firstLetter = alphabet[Math.floor(index / 26) - 1];
+    const secondLetter = alphabet[index % 26];
+    return firstLetter + secondLetter;
+  }
+}
+
+window.initMap = initMap;
+</script>
+
+	<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8&libraries=geometry,places&region=MA&callback=initMap">
+  </script>
+</body>
+</html>

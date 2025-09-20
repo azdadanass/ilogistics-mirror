@@ -100,6 +100,10 @@
 											<p:column headerText="Planned Pickup Time">
 												<p:calendar value="#{item.plannedPickupDate}" navigator="true" pattern="yyyy-MM-dd HH:mm" rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
 											</p:column>
+											<p:column headerText="Planned Pickup Duration (minutes)">
+   												 <p:inputNumber value="#{item.plannedPickupDuration}"  minValue="0"  decimal="false" placeholder="Minutes" />
+											</p:column>
+
 											<p:column headerText="Needed Delivery Time">
 												<h:outputText value="#{item.neededDeliveryDate}" styleClass="pink">
 													<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
@@ -108,6 +112,9 @@
 											<p:column headerText="Planned Delivery Time">
 												<p:calendar value="#{item.plannedDeliveryDate}" navigator="true" pattern="yyyy-MM-dd HH:mm"
 													rendered="#{transportationJobView.transportationRequestList3.contains(item)}" />
+											</p:column>
+											<p:column headerText="Planned Delivery Duration (minutes)">
+   												 <p:inputNumber value="#{item.plannedDeliveryDuration}"  minValue="0"  decimal="false" placeholder="Minutes" />
 											</p:column>
 											<p:column headerText="Status" width="70">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />

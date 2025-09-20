@@ -153,6 +153,40 @@
 									</div>
 								</div>
 								<br />
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label
+												class="col-xs-3 col-sm-3 control-label no-padding-right">
+												<h:outputText value="Planned Start Latitude" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:inputText id="lat"
+													value="#{transportationJobView.transportationJob.plannedStartLatitude}"
+													required="true"  readonly="true"
+													requiredMessage="Latitude should not be null. Please select by clicking in the map!"
+													placeholder="Latitude"  />
+											</div>
+										</div>
+									</div>
+
+									<div class="col-xs-12 col-sm-6">
+										<div class="form-group">
+											<label
+												class="col-xs-3 col-sm-3 control-label no-padding-right">
+												<h:outputText value="Planned Start Longitude" />
+											</label>
+											<div class="col-xs-9 col-sm-9">
+												<p:inputText id="lng"
+													value="#{transportationJobView.transportationJob.plannedStartLongitude}"
+													required="true"  readonly="true"
+													requiredMessage="Longitude should not be null. Please select by clicking in the map!"
+													placeholder="Longitude" />
+											</div>
+										</div>
+									</div>
+								</div>
+
 							</h:panelGroup>
 							<div class="space-16" />
 							<h:panelGroup id="panel1">
@@ -220,8 +254,8 @@
 										<div class="col-sm-offset-1 col-sm-10">
 											<div class="table-header col-sm-12 col-xs-12">
 												<div class="col-sm-6 hidden-xs">
-													<i class="fa fa-list" />
-													<h:outputText value=" User List" />
+													<i class="fa fa-truck" />
+													<h:outputText value=" Drivers List" />
 												</div>
 												<div class="col-sm-4 hidden-xs">
 													<i class="fa fa-list" />
@@ -365,11 +399,11 @@
 							</h:panelGroup>
 							<div class="space-16"></div>
 							<h:panelGroup id="gmap">
-								 <iframe
-									src="#{request.contextPath}/map3.html?jobId=#{transportationJobView.transportationJob.id}&amp;type=#{transportationJobView.transportationJob.assignmentType.value}&amp;lat=#{transportationJobView.latitude}&amp;lng=#{transportationJobView.longitude}"
+								<iframe
+									src="#{request.contextPath}/transportationJobAssignMap.html?jobId=#{transportationJobView.transportationJob.id}&amp;type=#{transportationJobView.transportationJob.assignmentType.value}"
 									style="width: 100%; height: 500px; border: none;"> </iframe>
 							</h:panelGroup>
-							 <!--<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.latitude}, #{transportationJobView.longitude}" zoom="10" type="TERRAIN"
+							<!--<p:gmap id="gmap" widgetVar="gmap" model="#{transportationJobView.mapModel}" center="#{transportationJobView.latitude}, #{transportationJobView.longitude}" zoom="10" type="TERRAIN"
 								style="width:80%;height:400px;margin:auto" />-->
 							<div class="space-16" />
 						</div>
@@ -378,5 +412,22 @@
 				</div>
 			</div>
 		</h:form>
+		<script>
+  window.addEventListener("message", function (event) {
+	  if (event.data &amp;&amp; event.data.lat &amp;&amp; event.data.lng) {
+      // Update the inputs inside main_form
+      document.getElementById("main_form:lat").value = event.data.lat;
+      document.getElementById("main_form:lng").value = event.data.lng;
+
+      // 🔹 Trigger JSF AJAX update so bean updates immediately
+      jsf.ajax.request(
+        document.getElementById("main_form:lat"),
+        null,
+        { execute: "main_form:lat main_form:lng", render: "main_form" }
+      );
+    }
+  });
+</script>
+		
 	</ui:define>
 </ui:composition>

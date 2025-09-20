@@ -6,9 +6,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ma.azdad.model.DriverLocationDto;
+import ma.azdad.model.GenericPlace;
 import ma.azdad.model.Stop;
+import ma.azdad.model.StopType;
 import ma.azdad.model.TransportationJobItinerary;
 import ma.azdad.model.TransportationJobItineraryDto;
+import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.repos.StopRepos;
 
@@ -16,6 +20,7 @@ import java.io.IOException;
 import ma.azdad.repos.TransportationJobItineraryRepos;
 import ma.azdad.service.StopService;
 import ma.azdad.service.TransportationJobItineraryService;
+import ma.azdad.service.TransportationRequestService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +39,9 @@ public class JobIteneraryController {
 	
 	@Autowired
     private TransportationJobItineraryRepos repo;
+	
+	@Autowired
+    private TransportationRequestService transportationRequestService;
 	
 	@Autowired
 	private StopRepos stopRepos;
@@ -77,6 +85,48 @@ public class JobIteneraryController {
         if (stops == null) {
             return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.ok(locations);
+    }
+    
+    @GetMapping("/itinerary/tr/{requestId}")
+    public ResponseEntity<List<TransportationJobItineraryDto>> getRequestItenerary(@PathVariable Integer requestId) {
+    	List<TransportationJobItineraryDto> locations = itineraryService.getRequestItinerary(requestId);
+        if (locations == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(locations);
+    }
+    
+    @GetMapping("/estimated-itinerary/tr/{requestId}")
+    public ResponseEntity<List<TransportationJobItineraryDto>> getEstimatedRequestItenerary(@PathVariable Integer requestId) {
+    	List<TransportationJobItineraryDto> locations = new ArrayList<>();
+    	TransportationRequest transportationRequest = transportationRequestService.findOne(requestId);
+    	GenericPlace origin = !transportationRequest.getDeliveryRequest().getIsOutbound() ? transportationRequest.getDeliveryRequest().getOrigin()
+				: transportationRequest.getDeliveryRequest().getWarehouse();
+		GenericPlace destination = !transportationRequest.getDeliveryRequest().getIsInbound() ? transportationRequest.getDeliveryRequest().getDestination()
+				: transportationRequest.getDeliveryRequest().getWarehouse();
+		 locations.add(new TransportationJobItineraryDto(
+				 requestId,
+				 origin.getLatitude(),
+	    	        origin.getLongitude(),
+	    	        null,
+	    	        transportationRequest.getPickupDate()!=null?transportationRequest.getPickupDate():transportationRequest.getPlannedPickupDate(),
+	    	        null,
+	    	        origin.getName(),
+	    	        transportationRequest.getStatus()==TransportationRequestStatus.PICKEDUP?false:true,
+	    	        StopType.PICKUP.getValue()
+	    	    ));
+		 locations.add(new TransportationJobItineraryDto(
+				 requestId,
+				 destination.getLatitude(),
+				 destination.getLongitude(),
+	    	        null,
+	    	        transportationRequest.getDeliveryDate()!=null?transportationRequest.getDeliveryDate():transportationRequest.getPlannedDeliveryDate(),
+	    	        null,
+	    	        destination.getName(),
+	    	        transportationRequest.getStatus()==TransportationRequestStatus.DELIVERED?false:true,
+	    	        StopType.DELIVERY.getValue()
+	    	    ));
         return ResponseEntity.ok(locations);
     }
     

@@ -286,18 +286,32 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		
 	}
 	
-	public void pickupMobile(Integer id, String username,Double lat,Double lng) {
+	public void pickupMobile(Integer id, String username,Double lat,Double lng,Integer duration) {
 		TransportationRequest transportationRequest = transportationRequestService.findOne(id);
 		User user = userService.findByUsername(username);
+		transportationRequest.setPickupDuration(duration);
 		transportationRequest = pickup(transportationRequest,user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
 				,transportationRequest, TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.PICKEDUP);
 		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
 				transportationRequest.getTransportationJob().getId());
-		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
-		Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-		tItinerary.setCumulativeDistance(distance + tItinerary.getCumulativeDistance());
-		tItinerary.setDistanceFromPrevious(distance);
+		if (locations != null && !locations.isEmpty()) {
+		    TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+
+		    Double distance = PathService.getDistance(
+		            lastLocation.getLatitude(),
+		            lastLocation.getLongitude(),
+		            lat,
+		            lng
+		    );
+
+		    tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
+		    tItinerary.setDistanceFromPrevious(distance);
+		} else {
+		    // No previous itinerary → initialize distances
+		    tItinerary.setCumulativeDistance(0.0);
+		    tItinerary.setDistanceFromPrevious(0.0);
+		}
 		transportationJobItineraryRepos.save(tItinerary);
 	}
 	
@@ -340,18 +354,30 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	
 	
-	public void deliverMobile(Integer id, String username,Double lat,Double lng) {
+	public void deliverMobile(Integer id, String username,Double lat,Double lng,Integer duration) {
 		TransportationRequest transportationRequest = findOne(id);
+		transportationRequest.setDeliveryDuration(duration);
 		User user = userService.findByUsername(username);
 		transportationRequest = deliver(transportationRequest,user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
 				,transportationRequest,  TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.DELIVERED);
 		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
 				transportationRequest.getTransportationJob().getId());
-		TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
-		Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-		tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
-		tItinerary.setDistanceFromPrevious(distance);
+		if (locations != null && !locations.isEmpty()) {
+		    TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+		    Double distance = PathService.getDistance(
+		            lastLocation.getLatitude(),
+		            lastLocation.getLongitude(),
+		            lat,
+		            lng
+		    );
+		    tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
+		    tItinerary.setDistanceFromPrevious(distance);
+		} else {
+		    // First recorded location → no previous reference
+		    tItinerary.setCumulativeDistance(0.0);
+		    tItinerary.setDistanceFromPrevious(0.0);
+		}
 		transportationJobItineraryRepos.save(tItinerary);
 	}
 

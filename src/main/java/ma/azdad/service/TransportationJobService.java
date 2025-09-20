@@ -561,15 +561,17 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    if (index == -1) return;
 
 	    double fromLat, fromLng;
-	    double toLat = request.getDeliveryRequest().getOrigin().getLatitude();
-	    double toLng = request.getDeliveryRequest().getOrigin().getLongitude();
+	    double toLat = request.getDeliveryRequest().getOrigin() != null ?
+	    		request.getDeliveryRequest().getOrigin().getLatitude():request.getDeliveryRequest().getWarehouse().getLatitude();
+	    double toLng = request.getDeliveryRequest().getOrigin() != null ? 
+	    		request.getDeliveryRequest().getOrigin().getLongitude():request.getDeliveryRequest().getWarehouse().getLongitude();
 
 	    double startDistance;
 
 	    if (index == 0) {
 	        // --- First TR → from job start ---
-	        fromLat = job.getStartLatitude();
-	        fromLng = job.getStartLongitude();
+	        fromLat = job.getStartLatitude()!=null? job.getStartLatitude():job.getFirstLatitude();
+	        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude() ;
 
 	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
 
@@ -579,8 +581,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    } else {
 	        // --- Other TRs → from previous TR’s destination ---
 	        TransportationRequest prev = requests.get(index - 1);
-	        fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
-	        fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	        fromLat = prev.getDeliveryRequest().getDestination() != null ? 
+	        		prev.getDeliveryRequest().getDestination().getLatitude():prev.getDeliveryRequest().getWarehouse().getLatitude();
+	        fromLng = prev.getDeliveryRequest().getDestination() != null ?
+	        		prev.getDeliveryRequest().getDestination().getLongitude():prev.getDeliveryRequest().getWarehouse().getLongitude();
 
 	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
 	    }

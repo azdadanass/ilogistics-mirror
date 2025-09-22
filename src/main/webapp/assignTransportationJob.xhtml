@@ -101,7 +101,7 @@
                 <div class="space-16"></div>
 
                 <!-- STEP 1: Assignment Selection (Assignment Type, Drivers/Transporters, Vehicle, Map) -->
-                <h:panelGroup rendered="#{transportationJobView.currentStep == 1}">
+                <h:panelGroup id="main_pan" rendered="#{transportationJobView.currentStep == 1}">
                     <h4 class="header blue bolder smaller">
                         <i class="fa fa-user"></i>
                         <h:outputText value="Step 1: Assignment Selection" />
@@ -230,7 +230,7 @@
                            paginatorAlwaysVisible="false" paginator="true"
                            paginatorPosition="bottom" rowSelectMode="checkbox">
                     <!-- Change this line to use relative update -->
-                    <p:ajax event="rowSelectRadio" update="vehicleListPanel" />
+                    <p:ajax event="rowSelectRadio" update=":main_form:main_pan" />
                     <p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
                     <p:column headerText="Photo" width="80" exportable="false" styleClass="hidden-xs">
                         <p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
@@ -288,6 +288,7 @@
 													<p:dataTable id="vehicleList" widgetVar="vehicleList"
 														value="#{transportationJobView.vehicleSelectionList}"
 														rowKey="#{item.id}"
+													
 														selection="#{transportationJobView.transportationJob.vehicle}"
 														var="item" rows="5"
 														styleClass="table table-striped table-hover center"
@@ -295,6 +296,7 @@
 														paginatorPosition="bottom"
 														paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
 														rowSelectMode="checkbox">
+														 <p:ajax event="rowSelectRadio" update=":main_form:main_pan" />
 														<p:column selectionMode="single"
 															styleClass="ace aa-checkbox-column" />
 														<p:column headerText="Matricule">
@@ -449,7 +451,7 @@
                                            action="#{transportationJobView.saveTransportationJob()}"
                                            update=":main_form"
                                            styleClass="btn btn-success"
-                                           disabled="#{transportationJobView.isStep2Incomplete()}" />
+                                            />
                         </div>
                     </div>
                 </h:panelGroup>

@@ -619,39 +619,82 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	
 	//CALCULABLE FIELDS
 	public LatLng getTrStartPosition() {
-		return transportationJobService.getTrStartPosition(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ getTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.getTrStartPosition(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
-	
+
 	public LatLng getPlannedTrStartPosition() {
-		return transportationJobService.getPlannedTrStartPosition(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ getPlannedTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.getPlannedTrStartPosition(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
-	
+
 	public Double calculateTrStartDistance() {
-		 return transportationJobService.calculateTrStartDistance(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ calculateTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.calculateTrStartDistance(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
-	
+
 	public Double calculatePlannedTrStartDistance() {
-		 return transportationJobService.calculatePlannedTrStartDistance(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ calculatePlannedTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.calculatePlannedTrStartDistance(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
-	
+
 	public String calculatePlannedTrStartDuration() {
-		 return transportationJobService.calculatePlannedTrStartDuration(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ calculatePlannedTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.calculatePlannedTrStartDuration(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
-	
+
 	public String calculateTrStartDuration() {
-		 return transportationJobService.calculateTrStartDuration(model.getTransportationJob().getId(),model.getId());
+	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+	        System.out.println("⚠ calculateTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+	        return null;
+	    }
+	    return transportationJobService.calculateTrStartDuration(
+	        transportationRequest.getTransportationJob().getId(),
+	        transportationRequest.getId()
+	    );
 	}
+
 	
 	public Double calculateTrDistance() {
-		return transportationJobService.calculateTrDistance(model.getId());
+		return transportationJobService.calculateTrDistance(transportationRequest.getId());
 	}
 	
 	public String calculateTrDuration() {
-		return transportationJobService.calculateTrDuration(model.getId());
+		return transportationJobService.calculateTrDuration(transportationRequest.getId());
 	}
 	
 	public Long calculateTrDurationMilli() {
-		return transportationJobService.calculateTrDurationMilli(model.getId());
+		return transportationJobService.calculateTrDurationMilli(transportationRequest.getId());
 	}
 
 	// generic

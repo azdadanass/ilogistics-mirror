@@ -81,7 +81,7 @@
         
         <div class="tab-content profile-edit-tab-content">
             <div class="tab-pane in active">
-                <p:messages id="messages" closable="true" />
+                
                 
                 <!-- Step Progress Indicator -->
                 <div class="row">
@@ -99,7 +99,7 @@
                     </div>
                 </div>
                 <div class="space-16"></div>
-
+				<p:messages id="messages" closable="true" />
                 <!-- STEP 1: Assignment Selection (Assignment Type, Drivers/Transporters, Vehicle, Map) -->
                 <h:panelGroup id="main_pan" rendered="#{transportationJobView.currentStep == 1}">
                     <h4 class="header blue bolder smaller">
@@ -125,7 +125,7 @@
                                         <f:selectItem itemLabel="#{TransportationJobAssignmentType.EXTERNAL_DRIVER.value}"
                                                     itemValue="#{TransportationJobAssignmentType.EXTERNAL_DRIVER}" />
                                         <p:ajax listener="#{transportationJobView.changeTransportationJobAssignmentTypeListener()}"
-                                              update="assignmentSelectionPanel,mapPanel" />
+                                              update="assignmentSelectionPanel,mapPanel,main_pan" />
                                     </h:selectOneMenu>
                                 </div>
                             </div>
@@ -448,7 +448,7 @@
                         </div>
                         <div class="col-sm-6 text-right">
                             <p:commandButton value="Complete Assignment" 
-                                           action="#{transportationJobView.saveTransportationJob()}"
+                                           action="#{transportationJobView.assign()}"
                                            update=":main_form"
                                            styleClass="btn btn-success"
                                             />

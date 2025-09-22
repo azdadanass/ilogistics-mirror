@@ -583,6 +583,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			if (transportationJob.getVehicle() == null)
 				return FacesContextMessages.ErrorMessages("Vehicle should not be null");
 		}
+		if (transportationJob.getPlannedStartLatitude() == null || transportationJob.getPlannedStartLongitude() == null)
+			return FacesContextMessages.ErrorMessages("Start position should not be null");
 		Double maxCumulativeWeight = transportationJobCapacityRepos.findMaxCumulativeWeightByTransportationJobIdAndType(transportationJob.getId(), "Planned");
 		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Planned");
 		Double maxVehiculeWeight = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxWeight();

@@ -65,6 +65,7 @@ import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.repos.UserRepos;
 import ma.azdad.utils.App;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.LatLng;
 import ma.azdad.utils.Mail;
 import ma.azdad.utils.TemplateType;
 
@@ -549,7 +550,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	        return;
 	    }
 
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+	    requests.sort(Comparator.comparing(TransportationRequest::getPickupDate));
 
 	    int index = -1;
 	    for (int i = 0; i < requests.size(); i++) {
@@ -569,7 +570,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    double startDistance;
 
 	    if (index == 0) {
-	        // --- First TR → from job start ---
+	        // --- First TR â†’ from job start ---
 	        fromLat = job.getStartLatitude()!=null? job.getStartLatitude():job.getFirstLatitude();
 	        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude() ;
 
@@ -579,7 +580,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	        job.setStartDistance(startDistance);
 	        save(job); // persist job
 	    } else {
-	        // --- Other TRs → from previous TR’s destination ---
+	        // --- Other TRs â†’ from previous TRâ€™s destination ---
 	        TransportationRequest prev = requests.get(index - 1);
 	        fromLat = prev.getDeliveryRequest().getDestination() != null ? 
 	        		prev.getDeliveryRequest().getDestination().getLatitude():prev.getDeliveryRequest().getWarehouse().getLatitude();
@@ -593,6 +594,345 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    request.setStartDistance(startDistance);
 	    transportationRequestService.save(request); // persist request
 	}
+	
+	public LatLng getTrStartPosition(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return null;
+	    }
+
+	    // Sort requests by pickup date
+	    requests.sort(Comparator.comparing(TransportationRequest::getPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(request.getId())) {
+	            index = i;
+	            break;
+	        }
+	    }
+
+	    if (index == -1) {
+	        return null; // request not found in list
+	    }
+
+	    Double fromLat;
+	    Double fromLng;
+
+	    if (index == 0) {
+	        // ✅ First TR → use job start or fallback
+	        fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+	        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+	    } else {
+	        // ✅ Otherwise → use previous TR delivery location
+	        TransportationRequest prev = requests.get(index - 1);
+	        if (prev.getDeliveryRequest() != null) {
+	            if (prev.getDeliveryRequest().getDestination() != null) {
+	                fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	                fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	            } else if (prev.getDeliveryRequest().getWarehouse() != null) {
+	                fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+	                fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+	            } else {
+	                fromLat = null;
+	                fromLng = null;
+	            }
+	        } else {
+	            fromLat = null;
+	            fromLng = null;
+	        }
+	    }
+
+	    return new LatLng(fromLat, fromLng);
+	}
+	
+	public LatLng getPlannedTrStartPosition(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return null;
+	    }
+
+	    // Sort requests by pickup date
+	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(request.getId())) {
+	            index = i;
+	            break;
+	        }
+	    }
+
+	    if (index == -1) {
+	        return null; // request not found in list
+	    }
+
+	    Double fromLat;
+	    Double fromLng;
+
+	    if (index == 0) {
+	        // ✅ First TR → use job start or fallback
+	        fromLat = job.getPlannedStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+	        fromLng = job.getPlannedStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+	    } else {
+	        // ✅ Otherwise → use previous TR delivery location
+	        TransportationRequest prev = requests.get(index - 1);
+	        if (prev.getDeliveryRequest() != null) {
+	            if (prev.getDeliveryRequest().getDestination() != null) {
+	                fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	                fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	            } else if (prev.getDeliveryRequest().getWarehouse() != null) {
+	                fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+	                fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+	            } else {
+	                fromLat = null;
+	                fromLng = null;
+	            }
+	        } else {
+	            fromLat = null;
+	            fromLng = null;
+	        }
+	    }
+
+	    return new LatLng(fromLat, fromLng);
+	}
+	
+	public Double calculateTrStartDistance(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return null;
+	    }
+
+	    // Sort by pickup date
+	    requests.sort(Comparator.comparing(TransportationRequest::getPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(requestId)) {
+	            index = i;
+	            break;
+	        }
+	    }
+	    if (index == -1) {
+	        return null; // request not found
+	    }
+
+	    double fromLat, fromLng;
+	    double toLat = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLatitude()
+	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+
+	    double toLng = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLongitude()
+	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+
+	    double startDistance;
+
+	    if (index == 0) {
+	        //  First TR → from job start
+	        fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+	        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+	    } else {
+	        //  Other TRs → from previous TR’s destination
+	        TransportationRequest prev = requests.get(index - 1);
+
+	        if (prev.getDeliveryRequest().getDestination() != null) {
+	            fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	        } else {
+	            fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+	        }
+
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+	    }
+
+	    return startDistance;
+	}
+	
+	public Double calculatePlannedTrStartDistance(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return null;
+	    }
+
+	    // Sort by pickup date
+	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(requestId)) {
+	            index = i;
+	            break;
+	        }
+	    }
+	    if (index == -1) {
+	        return null; // request not found
+	    }
+
+	    double fromLat, fromLng;
+	    double toLat = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLatitude()
+	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+
+	    double toLng = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLongitude()
+	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+
+	    double startDistance;
+
+	    if (index == 0) {
+	        //  First TR → from job start
+	        fromLat = job.getPlannedStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+	        fromLng = job.getPlannedStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+	    } else {
+	        //  Other TRs → from previous TR’s destination
+	        TransportationRequest prev = requests.get(index - 1);
+
+	        if (prev.getDeliveryRequest().getDestination() != null) {
+	            fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	        } else {
+	            fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+	        }
+
+	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+	    }
+
+	    return startDistance;
+	}
+	
+	public String calculatePlannedTrStartDuration(Integer jobId, Integer requestId) {
+	    TransportationJob job = findOne(jobId);
+	    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+	    List<TransportationRequest> requests = job.getTransportationRequestList();
+	    if (requests == null || requests.isEmpty() || request == null) {
+	        return null;
+	    }
+
+	    // Sort by pickup date
+	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+
+	    int index = -1;
+	    for (int i = 0; i < requests.size(); i++) {
+	        if (requests.get(i).getId().equals(requestId)) {
+	            index = i;
+	            break;
+	        }
+	    }
+	    if (index == -1) {
+	        return null; // request not found
+	    }
+
+	    double fromLat, fromLng;
+	    double toLat = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLatitude()
+	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+
+	    double toLng = request.getDeliveryRequest().getOrigin() != null
+	            ? request.getDeliveryRequest().getOrigin().getLongitude()
+	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+
+	    String startDuration;
+
+	    if (index == 0) {
+	        //  First TR → from job start
+	        fromLat = job.getPlannedStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+	        fromLng = job.getPlannedStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+	        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+	    } else {
+	        //  Other TRs → from previous TR’s destination
+	        TransportationRequest prev = requests.get(index - 1);
+
+	        if (prev.getDeliveryRequest().getDestination() != null) {
+	            fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+	        } else {
+	            fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+	            fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+	        }
+
+	        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+	    }
+
+	    return startDuration;
+	}
+	
+	public String calculateTrStartDuration(Integer jobId, Integer requestId) {
+		 TransportationJob job = findOne(jobId);
+		    TransportationRequest request = transportationRequestService.findOne(requestId);
+
+		    List<TransportationRequest> requests = job.getTransportationRequestList();
+		    if (requests == null || requests.isEmpty() || request == null) {
+		        return null;
+		    }
+
+		    // Sort by pickup date
+		    requests.sort(Comparator.comparing(TransportationRequest::getPickupDate));
+
+		    int index = -1;
+		    for (int i = 0; i < requests.size(); i++) {
+		        if (requests.get(i).getId().equals(requestId)) {
+		            index = i;
+		            break;
+		        }
+		    }
+		    if (index == -1) {
+		        return null; // request not found
+		    }
+
+		    double fromLat, fromLng;
+		    double toLat = request.getDeliveryRequest().getOrigin() != null
+		            ? request.getDeliveryRequest().getOrigin().getLatitude()
+		            : request.getDeliveryRequest().getWarehouse().getLatitude();
+
+		    double toLng = request.getDeliveryRequest().getOrigin() != null
+		            ? request.getDeliveryRequest().getOrigin().getLongitude()
+		            : request.getDeliveryRequest().getWarehouse().getLongitude();
+
+		    String startDuration;
+
+		    if (index == 0) {
+		        //  First TR → from job start
+		        fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+		        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+		        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+		    } else {
+		        //  Other TRs → from previous TR’s destination
+		        TransportationRequest prev = requests.get(index - 1);
+
+		        if (prev.getDeliveryRequest().getDestination() != null) {
+		            fromLat = prev.getDeliveryRequest().getDestination().getLatitude();
+		            fromLng = prev.getDeliveryRequest().getDestination().getLongitude();
+		        } else {
+		            fromLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+		            fromLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+		        }
+
+		        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+		    }
+
+		    return startDuration;
+	}
+
+
+
 
 
 
@@ -1021,7 +1361,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if (locations == null || locations.isEmpty()) {
 				DriverLocation userLocation = new DriverLocation(new Date(), lat, lng, user);
 				userLocation = driverLocationRepo.save(userLocation);
-				// hadi hiya li at3merlina les info de user si nexiste pas f base donnÃ©s
+				// hadi hiya li at3merlina les info de user si nexiste pas f base donnÃƒÂ©s
 				googleGeocodeService.updateGoogleGeocodeDataAsync(userLocation);
 
 			} else {
@@ -1030,11 +1370,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(lastLocation.getDate(), new Date()) > 3) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
-					// hadi adir mï¿½j les cordonnÃ©es si user exist dÃ©ja et distance > 5km
+					// hadi adir mÃ¯Â¿Â½j les cordonnÃƒÂ©es si user exist dÃƒÂ©ja et distance > 5km
 					googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
 
 				} else {
-					System.out.println("Distance < 5km or Last Update < 3 days ï¿½ skipping update");
+					System.out.println("Distance < 5km or Last Update < 3 days Ã¯Â¿Â½ skipping update");
 				}
 			}
 	}
@@ -1066,7 +1406,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 						transportationJobItineraryRepos.save(location);
 
 					} else {
-						System.out.println("Distance < 5km ï¿½ skipping update");
+						System.out.println("Distance < 5km Ã¯Â¿Â½ skipping update");
 					}
 				} else {
 					List<TransportationRequest> list = transportationRequestRepos.findLightByJob(transportationJob.getId());

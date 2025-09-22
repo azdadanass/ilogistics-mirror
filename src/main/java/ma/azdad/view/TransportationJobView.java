@@ -156,6 +156,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private boolean optimizing = false;
 
 	private int step = 1;
+	
+	private int currentStep = 1;
+    private static final int STEP_ASSIGNMENT = 1;
+    private static final int STEP_SCHEDULE_LOCATION = 2;
 
 	public List<Path> getOptimizedPaths() {
 		return optimizedPaths;
@@ -587,12 +591,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Planned");
 		Double maxVehiculeWeight = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxWeight();
 		Double maxVehiculeVolume = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxVolume();
-		if (maxVehiculeVolume < maxCumulativeVolume) {
+		if (maxVehiculeVolume != null && maxCumulativeVolume != null 
+		        && maxVehiculeVolume < maxCumulativeVolume) {
 			return FacesContextMessages
 					.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle," + " Please change the assigned vehicle.");
 
 		}
-		if (maxVehiculeWeight < maxCumulativeWeight) {
+		if (maxVehiculeWeight != null && maxCumulativeWeight != null
+		        && maxVehiculeWeight < maxCumulativeWeight) {
 			return FacesContextMessages
 					.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle," + " Please change the assigned vehicle.");
 
@@ -1448,5 +1454,105 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setState(TransportationJobState state) {
 		this.state = state;
 	}
+	
+	public String goToStep1() {
+        this.currentStep = STEP_ASSIGNMENT;
+        return null; // Stay on same page
+    }
+
+    public String goToStep2() {
+        this.currentStep = STEP_SCHEDULE_LOCATION;
+        return null;
+    }
+
+    public boolean isStep1() {
+        return currentStep == STEP_ASSIGNMENT;
+    }
+
+    public boolean isStep2() {
+        return currentStep == STEP_SCHEDULE_LOCATION;
+    }
+
+    
+    public boolean isStepAssignment() {
+        return currentStep == STEP_ASSIGNMENT;
+    }
+
+    public boolean isStepScheduleLocation() {
+        return currentStep == STEP_SCHEDULE_LOCATION;
+    }
+    
+    public boolean isStep1Incomplete() {
+        return !isStep1Complete();
+    }
+
+    public boolean isStep1Complete() {
+        if (transportationJob == null || transportationJob.getAssignmentType() == null) {
+            return false;
+        }
+
+        switch (transportationJob.getAssignmentType()) {
+            case TRANSPORTER:
+                return transportationJob.getTransporter() != null;
+            
+            case INTERNAL_DRIVER:
+            case EXTERNAL_DRIVER:
+                return transportationJob.getDriver() != null && 
+                       transportationJob.getVehicle() != null;
+            
+            default:
+                return false;
+        }
+    }
+
+    public boolean isStep2Incomplete() {
+        return !isStep2Complete();
+    }
+
+    public boolean isStep2Complete() {
+        if (transportationJob == null) {
+            return false;
+        }
+
+        return transportationJob.getAcceptLeadTime() != null &&
+               transportationJob.getStartLeadTime() != null &&
+               transportationJob.getPlannedStartLatitude() != null &&
+               transportationJob.getPlannedStartLongitude() != null 
+             ;
+    }
+
+
+    public String getCurrentStepTitle() {
+        switch (currentStep) {
+            case STEP_ASSIGNMENT:
+                return "Assignment Selection";
+            case STEP_SCHEDULE_LOCATION:
+                return "Schedule & Location";
+            default:
+                return "Unknown Step";
+        }
+    }
+
+    public String getCurrentStepDescription() {
+        switch (currentStep) {
+            case STEP_ASSIGNMENT:
+                return "Select assignment type, driver/transporter, and vehicle";
+            case STEP_SCHEDULE_LOCATION:
+                return "Set lead times and planned start location";
+            default:
+                return "";
+        }
+    }
+
+    public void resetToStep1() {
+        currentStep = STEP_ASSIGNMENT;
+    }
+    public int getCurrentStep() {
+        return currentStep;
+    }
+
+    public void setCurrentStep(int currentStep) {
+        this.currentStep = currentStep;
+    }
 
 }

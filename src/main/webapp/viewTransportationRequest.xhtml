@@ -363,7 +363,7 @@
 							class="green ace-icon fa fa-list-alt bigger-120"></i> <h:outputText
 								value=" Informations" styleClass="hidden-xs" />
 					</a></li>
-						<li><a data-toggle="tab" href="#tab5" onclick="updateGmap()">
+					<li><a data-toggle="tab" href="#tab5" onclick="updateGmap()">
 							<i class="purple ace-icon fa fa-truck bigger-120"></i> <h:outputText
 								value=" Itinerary" />
 					</a></li>
@@ -761,7 +761,8 @@
 										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
 										rowIndexVar="rowIndexVar">
 										<p:column headerText="PN Photo" styleClass="center" width="50">
-											<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+											<p:graphicImage value="#{fileUploadView.stream}" width="20"
+												height="20">
 												<f:param name="fileName" value="#{item.partNumber.image}" />
 											</p:graphicImage>
 										</p:column>
@@ -817,17 +818,17 @@
 										<p:column headerText="Part Number" styleClass="hide">
 											<h:outputText value="#{item.partNumber.name}" />
 										</p:column>
-										
+
 										<p:column headerText="Description" width="200">
 											<h:outputText value="#{item.partNumber.description}"
 												styleClass="blue aa-cut-text" />
 										</p:column>
-										
+
 										<p:column headerText="Unit Type" width="70">
 											<h:outputText value=" #{item.partNumber.unitType}"
 												styleClass="bolder pink" />
 										</p:column>
-										
+
 										<p:column headerText="Packing" width="70">
 											<h:outputText value="#{item.packing.name}"
 												styleClass="bolder light-blue" />
@@ -839,8 +840,7 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 										</p:column>
-										<p:column headerText="Gross Weight" width="60"
-											>
+										<p:column headerText="Gross Weight" width="60">
 											<h:outputText value="#{item.grossWeight}">
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
@@ -853,14 +853,14 @@
 											</h:outputText>
 											<h:outputText value=" m3" />
 										</p:column>
-										
+
 									</p:dataTable>
 								</div>
 							</div>
 						</div>
 						<div class="space-8" />
 						<div class="row">
-							
+
 							<div class="col-sm-12">
 								<div class="table-header col-sm-12 col-xs-12">
 									<div class="col-sm-12">
@@ -869,15 +869,24 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="packingDetailSummaryList" value="#{transportationRequestView.transportationRequest.deliveryRequest.packingDetailSummaryList}" rows="40" var="item" styleClass="table table-striped table-hover center"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+									<p:dataTable id="packingDetailSummaryList"
+										value="#{transportationRequestView.transportationRequest.deliveryRequest.packingDetailSummaryList}"
+										rows="40" var="item"
+										styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+										rowIndexVar="rowIndexVar">
 										<p:column headerText="Type" styleClass="center" width="50">
-											<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
-												<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.type,item.parent.partNumber.partNumberClass)}" />
+											<p:graphicImage value="#{fileUploadView.stream}" width="20"
+												height="20">
+												<f:param name="fileName"
+													value="#{packingDetailTypeView.findImageByNameAndClass(item.type,item.parent.partNumber.partNumberClass)}" />
 											</p:graphicImage>
 										</p:column>
 										<p:column headerText="Dimension">
-											<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" />
+											<h:outputText
+												value="#{item.length} m / #{item.width} m / #{item.height} m" />
 										</p:column>
 										<p:column headerText="GW">
 											<h:outputText value="#{item.grossWeight} Kg" />
@@ -890,22 +899,31 @@
 										</p:column>
 										<p:column headerText="Packing Options">
 											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Flammable" rendered="#{item.flammable}">
+												<p:commandLink styleClass="aa-tooltip tooltip-warning"
+													title="Flammable" rendered="#{item.flammable}">
 													<i class="ace-icon fa fa-fire bigger-130 orange" />
 												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Fragile" rendered="#{item.fragile}">
+												<p:commandLink styleClass="aa-tooltip tooltip-info"
+													title="Fragile" rendered="#{item.fragile}">
 													<i class="ace-icon fa fa-glass bigger-130 light-blue" />
 												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Min Storage Temperature : #{item.minStorageTemperature}°" rendered="#{item.minStorageTemperature!=null}">
+												<p:commandLink styleClass="aa-tooltip tooltip-info"
+													title="Min Storage Temperature : #{item.minStorageTemperature}°"
+													rendered="#{item.minStorageTemperature!=null}">
 													<i class="ace-icon fa fa-thermometer-empty bigger-130 blue" />
 												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Max Storage Temperature : #{item.maxStorageTemperature}°" rendered="#{item.maxStorageTemperature!=null}">
+												<p:commandLink styleClass="aa-tooltip tooltip-error"
+													title="Max Storage Temperature : #{item.maxStorageTemperature}°"
+													rendered="#{item.maxStorageTemperature!=null}">
 													<i class="ace-icon fa fa-thermometer-full bigger-130 red" />
 												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip" title="HAS SN" rendered="#{item.hasSerialnumber}">
+												<p:commandLink styleClass="aa-tooltip" title="HAS SN"
+													rendered="#{item.hasSerialnumber}">
 													<i class="ace-icon fa fa-barcode bigger-130 purple" />
 												</p:commandLink>
-												<p:commandLink styleClass="aa-tooltip" title="Storage Humidity : #{item.storageHumidity}" rendered="#{item.storageHumidity!=null}">
+												<p:commandLink styleClass="aa-tooltip"
+													title="Storage Humidity : #{item.storageHumidity}"
+													rendered="#{item.storageHumidity!=null}">
 													<i class="ace-icon fa fa-tint bigger-130 pink" />
 												</p:commandLink>
 											</div>
@@ -1043,7 +1061,7 @@
 							</div>
 						</div>
 						<div class="space-16" />
-						
+
 					</div>
 					<div id="tab5" class="tab-pane in active">
 						<div class="space-8" />
@@ -1056,64 +1074,34 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Distance" />
+											<h:outputText value="Planned start position" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.estimatedDistanceText}" />
+												value="#{transportationRequestView.getPlannedTrStartPosition()}"
+												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Transporter" />
+											<h:outputText value="Planned start distance" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.transportationJob.transporter.name}" />
+												value="#{transportationRequestView.calculatePlannedTrStartDistance()}"
+												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Expected Pickup Time" />
+											<h:outputText value="Planned start duration" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Expected Delivery Time" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText
-												value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Transportation Job" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputLink value="viewTransportationJob.xhtml"
-												target="blank" rendered="#{sessionView.isTM}">
-												<h:outputText
-													value="#{transportationRequestView.transportationRequest.transportationJob.idStr}"
-													styleClass="blue" />
-												<f:param name="id"
-													value="#{transportationRequestView.transportationRequest.transportationJob.id}" />
-											</h:outputLink>
-											<h:outputText
-												value="#{transportationRequestView.transportationRequest.transportationJob.idStr}"
-												styleClass="blue" rendered="#{!sessionView.isTM}" />
+												value="#{transportationRequestView.calculatePlannedTrStartDuration()}"
+												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
@@ -1123,56 +1111,34 @@
 								<div class="profile-user-info profile-user-info-striped">
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Estimated Tr Time" />
+											<h:outputText value="Start Position" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.estimatedDurationText}" />
+												value="#{transportationRequestView.getTrStartPosition()}"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Driver / Vehicle" />
+											<h:outputText value="Start Distance" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.transportationJob.driver.fullName},#{transportationRequestView.transportationRequest.transportationJob.driver.phone} / #{transportationRequestView.transportationRequest.transportationJob.vehicle.correctMatricule}" />
+												value="#{transportationRequestView.calculateTrStartDistance()}"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Pickup Time" />
+											<h:outputText value="Start Duration" />
 										</div>
 										<div class="profile-info-value">
 											<h:outputText
-												value="#{transportationRequestView.transportationRequest.pickupDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Delivery Time" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText
-												value="#{transportationRequestView.transportationRequest.deliveryDate}">
-												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
-											</h:outputText>
-											&nbsp;
-										</div>
-									</div>
-									<div class="profile-info-row">
-										<div class="profile-info-name">
-											<h:outputText value="Job Status" />
-										</div>
-										<div class="profile-info-value">
-											<h:outputText
-												value="#{transportationRequestView.transportationRequest.transportationJob.status.value}"
-												styleClass="bolder #{transportationRequestView.transportationRequest.transportationJob.status.color}" />
+												value="#{transportationRequestView.calculateTrStartDuration()}"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
 											&nbsp;
 										</div>
 									</div>
@@ -1180,6 +1146,108 @@
 							</div>
 						</div>
 						<div class="space-16" />
+						<div class="row">
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned pickup duration" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.plannedPickupDuration} Min"
+												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Pickup duration" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.pickupDuration} Min"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Estimated TR distance" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.estimatedDistanceText}"
+												style="color: #17a2b8; background-color: #e0f7fa; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="TR distance" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.calculateTrDistance()}"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+											<h:outputText
+												value=" (#{((transportationRequestView.calculateTrDistance() - transportationRequestView.transportationRequest.estimatedDistance) / transportationRequestView.transportationRequest.estimatedDistance * 100)}%)" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-sm-6">
+								<div class="profile-user-info profile-user-info-striped">
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned delivery duration" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.plannedDeliveryDuration} Min"
+												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Delivery duration" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.deliveryDuration} Min"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Estimated TR time" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.estimatedDurationText}"
+												style="color: #17a2b8; background-color: #e0f7fa; padding: 4px 8px; border-radius: 4px;" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="TR duration" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText
+												value="#{transportationRequestView.calculateTrDuration()}"
+												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+											<h:outputText
+												value=" (#{((transportationRequestView.calculateTrDurationMilli() - transportationRequestView.transportationRequest.estimatedDuration) / transportationRequestView.transportationRequest.estimatedDuration * 100)}%)" />
+											&nbsp;
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">
 								<div class="widget-box transparent ">
@@ -1326,20 +1394,20 @@
 							<i class="ace-icon fa fa-map-marker"></i>
 							<h:outputText value=" Itinerary" />
 						</h4>
-						
+
 						<h:panelGroup id="gmap">
 							<iframe
 								src="#{request.contextPath}/transportationRequestItinerary.html?jobId=#{transportationRequestView.transportationRequest.id}&amp;username=#{transportationRequestView.transportationRequest.transportationJob.driverUsername}"
 								style="width: 100%; height: 500px; border: none;"> </iframe>
 						</h:panelGroup>
-							<!-- <p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.deliveryRequest.origin.latitude}, #{transportationRequestView.transportationRequest.deliveryRequest.origin.longitude}" zoom="17" type="TERRAIN"
+						<!-- <p:gmap widgetVar="map" model="#{transportationRequestView.mapModel}" center="#{transportationRequestView.transportationRequest.deliveryRequest.origin.latitude}, #{transportationRequestView.transportationRequest.deliveryRequest.origin.longitude}" zoom="17" type="TERRAIN"
 								style="width:100%;height:500px" /> 
 							<p:gmap widgetVar="map"
 								model="#{transportationRequestView.mapModel}"
 								center="#{transportationRequestView.transportationRequest.originValue}"
 								type="TERRAIN" style="width:100%;height:500px" /> -->
 						<div class="space-16" />
-						</div>
+					</div>
 					<div id="tab2" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-1 col-sm-10">

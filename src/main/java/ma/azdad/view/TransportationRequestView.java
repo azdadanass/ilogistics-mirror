@@ -48,6 +48,7 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleService;
 import ma.azdad.utils.FacesContextMessages;
+import ma.azdad.utils.LatLng;
 
 @ManagedBean
 @Component
@@ -56,6 +57,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected TransportationRequestService transportationRequestService;
+	
 
 	@Autowired
 	protected TransportationRequestHistoryService transportationRequestHistoryService;
@@ -613,6 +615,43 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 				: transportationRequest.getDeliveryRequest().getWarehouse();
 
 		mapModel = mapService.generate(origin, destination);
+	}
+	
+	//CALCULABLE FIELDS
+	public LatLng getTrStartPosition() {
+		return transportationJobService.getTrStartPosition(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public LatLng getPlannedTrStartPosition() {
+		return transportationJobService.getPlannedTrStartPosition(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public Double calculateTrStartDistance() {
+		 return transportationJobService.calculateTrStartDistance(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public Double calculatePlannedTrStartDistance() {
+		 return transportationJobService.calculatePlannedTrStartDistance(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public String calculatePlannedTrStartDuration() {
+		 return transportationJobService.calculatePlannedTrStartDuration(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public String calculateTrStartDuration() {
+		 return transportationJobService.calculateTrStartDuration(model.getTransportationJob().getId(),model.getId());
+	}
+	
+	public Double calculateTrDistance() {
+		return transportationJobService.calculateTrDistance(model.getId());
+	}
+	
+	public String calculateTrDuration() {
+		return transportationJobService.calculateTrDuration(model.getId());
+	}
+	
+	public Long calculateTrDurationMilli() {
+		return transportationJobService.calculateTrDurationMilli(model.getId());
 	}
 
 	// generic

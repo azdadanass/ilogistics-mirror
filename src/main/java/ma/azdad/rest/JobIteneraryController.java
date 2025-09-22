@@ -113,7 +113,9 @@ public class JobIteneraryController {
 	    	        transportationRequest.getPickupDate()!=null?transportationRequest.getPickupDate():transportationRequest.getPlannedPickupDate(),
 	    	        null,
 	    	        origin.getName(),
-	    	        transportationRequest.getStatus()==TransportationRequestStatus.PICKEDUP?false:true,
+	    	        Arrays.asList(TransportationRequestStatus.PICKEDUP,
+	    	        		TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())
+	    	        ?false:true,
 	    	        StopType.PICKUP.getValue()
 	    	    ));
 		 locations.add(new TransportationJobItineraryDto(
@@ -124,7 +126,8 @@ public class JobIteneraryController {
 	    	        transportationRequest.getDeliveryDate()!=null?transportationRequest.getDeliveryDate():transportationRequest.getPlannedDeliveryDate(),
 	    	        null,
 	    	        destination.getName(),
-	    	        transportationRequest.getStatus()==TransportationRequestStatus.DELIVERED?false:true,
+	    	        Arrays.asList(TransportationRequestStatus.DELIVERED
+	    	        		,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())?false:true,
 	    	        StopType.DELIVERY.getValue()
 	    	    ));
         return ResponseEntity.ok(locations);

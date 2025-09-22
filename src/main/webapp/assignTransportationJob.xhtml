@@ -426,6 +426,14 @@
                             </div>
                         </div>
                     </div>
+                    <p:commandButton id="updateCoordsBtn" 
+												action="#{transportationJobView.updateCoordinates()}"
+												
+												style="display:none;" />
+								
+								<!-- Hidden inputs to capture map coordinates -->
+								<p:inputText id="hiddenLat" value="#{transportationJobView.mapLatitude}" style="display:none;" />
+								<p:inputText id="hiddenLng" value="#{transportationJobView.mapLongitude}" style="display:none;" />
 
                     <!-- Interactive Map for Step 2 -->
                     <div class="space-16"></div>
@@ -447,11 +455,11 @@
                                            styleClass="btn btn-default" />
                         </div>
                         <div class="col-sm-6 text-right">
-                            <p:commandButton value="Complete Assignment" 
+                            <p:commandLink  value="Complete Assignment" 
                                            action="#{transportationJobView.assign()}"
-                                           update=":main_form"
+                                           	update="messages"
                                            styleClass="btn btn-success"
-                                            />
+                                            ></p:commandLink>
                         </div>
                     </div>
                 </h:panelGroup>
@@ -539,12 +547,12 @@
       document.getElementById("main_form:lat").value = event.data.lat;
       document.getElementById("main_form:lng").value = event.data.lng;
 
-      // 🔹 Trigger JSF AJAX update so bean updates immediately
-      jsf.ajax.request(
-        document.getElementById("main_form:lat"),
-        null,
-        { execute: "main_form:lat main_form:lng", render: "main_form" }
-      );
+   // Update the hidden inputs that will be submitted to the server
+		document.getElementById("main_form:hiddenLat").value = event.data.lat;
+		document.getElementById("main_form:hiddenLng").value = event.data.lng;
+
+		// Trigger the hidden button to update coordinates in the bean
+		document.getElementById("main_form:updateCoordsBtn").click();
     }
   });
 </script>

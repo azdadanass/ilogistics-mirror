@@ -59,7 +59,7 @@ public class Packing extends GenericModel<Integer> implements Serializable {
 			if (packingDetail.getGrossWeight() != null)
 				grossWeight += packingDetail.getQuantity() * packingDetail.getGrossWeight();
 			if (packingDetail.getNetWeight() != null)
-				grossWeight += packingDetail.getQuantity() * packingDetail.getNetWeight();
+				netWeight += packingDetail.getQuantity() * packingDetail.getNetWeight();
 			if (packingDetail.getVolume() != null)
 				volume += packingDetail.getQuantity() * packingDetail.getVolume();
 		}

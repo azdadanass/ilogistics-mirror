@@ -147,47 +147,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getCompany());
 			}
 		}
-		generateScript();
 		return transportationRequest;
 	}
 	
-	public void generateScript() {
-	    List<TransportationRequest> list = findAll();
-	    for (TransportationRequest transportationRequest : list) {
-	        if (Arrays.asList(
-	                TransportationRequestStatus.PICKEDUP,
-	                TransportationRequestStatus.DELIVERED,
-	                TransportationRequestStatus.ACKNOWLEDGED
-	        ).contains(transportationRequest.getStatus())) {
-
-	            Integer items = transportationRequest.getNumberOfItems();
-	            if (items == null) {
-	                System.out.println("⚠ Request " + transportationRequest.getId() + " has null items");
-	                continue;
-	            }
-
-	            Integer durationMinutes;
-	            if (items <= 5) {
-	                durationMinutes = 30;  // 30 minutes
-	            } else if (items <= 10) {
-	                durationMinutes = 60;  // 1 hour
-	            } else {
-	                durationMinutes = 120; // 2 hours
-	            }
-
-	            // set both pickup & delivery durations in minutes
-	            transportationRequest.setPickupDuration(durationMinutes);
-	            transportationRequest.setPlannedPickupDuration(durationMinutes);
-	            transportationRequest.setDeliveryDuration(durationMinutes);
-	            transportationRequest.setPlannedDeliveryDuration(durationMinutes);
-	            save(transportationRequest);
-
-	            System.out.println("✅ Request " + transportationRequest.getId() + 
-	                " | items=" + items + " → duration=" + durationMinutes + " minutes");
-	        }
-	    }
-	}
-
+	
 	
 	public List<TransportationRequest> findByTransportationJobId(Integer id){
 		List<TransportationRequest> list = repos.findByTransportationJobId(id);

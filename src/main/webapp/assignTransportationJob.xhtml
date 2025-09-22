@@ -273,54 +273,56 @@
     </div>
 </f:subview>
 
-<!-- Move Vehicle Selection Panel Outside of Subview -->
-<h:panelGroup id="vehicleListPanel">
-    <div class="vehicle-list-container">
-        <!-- Add the same condition here -->
-        <f:subview rendered="#{(TransportationJobAssignmentType.INTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType or TransportationJobAssignmentType.EXTERNAL_DRIVER==transportationJobView.transportationJob.assignmentType) and transportationJobView.transportationJob.driver!=null}">
-            <div class="space-8" />
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="table-header col-sm-12 col-xs-12">
-                        <i class="fa fa-car" />
-                        <h:outputText value=" Select Vehicle" />
-                    </div>
-                    <div class="col-sm-12 col-xs-12 aa-datatable-container">
-                        <p:dataTable id="vehicleList" widgetVar="vehicleList"
-                                   value="#{transportationJobView.vehicleSelectionList}"
-                                   rowKey="#{item.id}"
-                                   selection="#{transportationJobView.transportationJob.vehicle}"
-                                   var="item" rows="5"
-                                   styleClass="table table-striped table-hover center"
-                                   paginatorAlwaysVisible="false" paginator="true"
-                                   paginatorPosition="bottom" rowSelectMode="checkbox">
-                            <p:ajax event="rowSelectRadio" update="@(.map-container)" />
-                            <p:column selectionMode="single" styleClass="ace aa-checkbox-column" />
-                            <p:column headerText="Matricule">
-                                <h:outputText value="#{item.correctMatricule}" styleClass="purple bolder" />
-                            </p:column>
-                            <p:column headerText="Vehicle Type">
-                                <h:outputText value="#{item.vehicleType.name}" styleClass="bolder green" />
-                            </p:column>
-                            <p:column headerText="Max Weight">
-                                <h:outputText value="#{item.maxWeight}">
-                                    <f:convertNumber type="number" maxFractionDigits="2" />
-                                </h:outputText>
-                                <h:outputText value=" Kg" />
-                            </p:column>
-                            <p:column headerText="Max Volume">
-                                <h:outputText value="#{item.maxVolume}">
-                                    <f:convertNumber type="number" maxFractionDigits="2" />
-                                </h:outputText>
-                                <h:outputText value=" m3" />
-                            </p:column>
-                        </p:dataTable>
-                    </div>
-                </div>
-            </div>
-        </f:subview>
-    </div>
-</h:panelGroup>
+						<!-- Move Vehicle Selection Panel Outside of Subview -->
+						<h:panelGroup id="vehicleListPanel">
+									<f:subview
+										rendered="#{transportationJobView.transportationJob.driver!=null}">
+										<div class="space-8" />
+										<div class="row">
+											<div class="col-sm-offset-1 col-sm-10">
+												<div class="table-header col-sm-12 col-xs-12">
+													<i class="fa fa-list" />
+													<h:outputText value=" Vehicle List" />
+												</div>
+												<div class="col-sm-12 col-xs-12 aa-datatable-container">
+													<p:dataTable id="vehicleList" widgetVar="vehicleList"
+														value="#{transportationJobView.vehicleSelectionList}"
+														rowKey="#{item.id}"
+														selection="#{transportationJobView.transportationJob.vehicle}"
+														var="item" rows="5"
+														styleClass="table table-striped table-hover center"
+														paginatorAlwaysVisible="false" paginator="true"
+														paginatorPosition="bottom"
+														paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+														rowSelectMode="checkbox">
+														<p:column selectionMode="single"
+															styleClass="ace aa-checkbox-column" />
+														<p:column headerText="Matricule">
+															<h:outputText value="#{item.correctMatricule}"
+																styleClass="purple bolder" />
+														</p:column>
+														<p:column headerText="Vehicle Type">
+															<h:outputText value="#{item.vehicleType.name}"
+																styleClass="bolder green" />
+														</p:column>
+														<p:column headerText="Max Weight">
+															<h:outputText value="#{item.maxWeight}">
+																<f:convertNumber type="number" maxFractionDigits="2" />
+															</h:outputText>
+															<h:outputText value=" Kg" />
+														</p:column>
+														<p:column headerText="Max Volume">
+															<h:outputText value="#{item.maxVolume}">
+																<f:convertNumber type="number" maxFractionDigits="2" />
+															</h:outputText>
+															<h:outputText value=" m3" />
+														</p:column>
+													</p:dataTable>
+												</div>
+											</div>
+										</div>
+									</f:subview>
+								</h:panelGroup>
                     </h:panelGroup>
 
                     <!-- Map for Step 1 -->

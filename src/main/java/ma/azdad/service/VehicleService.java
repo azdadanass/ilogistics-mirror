@@ -20,6 +20,8 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 		Vehicle vehicle = super.findOne(id);
 		Hibernate.initialize(vehicle.getFileList());
 		Hibernate.initialize(vehicle.getHistoryList());
+		if (vehicle.getBrandType() != null)
+			initialize(vehicle.getBrandType().getBrand());
 		initialize(vehicle.getTransporter().getUserList());
 		vehicle.getUserList().forEach(i -> initialize(i.getUser()));
 		return vehicle;
@@ -33,8 +35,8 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 		evictCache();
 		repos.updateActive(id, active);
 	}
-	
-	public List<Vehicle> findActiveByDriver(String driverUsername){
+
+	public List<Vehicle> findActiveByDriver(String driverUsername) {
 		return repos.findActiveByDriver(driverUsername);
 	}
 

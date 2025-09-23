@@ -15,7 +15,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -1434,6 +1436,17 @@ public class TransportationJobView
 
 		public void resetToStep1() {
 			currentStep = STEP_ASSIGNMENT;
+		}
+		
+		public String goToStep3() {
+		    
+		    if (!isStep2Incomplete()) {
+		        this.currentStep = 3;
+		    } else {
+		       
+		    	FacesContextMessages.ErrorMessages("Start position should not be null");
+		    }
+		    return null; 
 		}
 
 

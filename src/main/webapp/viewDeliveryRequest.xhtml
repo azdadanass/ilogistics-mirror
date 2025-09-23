@@ -2219,6 +2219,9 @@
 												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Fragile" rendered="#{item.fragile}">
 													<i class="ace-icon fa fa-glass bigger-130 light-blue" />
 												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Max Stack : #{item.maxStack}" rendered="#{item.stackable}">
+													<p:graphicImage value="/resources/img/stackable.png" width="16" />
+												</p:commandLink>
 												<p:commandLink styleClass="aa-tooltip tooltip-info" title="Min Storage Temperature : #{item.minStorageTemperature}°" rendered="#{item.minStorageTemperature!=null}">
 													<i class="ace-icon fa fa-thermometer-empty bigger-130 blue" />
 												</p:commandLink>

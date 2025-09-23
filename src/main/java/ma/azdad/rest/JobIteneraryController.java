@@ -105,12 +105,22 @@ public class JobIteneraryController {
 				: transportationRequest.getDeliveryRequest().getWarehouse();
 		GenericPlace destination = !transportationRequest.getDeliveryRequest().getIsInbound() ? transportationRequest.getDeliveryRequest().getDestination()
 				: transportationRequest.getDeliveryRequest().getWarehouse();
+		Date pickupDate =
+			    transportationRequest.getPickupDate() != null ? transportationRequest.getPickupDate()
+			    : (transportationRequest.getPlannedPickupDate() != null ? transportationRequest.getPlannedPickupDate()
+			    : transportationRequest.getNeededPickupDate());
+		Date deliveryDate =
+			    transportationRequest.getDeliveryDate() != null ? transportationRequest.getDeliveryDate()
+			    : (transportationRequest.getPlannedDeliveryDate() != null ? transportationRequest.getPlannedDeliveryDate()
+			    : transportationRequest.getNeededDeliveryDate());
+
+
 		 locations.add(new TransportationJobItineraryDto(
 				 requestId,
 				 origin.getLatitude(),
 	    	        origin.getLongitude(),
 	    	        null,
-	    	        transportationRequest.getPickupDate()!=null?transportationRequest.getPickupDate():transportationRequest.getPlannedPickupDate(),
+	    	        pickupDate,
 	    	        null,
 	    	        origin.getName(),
 	    	        Arrays.asList(TransportationRequestStatus.PICKEDUP,
@@ -123,7 +133,7 @@ public class JobIteneraryController {
 				 destination.getLatitude(),
 				 destination.getLongitude(),
 	    	        null,
-	    	        transportationRequest.getDeliveryDate()!=null?transportationRequest.getDeliveryDate():transportationRequest.getPlannedDeliveryDate(),
+	    	        deliveryDate,
 	    	        null,
 	    	        destination.getName(),
 	    	        Arrays.asList(TransportationRequestStatus.DELIVERED

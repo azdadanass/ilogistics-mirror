@@ -78,6 +78,7 @@ public class JobIteneraryController {
     	        null,
     	        name,
     	        stop.getExpected(),
+    	        false,
     	        stop.getType().getValue()
     	    ));
     	}
@@ -120,12 +121,16 @@ public class JobIteneraryController {
 				 origin.getLatitude(),
 	    	        origin.getLongitude(),
 	    	        null,
-	    	        pickupDate,
+	    	        Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
+	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?
+	    	        				transportationRequest.getNeededPickupDate():pickupDate,
 	    	        null,
 	    	        origin.getName(),
 	    	        Arrays.asList(TransportationRequestStatus.PICKEDUP,
 	    	        		TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())
 	    	        ?false:true,
+	    	        		Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
+	    	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?true:false	,	
 	    	        StopType.PICKUP.getValue()
 	    	    ));
 		 locations.add(new TransportationJobItineraryDto(
@@ -133,11 +138,15 @@ public class JobIteneraryController {
 				 destination.getLatitude(),
 				 destination.getLongitude(),
 	    	        null,
-	    	        deliveryDate,
+	    	        Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
+	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?
+	    	        				transportationRequest.getNeededDeliveryDate():deliveryDate,
 	    	        null,
 	    	        destination.getName(),
 	    	        Arrays.asList(TransportationRequestStatus.DELIVERED
 	    	        		,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())?false:true,
+	    	        				Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
+	    	    	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?true:false,
 	    	        StopType.DELIVERY.getValue()
 	    	    ));
         return ResponseEntity.ok(locations);

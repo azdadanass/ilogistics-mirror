@@ -663,11 +663,23 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
-											<h:outputText value="Planned Pickup Date" />
+											<h:outputText value="Expected Pickup Date" />
 										</div>
 										<div class="profile-info-value bolder blue">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.expectedPickupDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned Pickup Date" />
+										</div>
+										<div class="profile-info-value bolder blue">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.plannedPickupDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;
@@ -708,6 +720,18 @@
 										<div class="profile-info-value bolder blue">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.expectedDeliveryDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+											</h:outputText>
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Planned Delivery Date" />
+										</div>
+										<div class="profile-info-value bolder blue">
+											<h:outputText
+												value="#{transportationRequestView.transportationRequest.plannedDeliveryDate}">
 												<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 											</h:outputText>
 											&nbsp;

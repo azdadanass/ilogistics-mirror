@@ -739,7 +739,12 @@ function showEstimatedItinerary() {
             let dateDisplay = '';
             if (point.date) {
                 const formattedDate = formatDate(point.date);
-                const expectedText = point.expected ? 'Expected ' : '';
+                const expectedText = point.needed
+                ? 'Needed '
+                : point.expected
+                  ? 'Expected '
+                  : '';
+
                 dateDisplay = `${point.type} : ${expectedText}${formattedDate}`;
             }
 

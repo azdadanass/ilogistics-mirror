@@ -23,8 +23,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 50px 100px;
-            height: 300px;
+            margin:5px 100px;
+            height: 0px;
         }
 
         .timeline-line {
@@ -131,10 +131,10 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(10px);
+            transform: translateY(-10px);
             transition: all 0.3s ease;
             z-index: 10;
-            top: -180px;
+            top: 80px;
             left: 50%;
             margin-left: -125px;
         }
@@ -145,14 +145,14 @@
             transform: translateY(0);
         }
 
-        .info-card::after {
+        .info-card::before {
             content: '';
             position: absolute;
-            top: 100%;
+            bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
             border: 8px solid transparent;
-            border-top-color: white;
+            border-bottom-color: white;
         }
 
         .info-item {
@@ -224,7 +224,7 @@
                                             <i class="fa fa-building"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="origin-name"></span>
+                                            <span id="origin-name">Origin Company</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -232,7 +232,7 @@
                                             <i class="fa fa-map-marker"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="origin-address"></span>
+                                            <span id="origin-address">123 Origin Street, City, State</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -240,7 +240,7 @@
                                             <i class="fa fa-user"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="origin-contact"></span>
+                                            <span id="origin-contact">John Doe</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -248,7 +248,7 @@
                                             <i class="fa fa-phone"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="origin-phone"></span>
+                                            <span id="origin-phone">+1 (555) 123-4567</span>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@
                                             <i class="fa fa-building"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="destination-name"></span>
+                                            <span id="destination-name">Destination Company</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -280,7 +280,7 @@
                                             <i class="fa fa-map-marker"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="destination-address"></span>
+                                            <span id="destination-address">456 Destination Ave, City, State</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -288,7 +288,7 @@
                                             <i class="fa fa-user"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="destination-contact"></span>
+                                            <span id="destination-contact">Jane Smith</span>
                                         </div>
                                     </div>
                                     <div class="info-item">
@@ -296,7 +296,7 @@
                                             <i class="fa fa-phone"></i>
                                         </div>
                                         <div class="info-text">
-                                            <span id="destination-phone"></span>
+                                            <span id="destination-phone">+1 (555) 987-6543</span>
                                         </div>
                                     </div>
                                 </div>
@@ -324,7 +324,7 @@
         // Function to initialize data from URL parameters
         function initializeData() {
             timelineData = {
-                state: parseInt(getUrlParameter('state') || '0'),
+                state: parseInt(getUrlParameter('state') || '1'),
                 originName: getUrlParameter('originName') || '',
                 originAddress: getUrlParameter('originAddress') || '',
                 originContact: getUrlParameter('originContact') || '',

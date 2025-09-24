@@ -1,5 +1,7 @@
 package ma.azdad.view;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
@@ -12,6 +14,7 @@ import ma.azdad.model.PackingDetail;
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PackingRepos;
 import ma.azdad.service.DeliveryRequestSerialNumberService;
+import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.PackingService;
 import ma.azdad.service.PartNumberService;
 import ma.azdad.service.UtilsFunctions;
@@ -33,6 +36,9 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 	
 	@Autowired
 	private DeliveryRequestSerialNumberService deliveryRequestSerialNumberService;
+	
+	@Autowired
+	private DeliveryRequestService deliveryRequestService;
 
 	@Autowired
 	private CacheView cacheView;
@@ -124,6 +130,13 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 		packing.calculateFields();
 		packing = packingService.save(packing);
 		partNumberService.updateHasPacking(packing.getPartNumber().getId());
+		
+		List<Integer> associatedDeliveryRequestList = deliveryRequestService.findAssociatedDeliveryRequestListWithPacking(packing.getId());
+		deliveryRequestService.updateNumberOfItems(associatedDeliveryRequestList);
+		deliveryRequestService.updateNetWeight(associatedDeliveryRequestList);
+		deliveryRequestService.updateGrossWeight(associatedDeliveryRequestList);
+		deliveryRequestService.updateVolume(associatedDeliveryRequestList);
+		
 		return addParameters("/viewPartNumber.xhtm", "faces-redirect=true", "id=" + packing.getPartNumber().getId());
 	}
 

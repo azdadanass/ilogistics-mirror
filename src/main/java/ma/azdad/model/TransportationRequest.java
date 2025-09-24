@@ -58,17 +58,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private Double estimatedDistance = 0.0;
 	private String estimatedDistanceText;
 	private String rejectionReason;
-	
+
 	private Integer plannedPickupDuration;
 	private Integer plannedDeliveryDuration;
 	private Integer pickupDuration;
 	private Integer deliveryDuration;
 
-
 	private Double realDistance;
 	private Double startDistance;
-
-	
 
 	private Double estimatedCost = 0.0;
 	private Double estimatedItineraryCost;
@@ -156,17 +153,31 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	// c1
-	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Integer deliveryRequestId,
-			String deliveryRequestReference, String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, String originName, String destinationName, String warehouseName, //
+	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Date plannedPickupDate, Date plannedDeliveryDate,
+			Date expectedPickupDate, Date expectedDeliveryDate, Date pickupDate, Date deliveryDate, //
+			Integer deliveryRequestId, String deliveryRequestReference, String deliveryRequestSmsRef, DeliveryRequestType deliveryRequestType, Integer numberOfItems,Double netWeight,Double grossWeight,Double volume,// 
+			String requesterUsername, String requesterFullName,
+			String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
 		this.neededPickupDate = neededPickupDate;
 		this.neededDeliveryDate = neededDeliveryDate;
+		this.plannedPickupDate = plannedPickupDate;
+		this.plannedDeliveryDate = plannedDeliveryDate;
+		this.expectedPickupDate = expectedPickupDate;
+		this.expectedDeliveryDate = expectedDeliveryDate;
+		this.pickupDate = pickupDate;
+		this.deliveryDate = deliveryDate;
 		this.deliveryRequestId = deliveryRequestId;
 		this.deliveryRequestReference = deliveryRequestReference;
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
+		this.setDeliveryRequestType(deliveryRequestType);
+		this.setNumberOfItems(numberOfItems);
+		this.setNetWeight(netWeight);
+		this.setGrossWeight(grossWeight);
+		this.setVolume(volume);
 		this.requesterUsername = requesterUsername;
 		this.requesterFullName = requesterFullName;
 		this.setOriginName(originName);
@@ -336,26 +347,48 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Date getStartDate() {
-		return ObjectUtils.firstNonNull(pickupDate, plannedPickupDate , expectedPickupDate);
+		return ObjectUtils.firstNonNull(pickupDate, expectedPickupDate, plannedPickupDate, neededPickupDate);
 	}
-	
+
+	@Transient
+	public String getStartDatePrefix() {
+		if (pickupDate != null)
+			return "";
+		if (expectedPickupDate != null)
+			return "Expected on ";
+		if (plannedPickupDate != null)
+			return "Planned on ";
+		return "Needed on ";
+	}
+
 	@Transient
 	public Integer getPickupDuration2() {
-		if(pickupDuration != null)
+		if (pickupDuration != null)
 			return pickupDuration;
 		return plannedPickupDuration;
 	}
-	
+
 	@Transient
 	public Integer getDeliveryDuration2() {
-		if(deliveryDuration != null)
+		if (deliveryDuration != null)
 			return deliveryDuration;
 		return plannedDeliveryDuration;
 	}
 
 	@Transient
 	public Date getEndDate() {
-		return ObjectUtils.firstNonNull(deliveryDate, plannedDeliveryDate, expectedDeliveryDate);
+		return ObjectUtils.firstNonNull(deliveryDate, expectedDeliveryDate, plannedDeliveryDate, neededDeliveryDate);
+	}
+
+	@Transient
+	public String getEndDatePrefix() {
+		if (deliveryDate != null)
+			return "";
+		if (expectedDeliveryDate != null)
+			return "Expected on ";
+		if (plannedDeliveryDate != null)
+			return "Planned on ";
+		return "Needed on ";
 	}
 
 	@Transient
@@ -967,18 +1000,11 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Override
 	public int compareTo(TransportationRequest o) {
-		if (o == null)
-			return 1;
-		Date date1 = pickupDate != null ? pickupDate : expectedPickupDate;
-		Date date2 = o.getPickupDate() != null ? o.getPickupDate() : o.expectedPickupDate;
-		if (date1 == null && date2 == null)
-			return 0;
-		if (date1 == null)
+		if (getStartDate() == null)
 			return -1;
-		if (date2 == null)
+		if (o.getStartDate() == null)
 			return 1;
-
-		return date1.compareTo(date2);
+		return o.getStartDate().compareTo(getStartDate());
 	}
 
 	public Double getTotalAppLinkCost() {
@@ -1102,31 +1128,51 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	@Transient
-	public Double getGrossWeight() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getGrossWeight();
-		return null;
+	public Integer getNumberOfItems() {
+		return deliveryRequest != null ? deliveryRequest.getNumberOfItems() : null;
+	}
+
+	@Transient
+	public void setNumberOfItems(Integer deliveryRequestNumberOfItems) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setNumberOfItems(deliveryRequestNumberOfItems);
 	}
 
 	@Transient
 	public Double getNetWeight() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getNetWeight();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getNetWeight() : null;
+	}
+
+	@Transient
+	public void setNetWeight(Double deliveryRequestNetWeight) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setNetWeight(deliveryRequestNetWeight);
+	}
+
+	@Transient
+	public Double getGrossWeight() {
+		return deliveryRequest != null ? deliveryRequest.getGrossWeight() : null;
+	}
+
+	@Transient
+	public void setGrossWeight(Double deliveryRequestGrossWeight) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setGrossWeight(deliveryRequestGrossWeight);
 	}
 
 	@Transient
 	public Double getVolume() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getVolume();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getVolume() : null;
 	}
 
 	@Transient
-	public Integer getNumberOfItems() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getNumberOfItems();
-		return null;
+	public void setVolume(Double deliveryRequestVolume) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setVolume(deliveryRequestVolume);
 	}
 
 	@Transient
@@ -1375,11 +1421,5 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void setPickupDuration(Integer pickupDuration) {
 		this.pickupDuration = pickupDuration;
 	}
-	
-	
-	
-	
-	
-	
 
 }

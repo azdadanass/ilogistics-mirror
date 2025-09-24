@@ -151,5 +151,14 @@ public class JobService {
 		log.info("sendPendingAckNotification");
 		transportationRequestService.sendPendingAckNotification();
 	}
+	
+	
+	@Scheduled(cron = "00 35 00 * * *")
+	public void updateDeliveryRequestPackingQuantities() {
+		deliveryRequestService.updateNumberOfItems();
+		deliveryRequestService.updateGrossWeight();
+		deliveryRequestService.updateNetWeight();
+		deliveryRequestService.updateVolume();
+	}
 
 }

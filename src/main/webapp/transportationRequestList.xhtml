@@ -25,6 +25,7 @@
 	</ui:define>
 	<ui:define name="body">
 		<p:importEnum type="ma.azdad.model.TransportationRequestPaymentStatus" var="TransportationRequestPaymentStatus" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.TransportationRequestState" var="TransportationRequestState" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -156,19 +157,13 @@
 							<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
 								<img src="#{cacheView.getPhoto(item.requesterUsername)}" class="img-circle aa-datatable-photo" />
 							</p:column>
+							<p:column headerText="Reference" width="90">
+								<h:outputText value="#{item.reference}" styleClass="bolder purple" />
+							</p:column>
 							<p:column headerText="REF">
 								<h:outputText value="#{item.deliveryRequestSmsRef}" />
 							</p:column>
-							<p:column headerText="Requester" styleClass="hide">
-								<h:outputText value="#{item.requesterFullName}" />
-							</p:column>
-							<p:column headerText="Approver" styleClass="hide">
-								<h:outputText value="#{item.approverFullName}" />
-							</p:column>
-							<p:column headerText="Reference" width="100">
-								<h:outputText value="#{item.reference}" styleClass="bolder purple" />
-							</p:column>
-							<p:column headerText="DN" width="100" exportable="false">
+							<p:column headerText="DN" width="90" exportable="false">
 								<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
 									<h:outputText value="#{item.deliveryRequestReference}" styleClass="#{item.deliveryRequestType.color}" />
 									<f:param name="id" value="#{item.deliveryRequestId}" />
@@ -178,30 +173,91 @@
 								<h:outputText value="#{item.deliveryRequestReference}" />
 							</p:column>
 							<p:column headerText="Origin Name" rendered="#{transportationRequestView.pageIndex!=7}">
-								<h:outputText value="#{item.originName}" styleClass=" blue" />
+								<h:outputText value="#{item.originName}" styleClass="purple" />
+								<h:outputText value="#{item.warehouseName}" styleClass="purple" rendered="#{item.isOutbound}" />
 							</p:column>
-							<p:column headerText="Needed Pick up time" sortBy="#{item.neededPickupDate}" rendered="#{transportationRequestView.pageIndex!=7}">
+							<p:column headerText="Needed Pick up time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING}">
 								<h:outputText value="#{item.neededPickupDate}" styleClass="bolder light-blue">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Destination Name" rendered="#{transportationRequestView.pageIndex!=7}">
-								<h:outputText value="#{item.destinationName}" styleClass=" green" />
+							<p:column headerText="Planned Pick up time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.ASSIGNED}">
+								<h:outputText value="#{item.plannedPickupDate}" styleClass="bolder light-blue">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
 							</p:column>
-							<p:column headerText="Needed Delivery time" sortBy="#{item.neededDeliveryDate}" rendered="#{transportationRequestView.pageIndex!=7}">
+							<p:column headerText="Pick up time" width="130"
+								rendered="#{transportationRequestView.isPageIndex(1) and (transportationRequestView.state==TransportationRequestState.IN_PROGRESS or transportationRequestView.state==TransportationRequestState.COMPLETED) }">
+								<h:outputText value="#{item.pickupDate}" styleClass="bolder light-blue">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Pick up time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==null }">
+								<h:outputText value="#{item.startDatePrefix}" styleClass="bolder light-blue" />
+								<h:outputText value="#{item.startDate}" styleClass="bolder light-blue">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Destination Name" rendered="#{transportationRequestView.pageIndex!=7}">
+								<h:outputText value="#{item.destinationName}" styleClass="green" />
+								<h:outputText value="#{item.warehouseName}" styleClass="green" rendered="#{item.isInbound}" />
+							</p:column>
+							<p:column headerText="Needed Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING}">
 								<h:outputText value="#{item.neededDeliveryDate}" styleClass="bolder light-green">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
+							</p:column>
+							<p:column headerText="Planned Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.ASSIGNED}">
+								<h:outputText value="#{item.plannedDeliveryDate}" styleClass="bolder light-green">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Expected Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.IN_PROGRESS}">
+								<h:outputText value="#{item.expectedDeliveryDate}" styleClass="bolder light-green">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.COMPLETED}">
+								<h:outputText value="#{item.deliveryDate}" styleClass="bolder light-green">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==null}">
+								<h:outputText value="#{item.endDatePrefix}" styleClass="bolder light-green" />
+								<h:outputText value="#{item.endDate}" styleClass="bolder light-green">
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Number Of Items" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+								<h:outputText value="#{item.numberOfItems}" />
+							</p:column>
+							<p:column headerText="GW" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+								<h:outputText value="#{item.grossWeight}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" Kg" />
+							</p:column>
+							<p:column headerText="Volume" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+								<h:outputText value="#{item.volume}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" m3" />
+							</p:column>
+							<p:column headerText="Requester" styleClass="hide">
+								<h:outputText value="#{item.requesterFullName}" />
+							</p:column>
+							<p:column headerText="Approver" styleClass="hide">
+								<h:outputText value="#{item.approverFullName}" />
 							</p:column>
 							<p:column headerText="Delivery Time" sortBy="#{item.neededDeliveryDate}" rendered="#{transportationRequestView.pageIndex==7}">
 								<h:outputText value="#{item.deliveryDate}" styleClass="bolder green">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Transporter">
+							<p:column headerText="Transporter" styleClass="hide">
 								<h:outputText value="#{item.transporterName}" styleClass=" purple" />
 							</p:column>
-							<p:column headerText="Status">
+							<p:column headerText="Status" width="120">
 								<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 							</p:column>
 							<p:column headerText="Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
@@ -240,7 +296,7 @@
 							<p:column headerText="Payment Status" rendered="#{transportationRequestView.pageIndex==7}">
 								<h:outputText value="#{item.paymentStatus.value}" styleClass="#{item.paymentStatus.color}" />
 							</p:column>
-							<p:column headerText="Actions" style="width:150px" exportable="false">
+							<p:column headerText="Actions" width="100" exportable="false">
 								<div class="action-buttons center">
 									<h:outputLink value="#{transportationRequestView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />

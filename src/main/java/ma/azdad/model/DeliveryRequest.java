@@ -38,7 +38,7 @@ import ma.azdad.utils.Public;
 
 @Entity
 
-public class DeliveryRequest extends GenericModel<Integer> implements Comparable<DeliveryRequest> ,Serializable {
+public class DeliveryRequest extends GenericModel<Integer> implements Comparable<DeliveryRequest>, Serializable {
 
 	private String reference;
 	private String description;
@@ -64,6 +64,10 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Boolean missingOutboundDeliveryNote = false;
 	private Boolean autoBoqMapped = false;
 	private Integer countFiles = 0;
+	private Integer numberOfItems = 0;
+	private Double netWeight = 0.0;
+	private Double grossWeight = 0.0;
+	private Double volume = 0.0;
 
 	private DeliveryRequestType type;
 	private InboundType inboundType = InboundType.NEW;
@@ -192,8 +196,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.crossChargeId = crossChargeId;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4,
-			Double qTotalCost, Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Date date4, Double qTotalCost,
+			Double qAssociatedCostIbuy, Double qAssociatedCostIexpense, InboundType inboundType) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -207,8 +211,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		this.inboundType = inboundType;
 	}
 
-	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project,
-			Project destinationProject, String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
+	public DeliveryRequest(Integer id, String reference, Integer referenceNumber, DeliveryRequestType type, DeliveryRequestStatus status, Project project, Project destinationProject,
+			String destinationProjectCustomerName, Date date4, Double qTotalCost, Double qTotalRevenue, Double qTotalCrossCharge, String poNumero) {
 		super(id);
 		this.reference = reference;
 		this.referenceNumber = referenceNumber;
@@ -231,13 +235,12 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	// c1
 	public DeliveryRequest(Integer id, String description, Integer referenceNumber, String reference, Priority priority, User requester, Project project, DeliveryRequestType type, //
 			InboundType inboundType, OutboundType outboundType, Boolean sdm, DeliveryRequestStatus status, String originNumber, Date date4, //
-			Date neededDeliveryDate, String returnReason, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName,
-			String companyName, Warehouse warehouse, //
+			Date neededDeliveryDate, String returnReason, String originName, String destinationName, CompanyType ownerType, String customerName, String supplierName, String companyName,
+			Warehouse warehouse, //
 			String destinationProjectName, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			Long transportationRequestNumber, Boolean transportationNeeded, String smsRef, //
 			Boolean containsBoqMapping, Boolean missingPo, Boolean missingOutboundDeliveryNote, String poNumero, CompanyType deliverToCompanyType, String deliverToCompanyName, //
-			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName,
-			String destinationProjectCustomerName) {
+			String deliverToCustomerName, String deliverToSupplierName, String toUserFullName, String endCustomerName, String projectCustomerName, String destinationProjectCustomerName) {
 		super(id);
 		this.description = description;
 		this.priority = priority;
@@ -387,6 +390,22 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		countFiles = fileList.size();
 	}
 
+	public void calculateNumberOfItems() {
+		numberOfItems = detailList.stream().mapToInt(i -> (int) (i.getQuantity() * i.getPacking().getTotalItems() / i.getPacking().getQuantity())).sum();
+	}
+
+	public void calculateNetWeight() {
+		netWeight = detailList.stream().mapToDouble(i -> i.getQuantity() * i.getPacking().getNetWeight() / i.getPacking().getQuantity()).sum();
+	}
+
+	public void calculateGrossWeight() {
+		grossWeight = detailList.stream().mapToDouble(i -> i.getQuantity() * i.getPacking().getGrossWeight() / i.getPacking().getQuantity()).sum();
+	}
+
+	public void calculateVolume() {
+		volume = detailList.stream().mapToDouble(i -> i.getQuantity() * i.getPacking().getVolume() / i.getPacking().getQuantity()).sum();
+	}
+
 	@Transient
 	public Boolean getHasFiles() {
 		return countFiles > 0;
@@ -408,8 +427,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public boolean filter(String query) {
 		return contains(query, getReference(), smsRef, description, originNumber, ownerName, //
 				getProjectName(), getDestinationProjectName(), getRequesterFullName(), getSubType(), getWarehouseName(), //
-				deliverToCompanyType != null ? deliverToCompanyType.getValue() : null, getDeliverToCompanyName(), getDeliverToSupplierName(), getDeliverToCustomerName(),
-				getToUserFullName());
+				deliverToCompanyType != null ? deliverToCompanyType.getValue() : null, getDeliverToCompanyName(), getDeliverToSupplierName(), getDeliverToCustomerName(), getToUserFullName());
 	}
 
 	public void copyFromTemplate(DeliveryRequest template) {
@@ -809,42 +827,74 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		return ProjectTypes.STOCK.getValue().equals(project.getType());
 	}
 
-	@Transient
+//	@Transient
+//	public Integer getNumberOfItems() {
+//		int result = 0;
+//		for (DeliveryRequestDetail deliveryRequestDetail : detailList) {
+//			result += deliveryRequestDetail.getPacking().getDetailList().stream()
+//					.mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity())).sum();
+//		}
+//
+//		return result;
+//	}
+//
+//	@Transient
+//	public Double getNetWeight() {
+//		Double result = 0.0;
+//		if (detailList != null)
+//			for (DeliveryRequestDetail detail : detailList)
+//				result += detail.getNetWeight();
+//		return result;
+//	}
+//
+//	@Transient
+//	public Double getGrossWeight() {
+//		Double result = 0.0;
+//		if (detailList != null)
+//			for (DeliveryRequestDetail detail : detailList)
+//				result += detail.getGrossWeight();
+//		return result;
+//	}
+//
+//	@Transient
+//	public Double getVolume() {
+//		Double result = 0.0;
+//		if (detailList != null)
+//			for (DeliveryRequestDetail detail : detailList)
+//				result += detail.getVolume();
+//		return result;
+//	}
+
 	public Integer getNumberOfItems() {
-		int result = 0;
-		for (DeliveryRequestDetail deliveryRequestDetail : detailList) {
-			result += deliveryRequestDetail.getPacking().getDetailList().stream()
-					.mapToInt(i -> (int) (i.getQuantity() * deliveryRequestDetail.getQuantity() / deliveryRequestDetail.getPacking().getQuantity())).sum();
-		}
-
-		return result;
+		return numberOfItems;
 	}
 
-	@Transient
+	public void setNumberOfItems(Integer numberOfItems) {
+		this.numberOfItems = numberOfItems;
+	}
+
 	public Double getNetWeight() {
-		Double result = 0.0;
-		if (detailList != null)
-			for (DeliveryRequestDetail detail : detailList)
-				result += detail.getNetWeight();
-		return result;
+		return netWeight;
 	}
 
-	@Transient
+	public void setNetWeight(Double netWeight) {
+		this.netWeight = netWeight;
+	}
+
 	public Double getGrossWeight() {
-		Double result = 0.0;
-		if (detailList != null)
-			for (DeliveryRequestDetail detail : detailList)
-				result += detail.getGrossWeight();
-		return result;
+		return grossWeight;
 	}
 
-	@Transient
+	public void setGrossWeight(Double grossWeight) {
+		this.grossWeight = grossWeight;
+	}
+
 	public Double getVolume() {
-		Double result = 0.0;
-		if (detailList != null)
-			for (DeliveryRequestDetail detail : detailList)
-				result += detail.getVolume();
-		return result;
+		return volume;
+	}
+
+	public void setVolume(Double volume) {
+		this.volume = volume;
 	}
 
 	@Transient

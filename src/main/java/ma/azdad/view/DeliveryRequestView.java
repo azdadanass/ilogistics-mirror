@@ -2236,6 +2236,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.generateReference();
 
 		deliveryRequest.addHistory(new DeliveryRequestHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
+		
+		deliveryRequest.calculateNumberOfItems();
+		deliveryRequest.calculateNetWeight();
+		deliveryRequest.calculateGrossWeight();
+		deliveryRequest.calculateVolume();
 
 		deliveryRequest = service.save(deliveryRequest);
 

@@ -444,6 +444,41 @@ public interface DeliveryRequestRepos extends JpaRepository<DeliveryRequest, Int
 	@Query("update DeliveryRequest set sdm = ?2 where id = ?1")
 	public void updateSdm(Integer id, Boolean sdm);
 
+	@Modifying
+	@Query("update DeliveryRequest a set numberOfItems = (select sum((b.quantity /b.packing.quantity) * b.packing.totalItems) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)")
+	public void updateNumberOfItems();
+
+	@Modifying
+	@Query("update DeliveryRequest a set numberOfItems = (select sum((b.quantity /b.packing.quantity) * b.packing.totalItems) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)  where a.id in (?1)")
+	public void updateNumberOfItems(List<Integer> id);
+
+	@Modifying
+	@Query("update DeliveryRequest a set netWeight = (select sum((b.quantity /b.packing.quantity) * b.packing.netWeight) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)")
+	public void updateNetWeight();
+
+	@Modifying
+	@Query("update DeliveryRequest a set netWeight = (select sum((b.quantity /b.packing.quantity) * b.packing.netWeight) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)  where a.id in (?1)")
+	public void updateNetWeight(List<Integer> id);
+
+	@Modifying
+	@Query("update DeliveryRequest a set grossWeight = (select sum((b.quantity /b.packing.quantity) * b.packing.grossWeight) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)")
+	public void updateGrossWeight();
+
+	@Modifying
+	@Query("update DeliveryRequest a set grossWeight = (select sum((b.quantity /b.packing.quantity) * b.packing.grossWeight) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)  where a.id in (?1)")
+	public void updateGrossWeight(List<Integer> id);
+
+	@Modifying
+	@Query("update DeliveryRequest a set volume = (select sum((b.quantity /b.packing.quantity) * b.packing.volume) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)")
+	public void updateVolume();
+
+	@Modifying
+	@Query("update DeliveryRequest a set volume = (select sum((b.quantity /b.packing.quantity) * b.packing.volume) from DeliveryRequestDetail b where b.deliveryRequest.id = a.id)  where a.id in (?1)")
+	public void updateVolume(List<Integer> id);
+
+	@Query("select distinct a.deliveryRequest.id from DeliveryRequestDetail a where a.packing.id = ?1")
+	public List<Integer> findAssociatedDeliveryRequestListWithPacking(Integer packingId);
+
 	// update countIssues
 	@Modifying
 	@Query("update DeliveryRequest a set a.countIssues1 = (select count(*) from Issue b where b.deliveryRequest.id = a.id and b.status in (?2) and b.blocking is true) where id = ?1")

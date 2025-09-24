@@ -175,6 +175,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			case 1:
 				if (sessionView.getIsInternalTM()) {
 					initLists(service.find(state));
+					Collections.sort(list1);
 					break;
 				} else {
 					Set<TransportationRequest> result = new HashSet<TransportationRequest>();

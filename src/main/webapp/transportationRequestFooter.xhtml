@@ -370,7 +370,7 @@
 		</p:dialog>
 	</h:form>
 
-	<h:form id="addTransportationRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
+	<h:form id="addTransportationRequestFileForm" rendered="#{transportationRequestView.isViewPage}">
 		<p:dialog widgetVar="uploadTransportationRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransportationRequestFileDlg').hide()">
 				<h:outputText value="x" />

@@ -298,7 +298,170 @@
 									<i class="ace-icon fa fa-envelope" />
 									<h:outputText value=" Summary" />
 								</h3>
-								<div class="row"></div>
+								<div class="row">
+									<div class="col-xs-12 col-sm-6">
+										<div class="profile-user-info profile-user-info-striped">
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Reference" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.reference}" styleClass="bolder blue" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Priority" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.priority.value}" styleClass="#{transportationJobView.transportationJob.priority.color}" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Transporter" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.transporter.name} " styleClass="bolder green" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Driver" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText id="driver" value="#{transportationJobView.transportationJob.driver.fullName} " styleClass="bolder green" />
+													<p:overlayPanel for="driver" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
+														<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.driver.username)}" />
+													</p:overlayPanel>
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Planned Start Date" />
+												</div>
+												<div class="profile-info-value light-blue">
+													<h:outputText value="#{transportationJobView.transportationJob.plannedStartDate}" styleClass="bolder">
+														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+													</h:outputText>
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Planned End Date" />
+												</div>
+												<div class="profile-info-value light-blue">
+													<h:outputText value="#{transportationJobView.transportationJob.plannedEndDate}" styleClass="bolder">
+														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+													</h:outputText>
+													&nbsp;
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-xs-12 col-sm-6">
+										<div class="profile-user-info profile-user-info-striped">
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="REF" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.ref}" styleClass="bolder blue" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Important" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.important?'Yes':'No'}" styleClass="#{transportationJobView.transportationJob.important?'green':'grey'}" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Transporter Type" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText value="#{transportationJobView.transportationJob.transporter.type.value} " styleClass="#{transportationJobView.transportationJob.transporter.type.color}" />
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Vehicle" />
+												</div>
+												<div class="profile-info-value">
+													<h:outputText id="vehicle" value=" #{transportationJobView.transportationJob.vehicle.correctMatricule}" styleClass="bolder orange" />
+													<p:overlayPanel for="vehicle" style="text-align: left;width:400px;" showEvent="mouseover" hideEvent="mouseout">
+														<div class="col-xs-4 center">
+															<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
+																<f:param name="fileName" value="#{transportationJobView.transportationJob.vehicle.vehicleType.image}" />
+															</p:graphicImage>
+															<br />
+															<span class="bolder green smaller-80">
+																<h:outputText value="#{transportationJobView.transportationJob.vehicle.correctMatricule}" />
+															</span>
+														</div>
+														<div class="col-xs-8">
+															<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+															<span class="bolder blue">
+																<h:outputText value="Brand : #{transportationJobView.transportationJob.vehicle.brandType.brand.name}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+															<span class="pink">
+																<h:outputText value="Brand Type : #{transportationJobView.transportationJob.vehicle.brandType.name}" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+															<span class="green">
+																<h:outputText value="Max Weight : #{transportationJobView.transportationJob.vehicle.vehicleType.maxWeight} Kg" />
+															</span>
+															<br />
+															<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+															<span class="orange">
+																<h:outputText value="Max Volume : #{transportationJobView.transportationJob.vehicle.vehicleType.maxVolume} m3" />
+															</span>
+															<hr />
+														</div>
+													</p:overlayPanel>
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="Start Date" />
+												</div>
+												<div class="profile-info-value light-blue">
+													<h:outputText value="Expected to start on " rendered="#{transportationJobView.transportationJob.expectedToStart}" />
+													<h:outputText value="#{transportationJobView.transportationJob.startDate}" styleClass="bolder">
+														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+													</h:outputText>
+													&nbsp;
+												</div>
+											</div>
+											<div class="profile-info-row">
+												<div class="profile-info-name">
+													<h:outputText value="End Date" />
+												</div>
+												<div class="profile-info-value light-green">
+													<h:outputText value="Expected to end on " rendered="#{transportationJobView.transportationJob.expectedToEnd}" />
+													<h:outputText value="#{transportationJobView.transportationJob.endDate}" styleClass="bolder">
+														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+													</h:outputText>
+													&nbsp;
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="space-8" />
 							</f:subview>
 						</h:panelGroup>

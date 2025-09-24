@@ -151,7 +151,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getCompany());
 			}
 		}
-		//generateScript();
+		
 		return transportationRequest;
 	}
 	

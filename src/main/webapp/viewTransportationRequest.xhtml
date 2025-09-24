@@ -961,6 +961,25 @@
 
 					</div>
 					<div id="tab5" class="tab-pane">
+					<!-- don't change the params structure in the frame !!!!!!!!!!!! -->
+						<iframe id="timelineFrame"
+							src="#{request.contextPath}/trTimeline.html?state=#{transportationRequestView.transportationRequest.state}
+							&amp;originName=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? transportationRequestView.transportationRequest.deliveryRequest.origin.name : (transportationRequestView.transportationRequest.deliveryRequest.isOutbound ? transportationRequestView.transportationRequest.deliveryRequest.warehouse.name : '')}
+							&amp;originAddress=#{transportationRequestView.transportationRequest.originValue}
+							&amp;originContact=#{transportationRequestView.transportationRequest.originContactName}
+							&amp;originPhone=#{transportationRequestView.transportationRequest.originContactPhone}
+							&amp;destinationName=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? transportationRequestView.transportationRequest.deliveryRequest.destination.name : (transportationRequestView.transportationRequest.deliveryRequest.isInbound ? transportationRequestView.transportationRequest.deliveryRequest.warehouse.name : '')}
+							&amp;destinationAddress=#{transportationRequestView.transportationRequest.destinationValue}
+							&amp;destinationContact=#{transportationRequestView.transportationRequest.destinationContactName}
+							&amp;destinationPhone=#{transportationRequestView.transportationRequest.destinationContactPhone}
+							&amp;isInbound=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound}
+							&amp;isOutbound=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}
+							&amp;isXbound=#{transportationRequestView.transportationRequest.deliveryRequest.isXbound}&amp;warehouseName=#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}
+							&amp;originUrl=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? 'viewSite.xhtml?id=' += transportationRequestView.transportationRequest.deliveryRequest.origin.id : ''}
+							&amp;destinationUrl=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? 'viewSite.xhtml?id=' += transportationRequestView.transportationRequest.deliveryRequest.destination.id : ''}"
+							width="100%" height="300px" frameborder="0" scrolling="no"
+							style="border: none; border-radius: 8px; overflow: hidden;">
+						</iframe>
 						<div class="space-8" />
 						<h4 class="header blue bolder smaller">
 							<i class="ace-icon fa fa-truck"></i>
@@ -1145,27 +1164,7 @@
 								</div>
 							</div>
 						</div>
-
-						<iframe id="timelineFrame"
-							src="#{request.contextPath}/trTimeline.html?state=#{transportationRequestView.transportationRequest.state}
-							&amp;originName=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? transportationRequestView.transportationRequest.deliveryRequest.origin.name : (transportationRequestView.transportationRequest.deliveryRequest.isOutbound ? transportationRequestView.transportationRequest.deliveryRequest.warehouse.name : '')}
-							&amp;originAddress=#{transportationRequestView.transportationRequest.originValue}
-							&amp;originContact=#{transportationRequestView.transportationRequest.originContactName}
-							&amp;originPhone=#{transportationRequestView.transportationRequest.originContactPhone}
-							&amp;destinationName=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? transportationRequestView.transportationRequest.deliveryRequest.destination.name : (transportationRequestView.transportationRequest.deliveryRequest.isInbound ? transportationRequestView.transportationRequest.deliveryRequest.warehouse.name : '')}
-							&amp;destinationAddress=#{transportationRequestView.transportationRequest.destinationValue}
-							&amp;destinationContact=#{transportationRequestView.transportationRequest.destinationContactName}
-							&amp;destinationPhone=#{transportationRequestView.transportationRequest.destinationContactPhone}
-							&amp;isInbound=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound}
-							&amp;isOutbound=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound}
-							&amp;isXbound=#{transportationRequestView.transportationRequest.deliveryRequest.isXbound}&amp;warehouseName=#{transportationRequestView.transportationRequest.deliveryRequest.warehouse.name}
-							&amp;originUrl=#{transportationRequestView.transportationRequest.deliveryRequest.isInbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? 'viewSite.xhtml?id=' += transportationRequestView.transportationRequest.deliveryRequest.origin.id : ''}
-							&amp;destinationUrl=#{transportationRequestView.transportationRequest.deliveryRequest.isOutbound or transportationRequestView.transportationRequest.deliveryRequest.isXbound ? 'viewSite.xhtml?id=' += transportationRequestView.transportationRequest.deliveryRequest.destination.id : ''}"
-							width="100%" height="300px" frameborder="0" scrolling="no"
-							style="border: none; border-radius: 8px; overflow: hidden;">
-						</iframe>
-
-
+						
 						<div class="space-8" />
 						<h4 class="header blue bolder smaller">
 							<i class="ace-icon fa fa-map-marker"></i>

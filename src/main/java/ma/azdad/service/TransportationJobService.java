@@ -82,13 +82,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Autowired
 	UserRepos userRepos;
-	
+
 	@Autowired
 	CapacityService capacityService;
 
 	@Autowired
 	DriverLocationRepo driverLocationRepo;
-	
+
 	@Autowired
 	TransportationJobCapacityRepos transportationJobCapacityRepos;
 
@@ -164,40 +164,36 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Hibernate.initialize(transportationJob.getDriver());
 		return transportationJob;
 	}
-	
+
 	public TransportationJob initCalculableFields(TransportationJob transportationJob) {
 		List<TransportationJobCapacity> simulatedList = capacityService.simulatePlannedCapacities(transportationJob.getId(), transportationJob.getTransportationRequestList());
 		List<TransportationJobItinerary> list = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(transportationJob.getId());
-		 Double maxCumulativeWeight = transportationJobCapacityRepos
-		            .findMaxCumulativeWeightByTransportationJobIdAndType(transportationJob.getId(), "Real");
-		 Double maxCumulativeVolume = transportationJobCapacityRepos
-		            .findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Real");
-		 if(!list.isEmpty()) {
-		TransportationJobItinerary firstPoint = list.get(0);
-		TransportationJobItinerary lastPoint = list.get(list.size() - 1);
-		transportationJob.setTotalDistanceTravelled(lastPoint.getCumulativeDistance());
-		transportationJob.setTotalItineraryDuration(UtilsFunctions.getDateDifferenceDaysHoursMinutes(firstPoint.getTimestamp(), lastPoint.getTimestamp()));
-		}else {
+		Double maxCumulativeWeight = transportationJobCapacityRepos.findMaxCumulativeWeightByTransportationJobIdAndType(transportationJob.getId(), "Real");
+		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationJob.getId(), "Real");
+		if (!list.isEmpty()) {
+			TransportationJobItinerary firstPoint = list.get(0);
+			TransportationJobItinerary lastPoint = list.get(list.size() - 1);
+			transportationJob.setTotalDistanceTravelled(lastPoint.getCumulativeDistance());
+			transportationJob.setTotalItineraryDuration(UtilsFunctions.getDateDifferenceDaysHoursMinutes(firstPoint.getTimestamp(), lastPoint.getTimestamp()));
+		} else {
 			transportationJob.setTotalDistanceTravelled(0d);
 			transportationJob.setTotalItineraryDuration(null);
 		}
-		
+
 		transportationJob.setPlannedEffectiveDistance(calculateEstimatedProductiveDist(transportationJob.getId()));
 		transportationJob.setPlannedNonEffectiveDistance(calculateEstimatedNonProductiveDist(transportationJob.getId()));
 		transportationJob.setPlannedMaxVolume(simulatedList.stream().mapToDouble(TransportationJobCapacity::getCumulativeVolume).max().orElse(0d));
 		transportationJob.setPlannedMaxWeight(simulatedList.stream().mapToDouble(TransportationJobCapacity::getCumulativeWeight).max().orElse(0d));
 		transportationJob.setStartingDistance(realStartDistance(transportationJob.getId()));
-		
+
 		transportationJob.setEffectiveTraveledDistance(calculateRealProductiveDist(transportationJob.getId()));
 		transportationJob.setNonEffectiveTraveledDistance(calculateRealNonProductiveDist(transportationJob.getId()));
-		transportationJob.setItineratyMaxVolume(maxCumulativeVolume != null?maxCumulativeVolume:0d);
-		transportationJob.setItineratyMaxWeight(maxCumulativeWeight != null?maxCumulativeWeight:0d);
+		transportationJob.setItineratyMaxVolume(maxCumulativeVolume != null ? maxCumulativeVolume : 0d);
+		transportationJob.setItineratyMaxWeight(maxCumulativeWeight != null ? maxCumulativeWeight : 0d);
 
 		return transportationJob;
-		
+
 	}
-	
-	
 
 	public List<TransportationJob> find() {
 		return repos.find();
@@ -541,564 +537,491 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
 	}
-	
+
 	public void calculateAndSaveTrStartDistance(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return;
+		}
 
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(requestId)) {
-	            index = i;
-	            break;
-	        }
-	    }
-	    if (index == -1) return;
+		requests.sort(Comparator.comparing(tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(requestId)) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1)
+			return;
 
-	    // --- Current pickup coordinates ---
-	    double toLat = request.getDeliveryRequest().getOrigin() != null ?
-	            request.getDeliveryRequest().getOrigin().getLatitude()
-	            : request.getDeliveryRequest().getWarehouse().getLatitude();
-	    double toLng = request.getDeliveryRequest().getOrigin() != null ?
-	            request.getDeliveryRequest().getOrigin().getLongitude()
-	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+		// --- Current pickup coordinates ---
+		double toLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
+		double toLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	    double startDistance;
+		double startDistance;
 
-	    if (index == 0) {
-	        // First TR — from job start
-	        double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	        double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+		if (index == 0) {
+			// First TR — from job start
+			double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+			double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
 
-	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
 
-	        // Save into job
-	        job.setStartDistance(startDistance);
-	        save(job);
-	    } else {
-	        // Not the first one — check previous request
-	        TransportationRequest prev = requests.get(index - 1);
+			// Save into job
+			job.setStartDistance(startDistance);
+			save(job);
+		} else {
+			// Not the first one — check previous request
+			TransportationRequest prev = requests.get(index - 1);
 
-	        // Default: from prev delivery point
-	        double fromLat = prev.getDeliveryRequest().getDestination() != null ?
-	                prev.getDeliveryRequest().getDestination().getLatitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLatitude();
-	        double fromLng = prev.getDeliveryRequest().getDestination() != null ?
-	                prev.getDeliveryRequest().getDestination().getLongitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLongitude();
+			// Default: from prev delivery point
+			double fromLat = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLatitude() : prev.getDeliveryRequest().getWarehouse().getLatitude();
+			double fromLng = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLongitude() : prev.getDeliveryRequest().getWarehouse().getLongitude();
 
-	        // Handle cases
-	        if (prev.getDeliveryDate() != null && request.getPickupDate() != null &&
-	            prev.getDeliveryDate().after(request.getPickupDate())) {
-	            // Previous delivery happens later — fall back to job start
-	            fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	            fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	        } else if (Double.compare(fromLat, toLat) == 0 && Double.compare(fromLng, toLng) == 0) {
-	            // Same place — no travel needed
-	            startDistance = 0d;
-	            request.setStartDistance(startDistance);
-	            transportationRequestService.save(request);
-	            return;
-	        }
+			// Handle cases
+			if (prev.getDeliveryDate() != null && request.getPickupDate() != null && prev.getDeliveryDate().after(request.getPickupDate())) {
+				// Previous delivery happens later — fall back to job start
+				fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+				fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+			} else if (Double.compare(fromLat, toLat) == 0 && Double.compare(fromLng, toLng) == 0) {
+				// Same place — no travel needed
+				startDistance = 0d;
+				request.setStartDistance(startDistance);
+				transportationRequestService.save(request);
+				return;
+			}
 
-	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
-	    }
+			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+		}
 
-	    // Save into request
-	    request.setStartDistance(startDistance);
-	    transportationRequestService.save(request);
+		// Save into request
+		request.setStartDistance(startDistance);
+		transportationRequestService.save(request);
 	}
 
-	
 	public LatLng getTrStartPosition(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort requests by pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(request.getId())) {
-	            index = i;
-	            break;
-	        }
-	    }
+		// Sort requests by pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(request.getId())) {
+				index = i;
+				break;
+			}
+		}
 
-	    if (index == -1) {
-	        return null; // request not found in list
-	    }
+		if (index == -1) {
+			return null; // request not found in list
+		}
 
-	    Double fromLat;
-	    Double fromLng;
+		Double fromLat;
+		Double fromLng;
 
-	    if (index == 0) {
-	        // ✅ First TR → from job start or fallback
-	        fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	        fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	    } else {
-	        TransportationRequest prev = requests.get(index - 1);
+		if (index == 0) {
+			// ✅ First TR → from job start or fallback
+			fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+			fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+		} else {
+			TransportationRequest prev = requests.get(index - 1);
 
-	        // --- Default from previous TR delivery
-	        Double prevLat = null, prevLng = null;
-	        if (prev.getDeliveryRequest() != null) {
-	            if (prev.getDeliveryRequest().getDestination() != null) {
-	                prevLat = prev.getDeliveryRequest().getDestination().getLatitude();
-	                prevLng = prev.getDeliveryRequest().getDestination().getLongitude();
-	            } else if (prev.getDeliveryRequest().getWarehouse() != null) {
-	                prevLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
-	                prevLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
-	            }
-	        }
+			// --- Default from previous TR delivery
+			Double prevLat = null, prevLng = null;
+			if (prev.getDeliveryRequest() != null) {
+				if (prev.getDeliveryRequest().getDestination() != null) {
+					prevLat = prev.getDeliveryRequest().getDestination().getLatitude();
+					prevLng = prev.getDeliveryRequest().getDestination().getLongitude();
+				} else if (prev.getDeliveryRequest().getWarehouse() != null) {
+					prevLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+					prevLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+				}
+			}
 
-	        // --- Current pickup point
-	        Double pickupLat = request.getDeliveryRequest().getOrigin() != null
-	                ? request.getDeliveryRequest().getOrigin().getLatitude()
-	                : request.getDeliveryRequest().getWarehouse().getLatitude();
-	        Double pickupLng = request.getDeliveryRequest().getOrigin() != null
-	                ? request.getDeliveryRequest().getOrigin().getLongitude()
-	                : request.getDeliveryRequest().getWarehouse().getLongitude();
+			// --- Current pickup point
+			Double pickupLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
+			Double pickupLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	        if (prev.getDeliveryDate() != null && request.getPickupDate() != null
-	                && prev.getDeliveryDate().after(request.getPickupDate())) {
-	            // ⏰ Previous delivery happens later → fallback to job start
-	            fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	            fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	        } else if (prevLat != null && prevLng != null
-	                && Double.compare(prevLat, pickupLat) == 0
-	                && Double.compare(prevLng, pickupLng) == 0) {
-	            // 📍 Same location → start = pickup point
-	            fromLat = pickupLat;
-	            fromLng = pickupLng;
-	        } else {
-	            // ✅ Normal case → use previous delivery location
-	            fromLat = prevLat;
-	            fromLng = prevLng;
-	        }
-	    }
+			if (prev.getDeliveryDate() != null && request.getPickupDate() != null && prev.getDeliveryDate().after(request.getPickupDate())) {
+				// ⏰ Previous delivery happens later → fallback to job start
+				fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+				fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+			} else if (prevLat != null && prevLng != null && Double.compare(prevLat, pickupLat) == 0 && Double.compare(prevLng, pickupLng) == 0) {
+				// 📍 Same location → start = pickup point
+				fromLat = pickupLat;
+				fromLng = pickupLng;
+			} else {
+				// ✅ Normal case → use previous delivery location
+				fromLat = prevLat;
+				fromLng = prevLng;
+			}
+		}
 
-	    return (fromLat != null && fromLng != null) ? new LatLng(fromLat, fromLng) : null;
+		return (fromLat != null && fromLng != null) ? new LatLng(fromLat, fromLng) : null;
 	}
 
-	
 	public LatLng getPlannedTrStartPosition(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort requests by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+		// Sort requests by expected pickup date
+		requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
 
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(request.getId())) {
-	            index = i;
-	            break;
-	        }
-	    }
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(request.getId())) {
+				index = i;
+				break;
+			}
+		}
 
-	    if (index == -1) {
-	        return null; // request not found in list
-	    }
+		if (index == -1) {
+			return null; // request not found in list
+		}
 
-	    Double fromLat;
-	    Double fromLng;
+		Double fromLat;
+		Double fromLng;
 
-	    if (index == 0) {
-	        // ✅ First TR → use planned job start or fallback
-	        fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
-	        fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
-	    } else {
-	        TransportationRequest prev = requests.get(index - 1);
+		if (index == 0) {
+			// ✅ First TR → use planned job start or fallback
+			fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
+			fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
+		} else {
+			TransportationRequest prev = requests.get(index - 1);
 
-	        // --- Default from previous TR planned delivery
-	        Double prevLat = null, prevLng = null;
-	        if (prev.getDeliveryRequest() != null) {
-	            if (prev.getDeliveryRequest().getDestination() != null) {
-	                prevLat = prev.getDeliveryRequest().getDestination().getLatitude();
-	                prevLng = prev.getDeliveryRequest().getDestination().getLongitude();
-	            } else if (prev.getDeliveryRequest().getWarehouse() != null) {
-	                prevLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
-	                prevLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
-	            }
-	        }
+			// --- Default from previous TR planned delivery
+			Double prevLat = null, prevLng = null;
+			if (prev.getDeliveryRequest() != null) {
+				if (prev.getDeliveryRequest().getDestination() != null) {
+					prevLat = prev.getDeliveryRequest().getDestination().getLatitude();
+					prevLng = prev.getDeliveryRequest().getDestination().getLongitude();
+				} else if (prev.getDeliveryRequest().getWarehouse() != null) {
+					prevLat = prev.getDeliveryRequest().getWarehouse().getLatitude();
+					prevLng = prev.getDeliveryRequest().getWarehouse().getLongitude();
+				}
+			}
 
-	        // --- Current planned pickup
-	        Double pickupLat = request.getDeliveryRequest().getOrigin() != null
-	                ? request.getDeliveryRequest().getOrigin().getLatitude()
-	                : request.getDeliveryRequest().getWarehouse().getLatitude();
-	        Double pickupLng = request.getDeliveryRequest().getOrigin() != null
-	                ? request.getDeliveryRequest().getOrigin().getLongitude()
-	                : request.getDeliveryRequest().getWarehouse().getLongitude();
+			// --- Current planned pickup
+			Double pickupLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
+			Double pickupLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	        if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null
-	                && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
-	            // ⏰ Previous planned delivery happens later → fallback to planned job start
-	            fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
-	            fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
-	        } else if (prevLat != null && prevLng != null
-	                && Double.compare(prevLat, pickupLat) == 0
-	                && Double.compare(prevLng, pickupLng) == 0) {
-	            // 📍 Same location → start = pickup
-	            fromLat = pickupLat;
-	            fromLng = pickupLng;
-	        } else {
-	            // ✅ Normal case → use previous planned delivery
-	            fromLat = prevLat;
-	            fromLng = prevLng;
-	        }
-	    }
+			if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
+				// ⏰ Previous planned delivery happens later → fallback to planned job start
+				fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
+				fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
+			} else if (prevLat != null && prevLng != null && Double.compare(prevLat, pickupLat) == 0 && Double.compare(prevLng, pickupLng) == 0) {
+				// 📍 Same location → start = pickup
+				fromLat = pickupLat;
+				fromLng = pickupLng;
+			} else {
+				// ✅ Normal case → use previous planned delivery
+				fromLat = prevLat;
+				fromLng = prevLng;
+			}
+		}
 
-	    return (fromLat != null && fromLng != null) ? new LatLng(fromLat, fromLng) : null;
+		return (fromLat != null && fromLng != null) ? new LatLng(fromLat, fromLng) : null;
 	}
 
-	
 	public Double calculateTrStartDistance(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort by pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(requestId)) {
-	            index = i;
-	            break;
-	        }
-	    }
-	    if (index == -1) {
-	        return null; // request not found
-	    }
+		// Sort by pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(requestId)) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			return null; // request not found
+		}
 
-	    // --- Target pickup point
-	    double toLat = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLatitude()
-	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+		// --- Target pickup point
+		double toLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
 
-	    double toLng = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLongitude()
-	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+		double toLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	    double startDistance;
+		double startDistance;
 
-	    if (index == 0) {
-	        // ✅ First TR → from job start
-	        double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	        double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
-	    } else {
-	        TransportationRequest prev = requests.get(index - 1);
+		if (index == 0) {
+			// ✅ First TR → from job start
+			double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+			double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+		} else {
+			TransportationRequest prev = requests.get(index - 1);
 
-	        // --- Previous delivery point
-	        Double prevLat = prev.getDeliveryRequest().getDestination() != null
-	                ? prev.getDeliveryRequest().getDestination().getLatitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLatitude();
-	        Double prevLng = prev.getDeliveryRequest().getDestination() != null
-	                ? prev.getDeliveryRequest().getDestination().getLongitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLongitude();
+			// --- Previous delivery point
+			Double prevLat = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLatitude() : prev.getDeliveryRequest().getWarehouse().getLatitude();
+			Double prevLng = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLongitude() : prev.getDeliveryRequest().getWarehouse().getLongitude();
 
-	        if (prev.getDeliveryDate() != null && request.getPickupDate() != null
-	                && prev.getDeliveryDate().after(request.getPickupDate())) {
-	            // ⏰ Previous delivery happens after this pickup → fallback to job start
-	            double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	            double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	            startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
-	        } else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
-	            // 📍 Same point → distance = 0
-	            startDistance = 0d;
-	        } else {
-	            // ✅ Normal case → previous delivery
-	            startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
-	        }
-	    }
+			if (prev.getDeliveryDate() != null && request.getPickupDate() != null && prev.getDeliveryDate().after(request.getPickupDate())) {
+				// ⏰ Previous delivery happens after this pickup → fallback to job start
+				double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+				double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+				startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
+				// 📍 Same point → distance = 0
+				startDistance = 0d;
+			} else {
+				// ✅ Normal case → previous delivery
+				startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
+			}
+		}
 
-	    return startDistance;
+		return startDistance;
 	}
 
-	
 	public Double calculatePlannedTrStartDistance(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
 
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(requestId)) {
-	            index = i;
-	            break;
-	        }
-	    }
-	    if (index == -1) {
-	        return null; // request not found
-	    }
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(requestId)) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			return null; // request not found
+		}
 
-	    // --- Target planned pickup point
-	    double toLat = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLatitude()
-	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+		// --- Target planned pickup point
+		double toLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
 
-	    double toLng = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLongitude()
-	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+		double toLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	    double startDistance;
+		double startDistance;
 
-	    if (index == 0) {
-	        // ✅ First TR → from planned job start
-	        double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
-	        double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
-	        startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
-	    } else {
-	        TransportationRequest prev = requests.get(index - 1);
+		if (index == 0) {
+			// ✅ First TR → from planned job start
+			double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
+			double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
+			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+		} else {
+			TransportationRequest prev = requests.get(index - 1);
 
-	        // --- Previous planned delivery point
-	        Double prevLat = prev.getDeliveryRequest().getDestination() != null
-	                ? prev.getDeliveryRequest().getDestination().getLatitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLatitude();
-	        Double prevLng = prev.getDeliveryRequest().getDestination() != null
-	                ? prev.getDeliveryRequest().getDestination().getLongitude()
-	                : prev.getDeliveryRequest().getWarehouse().getLongitude();
+			// --- Previous planned delivery point
+			Double prevLat = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLatitude() : prev.getDeliveryRequest().getWarehouse().getLatitude();
+			Double prevLng = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLongitude() : prev.getDeliveryRequest().getWarehouse().getLongitude();
 
-	        if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null
-	                && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
-	            // ⏰ Previous planned delivery happens after this planned pickup → fallback to planned job start
-	            double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
-	            double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
-	            startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
-	        } else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
-	            // 📍 Same point → distance = 0
-	            startDistance = 0d;
-	        } else {
-	            // ✅ Normal case → use previous planned delivery
-	            startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
-	        }
-	    }
+			if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
+				// ⏰ Previous planned delivery happens after this planned pickup → fallback to
+				// planned job start
+				double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
+				double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
+				startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
+			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
+				// 📍 Same point → distance = 0
+				startDistance = 0d;
+			} else {
+				// ✅ Normal case → use previous planned delivery
+				startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
+			}
+		}
 
-	    return startDistance;
+		return startDistance;
 	}
 
-	
 	public String calculatePlannedTrStartDuration(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
 
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(requestId)) {
-	            index = i;
-	            break;
-	        }
-	    }
-	    if (index == -1) {
-	        return null; // request not found
-	    }
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(requestId)) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			return null; // request not found
+		}
 
-	    Date trPickup = request.getExpectedPickupDate();
-	    String startDuration;
+		Date trPickup = request.getExpectedPickupDate();
+		String startDuration;
 
-	    if (index == 0) {
-	        // First TR → from planned job start
-	        Date jobStart = job.getPlannedStartDate();
-	        startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(jobStart, trPickup);
-	    } else {
-	        // Other TRs → normally from previous TR delivery
-	        TransportationRequest prev = requests.get(index - 1);
-	        Date prevDelivery = prev.getExpectedDeliveryDate();
+		if (index == 0) {
+			// First TR → from planned job start
+			Date jobStart = job.getPlannedStartDate();
+			startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(jobStart, trPickup);
+		} else {
+			// Other TRs → normally from previous TR delivery
+			TransportationRequest prev = requests.get(index - 1);
+			Date prevDelivery = prev.getExpectedDeliveryDate();
 
-	        if (prevDelivery != null && !prevDelivery.after(trPickup)) {
-	            // prev delivered before or exactly at current pickup → OK
-	            startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(prevDelivery, trPickup);
-	        } else {
-	            // prev delivery happens after this pickup → fallback to job start
-	            Date jobStart = job.getPlannedStartDate();
-	            startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(jobStart, trPickup);
-	        }
-	    }
+			if (prevDelivery != null && !prevDelivery.after(trPickup)) {
+				// prev delivered before or exactly at current pickup → OK
+				startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(prevDelivery, trPickup);
+			} else {
+				// prev delivery happens after this pickup → fallback to job start
+				Date jobStart = job.getPlannedStartDate();
+				startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(jobStart, trPickup);
+			}
+		}
 
-	    return startDuration;
+		return startDuration;
 	}
 
-
-	
 	public String calculateTrStartDuration(Integer jobId, Integer requestId) {
-	    TransportationJob job = findOne(jobId);
-	    TransportationRequest request = transportationRequestService.findOne(requestId);
+		TransportationJob job = findOne(jobId);
+		TransportationRequest request = transportationRequestService.findOne(requestId);
 
-	    List<TransportationRequest> requests = job.getTransportationRequestList();
-	    if (requests == null || requests.isEmpty() || request == null) {
-	        return null;
-	    }
+		List<TransportationRequest> requests = job.getTransportationRequestList();
+		if (requests == null || requests.isEmpty() || request == null) {
+			return null;
+		}
 
-	    // Sort by actual pickup date
-	 // Sort requests by pickupDate, falling back to expectedPickupDate if pickupDate is null
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort by actual pickup date
+		// Sort requests by pickupDate, falling back to expectedPickupDate if pickupDate
+		// is null
+		requests.sort(Comparator.comparing(tr -> tr.getPickupDate() != null ? tr.getPickupDate() : tr.getExpectedPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
-	    int index = -1;
-	    for (int i = 0; i < requests.size(); i++) {
-	        if (requests.get(i).getId().equals(requestId)) {
-	            index = i;
-	            break;
-	        }
-	    }
-	    if (index == -1) {
-	        return null; // request not found
-	    }
+		int index = -1;
+		for (int i = 0; i < requests.size(); i++) {
+			if (requests.get(i).getId().equals(requestId)) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			return null; // request not found
+		}
 
-	    double toLat = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLatitude()
-	            : request.getDeliveryRequest().getWarehouse().getLatitude();
+		double toLat = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLatitude() : request.getDeliveryRequest().getWarehouse().getLatitude();
 
-	    double toLng = request.getDeliveryRequest().getOrigin() != null
-	            ? request.getDeliveryRequest().getOrigin().getLongitude()
-	            : request.getDeliveryRequest().getWarehouse().getLongitude();
+		double toLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
-	    String startDuration;
+		String startDuration;
 
-	    if (index == 0) {
-	        // First TR → from job start
-	        double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	        double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
-	    } else {
-	        // Search backwards for the last TR that was delivered before this pickup
-	        Date thisPickup = request.getPickupDate();
-	        TransportationRequest validPrev = null;
+		if (index == 0) {
+			// First TR → from job start
+			double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+			double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+			startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+		} else {
+			// Search backwards for the last TR that was delivered before this pickup
+			Date thisPickup = request.getPickupDate();
+			TransportationRequest validPrev = null;
 
-	        for (int i = index - 1; i >= 0; i--) {
-	            TransportationRequest candidate = requests.get(i);
-	            Date candidateDelivery = candidate.getDeliveryDate();
-	            if (candidateDelivery != null && !candidateDelivery.after(thisPickup)) {
-	                validPrev = candidate;
-	                break;
-	            }
-	        }
+			for (int i = index - 1; i >= 0; i--) {
+				TransportationRequest candidate = requests.get(i);
+				Date candidateDelivery = candidate.getDeliveryDate();
+				if (candidateDelivery != null && !candidateDelivery.after(thisPickup)) {
+					validPrev = candidate;
+					break;
+				}
+			}
 
-	        double fromLat, fromLng;
+			double fromLat, fromLng;
 
-	        if (validPrev != null) {
-	            if (validPrev.getDeliveryRequest().getDestination() != null) {
-	                fromLat = validPrev.getDeliveryRequest().getDestination().getLatitude();
-	                fromLng = validPrev.getDeliveryRequest().getDestination().getLongitude();
-	            } else {
-	                fromLat = validPrev.getDeliveryRequest().getWarehouse().getLatitude();
-	                fromLng = validPrev.getDeliveryRequest().getWarehouse().getLongitude();
-	            }
-	        } else {
-	            // no valid previous TR → fallback to job start
-	            fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
-	            fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
-	        }
+			if (validPrev != null) {
+				if (validPrev.getDeliveryRequest().getDestination() != null) {
+					fromLat = validPrev.getDeliveryRequest().getDestination().getLatitude();
+					fromLng = validPrev.getDeliveryRequest().getDestination().getLongitude();
+				} else {
+					fromLat = validPrev.getDeliveryRequest().getWarehouse().getLatitude();
+					fromLng = validPrev.getDeliveryRequest().getWarehouse().getLongitude();
+				}
+			} else {
+				// no valid previous TR → fallback to job start
+				fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
+				fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
+			}
 
-	        startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
-	    }
+			startDuration = PathService.getDuration(fromLat, fromLng, toLat, toLng);
+		}
 
-	    return startDuration;
+		return startDuration;
 	}
-	
+
 	public Double calculateTrDistance(Integer id) {
-	    List<TransportationJobItinerary> list =
-	            transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
+		List<TransportationJobItinerary> list = transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
 
-	    if (list == null || list.size() < 2) {
-	        return 0d; // no distance if fewer than 2 points
-	    }
+		if (list == null || list.size() < 2) {
+			return 0d; // no distance if fewer than 2 points
+		}
 
-	    double first = list.get(0).getCumulativeDistance();
-	    double last = list.get(list.size() - 1).getCumulativeDistance();
+		double first = list.get(0).getCumulativeDistance();
+		double last = list.get(list.size() - 1).getCumulativeDistance();
 
-	    return last - first;
+		return last - first;
 	}
-	
+
 	public String calculateTrDuration(Integer id) {
-	    List<TransportationJobItinerary> list =
-	            transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
+		List<TransportationJobItinerary> list = transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
 
-	    if (list == null || list.size() < 2) {
-	        return "0m"; // no duration if fewer than 2 points
-	    }
+		if (list == null || list.size() < 2) {
+			return "0m"; // no duration if fewer than 2 points
+		}
 
-	    Date first = list.get(0).getTimestamp();
-	    Date last = list.get(list.size() - 1).getTimestamp();
+		Date first = list.get(0).getTimestamp();
+		Date last = list.get(list.size() - 1).getTimestamp();
 
-	    if (first == null || last == null) {
-	        return null; // safeguard if timestamps are missing
-	    }
+		if (first == null || last == null) {
+			return null; // safeguard if timestamps are missing
+		}
 
-	    return UtilsFunctions.getDateDifferenceDaysHoursMinutes(first, last);
+		return UtilsFunctions.getDateDifferenceDaysHoursMinutes(first, last);
 	}
-	
+
 	public Long calculateTrDurationMilli(Integer id) {
-	    List<TransportationJobItinerary> list =
-	            transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
+		List<TransportationJobItinerary> list = transportationJobItineraryRepos.findByTransportationRequestIdOrderByTimestampAsc(id);
 
-	    if (list == null || list.size() < 2) {
-	        return 0L; // no duration if fewer than 2 points
-	    }
+		if (list == null || list.size() < 2) {
+			return 0L; // no duration if fewer than 2 points
+		}
 
-	    Date first = list.get(0).getTimestamp();
-	    Date last = list.get(list.size() - 1).getTimestamp();
+		Date first = list.get(0).getTimestamp();
+		Date last = list.get(list.size() - 1).getTimestamp();
 
-	    if (first == null || last == null) {
-	        return null; // safeguard if timestamps are missing
-	    }
+		if (first == null || last == null) {
+			return null; // safeguard if timestamps are missing
+		}
 
-	    return UtilsFunctions.getDateDifference(first, last);
+		return UtilsFunctions.getDateDifference(first, last);
 	}
-
-
-
-
-
-
-
-
-
 
 	public Double getEstimatedDeliveryDistance(Integer jobId) {
 		TransportationJob job = findOne(jobId);
@@ -1188,8 +1111,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 			document.open();
 
-			paragraph = new Paragraph(
-					transportationJob.getReference() + " | Creation Date : " + (transportationJob.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationJob.getDate1()) : ""), titleFont);
+			paragraph = new Paragraph(transportationJob.getReference() + " |   " + transportationJob.getStatus().getValue(), titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -1534,7 +1456,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(lastLocation.getDate(), new Date()) > 3) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
-					// hadi adir mÃƒÂ¯Ã‚Â¿Ã‚Â½j les cordonnÃƒÆ’Ã‚Â©es si user exist dÃƒÆ’Ã‚Â©ja et distance > 5km
+					// hadi adir mÃƒÂ¯Ã‚Â¿Ã‚Â½j les cordonnÃƒÆ’Ã‚Â©es si user exist dÃƒÆ’Ã‚Â©ja et
+					// distance > 5km
 					googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
 
 				} else {
@@ -1590,13 +1513,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		}
 
 	}
-	
+
 	public Double plannedStartDistance(TransportationJob job) {
 
 		if (job.getStopList() != null && !job.getStopList().isEmpty()) {
-			return PathService.getDistance(job.getFirstLatitude(), job.getFirstLongitude(), job.getStopList().get(0).getSite()!=null?
-					job.getStopList().get(0).getSite().getLatitude():job.getStopList().get(0).getWarehouse().getLatitude(), job.getStopList().get(0).getSite()!=null?
-							job.getStopList().get(0).getSite().getLongitude():job.getStopList().get(0).getWarehouse().getLongitude());
+			return PathService.getDistance(job.getFirstLatitude(), job.getFirstLongitude(),
+					job.getStopList().get(0).getSite() != null ? job.getStopList().get(0).getSite().getLatitude() : job.getStopList().get(0).getWarehouse().getLatitude(),
+					job.getStopList().get(0).getSite() != null ? job.getStopList().get(0).getSite().getLongitude() : job.getStopList().get(0).getWarehouse().getLongitude());
 		}
 
 		return 0d;
@@ -1611,9 +1534,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		return 0d;
 	}
-	
-	
-
 
 	public Double ongoingDistance(Integer jobId) {
 		List<TransportationJobItinerary> delivery = transportationJobItineraryRepos.findByTransportationJobIdAndTransportationRequestStatus(jobId, TransportationRequestStatus.DELIVERED);
@@ -1627,165 +1547,166 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 
 	public Double calculateRealProductiveDist(Integer jobId) {
-	    List<TransportationJobItinerary> orderedItineraries =
-	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
 
-	    double realProductive = 0d;
-	    int loadCount = 0; // number of active loads still onboard
+		double realProductive = 0d;
+		int loadCount = 0; // number of active loads still onboard
 
-	    for (TransportationJobItinerary point : orderedItineraries) {
-	        double dist = point.getDistanceFromPrevious();
+		for (TransportationJobItinerary point : orderedItineraries) {
+			double dist = point.getDistanceFromPrevious();
 
-	        // Count distance only if carrying goods
-	        if (loadCount > 0) {
-	            realProductive += dist;
-	        }
+			// Count distance only if carrying goods
+			if (loadCount > 0) {
+				realProductive += dist;
+			}
 
-	        // Update load count based on request status
-	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
-	            loadCount++;
-	        } else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
-	            if (loadCount > 0) loadCount--;
-	        }
-	    }
+			// Update load count based on request status
+			if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+				loadCount++;
+			} else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+				if (loadCount > 0)
+					loadCount--;
+			}
+		}
 
-	    return realProductive;
+		return realProductive;
 	}
 
 	public Double calculateRealNonProductiveDist(Integer jobId) {
-	    List<TransportationJobItinerary> orderedItineraries =
-	            transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
+		List<TransportationJobItinerary> orderedItineraries = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(jobId);
 
-	    double realNonProductive = 0d;
-	    int loadCount = 0; // number of active loads still onboard
+		double realNonProductive = 0d;
+		int loadCount = 0; // number of active loads still onboard
 
-	    for (TransportationJobItinerary point : orderedItineraries) {
-	        double dist = point.getDistanceFromPrevious();
+		for (TransportationJobItinerary point : orderedItineraries) {
+			double dist = point.getDistanceFromPrevious();
 
-	        // Count distance only if NOT carrying goods
-	        if (loadCount == 0) {
-	            realNonProductive += dist;
-	        }
+			// Count distance only if NOT carrying goods
+			if (loadCount == 0) {
+				realNonProductive += dist;
+			}
 
-	        // Update load count based on request status
-	        if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
-	            loadCount++;
-	        } else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
-	            if (loadCount > 0) loadCount--;
-	        }
-	    }
+			// Update load count based on request status
+			if (point.getTransportationRequestStatus() == TransportationRequestStatus.PICKEDUP) {
+				loadCount++;
+			} else if (point.getTransportationRequestStatus() == TransportationRequestStatus.DELIVERED) {
+				if (loadCount > 0)
+					loadCount--;
+			}
+		}
 
-	    return realNonProductive;
+		return realNonProductive;
 	}
-
 
 	public Double calculateEstimatedProductiveDist(Integer jobId) {
-	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-	    double estimatedProd = 0d;
-	    int loadCount = 0; // track how many pickups are still active
+		double estimatedProd = 0d;
+		int loadCount = 0; // track how many pickups are still active
 
-	    Double lastLat = null;
-	    Double lastLng = null;
+		Double lastLat = null;
+		Double lastLng = null;
 
-	    for (Stop stop : stops) {
-	        double lat;
-	        double lng;
+		for (Stop stop : stops) {
+			double lat;
+			double lng;
 
-	        if (stop.getSite() != null) {
-	            lat = stop.getSite().getLatitude();
-	            lng = stop.getSite().getLongitude();
-	        } else if (stop.getWarehouse() != null) {
-	            lat = stop.getWarehouse().getLatitude();
-	            lng = stop.getWarehouse().getLongitude();
-	        } else {
-	            lat = 0.0;
-	            lng = 0.0;
-	        }
+			if (stop.getSite() != null) {
+				lat = stop.getSite().getLatitude();
+				lng = stop.getSite().getLongitude();
+			} else if (stop.getWarehouse() != null) {
+				lat = stop.getWarehouse().getLatitude();
+				lng = stop.getWarehouse().getLongitude();
+			} else {
+				lat = 0.0;
+				lng = 0.0;
+			}
 
-	        if (lastLat != null && lastLng != null) {
-	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+			if (lastLat != null && lastLng != null) {
+				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-	            if (loadCount > 0) { // productive distance only if carrying goods
-	                estimatedProd += dist;
-	            }
-	        }
+				if (loadCount > 0) { // productive distance only if carrying goods
+					estimatedProd += dist;
+				}
+			}
 
-	        // Update load count based on stop type
-	        switch (stop.getType()) {
-	            case PICKUP:
-	                loadCount++;
-	                break;
-	            case DELIVERY:
-	                if (loadCount > 0) loadCount--;
-	                break;
-	            case DELIVERY_AND_PICKUP:
-	                if (loadCount > 0) loadCount--; // first deliver
-	                loadCount++; // then pickup again
-	                break;
-	        }
+			// Update load count based on stop type
+			switch (stop.getType()) {
+			case PICKUP:
+				loadCount++;
+				break;
+			case DELIVERY:
+				if (loadCount > 0)
+					loadCount--;
+				break;
+			case DELIVERY_AND_PICKUP:
+				if (loadCount > 0)
+					loadCount--; // first deliver
+				loadCount++; // then pickup again
+				break;
+			}
 
-	        lastLat = lat;
-	        lastLng = lng;
-	    }
+			lastLat = lat;
+			lastLng = lng;
+		}
 
-	    return estimatedProd;
+		return estimatedProd;
 	}
-
 
 	public Double calculateEstimatedNonProductiveDist(Integer jobId) {
-	    List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
+		List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(jobId);
 
-	    double estimatedNonProd = 0d;
-	    int loadCount = 0; // track active pickups still onboard
+		double estimatedNonProd = 0d;
+		int loadCount = 0; // track active pickups still onboard
 
-	    Double lastLat = null;
-	    Double lastLng = null;
+		Double lastLat = null;
+		Double lastLng = null;
 
-	    for (Stop stop : stops) {
-	        double lat;
-	        double lng;
+		for (Stop stop : stops) {
+			double lat;
+			double lng;
 
-	        if (stop.getSite() != null) {
-	            lat = stop.getSite().getLatitude();
-	            lng = stop.getSite().getLongitude();
-	        } else if (stop.getWarehouse() != null) {
-	            lat = stop.getWarehouse().getLatitude();
-	            lng = stop.getWarehouse().getLongitude();
-	        } else {
-	            lat = 0.0;
-	            lng = 0.0;
-	        }
+			if (stop.getSite() != null) {
+				lat = stop.getSite().getLatitude();
+				lng = stop.getSite().getLongitude();
+			} else if (stop.getWarehouse() != null) {
+				lat = stop.getWarehouse().getLatitude();
+				lng = stop.getWarehouse().getLongitude();
+			} else {
+				lat = 0.0;
+				lng = 0.0;
+			}
 
-	        if (lastLat != null && lastLng != null) {
-	            double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
+			if (lastLat != null && lastLng != null) {
+				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
 
-	            if (loadCount == 0) { // only count as non-productive if carrying nothing
-	                estimatedNonProd += dist;
-	            }
-	        }
+				if (loadCount == 0) { // only count as non-productive if carrying nothing
+					estimatedNonProd += dist;
+				}
+			}
 
-	        // Update load count based on stop type
-	        switch (stop.getType()) {
-	            case PICKUP:
-	                loadCount++;
-	                break;
-	            case DELIVERY:
-	                if (loadCount > 0) loadCount--;
-	                break;
-	            case DELIVERY_AND_PICKUP:
-	                if (loadCount > 0) loadCount--; // deliver first
-	                loadCount++; // then pickup again
-	                break;
-	        }
+			// Update load count based on stop type
+			switch (stop.getType()) {
+			case PICKUP:
+				loadCount++;
+				break;
+			case DELIVERY:
+				if (loadCount > 0)
+					loadCount--;
+				break;
+			case DELIVERY_AND_PICKUP:
+				if (loadCount > 0)
+					loadCount--; // deliver first
+				loadCount++; // then pickup again
+				break;
+			}
 
-	        lastLat = lat;
-	        lastLng = lng;
-	    }
+			lastLat = lat;
+			lastLng = lng;
+		}
 
-	    return estimatedNonProd;
+		return estimatedNonProd;
 	}
-
 
 	public static double haversineDistance(double lat1, double lon1, double lat2, double lon2) {
 		final int EARTH_RADIUS_KM = 6371;

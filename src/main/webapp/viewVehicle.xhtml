@@ -95,6 +95,15 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Brand" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleView.vehicle.brandName}" styleClass="blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Max Weight" />
 										</div>
 										<div class="profile-info-value">
@@ -102,6 +111,24 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" Kg" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="From Mytools" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleView.vehicle.fromMyTools?'Yes':'No'}" styleClass="#{vehicleView.vehicle.fromMyTools?'green':'red'}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Geolocalised" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleView.vehicle.geolocalised?'Yes':'No'}" />
 											&nbsp;
 										</div>
 									</div>
@@ -120,6 +147,15 @@
 									</div>
 									<div class="profile-info-row">
 										<div class="profile-info-name">
+											<h:outputText value="Brand Type" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleView.vehicle.brandTypeName}" styleClass="orange" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
 											<h:outputText value="Max Volume" />
 										</div>
 										<div class="profile-info-value">
@@ -127,6 +163,15 @@
 												<f:convertNumber type="number" maxFractionDigits="2" />
 											</h:outputText>
 											<h:outputText value=" m3" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Mytools ID" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{vehicleView.vehicle.tool.id}" styleClass="badge badge-info" />
 											&nbsp;
 										</div>
 									</div>

@@ -26,6 +26,13 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 		vehicle.getUserList().forEach(i -> initialize(i.getUser()));
 		return vehicle;
 	}
+	
+	@Override
+	public Vehicle save(Vehicle model) {
+		if(model.getFromMyTools())
+			model.setMatricule(model.getTool().getMatricule());
+		return super.save(model);
+	}
 
 	public List<Vehicle> findLightByTransporter(Integer transporterId) {
 		return vehicleRepos.findLightByTransporter(transporterId);

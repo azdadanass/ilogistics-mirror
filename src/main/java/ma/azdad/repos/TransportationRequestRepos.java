@@ -35,7 +35,7 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	String destinationProjectName = "(select b.name from Project b where b.id = a.deliveryRequest.destinationProject.id)";
 
 	String c1 = "select new  TransportationRequest(a.id,a.reference,a.status,a.neededPickupDate,a.neededDeliveryDate,plannedPickupDate,a.plannedDeliveryDate,a.expectedPickupDate,a.expectedDeliveryDate,a.pickupDate,a.deliveryDate," //
-			+ "a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.type,a.deliveryRequest.numberOfItems,a.deliveryRequest.netWeight,a.deliveryRequest.grossWeight,a.deliveryRequest.volume,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,"
+			+ "a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.smsRef,a.deliveryRequest.type,a.deliveryRequest.priority,a.deliveryRequest.numberOfItems,a.deliveryRequest.netWeight,a.deliveryRequest.grossWeight,a.deliveryRequest.volume,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,"
 			+ originName + ", " + destinationName + ", " + warehouseName + ", " + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
 			+ ") ";
 

@@ -155,9 +155,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	// c1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Date plannedPickupDate, Date plannedDeliveryDate,
 			Date expectedPickupDate, Date expectedDeliveryDate, Date pickupDate, Date deliveryDate, //
-			Integer deliveryRequestId, String deliveryRequestReference, String deliveryRequestSmsRef, DeliveryRequestType deliveryRequestType, Integer numberOfItems,Double netWeight,Double grossWeight,Double volume,// 
-			String requesterUsername, String requesterFullName,
-			String originName, String destinationName, String warehouseName, //
+			Integer deliveryRequestId, String deliveryRequestReference, String deliveryRequestSmsRef, DeliveryRequestType deliveryRequestType, Priority priority, Integer numberOfItems, Double netWeight,
+			Double grossWeight, Double volume, //
+			String requesterUsername, String requesterFullName, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
 		this.reference = reference;
@@ -174,6 +174,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.deliveryRequestReference = deliveryRequestReference;
 		this.deliveryRequestSmsRef = deliveryRequestSmsRef;
 		this.setDeliveryRequestType(deliveryRequestType);
+		this.setPriority(priority);
 		this.setNumberOfItems(numberOfItems);
 		this.setNetWeight(netWeight);
 		this.setGrossWeight(grossWeight);
@@ -294,6 +295,18 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	@Transient
 	public Double getDistance() {
 		return ObjectUtils.firstNonNull(realDistance, estimatedDistance, 0.0);
+	}
+	
+	@Transient
+	public Boolean getIsCritical() {
+		return Priority.CRITICAL.equals(getPriority());
+	}
+	
+	@Transient
+	public Boolean getIsOverdue() {
+		if(pickupDate!=null)
+			return false;
+		return (new Date()).compareTo(getStartDate()) > 0;
 	}
 
 	@Transient
@@ -1080,9 +1093,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Priority getPriority() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getPriority();
-		return null;
+		return deliveryRequest != null ? deliveryRequest.getPriority() : null;
+	}
+
+	@Transient
+	public void setPriority(Priority deliveryRequestPriority) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
+		deliveryRequest.setPriority(deliveryRequestPriority);
 	}
 
 	@Transient

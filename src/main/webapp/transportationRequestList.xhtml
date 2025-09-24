@@ -298,6 +298,12 @@
 							</p:column>
 							<p:column headerText="Actions" width="100" exportable="false">
 								<div class="action-buttons center">
+									<p:commandLink title="Critical" styleClass="aa-tooltip tooltip-error" rendered="#{item.isCritical}">
+										<i class="ace-icon fa fa-exclamation-triangle bigger-130 red" />
+									</p:commandLink>
+										<p:commandLink title="Overdue" styleClass="aa-tooltip tooltip-error" rendered="#{item.isOverdue}">
+										<i class="ace-icon fa fa-flag bigger-130 red" />
+									</p:commandLink>
 									<h:outputLink value="#{transportationRequestView.viewPage}" title="Show details" styleClass="aa-tooltip tooltip-info">
 										<i class="ace-icon fa fa-list-alt bigger-130 blue" />
 										<f:param name="id" value="#{item.id}" />

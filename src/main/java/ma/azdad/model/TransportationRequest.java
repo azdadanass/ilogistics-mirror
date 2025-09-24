@@ -578,7 +578,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Override
 	public boolean filter(String query) {
-		return contains(query, getDeliveryRequestReference(), getReference(), getOriginName(), getDestinationName(), transporterName);
+		return contains(query, getDeliveryRequestReference(), getReference(), getOriginName(), getDestinationName(), transporterName,getSmsRef(),getOriginName(),getDestinationName(),getWarehouseName(),status.getValue());
 	}
 
 	@Transient

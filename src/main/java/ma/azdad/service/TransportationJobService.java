@@ -141,6 +141,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		TransportationJob transportationJob = super.findOne(id);
 		Hibernate.initialize(transportationJob.getFileList());
 		Hibernate.initialize(transportationJob.getHistoryList());
+		Hibernate.initialize(transportationJob.getCommentList());
 		Hibernate.initialize(transportationJob.getTransportationRequestList());
 		Hibernate.initialize(transportationJob.getToNotifyList());
 		if (transportationJob.getTransportationRequestList() != null)

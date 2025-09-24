@@ -485,4 +485,51 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="addCommentForm" rendered="#{transportationJobView.isViewPage}">
+		<p:dialog widgetVar="addCommentDlg" modal="true" closable="false" resizable="false" showHeader="false" position="top" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus light-blue" />
+					<h:outputText value=" Add Comment" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width:100%">
+				<div class="center">
+					<p:inputText value="#{transportationJobView.comment.title}" placeholder="Title" required="true" requiredMessage="Title should not be null" style="width:90%;margin:auto" />
+				</div>
+				<br />
+				<div class="center">
+					<p:textEditor widgetVar="editor1" value="#{transportationJobView.comment.content}" height="300" style="margin-bottom:10px" required="true" requiredMessage="Comment should not be null"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.addComment()}" value="Add" styleClass="btn btn-info" oncomplete="PF('addCommentDlg').hide()" update=":main_form:commentPanel" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="deleteCommentForm" rendered="#{transportationJobView.isViewPage}">
+		<p:dialog widgetVar="deleteCommentDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete Comment" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationJobView.deleteComment()}" value="Delete" styleClass="btn btn-danger"  oncomplete="PF('deleteCommentDlg').hide()" update=":main_form:commentPanel" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

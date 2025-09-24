@@ -263,6 +263,15 @@ public class ScriptView {
 		transportationJobService.generateQrKeyScript();
 	}
 	
+	public void updateDeliveryRequestPackingQuantities() {
+		if (!canExecute)
+			return;
+		deliveryRequestService.updateNumberOfItems();
+		deliveryRequestService.updateGrossWeight();
+		deliveryRequestService.updateNetWeight();
+		deliveryRequestService.updateVolume();
+	}
+	
 	
 
 	// GETTERS & SETTERS

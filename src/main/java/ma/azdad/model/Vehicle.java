@@ -21,8 +21,7 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	private Boolean active = true;
 	private String description;
-	
-	
+
 	private String matricule;
 	private Boolean fromMyTools = false;
 	private Boolean geolocalised = false;
@@ -41,14 +40,6 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	private List<VehicleHistory> historyList = new ArrayList<>();
 	private List<UserVehicle> userList = new ArrayList<UserVehicle>();
 
-	// tmp
-	private Integer toolId;
-
-	public void init() {
-		if (tool != null)
-			toolId = tool.getId();
-	}
-
 	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
@@ -64,8 +55,8 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		this.transporter = transporter;
 	}
 
-	//c1
-	public Vehicle(Integer id, Boolean fromMyTools, String matricule, String toolMatricule,Double maxWeight,Double maxVolume) {
+	// c1
+	public Vehicle(Integer id, Boolean fromMyTools, String matricule, String toolMatricule, Double maxWeight, Double maxVolume) {
 		super(id);
 		this.matricule = matricule;
 		this.fromMyTools = fromMyTools;
@@ -84,44 +75,42 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		userVehicle.setVehicle(null);
 		userList.remove(userVehicle);
 	}
-	
+
 	@Transient
-	public Double getMaxWeight(){
-		return vehicleType!=null?vehicleType.getMaxWeight():null;
+	public Double getMaxWeight() {
+		return vehicleType != null ? vehicleType.getMaxWeight() : null;
 	}
 
 	@Transient
-	public void setMaxWeight(Double vehicleTypeMaxWeight){
-		if(vehicleType==null)
-			vehicleType=new VehicleType();
+	public void setMaxWeight(Double vehicleTypeMaxWeight) {
+		if (vehicleType == null)
+			vehicleType = new VehicleType();
 		vehicleType.setMaxWeight(vehicleTypeMaxWeight);
 	}
-	
+
 	@Transient
-	public Double getMaxVolume(){
-		return vehicleType!=null?vehicleType.getMaxVolume():null;
+	public Double getMaxVolume() {
+		return vehicleType != null ? vehicleType.getMaxVolume() : null;
 	}
 
 	@Transient
-	public void setMaxVolume(Double vehicleTypeMaxVolume){
-		if(vehicleType==null)
-			vehicleType=new VehicleType();
+	public void setMaxVolume(Double vehicleTypeMaxVolume) {
+		if (vehicleType == null)
+			vehicleType = new VehicleType();
 		vehicleType.setMaxVolume(vehicleTypeMaxVolume);
 	}
-	
+
 	@Transient
-	public String getTypeName(){
-		return vehicleType!=null?vehicleType.getName():null;
+	public String getTypeName() {
+		return vehicleType != null ? vehicleType.getName() : null;
 	}
 
 	@Transient
-	public void setTypeName(String vehicleTypeName){
-		if(vehicleType==null)
-			vehicleType=new VehicleType();
+	public void setTypeName(String vehicleTypeName) {
+		if (vehicleType == null)
+			vehicleType = new VehicleType();
 		vehicleType.setName(vehicleTypeName);
 	}
-
-
 
 	@Transient
 	public String getCorrectMatricule() {
@@ -273,12 +262,14 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 
 	@Transient
 	public Integer getToolId() {
-		return toolId;
+		return tool != null ? tool.getId() : null;
 	}
 
 	@Transient
 	public void setToolId(Integer toolId) {
-		this.toolId = toolId;
+		if (tool == null || !toolId.equals(tool.getId()))
+			tool = new Tool();
+		tool.setId(toolId);
 	}
 
 //	public Double getMaxWeight() {

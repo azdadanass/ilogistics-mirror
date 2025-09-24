@@ -1132,10 +1132,15 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	@Transient
-	public String getProjectName() {
-		if (deliveryRequest != null)
-			return deliveryRequest.getProject().getName();
-		return null;
+	public String getProjectName(){
+		return deliveryRequest!=null?deliveryRequest.getProjectName():null;
+	}
+
+	@Transient
+	public void setProjectName(String projectName){
+		if(deliveryRequest==null)
+			deliveryRequest=new DeliveryRequest();
+		deliveryRequest.setProjectName(projectName);
 	}
 
 	@Transient

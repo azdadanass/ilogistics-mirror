@@ -50,13 +50,21 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 		super();
 	}
 
-	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount, Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
+	// c1
+	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount,//
+			String transportationRequestReference,TransportationRequestStatus transportationRequestStatus,Double transportationRequestCost,TransportationRequestPaymentStatus transportationRequestPaymentStatus,String transportationRequestProjectName, //
+			Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
 		super();
 		this.costType = costType;
 		this.revenueType = revenueType;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.amount = amount;
+		this.setTransportationRequestReference(transportationRequestReference);
+		this.setTransportationRequestStatus(transportationRequestStatus);
+		this.setTransportationRequestCost(transportationRequestCost);
+		this.setTransportationRequestPaymentStatus(transportationRequestPaymentStatus);
+		this.setTransportationRequestProjectName(transportationRequestProjectName);
 		this.acceptanceId = acceptanceId;
 		this.expensepaymentId = expensepaymentId;
 		this.madConversionRate = madConversionRate1 != null ? madConversionRate1 : madConversionRate2;
@@ -253,6 +261,66 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	@Transient
+	public String getTransportationRequestReference(){
+		return transportationRequest!=null?transportationRequest.getReference():null;
+	}
+
+	@Transient
+	public void setTransportationRequestReference(String transportationRequestReference){
+		if(transportationRequest==null)
+			transportationRequest=new TransportationRequest();
+		transportationRequest.setReference(transportationRequestReference);
+	}
+	
+	@Transient
+	public TransportationRequestStatus getTransportationRequestStatus(){
+		return transportationRequest!=null?transportationRequest.getStatus():null;
+	}
+
+	@Transient
+	public void setTransportationRequestStatus(TransportationRequestStatus transportationRequestStatus){
+		if(transportationRequest==null)
+			transportationRequest=new TransportationRequest();
+		transportationRequest.setStatus(transportationRequestStatus);
+	}
+	
+	@Transient
+	public Double getTransportationRequestCost(){
+		return transportationRequest!=null?transportationRequest.getCost():null;
+	}
+
+	@Transient
+	public void setTransportationRequestCost(Double transportationRequestCost){
+		if(transportationRequest==null)
+			transportationRequest=new TransportationRequest();
+		transportationRequest.setCost(transportationRequestCost);
+	}
+
+	@Transient
+	public TransportationRequestPaymentStatus getTransportationRequestPaymentStatus(){
+		return transportationRequest!=null?transportationRequest.getPaymentStatus():null;
+	}
+
+	@Transient
+	public void setTransportationRequestPaymentStatus(TransportationRequestPaymentStatus transportationRequestPaymentStatus){
+		if(transportationRequest==null)
+			transportationRequest=new TransportationRequest();
+		transportationRequest.setPaymentStatus(transportationRequestPaymentStatus);
+	}
+
+	@Transient
+	public String getTransportationRequestProjectName(){
+		return transportationRequest!=null?transportationRequest.getProjectName():null;
+	}
+
+	@Transient
+	public void setTransportationRequestProjectName(String projectName){
+		if(transportationRequest==null)
+			transportationRequest=new TransportationRequest();
+		transportationRequest.setProjectName(projectName);
 	}
 
 }

@@ -40,23 +40,22 @@ public class AppLinkView extends GenericView<Integer, AppLink, AppLinkRepos, App
 	@Override
 	public void refreshList() {
 		if ("/viewDeliveryRequest.xhtml".equals(currentPath)) {
-
 			Integer transportationRequestId = transportationRequestService.findIdByDeliveryRequest(id);
-
 			list1 = new ArrayList<AppLink>();
 			list1.addAll(appLinkService.findByDeliveryRequest(id, true));
 			if (transportationRequestId != null)
 				list1.addAll(appLinkService.findByTransportationRequest(transportationRequestId));
-
 			list2 = new ArrayList<AppLink>();
 			list2.addAll(appLinkService.findByDeliveryRequest(id, false));
 			if (transportationRequestId != null)
 				list2.addAll(appLinkService.findByTransportationRequest(transportationRequestId));
-			
+
 		} else if ("/viewTransportationRequest.xhtml".equals(currentPath))
 			list2 = list1 = appLinkService.findByTransportationRequest(id);
 		else if ("/viewWarehouse.xhtml".equals(currentPath))
 			list2 = list1 = appLinkService.findByWarehouse(id);
+		else if (isPage("viewTransportationJob"))
+			initDatatableList(service.findByTransportationJob(id));
 	}
 
 	public Double getTotalAmount1() {

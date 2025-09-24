@@ -38,4 +38,8 @@ public class AppLinkService extends GenericService<Integer, AppLink, AppLinkRepo
 	public void deleteByDeliveryRequest(Integer deliveryRequestId) {
 		appLinkRepos.deleteByDeliveryRequest(deliveryRequestId);
 	}
+	
+	public List<AppLink> findByTransportationJob(Integer transportationJobId){
+		return repos.findByTransportationJob(transportationJobId);
+	}
 }

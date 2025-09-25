@@ -38,7 +38,7 @@
 					<h:outputText value="Assign" />
 				</h1>
 			</div>
-			
+
 			<div class="hr dotted" />
 			<div class="row">
 				<div class="col-sm-12">
@@ -301,31 +301,50 @@
 															paginatorPosition="bottom"
 															paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
 															rowSelectMode="checkbox">
+
 															<p:ajax event="rowSelectRadio"
 																update=":main_form:main_pan" />
+
 															<p:column selectionMode="single"
 																styleClass="ace aa-checkbox-column" />
+
 															<p:column headerText="Matricule">
 																<h:outputText value="#{item.correctMatricule}"
 																	styleClass="purple bolder" />
 															</p:column>
+
 															<p:column headerText="Vehicle Type">
 																<h:outputText value="#{item.vehicleType.name}"
 																	styleClass="bolder green" />
 															</p:column>
+
+															<p:column headerText="Brand Type">
+																<h:outputText value="#{item.brandType.name}"
+																	styleClass="bolder blue" />
+															</p:column>
+
+															<p:column headerText="Brand">
+																<h:outputText value="#{item.brandType.brand.name}"
+																	styleClass="purple blue" />
+															</p:column>
+
 															<p:column headerText="Max Weight">
 																<h:outputText value="#{item.maxWeight}">
 																	<f:convertNumber type="number" maxFractionDigits="2" />
 																</h:outputText>
 																<h:outputText value=" Kg" />
 															</p:column>
+
 															<p:column headerText="Max Volume">
 																<h:outputText value="#{item.maxVolume}">
 																	<f:convertNumber type="number" maxFractionDigits="2" />
 																</h:outputText>
 																<h:outputText value=" m3" />
 															</p:column>
+
+
 														</p:dataTable>
+
 													</div>
 												</div>
 											</div>
@@ -615,6 +634,21 @@
 																			value="#{transportationJobView.transportationJob.vehicle.vehicleType.name}" />
 																	</span>
 																</div>
+
+																<div class="info-item">
+																	<strong>Brand Type:</strong> <span class="bolder blue">
+																		<h:outputText
+																			value="#{transportationJobView.transportationJob.vehicle.brandType.name}" />
+																	</span>
+																</div>
+
+																<div class="info-item">
+																	<strong>Brand:</strong> <span class="bolder blue">
+																		<h:outputText
+																			value="#{transportationJobView.transportationJob.vehicle.brandType.brand.name}" />
+																	</span>
+																</div>
+
 																<div class="info-item">
 																	<strong>Max Weight:</strong>
 																	<h:outputText
@@ -704,8 +738,7 @@
 									<div class="col-sm-6 text-right">
 										<p:commandButton value="✓ Finish"
 											action="#{transportationJobView.assign()}" update="messages"
-											styleClass="btn btn-success btn-lg"
-											 />
+											styleClass="btn btn-success btn-lg" />
 									</div>
 								</div>
 							</h:panelGroup>

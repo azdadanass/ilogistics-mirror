@@ -2,8 +2,12 @@ package ma.azdad.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,6 +26,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.App;
 
 @Entity
@@ -126,6 +131,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private List<TransportationRequestFile> fileList = new ArrayList<>();
 	private List<TransportationRequestHistory> historyList = new ArrayList<>();
 	private List<Issue> issueList = new ArrayList<>();
+	private List<TransportationRequestComment> commentList = new ArrayList<>();
+
+	private List<CommentGroup<TransportationRequestComment>> commentGroupList;
 
 	public void clearTimeLine() {
 		rejectionReason = null;
@@ -155,8 +163,8 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	// c1
 	public TransportationRequest(Integer id, String reference, TransportationRequestStatus status, Date neededPickupDate, Date neededDeliveryDate, Date plannedPickupDate, Date plannedDeliveryDate,
 			Date expectedPickupDate, Date expectedDeliveryDate, Date pickupDate, Date deliveryDate, //
-			Integer deliveryRequestId, String deliveryRequestReference, String deliveryRequestSmsRef, DeliveryRequestType deliveryRequestType, Priority priority, Integer numberOfItems, Double netWeight,
-			Double grossWeight, Double volume, //
+			Integer deliveryRequestId, String deliveryRequestReference, String deliveryRequestSmsRef, DeliveryRequestType deliveryRequestType, Priority priority, Integer numberOfItems,
+			Double netWeight, Double grossWeight, Double volume, //
 			String requesterUsername, String requesterFullName, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName) {
 		super(id);
@@ -296,15 +304,16 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public Double getDistance() {
 		return ObjectUtils.firstNonNull(realDistance, estimatedDistance, 0.0);
 	}
-	
+
 	@Transient
 	public Boolean getIsCritical() {
 		return Priority.CRITICAL.equals(getPriority());
 	}
-	
+
 	@Transient
 	public Boolean getIsOverdue() {
-		if(pickupDate!=null)
+		if (Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, //
+				TransportationRequestStatus.ACKNOWLEDGED, TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED).contains(status))
 			return false;
 		return (new Date()).compareTo(getStartDate()) > 0;
 	}
@@ -576,9 +585,45 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		historyList.remove(history);
 	}
 
+	public void addComment(TransportationRequestComment comment) {
+		comment.setParent(this);
+		commentList.add(comment);
+	}
+
+	public void removeComment(TransportationRequestComment comment) {
+		comment.setParent(null);
+		commentList.remove(comment);
+	}
+
+	private void generateCommentGroupList() {
+		Map<String, List<TransportationRequestComment>> map = new HashMap<>();
+		for (TransportationRequestComment comment : commentList) {
+			String dateStr = UtilsFunctions.getFormattedDate(comment.getDate());
+			map.putIfAbsent(dateStr, new ArrayList<TransportationRequestComment>());
+			map.get(dateStr).add(comment);
+		}
+		commentGroupList = new ArrayList<>();
+		for (String dateStr : map.keySet())
+			commentGroupList.add(new CommentGroup<>(UtilsFunctions.getDate(dateStr), map.get(dateStr)));
+		Collections.sort(commentGroupList);
+	}
+
+	@Transient
+	public List<CommentGroup<TransportationRequestComment>> getCommentGroupList() {
+		if (commentGroupList == null)
+			generateCommentGroupList();
+		return commentGroupList;
+	}
+
+	@Transient
+	public void setCommentGroupList(List<CommentGroup<TransportationRequestComment>> commentGroupList) {
+		this.commentGroupList = commentGroupList;
+	}
+
 	@Override
 	public boolean filter(String query) {
-		return contains(query, getDeliveryRequestReference(), getReference(), getOriginName(), getDestinationName(), transporterName);
+		return contains(query, getDeliveryRequestReference(), getReference(), getOriginName(), getDestinationName(), transporterName, getSmsRef(), getOriginName(), getDestinationName(),
+				getWarehouseName(), status.getValue());
 	}
 
 	@Transient
@@ -1132,14 +1177,14 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	}
 
 	@Transient
-	public String getProjectName(){
-		return deliveryRequest!=null?deliveryRequest.getProjectName():null;
+	public String getProjectName() {
+		return deliveryRequest != null ? deliveryRequest.getProjectName() : null;
 	}
 
 	@Transient
-	public void setProjectName(String projectName){
-		if(deliveryRequest==null)
-			deliveryRequest=new DeliveryRequest();
+	public void setProjectName(String projectName) {
+		if (deliveryRequest == null)
+			deliveryRequest = new DeliveryRequest();
 		deliveryRequest.setProjectName(projectName);
 	}
 
@@ -1443,6 +1488,15 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setPickupDuration(Integer pickupDuration) {
 		this.pickupDuration = pickupDuration;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<TransportationRequestComment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(List<TransportationRequestComment> commentList) {
+		this.commentList = commentList;
 	}
 
 }

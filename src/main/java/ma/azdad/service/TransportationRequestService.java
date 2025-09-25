@@ -60,22 +60,22 @@ import ma.azdad.utils.TemplateType;
 
 @Component
 public class TransportationRequestService extends GenericService<Integer, TransportationRequest, TransportationRequestRepos> {
-	
+
 	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
 	private String erp;
 
 	@Autowired
 	TransportationRequestRepos repos;
-	
+
 	@Autowired
 	StopService stopService;
 
 	@Autowired
 	DeliveryRequestService deliveryRequestService;
-	
+
 	@Autowired
 	TransportationJobService transportationJobService;
-	
+
 	@Autowired
 	CapacityService capacityService;
 
@@ -105,7 +105,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	@Autowired
 	FileReaderService fileReaderService;
-	
+
 	@Autowired
 	EmailService emailService;
 
@@ -122,6 +122,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			return null;
 		Hibernate.initialize(transportationRequest.getFileList());
 		Hibernate.initialize(transportationRequest.getHistoryList());
+		Hibernate.initialize(transportationRequest.getCommentList());
 		Hibernate.initialize(transportationRequest.getDeliveryRequest());
 		Hibernate.initialize(transportationRequest.getDeliveryRequest().getProject());
 		Hibernate.initialize(transportationRequest.getDeliveryRequest().getProject().getManager());
@@ -135,13 +136,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		Hibernate.initialize(transportationRequest.getContact2());
 		Hibernate.initialize(transportationRequest.getTransportationJob());
 		if (transportationRequest.getTransportationJob() != null) {
-			if ( transportationRequest.getTransportationJob().getVehicle() != null 
-			        && transportationRequest.getTransportationJob().getVehicle().getBrandType() != null 
-			        && transportationRequest.getTransportationJob().getVehicle().getBrandType().getBrand() != null) {
+			if (transportationRequest.getTransportationJob().getVehicle() != null && transportationRequest.getTransportationJob().getVehicle().getBrandType() != null
+					&& transportationRequest.getTransportationJob().getVehicle().getBrandType().getBrand() != null) {
 				Hibernate.initialize(transportationRequest.getTransportationJob().getVehicle());
-			    Hibernate.initialize(
-			        transportationRequest.getTransportationJob().getVehicle().getBrandType().getBrand()
-			    );
+				Hibernate.initialize(transportationRequest.getTransportationJob().getVehicle().getBrandType().getBrand());
 			}
 
 			Hibernate.initialize(transportationRequest.getTransportationJob().getDriver());
@@ -151,16 +149,11 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getCompany());
 			}
 		}
-		
+
 		return transportationRequest;
 	}
-	
-	
 
-	
-	
-	
-	public List<TransportationRequest> findByTransportationJobId(Integer id){
+	public List<TransportationRequest> findByTransportationJobId(Integer id) {
 		List<TransportationRequest> list = repos.findByTransportationJobId(id);
 		for (TransportationRequest transportationRequest : list) {
 			Hibernate.initialize(transportationRequest.getDeliveryRequest());
@@ -170,7 +163,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			}
 		}
 		return list;
-		
+
 	}
 
 	public List<TransportationRequest> findByNotHavingTransportationJob(TransportationRequestStatus status, List<DeliveryRequestStatus> deliveryRequestStatus) {
@@ -204,7 +197,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		if (paymentStatus == null)
 			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, username);
 		else
-			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus) : repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus, username);
+			return isTm ? repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus)
+					: repos.findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, paymentStatus, username);
 
 	}
 
@@ -244,9 +238,10 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countByDriverAndStatus(String username, List<TransportationRequestStatus> statusList) {
 		return repos.countByDriverAndStatus(username, statusList);
 	}
-	
+
 	public Long countPendingByDriver(String username) {
-		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,TransportationRequestStatus.APPROVED,TransportationRequestStatus.ASSIGNED,TransportationRequestStatus.PICKEDUP));
+		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED,
+				TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
 	}
 
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
@@ -282,8 +277,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 //				return repos.findLight(username, Arrays.asList(TransportationRequestStatus.REJECTED, TransportationRequestStatus.CANCELED), assignedProjectList);
 //		return null;
 	}
-	
-	
+
 	public TransportationRequest pickup(TransportationRequest transportationRequest, User connectedUser) {
 		transportationRequest.setStatus(TransportationRequestStatus.PICKEDUP);
 		transportationRequest.setDate5(new Date());
@@ -293,38 +287,33 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		capacityService.pickupVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.pickedup(transportationRequest, connectedUser);
 		return transportationRequest;
-		
+
 	}
-	
-	public void pickupMobile(Integer id, String username,Double lat,Double lng,Integer duration) {
+
+	public void pickupMobile(Integer id, String username, Double lat, Double lng, Integer duration) {
 		TransportationRequest transportationRequest = transportationRequestService.findOne(id);
 		User user = userService.findByUsername(username);
 		transportationRequest.setPickupDuration(duration);
-		transportationRequest = pickup(transportationRequest,user);
-		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
-				,transportationRequest, TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.PICKEDUP);
-		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
-				transportationRequest.getTransportationJob().getId());
+		transportationRequest = pickup(transportationRequest, user);
+		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob(), transportationRequest,
+				TransportationJobStatus.IN_PROGRESS, TransportationRequestStatus.PICKEDUP);
+		List<TransportationJobItinerary> locations = transportationJobItineraryRepos
+				.findByTransportationJobIdOrderByTimestampAsc(transportationRequest.getTransportationJob().getId());
 		if (locations != null && !locations.isEmpty()) {
-		    TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+			TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
 
-		    Double distance = PathService.getDistance(
-		            lastLocation.getLatitude(),
-		            lastLocation.getLongitude(),
-		            lat,
-		            lng
-		    );
+			Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
 
-		    tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
-		    tItinerary.setDistanceFromPrevious(distance);
+			tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
+			tItinerary.setDistanceFromPrevious(distance);
 		} else {
-		    // No previous itinerary → initialize distances
-		    tItinerary.setCumulativeDistance(0.0);
-		    tItinerary.setDistanceFromPrevious(0.0);
+			// No previous itinerary → initialize distances
+			tItinerary.setCumulativeDistance(0.0);
+			tItinerary.setDistanceFromPrevious(0.0);
 		}
 		transportationJobItineraryRepos.save(tItinerary);
 	}
-	
+
 	public TransportationRequest deliver(TransportationRequest transportationRequest, User connectedUser) {
 		transportationRequest.setStatus(TransportationRequestStatus.DELIVERED);
 		transportationRequest.setDate6(new Date());
@@ -335,62 +324,54 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		capacityService.deliverVolumeAndWeight(transportationRequest.getId());
 		transportationRequestHistoryService.delivred(transportationRequest, connectedUser);
 		return transportationRequest;
-		
+
 	}
-	
+
 	public Double getDistanceForTR(Integer requestId) {
-	    // get pickup stops
-	    List<TransportationJobItinerary> pickupStops = transportationJobItineraryRepos
-	            .findByTransportationRequestIdAndTransportationRequestStatus(requestId, TransportationRequestStatus.PICKEDUP);
+		// get pickup stops
+		List<TransportationJobItinerary> pickupStops = transportationJobItineraryRepos.findByTransportationRequestIdAndTransportationRequestStatus(requestId,
+				TransportationRequestStatus.PICKEDUP);
 
-	    // get delivery stops
-	    List<TransportationJobItinerary> deliveryStops = transportationJobItineraryRepos
-	            .findByTransportationRequestIdAndTransportationRequestStatus(requestId, TransportationRequestStatus.DELIVERED);
+		// get delivery stops
+		List<TransportationJobItinerary> deliveryStops = transportationJobItineraryRepos.findByTransportationRequestIdAndTransportationRequestStatus(requestId,
+				TransportationRequestStatus.DELIVERED);
 
-	    if (pickupStops == null || pickupStops.isEmpty() || deliveryStops == null || deliveryStops.isEmpty()) {
-	        return 0.0;
-	    }
+		if (pickupStops == null || pickupStops.isEmpty() || deliveryStops == null || deliveryStops.isEmpty()) {
+			return 0.0;
+		}
 
-	    // assume first pickup and last delivery
-	    Double pickupCumul = pickupStops.get(0).getCumulativeDistance();
-	    Double deliveryCumul = deliveryStops.get(deliveryStops.size() - 1).getCumulativeDistance();
+		// assume first pickup and last delivery
+		Double pickupCumul = pickupStops.get(0).getCumulativeDistance();
+		Double deliveryCumul = deliveryStops.get(deliveryStops.size() - 1).getCumulativeDistance();
 
-	    if (pickupCumul == null || deliveryCumul == null) {
-	        return 0.0;
-	    }
+		if (pickupCumul == null || deliveryCumul == null) {
+			return 0.0;
+		}
 
-	    return deliveryCumul - pickupCumul;
+		return deliveryCumul - pickupCumul;
 	}
 
-	
-	
-	public void deliverMobile(Integer id, String username,Double lat,Double lng,Integer duration) {
+	public void deliverMobile(Integer id, String username, Double lat, Double lng, Integer duration) {
 		TransportationRequest transportationRequest = findOne(id);
 		transportationRequest.setDeliveryDuration(duration);
 		User user = userService.findByUsername(username);
-		transportationRequest = deliver(transportationRequest,user);
-		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob()
-				,transportationRequest,  TransportationJobStatus.IN_PROGRESS,TransportationRequestStatus.DELIVERED);
-		List<TransportationJobItinerary> locations = transportationJobItineraryRepos.findByTransportationJobIdOrderByTimestampAsc(
-				transportationRequest.getTransportationJob().getId());
+		transportationRequest = deliver(transportationRequest, user);
+		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationRequest.getTransportationJob(), transportationRequest,
+				TransportationJobStatus.IN_PROGRESS, TransportationRequestStatus.DELIVERED);
+		List<TransportationJobItinerary> locations = transportationJobItineraryRepos
+				.findByTransportationJobIdOrderByTimestampAsc(transportationRequest.getTransportationJob().getId());
 		if (locations != null && !locations.isEmpty()) {
-		    TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
-		    Double distance = PathService.getDistance(
-		            lastLocation.getLatitude(),
-		            lastLocation.getLongitude(),
-		            lat,
-		            lng
-		    );
-		    tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
-		    tItinerary.setDistanceFromPrevious(distance);
+			TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
+			Double distance = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
+			tItinerary.setCumulativeDistance(distance + lastLocation.getCumulativeDistance());
+			tItinerary.setDistanceFromPrevious(distance);
 		} else {
-		    // First recorded location → no previous reference
-		    tItinerary.setCumulativeDistance(0.0);
-		    tItinerary.setDistanceFromPrevious(0.0);
+			// First recorded location → no previous reference
+			tItinerary.setCumulativeDistance(0.0);
+			tItinerary.setDistanceFromPrevious(0.0);
 		}
 		transportationJobItineraryRepos.save(tItinerary);
 	}
-
 
 	public List<TransportationRequest> findByDriver(String driverUsername, TransportationRequestState state) {
 		if (state == null)
@@ -561,16 +542,14 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		}
 		return null;
 	}
-	
-	
+
 	public void generateQrKeyScript() {
-		repos.findWithoutQrKey().forEach(i->{
+		repos.findWithoutQrKey().forEach(i -> {
 			i.setQrKey(UtilsFunctions.generateQrKey());
 			save(i);
 		});
 	}
 
-	
 	public String generateStamp(TransportationRequest transportationRequest) {
 		String downloadPath = "temp/stamp_" + transportationRequest.getReference() + ".pdf";
 		try {
@@ -591,8 +570,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 			document.open();
 
-			paragraph = new Paragraph(transportationRequest.getReference() + " | Creation Date : "
-					+ (transportationRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(transportationRequest.getDate1()) : ""), titleFont);
+			paragraph = new Paragraph(transportationRequest.getReference() + " | " + transportationRequest.getStatus().getValue(), titleFont);
 			paragraph.setAlignment(Element.ALIGN_CENTER);
 			paragraph.setSpacingAfter(10f);
 			document.add(paragraph);
@@ -656,7 +634,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 		return downloadPath;
 	}
-	
+
 	// notification
 	public void sendNotification(TransportationRequest transportationRequest) {
 		User toUser = transportationRequest.getTransportationJob().getUser1();
@@ -666,12 +644,12 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		mail.addParameter("toUser", toUser);
 		emailService.generateAndSend(mail);
 	}
-	
+
 	public void sendPendingAckNotification() {
 		List<User> userList = repos.findToAcknowledgeUserList();
 		userList.forEach(this::sendPendingAckNotification);
 	}
-	
+
 	private void sendPendingAckNotification(User toUser) {
 		List<TransportationRequest> list = repos.findToAcknowledge2(toUser.getUsername());
 		String subject = "Delivered TR pending acknoledgement ";
@@ -680,22 +658,21 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		mail.addParameter("toUser", toUser);
 		emailService.generateAndSendNonAsync(mail);
 		try {
-			Thread.sleep(3*1000);
+			Thread.sleep(3 * 1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	// mobile
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobile() {
 		List<TransportationRequest> list = repos.findLight();
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
-					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(), tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
@@ -707,8 +684,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
-					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(), tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
@@ -720,8 +697,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		List<ma.azdad.mobile.model.TransportationRequest> mbList = new ArrayList<>();
 		for (TransportationRequest tj : list) {
 
-			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(), tj.getExpectedPickupDate(),
-					tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequest(tj.getId(), tj.getReference(), tj.getStatus(), tj.getNeededPickupDate(), tj.getNeededDeliveryDate(),
+					tj.getExpectedPickupDate(), tj.getPickupDate(), tj.getExpectedDeliveryDate(), tj.getDeliveryDate(), tj.getOriginName(), tj.getDestinationName()));
 
 		}
 
@@ -731,8 +708,7 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public List<ma.azdad.mobile.model.TransportationRequest> findByTmMobileByStatus(Integer state) {
 		switch (state) {
 		case 0:
-			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
-					TransportationRequestStatus.APPROVED));
+			return findByTmMobile(Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED));
 		case 1:
 			return findByTmMobile(Arrays.asList(TransportationRequestStatus.ASSIGNED));
 		case 2:
@@ -766,14 +742,15 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public ma.azdad.mobile.model.TransportationRequest findOneMobile(Integer id) {
 		TransportationRequest tr = findOne(id);
 		ma.azdad.mobile.model.TransportationRequest trMobile = new ma.azdad.mobile.model.TransportationRequest(tr.getId(), tr.getReference(), tr.getStatus(), tr.getPriority(),
-				tr.getDeliveryRequest().getNumberOfItems(), tr.getDeliveryRequest().getGrossWeight(), tr.getDeliveryRequest().getVolume(), tr.getNeededPickupDate(), tr.getNeededDeliveryDate(),
-				tr.getExpectedPickupDate(), tr.getPickupDate(), tr.getExpectedDeliveryDate(), tr.getDeliveryDate());
+				tr.getDeliveryRequest().getNumberOfItems(), tr.getDeliveryRequest().getGrossWeight(), tr.getDeliveryRequest().getVolume(), tr.getNeededPickupDate(),
+				tr.getNeededDeliveryDate(), tr.getExpectedPickupDate(), tr.getPickupDate(), tr.getExpectedDeliveryDate(), tr.getDeliveryDate());
 
 		if (tr.getEstimatedDistance() != null) {
 			trMobile.setEstimatedDistanceText(tr.getEstimatedDistanceText());
 		}
 		if (tr.getTransportationJob() != null && tr.getTransportationJob().getVehicle() != null) {
-			trMobile.setVehicule(new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicleTypeName(), tr.getTransportationJob().getVehicleMatricule()));
+			trMobile.setVehicule(
+					new Vehicule(tr.getTransportationJob().getVehicleId(), tr.getTransportationJob().getVehicleTypeName(), tr.getTransportationJob().getVehicleMatricule()));
 		}
 		if (tr.getTransportationJob() != null && tr.getTransportationJob().getDriver() != null) {
 			trMobile.setDriver(toMobileUser2(tr.getTransportationJob().getDriver()));
@@ -849,7 +826,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	private ma.azdad.mobile.model.User toMobileUser2(User user) {
-		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(), user.getPhone());
+		return new ma.azdad.mobile.model.User(user.getUsername(), user.getFirstName(), user.getLastName(), user.getLogin(), user.getPhoto(), user.getEmail(), user.getCin(),
+				user.getPhone());
 	}
 
 	public void handleFileUpload(FileUploadEvent event, User user, Integer id, String fileType) throws IOException {
@@ -889,8 +867,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		TransportationRequest job = findOne(id);
 		List<ma.azdad.mobile.model.TransportationRequestFile> list = new ArrayList<>();
 		for (TransportationRequestFile dnFile : job.getFileList()) {
-			list.add(new ma.azdad.mobile.model.TransportationRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(), dnFile.getSize(),
-					dnFile.getName()));
+			list.add(new ma.azdad.mobile.model.TransportationRequestFile(dnFile.getId(), dnFile.getDate(), dnFile.getLink(), dnFile.getExtension(), dnFile.getType(),
+					dnFile.getSize(), dnFile.getName()));
 
 		}
 		return list;
@@ -908,7 +886,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		return "image/jpeg"; // default
 	}
 
-	public String uploadTaskDetailPhoto(TransportationRequest tr, String type, InputStream inputStream, String fileName, Long fileSize, Boolean showFacesMessage) throws IOException {
+	public String uploadTaskDetailPhoto(TransportationRequest tr, String type, InputStream inputStream, String fileName, Long fileSize, Boolean showFacesMessage)
+			throws IOException {
 
 		File file = fileUploadService.handlePhotoUpload(inputStream, fileName, fileSize, "transportationRequestImage", 400 * 1024, showFacesMessage);
 		TransportationRequestImage trm = new TransportationRequestImage(type, "files/transportationRequestImage/" + file.getName(), tr);
@@ -921,50 +900,43 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 		List<TransportationRequestImage> list = transportationRequestImageRepos.findByTypeAndTransportationRequestId(type, id);
 		List<ma.azdad.mobile.model.TransportationRequestImage> mbList = new ArrayList<>();
 		for (TransportationRequestImage trm : list) {
-			mbList.add(new ma.azdad.mobile.model.TransportationRequestImage(trm.getId(), trm.getType(), trm.getValue(), trm.getLatitude(), trm.getLongitude(), trm.getGoogleAddress(),
-					trm.getTakenDate(), trm.getPhoneModel()));
+			mbList.add(new ma.azdad.mobile.model.TransportationRequestImage(trm.getId(), trm.getType(), trm.getValue(), trm.getLatitude(), trm.getLongitude(),
+					trm.getGoogleAddress(), trm.getTakenDate(), trm.getPhoneModel()));
 		}
 		return mbList;
 	}
-	
+
 	public void generateScript() {
-	    List<TransportationRequest> list = findAll();
-	    for (TransportationRequest transportationRequest : list) {
-	        if (Arrays.asList(
-	                TransportationRequestStatus.PICKEDUP,
-	                TransportationRequestStatus.DELIVERED,
-	                TransportationRequestStatus.ACKNOWLEDGED
-	        ).contains(transportationRequest.getStatus())) {
+		List<TransportationRequest> list = findAll();
+		for (TransportationRequest transportationRequest : list) {
+			if (Arrays.asList(TransportationRequestStatus.PICKEDUP, TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED)
+					.contains(transportationRequest.getStatus())) {
 
-	            Integer items = transportationRequest.getNumberOfItems();
-	            if (items == null) {
-	                System.out.println("⚠ Request " + transportationRequest.getId() + " has null items");
-	                continue;
-	            }
-
-	            Integer durationMinutes;
-	            if (items <= 5) {
-	                durationMinutes = 30;  // 30 minutes
-	            } else if (items <= 10) {
-	                durationMinutes = 60;  // 1 hour
-	            } else {
-	                durationMinutes = 120; // 2 hours
-	            }
-
-	            // set both pickup & delivery durations in minutes
-	            List<Stop> stops =  transportationRequest.getTransportationJob().getStopList();
-	            for (Stop stop : stops) {
-					stop.setDuration(durationMinutes);
-					stopService.save(stop);
-					System.out.println("✅ Stop " + stop.getId() + 
-			                " | items=" + items + " → duration=" + durationMinutes + " minutes");
+				Integer items = transportationRequest.getNumberOfItems();
+				if (items == null) {
+					System.out.println("⚠ Request " + transportationRequest.getId() + " has null items");
+					continue;
 				}
 
-	            
-	        }
-	    }
+				Integer durationMinutes;
+				if (items <= 5) {
+					durationMinutes = 30; // 30 minutes
+				} else if (items <= 10) {
+					durationMinutes = 60; // 1 hour
+				} else {
+					durationMinutes = 120; // 2 hours
+				}
+
+				// set both pickup & delivery durations in minutes
+				List<Stop> stops = transportationRequest.getTransportationJob().getStopList();
+				for (Stop stop : stops) {
+					stop.setDuration(durationMinutes);
+					stopService.save(stop);
+					System.out.println("✅ Stop " + stop.getId() + " | items=" + items + " → duration=" + durationMinutes + " minutes");
+				}
+
+			}
+		}
 	}
-	
-	
-	
+
 }

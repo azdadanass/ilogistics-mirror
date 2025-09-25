@@ -349,7 +349,7 @@
 		</p:dialog>
 	</h:form>
 
-	<h:form id="deleteTransportationRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
+	<h:form id="deleteTransportationRequestFileForm" rendered="#{transportationRequestView.isViewPage}">
 		<p:dialog widgetVar="deleteTransportationRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('deleteTransportationRequestFileDlg').hide()">
 				<h:outputText value="x" />
@@ -370,7 +370,7 @@
 		</p:dialog>
 	</h:form>
 
-	<h:form id="addTransportationRequestFileForm" rendered="#{deliveryRequestView.isViewPage}">
+	<h:form id="addTransportationRequestFileForm" rendered="#{transportationRequestView.isViewPage}">
 		<p:dialog widgetVar="uploadTransportationRequestFileDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('uploadTransportationRequestFileDlg').hide()">
 				<h:outputText value="x" />
@@ -417,7 +417,7 @@
 			</div>
 		</p:dialog>
 	</h:form>
-	<h:form id="stampForm">
+	<h:form id="stampForm" rendered="#{transportationRequestView.isViewPage}">
 		<p:dialog widgetVar="stampDlg" modal="true" closable="false" resizable="false" showHeader="false">
 			<button type="button" class="bootbox-close-button close" onclick="PF('stampDlg').hide()">
 				<h:outputText value="x" />
@@ -436,6 +436,54 @@
 				<h:outputLink styleClass="btn btn-info" value="#{transportationRequestView.downloadPath}" style="margin-left: 20px" target="blank">
 					<h:outputText value="Print" />
 				</h:outputLink>
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="addCommentForm" rendered="#{transportationRequestView.isViewPage}">
+		<p:dialog widgetVar="addCommentDlg" modal="true" closable="false" resizable="false" showHeader="false" position="top" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus light-blue" />
+					<h:outputText value=" Add Comment" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width:100%">
+				<div class="center">
+					<p:inputText value="#{transportationRequestView.comment.title}" placeholder="Title" required="true" requiredMessage="Title should not be null" style="width:90%;margin:auto" />
+				</div>
+				<br />
+				<div class="center">
+					<p:textEditor widgetVar="editor1" value="#{transportationRequestView.comment.content}" height="300" style="margin-bottom:10px" required="true" requiredMessage="Comment should not be null"/>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationRequestView.addComment()}" value="Add" styleClass="btn btn-info" oncomplete="PF('addCommentDlg').hide()" update=":main_form:commentPanel" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="deleteCommentForm" rendered="#{transportationRequestView.isViewPage}">
+		<p:dialog widgetVar="deleteCommentDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('deleteCommentDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-trash-o red" />
+					<h:outputText value=" Delete Comment" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<h:outputText value="Are you sure you want to delete this item ?" style="margin-left: 20px" />
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('deleteCommentDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{transportationRequestView.deleteComment()}" value="Delete" styleClass="btn btn-danger"  oncomplete="PF('deleteCommentDlg').hide()" update=":main_form:commentPanel" />
 			</div>
 		</p:dialog>
 	</h:form>

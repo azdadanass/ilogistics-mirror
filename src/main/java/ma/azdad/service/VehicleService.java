@@ -14,6 +14,8 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 
 	@Autowired
 	VehicleRepos vehicleRepos;
+	@Autowired
+	VehicleBrandTypeService vehicleBrandTypeService;
 
 	@Override
 	public Vehicle findOne(Integer id) {
@@ -35,7 +37,12 @@ public class VehicleService extends GenericService<Integer, Vehicle, VehicleRepo
 	}
 	
 	public List<Vehicle> findActiveByDriver(String driverUsername){
-		return repos.findActiveByDriver(driverUsername);
+		List<Vehicle> list =  repos.findActiveByDriver(driverUsername);
+		for (Vehicle vehicle : list) {
+			Hibernate.initialize(vehicle.getBrandType());
+			Hibernate.initialize(vehicle.getBrandType().getBrand());
+		}
+		return list;
 	}
 
 }

@@ -65,14 +65,15 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 	}
 
 	//c1
-	public Vehicle(Integer id, Boolean fromMyTools, String matricule, String toolMatricule,Double maxWeight,Double maxVolume) {
+	public Vehicle(Integer id, Boolean fromMyTools, String matricule, String toolMatricule,VehicleType vehicleType) {
 		super(id);
 		this.matricule = matricule;
 		this.fromMyTools = fromMyTools;
 		if (fromMyTools)
 			tool = new Tool(toolMatricule);
-		this.setMaxWeight(maxWeight);
-		this.setMaxVolume(maxVolume);
+		this.vehicleType = vehicleType;
+		this.setMaxWeight(vehicleType.getMaxWeight());
+		this.setMaxVolume(vehicleType.getMaxVolume());
 	}
 
 	public void addUser(UserVehicle userVehicle) {

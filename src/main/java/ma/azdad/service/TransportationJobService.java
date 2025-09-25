@@ -394,6 +394,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
 		try {
+			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size() );
+
 			transportationJob.init();
 			transportationJob.calculateStartDate();
 			transportationJob.calculateEndDate();
@@ -407,10 +409,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.generateStopList();
 			transportationJob.generatePathList();
 			calculateTransportationRequestListCosts(transportationJob, setCost);
-			save(transportationJob);
-		} catch (Exception e) {
-			FacesContextMessages.ErrorMessages(e.getMessage());
+			System.out.println("Stops in DB = " + transportationJob.getStopList().size() );
+			TransportationJob tj =save(transportationJob);
+			System.out.println("Stops in DB = " + tj.getStopList().size() );
+			               
+		}  catch (Exception e) {
+		    e.printStackTrace(); 
+		    FacesContextMessages.ErrorMessages(e.getMessage());
 		}
+
 
 	}
 
@@ -706,7 +713,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    }
 
 	    // Sort requests by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+	    requests.sort(Comparator.comparing(
+	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
+	            Comparator.nullsLast(Comparator.naturalOrder())
+	    ));
 
 	    int index = -1;
 	    for (int i = 0; i < requests.size(); i++) {
@@ -853,7 +863,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    }
 
 	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+	    requests.sort(Comparator.comparing(
+	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
+	            Comparator.nullsLast(Comparator.naturalOrder())
+	    ));
 
 	    int index = -1;
 	    for (int i = 0; i < requests.size(); i++) {
@@ -922,7 +935,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	    }
 
 	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(TransportationRequest::getExpectedPickupDate));
+	    requests.sort(Comparator.comparing(
+	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
+	            Comparator.nullsLast(Comparator.naturalOrder())
+	    ));
 
 	    int index = -1;
 	    for (int i = 0; i < requests.size(); i++) {

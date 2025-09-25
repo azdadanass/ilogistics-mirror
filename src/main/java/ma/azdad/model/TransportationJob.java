@@ -622,7 +622,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	           
 	        
 		}
-		stopList = new ArrayList<>(map.values());
+		stopList.clear();
+		for (Stop stop : map.values()) {
+		    stop.setTransportationJob(this); // extra safety in case ctor didn’t set it
+		    stopList.add(stop);
+		}
 		Collections.sort(stopList);
 		if (!stopList.isEmpty()) {
 			firstLatitude = stopList.get(0).getPlace().getLatitude();

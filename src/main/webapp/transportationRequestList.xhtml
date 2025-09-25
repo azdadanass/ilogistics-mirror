@@ -176,7 +176,7 @@
 								<h:outputText value="#{item.originName}" styleClass="purple" />
 								<h:outputText value="#{item.warehouseName}" styleClass="purple" rendered="#{item.isOutbound}" />
 							</p:column>
-							<p:column headerText="Needed Pick up time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING}">
+							<p:column headerText="Needed Pick up time" width="130" rendered="#{(transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING) or transportationRequestView.isPageIndex(4)}">
 								<h:outputText value="#{item.neededPickupDate}" styleClass="bolder light-blue">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
@@ -202,7 +202,7 @@
 								<h:outputText value="#{item.destinationName}" styleClass="green" />
 								<h:outputText value="#{item.warehouseName}" styleClass="green" rendered="#{item.isInbound}" />
 							</p:column>
-							<p:column headerText="Needed Delivery time" width="130" rendered="#{transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING}">
+							<p:column headerText="Needed Delivery time" width="130" rendered="#{(transportationRequestView.isPageIndex(1) and transportationRequestView.state==TransportationRequestState.PENDING) or transportationRequestView.isPageIndex(4)}">
 								<h:outputText value="#{item.neededDeliveryDate}" styleClass="bolder light-green">
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
@@ -228,16 +228,16 @@
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Number Of Items" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+							<p:column headerText="Number Of Items" width="80" rendered="#{transportationRequestView.isPageIndex(1,4)}">
 								<h:outputText value="#{item.numberOfItems}" />
 							</p:column>
-							<p:column headerText="GW" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+							<p:column headerText="GW" width="80" rendered="#{transportationRequestView.isPageIndex(1,4)}">
 								<h:outputText value="#{item.grossWeight}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" Kg" />
 							</p:column>
-							<p:column headerText="Volume" width="80" rendered="#{transportationRequestView.isPageIndex(1)}">
+							<p:column headerText="Volume" width="80" rendered="#{transportationRequestView.isPageIndex(1,4)}">
 								<h:outputText value="#{item.volume}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>

@@ -62,7 +62,6 @@ public class Vehicle extends GenericModel<Integer> implements Serializable {
 		this.fromMyTools = fromMyTools;
 		if (fromMyTools)
 			tool = new Tool(toolMatricule);
-		this.vehicleType = vehicleType;
 		this.setMaxWeight(vehicleType.getMaxWeight());
 		this.setMaxVolume(vehicleType.getMaxVolume());
 	}

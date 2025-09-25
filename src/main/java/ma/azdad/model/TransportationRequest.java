@@ -2,8 +2,11 @@ package ma.azdad.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -22,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang3.ObjectUtils;
 
+import ma.azdad.service.UtilsFunctions;
 import ma.azdad.utils.App;
 
 @Entity
@@ -126,6 +130,9 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private List<TransportationRequestFile> fileList = new ArrayList<>();
 	private List<TransportationRequestHistory> historyList = new ArrayList<>();
 	private List<Issue> issueList = new ArrayList<>();
+	private List<TransportationRequestComment> commentList = new ArrayList<>();
+	
+	private List<CommentGroup<TransportationRequestComment>> commentGroupList;
 
 	public void clearTimeLine() {
 		rejectionReason = null;
@@ -574,6 +581,41 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void removeHistory(TransportationRequestHistory history) {
 		history.setParent(null);
 		historyList.remove(history);
+	}
+	
+	public void addComment(TransportationRequestComment comment) {
+		comment.setParent(this);
+		commentList.add(comment);
+	}
+
+	public void removeComment(TransportationRequestComment comment) {
+		comment.setParent(null);
+		commentList.remove(comment);
+	}
+	
+	private void generateCommentGroupList() {
+		Map<String, List<TransportationRequestComment>> map = new HashMap<>();
+		for (TransportationRequestComment comment : commentList) {
+			String dateStr = UtilsFunctions.getFormattedDate(comment.getDate());
+			map.putIfAbsent(dateStr, new ArrayList<TransportationRequestComment>());
+			map.get(dateStr).add(comment);
+		}
+		commentGroupList = new ArrayList<>();
+		for (String dateStr : map.keySet())
+			commentGroupList.add(new CommentGroup<>(UtilsFunctions.getDate(dateStr), map.get(dateStr)));
+		Collections.sort(commentGroupList);
+	}
+	
+	@Transient
+	public List<CommentGroup<TransportationRequestComment>> getCommentGroupList() {
+		if (commentGroupList == null)
+			generateCommentGroupList();
+		return commentGroupList;
+	}
+
+	@Transient
+	public void setCommentGroupList(List<CommentGroup<TransportationRequestComment>> commentGroupList) {
+		this.commentGroupList = commentGroupList;
 	}
 
 	@Override
@@ -1443,6 +1485,15 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setPickupDuration(Integer pickupDuration) {
 		this.pickupDuration = pickupDuration;
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<TransportationRequestComment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(List<TransportationRequestComment> commentList) {
+		this.commentList = commentList;
 	}
 
 }

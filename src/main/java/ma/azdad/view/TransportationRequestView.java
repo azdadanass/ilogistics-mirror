@@ -28,6 +28,7 @@ import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationRequest;
+import ma.azdad.model.TransportationRequestComment;
 import ma.azdad.model.TransportationRequestFile;
 import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestState;
@@ -57,7 +58,6 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected TransportationRequestService transportationRequestService;
-	
 
 	@Autowired
 	protected TransportationRequestHistoryService transportationRequestHistoryService;
@@ -617,83 +617,64 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		mapModel = mapService.generate(origin, destination);
 	}
-	
-	//CALCULABLE FIELDS
+
+	// CALCULABLE FIELDS
 	public LatLng getTrStartPosition() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ getTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.getTrStartPosition(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ getTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.getTrStartPosition(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
 	public LatLng getPlannedTrStartPosition() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ getPlannedTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.getPlannedTrStartPosition(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ getPlannedTrStartPosition: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.getPlannedTrStartPosition(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
 	public Double calculateTrStartDistance() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ calculateTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.calculateTrStartDistance(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ calculateTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.calculateTrStartDistance(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
 	public Double calculatePlannedTrStartDistance() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ calculatePlannedTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.calculatePlannedTrStartDistance(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ calculatePlannedTrStartDistance: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.calculatePlannedTrStartDistance(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
 	public String calculatePlannedTrStartDuration() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ calculatePlannedTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.calculatePlannedTrStartDuration(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ calculatePlannedTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.calculatePlannedTrStartDuration(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
 	public String calculateTrStartDuration() {
-	    if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
-	        System.out.println("⚠ calculateTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
-	        return null;
-	    }
-	    return transportationJobService.calculateTrStartDuration(
-	        transportationRequest.getTransportationJob().getId(),
-	        transportationRequest.getId()
-	    );
+		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
+			System.out.println("⚠ calculateTrStartDuration: job is NULL for request " + (transportationRequest != null ? transportationRequest.getId() : null));
+			return null;
+		}
+		return transportationJobService.calculateTrStartDuration(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
 
-	
 	public Double calculateTrDistance() {
 		return transportationJobService.calculateTrDistance(transportationRequest.getId());
 	}
-	
+
 	public String calculateTrDuration() {
 		return transportationJobService.calculateTrDuration(transportationRequest.getId());
 	}
-	
+
 	public Long calculateTrDurationMilli() {
 		return transportationJobService.calculateTrDurationMilli(transportationRequest.getId());
 	}
@@ -751,6 +732,33 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		if (sessionView.getIsTM() || sessionView.getIsDriver())
 			total += countToAssign() + countToPickup() + countToDeliver();
 		return total;
+	}
+
+	// comments
+	private TransportationRequestComment comment = new TransportationRequestComment();
+
+	public Boolean canAddComment() {
+		return true;
+	}
+
+	public void addComment() {
+		if (!canAddComment())
+			return;
+		comment.setDate(new Date());
+		comment.setUser(sessionView.getUser());
+		transportationRequest.addComment(comment);
+		transportationRequest = service.saveAndRefresh(transportationRequest);
+	}
+
+	public Boolean canDeleteComment(TransportationRequestComment comment) {
+		return sessionView.isTheConnectedUser(comment.getUser());
+	}
+
+	public void deleteComment() {
+		if (!canDeleteComment(comment))
+			return;
+		transportationRequest.removeComment(comment);
+		transportationRequest = service.saveAndRefresh(transportationRequest);
 	}
 
 	// GETTERS & SETTERS
@@ -956,6 +964,14 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	public void setDownloadPath(String downloadPath) {
 		this.downloadPath = downloadPath;
+	}
+
+	public TransportationRequestComment getComment() {
+		return comment;
+	}
+
+	public void setComment(TransportationRequestComment comment) {
+		this.comment = comment;
 	}
 
 }

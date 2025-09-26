@@ -54,6 +54,7 @@ import ma.azdad.service.CapacityService;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.DriverLocationService;
 import ma.azdad.service.EmailService;
+import ma.azdad.service.GoogleGeocodeService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.PathService;
 import ma.azdad.service.RouteAppService;
@@ -96,6 +97,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	@Autowired
 	TransportationJobCapacityRepos transportationJobCapacityRepos;
 
+	@Autowired
+	GoogleGeocodeService geocodeService;
+	
 	@Autowired
 	protected TransportationRequestHistoryService transportationRequestHistoryService;
 
@@ -1406,6 +1410,33 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.removeComment(comment);
 		transportationJob = service.saveAndRefresh(transportationJob);
 	}
+	//google adress
+	public String getStartAddress() {
+	    Double lat = transportationJob.getPlannedStartLatitude() != null 
+	                    ? transportationJob.getPlannedStartLatitude() 
+	                    : transportationJob.getFirstLatitude();
+	    Double lng = transportationJob.getPlannedStartLongitude() != null 
+	                    ? transportationJob.getPlannedStartLongitude() 
+	                    : transportationJob.getFirstLongitude();
+
+	    String latlng = lat + "," + lng;
+	    return geocodeService.getAddress(latlng);
+	}
+	
+	public String getStartAddress2() {
+	    Double lat = transportationJob.getStartLatitude();
+	    Double lng = transportationJob.getStartLongitude();
+
+	    if (lat == null || lng == null) {
+	        return "No coordinates";
+	    }
+
+	    String latlng = lat + "," + lng;
+	    return geocodeService.getAddress(latlng);
+	}
+
+
+
 
 	// GETTERS & SETTERS
 

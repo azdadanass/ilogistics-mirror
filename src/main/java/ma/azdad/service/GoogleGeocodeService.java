@@ -148,6 +148,43 @@ public class GoogleGeocodeService extends GenericService<Integer, Site, SiteRepo
 		return place;
 	}
 	
+	 public String getAddress(String latlng) {
+	        String url;
+	        JSONObject json;
+	        boolean retry;
+	        int k = 0;
+
+	        do {
+	            try {
+	                url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" 
+	                        + latlng + "&sensor=true&key=" + API_KEYS[currentApiKey];
+
+	                System.out.println("Calling Google Maps API: " + url);
+
+	                json = JsonReader.readJsonFromUrl(url); // <-- your util
+	                String status = json.getString("status");
+
+	                if ("OVER_QUERY_LIMIT".equals(status)) {
+	                    // Switch API key and retry
+	                    currentApiKey = (++currentApiKey) % API_KEYS.length;
+	                    retry = true;
+	                } else if ("OK".equals(status)) {
+	                    JSONObject firstResult = json.getJSONArray("results").getJSONObject(0);
+	                    return firstResult.getString("formatted_address");
+	                } else {
+	                    System.err.println("Google API error status: " + status);
+	                    return latlng; // fallback to coords
+	                }
+	            } catch (Exception e) {
+	                System.err.println("Error calling Google API: " + e.getMessage());
+	                return latlng; // fallback to coords
+	            }
+	        } while (retry = (k++ < API_KEYS.length));
+
+	        // If all keys exhausted
+	        return latlng;
+	    }
+	
 	
 	public static GenericPlace getGoogleGeocodeData(Localizable localizable) {
 		GenericPlace place = new  GenericPlace();

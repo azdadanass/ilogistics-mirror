@@ -56,7 +56,23 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Delivery Duration (Minutes) " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<span class="input-icon input-icon-right">
+									<p:inputNumber value="#{transportationJobView.transportationRequest.deliveryDuration}"
+									placeholder="Minutes" decimalSeparator="." thousandSeparator="" minValue="0" required="true"
+									requiredMessage="Pickup Duration should not be null">
+								</p:inputNumber>
+								</span>
+							</div>
+						</div>
+					</div>
 				</div>
+				
 				<br /> <br />
 			</div>
 			<div class="modal-footer">
@@ -107,6 +123,25 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				 <br />
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+								<h:outputText value="Pickup Duration (Minutes) " />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<span class="input-icon input-icon-right">
+									<p:inputNumber value="#{transportationJobView.transportationRequest.pickupDuration}"
+									placeholder="Minutes" decimalSeparator="." thousandSeparator="" minValue="0" required="true"
+									requiredMessage="Pickup Duration should not be null">
+								</p:inputNumber>
+								</span>
+							</div>
+						</div>
+					</div>
+					
 				</div>
 				<br /> <br />
 			</div>

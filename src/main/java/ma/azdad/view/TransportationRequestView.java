@@ -37,6 +37,7 @@ import ma.azdad.repos.TransportationJobCapacityRepos;
 import ma.azdad.repos.TransportationRequestRepos;
 import ma.azdad.service.DeliveryRequestService;
 import ma.azdad.service.ExternalResourceService;
+import ma.azdad.service.GoogleGeocodeService;
 import ma.azdad.service.MapService;
 import ma.azdad.service.OldEmailService;
 import ma.azdad.service.SmsService;
@@ -97,6 +98,9 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Autowired
 	protected OldEmailService emailService;
+	
+	@Autowired
+	GoogleGeocodeService geocodeService;
 
 	@Autowired
 	protected SmsService smsService;
@@ -626,6 +630,21 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		}
 		return transportationJobService.getTrStartPosition(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
+	
+	public String getTrStartAddress() {
+	    LatLng pos = getTrStartPosition();
+	    if (pos == null) {
+	        return "No coordinates";
+	    }
+	    String latlng = pos.getLat() + "," + pos.getLng();
+	    return geocodeService.getAddress(latlng);
+	}
+
+	public String getTrStartLatLng() {
+	    LatLng pos = getTrStartPosition();
+	    return pos != null ? pos.getLat() + "," + pos.getLng() : null;
+	}
+
 
 	public LatLng getPlannedTrStartPosition() {
 		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {
@@ -634,6 +653,21 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		}
 		return transportationJobService.getPlannedTrStartPosition(transportationRequest.getTransportationJob().getId(), transportationRequest.getId());
 	}
+	
+	public String getPlannedTrStartAddress() {
+	    LatLng pos = getPlannedTrStartPosition();
+	    if (pos == null) {
+	        return "No coordinates";
+	    }
+	    String latlng = pos.getLat() + "," + pos.getLng();
+	    return geocodeService.getAddress(latlng); 
+	}
+
+	public String getPlannedTrStartLatLng() {
+	    LatLng pos = getPlannedTrStartPosition();
+	    return pos != null ? pos.getLat() + "," + pos.getLng() : null;
+	}
+
 
 	public Double calculateTrStartDistance() {
 		if (transportationRequest == null || transportationRequest.getTransportationJob() == null) {

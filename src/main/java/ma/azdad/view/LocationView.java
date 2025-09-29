@@ -177,10 +177,10 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
 	}
 
-	public List<Location> findLightByWarehouse(Integer warehouseId){
+	public List<Location> findLightByWarehouse(Integer warehouseId) {
 		return service.findLightByWarehouse(warehouseId);
 	}
-	
+
 	// GETTERS & SETTERS
 
 	public LocationService getLocationService() {
@@ -205,6 +205,14 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setEditDetailList(Boolean editDetailList) {
 		this.editDetailList = editDetailList;
+	}
+
+	public Location getModel() {
+		return this.model;
+	}
+
+	public void setModel(Location model) {
+		this.model = model;
 	}
 
 }

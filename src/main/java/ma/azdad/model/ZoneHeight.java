@@ -18,9 +18,12 @@ public class ZoneHeight extends GenericModel<Integer> implements Comparable<Zone
 	private Integer id;
 	private Integer numero;
 	private ZoneColumn column;
-	
+
 	@Expose
 	private String reference;
+
+	@Expose
+	private Double fillPercentage = 0.0;
 
 	public boolean filter(String query) {
 		return contains(query, numero);
@@ -91,6 +94,14 @@ public class ZoneHeight extends GenericModel<Integer> implements Comparable<Zone
 
 	public void setReference(String reference) {
 		this.reference = reference;
+	}
+
+	public Double getFillPercentage() {
+		return fillPercentage;
+	}
+
+	public void setFillPercentage(Double fillPercentage) {
+		this.fillPercentage = fillPercentage;
 	}
 
 }

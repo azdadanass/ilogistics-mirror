@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ma.azdad.model.CompanyType;
 import ma.azdad.model.Location;
 import ma.azdad.model.StockRowState;
+import ma.azdad.model.ZoneHeight;
 
 @Repository
 public interface LocationRepos extends JpaRepository<Location, Integer> {
@@ -28,5 +29,10 @@ public interface LocationRepos extends JpaRepository<Location, Integer> {
 	
 	@Query("select new Location(id,name) from Location where warehouse.id = ?1")
 	List<Location> findLightByWarehouse(Integer warehouseId);
+	
+	
+	
+	@Query("from ZoneHeight where column.line.location.id = ?1")
+	List<ZoneHeight> findHeightListByLocation(Integer locationId);
 	
 }

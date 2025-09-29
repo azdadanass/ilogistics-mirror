@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
-
 public class Location extends GenericModel<Integer> implements Serializable {
 
 	private String name;
@@ -25,19 +24,16 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	private Warehouse warehouse;
 	private List<LocationDetail> detailList = new ArrayList<>();
+	private List<ZoneLine> lineList = new ArrayList<>();
 
 	public Location() {
 		super();
 	}
-	
-	
 
-	public Location(Integer id,String name) {
+	public Location(Integer id, String name) {
 		super(id);
 		this.name = name;
 	}
-
-
 
 	public Location(Warehouse warehouse) {
 		super();
@@ -65,6 +61,16 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public void removeDetail(LocationDetail detail) {
 		detail.setLocation(null);
 		detailList.remove(detail);
+	}
+
+	public void addLine(ZoneLine line) {
+		line.setLocation(this);
+		lineList.add(line);
+	}
+
+	public void removeLine(ZoneLine line) {
+		line.setLocation(null);
+		lineList.remove(line);
 	}
 
 	public String getName() {
@@ -117,6 +123,15 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setDetailList(List<LocationDetail> detailList) {
 		this.detailList = detailList;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ZoneLine> getLineList() {
+		return lineList;
+	}
+
+	public void setLineList(List<ZoneLine> lineList) {
+		this.lineList = lineList;
 	}
 
 }

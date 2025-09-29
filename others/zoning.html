@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Warehouse Simulation - PixiJS</title>
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@7/dist/pixi.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1e1e1e;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<script>
+//---------------------------
+//1. SETUP PIXI APP
+//---------------------------
+const app = new PIXI.Application({
+background: '#1e1e1e',
+resizeTo: window,
+antialias: true,
+});
+document.body.appendChild(app.view);
+
+//---------------------------
+//2. INPUT DATA
+//---------------------------
+const warehouseData = [{"id":402,"reference":"L1C1H2"},{"id":403,"reference":"L1C1H3"},{"id":404,"reference":"L1C1H4"},{"id":405,"reference":"L1C2H1"},{"id":406,"reference":"L1C2H2"},{"id":407,"reference":"L1C3H1"},{"id":408,"reference":"L1C3H2"},{"id":409,"reference":"L1C3H3"},{"id":410,"reference":"L1C3H4"},{"id":411,"reference":"L1C4H1"},{"id":412,"reference":"L1C4H2"},{"id":413,"reference":"L1C4H3"},{"id":414,"reference":"L1C4H4"},{"id":415,"reference":"L1C5H1"},{"id":416,"reference":"L1C5H2"},{"id":417,"reference":"L1C5H3"},{"id":418,"reference":"L2C1H1"},{"id":419,"reference":"L2C1H2"},{"id":420,"reference":"L2C1H3"},{"id":421,"reference":"L2C2H1"},{"id":422,"reference":"L2C2H2"},{"id":423,"reference":"L2C2H3"},{"id":424,"reference":"L2C2H4"},{"id":425,"reference":"L2C3H1"},{"id":426,"reference":"L2C3H2"},{"id":427,"reference":"L2C3H3"},{"id":428,"reference":"L2C3H4"},{"id":429,"reference":"L2C4H1"},{"id":430,"reference":"L2C4H2"},{"id":431,"reference":"L2C4H3"},{"id":432,"reference":"L2C4H4"},{"id":433,"reference":"L2C5H1"},{"id":434,"reference":"L2C5H2"},{"id":435,"reference":"L2C5H3"},{"id":436,"reference":"L2C5H4"},{"id":437,"reference":"L2C6H1"},{"id":438,"reference":"L2C6H2"},{"id":439,"reference":"L2C6H3"},{"id":440,"reference":"L2C6H4"},{"id":441,"reference":"L3C1H1"},{"id":442,"reference":"L3C1H2"},{"id":443,"reference":"L3C1H3"},{"id":444,"reference":"L3C1H4"},{"id":445,"reference":"L3C2H1"},{"id":446,"reference":"L3C2H2"},{"id":447,"reference":"L3C2H3"},{"id":448,"reference":"L3C2H4"},{"id":449,"reference":"L3C3H1"},{"id":450,"reference":"L3C3H2"},{"id":451,"reference":"L3C3H3"},{"id":452,"reference":"L3C3H4"},{"id":453,"reference":"L3C4H1"},{"id":454,"reference":"L3C4H2"},{"id":455,"reference":"L3C4H3"},{"id":456,"reference":"L3C4H4"},{"id":457,"reference":"L3C5H1"},{"id":458,"reference":"L3C5H2"},{"id":459,"reference":"L3C5H3"},{"id":460,"reference":"L3C5H4"},{"id":461,"reference":"L4C1H1"},{"id":462,"reference":"L4C1H2"},{"id":463,"reference":"L4C1H3"},{"id":464,"reference":"L4C1H4"},{"id":465,"reference":"L4C2H1"},{"id":466,"reference":"L4C2H2"},{"id":467,"reference":"L4C2H3"},{"id":468,"reference":"L4C2H4"},{"id":469,"reference":"L4C3H1"},{"id":470,"reference":"L4C3H2"},{"id":471,"reference":"L4C3H3"},{"id":472,"reference":"L4C3H4"},{"id":473,"reference":"L4C4H1"},{"id":474,"reference":"L4C4H2"},{"id":475,"reference":"L4C4H3"},{"id":476,"reference":"L4C4H4"},{"id":477,"reference":"L4C5H1"},{"id":478,"reference":"L4C5H2"},{"id":479,"reference":"L4C5H3"},{"id":480,"reference":"L4C5H4"},{"id":481,"reference":"L5C1H1"},{"id":482,"reference":"L5C1H2"},{"id":483,"reference":"L5C1H3"},{"id":484,"reference":"L5C1H4"},{"id":485,"reference":"L5C2H1"},{"id":486,"reference":"L5C2H2"},{"id":487,"reference":"L5C2H3"},{"id":488,"reference":"L5C2H4"},{"id":489,"reference":"L5C3H1"},{"id":490,"reference":"L5C3H2"},{"id":491,"reference":"L5C3H3"},{"id":492,"reference":"L5C3H4"},{"id":493,"reference":"L5C4H1"},{"id":494,"reference":"L5C4H2"},{"id":495,"reference":"L5C4H3"},{"id":496,"reference":"L5C4H4"},{"id":497,"reference":"L5C5H1"},{"id":498,"reference":"L5C5H2"},{"id":499,"reference":"L5C5H3"},{"id":500,"reference":"L5C5H4"},{"id":501,"reference":"L6C1H1"},{"id":502,"reference":"L6C1H2"},{"id":503,"reference":"L6C1H3"},{"id":504,"reference":"L6C1H4"},{"id":505,"reference":"L6C2H1"},{"id":506,"reference":"L6C2H2"},{"id":507,"reference":"L6C2H3"},{"id":508,"reference":"L6C2H4"},{"id":509,"reference":"L6C3H1"},{"id":510,"reference":"L6C3H2"},{"id":511,"reference":"L6C3H3"},{"id":512,"reference":"L6C3H4"},{"id":513,"reference":"L6C4H1"},{"id":514,"reference":"L6C4H2"},{"id":515,"reference":"L6C4H3"},{"id":516,"reference":"L6C4H4"},{"id":517,"reference":"L6C5H1"},{"id":518,"reference":"L6C5H2"},{"id":519,"reference":"L6C5H3"},{"id":520,"reference":"L6C5H4"},{"id":521,"reference":"L7C1H1"},{"id":522,"reference":"L7C1H2"},{"id":523,"reference":"L7C1H3"},{"id":524,"reference":"L7C1H4"},{"id":525,"reference":"L7C2H1"},{"id":526,"reference":"L7C2H2"},{"id":527,"reference":"L7C2H3"},{"id":528,"reference":"L7C2H4"},{"id":529,"reference":"L7C3H1"},{"id":530,"reference":"L7C3H2"},{"id":531,"reference":"L7C3H3"},{"id":532,"reference":"L7C3H4"},{"id":533,"reference":"L7C4H1"},{"id":534,"reference":"L7C4H2"},{"id":535,"reference":"L7C4H3"},{"id":536,"reference":"L7C4H4"},{"id":537,"reference":"L7C5H1"},{"id":538,"reference":"L7C5H2"},{"id":539,"reference":"L7C5H3"},{"id":540,"reference":"L7C5H4"},{"id":541,"reference":"L8C1H1"},{"id":542,"reference":"L8C1H2"},{"id":543,"reference":"L8C1H3"},{"id":544,"reference":"L8C1H4"},{"id":545,"reference":"L8C2H1"},{"id":546,"reference":"L8C2H2"},{"id":547,"reference":"L8C2H3"},{"id":548,"reference":"L8C2H4"},{"id":549,"reference":"L8C3H1"},{"id":550,"reference":"L8C3H2"},{"id":551,"reference":"L8C3H3"},{"id":552,"reference":"L8C3H4"},{"id":553,"reference":"L8C4H1"},{"id":554,"reference":"L8C4H2"},{"id":555,"reference":"L8C4H3"},{"id":556,"reference":"L8C4H4"},{"id":557,"reference":"L8C5H1"},{"id":558,"reference":"L8C5H2"},{"id":559,"reference":"L8C5H3"},{"id":560,"reference":"L8C5H4"},{"id":561,"reference":"L9C1H1"},{"id":562,"reference":"L9C1H2"},{"id":563,"reference":"L9C1H3"},{"id":564,"reference":"L9C1H4"},{"id":565,"reference":"L9C2H1"},{"id":566,"reference":"L9C2H2"},{"id":567,"reference":"L9C2H3"},{"id":568,"reference":"L9C2H4"},{"id":569,"reference":"L9C3H1"},{"id":570,"reference":"L9C3H2"},{"id":571,"reference":"L9C3H3"},{"id":572,"reference":"L9C3H4"},{"id":573,"reference":"L9C4H1"},{"id":574,"reference":"L9C4H2"},{"id":575,"reference":"L9C4H3"},{"id":576,"reference":"L9C4H4"},{"id":577,"reference":"L9C5H1"},{"id":578,"reference":"L9C5H2"},{"id":579,"reference":"L9C5H3"},{"id":580,"reference":"L9C5H4"},{"id":581,"reference":"L10C1H1"},{"id":582,"reference":"L10C1H2"},{"id":583,"reference":"L10C1H3"},{"id":584,"reference":"L10C1H4"},{"id":585,"reference":"L10C2H1"},{"id":586,"reference":"L10C2H2"},{"id":587,"reference":"L10C2H3"},{"id":588,"reference":"L10C2H4"},{"id":589,"reference":"L10C3H1"},{"id":590,"reference":"L10C3H2"},{"id":591,"reference":"L10C3H3"},{"id":592,"reference":"L10C3H4"},{"id":593,"reference":"L10C4H1"},{"id":594,"reference":"L10C4H2"},{"id":595,"reference":"L10C4H3"},{"id":596,"reference":"L10C4H4"},{"id":597,"reference":"L10C5H1"},{"id":598,"reference":"L10C5H2"},{"id":599,"reference":"L10C5H3"},{"id":600,"reference":"L10C5H4"}];[{"id":401,"reference":"L1C1H1"},{"id":402,"reference":"L1C1H2"},{"id":403,"reference":"L1C1H3"},{"id":404,"reference":"L1C1H4"},{"id":405,"reference":"L1C2H1"},{"id":406,"reference":"L1C2H2"},{"id":407,"reference":"L1C3H1"},{"id":408,"reference":"L1C3H2"},{"id":409,"reference":"L1C3H3"},{"id":410,"reference":"L1C3H4"},{"id":411,"reference":"L1C4H1"},{"id":412,"reference":"L1C4H2"},{"id":413,"reference":"L1C4H3"},{"id":414,"reference":"L1C4H4"},{"id":415,"reference":"L1C5H1"},{"id":416,"reference":"L1C5H2"},{"id":417,"reference":"L1C5H3"},{"id":418,"reference":"L2C1H1"},{"id":419,"reference":"L2C1H2"},{"id":420,"reference":"L2C1H3"},{"id":421,"reference":"L2C2H1"},{"id":422,"reference":"L2C2H2"},{"id":423,"reference":"L2C2H3"},{"id":424,"reference":"L2C2H4"},{"id":425,"reference":"L2C3H1"},{"id":426,"reference":"L2C3H2"},{"id":427,"reference":"L2C3H3"},{"id":428,"reference":"L2C3H4"},{"id":429,"reference":"L2C4H1"},{"id":430,"reference":"L2C4H2"},{"id":431,"reference":"L2C4H3"},{"id":432,"reference":"L2C4H4"},{"id":433,"reference":"L2C5H1"},{"id":434,"reference":"L2C5H2"},{"id":435,"reference":"L2C5H3"},{"id":436,"reference":"L2C5H4"},{"id":437,"reference":"L2C6H1"},{"id":438,"reference":"L2C6H2"},{"id":439,"reference":"L2C6H3"},{"id":440,"reference":"L2C6H4"},{"id":441,"reference":"L3C1H1"},{"id":442,"reference":"L3C1H2"},{"id":443,"reference":"L3C1H3"},{"id":444,"reference":"L3C1H4"},{"id":445,"reference":"L3C2H1"},{"id":446,"reference":"L3C2H2"},{"id":447,"reference":"L3C2H3"},{"id":448,"reference":"L3C2H4"},{"id":449,"reference":"L3C3H1"},{"id":450,"reference":"L3C3H2"},{"id":451,"reference":"L3C3H3"},{"id":452,"reference":"L3C3H4"},{"id":453,"reference":"L3C4H1"},{"id":454,"reference":"L3C4H2"},{"id":455,"reference":"L3C4H3"},{"id":456,"reference":"L3C4H4"},{"id":457,"reference":"L3C5H1"},{"id":458,"reference":"L3C5H2"},{"id":459,"reference":"L3C5H3"},{"id":460,"reference":"L3C5H4"},{"id":461,"reference":"L4C1H1"},{"id":462,"reference":"L4C1H2"},{"id":463,"reference":"L4C1H3"},{"id":464,"reference":"L4C1H4"},{"id":465,"reference":"L4C2H1"},{"id":466,"reference":"L4C2H2"},{"id":467,"reference":"L4C2H3"},{"id":468,"reference":"L4C2H4"},{"id":469,"reference":"L4C3H1"},{"id":470,"reference":"L4C3H2"},{"id":471,"reference":"L4C3H3"},{"id":472,"reference":"L4C3H4"},{"id":473,"reference":"L4C4H1"},{"id":474,"reference":"L4C4H2"},{"id":475,"reference":"L4C4H3"},{"id":476,"reference":"L4C4H4"},{"id":477,"reference":"L4C5H1"},{"id":478,"reference":"L4C5H2"},{"id":479,"reference":"L4C5H3"},{"id":480,"reference":"L4C5H4"},{"id":481,"reference":"L5C1H1"},{"id":482,"reference":"L5C1H2"},{"id":483,"reference":"L5C1H3"},{"id":484,"reference":"L5C1H4"},{"id":485,"reference":"L5C2H1"},{"id":486,"reference":"L5C2H2"},{"id":487,"reference":"L5C2H3"},{"id":488,"reference":"L5C2H4"},{"id":489,"reference":"L5C3H1"},{"id":490,"reference":"L5C3H2"},{"id":491,"reference":"L5C3H3"},{"id":492,"reference":"L5C3H4"},{"id":493,"reference":"L5C4H1"},{"id":494,"reference":"L5C4H2"},{"id":495,"reference":"L5C4H3"},{"id":496,"reference":"L5C4H4"},{"id":497,"reference":"L5C5H1"},{"id":498,"reference":"L5C5H2"},{"id":499,"reference":"L5C5H3"},{"id":500,"reference":"L5C5H4"},{"id":501,"reference":"L6C1H1"},{"id":502,"reference":"L6C1H2"},{"id":503,"reference":"L6C1H3"},{"id":504,"reference":"L6C1H4"},{"id":505,"reference":"L6C2H1"},{"id":506,"reference":"L6C2H2"},{"id":507,"reference":"L6C2H3"},{"id":508,"reference":"L6C2H4"},{"id":509,"reference":"L6C3H1"},{"id":510,"reference":"L6C3H2"},{"id":511,"reference":"L6C3H3"},{"id":512,"reference":"L6C3H4"},{"id":513,"reference":"L6C4H1"},{"id":514,"reference":"L6C4H2"},{"id":515,"reference":"L6C4H3"},{"id":516,"reference":"L6C4H4"},{"id":517,"reference":"L6C5H1"},{"id":518,"reference":"L6C5H2"},{"id":519,"reference":"L6C5H3"},{"id":520,"reference":"L6C5H4"},{"id":521,"reference":"L7C1H1"},{"id":522,"reference":"L7C1H2"},{"id":523,"reference":"L7C1H3"},{"id":524,"reference":"L7C1H4"},{"id":525,"reference":"L7C2H1"},{"id":526,"reference":"L7C2H2"},{"id":527,"reference":"L7C2H3"},{"id":528,"reference":"L7C2H4"},{"id":529,"reference":"L7C3H1"},{"id":530,"reference":"L7C3H2"},{"id":531,"reference":"L7C3H3"},{"id":532,"reference":"L7C3H4"},{"id":533,"reference":"L7C4H1"},{"id":534,"reference":"L7C4H2"},{"id":535,"reference":"L7C4H3"},{"id":536,"reference":"L7C4H4"},{"id":537,"reference":"L7C5H1"},{"id":538,"reference":"L7C5H2"},{"id":539,"reference":"L7C5H3"},{"id":540,"reference":"L7C5H4"},{"id":541,"reference":"L8C1H1"},{"id":542,"reference":"L8C1H2"},{"id":543,"reference":"L8C1H3"},{"id":544,"reference":"L8C1H4"},{"id":545,"reference":"L8C2H1"},{"id":546,"reference":"L8C2H2"},{"id":547,"reference":"L8C2H3"},{"id":548,"reference":"L8C2H4"},{"id":549,"reference":"L8C3H1"},{"id":550,"reference":"L8C3H2"},{"id":551,"reference":"L8C3H3"},{"id":552,"reference":"L8C3H4"},{"id":553,"reference":"L8C4H1"},{"id":554,"reference":"L8C4H2"},{"id":555,"reference":"L8C4H3"},{"id":556,"reference":"L8C4H4"},{"id":557,"reference":"L8C5H1"},{"id":558,"reference":"L8C5H2"},{"id":559,"reference":"L8C5H3"},{"id":560,"reference":"L8C5H4"},{"id":561,"reference":"L9C1H1"},{"id":562,"reference":"L9C1H2"},{"id":563,"reference":"L9C1H3"},{"id":564,"reference":"L9C1H4"},{"id":565,"reference":"L9C2H1"},{"id":566,"reference":"L9C2H2"},{"id":567,"reference":"L9C2H3"},{"id":568,"reference":"L9C2H4"},{"id":569,"reference":"L9C3H1"},{"id":570,"reference":"L9C3H2"},{"id":571,"reference":"L9C3H3"},{"id":572,"reference":"L9C3H4"},{"id":573,"reference":"L9C4H1"},{"id":574,"reference":"L9C4H2"},{"id":575,"reference":"L9C4H3"},{"id":576,"reference":"L9C4H4"},{"id":577,"reference":"L9C5H1"},{"id":578,"reference":"L9C5H2"},{"id":579,"reference":"L9C5H3"},{"id":580,"reference":"L9C5H4"},{"id":581,"reference":"L10C1H1"},{"id":582,"reference":"L10C1H2"},{"id":583,"reference":"L10C1H3"},{"id":584,"reference":"L10C1H4"},{"id":585,"reference":"L10C2H1"},{"id":586,"reference":"L10C2H2"},{"id":587,"reference":"L10C2H3"},{"id":588,"reference":"L10C2H4"},{"id":589,"reference":"L10C3H1"},{"id":590,"reference":"L10C3H2"},{"id":591,"reference":"L10C3H3"},{"id":592,"reference":"L10C3H4"},{"id":593,"reference":"L10C4H1"},{"id":594,"reference":"L10C4H2"},{"id":595,"reference":"L10C4H3"},{"id":596,"reference":"L10C4H4"},{"id":597,"reference":"L10C5H1"},{"id":598,"reference":"L10C5H2"},{"id":599,"reference":"L10C5H3"},{"id":600,"reference":"L10C5H4"}];
+
+//---------------------------
+//3. PARSE REFERENCE STRINGS
+//---------------------------
+function parseRef(ref) {
+const match = ref.match(/L(\d+)C(\d+)H(\d+)/);
+if (!match) return null;
+return {
+ line: parseInt(match[1]),
+ column: parseInt(match[2]),
+ height: parseInt(match[3]),
+};
+}
+
+const parsed = warehouseData.map(d => ({
+...d,
+...parseRef(d.reference)
+}));
+
+//Get max values for layout
+const maxLine = Math.max(...parsed.map(p => p.line));
+const maxColumn = Math.max(...parsed.map(p => p.column));
+const maxHeight = Math.max(...parsed.map(p => p.height));
+
+//---------------------------
+//4. GRID CONFIG
+//---------------------------
+const CELL_WIDTH = 50;
+const CELL_HEIGHT = 25;
+const GAP_X = 10;
+const GAP_Y = 10;
+const OFFSET_X = 100;
+const OFFSET_Y = 80;
+
+const colors = {
+free: 0x3498db,
+occupied: 0xe74c3c,
+};
+
+const cells = [];
+
+//---------------------------
+//5. DRAW CELLS
+//---------------------------
+parsed.forEach(item => {
+const rect = new PIXI.Graphics();
+rect.beginFill(colors.free);
+rect.drawRect(0, 0, CELL_WIDTH, CELL_HEIGHT);
+rect.endFill();
+
+// Compute position
+const x = OFFSET_X + (item.column - 1) * (CELL_WIDTH + GAP_X);
+const y =
+ OFFSET_Y +
+ (item.line - 1) * ((CELL_HEIGHT + GAP_Y) * maxHeight) +
+ (item.height - 1) * (CELL_HEIGHT + 3);
+
+rect.x = x;
+rect.y = y;
+rect.status = 'free';
+rect.cursor = 'pointer';
+rect.eventMode = 'static';
+rect.cellId = item.id;
+rect.refLabel = item.reference;
+
+// Click → log ID
+rect.on('pointerdown', () => {
+ console.log(`Clicked cell ID: ${rect.cellId}`);
+ rect.status = rect.status === 'occupied' ? 'free' : 'occupied';
+ updateColor(rect);
+});
+
+// Hover → show tooltip
+rect.on('pointerover', () => showTooltip(rect.refLabel));
+rect.on('pointermove', (e) => moveTooltip(e.global));
+rect.on('pointerout', hideTooltip);
+
+app.stage.addChild(rect);
+cells.push(rect);
+});
+
+//---------------------------
+//6. COLOR UPDATE FUNCTION
+//---------------------------
+function updateColor(rect) {
+rect.clear();
+rect.beginFill(colors[rect.status]);
+rect.drawRect(0, 0, CELL_WIDTH, CELL_HEIGHT);
+rect.endFill();
+}
+
+//---------------------------
+//7. LINE & COLUMN LABELS
+//---------------------------
+const textStyle = new PIXI.TextStyle({
+fill: '#ffffff',
+fontSize: 14,
+fontWeight: 'bold'
+});
+
+//Column labels (top)
+for (let c = 1; c <= maxColumn; c++) {
+const label = new PIXI.Text(`Col ${c}`, textStyle);
+label.x = OFFSET_X + (c - 1) * (CELL_WIDTH + GAP_X) + 5;
+label.y = OFFSET_Y - 30;
+app.stage.addChild(label);
+}
+
+//Line labels (left)
+for (let l = 1; l <= maxLine; l++) {
+const label = new PIXI.Text(`Line ${l}`, textStyle);
+label.x = 20;
+label.y = OFFSET_Y + (l - 1) * ((CELL_HEIGHT + GAP_Y) * maxHeight) + 20;
+app.stage.addChild(label);
+}
+
+//---------------------------
+//8. TOOLTIP SYSTEM
+//---------------------------
+const tooltip = document.createElement('div');
+tooltip.style.position = 'fixed';
+tooltip.style.padding = '6px 10px';
+tooltip.style.background = 'rgba(0,0,0,0.8)';
+tooltip.style.color = '#fff';
+tooltip.style.borderRadius = '6px';
+tooltip.style.fontFamily = 'sans-serif';
+tooltip.style.fontSize = '13px';
+tooltip.style.pointerEvents = 'none';
+tooltip.style.transition = 'opacity 0.1s ease';
+tooltip.style.opacity = '0';
+tooltip.style.zIndex = '1000';
+document.body.appendChild(tooltip);
+
+function showTooltip(text) {
+tooltip.textContent = text;
+tooltip.style.opacity = '1';
+}
+
+function moveTooltip(pos) {
+tooltip.style.left = pos.x + 12 + 'px';
+tooltip.style.top = pos.y + 12 + 'px';
+}
+
+function hideTooltip() {
+tooltip.style.opacity = '0';
+}
+
+
+
+</script>
+</body>
+</html>

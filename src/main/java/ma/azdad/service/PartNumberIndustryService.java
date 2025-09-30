@@ -33,5 +33,9 @@ public class PartNumberIndustryService extends GenericService<Integer, PartNumbe
 	public PartNumberIndustry findByName(String name) {
 		return partNumberIndustryRepos.findByName(name);
 	}
+	
+	public List<PartNumberIndustry> find(){
+		return repos.find();
+	}
 
 }

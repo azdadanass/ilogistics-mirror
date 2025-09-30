@@ -28,6 +28,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private Warehouse warehouse;
 	private List<LocationDetail> detailList = new ArrayList<>();
 	private List<ZoneLine> lineList = new ArrayList<>();
+	private List<ZoneIndustry> industryList = new ArrayList<>();
 
 	public Location() {
 		super();
@@ -74,6 +75,16 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public void removeLine(ZoneLine line) {
 		line.setLocation(null);
 		lineList.remove(line);
+	}
+
+	public void addIndustry(ZoneIndustry industry) {
+		industry.setLocation(this);
+		industryList.add(industry);
+	}
+
+	public void removeIndustry(ZoneIndustry industry) {
+		industry.setLocation(null);
+		industryList.remove(industry);
 	}
 
 	public String getName() {
@@ -158,6 +169,15 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setSlotSize(Double slotSize) {
 		this.slotSize = slotSize;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ZoneIndustry> getIndustryList() {
+		return industryList;
+	}
+
+	public void setIndustryList(List<ZoneIndustry> industryList) {
+		this.industryList = industryList;
 	}
 
 }

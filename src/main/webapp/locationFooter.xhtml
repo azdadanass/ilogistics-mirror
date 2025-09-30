@@ -72,4 +72,38 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="addIndustryForm">
+		<p:dialog widgetVar="addIndustryDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addIndustryDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add Industry" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Name" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{locationView.partNumberIndustryId}" converter="#{genericSecuredConverter}" required="true" requiredMessage="Industry should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{partNumberIndustryView.find()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addIndustryDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{locationView.addIndustry()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addIndustryDlg').hide()" update=":main_form:industryList,:main_form:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

@@ -76,6 +76,12 @@
 							</a>
 						</li>
 					</f:subview>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="blue ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Indutries &amp; Categories" styleClass="hidden-xs" />
+						</a>
+					</li>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -111,6 +117,39 @@
 					</div>
 					<div id="tab2" class="tab-pane">
 						<div id="zoningGird"></div>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Industry List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="industryList" value="#{locationView.model.industryList}" rowKey="#{item.id}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Name">
+											<h:outputText value="#{item.industryName}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry()}" rendered="#{locationView.canDeleteIndustry()}"
+													update="partNumberIndustryTab">
+													<i class="fa fa-trash-o red bigger-130" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add  Industry" oncomplete="PF('addIndustryDlg').show()" update=":addIndustryForm" rendered="#{locationView.canAddIndustry()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

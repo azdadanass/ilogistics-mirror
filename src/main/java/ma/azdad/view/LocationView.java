@@ -18,10 +18,12 @@ import com.google.gson.GsonBuilder;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
+import ma.azdad.model.ZoneIndustry;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.LocationService;
+import ma.azdad.service.PartNumberIndustryService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -44,6 +46,9 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	@Autowired
 	protected SupplierService supplierService;
+	
+	@Autowired
+	protected PartNumberIndustryService partNumberIndustryService;
 
 	private Location location = new Location();
 
@@ -179,7 +184,43 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return listPage;
 	}
 
-	// generat zoning
+	// industry / category / type management
+	private Integer partNumberIndustryId;
+
+	public Boolean canAddIndustry() {
+		return sessionView.getIsAdmin();
+	}
+	
+	public Boolean validateAddIndustry() {
+		if(model.getIndustryList().stream().filter(i->i.getIndustryId().equals(partNumberIndustryId)).count()>0)
+			return FacesContextMessages.ErrorMessages("Already exists");
+		
+		return true;
+	}
+
+	public void addIndustry() {
+		if (!canAddIndustry())
+			return;
+		if (!validateAddIndustry())
+			return;
+		ZoneIndustry industry = new ZoneIndustry();
+		industry.setIndustry(partNumberIndustryService.findOneLight(partNumberIndustryId));
+		model.addIndustry(industry);
+		service.save(model);
+		refreshModel();
+	}
+	
+	public Boolean canDeleteIndustry() {
+		return canAddIndustry();
+	}
+	
+	public void deleteIndustry(ZoneIndustry zoneIndustry) {
+		model.removeIndustry(zoneIndustry);
+		service.save(model);
+		refreshModel();
+	}
+
+	// generate zoning
 
 	public Boolean canGenerateZoning() {
 		return sessionView.getIsAdmin() && !model.getZoning() && model.getLineList().isEmpty();
@@ -244,6 +285,46 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setModel(Location model) {
 		this.model = model;
+	}
+
+	public SessionView getSessionView() {
+		return sessionView;
+	}
+
+	public void setSessionView(SessionView sessionView) {
+		this.sessionView = sessionView;
+	}
+
+	public CompanyService getCompanyService() {
+		return companyService;
+	}
+
+	public void setCompanyService(CompanyService companyService) {
+		this.companyService = companyService;
+	}
+
+	public CustomerService getCustomerService() {
+		return customerService;
+	}
+
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
+	public SupplierService getSupplierService() {
+		return supplierService;
+	}
+
+	public void setSupplierService(SupplierService supplierService) {
+		this.supplierService = supplierService;
+	}
+
+	public Integer getPartNumberIndustryId() {
+		return partNumberIndustryId;
+	}
+
+	public void setPartNumberIndustryId(Integer partNumberIndustryId) {
+		this.partNumberIndustryId = partNumberIndustryId;
 	}
 
 }

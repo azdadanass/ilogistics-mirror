@@ -137,10 +137,10 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	List<ma.azdad.mobile.model.TransportationJobHistory> findHistoryListMobile(Integer id);
 
 	// reactivity and performance
-	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and date4 is not null")
+	@Query("select count(*) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) and date4 is not null")
 	Long countAcceptedByDriver(String driverUsername);
 
-	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and date4 is not null and date4 < maxAcceptDate")
+	@Query("select count(*) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) and date4 is not null and date4 < maxAcceptDate")
 	Long countAcceptedWithinDeadLineByDriver(String driverUsername);
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and date5 is not null")

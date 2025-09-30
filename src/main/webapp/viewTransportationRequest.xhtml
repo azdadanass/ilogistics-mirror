@@ -132,6 +132,7 @@
 						</p:commandLink>
 						<p:commandLink title="Generate Label"
 							action="#{transportationRequestView.generateStamp()}"
+							rendered="#{transportationRequestView.canGenerateStamp()}"
 							update=":stampForm" oncomplete="PF('stampDlg').show()"
 							styleClass="btn btn-app btn-sm btn-warning  hover aa-tooltip tooltip-purple">
 							<i class="ace-icon fa fa-qrcode bigger-230"></i>
@@ -997,7 +998,7 @@
 										<div class="profile-info-value bolder blue">
 											<h:outputText
 												value="#{transportationRequestView.plannedTrStartAddress}"
-												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #007bff; " />
 											&nbsp;
 										</div>
 
@@ -1016,7 +1017,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculatePlannedTrStartDistance()}"
-												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #007bff; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1027,7 +1028,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculatePlannedTrStartDuration()}"
-												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #007bff; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1042,7 +1043,7 @@
 										<div class="profile-info-value bolder blue">
 											<h:outputText
 												value="#{transportationRequestView.trStartAddress}"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745; " />
 											&nbsp;
 										</div>
 
@@ -1061,7 +1062,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculateTrStartDistance()}"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1072,7 +1073,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculateTrStartDuration()}"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1090,7 +1091,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.plannedPickupDuration} Min"
-												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #007bff; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1101,7 +1102,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.pickupDuration} Min"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1112,7 +1113,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.estimatedDistanceText}"
-												style="color: #17a2b8; background-color: #e0f7fa; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #17a2b8;" />
 											&nbsp;
 										</div>
 									</div>
@@ -1123,7 +1124,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculateTrDistance()}"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745;" />
 											<h:outputText
 												value=" (#{((transportationRequestView.calculateTrDistance() - transportationRequestView.transportationRequest.estimatedDistance) / transportationRequestView.transportationRequest.estimatedDistance * 100)}%)" />
 											&nbsp;
@@ -1140,7 +1141,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.plannedDeliveryDuration} Min"
-												style="color: #007bff; background-color: #e3f2fd; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #007bff; " />
 											&nbsp;
 										</div>
 									</div>
@@ -1151,7 +1152,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.deliveryDuration} Min"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745;" />
 											&nbsp;
 										</div>
 									</div>
@@ -1162,7 +1163,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.transportationRequest.estimatedDurationText}"
-												style="color: #17a2b8; background-color: #e0f7fa; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #17a2b8;" />
 											&nbsp;
 										</div>
 									</div>
@@ -1173,7 +1174,7 @@
 										<div class="profile-info-value">
 											<h:outputText
 												value="#{transportationRequestView.calculateTrDuration()}"
-												style="color: #28a745; background-color: #e8f5e9; padding: 4px 8px; border-radius: 4px;" />
+												style="color: #28a745;" />
 											<h:outputText
 												value=" (#{((transportationRequestView.calculateTrDurationMilli() - transportationRequestView.transportationRequest.estimatedDuration) / transportationRequestView.transportationRequest.estimatedDuration * 100)}%)" />
 											&nbsp;

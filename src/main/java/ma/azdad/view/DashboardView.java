@@ -50,10 +50,13 @@ public class DashboardView {
 		this.countTrToPickup = transportationRequestService.countToPickup(sessionView.getUsername());
 		this.countTrToDeliver = transportationRequestService.countToDeliver(sessionView.getUsername());
 		this.countTrToAcknowledge = transportationRequestService.countToAcknowledge(sessionView.getUsername());
+		
+		this.acceptPerfomance = transportationJobService.getAcceptPerformance(sessionView.getUsername());
+		this.startPerfomance = transportationJobService.getStartPerformance(sessionView.getUsername());
 	}
 
 	public Long getReactivity() {
-		return 0l;
+		return transportationJobService.getReactivity(sessionView.getUsername());
 	}
 
 	public Long getPerformance() {

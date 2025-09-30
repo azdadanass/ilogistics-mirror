@@ -133,8 +133,8 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" exportable="false">
 											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry()}" rendered="#{locationView.canDeleteIndustry()}"
-													update="partNumberIndustryTab">
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry(item)}" rendered="#{locationView.canDeleteIndustry()}"
+													update="industryList">
 													<i class="fa fa-trash-o red bigger-130" />
 												</p:commandLink>
 											</div>

@@ -31,10 +31,11 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	private Integer maxStorageTemperature;
 	private Boolean flammable;
 	private Integer storageHumidity;
+	private Double storageFactor = 1.0;
 
 	private Packing parent;
-	
-	//tmp
+
+	// tmp
 	private Integer tmpQuantity;
 
 	public PackingDetail() {
@@ -60,59 +61,54 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 			result = type.toLowerCase().contains(query);
 		return result;
 	}
-	
+
 	@Transient
-	public String getParentName(){
-		return parent!=null?parent.getName():null;
+	public String getParentName() {
+		return parent != null ? parent.getName() : null;
 	}
 
 	@Transient
-	public void setParentName(String parentName){
-		if(parent==null)
-			parent=new Packing();
+	public void setParentName(String parentName) {
+		if (parent == null)
+			parent = new Packing();
 		parent.setName(parentName);
 	}
 
-	
-	
 	@Transient
-	public String getPartNumberName(){
-		return parent!=null?parent.getPartNumberName():null;
+	public String getPartNumberName() {
+		return parent != null ? parent.getPartNumberName() : null;
 	}
 
 	@Transient
-	public void setPartNumberName(String partNumberName){
-		if(parent==null)
-			parent=new Packing();
+	public void setPartNumberName(String partNumberName) {
+		if (parent == null)
+			parent = new Packing();
 		parent.setPartNumberName(partNumberName);
 	}
-	
 
 	@Transient
-	public String getPartNumberDescription(){
-		return parent!=null?parent.getPartNumberDescription():null;
+	public String getPartNumberDescription() {
+		return parent != null ? parent.getPartNumberDescription() : null;
 	}
 
 	@Transient
-	public void setPartNumberDescription(String partNumberDescription){
-		if(parent==null)
-			parent=new Packing();
+	public void setPartNumberDescription(String partNumberDescription) {
+		if (parent == null)
+			parent = new Packing();
 		parent.setPartNumberDescription(partNumberDescription);
 	}
-	
+
 	@Transient
-	public String getPartNumberBrandName(){
-		return parent!=null?parent.getPartNumberBrandName():null;
+	public String getPartNumberBrandName() {
+		return parent != null ? parent.getPartNumberBrandName() : null;
 	}
 
 	@Transient
-	public void setPartNumberBrandName(String partNumberBrandName){
-		if(parent==null)
-			parent=new Packing();
+	public void setPartNumberBrandName(String partNumberBrandName) {
+		if (parent == null)
+			parent = new Packing();
 		parent.setPartNumberBrandName(partNumberBrandName);
 	}
-
-
 
 	public String getType() {
 		return type;
@@ -278,7 +274,20 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	public void setTmpQuantity(Integer tmpQuantity) {
 		this.tmpQuantity = tmpQuantity;
 	}
+
+	public Double getStorageFactor() {
+		return storageFactor;
+	}
+
+	public void setStorageFactor(Double storageFactor) {
+		this.storageFactor = storageFactor;
+	}
 	
-	
+	public void calculateVolume() {
+		try {
+			this.volume = this.length * this.width * this.height;
+		} catch (Exception e) {
+		}
+	}
 
 }

@@ -68,6 +68,14 @@
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
 						</a>
 					</li>
+					<f:subview rendered="#{locationView.model.zoning}">
+						<li>
+							<a data-toggle="tab" href="#tab2">
+								<i class="purple ace-icon fa fa-th bigger-120"></i>
+								<h:outputText value=" Zoning" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
 				</ul>
 				<div class="tab-content no-border padding-24">
 					<div id="tab1" class="tab-pane in active">
@@ -100,18 +108,19 @@
 							</div>
 						</div>
 						<div class="space-16" />
+					</div>
+					<div id="tab2" class="tab-pane">
 						<div id="zoningGird"></div>
 					</div>
-					<div id="tab2" class="tab-pane"></div>
 				</div>
 			</div>
 		</h:form>
 		<h:panelGroup id="zoningScriptsPanel">
 			<script src="/resources/js/zoning.js" />
 			<script type="text/javascript">
-			const warehouseData = <h:outputText value="#{locationView.heightListJson}"/>
-			drawCells(warehouseData);
-		</script>
+				const warehouseData = <h:outputText value="#{locationView.heightListJson}"/>
+				drawCells(warehouseData);
+			</script>
 		</h:panelGroup>
 		<f:event type="preRenderView" listener="#{locationView.redirect()}" />
 		<ui:include src="locationFooter.xhtml" />

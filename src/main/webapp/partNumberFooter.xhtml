@@ -77,6 +77,16 @@
 										<f:selectItem itemLabel="QR Code" itemValue="QR Code" />
 									</h:selectOneMenu>
 								</p:column>
+								<p:column headerText="Storage Factor" width="80">
+									<h:outputText value="#{item.storageFactor}" rendered="#{!packingView.editMode}" />
+									<h:selectOneMenu value="#{item.storageFactor}" style="width:90px" rendered="#{packingView.editMode}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="1" itemValue="1" />
+										<f:selectItem itemLabel="0.7" itemValue="0.7" />
+										<f:selectItem itemLabel="0.5" itemValue="0.5" />
+										<f:selectItem itemLabel="0.3" itemValue="0.3" />
+									</h:selectOneMenu>
+								</p:column>
 								<p:column headerText="Gross Weight" width="70">
 									<h:outputText value="#{item.grossWeight} KG" rendered="#{!packingView.editMode}" />
 									<p:inputText value="#{item.grossWeight}" placeholder="(KG)" style="width: 60px" rendered="#{packingView.editMode}" />
@@ -87,15 +97,21 @@
 								</p:column>
 								<p:column headerText="Volume" width="70">
 									<h:outputText value="#{item.volume} m3" rendered="#{!packingView.editMode}" />
-									<p:inputText value="#{item.volume}" placeholder="(m3)" style="width: 60px" rendered="#{packingView.editMode}" />
+									<p:inputText id="volume" value="#{item.volume}" placeholder="(m3)" style="width: 60px" rendered="#{packingView.editMode}" />
 								</p:column>
 								<p:column headerText="length / Width / Height" width="100">
 									<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" rendered="#{!packingView.editMode}" />
-									<p:inputText value="#{item.length}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+									<p:inputText value="#{item.length}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}">
+										<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+									</p:inputText>
 									&nbsp;
-									<p:inputText value="#{item.width}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+									<p:inputText value="#{item.width}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}">
+										<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+									</p:inputText>
 									&nbsp;
-									<p:inputText value="#{item.height}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}" />
+									<p:inputText value="#{item.height}" placeholder="(m)" style="width: 40px" rendered="#{packingView.editMode}">
+										<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+									</p:inputText>
 								</p:column>
 								<p:column headerText="Fragile" width="50">
 									<i class="ace-icon fa #{item.fragile?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200 #{packingView.editMode?'hide':''}" />
@@ -144,7 +160,7 @@
 										<p:column footerText="#{packingView.packing.grossWeight} Kg" />
 										<p:column footerText="" />
 										<p:column footerText="#{packingView.packing.volume} m3" />
-										<p:column colspan="9" footerText="" />
+										<p:column colspan="10" footerText="" />
 									</p:row>
 								</p:columnGroup>
 								<f:facet name="footer">

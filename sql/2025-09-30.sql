@@ -1,0 +1,1 @@
+update location set zoning = false where zoning is null;

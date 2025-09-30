@@ -926,7 +926,7 @@
 										<p:dataTable id="packingDetailList" var="item" value="#{packingDetailView.findByPartNumber(partNumberView.partNumber.id)}" styleClass="table table-striped table-hover center"
 											sortBy="#{item.parent.name}" expandableRowGroups="true" rendered="#{packingView.showPackingDetail}">
 											<p:headerRow>
-												<p:column colspan="14" styleClass="center">
+												<p:column colspan="16" styleClass="center">
 													<h:outputText value="#{item.parent.name}" />
 												</p:column>
 											</p:headerRow>
@@ -941,6 +941,9 @@
 											</p:column>
 											<p:column headerText="SN Type" width="70">
 												<h:outputText value="#{item.snType}" />
+											</p:column>
+											<p:column headerText="Storage Factor" width="80">
+												<h:outputText value="#{item.storageFactor}" />
 											</p:column>
 											<p:column headerText="Gross Weight" width="70">
 												<h:outputText value="#{item.grossWeight} KG" />

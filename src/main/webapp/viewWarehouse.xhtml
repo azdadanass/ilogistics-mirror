@@ -290,9 +290,12 @@
 											<sup> <h:outputText value="3" />
 											</sup>
 										</p:column>
-										<p:column headerText="Status Category">
+										<p:column headerText="Status Category" width="150">
 											<h:outputText value="#{item.stockRowState.value}" styleClass="#{item.stockRowState.color.name}" />
 											<h:outputText value="Normal &amp; Faulty" rendered="#{item.stockRowState==null}" styleClass="blue" />
+										</p:column>
+										<p:column headerText="Zoning" width="100">
+											<h:outputText value="#{item.zoning?'Yes':'No'}" styleClass="badge #{item.zoning?'badge-success':''}" />
 										</p:column>
 										<p:column headerText="Actions" width="150" style="text-align : center;">
 											<div class="action-buttons center">

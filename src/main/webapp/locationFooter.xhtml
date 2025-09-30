@@ -35,8 +35,7 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-xs-12 col-sm-3">
-						<label class="control-label pull-right">
-							<h:outputText value="Zoning " />
+						<label class="control-label pull-right"> <h:outputText value="Zoning " />
 						</label>
 					</div>
 					<div class="col-xs-12 col-sm-9">
@@ -87,8 +86,7 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
-								<h:outputText value="Name" />
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Name" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
 								<p:selectOneMenu value="#{locationView.partNumberIndustryId}" converter="#{genericSecuredConverter}" required="true" requiredMessage="Industry should not be null">
@@ -136,14 +134,18 @@
 								</p:column>
 								<p:column headerText="Actions" width="150" exportable="false">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteCategory(item)}" rendered="#{locationView.canDeleteCategory()}" update="categorylist">
+										<p:commandLink title="View Type List" update=":typeListForm" oncomplete="PF('typeListDlg').show()">
+											<i class="ace-icon fa fa-list bigger-130 blue" />
+											<f:setPropertyActionListener value="#{item}" target="#{locationView.category}" />
+										</p:commandLink>
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteType(item)}" rendered="#{locationView.canDeleteType()}" update="typelist">
 											<i class="fa fa-trash-o red bigger-130" />
 										</p:commandLink>
 									</div>
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" oncomplete="PF('addCategoryDlg').show()" update=":addCategoryForm" rendered="#{locationView.canAddCategory()}">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm" rendered="#{locationView.canAddType()}">
 											<i class="fa fa-plus green" />
 										</p:commandLink>
 									</div>
@@ -173,8 +175,7 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
-								<h:outputText value="Category" />
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Category" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
 								<p:selectOneMenu value="#{locationView.partNumberCategoryId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Category should not be null">

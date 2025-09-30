@@ -18,12 +18,15 @@ import com.google.gson.GsonBuilder;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
+import ma.azdad.model.ZoneCategory;
 import ma.azdad.model.ZoneIndustry;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.LocationService;
+import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberIndustryService;
+import ma.azdad.service.PartNumberTypeService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.utils.FacesContextMessages;
 
@@ -46,9 +49,15 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	@Autowired
 	protected SupplierService supplierService;
-	
+
 	@Autowired
 	protected PartNumberIndustryService partNumberIndustryService;
+
+	@Autowired
+	protected PartNumberCategoryService partNumberCategoryService;
+
+	@Autowired
+	protected PartNumberTypeService partNumberTypeService;
 
 	private Location location = new Location();
 
@@ -190,11 +199,11 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public Boolean canAddIndustry() {
 		return sessionView.getIsAdmin();
 	}
-	
+
 	public Boolean validateAddIndustry() {
-		if(model.getIndustryList().stream().filter(i->i.getIndustryId().equals(partNumberIndustryId)).count()>0)
+		if (model.getIndustryList().stream().filter(i -> i.getIndustryId().equals(partNumberIndustryId)).count() > 0)
 			return FacesContextMessages.ErrorMessages("Already exists");
-		
+
 		return true;
 	}
 
@@ -209,15 +218,55 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		service.save(model);
 		refreshModel();
 	}
-	
+
 	public Boolean canDeleteIndustry() {
 		return canAddIndustry();
 	}
-	
+
 	public void deleteIndustry(ZoneIndustry zoneIndustry) {
 		model.removeIndustry(zoneIndustry);
 		service.save(model);
 		refreshModel();
+	}
+
+	private ZoneIndustry industry;
+	private Integer partNumberCategoryId;
+
+	public Boolean canAddCategory() {
+		return sessionView.getIsAdmin();
+	}
+	
+	public Boolean validateAddCategory() {
+		if (industry.getCategoryList().stream().filter(i -> i.getCategoryId().equals(partNumberCategoryId)).count() > 0)
+			return FacesContextMessages.ErrorMessages("Already exists");
+		
+		return true;
+	}
+
+	public void addCategory() {
+		if (!canAddCategory())
+			return;
+		if(!validateAddCategory())
+			return;
+		ZoneCategory category = new ZoneCategory();
+		category.setCategory(partNumberCategoryService.findOneLight(partNumberCategoryId));
+		industry.addCategory(category);
+		service.save(model);
+		refreshModel();
+		
+		industry = model.getIndustryList().stream().filter(i->i.getId().equals(industry.getId())).findFirst().get();
+	}
+	
+	public Boolean canDeleteCategory() {
+		return canAddCategory();
+	}
+
+	public void deleteCategory(ZoneCategory zoneCategory) {
+		industry.removeCategory(zoneCategory);
+		service.save(model);
+		refreshModel();
+		
+		industry = model.getIndustryList().stream().filter(i->i.getId().equals(industry.getId())).findFirst().get();
 	}
 
 	// generate zoning
@@ -325,6 +374,46 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setPartNumberIndustryId(Integer partNumberIndustryId) {
 		this.partNumberIndustryId = partNumberIndustryId;
+	}
+
+	public ZoneIndustry getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(ZoneIndustry industry) {
+		this.industry = industry;
+	}
+
+	public PartNumberIndustryService getPartNumberIndustryService() {
+		return partNumberIndustryService;
+	}
+
+	public void setPartNumberIndustryService(PartNumberIndustryService partNumberIndustryService) {
+		this.partNumberIndustryService = partNumberIndustryService;
+	}
+
+	public PartNumberCategoryService getPartNumberCategoryService() {
+		return partNumberCategoryService;
+	}
+
+	public void setPartNumberCategoryService(PartNumberCategoryService partNumberCategoryService) {
+		this.partNumberCategoryService = partNumberCategoryService;
+	}
+
+	public PartNumberTypeService getPartNumberTypeService() {
+		return partNumberTypeService;
+	}
+
+	public void setPartNumberTypeService(PartNumberTypeService partNumberTypeService) {
+		this.partNumberTypeService = partNumberTypeService;
+	}
+
+	public Integer getPartNumberCategoryId() {
+		return partNumberCategoryId;
+	}
+
+	public void setPartNumberCategoryId(Integer partNumberCategoryId) {
+		this.partNumberCategoryId = partNumberCategoryId;
 	}
 
 }

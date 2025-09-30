@@ -50,6 +50,10 @@
 										<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.type,packingView.packing.partNumber.partNumberClass)}" />
 									</p:graphicImage>
 								</p:column>
+								<p:column headerText="Name" width="100">
+									<h:outputText value="#{item.name}" rendered="#{!packingView.editMode}" />
+									<p:inputText value="#{item.name}" style="width:90px" rendered="#{packingView.editMode}" />
+								</p:column>
 								<p:column headerText="Type" width="80">
 									<h:outputText value="#{item.type}" rendered="#{!packingView.editMode}" />
 									<h:selectOneMenu value="#{item.type}" rendered="#{packingView.editMode}" style="width:90px">
@@ -152,7 +156,7 @@
 									<h:outputText value="#{item.storageHumidity}" rendered="#{!packingView.editMode}" />
 									<p:inputText value="#{item.storageHumidity}" style="width: 80px" rendered="#{packingView.editMode}" />
 								</p:column>
-								<p:columnGroup type="footer">
+								<!-- <p:columnGroup type="footer">
 									<p:row>
 										<p:column colspan="2" footerText="Total:" />
 										<p:column footerText="#{packingView.packing.totalItems}" />
@@ -160,9 +164,9 @@
 										<p:column footerText="#{packingView.packing.grossWeight} Kg" />
 										<p:column footerText="" />
 										<p:column footerText="#{packingView.packing.volume} m3" />
-										<p:column colspan="10" footerText="" />
+										<p:column colspan="11" footerText="" />
 									</p:row>
-								</p:columnGroup>
+								</p:columnGroup> -->
 								<f:facet name="footer">
 									<div class="action-buttons center">
 										<p:commandLink styleClass="aa-tooltip tooltip-warning" title="Edit" rendered="#{packingView.canEdit()}" update="main_tab">

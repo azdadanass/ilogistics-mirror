@@ -97,6 +97,27 @@
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Zoning" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.zoning?'Yes':'No'}" styleClass="badge #{locationView.model.zoning?'badge-success':''}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Slot Size" />
+										</div>
+										<div class="profile-info-value purple">
+											<h:outputText value="#{locationView.model.slotSize}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3" rendered="#{locationView.model.slotSize!=null}" />
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -106,7 +127,32 @@
 											<h:outputText value="Surface" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{locationView.model.surface}" />
+											<h:outputText value="#{locationView.model.surface}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m2" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Volume" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.volume}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Status Category" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.stockRowState.value}" styleClass="#{locationView.model.stockRowState.color.name}" />
+											<h:outputText value="Normal &amp; Faulty" rendered="#{locationView.model.stockRowState==null}" styleClass="blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -133,8 +179,11 @@
 										</p:column>
 										<p:column headerText="Actions" width="150" exportable="false">
 											<div class="action-buttons center">
-												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry(item)}" rendered="#{locationView.canDeleteIndustry()}"
-													update="industryList">
+												<p:commandLink title="View Category List" update=":categoryListForm" oncomplete="PF('categoryListDlg').show()">
+													<i class="ace-icon fa fa-list bigger-130 blue" />
+													<f:setPropertyActionListener value="#{item}" target="#{locationView.industry}" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry(item)}" rendered="#{locationView.canDeleteIndustry()}" update="industryList">
 													<i class="fa fa-trash-o red bigger-130" />
 												</p:commandLink>
 											</div>
@@ -157,7 +206,7 @@
 		<h:panelGroup id="zoningScriptsPanel">
 			<script src="/resources/js/zoning.js" />
 			<script type="text/javascript">
-				const warehouseData = <h:outputText value="#{locationView.heightListJson}"/>
+				const warehouseData = #{locationView.heightListJson}
 				drawCells(warehouseData);
 			</script>
 		</h:panelGroup>

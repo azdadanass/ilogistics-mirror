@@ -93,5 +93,18 @@ public class ZoneCategory extends GenericModel<Integer> {
 		type.setCategory(null);
 		typeList.remove(type);
 	}
+	
+	@Transient
+	public Integer getCategoryId(){
+		return category!=null?category.getId():null;
+	}
+
+	@Transient
+	public void setCategoryId(Integer categoryId){
+		if(category==null || !categoryId.equals(category.getId()))
+			category=new PartNumberCategory();
+		category.setId(categoryId);
+	}
+
 
 }

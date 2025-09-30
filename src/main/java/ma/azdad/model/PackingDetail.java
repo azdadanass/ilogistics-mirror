@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 
 public class PackingDetail extends GenericModel<Integer> implements Serializable {
 
+	private String name;
 	private String type;
 	private Integer quantity = 1;
 	private Boolean hasSerialnumber = false;
@@ -289,5 +290,15 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 		} catch (Exception e) {
 		}
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 
 }

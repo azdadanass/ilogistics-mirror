@@ -106,4 +106,91 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="categoryListForm">
+		<p:dialog widgetVar="categoryListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('categoryListDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Categories" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<i class="fa fa-list" />
+							<h:outputText value=" Category List" />
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{locationView.industry.categoryList}" rowKey="#{item.id}" id="categorylist" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+								<p:column headerText="Name">
+									<h:outputText value="#{item.category.name}" styleClass="bolder green" />
+								</p:column>
+								<p:column headerText="Industry">
+									<h:outputText value="#{item.industry.industryName}" styleClass="blue" />
+								</p:column>
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteCategory(item)}" rendered="#{locationView.canDeleteCategory()}" update="categorylist">
+											<i class="fa fa-trash-o red bigger-130" />
+										</p:commandLink>
+									</div>
+								</p:column>
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" oncomplete="PF('addCategoryDlg').show()" update=":addCategoryForm" rendered="#{locationView.canAddCategory()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('categoryListDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addCategoryForm">
+		<p:dialog widgetVar="addCategoryDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addCategoryDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add Category" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Category" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{locationView.partNumberCategoryId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Category should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{partNumberCategoryView.findByIndustry(locationView.industry.industryId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addCategoryDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{locationView.addCategory()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addCategoryDlg').hide()"
+					update=":categoryListForm:categorylist,:categoryListForm:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

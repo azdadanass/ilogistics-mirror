@@ -101,6 +101,9 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Name" width="100">
+												<p:inputText value="#{item.name}"  style="width:90px"/>
+											</p:column>
 											<p:column headerText="Type" width="100">
 												<h:selectOneMenu value="#{item.type}" style="width:90px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
@@ -116,7 +119,7 @@
 													<f:setPropertyActionListener value="#{!item.hasSerialnumber}" target="#{item.hasSerialnumber}" />
 												</p:commandLink>
 											</p:column>
-											<p:column headerText="SN Type" width="50">
+											<p:column headerText="SN Type" width="100">
 												<h:selectOneMenu id="snType" value="#{item.snType}" disabled="#{!item.hasSerialnumber}" style="width:90px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="Numeric" itemValue="Numeric" />
@@ -125,7 +128,7 @@
 												</h:selectOneMenu>
 											</p:column>
 											<p:column headerText="Storage Factor" width="80">
-												<h:selectOneMenu value="#{item.storageFactor}" style="width:90px">
+												<h:selectOneMenu value="#{item.storageFactor}" style="width:50px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="1" itemValue="1" />
 													<f:selectItem itemLabel="0.7" itemValue="0.7" />

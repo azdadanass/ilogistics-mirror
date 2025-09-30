@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 @Entity
 public class Location extends GenericModel<Integer> implements Serializable {
@@ -19,6 +20,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private String name;
 	private Double surface;
 	private Double volume;
+	private Boolean zoning = false;
 
 	private StockRowState stockRowState; // null = normal & faulty
 
@@ -132,6 +134,21 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setLineList(List<ZoneLine> lineList) {
 		this.lineList = lineList;
+	}
+
+	@Transient
+	public List<ZoneHeight> getHeightList() {
+		List<ZoneHeight> result = new ArrayList<ZoneHeight>();
+		lineList.forEach(l -> l.getColumnList().forEach(c -> result.addAll(c.getHeightList())));
+		return result;
+	}
+
+	public Boolean getZoning() {
+		return zoning;
+	}
+
+	public void setZoning(Boolean zoning) {
+		this.zoning = zoning;
 	}
 
 }

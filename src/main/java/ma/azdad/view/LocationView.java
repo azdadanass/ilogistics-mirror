@@ -7,9 +7,13 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
@@ -25,6 +29,9 @@ import ma.azdad.utils.FacesContextMessages;
 @Component
 @Scope("view")
 public class LocationView extends GenericView<Integer, Location, LocationRepos, LocationService> {
+
+	@Autowired
+	protected SessionView sessionView;
 
 	@Autowired
 	protected LocationService locationService;
@@ -170,6 +177,30 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 			}
 
 		return listPage;
+	}
+
+	// generat zoning
+
+	public Boolean canGenerateZoning() {
+		return sessionView.getIsAdmin() && !model.getZoning() && model.getLineList().isEmpty();
+	}
+
+	public void generateZoning(FileUploadEvent event) {
+		try {
+			service.generateZoning(event.getFile().getInputstream()).forEach(line -> model.addLine(line));
+			service.save(model);
+			refreshModel();
+		} catch (Exception e) {
+			FacesContextMessages.ErrorMessages(e.getMessage());
+		}
+	}
+
+	public String getHeightListJson() {
+		model.getHeightList().forEach(i -> {
+			System.out.println(i.getReference());
+		});
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		return gson.toJson(model.getHeightList());
 	}
 
 	// generic

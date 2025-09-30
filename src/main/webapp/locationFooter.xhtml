@@ -21,4 +21,55 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	<h:form id="generateZoningForm">
+		<p:dialog widgetVar="generateZoningDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('generateZoningDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-grid purple" />
+					<h:outputText value=" Zoning " />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-3">
+						<label class="control-label pull-right">
+							<h:outputText value="Zoning " />
+						</label>
+					</div>
+					<div class="col-xs-12 col-sm-9">
+						<div class="clearfix">
+							<h:selectOneMenu value="#{locationView.model.zoning}" styleClass="col-xs-12 col-sm-6">
+								<f:selectItem itemLabel="No" itemValue="false" />
+								<f:selectItem itemLabel="Yes" itemValue="true" />
+								<p:ajax update="uploadZoningFilePanel" />
+							</h:selectOneMenu>
+							<br />
+						</div>
+					</div>
+				</div>
+				<h:panelGroup id="uploadZoningFilePanel">
+					<div class="space-16" />
+					<div class="row">
+						<h:panelGroup id="fileUploadPanel" rendered="#{locationView.model.zoning}">
+							<p:messages id="messages" closable="true" />
+							<p:fileUpload fileUploadListener="#{locationView.generateZoning}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update=":main_form,zoningScriptsPanel"
+								sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
+							<h:outputText value="You can download file template from " style="margin-left:20px" />
+							<h:outputLink target="blank" value="resources/doc/zoning_template.xls">
+								<h:outputText value="here" styleClass="blue bolder" />
+							</h:outputLink>
+						</h:panelGroup>
+					</div>
+					<div class="space-8" />
+					<div class="row"></div>
+				</h:panelGroup>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('generateZoningDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

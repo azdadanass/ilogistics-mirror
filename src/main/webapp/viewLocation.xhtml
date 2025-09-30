@@ -50,6 +50,10 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
+						<p:commandLink title="Zoning" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-purple" onclick="PF('generateZoningDlg').show()" rendered="#{locationView.canGenerateZoning()}">
+							<i class="ace-icon fa fa-th bigger-230"></i>
+							<h:outputText value="Zoning" />
+						</p:commandLink>
 					</div>
 				</div>
 			</div>
@@ -96,18 +100,19 @@
 							</div>
 						</div>
 						<div class="space-16" />
-						<div id="zoningGird">
-						
-						</div>
+						<div id="zoningGird"></div>
 					</div>
-					<div id="tab2" class="tab-pane">
-						
-					
-					</div>
+					<div id="tab2" class="tab-pane"></div>
 				</div>
 			</div>
 		</h:form>
-		<script src="/resources/js/zoning.js" />
+		<h:panelGroup id="zoningScriptsPanel">
+			<script src="/resources/js/zoning.js" />
+			<script type="text/javascript">
+			const warehouseData = <h:outputText value="#{locationView.heightListJson}"/>
+			drawCells(warehouseData);
+		</script>
+		</h:panelGroup>
 		<f:event type="preRenderView" listener="#{locationView.redirect()}" />
 		<ui:include src="locationFooter.xhtml" />
 	</ui:define>

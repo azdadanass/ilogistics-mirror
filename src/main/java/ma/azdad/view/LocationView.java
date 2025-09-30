@@ -20,6 +20,7 @@ import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
 import ma.azdad.model.ZoneCategory;
 import ma.azdad.model.ZoneIndustry;
+import ma.azdad.model.ZoneType;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
@@ -235,28 +236,28 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public Boolean canAddCategory() {
 		return sessionView.getIsAdmin();
 	}
-	
+
 	public Boolean validateAddCategory() {
 		if (industry.getCategoryList().stream().filter(i -> i.getCategoryId().equals(partNumberCategoryId)).count() > 0)
 			return FacesContextMessages.ErrorMessages("Already exists");
-		
+
 		return true;
 	}
 
 	public void addCategory() {
 		if (!canAddCategory())
 			return;
-		if(!validateAddCategory())
+		if (!validateAddCategory())
 			return;
 		ZoneCategory category = new ZoneCategory();
 		category.setCategory(partNumberCategoryService.findOneLight(partNumberCategoryId));
 		industry.addCategory(category);
 		service.save(model);
 		refreshModel();
-		
-		industry = model.getIndustryList().stream().filter(i->i.getId().equals(industry.getId())).findFirst().get();
+
+		industry = model.getIndustryList().stream().filter(i -> i.getId().equals(industry.getId())).findFirst().get();
 	}
-	
+
 	public Boolean canDeleteCategory() {
 		return canAddCategory();
 	}
@@ -265,8 +266,50 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		industry.removeCategory(zoneCategory);
 		service.save(model);
 		refreshModel();
-		
-		industry = model.getIndustryList().stream().filter(i->i.getId().equals(industry.getId())).findFirst().get();
+
+		industry = model.getIndustryList().stream().filter(i -> i.getId().equals(industry.getId())).findFirst().get();
+	}
+
+	private ZoneCategory category;
+	private Integer partNumberTypeId;
+
+	public Boolean canAddType() {
+		return sessionView.getIsAdmin();
+	}
+
+	public Boolean validateAddType() {
+		if (category.getTypeList().stream().filter(i -> i.getTypeId().equals(partNumberTypeId)).count() > 0)
+			return FacesContextMessages.ErrorMessages("Already exists");
+
+		return true;
+	}
+
+	public void addType() {
+		if (!canAddType())
+			return;
+		if (!validateAddType())
+			return;
+		ZoneType type = new ZoneType();
+		type.setType(partNumberTypeService.findOneLight(partNumberTypeId));
+		category.addType(type);
+		service.save(model);
+		refreshModel();
+
+		industry = model.getIndustryList().stream().filter(i -> i.getId().equals(industry.getId())).findFirst().get();
+		category = industry.getCategoryList().stream().filter(i -> i.getId().equals(category.getId())).findFirst().get();
+	}
+
+	public Boolean canDeleteType() {
+		return canAddType();
+	}
+
+	public void deleteType(ZoneType zoneType) {
+		category.removeType(zoneType);
+		service.save(model);
+		refreshModel();
+
+		industry = model.getIndustryList().stream().filter(i -> i.getId().equals(industry.getId())).findFirst().get();
+		category = industry.getCategoryList().stream().filter(i -> i.getId().equals(category.getId())).findFirst().get();
 	}
 
 	// generate zoning
@@ -414,6 +457,22 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setPartNumberCategoryId(Integer partNumberCategoryId) {
 		this.partNumberCategoryId = partNumberCategoryId;
+	}
+
+	public ZoneCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(ZoneCategory category) {
+		this.category = category;
+	}
+
+	public Integer getPartNumberTypeId() {
+		return partNumberTypeId;
+	}
+
+	public void setPartNumberTypeId(Integer partNumberTypeId) {
+		this.partNumberTypeId = partNumberTypeId;
 	}
 
 }

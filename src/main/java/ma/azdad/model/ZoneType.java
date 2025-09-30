@@ -67,5 +67,17 @@ public class ZoneType extends GenericModel<Integer> {
 			type = new PartNumberType();
 		type.setName(typeName);
 	}
+	
+	@Transient
+	public Integer getTypeId(){
+		return type!=null?type.getId():null;
+	}
+
+	@Transient
+	public void setTypeId(Integer typeId){
+		if(type==null || !typeId.equals(type.getId()))
+			type=new PartNumberType();
+		type.setId(typeId);
+	}
 
 }

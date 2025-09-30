@@ -138,14 +138,14 @@
 											<i class="ace-icon fa fa-list bigger-130 blue" />
 											<f:setPropertyActionListener value="#{item}" target="#{locationView.category}" />
 										</p:commandLink>
-										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteType(item)}" rendered="#{locationView.canDeleteType()}" update="typelist">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteCategory(item)}" rendered="#{locationView.canDeleteCategory()}" update="categorylist">
 											<i class="fa fa-trash-o red bigger-130" />
 										</p:commandLink>
 									</div>
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm" rendered="#{locationView.canAddType()}">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" oncomplete="PF('addCategoryDlg').show()" update=":addCategoryForm" rendered="#{locationView.canAddCategory()}">
 											<i class="fa fa-plus green" />
 										</p:commandLink>
 									</div>
@@ -191,6 +191,92 @@
 				<p:commandButton onclick="PF('addCategoryDlg').hide()" value="Hide" styleClass="btn btn-warning" />
 				<p:commandButton action="#{locationView.addCategory()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addCategoryDlg').hide()"
 					update=":categoryListForm:categorylist,:categoryListForm:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="typeListForm">
+		<p:dialog widgetVar="typeListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+			<button type="button" class="bootbox-close-button close" onclick="PF('typeListDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Types" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<p:messages id="messages" closable="true" />
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<i class="fa fa-list" />
+							<h:outputText value=" Type List" />
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable value="#{locationView.category.typeList}" rowKey="#{item.id}" id="typelist" var="item" rows="20" styleClass="table table-striped table-hover center"
+								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+								<p:column headerText="Name">
+									<h:outputText value="#{item.type.name}" styleClass="bolder green" />
+								</p:column>
+								<p:column headerText="Category">
+									<h:outputText value="#{item.category.categoryName}" styleClass="blue" />
+								</p:column>
+								<p:column headerText="Actions" width="150" exportable="false">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteType(item)}" rendered="#{locationView.canDeleteType()}" update="typelist">
+											<i class="fa fa-trash-o red bigger-130" />
+										</p:commandLink>
+									</div>
+								</p:column>
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm" rendered="#{locationView.canAddType()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('typeListDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="addTypeForm">
+		<p:dialog widgetVar="addTypeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addTypeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add Type" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Type" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{locationView.partNumberTypeId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Type should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{partNumberTypeView.findByCategory(locationView.category.categoryId)}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{locationView.addType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()"
+					update=":typeListForm:typelist,:typeListForm:messages" />
 			</div>
 		</p:dialog>
 	</h:form>

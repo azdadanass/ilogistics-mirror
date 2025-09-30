@@ -21,6 +21,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private Double surface;
 	private Double volume;
 	private Boolean zoning = false;
+	private Double slotSize;
 
 	private StockRowState stockRowState; // null = normal & faulty
 
@@ -149,6 +150,14 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setZoning(Boolean zoning) {
 		this.zoning = zoning;
+	}
+
+	public Double getSlotSize() {
+		return slotSize;
+	}
+
+	public void setSlotSize(Double slotSize) {
+		this.slotSize = slotSize;
 	}
 
 }

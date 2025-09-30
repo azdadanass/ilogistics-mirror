@@ -247,6 +247,10 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 				cacheView.accessDenied();
 		}
 	}
+	
+	public Boolean canGenerateStamp() {
+		return transportationRequest.getTransportationJob() != null;
+	}
 
 	public void generateStamp() {
 		downloadPath = service.generateStamp(transportationRequest);

@@ -132,6 +132,7 @@
 						</p:commandLink>
 						<p:commandLink title="Generate Label"
 							action="#{transportationRequestView.generateStamp()}"
+							rendered="#{transportationRequestView.canGenerateStamp()}"
 							update=":stampForm" oncomplete="PF('stampDlg').show()"
 							styleClass="btn btn-app btn-sm btn-warning  hover aa-tooltip tooltip-purple">
 							<i class="ace-icon fa fa-qrcode bigger-230"></i>

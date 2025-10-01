@@ -581,8 +581,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		}
 
-		if (deliveryRequest.getGrossWeight() == null || deliveryRequest.getGrossWeight().equals(0.0)) {
-			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 0 to add transport");
+		if (deliveryRequest.getGrossWeight() == null || deliveryRequest.getGrossWeight() < 10.0) {
+			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 10 Kg to add transport");
 			return null;
 		}
 

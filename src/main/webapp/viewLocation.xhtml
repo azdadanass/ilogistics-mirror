@@ -26,6 +26,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -80,6 +81,12 @@
 						<a data-toggle="tab" href="#tab3">
 							<i class="blue ace-icon fa fa-list bigger-120"></i>
 							<h:outputText value=" Indutries &amp; Categories" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4">
+							<i class="purple ace-icon fa fa-th bigger-120"></i>
+							<h:outputText value=" Owner List" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -196,6 +203,74 @@
 											</div>
 										</f:facet>
 									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Owner List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="detailList" value="#{locationView.location.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+								<p:column headerText="Owner Type" width="100">
+									<h:outputText value="#{item.ownerType.value}" styleClass="#{item.ownerType.color.name}" rendered="#{!locationView.editDetailList}" />
+									<h:selectOneMenu value="#{item.ownerType}" rendered="#{locationView.editDetailList}">
+										<f:selectItem itemLabel="---" noSelectionOption="true" />
+										<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+										<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+										<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+										<p:ajax update="owner" />
+									</h:selectOneMenu>
+								</p:column>
+								<p:column headerText="Owner">
+									<h:outputText value="#{item.ownerName}" rendered="#{!locationView.editDetailList}" />
+									<h:panelGroup id="owner">
+										<f:subview rendered="#{locationView.editDetailList}">
+											<p:selectOneMenu value="#{item.companyId}" rendered="#{CompanyType.COMPANY==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{companyView.findLight()}" var="company" itemLabel="#{company.name}" itemValue="#{company.id}" />
+											</p:selectOneMenu>
+											<p:selectOneMenu value="#{item.customerId}" rendered="#{CompanyType.CUSTOMER==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{customerView.findLight()}" var="customer" itemLabel="#{customer.name}" itemValue="#{customer.id}" />
+											</p:selectOneMenu>
+											<p:selectOneMenu value="#{item.supplierId}" rendered="#{CompanyType.SUPPLIER==item.ownerType}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{supplierView.findLight()}" var="supplier" itemLabel="#{supplier.name}" itemValue="#{supplier.id}" />
+											</p:selectOneMenu>
+										</f:subview>
+									</h:panelGroup>
+								</p:column>
+								<p:column headerText="Actions" styleClass="center" width="100">
+									<div class="action-buttons center">
+										<p:commandLink title="Remove row" action="#{locationView.deleteDetail(item)}" update="detailList" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canDeleteDetail()}">
+											<i class="ace-icon fa fa-remove bigger-130 red" />
+										</p:commandLink>
+									</div>
+								</p:column>
+								<f:facet name="footer">
+									<div class="action-buttons center">
+										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSaveLocation() and !locationView.editDetailList}">
+											<i class="fa fa-edit orange" />
+											<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
+										</p:commandLink>
+										<p:commandLink title="Add New Item" action="#{locationView.addDetail()}" update="detailList" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canAddDetail()}">
+											<i class="fa fa-plus green" />
+										</p:commandLink>
+										<p:commandLink title="Save" action="#{locationView.saveDetailList()}" update="detailList,:main_form:messages" partialSubmit="true" process="detailList"
+											rendered="#{locationView.canSaveDetailList()}">
+											<i class="fa fa-save green" />
+										</p:commandLink>
+									</div>
+								</f:facet>
+							</p:dataTable>
 								</div>
 							</div>
 						</div>

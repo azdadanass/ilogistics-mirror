@@ -307,9 +307,9 @@
 													<i class="ace-icon fa fa-edit bigger-130 blue" />
 													<f:setPropertyActionListener value="#{item}" target="#{warehouseView.location}" />
 												</p:commandLink>
-												<p:commandLink title="Owner List" action="#{locationView.refreshLocation(item.id)}" update=":locationDetailListForm" oncomplete="PF('locationDetailListDlg').show()">
+												<!-- <p:commandLink title="Owner List" action="#{locationView.refreshLocation(item.id)}" update=":locationDetailListForm" oncomplete="PF('locationDetailListDlg').show()">
 													<i class="ace-icon fa fa-list bigger-130 green" />
-												</p:commandLink>
+												</p:commandLink> -->
 												<!-- <p:commandLink title="Delete" update=":deleteLocationForm" oncomplete="PF('deleteLocationDlg').show()">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener value="#{item}" target="#{warehouseView.location}" />

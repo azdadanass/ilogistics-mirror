@@ -2383,6 +2383,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void generateStamp() {
 		downloadPath = service.generateStamp(deliveryRequest);
 	}
+	
+	public void generatePackingDetailStamp(PackingDetail packingDetail) {
+		downloadPath = service.generateStamp(packingDetail,deliveryRequest);
+	}
 
 	// smsRef
 	public Boolean canUpdateSmsRef() {

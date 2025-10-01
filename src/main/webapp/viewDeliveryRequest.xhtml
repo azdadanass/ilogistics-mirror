@@ -2200,7 +2200,7 @@
 											</p:graphicImage>
 										</p:column>
 										<p:column headerText="Dimension">
-											<h:outputText value="#{item.length} m / #{item.width} m / #{item.height} m" />
+											<h:outputText value="#{item.dimension}" />
 										</p:column>
 										<p:column headerText="GW">
 											<h:outputText value="#{item.grossWeight} Kg" />
@@ -2233,6 +2233,13 @@
 												</p:commandLink>
 												<p:commandLink styleClass="aa-tooltip" title="Storage Humidity : #{item.storageHumidity}" rendered="#{item.storageHumidity!=null}">
 													<i class="ace-icon fa fa-tint bigger-130 pink" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<p:column headerText="Actions" width="100" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink title="Generate Label" action="#{deliveryRequestView.generatePackingDetailStamp(item)}" update=":stampForm" oncomplete="PF('stampDlg').show()">
+													<i class="ace-icon fa fa-qrcode bigger-130 blue" />
 												</p:commandLink>
 											</div>
 										</p:column>

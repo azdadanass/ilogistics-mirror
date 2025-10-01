@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 @Entity
 
 public class PackingDetail extends GenericModel<Integer> implements Serializable {
@@ -61,6 +63,11 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 		if (!result && type != null)
 			result = type.toLowerCase().contains(query);
 		return result;
+	}
+
+	@Transient
+	public String getDimension() {
+		return ObjectUtils.firstNonNull(length ,"") + " m /" + ObjectUtils.firstNonNull(width ,"") + " m /" + ObjectUtils.firstNonNull(height ,"") + " m";
 	}
 
 	@Transient
@@ -283,7 +290,7 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	public void setStorageFactor(Double storageFactor) {
 		this.storageFactor = storageFactor;
 	}
-	
+
 	public void calculateVolume() {
 		try {
 			this.volume = this.length * this.width * this.height;
@@ -298,7 +305,5 @@ public class PackingDetail extends GenericModel<Integer> implements Serializable
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 }

@@ -1320,6 +1320,126 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 		return downloadPath;
 	}
 
+	public String generateStamp(PackingDetail packingDetail, DeliveryRequest deliveryRequest) {
+		String downloadPath = "temp/stamp_" + deliveryRequest.getReference() + "_" + packingDetail.getId() + ".pdf";
+		try {
+			Document document = new Document(new RectangleReadOnly(284, 171), 5, 5, 5, 5); // 100mm * 60mm
+			Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 15);
+			Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 7);
+			Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 7);
+			float[] pointColumnWidths = { 158F, 300F };
+			PdfPTable table1 = new PdfPTable(pointColumnWidths);
+			table1.setTotalWidth(290);
+			table1.setLockedWidth(true);
+			PdfPCell cell1, cell2;
+			Phrase phrase;
+			Paragraph paragraph;
+			PdfPTable table2 = new PdfPTable(2);
+
+			PdfWriter.getInstance(document, new FileOutputStream(UtilsFunctions.path() + downloadPath));
+
+			document.open();
+
+			paragraph = new Paragraph(deliveryRequest.getReference() + " | Delivery Date : " + (deliveryRequest.getDate4() != null ? UtilsFunctions.getFormattedDate(deliveryRequest.getDate4()) : ""),
+					titleFont);
+			paragraph.setAlignment(Element.ALIGN_CENTER);
+			paragraph.setSpacingAfter(10f);
+			document.add(paragraph);
+
+			// qrcode Cell
+			BarcodeQRCode barcodeQrcode = new BarcodeQRCode(App.QR.getLink() + "/dn/" + deliveryRequest.getId() + "/" + deliveryRequest.getQrKey(), 100, 100, null);
+			Image qrcodeImage = barcodeQrcode.getImage();
+			qrcodeImage.scaleToFit(95, 95);
+			// qrcodeImage.scalePercent(100);
+			Image logo = null;
+			if ("gcom".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/gcom.png");
+			else if ("orange".equals(erp))
+				logo = Image.getInstance(UtilsFunctions.path() + "resources/pdf/orange.png");
+			logo.scaleToFit(50, 60);
+			logo.setAlignment(Element.ALIGN_CENTER);
+			cell1 = new PdfPCell();
+			cell1.setBorder(Rectangle.NO_BORDER);
+			cell1.addElement(qrcodeImage);
+			cell1.addElement(logo);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table1.addCell(cell1);
+
+			// owner/project/ref/g weight/volume cell
+			phrase = new Phrase(10f);
+			phrase.add(new Chunk("# Of Items : ", boldFont));
+			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()), normalFont));
+			phrase.add(new Chunk("\nPart Number : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(packingDetail.getParent().getPartNumber().getName(), 70), normalFont));
+			phrase.add(new Chunk("\nOwner : ", boldFont));
+			phrase.add(new Chunk(deliveryRequest.getOwnerName() != null ? UtilsFunctions.cutText(deliveryRequest.getOwnerName(), 70) : "", normalFont));
+			phrase.add(new Chunk("\nProject : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(deliveryRequest.getProject().getName(), 25), normalFont));
+			phrase.add(new Chunk("\nDimension : ", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.cutText(packingDetail.getDimension(), 25), normalFont));
+			cell1 = new PdfPCell();
+			cell1.setPadding(3f);
+			cell1.setLeading(0, 1f);
+			cell1.addElement(phrase);
+
+			phrase = new Phrase();
+			phrase.add(new Chunk("Gross Weight\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getGrossWeight()) + " Kg", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			phrase = new Phrase();
+			phrase.add(new Chunk("Volume\n", boldFont));
+			phrase.add(new Chunk(UtilsFunctions.formatDouble(deliveryRequest.getVolume()) + " m3", normalFont));
+			cell2 = new PdfPCell();
+			cell2.setBorder(0);
+			cell2.addElement(phrase);
+			table2.addCell(cell2);
+			cell1.addElement(table2);
+
+			List<String> options = new ArrayList<String>();
+			if (packingDetail.getFlammable())
+				options.add("resources/pdf/flammable.png");
+			if (packingDetail.getStackable())
+				options.add("resources/pdf/stackable.png");
+			if (packingDetail.getHasSerialnumber())
+				options.add("resources/pdf/barcode.png");
+			if (packingDetail.getFragile())
+				options.add("resources/pdf/fragile.png");
+			if (packingDetail.getMinStorageTemperature() != null)
+				options.add("resources/pdf/thermometer-empty.png");
+			if (packingDetail.getMaxStorageTemperature() != null)
+				options.add("resources/pdf/thermometer-full.png");
+			if (packingDetail.getStorageHumidity() != null)
+				options.add("resources/pdf/tint.png");
+			
+			System.out.println(options);
+			PdfPTable iconTable = new PdfPTable(options.size());
+			iconTable.setSpacingBefore(10f);
+			for (String path : options) {
+				cell2 = new PdfPCell();
+				cell2.setBorder(Rectangle.NO_BORDER);
+				Image icon = Image.getInstance(UtilsFunctions.path() + path);
+				icon.scaleToFit(15, 15);
+				cell2.addElement(icon);
+				iconTable.addCell(cell2);
+			}
+
+			cell1.addElement(iconTable);
+
+			cell1.setBorder(Rectangle.LEFT);
+			table1.addCell(cell1);
+			document.add(table1);
+
+			document.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return downloadPath;
+	}
+
 	public byte[] generateStampMobile(DeliveryRequest deliveryRequest) {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -29,6 +29,8 @@ import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberIndustryService;
 import ma.azdad.service.PartNumberTypeService;
 import ma.azdad.service.SupplierService;
+import ma.azdad.service.UtilsFunctions;
+import ma.azdad.service.WarehouseService;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -60,7 +62,11 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	@Autowired
 	protected PartNumberTypeService partNumberTypeService;
 
+	@Autowired
+	protected WarehouseService warehouseService;
+
 	private Location location = new Location();
+	private Integer warehouseId;
 
 	@Override
 	@PostConstruct
@@ -73,6 +79,18 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		else if (isViewPage)
 			location = locationService.findOne(id);
 
+	}
+
+	@Override
+	protected void initParameters() {
+		super.initParameters();
+		warehouseId = UtilsFunctions.getIntegerParameter("warehouseId");
+	}
+
+	@Override
+	protected void addPage() {
+		super.addPage();
+		model.setWarehouse(warehouseService.findOneLight(warehouseId));
 	}
 
 	@Override
@@ -91,23 +109,31 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	// SAVE LOCATION
-	public Boolean canSaveLocation() {
+	public Boolean canSave() {
+		return sessionView.getIsAdmin();
+	}
+
+	public Boolean validate() {
+		if (service.isNameExists(model))
+			return FacesContextMessages.ErrorMessages("Name already exits !");
+
 		return true;
 	}
 
-	public String saveLocation() {
-		if (canSaveLocation()) {
-			location = locationService.save(location);
-			return addParameters(viewPage, "faces-redirect=true", "id=" + location.getId());
-		}
-		return listPage;
+	public String save() {
+		if (!canSave())
+			return null;
+		if (!validate())
+			return null;
+		service.save(model);
+		return addParameters(viewPage, "faces-redirect=true", "id=" + model.getId());
 	}
 
 	// details
 	private Boolean editDetailList = false;
 
 	public Boolean canAddDetail() {
-		return editDetailList && canSaveLocation();
+		return editDetailList && canSave();
 	}
 
 	public void addDetail() {
@@ -126,7 +152,7 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	}
 
 	public Boolean canSaveDetailList() {
-		return editDetailList && canSaveLocation();
+		return editDetailList && canSave();
 	}
 
 	public Boolean validateDetailList() {

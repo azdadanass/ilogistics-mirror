@@ -211,7 +211,7 @@
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSaveLocation() and !locationView.editDetailList}">
+										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSave() and !locationView.editDetailList}">
 											<i class="fa fa-edit orange" />
 											<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
 										</p:commandLink>

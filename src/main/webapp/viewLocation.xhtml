@@ -47,6 +47,11 @@
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</p:commandLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditLocation.xhtml" rendered="#{locationView.canSave()}">
+							<i class="ace-icon fa fa-edit bigger-230"></i>
+							<h:outputText value="Edit" />
+							<f:param name="id" value="#{locationView.id}" />
+						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
@@ -256,7 +261,7 @@
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSaveLocation() and !locationView.editDetailList}">
+										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSave() and !locationView.editDetailList}">
 											<i class="fa fa-edit orange" />
 											<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
 										</p:commandLink>

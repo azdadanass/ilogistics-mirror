@@ -290,10 +290,10 @@
 											<sup> <h:outputText value="3" />
 											</sup>
 										</p:column>
-										<p:column headerText="Status Category" width="150">
+										<!-- <p:column headerText="Status Category" width="150">
 											<h:outputText value="#{item.stockRowState.value}" styleClass="#{item.stockRowState.color.name}" />
 											<h:outputText value="Normal &amp; Faulty" rendered="#{item.stockRowState==null}" styleClass="blue" />
-										</p:column>
+										</p:column> -->
 										<p:column headerText="Slot Size" width="100">
 											<h:outputText value="#{item.slotSize}" />
 											<h:outputText value=" m3" rendered="#{item.slotSize!=null}" />
@@ -301,16 +301,16 @@
 										<p:column headerText="Zoning" width="100">
 											<h:outputText value="#{item.zoning?'Yes':'No'}" styleClass="badge #{item.zoning?'badge-success':''}" />
 										</p:column>
-										<p:column headerText="Actions" width="150" style="text-align : center;">
+										<p:column headerText="Actions" width="100" style="text-align : center;">
 											<div class="action-buttons center">
-												<p:commandLink title="Edit" update=":addEditLocationForm" oncomplete="PF('addEditLocationDlg').show()">
+												<!-- <p:commandLink title="Edit" update=":addEditLocationForm" oncomplete="PF('addEditLocationDlg').show()">
 													<i class="ace-icon fa fa-edit bigger-130 blue" />
 													<f:setPropertyActionListener value="#{item}" target="#{warehouseView.location}" />
 												</p:commandLink>
-												<!-- <p:commandLink title="Owner List" action="#{locationView.refreshLocation(item.id)}" update=":locationDetailListForm" oncomplete="PF('locationDetailListDlg').show()">
+												<p:commandLink title="Owner List" action="#{locationView.refreshLocation(item.id)}" update=":locationDetailListForm" oncomplete="PF('locationDetailListDlg').show()">
 													<i class="ace-icon fa fa-list bigger-130 green" />
-												</p:commandLink> -->
-												<!-- <p:commandLink title="Delete" update=":deleteLocationForm" oncomplete="PF('deleteLocationDlg').show()">
+												</p:commandLink> 
+												 <p:commandLink title="Delete" update=":deleteLocationForm" oncomplete="PF('deleteLocationDlg').show()">
 													<i class="ace-icon fa fa-trash-o bigger-130 red" />
 													<f:setPropertyActionListener value="#{item}" target="#{warehouseView.location}" />
 												</p:commandLink> -->
@@ -322,9 +322,13 @@
 										</p:column>
 										<f:facet name="footer">
 											<div class="action-buttons center">
-												<p:commandLink title="Add New Location" action="#{warehouseView.initLocation()}" update=":addEditLocationForm" oncomplete="PF('addEditLocationDlg').show()">
+												<!-- <p:commandLink title="Add New Location" action="#{warehouseView.initLocation()}" update=":addEditLocationForm" oncomplete="PF('addEditLocationDlg').show()">
 													<i class="fa fa-plus green" />
-												</p:commandLink>
+												</p:commandLink> -->
+												<h:outputLink value="addEditLocation.xhtml" title="Add New Location" rendered="#{locationView.canSave()}">
+													<i class="fa fa-plus green" />
+													<f:param name="warehouseId" value="#{warehouseView.warehouse.id}"/>
+												</h:outputLink>
 											</div>
 										</f:facet>
 									</p:dataTable>

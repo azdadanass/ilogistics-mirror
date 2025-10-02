@@ -14,6 +14,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	private Double quantity;
 	private StockRow stockRow;
+	private PackingDetail packingDetail;
 	private ZoneHeight zoneHeight;
 
 	public boolean filter(String query) {
@@ -54,6 +55,15 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	public void setStockRow(StockRow stockRow) {
 		this.stockRow = stockRow;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public PackingDetail getPackingDetail() {
+		return packingDetail;
+	}
+
+	public void setPackingDetail(PackingDetail packingDetail) {
+		this.packingDetail = packingDetail;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -1401,13 +1401,13 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			cell1.addElement(table2);
 
 			List<String> options = new ArrayList<String>();
-			if (packingDetail.getFlammable())
+			if (Boolean.TRUE.equals(packingDetail.getFlammable()))
 				options.add("resources/pdf/flammable.png");
-			if (packingDetail.getStackable())
+			if (Boolean.TRUE.equals(packingDetail.getStackable()))
 				options.add("resources/pdf/stackable.png");
-			if (packingDetail.getHasSerialnumber())
+			if (Boolean.TRUE.equals(packingDetail.getHasSerialnumber()))
 				options.add("resources/pdf/barcode.png");
-			if (packingDetail.getFragile())
+			if (Boolean.TRUE.equals(packingDetail.getFragile()))
 				options.add("resources/pdf/fragile.png");
 			if (packingDetail.getMinStorageTemperature() != null)
 				options.add("resources/pdf/thermometer-empty.png");
@@ -1415,20 +1415,19 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 				options.add("resources/pdf/thermometer-full.png");
 			if (packingDetail.getStorageHumidity() != null)
 				options.add("resources/pdf/tint.png");
-			
-			System.out.println(options);
-			PdfPTable iconTable = new PdfPTable(options.size());
-			iconTable.setSpacingBefore(10f);
-			for (String path : options) {
-				cell2 = new PdfPCell();
-				cell2.setBorder(Rectangle.NO_BORDER);
-				Image icon = Image.getInstance(UtilsFunctions.path() + path);
-				icon.scaleToFit(15, 15);
-				cell2.addElement(icon);
-				iconTable.addCell(cell2);
+			if (!options.isEmpty()) {
+				PdfPTable iconTable = new PdfPTable(options.size());
+				iconTable.setSpacingBefore(10f);
+				for (String path : options) {
+					cell2 = new PdfPCell();
+					cell2.setBorder(Rectangle.NO_BORDER);
+					Image icon = Image.getInstance(UtilsFunctions.path() + path);
+					icon.scaleToFit(15, 15);
+					cell2.addElement(icon);
+					iconTable.addCell(cell2);
+				}
+				cell1.addElement(iconTable);
 			}
-
-			cell1.addElement(iconTable);
 
 			cell1.setBorder(Rectangle.LEFT);
 			table1.addCell(cell1);

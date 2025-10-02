@@ -51,6 +51,7 @@ import ma.azdad.model.ProjectCross;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
+import ma.azdad.model.StockRowDetail;
 import ma.azdad.model.StockRowStatus;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
@@ -756,11 +757,21 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (!validateStorageStep5())
 				break;
 			step++;
+
+			// init zoning
+			deliveryRequest.generateStockRowDetailList();
+			deliveryRequest.initStockRowDetailList();
+
 			break;
 		case 6:
+			System.out.println("step6");
 			step++;
 			break;
 		case 7:
+			System.out.println("step7");
+			step++;
+			break;
+		case 8:
 			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
@@ -1051,6 +1062,49 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void cancelStockRowQuantityChange(StockRow row) {
 		row.setQuantity(row.getTmpQuantity());
+	}
+
+	public void changeStockRowDetailQuantityListener(StockRowDetail stockRowDetail, int index) {
+		if (UtilsFunctions.compareDoubles(stockRowDetail.getQuantity(), 0.0, 4) <= 0)
+			FacesContextMessages.ErrorMessages("Quantity should be greather than 0");
+		else if (UtilsFunctions.compareDoubles(stockRowDetail.getTmpQuantity(), stockRowDetail.getQuantity(), 4) != 0) {
+			StockRow stockRow = stockRowDetail.getStockRow();
+			Double newQuantity = stockRowDetail.getTmpQuantity() - stockRowDetail.getQuantity();
+			StockRowDetail newStockRowDetail = new StockRowDetail(newQuantity, newQuantity, false, stockRow, stockRowDetail.getPackingDetail());
+			deliveryRequest.getStockRowDetailList().add(++index, newStockRowDetail);
+			stockRow.addDetail(newStockRowDetail);
+			stockRowDetail.setTmpQuantity(stockRowDetail.getQuantity());
+		}
+
+		System.out.println("changeStockRowDetailQuantityListener");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
+	}
+
+	public void cancelStockRowDetailQuantityChange(StockRowDetail row) {
+		row.setQuantity(row.getTmpQuantity());
+		
+		System.out.println("cancelStockRowDetailQuantityChange");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
+	}
+
+	public void removeStockRowDetail(StockRowDetail row, int index) {
+		if (!row.getInitial()) {
+			if (deliveryRequest.getStockRowDetailList().stream().filter(i -> UtilsFunctions.compareDoubles(i.getQuantity(), i.getTmpQuantity(), 4) != 0).count() > 0)
+				return;
+			StockRow stockRow = row.getStockRow();
+			StockRowDetail previousRow = deliveryRequest.getStockRowDetailList().get(index - 1);
+			previousRow.setQuantity(previousRow.getQuantity() + row.getQuantity());
+			previousRow.setTmpQuantity(previousRow.getQuantity());
+			
+			deliveryRequest.getStockRowDetailList().remove(index);
+			stockRow.removeDetail(row);
+		}
+		
+		System.out.println("removeStockRowDetail");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
 	}
 
 	public void setSameLocation() {
@@ -2236,7 +2290,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.generateReference();
 
 		deliveryRequest.addHistory(new DeliveryRequestHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
-		
+
 		deliveryRequest.calculateNumberOfItems();
 		deliveryRequest.calculateNetWeight();
 		deliveryRequest.calculateGrossWeight();
@@ -2383,9 +2437,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	public void generateStamp() {
 		downloadPath = service.generateStamp(deliveryRequest);
 	}
-	
+
 	public void generatePackingDetailStamp(PackingDetail packingDetail) {
-		downloadPath = service.generateStamp(packingDetail,deliveryRequest);
+		downloadPath = service.generateStamp(packingDetail, deliveryRequest);
 	}
 
 	// smsRef

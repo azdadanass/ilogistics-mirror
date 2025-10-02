@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -187,6 +188,9 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	private Double qAssociatedCost = 0.0;
 	private Integer crossChargeId;
 
+	// transient
+	private List<StockRowDetail> stockRowDetailList = new ArrayList<StockRowDetail>();
+
 	private List<CommentGroup<DeliveryRequestComment>> commentGroupList;
 
 	public DeliveryRequest(Integer id, Double qTotalCost, Double qTotalCrossCharge, Integer crossChargeId) {
@@ -347,6 +351,34 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 	public void initDetailList() {
 		for (DeliveryRequestDetail detail : detailList)
 			detail.init();
+	}
+
+	public void generateStockRowDetailList() {
+		stockRowList.stream().filter(sr -> sr.getLocation().getZoning()).forEach(sr -> {
+			sr.getPacking().getDetailList().forEach(packingDetail -> {
+				Double quantity = sr.getQuantity() * packingDetail.getQuantity() / packingDetail.getParent().getQuantity();
+				sr.addDetail(new StockRowDetail(quantity, quantity, true, sr, packingDetail));
+			});
+		});
+	}
+
+//	@Transient
+//	public List<StockRowDetail> getStockRowDetailList() {
+//		return stockRowList.stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList());
+//	}
+	
+	public void initStockRowDetailList() {
+		stockRowDetailList = stockRowList.stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList());
+	}
+
+	@Transient
+	public List<StockRowDetail> getStockRowDetailList() {
+		return stockRowDetailList;
+	}
+
+	@Transient
+	public void setStockRowDetailList(List<StockRowDetail> stockRowDetailList) {
+		this.stockRowDetailList = stockRowDetailList;
 	}
 
 	public void clearTimeLine() {

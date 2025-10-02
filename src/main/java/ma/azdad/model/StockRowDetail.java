@@ -17,6 +17,29 @@ public class StockRowDetail extends GenericModel<Integer> {
 	private PackingDetail packingDetail;
 	private ZoneHeight zoneHeight;
 
+	// TMP
+	private Double tmpQuantity;
+	private Boolean initial = false;
+
+	public StockRowDetail() {
+		super();
+	}
+
+//	public StockRowDetail(Double quantity, PackingDetail packingDetail) {
+//		super();
+//		this.quantity = quantity;
+//		this.packingDetail = packingDetail;
+//	}
+
+	public StockRowDetail(Double quantity, Double tmpQuantity, Boolean initial, StockRow stockRow, PackingDetail packingDetail) {
+		super();
+		this.quantity = quantity;
+		this.tmpQuantity = tmpQuantity;
+		this.initial = initial;
+		this.stockRow = stockRow;
+		this.packingDetail = packingDetail;
+	}
+
 	public boolean filter(String query) {
 		return contains(query, getIdStr());
 	}
@@ -73,6 +96,31 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	public void setZoneHeight(ZoneHeight zoneHeight) {
 		this.zoneHeight = zoneHeight;
+	}
+
+	@Transient
+	public Double getTmpQuantity() {
+		return tmpQuantity;
+	}
+
+	@Transient
+	public void setTmpQuantity(Double tmpQuantity) {
+		this.tmpQuantity = tmpQuantity;
+	}
+
+	@Transient
+	public Boolean getInitial() {
+		return initial;
+	}
+
+	@Transient
+	public void setInitial(Boolean initial) {
+		this.initial = initial;
+	}
+
+	@Override
+	public String toString() {
+		return "{\"quantity\":\"" + quantity + "\", \"tmpQuantity\":\"" + tmpQuantity + "\", \"initial\":\"" + initial + "\"}";
 	}
 
 }

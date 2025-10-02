@@ -801,7 +801,7 @@
 											<p:column headerText="Status">
 												<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 											</p:column>
-											<p:column headerText="Location">
+											<p:column headerText="Zone">
 												<h:outputText value="#{item.location.name}" />
 											</p:column>
 											<p:column headerText="Age">
@@ -1006,7 +1006,7 @@
 												<p:column headerText="Status">
 													<h:outputText value="#{item.status.value}" />
 												</p:column>
-												<p:column headerText="Location">
+												<p:column headerText="Zone">
 													<h:outputText value="#{item.location.name}" />
 												</p:column>
 											</p:dataTable>
@@ -1154,7 +1154,7 @@
 												<p:column headerText="Status">
 													<h:outputText value="#{item.status.value}" />
 												</p:column>
-												<p:column headerText="Location">
+												<p:column headerText="Zone">
 													<h:outputText value="#{item.location.name}" />
 												</p:column>
 											</p:dataTable>
@@ -1913,7 +1913,7 @@
 											<h:outputText value="#{item.inboundStockRow.status.value}" />
 											<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
 										</p:column>
-										<p:column headerText="Location" exportable="false">
+										<p:column headerText="Zone" exportable="false">
 											<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
 											<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
 										</p:column>
@@ -2028,7 +2028,7 @@
 												<h:outputText value="#{item.inboundStockRow.status.value}" />
 												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
 											</p:column>
-											<p:column headerText="Location" exportable="false">
+											<p:column headerText="Zone" exportable="false">
 												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
 												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
 											</p:column>
@@ -2080,7 +2080,7 @@
 										<p:column headerText="Status">
 											<h:outputText value="#{item.stockRow.status.value}" styleClass="purple" />
 										</p:column>
-										<p:column headerText="Location">
+										<p:column headerText="Zone">
 											<h:outputText value="#{item.stockRow.location.name}" styleClass="bolder orange" />
 										</p:column>
 										<p:column headerText="Quantity" width="150">
@@ -2281,7 +2281,7 @@
 													<f:param name="id" value="#{item.inboundDeliveryRequest.id}" />
 												</h:outputLink>
 											</p:column>
-											<p:column headerText="Location">
+											<p:column headerText="Zone">
 												<h:outputText value="#{item.location.name}" />
 											</p:column>
 											<p:column headerText="Quantity">
@@ -2325,7 +2325,7 @@
 												<h:outputText value="#{item.inboundStockRow.status.value}" />
 												<h:outputText value="#{item.tmpStockRowStatus.value}" styleClass="blue bolder" />
 											</p:column>
-											<p:column headerText="Location" exportable="false">
+											<p:column headerText="Zone" exportable="false">
 												<h:outputText value="#{item.inboundStockRow.location.name}" styleClass="blue bolder" />
 												<h:outputText value="#{item.tmpLocation.name}" styleClass="blue bolder" />
 											</p:column>

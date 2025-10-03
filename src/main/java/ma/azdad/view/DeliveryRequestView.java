@@ -682,7 +682,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		System.out.println("generateStockRowFromOutboundDeliveryRequest");
 		potentialStockRowlist = stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest);
 		potentialStockRowlist.stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
-			System.out.println(i.getPartNumberName());
 			i.getPacking().getDetailList().stream().filter(j -> j.getHasSerialnumber()).forEach(j -> {
 				Integer quantity = -((int) (double) i.getQuantity()) * j.getQuantity() / i.getPacking().getQuantity();
 				List<DeliveryRequestSerialNumber> snList = deliveryRequestSerialNumberService.findHavingSerialNumberAndNoOutbound(i.getInboundDeliveryRequestDetail().getId(), i.getLocationId(),
@@ -1114,7 +1113,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		else if (UtilsFunctions.compareDoubles(stockRowDetail.getTmpQuantity(), stockRowDetail.getQuantity(), 4) != 0) {
 			StockRow stockRow = stockRowDetail.getStockRow();
 			Double newQuantity = stockRowDetail.getTmpQuantity() - stockRowDetail.getQuantity();
-			StockRowDetail newStockRowDetail = new StockRowDetail(newQuantity, newQuantity, false, stockRow, stockRowDetail.getPackingDetail());
+			StockRowDetail newStockRowDetail = new StockRowDetail(newQuantity, newQuantity, false, stockRow,stockRow, stockRowDetail.getPackingDetail());
 			deliveryRequest.getStockRowDetailList().add(++index, newStockRowDetail);
 			stockRow.addDetail(newStockRowDetail);
 			stockRowDetail.setTmpQuantity(stockRowDetail.getQuantity());

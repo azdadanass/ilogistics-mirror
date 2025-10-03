@@ -16,7 +16,8 @@ public class StockRowDetail extends GenericModel<Integer> {
 	private StockRow stockRow;
 	private PackingDetail packingDetail;
 	private ZoneHeight zoneHeight;
-	private StockRow outboundStockRow;
+
+	private StockRow inboundStockRow;
 
 	// TMP
 	private Double tmpQuantity;
@@ -32,12 +33,13 @@ public class StockRowDetail extends GenericModel<Integer> {
 //		this.packingDetail = packingDetail;
 //	}
 
-	public StockRowDetail(Double quantity, Double tmpQuantity, Boolean initial, StockRow stockRow, PackingDetail packingDetail) {
+	public StockRowDetail(Double quantity, Double tmpQuantity, Boolean initial, StockRow stockRow,StockRow InboundStockRow, PackingDetail packingDetail) {
 		super();
 		this.quantity = quantity;
 		this.tmpQuantity = tmpQuantity;
 		this.initial = initial;
 		this.stockRow = stockRow;
+		this.inboundStockRow = InboundStockRow;
 		this.packingDetail = packingDetail;
 	}
 
@@ -79,6 +81,15 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	public void setStockRow(StockRow stockRow) {
 		this.stockRow = stockRow;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	public StockRow getInboundStockRow() {
+		return inboundStockRow;
+	}
+
+	public void setInboundStockRow(StockRow inboundStockRow) {
+		this.inboundStockRow = inboundStockRow;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -134,15 +145,6 @@ public class StockRowDetail extends GenericModel<Integer> {
 		if (zoneHeight == null || !zoneHeightId.equals(zoneHeight.getId()))
 			zoneHeight = new ZoneHeight();
 		zoneHeight.setId(zoneHeightId);
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	public StockRow getOutboundStockRow() {
-		return outboundStockRow;
-	}
-
-	public void setOutboundStockRow(StockRow outboundStockRow) {
-		this.outboundStockRow = outboundStockRow;
 	}
 
 }

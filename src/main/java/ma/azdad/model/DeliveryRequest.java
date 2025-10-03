@@ -357,7 +357,7 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		stockRowList.stream().filter(sr -> sr.getId()==null && sr.getLocation().getZoning()).forEach(sr -> {
 			sr.getPacking().getDetailList().forEach(packingDetail -> {
 				Double quantity = sr.getQuantity() * packingDetail.getQuantity() / packingDetail.getParent().getQuantity();
-				sr.addDetail(new StockRowDetail(quantity, quantity, true, sr, packingDetail));
+				sr.addDetail(new StockRowDetail(quantity, quantity, true, sr,sr, packingDetail));
 			});
 		});
 	}

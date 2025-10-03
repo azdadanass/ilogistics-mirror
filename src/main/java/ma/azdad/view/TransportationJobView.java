@@ -1192,12 +1192,18 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public void calculateTrListCosts() {
-		Double total = transportationJob.getTransportationRequestList().stream().mapToDouble(tr -> deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance()).sum();
+		if(transportationJob.getTransportationRequestList().stream().anyMatch(tr->deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()).equals(0.0))) {
+			FacesContextMessages.ErrorMessages("TR gross weight equal to 0 !");
+			return;
+		}		
+		Boolean useRealDistance = !transportationJob.getTransportationRequestList().stream().anyMatch(tr->tr.getRealDistance()==null || tr.getRealDistance().equals(0.0));
+		Double total = transportationJob.getTransportationRequestList().stream().mapToDouble(tr -> deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance(useRealDistance)).sum();
 		transportationJob.getTransportationRequestList().forEach(tr -> {
-			Double proportion = deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance() / total;
+			Double proportion = deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance(useRealDistance) / total;
 			tr.setStartCost(proportion * transportationJob.getStartCost());
 			tr.setItineraryCost(proportion * transportationJob.getItineraryCost());
 			tr.setHandlingCost(proportion * transportationJob.getHandlingCost());
+			tr.calculateCost();
 		});
 	}
 

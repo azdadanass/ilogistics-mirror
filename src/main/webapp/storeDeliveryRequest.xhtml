@@ -405,9 +405,6 @@
 												<p:column headerText="Part Number">
 													<h:outputText value="#{item.stockRow.partNumber.name}" />
 												</p:column>
-												<p:column headerText="Zone">
-													<h:outputText value="#{item.stockRow.location.name}" />
-												</p:column>
 												<p:column headerText="Status">
 													<h:outputText value="#{item.stockRow.status.value}" styleClass="#{item.stockRow.status.color.name}" />
 												</p:column>
@@ -429,6 +426,15 @@
 															</p:commandLink>
 														</h:panelGroup>
 													</span>
+												</p:column>
+												<p:column headerText="Zone">
+													<h:outputText value="#{item.stockRow.location.name}" />
+												</p:column>
+												<p:column headerText="Line/Column/Height">
+													<p:selectOneMenu value="#{item.zoneHeightId}" filter="true" filterMatchMode="contains" >
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{zoneHeightView.findByLocation(item.stockRow.location.id)}" var="h" itemLabel="#{h.reference}" itemValue="#{h.id}" />
+													</p:selectOneMenu>
 												</p:column>
 												<p:column headerText="Actions" styleClass="center" width="100">
 													<div class="action-buttons center">

@@ -122,5 +122,17 @@ public class StockRowDetail extends GenericModel<Integer> {
 	public String toString() {
 		return "{\"quantity\":\"" + quantity + "\", \"tmpQuantity\":\"" + tmpQuantity + "\", \"initial\":\"" + initial + "\"}";
 	}
+	
+	@Transient
+	public Integer getZoneHeightId(){
+		return zoneHeight!=null?zoneHeight.getId():null;
+	}
+
+	@Transient
+	public void setZoneHeightId(Integer zoneHeightId){
+		if(zoneHeight==null || !zoneHeightId.equals(zoneHeight.getId()))
+			zoneHeight=new ZoneHeight();
+		zoneHeight.setId(zoneHeightId);
+	}
 
 }

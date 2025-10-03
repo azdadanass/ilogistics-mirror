@@ -88,6 +88,7 @@ import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.WarehouseService;
+import ma.azdad.service.ZoneHeightService;
 import ma.azdad.utils.DeliveryRequestExcelFileException;
 import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.LabelValue;
@@ -202,6 +203,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	ProjectAssignmentService projectAssignmentService;
+	
+	@Autowired
+	ZoneHeightService zoneHeightService;
 
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
@@ -765,6 +769,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			break;
 		case 6:
 			System.out.println("step6");
+			if(!validateStorageStep6())
+				break;
+			deliveryRequest.getStockRowDetailList().forEach(i->i.setZoneHeight(zoneHeightService.findOneLight(i.getZoneHeightId())));
 			step++;
 			break;
 		case 7:
@@ -1013,6 +1020,43 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 		if (deliveryRequest.getStockRowList().stream().filter(i -> i.getQuantity() % i.getPacking().getQuantity() != 0).count() > 0)
 			return FacesContextMessages.ErrorMessages("Packing Qty should be an integer");
+
+		return true;
+	}
+	
+	private Boolean validateStorageStep6() {
+		HashSet<String> set = new HashSet<>();
+		
+		deliveryRequest.getStockRowDetailList().forEach(i->{
+			System.out.println(i.getStockRow().getPartNumberName());
+			System.out.println(i.getStockRow().getLocationName());
+			System.out.println(i.getPackingDetail().getName());
+			System.out.println(i.getStockRow().getQuantity());
+			System.out.println(i.getZoneHeightId());
+		});
+
+		int newItemsListSize = 0;
+		for (StockRowDetail row : deliveryRequest.getStockRowDetailList()) {
+			if (row.getId() != null)
+				continue;
+
+			newItemsListSize++;
+			if (UtilsFunctions.compareDoubles(row.getTmpQuantity(), row.getQuantity(), 4) != 0) {
+				FacesContextMessages.ErrorMessages("please compelte the from");
+				return false;
+			}
+			if (row.getZoneHeightId() == null) {
+				FacesContextMessages.ErrorMessages("Line/Column/Height should not be null");
+				return false;
+			}
+			set.add(row.getStockRow().getId() + ";" + row.getZoneHeightId());
+		}
+
+		if (set.size() != newItemsListSize) {
+			FacesContextMessages.ErrorMessages("The combination Part Number, Status, Zone and Line/Column/Height must be unique");
+			return false;
+		}
+
 
 		return true;
 	}

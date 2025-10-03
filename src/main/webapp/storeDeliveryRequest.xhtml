@@ -402,6 +402,11 @@
 											<p:dataTable id="stockRowDetailList" value="#{deliveryRequestView.deliveryRequest.stockRowDetailList}" widgetVar="stockRowDetailListcv " var="item"
 												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												<p:column headerText="Type" styleClass="center" width="50">
+													<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+														<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.packingDetail.type,item.stockRow.partNumber.partNumberClass)}" />
+													</p:graphicImage>
+												</p:column>
 												<p:column headerText="Part Number">
 													<h:outputText value="#{item.stockRow.partNumber.name}" />
 												</p:column>
@@ -431,7 +436,7 @@
 													<h:outputText value="#{item.stockRow.location.name}" />
 												</p:column>
 												<p:column headerText="Line/Column/Height">
-													<p:selectOneMenu value="#{item.zoneHeightId}" filter="true" filterMatchMode="contains" >
+													<p:selectOneMenu value="#{item.zoneHeightId}" filter="true" filterMatchMode="contains"  disabled="#{item.id!=null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<f:selectItems value="#{zoneHeightView.findByLocation(item.stockRow.location.id)}" var="h" itemLabel="#{h.reference}" itemValue="#{h.id}" />
 													</p:selectOneMenu>

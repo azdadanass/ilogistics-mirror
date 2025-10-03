@@ -206,7 +206,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 	@Override
 	public DeliveryRequest findOne(Integer id) {
 		DeliveryRequest deliveryRequest = super.findOne(id);
-		Hibernate.initialize(deliveryRequest.getStockRowList());
+		deliveryRequest.getStockRowList().forEach(sr->initialize(sr.getDetailList()));
 		Hibernate.initialize(deliveryRequest.getCommentList());
 		Hibernate.initialize(deliveryRequest.getDetailList());
 		deliveryRequest.getDetailList().forEach(i -> Hibernate.initialize(i.getPacking()));

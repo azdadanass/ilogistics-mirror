@@ -16,6 +16,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 	private StockRow stockRow;
 	private PackingDetail packingDetail;
 	private ZoneHeight zoneHeight;
+	private StockRow outboundStockRow;
 
 	// TMP
 	private Double tmpQuantity;
@@ -122,17 +123,26 @@ public class StockRowDetail extends GenericModel<Integer> {
 	public String toString() {
 		return "{\"quantity\":\"" + quantity + "\", \"tmpQuantity\":\"" + tmpQuantity + "\", \"initial\":\"" + initial + "\"}";
 	}
-	
+
 	@Transient
-	public Integer getZoneHeightId(){
-		return zoneHeight!=null?zoneHeight.getId():null;
+	public Integer getZoneHeightId() {
+		return zoneHeight != null ? zoneHeight.getId() : null;
 	}
 
 	@Transient
-	public void setZoneHeightId(Integer zoneHeightId){
-		if(zoneHeight==null || !zoneHeightId.equals(zoneHeight.getId()))
-			zoneHeight=new ZoneHeight();
+	public void setZoneHeightId(Integer zoneHeightId) {
+		if (zoneHeight == null || !zoneHeightId.equals(zoneHeight.getId()))
+			zoneHeight = new ZoneHeight();
 		zoneHeight.setId(zoneHeightId);
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	public StockRow getOutboundStockRow() {
+		return outboundStockRow;
+	}
+
+	public void setOutboundStockRow(StockRow outboundStockRow) {
+		this.outboundStockRow = outboundStockRow;
 	}
 
 }

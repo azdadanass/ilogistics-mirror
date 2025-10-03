@@ -1049,11 +1049,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 				FacesContextMessages.ErrorMessages("Line/Column/Height should not be null");
 				return false;
 			}
-			set.add(row.getStockRow().getId() + ";" + row.getZoneHeightId());
+			set.add(row.getStockRow().getId()+";"+row.getPackingDetail().getId() + ";" + row.getZoneHeightId());
 		}
 
 		if (set.size() != newItemsListSize) {
-			FacesContextMessages.ErrorMessages("The combination Part Number, Status, Zone and Line/Column/Height must be unique");
+			FacesContextMessages.ErrorMessages("The combination Part Number, Status,PackingDetail, Zone and Line/Column/Height must be unique");
 			return false;
 		}
 

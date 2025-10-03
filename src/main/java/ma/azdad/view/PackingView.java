@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -145,6 +146,10 @@ public class PackingView extends GenericView<Integer, Packing, PackingRepos, Pac
 			return FacesContextMessages.ErrorMessages("Name already exists");
 		if (packing.getDetailList().isEmpty())
 			return FacesContextMessages.ErrorMessages("Detail List should not be null");
+		if(packing.getDetailList().stream().anyMatch(i->StringUtils.isBlank(i.getName())))
+			return FacesContextMessages.ErrorMessages("Detail Name should not be null");
+		if(packing.getDetailList().stream().anyMatch(i->i.getStorageFactor()==null))
+			return FacesContextMessages.ErrorMessages("Storage Factor should not be null");
 		if (packing.getDetailList().stream().filter(i -> i.getType() == null || i.getType().isEmpty() || i.getQuantity() == null).count() > 0)
 			return FacesContextMessages.ErrorMessages("Type / Quantity should not be null");
 		if (packing.getDetailList().stream().filter(i -> i.getHasSerialnumber()).mapToDouble(i -> i.getQuantity()).sum() > 10.0)

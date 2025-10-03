@@ -7,4 +7,4 @@ JOIN (
     GROUP BY parent_id
     HAVING COUNT(*) = 1
 ) d ON d.parent_id = b.id
-SET a.name = c.name;
+SET a.name = c.name where a.name is null;

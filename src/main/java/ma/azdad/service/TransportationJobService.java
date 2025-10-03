@@ -1469,7 +1469,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			} else {
 				DriverLocation lastLocation = locations.get(locations.size() - 1);
 				double distanceKm = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(lastLocation.getDate(), new Date()) > 3) {
+				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(new Date(),lastLocation.getDate()) > 3) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
 					// hadi adir mÃƒÂ¯Ã‚Â¿Ã‚Â½j les cordonnÃƒÆ’Ã‚Â©es si user exist dÃƒÆ’Ã‚Â©ja et

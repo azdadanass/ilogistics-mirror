@@ -118,6 +118,45 @@
 									<i class="ace-icon fa fa-th" />
 									<h:outputText value=" Zoning" />
 								</h3>
+								<div class="row">
+									<div class="col-sm-offset-1 col-sm-10">
+										<div class="table-header col-sm-12 col-xs-12">
+											<i class="fa fa-list" />
+											<h:outputText value=" Details" />
+										</div>
+										<div class="col-sm-12 col-xs-12 aa-datatable-container">
+											<p:dataTable id="stockRowDetailList" value="#{deliveryRequestView.deliveryRequest.stockRowDetailList}" widgetVar="stockRowDetailListcv " var="item"
+												styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+												<p:column headerText="Type" styleClass="center" width="50">
+													<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
+														<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.packingDetail.type,item.stockRow.partNumber.partNumberClass)}" />
+													</p:graphicImage>
+												</p:column>
+												<p:column headerText="Part Number">
+													<h:outputText value="#{item.stockRow.partNumber.name}" />
+												</p:column>
+												<p:column headerText="Status">
+													<h:outputText value="#{item.stockRow.status.value}" styleClass="#{item.stockRow.status.color.name}" />
+												</p:column>
+												<p:column headerText="Packing Detail">
+													<h:outputText value="#{item.packingDetail.name}" />
+												</p:column>
+												<p:column headerText="Quantity" width="180">
+													<h:outputText value="#{item.quantity}" styleClass="bolder">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+												</p:column>
+												<p:column headerText="Zone">
+													<h:outputText value="#{item.stockRow.location.name}" />
+												</p:column>
+												<p:column headerText="Line/Column/Height">
+													<h:outputText value="#{item.zoneHeight.reference}" />
+												</p:column>
+											</p:dataTable>
+										</div>
+									</div>
+								</div>
 							</f:subview>
 							<f:subview id="step3" rendered="#{deliveryRequestView.step==3}">
 								<h3 class="lighter block green">
@@ -297,7 +336,7 @@
 						<div class="wizard-actions">
 							<p:commandButton id="previousButton" value="Prev" action="#{deliveryRequestView.preparationPreviousStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
 								styleClass="btn btn-prev #{deliveryRequestView.step==1?'hide':''}" />
-							<p:commandButton id="nextButton" widgetVar="nextButton" value="#{deliveryRequestView.step==5?'Finish':'Next'}" action="#{deliveryRequestView.preparationNextStep()}"
+							<p:commandButton id="nextButton" widgetVar="nextButton" value="#{deliveryRequestView.step==6?'Finish':'Next'}" action="#{deliveryRequestView.preparationNextStep()}"
 								update="messages,nav-wizard,steps,nextButton,previousButton" styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
 							<p:ajaxStatus>
 								<f:facet name="start">

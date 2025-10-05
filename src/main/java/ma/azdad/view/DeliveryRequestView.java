@@ -605,14 +605,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	/*
 	 * WM WIZARD OUTBOUND
 	 */
+	List<StockRowDetail> stockRowDetailListToUpdate = new ArrayList<StockRowDetail>();
+	
 	public Boolean canPrepareOutboundDeliveryRequest() {
 		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId())
 				&& Arrays.asList(DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus());
 	}
 
 	public String preparationNextStep() {
-		List<StockRowDetail> stockRowDetailListToUpdate = new ArrayList<StockRowDetail>();
-
 		switch (step) {
 		case 0:
 			System.out.println("step0");
@@ -652,7 +652,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 										new StockRowDetail(quantity, stockRow, inboundStockRowDetail.getInboundStockRow(), packingDetail, inboundStockRowDetail.getZoneHeight()));
 								stockRowDetailListToUpdate.add(inboundStockRowDetail);
 								System.out.println("a : " + stockRow.getDetailList().get(stockRow.getDetailList().size() - 1));
-								System.out.println("new used quantity : "+inboundStockRowDetail.getUsedQuantity());
+								System.out.println("new used quantity : " + inboundStockRowDetail.getUsedQuantity());
 								break;
 							} else {
 								stockRow.addDetail(new StockRowDetail(inboundStockRowDetail.getRemainingQuantity(), stockRow, inboundStockRowDetail.getInboundStockRow(),
@@ -661,13 +661,16 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 								inboundStockRowDetail.setUsedQuantity(inboundStockRowDetail.getQuantity());
 								stockRowDetailListToUpdate.add(inboundStockRowDetail);
 								System.out.println("b: " + stockRow.getDetailList().get(stockRow.getDetailList().size() - 1));
-								System.out.println("new used quantity : "+inboundStockRowDetail.getUsedQuantity());
+								System.out.println("new used quantity : " + inboundStockRowDetail.getUsedQuantity());
 							}
 						}
 					}
 				}
 
 			}
+
+			deliveryRequest.initStockRowDetailList();
+
 			step++;
 			break;
 		case 2:
@@ -695,12 +698,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
-
-			for (StockRowDetail stockRowDetail : stockRowDetailListToUpdate) {
-				
-				stockRowDetailService.save(stockRowDetail);
-			}
-				
+			stockRowDetailListToUpdate.forEach(stockRowDetail->	stockRowDetailService.save(stockRowDetail));
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);

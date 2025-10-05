@@ -30,6 +30,7 @@ public class StockRowDetailService extends GenericService<Integer, StockRowDetai
 		result.forEach(i->{
 			initialize(i.getStockRow().getDeliveryRequestDetail());
 			i.getStockRow().getPacking().getDetailList().forEach(j->initialize(j));
+			initialize(i.getZoneHeight());
 		});
 		return result;
 	}

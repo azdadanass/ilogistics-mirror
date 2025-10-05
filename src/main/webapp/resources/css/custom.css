@@ -1307,3 +1307,12 @@ label {
 	color: white !important;
 	background: #a069c3 !important;
 }
+
+
+.ui-autocomplete-item.ui-autocomplete-row.ui-widget-content.ui-corner-all.ui-state-highlight {
+  /* background-color: red !important; */
+  color : #307ecc !important;
+}
+
+
+

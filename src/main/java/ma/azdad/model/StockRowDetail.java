@@ -17,6 +17,10 @@ public class StockRowDetail extends GenericModel<Integer> {
 	private PackingDetail packingDetail;
 	private ZoneHeight zoneHeight;
 
+	// only in inbound
+	private Double usedQuantity = 0.0; // total outbound quantity from this detail
+
+	// only in outbound
 	private StockRow inboundStockRow;
 
 	// TMP
@@ -33,14 +37,25 @@ public class StockRowDetail extends GenericModel<Integer> {
 //		this.packingDetail = packingDetail;
 //	}
 
-	public StockRowDetail(Double quantity, Double tmpQuantity, Boolean initial, StockRow stockRow,StockRow InboundStockRow, PackingDetail packingDetail) {
+	// inbound constructor
+	public StockRowDetail(Double quantity, Double tmpQuantity, Boolean initial, StockRow stockRow, PackingDetail packingDetail) {
 		super();
 		this.quantity = quantity;
 		this.tmpQuantity = tmpQuantity;
 		this.initial = initial;
 		this.stockRow = stockRow;
+		this.inboundStockRow = stockRow;
+		this.packingDetail = packingDetail;
+	}
+
+	// outbound constructor
+	public StockRowDetail(Double quantity, StockRow stockRow, StockRow InboundStockRow, PackingDetail packingDetail, ZoneHeight zoneHeight) {
+		super();
+		this.quantity = quantity;
+		this.stockRow = stockRow;
 		this.inboundStockRow = InboundStockRow;
 		this.packingDetail = packingDetail;
+		this.zoneHeight = zoneHeight;
 	}
 
 	public boolean filter(String query) {
@@ -132,7 +147,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	@Override
 	public String toString() {
-		return "{\"quantity\":\"" + quantity + "\", \"tmpQuantity\":\"" + tmpQuantity + "\", \"initial\":\"" + initial + "\"}";
+		return "{\"quantity\":\"" + quantity + "\", \"usedQuantity\":\"" + usedQuantity + "\", \"tmpQuantity\":\"" + tmpQuantity + "\", \"initial\":\"" + initial + "\"}";
 	}
 
 	@Transient
@@ -142,9 +157,27 @@ public class StockRowDetail extends GenericModel<Integer> {
 
 	@Transient
 	public void setZoneHeightId(Integer zoneHeightId) {
+		if (zoneHeightId == null) {
+			zoneHeight = null;
+			return;
+		}
+
 		if (zoneHeight == null || !zoneHeightId.equals(zoneHeight.getId()))
 			zoneHeight = new ZoneHeight();
 		zoneHeight.setId(zoneHeightId);
+	}
+
+	public Double getUsedQuantity() {
+		return usedQuantity;
+	}
+
+	public void setUsedQuantity(Double usedQuantity) {
+		this.usedQuantity = usedQuantity;
+	}
+
+	@Transient
+	public Double getRemainingQuantity() {
+		return this.quantity - this.usedQuantity;
 	}
 
 }

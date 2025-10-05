@@ -47,15 +47,20 @@
 								</li>
 								<li class="#{deliveryRequestView.step==2?'active':''}">
 									<a href="#">
-										<h:outputText value="Deliver to Company" />
+										<h:outputText value="Zoning" />
 									</a>
 								</li>
 								<li class="#{deliveryRequestView.step==3?'active':''}">
 									<a href="#">
-										<h:outputText value="Attachements" />
+										<h:outputText value="Deliver to Company" />
 									</a>
 								</li>
 								<li class="#{deliveryRequestView.step==4?'active':''}">
+									<a href="#">
+										<h:outputText value="Attachements" />
+									</a>
+								</li>
+								<li class="#{deliveryRequestView.step==5?'active':''}">
 									<a href="#">
 										<h:outputText value="Summary" />
 									</a>
@@ -109,6 +114,12 @@
 								</div>
 							</f:subview>
 							<f:subview id="step2" rendered="#{deliveryRequestView.step==2}">
+								<h3 class="lighter block green">
+									<i class="ace-icon fa fa-th" />
+									<h:outputText value=" Zoning" />
+								</h3>
+							</f:subview>
+							<f:subview id="step3" rendered="#{deliveryRequestView.step==3}">
 								<h3 class="lighter block green">
 									<i class="ace-icon fa fa-list-aslt" />
 									<h:outputText value=" Deliver to Company" />
@@ -200,7 +211,7 @@
 									<div class="space-8" />
 								</h:panelGroup>
 							</f:subview>
-							<f:subview rendered="#{deliveryRequestView.step==3}">
+							<f:subview rendered="#{deliveryRequestView.step==4}">
 								<h:form>
 									<h3 class="lighter block green">
 										<i class="ace-icon fa fa-file" />
@@ -274,7 +285,7 @@
 									</div>
 								</h:form>
 							</f:subview>
-							<f:subview rendered="#{deliveryRequestView.step==4}">
+							<f:subview rendered="#{deliveryRequestView.step==5}">
 								<h3 class="lighter block green">
 									<i class="ace-icon fa fa-list-alt" />
 									<h:outputText value=" Summary" />
@@ -286,7 +297,7 @@
 						<div class="wizard-actions">
 							<p:commandButton id="previousButton" value="Prev" action="#{deliveryRequestView.preparationPreviousStep()}" update="messages,nav-wizard,steps,nextButton,previousButton"
 								styleClass="btn btn-prev #{deliveryRequestView.step==1?'hide':''}" />
-							<p:commandButton id="nextButton" widgetVar="nextButton" value="#{deliveryRequestView.step==4?'Finish':'Next'}" action="#{deliveryRequestView.preparationNextStep()}"
+							<p:commandButton id="nextButton" widgetVar="nextButton" value="#{deliveryRequestView.step==5?'Finish':'Next'}" action="#{deliveryRequestView.preparationNextStep()}"
 								update="messages,nav-wizard,steps,nextButton,previousButton" styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
 							<p:ajaxStatus>
 								<f:facet name="start">

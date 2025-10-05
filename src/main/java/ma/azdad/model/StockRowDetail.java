@@ -44,7 +44,6 @@ public class StockRowDetail extends GenericModel<Integer> {
 		this.tmpQuantity = tmpQuantity;
 		this.initial = initial;
 		this.stockRow = stockRow;
-		this.inboundStockRow = stockRow;
 		this.packingDetail = packingDetail;
 	}
 
@@ -98,7 +97,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 		this.stockRow = stockRow;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	public StockRow getInboundStockRow() {
 		return inboundStockRow;
 	}

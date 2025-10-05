@@ -18,7 +18,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 	private ZoneHeight zoneHeight;
 
 	// only in inbound
-	private Double usedQuantity = 0.0; // total outbound quantity from this detail
+	private Double usedQuantity; // total outbound quantity from this detail
 
 	// only in outbound
 	private StockRow inboundStockRow;
@@ -45,6 +45,7 @@ public class StockRowDetail extends GenericModel<Integer> {
 		this.initial = initial;
 		this.stockRow = stockRow;
 		this.packingDetail = packingDetail;
+		this.usedQuantity = 0.0;
 	}
 
 	// outbound constructor

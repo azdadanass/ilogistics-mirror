@@ -629,6 +629,13 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			List<Integer> inboundDeliveryRequestDetailIdList = deliveryRequest.getStockRowList().stream().map(i -> i.getInboundDeliveryRequestDetail().getId())
 					.collect(Collectors.toList());
 			List<StockRowDetail> inboundStockRowDetailList = stockRowDetailService.findByDeliveryRequestDetailListAndNotFullyUsed(inboundDeliveryRequestDetailIdList);
+			
+			
+			Map<Integer, Double> mapIdUsedQuantity = inboundStockRowDetailList.stream()
+				    .collect(Collectors.toMap(
+				        StockRowDetail::getId,
+				        StockRowDetail::getUsedQuantity
+				    ));
 
 			// zoning
 			for (StockRow stockRow : deliveryRequest.getStockRowList()) {

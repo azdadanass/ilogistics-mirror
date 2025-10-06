@@ -34,7 +34,7 @@ public class TokenService {
 		token.setRoleList(userService.findRoleList(username));
 		token.setWarehouseList(warehouseService.findIdListByManager(username));
 		token.updateExpirationTime();
-		if(version.equals("2.0.1")) {
+		if(version.equals("2.0.0")) {
 			token.setIsValidVersion(true);
 		}
 		else {

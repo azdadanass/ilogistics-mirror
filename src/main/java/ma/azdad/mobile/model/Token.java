@@ -12,6 +12,8 @@ public class Token {
 	private String username;
 	private String key;
 	private Date expirationTime;
+	private Boolean isValidVersion;
+
 
 	private User user;
 	private List<Role> roleList = new ArrayList<Role>();
@@ -71,6 +73,16 @@ public class Token {
 
 	public void setRoleList(List<Role> roleList) {
 		this.roleList = roleList;
+	}
+	
+	
+
+	public Boolean getIsValidVersion() {
+		return isValidVersion;
+	}
+
+	public void setIsValidVersion(Boolean isValidVersion) {
+		this.isValidVersion = isValidVersion;
 	}
 
 	@Override

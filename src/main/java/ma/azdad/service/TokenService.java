@@ -23,7 +23,7 @@ public class TokenService {
 
 	private String key;
 
-	public Token generateToken(String username) {
+	public Token generateToken(String username,String version) {
 		Token token = userTokenMap.getOrDefault(username, new Token());
 		do {
 			key = UtilsFunctions.generateKey();
@@ -34,6 +34,14 @@ public class TokenService {
 		token.setRoleList(userService.findRoleList(username));
 		token.setWarehouseList(warehouseService.findIdListByManager(username));
 		token.updateExpirationTime();
+		if(version.equals("2.0.1")) {
+			token.setIsValidVersion(true);
+		}
+		else {
+			token.setIsValidVersion(false);
+		}
+		System.out.println("Version = "+version);
+		System.out.println("Version = "+token.getIsValidVersion());
 		userTokenMap.put(username, token);
 		System.out.println(userTokenMap);
 		return token;

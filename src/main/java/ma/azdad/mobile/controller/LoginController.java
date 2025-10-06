@@ -30,8 +30,8 @@ public class LoginController {
 	@Autowired
 	TokenService tokenService;
 
-	@PostMapping(path = "/mobile/login", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Token login(@RequestBody User user) {
+	@PostMapping(path = "/mobile/login/{version}", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Token login(@RequestBody User user,@PathVariable String version) {
 		System.out.println("/mobile/login "+user.getLogin()+" "+user.getPassword());
 		ma.azdad.model.User dbUser = userService.findByLogin(user.getLogin());
 		if (dbUser == null)
@@ -40,7 +40,7 @@ public class LoginController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad password");
 		if(!dbUser.getIsWM())
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied !");
-		Token token = tokenService.generateToken(dbUser.getUsername());
+		Token token = tokenService.generateToken(dbUser.getUsername(),version);
 		return token;
 	}
 	
@@ -54,7 +54,7 @@ public class LoginController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad password");
 		if(!dbUser.getIsTM() && !dbUser.getIsDriver())
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Access denied !");
-		Token token = tokenService.generateToken(dbUser.getUsername());
+		Token token = tokenService.generateToken(dbUser.getUsername(),"");
 		return token;
 	}
 	

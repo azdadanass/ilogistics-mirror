@@ -13,5 +13,9 @@ public interface StockRowDetailRepos extends JpaRepository<StockRowDetail, Integ
 
 	@Query("from StockRowDetail a where a.stockRow.deliveryRequestDetail.id in (?1) and a.quantity > a.usedQuantity")
 	List<StockRowDetail> findByDeliveryRequestDetailListAndNotFullyUsed(List<Integer> deliveryRequestDetailIdList);
+	
+	
+	@Query("select id,usedQuantity from StockRowDetail where id in (?1)")
+	List<Object[]> findUsedQunantityMap(List<Integer> idList);
 
 }

@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
+import ma.azdad.model.StockRowDetail;
 import ma.azdad.model.ZoneCategory;
 import ma.azdad.model.ZoneIndustry;
 import ma.azdad.model.ZoneType;
@@ -28,6 +29,7 @@ import ma.azdad.service.LocationService;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberIndustryService;
 import ma.azdad.service.PartNumberTypeService;
+import ma.azdad.service.StockRowDetailService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.WarehouseService;
@@ -64,6 +66,9 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	@Autowired
 	protected WarehouseService warehouseService;
+
+	@Autowired
+	protected StockRowDetailService stockRowDetailService;
 
 	private Location location = new Location();
 	private Integer warehouseId;
@@ -362,6 +367,14 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return gson.toJson(model.getHeightList());
 	}
 
+	private DatatableList<StockRowDetail> stockRowDetailDatatable;
+
+	public void initStockRowDetailDatatable(Integer zoneHeightId) {
+		System.out.println("initStockRowDetailDatatable");
+		stockRowDetailDatatable = new DatatableList<StockRowDetail>(stockRowDetailService.findRemainingByZoneHight(zoneHeightId));
+		System.out.println(stockRowDetailDatatable.getValue());
+	}
+
 	// generic
 	public List<Location> findByWarehouseAndStockRowStateAndOwner(DeliveryRequest deliveryRequest) {
 		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
@@ -499,6 +512,14 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setPartNumberTypeId(Integer partNumberTypeId) {
 		this.partNumberTypeId = partNumberTypeId;
+	}
+
+	public DatatableList<StockRowDetail> getStockRowDetailDatatable() {
+		return stockRowDetailDatatable;
+	}
+
+	public void setStockRowDetailDatatable(DatatableList<StockRowDetail> stockRowDetailDatatable) {
+		this.stockRowDetailDatatable = stockRowDetailDatatable;
 	}
 
 }

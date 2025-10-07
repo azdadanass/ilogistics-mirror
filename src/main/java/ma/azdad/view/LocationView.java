@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -369,8 +370,10 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	private DatatableList<StockRowDetail> stockRowDetailDatatable;
 
-	public void initStockRowDetailDatatable(Integer zoneHeightId) {
-		System.out.println("initStockRowDetailDatatable");
+	public void initStockRowDetailDatatable() {
+		System.out.println("initStockRowDetailDatatable : ");
+		Integer zoneHeightId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+		System.out.println("zoneHeightId : "+zoneHeightId);
 		stockRowDetailDatatable = new DatatableList<StockRowDetail>(stockRowDetailService.findRemainingByZoneHight(zoneHeightId));
 		System.out.println(stockRowDetailDatatable.getValue());
 	}

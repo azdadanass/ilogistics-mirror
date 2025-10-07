@@ -31,18 +31,20 @@ public class StockRowDetail extends GenericModel<Integer> {
 		super();
 	}
 
-	public StockRowDetail(Integer id, Double quantity, PackingDetail packingDetail, Double usedQuantity, //
-			String partNumberName, String partNumberDescription, Integer deliveryRequestId, String deliveryRequestReference
+	public StockRowDetail(Integer id, Double quantity, Double usedQuantity, //
+			String partNumberName, String partNumberDescription, String packingDetailName, String packingDetailType, Integer deliveryRequestId, String deliveryRequestReference
 
 	) {
 		super(id);
 		this.quantity = quantity;
-		this.packingDetail = packingDetail;
 		this.usedQuantity = usedQuantity;
+		this.setPackingDetailName(packingDetailName);
+		this.setPackingDetailType(packingDetailType);
 		this.setPartNumberName(partNumberName);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setDeliveryRequestReference(deliveryRequestReference);
+
 	}
 
 //	public StockRowDetail(Double quantity, PackingDetail packingDetail) {

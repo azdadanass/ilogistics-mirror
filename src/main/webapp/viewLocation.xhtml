@@ -176,8 +176,8 @@
 					<div id="tab2" class="tab-pane">
 					
 					
-						<p:remoteCommand name="testttttt" action="#{locationView.initStockRowDetailDatatable(2)}" update=":stockRowDetailListForm" oncomplete="PF('stockRowDetailListDlg').show()"></p:remoteCommand>
-						<p:commandLink onclick="testttttt()">test</p:commandLink>
+						<p:remoteCommand name="testttttt" action="#{locationView.initStockRowDetailDatatable()}" update=":stockRowDetailListForm" oncomplete="PF('stockRowDetailListDlg').show()"></p:remoteCommand>
+						<p:commandLink onclick="testttttt([{name:'id', value:243}])">test</p:commandLink>
 					
 						<div id="zoningGird"></div>
 					</div>

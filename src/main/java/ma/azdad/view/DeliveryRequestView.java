@@ -775,6 +775,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SAVE BY STEPS
 	public void preparationPreviousStep() {
+		if(step==2 && deliveryRequest.getStockRowDetailList().isEmpty()) {
+			step = 0;
+			return;
+		}
+		
 		if (step > 1)
 			step--;
 	}

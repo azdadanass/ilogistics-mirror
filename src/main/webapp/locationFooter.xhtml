@@ -55,8 +55,8 @@
 					<div class="row">
 						<h:panelGroup id="fileUploadPanel" rendered="#{locationView.model.zoning}">
 							<p:messages id="messages" closable="true" />
-							<p:fileUpload fileUploadListener="#{locationView.generateZoning}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true"
-								update=":main_form,zoningScriptsPanel" sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
+							<p:fileUpload fileUploadListener="#{locationView.generateZoning}" previewWidth="40" mode="advanced" dragDropSupport="true" multiple="true" update=":main_form,zoningScriptsPanel"
+								sizeLimit="20000000" allowTypes="/(\.|\/)(xls)$/" style="margin: auto;width: 80%" />
 							<h:outputText value="You can download file template from " style="margin-left:20px" />
 							<h:outputLink target="blank" value="resources/doc/zoning_template.xls">
 								<h:outputText value="here" styleClass="blue bolder" />
@@ -102,8 +102,7 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addIndustryDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{locationView.addIndustry()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addIndustryDlg').hide()"
-					update=":main_form:industryList,:main_form:messages" />
+				<p:commandButton action="#{locationView.addIndustry()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addIndustryDlg').hide()" update=":main_form:industryList,:main_form:messages" />
 			</div>
 		</p:dialog>
 	</h:form>
@@ -141,16 +140,14 @@
 											<i class="ace-icon fa fa-list bigger-130 blue" />
 											<f:setPropertyActionListener value="#{item}" target="#{locationView.category}" />
 										</p:commandLink>
-										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteCategory(item)}" rendered="#{locationView.canDeleteCategory()}"
-											update="categorylist">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteCategory(item)}" rendered="#{locationView.canDeleteCategory()}" update="categorylist">
 											<i class="fa fa-trash-o red bigger-130" />
 										</p:commandLink>
 									</div>
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" oncomplete="PF('addCategoryDlg').show()" update=":addCategoryForm"
-											rendered="#{locationView.canAddCategory()}">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new category" oncomplete="PF('addCategoryDlg').show()" update=":addCategoryForm" rendered="#{locationView.canAddCategory()}">
 											<i class="fa fa-plus green" />
 										</p:commandLink>
 									</div>
@@ -220,8 +217,8 @@
 							<h:outputText value=" Type List" />
 						</div>
 						<div class="col-sm-12 col-xs-12 aa-datatable-container">
-							<p:dataTable value="#{locationView.category.typeList}" rowKey="#{item.id}" id="typelist" var="item" rows="20" styleClass="table table-striped table-hover center"
-								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+							<p:dataTable value="#{locationView.category.typeList}" rowKey="#{item.id}" id="typelist" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 								<p:column headerText="Name">
 									<h:outputText value="#{item.type.name}" styleClass="bolder green" />
 								</p:column>
@@ -230,16 +227,14 @@
 								</p:column>
 								<p:column headerText="Actions" width="150" exportable="false">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteType(item)}" rendered="#{locationView.canDeleteType()}"
-											update="typelist">
+										<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteType(item)}" rendered="#{locationView.canDeleteType()}" update="typelist">
 											<i class="fa fa-trash-o red bigger-130" />
 										</p:commandLink>
 									</div>
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm"
-											rendered="#{locationView.canAddType()}">
+										<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add new type" oncomplete="PF('addTypeDlg').show()" update=":addTypeForm" rendered="#{locationView.canAddType()}">
 											<i class="fa fa-plus green" />
 										</p:commandLink>
 									</div>
@@ -284,13 +279,12 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{locationView.addType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()"
-					update=":typeListForm:typelist,:typeListForm:messages" />
+				<p:commandButton action="#{locationView.addType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()" update=":typeListForm:typelist,:typeListForm:messages" />
 			</div>
 		</p:dialog>
 	</h:form>
 	<h:form id="stockRowDetailListForm">
-		<p:dialog widgetVar="stockRowDetailListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1000">
+		<p:dialog widgetVar="stockRowDetailListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1200">
 			<button type="button" class="bootbox-close-button close" onclick="PF('stockRowDetailListDlg').hide()">
 				<h:outputText value="x" />
 			</button>
@@ -331,11 +325,19 @@
 							<p:dataTable id="stockRowDetailList" value="#{locationView.stockRowDetailDatatable.value}" rowKey="#{item.id}" widgetVar="stockRowDetailList" var="item" rows="20"
 								styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
 								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+								<p:column headerText="Image" width="80" exportable="false">
+									<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+										<f:param name="fileName" value="#{item.partNumberImage}" />
+									</p:graphicImage>
+								</p:column>
 								<p:column headerText="Part Number">
 									<h:outputText value="#{item.partNumberName}" styleClass="bolder purple" />
 								</p:column>
 								<p:column headerText="Description">
 									<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
+								</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{item.stockRowStatus.value}" styleClass="#{item.stockRowStatus.color.name}" />
 								</p:column>
 								<p:column headerText="Packing Detail">
 									<h:outputText value="#{item.packingDetailName}" />

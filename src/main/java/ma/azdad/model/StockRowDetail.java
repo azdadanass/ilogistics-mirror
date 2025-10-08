@@ -32,15 +32,16 @@ public class StockRowDetail extends GenericModel<Integer> {
 	}
 
 	public StockRowDetail(Integer id, Double quantity, Double usedQuantity, //
-			String partNumberName, String partNumberDescription, String packingDetailName, String packingDetailType, Integer deliveryRequestId, String deliveryRequestReference
-
+			StockRowStatus  stockRowStatus, String packingDetailName, String packingDetailType,String partNumberName,String partNumberImage, String partNumberDescription, Integer deliveryRequestId, String deliveryRequestReference
 	) {
 		super(id);
 		this.quantity = quantity;
 		this.usedQuantity = usedQuantity;
+		this.setStockRowStatus(stockRowStatus);
 		this.setPackingDetailName(packingDetailName);
 		this.setPackingDetailType(packingDetailType);
 		this.setPartNumberName(partNumberName);
+		this.setPartNumberImage(partNumberImage);
 		this.setPartNumberDescription(partNumberDescription);
 		this.setDeliveryRequestId(deliveryRequestId);
 		this.setDeliveryRequestReference(deliveryRequestReference);
@@ -197,6 +198,18 @@ public class StockRowDetail extends GenericModel<Integer> {
 	}
 
 	@Transient
+	public String getPartNumberImage() {
+		return stockRow != null ? stockRow.getPartNumberImage() : null;
+	}
+
+	@Transient
+	public void setPartNumberImage(String partNumberImage) {
+		if (stockRow == null)
+			stockRow = new StockRow();
+		stockRow.setPartNumberImage(partNumberImage);
+	}
+	
+	@Transient
 	public String getPartNumberName() {
 		return stockRow != null ? stockRow.getPartNumberName() : null;
 	}
@@ -219,6 +232,8 @@ public class StockRowDetail extends GenericModel<Integer> {
 			stockRow = new StockRow();
 		stockRow.setPartNumberDescription(partNumberDescription);
 	}
+	
+	
 
 	@Transient
 	public String getPackingDetailName() {
@@ -266,6 +281,18 @@ public class StockRowDetail extends GenericModel<Integer> {
 		if (stockRow == null)
 			stockRow = new StockRow();
 		stockRow.setDeliveryRequestId(deliveryRequestId);
+	}
+	
+	@Transient
+	public StockRowStatus getStockRowStatus(){
+		return stockRow!=null?stockRow.getStatus():null;
+	}
+
+	@Transient
+	public void setStockRowStatus(StockRowStatus stockRowStatus){
+		if(stockRow==null)
+			stockRow=new StockRow();
+		stockRow.setStatus(stockRowStatus);
 	}
 
 }

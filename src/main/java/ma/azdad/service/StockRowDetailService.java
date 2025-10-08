@@ -39,4 +39,8 @@ public class StockRowDetailService extends GenericService<Integer, StockRowDetai
 		repos.findUsedQunantityMap(idList).forEach(i -> result.put((int) i[0], (double) i[1]));
 		return result;
 	}
+	
+	public List<StockRowDetail> findRemainingByZoneHight(Integer zoneHeightId){
+		return repos.findRemainingByZoneHight(zoneHeightId);
+	}
 }

@@ -43,9 +43,13 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 			initialize(i.getIndustry());
 			i.getCategoryList().forEach(c -> {
 				initialize(c.getCategory());
-				c.getTypeList().forEach(t->initialize(t.getType()));
+				c.getTypeList().forEach(t -> initialize(t.getType()));
 			});
 		});
+
+		location.getPackingDetailTypeList().forEach(i->initialize(i.getType()));
+
+		location.initOptions();
 
 		return location;
 	}

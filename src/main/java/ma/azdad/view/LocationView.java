@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +19,20 @@ import com.google.gson.GsonBuilder;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
+import ma.azdad.model.StockRowDetail;
 import ma.azdad.model.ZoneCategory;
 import ma.azdad.model.ZoneIndustry;
+import ma.azdad.model.ZonePackingDetailType;
 import ma.azdad.model.ZoneType;
 import ma.azdad.repos.LocationRepos;
 import ma.azdad.service.CompanyService;
 import ma.azdad.service.CustomerService;
 import ma.azdad.service.LocationService;
+import ma.azdad.service.PackingDetailTypeService;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.service.PartNumberIndustryService;
 import ma.azdad.service.PartNumberTypeService;
+import ma.azdad.service.StockRowDetailService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.WarehouseService;
@@ -65,6 +70,12 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	@Autowired
 	protected WarehouseService warehouseService;
 
+	@Autowired
+	protected StockRowDetailService stockRowDetailService;
+	
+	@Autowired
+	protected PackingDetailTypeService packingDetailTypeService;
+
 	private Location location = new Location();
 	private Integer warehouseId;
 
@@ -76,9 +87,8 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 			refreshList();
 		else if (isEditPage)
 			location = locationService.findOne(id);
-		else if (isViewPage)
+		else if (isViewPage) 
 			location = locationService.findOne(id);
-
 	}
 
 	@Override
@@ -203,6 +213,16 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	}
 
+	// options
+	private Boolean editOptionList = false;
+
+	public void saveOptionList() {
+		location.calculateOptions();
+		service.save(location);
+		location = service.findOne(location.getId());
+		editOptionList = false;
+	}
+
 	// DELETE LOCATION
 	public Boolean canDeleteLocation() {
 		return true;
@@ -219,6 +239,44 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 		return listPage;
 	}
+	
+	// packing detail type
+	private Integer packingDetailTypeId;
+	
+	public Boolean canAddPackingDetailType() {
+		return sessionView.getIsAdmin();
+	}
+
+	public Boolean validateAddPackingDetailType() {
+		if (model.getPackingDetailTypeList().stream().filter(i -> i.getTypeId().equals(packingDetailTypeId)).count() > 0)
+			return FacesContextMessages.ErrorMessages("Already exists");
+
+		return true;
+	}
+
+	public void addPackingDetailType() {
+		if (!canAddPackingDetailType())
+			return;
+		if (!validateAddPackingDetailType())
+			return;
+		ZonePackingDetailType packingDetailType = new ZonePackingDetailType();
+		packingDetailType.setType(packingDetailTypeService.findOneLight(packingDetailTypeId));
+		model.addPackingDetailType(packingDetailType);
+		service.save(model);
+		refreshModel();
+	}
+
+	public Boolean canDeletePackingDetailType() {
+		return canAddPackingDetailType();
+	}
+
+	public void deletePackingDetailType(ZonePackingDetailType zonePackingDetailType) {
+		model.removePackingDetailType(zonePackingDetailType);
+		service.save(model);
+		refreshModel();
+	}
+	
+	
 
 	// industry / category / type management
 	private Integer partNumberIndustryId;
@@ -362,6 +420,16 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		return gson.toJson(model.getHeightList());
 	}
 
+	private DatatableList<StockRowDetail> stockRowDetailDatatable;
+
+	public void initStockRowDetailDatatable() {
+		System.out.println("initStockRowDetailDatatable : ");
+		Integer zoneHeightId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+		System.out.println("zoneHeightId : " + zoneHeightId);
+		stockRowDetailDatatable = new DatatableList<StockRowDetail>(stockRowDetailService.findRemainingByZoneHight(zoneHeightId));
+		System.out.println(stockRowDetailDatatable.getValue());
+	}
+
 	// generic
 	public List<Location> findByWarehouseAndStockRowStateAndOwner(DeliveryRequest deliveryRequest) {
 		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
@@ -500,5 +568,31 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public void setPartNumberTypeId(Integer partNumberTypeId) {
 		this.partNumberTypeId = partNumberTypeId;
 	}
+
+	public DatatableList<StockRowDetail> getStockRowDetailDatatable() {
+		return stockRowDetailDatatable;
+	}
+
+	public void setStockRowDetailDatatable(DatatableList<StockRowDetail> stockRowDetailDatatable) {
+		this.stockRowDetailDatatable = stockRowDetailDatatable;
+	}
+
+	public Boolean getEditOptionList() {
+		return editOptionList;
+	}
+
+	public void setEditOptionList(Boolean editOptionList) {
+		this.editOptionList = editOptionList;
+	}
+
+	public Integer getPackingDetailTypeId() {
+		return packingDetailTypeId;
+	}
+
+	public void setPackingDetailTypeId(Integer packingDetailTypeId) {
+		this.packingDetailTypeId = packingDetailTypeId;
+	}
+	
+	
 
 }

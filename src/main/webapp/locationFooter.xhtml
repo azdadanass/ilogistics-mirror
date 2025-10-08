@@ -35,7 +35,8 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-xs-12 col-sm-3">
-						<label class="control-label pull-right"> <h:outputText value="Zoning " />
+						<label class="control-label pull-right">
+							<h:outputText value="Zoning " />
 						</label>
 					</div>
 					<div class="col-xs-12 col-sm-9">
@@ -86,7 +87,8 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Name" />
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Name" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
 								<p:selectOneMenu value="#{locationView.partNumberIndustryId}" converter="#{genericSecuredConverter}" required="true" requiredMessage="Industry should not be null">
@@ -175,7 +177,8 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Category" />
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Category" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
 								<p:selectOneMenu value="#{locationView.partNumberCategoryId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Category should not be null">
@@ -214,8 +217,8 @@
 							<h:outputText value=" Type List" />
 						</div>
 						<div class="col-sm-12 col-xs-12 aa-datatable-container">
-							<p:dataTable value="#{locationView.category.typeList}" rowKey="#{item.id}" id="typelist" var="item" rows="20" styleClass="table table-striped table-hover center"
-								paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+							<p:dataTable value="#{locationView.category.typeList}" rowKey="#{item.id}" id="typelist" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+								paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 								<p:column headerText="Name">
 									<h:outputText value="#{item.type.name}" styleClass="bolder green" />
 								</p:column>
@@ -261,7 +264,8 @@
 				<div class="row">
 					<div class="col-xs-12 col-sm-6">
 						<div class="form-group">
-							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename"> <h:outputText value="Type" />
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Type" />
 							</label>
 							<div class="col-xs-9 col-sm-9">
 								<p:selectOneMenu value="#{locationView.partNumberTypeId}" filter="true" filterMatchMode="contains" required="true" requiredMessage="Type should not be null">
@@ -275,8 +279,125 @@
 			</div>
 			<div class="modal-footer">
 				<p:commandButton onclick="PF('addTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-				<p:commandButton action="#{locationView.addType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()"
-					update=":typeListForm:typelist,:typeListForm:messages" />
+				<p:commandButton action="#{locationView.addType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addTypeDlg').hide()" update=":typeListForm:typelist,:typeListForm:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
+	<h:form id="stockRowDetailListForm">
+		<p:dialog widgetVar="stockRowDetailListDlg" modal="true" closable="false" resizable="false" showHeader="false" width="1200">
+			<button type="button" class="bootbox-close-button close" onclick="PF('stockRowDetailListDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-list blue" />
+					<h:outputText value=" Details" />
+				</h4>
+			</div>
+			<div class="modal-body" style="width: 100%">
+				<div class="row">
+					<div class="col-sm-offset-1 col-sm-10">
+						<div class="table-header col-sm-12 col-xs-12">
+							<div class="col-sm-8 col-xs-8">
+								<i class="fa fa-list" />
+								<h:outputText value=" Details" />
+							</div>
+							<div class="col-sm-2 hidden-xs">
+								<div class="action-buttons center">
+									<h:commandLink styleClass="aa-tooltip tooltip-success" title="Export to excel">
+										<img src="/resources/img/xls.png" width="20" height="20" />
+										<p:dataExporter type="xls" target="stockRowDetailList" fileName="stockRowDetailList" postProcessor="#{utilsView.excelExportation}" />
+									</h:commandLink>
+								</div>
+							</div>
+							<div class="col-sm-2 col-xs-4">
+								<div class="nav-search minimized">
+									<span class="input-icon">
+										<p:inputText value="#{locationView.stockRowDetailDatatable.search}" placeholder="Search..." styleClass="input-small nav-search-input" autocomplete="off">
+											<p:ajax event="keyup" update="stockRowDetailList" />
+										</p:inputText>
+										<i class="ace-icon fa fa-search nav-search-icon" />
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12 col-xs-12 aa-datatable-container">
+							<p:dataTable id="stockRowDetailList" value="#{locationView.stockRowDetailDatatable.value}" rowKey="#{item.id}" widgetVar="stockRowDetailList" var="item" rows="20"
+								styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowSelectMode="checkbox">
+								<p:column headerText="Image" width="80" exportable="false">
+									<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+										<f:param name="fileName" value="#{item.partNumberImage}" />
+									</p:graphicImage>
+								</p:column>
+								<p:column headerText="Part Number">
+									<h:outputText value="#{item.partNumberName}" styleClass="bolder purple" />
+								</p:column>
+								<p:column headerText="Description">
+									<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
+								</p:column>
+								<p:column headerText="DN">
+									<h:outputLink value="viewDeliveryRequest.xhtml">
+										<h:outputText value="#{item.deliveryRequestReference}" styleClass="bolder green" />
+										<f:param name="id" value="#{item.deliveryRequestId}"/>
+									</h:outputLink>
+								</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{item.stockRowStatus.value}" styleClass="#{item.stockRowStatus.color.name}" />
+								</p:column>
+								<p:column headerText="Packing Detail">
+									<h:outputText value="#{item.packingDetailName}" />
+								</p:column>
+								<p:column headerText="Type">
+									<h:outputText value="#{item.packingDetailType}" />
+								</p:column>
+								<p:column headerText="Stock Quantity">
+									<h:outputText value="#{item.quantity-item.usedQuantity}" styleClass="bolder green">
+										<f:convertNumber type="number" maxFractionDigits="2" />
+									</h:outputText>
+								</p:column>
+							</p:dataTable>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('stockRowDetailListDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+			</div>
+		</p:dialog>
+	</h:form>
+	
+	<h:form id="addPackingDetailTypeForm">
+		<p:dialog widgetVar="addPackingDetailTypeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addPackingDetailTypeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add PackingDetailType" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Name" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{locationView.packingDetailTypeId}" converter="#{genericSecuredConverter}" required="true" requiredMessage="PackingDetailType should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{packingDetailTypeView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addPackingDetailTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{locationView.addPackingDetailType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addPackingDetailTypeDlg').hide()" update=":main_form:packingDetailTypeList,:main_form:messages" />
 			</div>
 		</p:dialog>
 	</h:form>

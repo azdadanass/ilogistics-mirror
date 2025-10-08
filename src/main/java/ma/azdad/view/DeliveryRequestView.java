@@ -594,6 +594,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 10 Kg to add transport");
 			return null;
 		}
+		
+
+		if (deliveryRequest.getVolume() == null || deliveryRequest.getVolume() < 0.5) {
+			FacesContextMessages.ErrorMessages("Volume  must be greater than 0.5 m3 to add transport");
+			return null;
+		}
 
 		indexView.setSelectedMenu(3);
 		return addParameters("addEditTransportationRequest.xhtml", "faces-redirect=true", "deliveryRequestId=" + deliveryRequest.getId());
@@ -710,7 +716,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
+
 			stockRowDetailListToUpdate.forEach(stockRowDetail -> stockRowDetailService.save(stockRowDetail));
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
@@ -775,6 +783,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SAVE BY STEPS
 	public void preparationPreviousStep() {
+		if(step==2 && deliveryRequest.getStockRowDetailList().isEmpty()) {
+			step = 0;
+			return;
+		}
+		
 		if (step > 1)
 			step--;
 	}
@@ -887,6 +900,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			stockRowService.updateOwnerId(deliveryRequest.getId());
 			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+			
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 

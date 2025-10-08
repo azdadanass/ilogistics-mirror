@@ -96,6 +96,12 @@
 					</li>
 					<li>
 						<a data-toggle="tab" href="#tab5">
+							<i class="orange ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Packing Types" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6">
 							<i class="orange ace-icon fa fa-gear bigger-120"></i>
 							<h:outputText value=" Options" styleClass="hidden-xs" />
 						</a>
@@ -287,6 +293,38 @@
 						</div>
 					</div>
 					<div id="tab5" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Packing Type List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="packingDetailTypeList" value="#{locationView.model.packingDetailTypeList}" rowKey="#{item.id}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Name">
+											<h:outputText value="#{item.typeName}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deletePackingDetailType(item)}" rendered="#{locationView.canDeletePackingDetailType()}" update="packingDetailTypeList">
+													<i class="fa fa-trash-o red bigger-130" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add Type" oncomplete="PF('addPackingDetailTypeDlg').show()" update=":addPackingDetailTypeForm" rendered="#{locationView.canAddPackingDetailType()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab6" class="tab-pane">
 						<div class="row">
 							<div class="col-sm-offset-2 col-sm-8">
 								<div class="table-header col-sm-12 col-xs-12">

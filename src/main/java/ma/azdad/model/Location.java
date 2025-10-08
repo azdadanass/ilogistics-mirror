@@ -35,6 +35,7 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private List<LocationDetail> detailList = new ArrayList<>();
 	private List<ZoneLine> lineList = new ArrayList<>();
 	private List<ZoneIndustry> industryList = new ArrayList<>();
+	private List<ZonePackingDetailType> packingDetailTypeList = new ArrayList<>();
 
 	// tmp
 	private List<Pair<String, String>> options;
@@ -112,6 +113,16 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	public void removeIndustry(ZoneIndustry industry) {
 		industry.setLocation(null);
 		industryList.remove(industry);
+	}
+
+	public void addPackingDetailType(ZonePackingDetailType packingDetailType) {
+		packingDetailType.setLocation(this);
+		packingDetailTypeList.add(packingDetailType);
+	}
+
+	public void removePackingDetailType(ZonePackingDetailType packingDetailType) {
+		packingDetailType.setLocation(null);
+		packingDetailTypeList.remove(packingDetailType);
 	}
 
 	public String getName() {
@@ -239,6 +250,15 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public void setOptions(List<Pair<String, String>> options) {
 		this.options = options;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<ZonePackingDetailType> getPackingDetailTypeList() {
+		return packingDetailTypeList;
+	}
+
+	public void setPackingDetailTypeList(List<ZonePackingDetailType> packingDetailTypeList) {
+		this.packingDetailTypeList = packingDetailTypeList;
 	}
 
 }

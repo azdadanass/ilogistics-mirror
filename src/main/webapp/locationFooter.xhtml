@@ -366,4 +366,39 @@
 			</div>
 		</p:dialog>
 	</h:form>
+	
+	<h:form id="addPackingDetailTypeForm">
+		<p:dialog widgetVar="addPackingDetailTypeDlg" modal="true" closable="false" resizable="false" showHeader="false">
+			<button type="button" class="bootbox-close-button close" onclick="PF('addPackingDetailTypeDlg').hide()">
+				<h:outputText value="x" />
+			</button>
+			<div class="modal-header">
+				<h4 class="modal-title">
+					<i class="ace-icon fa fa-plus green" />
+					<h:outputText value=" Add PackingDetailType" />
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-sitename">
+								<h:outputText value="Name" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:selectOneMenu value="#{locationView.packingDetailTypeId}" converter="#{genericSecuredConverter}" required="true" requiredMessage="PackingDetailType should not be null">
+									<f:selectItem itemLabel="---" noSelectionOption="true" />
+									<f:selectItems value="#{packingDetailTypeView.findLight()}" var="item" itemLabel="#{item.name}" itemValue="#{item.id}" />
+								</p:selectOneMenu>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton onclick="PF('addPackingDetailTypeDlg').hide()" value="Hide" styleClass="btn btn-warning" />
+				<p:commandButton action="#{locationView.addPackingDetailType()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addPackingDetailTypeDlg').hide()" update=":main_form:packingDetailTypeList,:main_form:messages" />
+			</div>
+		</p:dialog>
+	</h:form>
 </ui:composition>

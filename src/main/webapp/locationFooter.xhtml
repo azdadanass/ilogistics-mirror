@@ -336,6 +336,12 @@
 								<p:column headerText="Description">
 									<h:outputText value="#{item.partNumberDescription}" styleClass="blue aa-cut-text" />
 								</p:column>
+								<p:column headerText="DN">
+									<h:outputLink value="viewDeliveryRequest.xhtml">
+										<h:outputText value="#{item.deliveryRequestReference}" styleClass="bolder green" />
+										<f:param name="id" value="#{item.deliveryRequestId}"/>
+									</h:outputLink>
+								</p:column>
 								<p:column headerText="Status">
 									<h:outputText value="#{item.stockRowStatus.value}" styleClass="#{item.stockRowStatus.color.name}" />
 								</p:column>

@@ -25,4 +25,15 @@ public class ZoneHeightService extends GenericService<Integer, ZoneHeight, ZoneH
 		return repos.findByLocation(locationId);
 	}
 
+	public List<Integer> findIdListByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findIdListByDeliveryRequest(deliveryRequestId);
+	}
+
+	public void updateFillPercentage(Integer id) {
+		System.out.println("updateFillPercentage : "+id);
+		Double totalUsedVolume = repos.findTotalUsedVolume(id);
+		Double slotSize = repos.findSlotSize(id);
+		repos.updateFillPercentage(id, totalUsedVolume/slotSize);
+	}
+
 }

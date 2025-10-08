@@ -716,7 +716,9 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
+
 			stockRowDetailListToUpdate.forEach(stockRowDetail -> stockRowDetailService.save(stockRowDetail));
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
@@ -898,6 +900,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			stockRowService.updateOwnerId(deliveryRequest.getId());
 			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+			
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 

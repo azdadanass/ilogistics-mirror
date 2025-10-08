@@ -2192,24 +2192,27 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="packingDetailSummaryList" value="#{deliveryRequestView.deliveryRequest.packingDetailSummaryList}" rows="40" var="item" styleClass="table table-striped table-hover center"
+									<p:dataTable id="packingDetailSummaryList" value="#{deliveryRequestView.deliveryRequest.packingDetailSummaryList}" rows="10" var="item" styleClass="table table-striped table-hover center"
 										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="Type" styleClass="center" width="50">
 											<p:graphicImage value="#{fileUploadView.stream}" width="20" height="20">
 												<f:param name="fileName" value="#{packingDetailTypeView.findImageByNameAndClass(item.type,item.parent.partNumber.partNumberClass)}" />
 											</p:graphicImage>
 										</p:column>
+										<p:column headerText="Packing Name" >
+											<h:outputText value="#{item.name}" styleClass="blue" />
+										</p:column>
 										<p:column headerText="Dimension">
-											<h:outputText value="#{item.dimension}" />
+											<h:outputText value="#{item.dimension}" styleClass="purple"/>
 										</p:column>
 										<p:column headerText="GW">
-											<h:outputText value="#{item.grossWeight} Kg" />
+											<h:outputText value="#{item.grossWeight} Kg" styleClass="pink"/>
 										</p:column>
 										<p:column headerText="Volume">
-											<h:outputText value="#{item.volume} m3" />
+											<h:outputText value="#{item.volume} m3" styleClass="orange"/>
 										</p:column>
 										<p:column headerText="Quantity">
-											<h:outputText value="#{item.tmpQuantity}" />
+											<h:outputText value="#{item.tmpQuantity}" styleClass="bolder green"/>
 										</p:column>
 										<p:column headerText="Packing Options">
 											<div class="action-buttons center">

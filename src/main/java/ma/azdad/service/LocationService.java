@@ -46,6 +46,8 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 				c.getTypeList().forEach(t->initialize(t.getType()));
 			});
 		});
+		
+		location.initOptions();
 
 		return location;
 	}

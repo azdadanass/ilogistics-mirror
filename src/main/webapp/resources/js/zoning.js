@@ -67,7 +67,7 @@ function drawCells(warehouseData) {
 		// Click → log ID
 		rect.on('pointerdown', () => {
 			console.log(`Clicked cell ID: ${rect.cellId}, Filllll: ${rect.fillPercentage * 100}%`);
-			testttttt([{name:'id', value:`${rect.cellId}`}]);
+			initStockRowDetailDatatable([{name:'id', value:`${rect.cellId}`}]);
 		});
 
 		// Hover → show tooltip

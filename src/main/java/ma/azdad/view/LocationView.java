@@ -82,9 +82,8 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 			refreshList();
 		else if (isEditPage)
 			location = locationService.findOne(id);
-		else if (isViewPage)
+		else if (isViewPage) 
 			location = locationService.findOne(id);
-
 	}
 
 	@Override
@@ -207,6 +206,16 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 		location = service.findOne(location.getId());
 		editDetailList = false;
 
+	}
+
+	// options
+	private Boolean editOptionList = false;
+
+	public void saveOptionList() {
+		location.calculateOptions();
+		service.save(location);
+		location = service.findOne(location.getId());
+		editOptionList = false;
 	}
 
 	// DELETE LOCATION
@@ -373,7 +382,7 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public void initStockRowDetailDatatable() {
 		System.out.println("initStockRowDetailDatatable : ");
 		Integer zoneHeightId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
-		System.out.println("zoneHeightId : "+zoneHeightId);
+		System.out.println("zoneHeightId : " + zoneHeightId);
 		stockRowDetailDatatable = new DatatableList<StockRowDetail>(stockRowDetailService.findRemainingByZoneHight(zoneHeightId));
 		System.out.println(stockRowDetailDatatable.getValue());
 	}
@@ -523,6 +532,14 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 
 	public void setStockRowDetailDatatable(DatatableList<StockRowDetail> stockRowDetailDatatable) {
 		this.stockRowDetailDatatable = stockRowDetailDatatable;
+	}
+
+	public Boolean getEditOptionList() {
+		return editOptionList;
+	}
+
+	public void setEditOptionList(Boolean editOptionList) {
+		this.editOptionList = editOptionList;
 	}
 
 }

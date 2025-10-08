@@ -1223,7 +1223,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				tr.calculateCost();
 			});
 		}
-
 	}
 
 	public Boolean canRecalculateTrListCosts() {

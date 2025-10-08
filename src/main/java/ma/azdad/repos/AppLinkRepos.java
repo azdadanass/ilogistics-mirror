@@ -23,7 +23,11 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 	String invoiceDate = "(select b.dateInvoice from Acceptance b where b.id = a.acceptance.id)";
 	String poNumeroIbuy = "(select b.oldInvoiceTerm.po.numeroIbuy from Acceptance b where b.id = a.acceptance.id)";
 	String poNumeroInvoice = "(select b.oldInvoiceTerm.po.numeroInvoice from Acceptance b where b.id = a.acceptance.id)";
-	String c1 = "select new AppLink(a.costType,a.revenueType,a.startDate,a.endDate,a.amount,a.transportationRequest.reference,a.transportationRequest.status,a.transportationRequest.cost,a.transportationRequest.paymentStatus,a.transportationRequest.deliveryRequest.project.name," + madConversionRate + "," + currency + "," + acceptanceId + " ," + expensepaymentId + ","	
+	
+	String c1 = "select new AppLink(a.costType,a.revenueType,a.startDate,a.endDate,a.amount," + madConversionRate + "," + currency + "," + acceptanceId + " ," + expensepaymentId + ","	
+			+ supplierName + "," + customerName + "," + idInvoice + "," + invoiceStatus + "," + invoiceDate + "," + poNumeroIbuy + "," + poNumeroInvoice + ") ";
+	
+	String c2 = "select new AppLink(a.costType,a.revenueType,a.startDate,a.endDate,a.amount,a.transportationRequest.reference,a.transportationRequest.status,a.transportationRequest.cost,a.transportationRequest.paymentStatus,a.transportationRequest.deliveryRequest.project.name," + madConversionRate + "," + currency + "," + acceptanceId + " ," + expensepaymentId + ","	
 			+ supplierName + "," + customerName + "," + idInvoice + "," + invoiceStatus + "," + invoiceDate + "," + poNumeroIbuy + "," + poNumeroInvoice + ") ";
 
 	@Query(c1 + "from AppLink a where a.deliveryRequest.id = ?1 and a.costType is not null")
@@ -38,13 +42,13 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 	@Query("select a.acceptance.oldInvoiceTerm.po.project.id from AppLink a where a.deliveryRequest.id = ?1 and a.revenueType is not null group by a.acceptance.oldInvoiceTerm.po.project.id")
 	public List<Integer> findRevenuesIdProjectByDeliveryRequest(Integer deliveryRequestId);
 
-	@Query(c1 + "from AppLink a where a.transportationRequest.id = ?1")
+	@Query(c2 + "from AppLink a where a.transportationRequest.id = ?1")
 	public List<AppLink> findByTransportationRequest(Integer transportationRequestId);
 	
-	@Query(c1 + "from AppLink a where a.transportationRequest.transportationJob.id = ?1")
+	@Query(c2 + "from AppLink a where a.transportationRequest.transportationJob.id = ?1")
 	public List<AppLink> findByTransportationJob(Integer transportationJobId);
 
-	@Query(c1 + "from AppLink a where a.warehouse.id = ?1")
+	@Query(c2 + "from AppLink a where a.warehouse.id = ?1")
 	public List<AppLink> findByWarehouse(Integer warehouseId);
 
 	@Modifying

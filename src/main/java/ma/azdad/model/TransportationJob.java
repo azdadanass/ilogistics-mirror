@@ -574,7 +574,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 				}).sum();
 
 				// set summed duration
-				s2.setDuration(totalDuration);
+				s1.setDuration(totalDuration);
 			}
 			map.put(date1, s1);
 			map2.put(tr.getStartDate(), s1.getPlace().id());

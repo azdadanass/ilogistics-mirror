@@ -43,6 +43,7 @@ public class JobIteneraryController {
 	@Autowired
     private TransportationRequestService transportationRequestService;
 	
+	
 	@Autowired
 	private StopRepos stopRepos;
 
@@ -99,58 +100,12 @@ public class JobIteneraryController {
     }
     
     @GetMapping("/estimated-itinerary/tr/{requestId}")
-    public ResponseEntity<List<TransportationJobItineraryDto>> getEstimatedRequestItenerary(@PathVariable Integer requestId) {
-    	List<TransportationJobItineraryDto> locations = new ArrayList<>();
-    	TransportationRequest transportationRequest = transportationRequestService.findOne(requestId);
-    	GenericPlace origin = !transportationRequest.getDeliveryRequest().getIsOutbound() ? transportationRequest.getDeliveryRequest().getOrigin()
-				: transportationRequest.getDeliveryRequest().getWarehouse();
-		GenericPlace destination = !transportationRequest.getDeliveryRequest().getIsInbound() ? transportationRequest.getDeliveryRequest().getDestination()
-				: transportationRequest.getDeliveryRequest().getWarehouse();
-		Date pickupDate =
-			    transportationRequest.getPickupDate() != null ? transportationRequest.getPickupDate()
-			    : (transportationRequest.getPlannedPickupDate() != null ? transportationRequest.getPlannedPickupDate()
-			    : transportationRequest.getNeededPickupDate());
-		Date deliveryDate =
-			    transportationRequest.getDeliveryDate() != null ? transportationRequest.getDeliveryDate()
-			    : (transportationRequest.getPlannedDeliveryDate() != null ? transportationRequest.getPlannedDeliveryDate()
-			    : transportationRequest.getNeededDeliveryDate());
-
-
-		 locations.add(new TransportationJobItineraryDto(
-				 requestId,
-				 origin.getLatitude(),
-	    	        origin.getLongitude(),
-	    	        null,
-	    	        Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
-	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?
-	    	        				transportationRequest.getNeededPickupDate():pickupDate,
-	    	        null,
-	    	        origin.getName(),
-	    	        Arrays.asList(TransportationRequestStatus.PICKEDUP,
-	    	        		TransportationRequestStatus.DELIVERED,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())
-	    	        ?false:true,
-	    	        		Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
-	    	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?true:false	,	
-	    	        StopType.PICKUP.getValue()
-	    	    ));
-		 locations.add(new TransportationJobItineraryDto(
-				 requestId,
-				 destination.getLatitude(),
-				 destination.getLongitude(),
-	    	        null,
-	    	        Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
-	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?
-	    	        				transportationRequest.getNeededDeliveryDate():deliveryDate,
-	    	        null,
-	    	        destination.getName(),
-	    	        Arrays.asList(TransportationRequestStatus.DELIVERED
-	    	        		,TransportationRequestStatus.ACKNOWLEDGED).contains(transportationRequest.getStatus())?false:true,
-	    	        				Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,
-	    	    	    	        		TransportationRequestStatus.APPROVED).contains(transportationRequest.getStatus())?true:false,
-	    	        StopType.DELIVERY.getValue()
-	    	    ));
+    public ResponseEntity<List<TransportationJobItineraryDto>> getEstimatedRequestItinerary(
+            @PathVariable Integer requestId) {
+        List<TransportationJobItineraryDto> locations = itineraryService.getEstimatedItinerary(requestId);
         return ResponseEntity.ok(locations);
     }
+    
     
     @PostMapping("/updatePoint/{pointId}")
     public ResponseEntity<Void> updatePointDistances(

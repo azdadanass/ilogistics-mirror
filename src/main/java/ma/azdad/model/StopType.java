@@ -2,6 +2,7 @@ package ma.azdad.model;
 
 public enum StopType {
 	PICKUP("Pick Up", "blue"),
+	STOP("Stop", "purple"),
 	DELIVERY("Delivery", "green"),
 	DELIVERY_AND_PICKUP("Delivery & Pick Up", "purple"),;
 

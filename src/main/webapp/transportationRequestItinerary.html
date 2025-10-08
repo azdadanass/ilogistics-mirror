@@ -649,146 +649,184 @@ function showActualItinerary() {
 }
 
 function showEstimatedItinerary() {
-  const jobId = getJobIdFromURL();
-  if (!jobId) {
-    console.error("Aucun jobId trouvé dans l'URL.");
-    return;
-  }
+	  const jobId = getJobIdFromURL();
+	  if (!jobId) {
+	    console.error("Aucun jobId trouvé dans l'URL.");
+	    return;
+	  }
 
-  fetch(`/api/job/estimated-itinerary/tr/${jobId}`)
-    .then(response => response.json())
-    .then(points => {
-      if (!points || points.length < 2) {
-        console.warn("Pas assez de points pour tracer l'itinéraire estimé.");
-        return;
-      }
+	  fetch(`/api/job/estimated-itinerary/tr/${jobId}`)
+	    .then(response => response.json())
+	    .then(points => {
+	      if (!points || points.length < 2) {
+	        console.warn("Pas assez de points pour tracer l'itinéraire estimé.");
+	        return;
+	      }
 
-      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
-      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
+	      // Origin and destination
+	      const origin = new google.maps.LatLng(points[0].latitude, points[0].longitude);
+	      const destination = new google.maps.LatLng(points[points.length - 1].latitude, points[points.length - 1].longitude);
 
-      let waypointList = points.slice(1, -1);
-      if (waypointList.length > MAX_WAYPOINTS) {
-        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
-        waypointList = waypointList.filter((_, i) => i % factor === 0);
-      }
+	      // Build waypoint list (all intermediate stops)
+	      let waypointList = points.slice(1, -1);
+	      if (waypointList.length > MAX_WAYPOINTS) {
+	        const factor = Math.ceil(waypointList.length / MAX_WAYPOINTS);
+	        waypointList = waypointList.filter((_, i) => i % factor === 0);
+	      }
 
-      const waypoints = waypointList.map(p => ({
-        location: new google.maps.LatLng(p.latitude, p.longitude),
-        stopover: true,
-      }));
+	      const waypoints = waypointList.map(p => ({
+	        location: new google.maps.LatLng(p.latitude, p.longitude),
+	        stopover: true,
+	      }));
 
-      const request = {
-        origin,
-        destination,
-        waypoints,
-        travelMode: google.maps.TravelMode.DRIVING,
-        optimizeWaypoints: false,
-      };
+	      const request = {
+	        origin,
+	        destination,
+	        waypoints,
+	        travelMode: google.maps.TravelMode.DRIVING,
+	        optimizeWaypoints: false,
+	      };
 
-      directionsService.route(request, (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK) {
-          estimatedDirectionsRenderer.setDirections(result);
+	      directionsService.route(request, (result, status) => {
+	        if (status !== google.maps.DirectionsStatus.OK) {
+	          console.error("Erreur Directions API:", status);
+	          return;
+	        }
 
-          points.forEach((point, index) => {
-            let isWithin5km = false;
-            let nearestDistKm = null;
+	        estimatedDirectionsRenderer.setDirections(result);
 
-            if (actualPoints && actualPoints.length > 0) {
-              const estLatLng = new google.maps.LatLng(point.latitude, point.longitude);
-              for (let ap of actualPoints) {
-                const actLatLng = new google.maps.LatLng(ap.latitude, ap.longitude);
-                const distMeters = google.maps.geometry.spherical.computeDistanceBetween(estLatLng, actLatLng);
-                const distKm = distMeters / 1000.0;
-                if (nearestDistKm === null || distKm < nearestDistKm) nearestDistKm = distKm;
-                if (distMeters <= 5000) {
-                  isWithin5km = true;
-                  break;
-                }
-              }
-            }
+	        // Decode route path
+	        const routePath = [];
+	        result.routes[0].legs.forEach(leg => {
+	          leg.steps.forEach(step => {
+	            step.path.forEach(latlng => routePath.push(latlng));
+	          });
+	        });
 
-            const isArrived = point.isArrived || point.status === 'arrived' || point.arrived === true;
+	        // Check if a point is near the route path
+	        function isPointNearRoute(lat, lng, path, toleranceMeters = 5000) {
+	          const point = new google.maps.LatLng(lat, lng);
+	          for (let i = 0; i < path.length - 1; i++) {
+	            const segStart = path[i];
+	            const segEnd = path[i + 1];
+	            const d1 = google.maps.geometry.spherical.computeDistanceBetween(segStart, point);
+	            const d2 = google.maps.geometry.spherical.computeDistanceBetween(segEnd, point);
+	            const d3 = google.maps.geometry.spherical.computeDistanceBetween(segStart, segEnd);
+	            const s = (d1 + d2 + d3) / 2;
+	            const area = Math.sqrt(Math.max(s * (s - d1) * (s - d2) * (s - d3), 0));
+	            const height = (2 * area) / d3;
+	            if (height < toleranceMeters) return true;
+	          }
+	          return false;
+	        }
+
+	        // Format date nicely
+	        function formatDate(timestamp) {
+	          if (!timestamp) return "";
+	          const date = new Date(timestamp);
+	          const day = date.getDate().toString().padStart(2, "0");
+	          const month = (date.getMonth() + 1).toString().padStart(2, "0");
+	          const year = date.getFullYear();
+	          const hours = date.getHours().toString().padStart(2, "0");
+	          const minutes = date.getMinutes().toString().padStart(2, "0");
+	          return `${day}/${month}/${year} ${hours}h:${minutes}`;
+	        }
+
+	       
+	        // Function to select icon by point type
+        function getMarkerIcon(point, index, totalPoints) {
+          // First or last point: alphabetical marker
+          if (index === 0 || index === totalPoints - 1) {
             const markerColor = (!point.expected) ? '#28a745' : '#dc3545';
-            const dateColor = point.expected ? '#dc3545' : '#28a745'; // red if expected, green if not
-
-
-            const letter = getAlphabetLetter(index);
-
-            const marker = new google.maps.Marker({
-                position: new google.maps.LatLng(point.latitude, point.longitude),
-                map: map,
-                title: point.siteName || "Unknown", // Just the site name
-                icon: createAlphabetIcon(letter, markerColor),
-                zIndex: 1000 + index,
-                animation: google.maps.Animation.BOUNCE
-            });
-
-            estimatedMarkers.push(marker);
-
-            // Format date function
-            function formatDate(timestamp) {
-                const date = new Date(timestamp);
-                const day = date.getDate().toString().padStart(2, '0');
-                const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                const year = date.getFullYear();
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                return `${day}/${month}/${year} ${hours}h:${minutes}`;
-            }
-
-            // Create date display string
-            let dateDisplay = '';
-            if (point.date) {
-                const formattedDate = formatDate(point.date);
-                const expectedText = point.needed
-                ? 'Needed '
-                : point.expected
-                  ? 'Expected '
-                  : '';
-
-                dateDisplay = `${point.type} : ${expectedText}${formattedDate}`;
-            }
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                <div style="
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    max-width: 260px;
-                    border-radius: 8px;
-                    padding: 10px 12px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                    background: #fff;
-                ">
-                    <h3 style="
-                        margin: 0 0 8px 0;
-                        font-size: 16px;
-                        color: #2c3e50;
-                        border-bottom: 1px solid #eee;
-                        padding-bottom: 6px;
-                    ">
-                        📍 ${point.siteName || "Unknown"}
-                    </h3>
-                    
-                    ${dateDisplay ? `
-                            <p style="margin: 6px 0; font-weight: bold;">
-                                <strong style="color: ${dateColor};">${dateDisplay}</strong>
-                            </p>` : ''}
-
-                </div>
-                `
-            });
-            marker.addListener('click', () => {
-              infoWindow.open(map, marker);
-            });
-          });
+            const letter = getAlphabetLetter(index === 0 ? 0 : 1); // A for first, B for last
+            return createAlphabetIcon(letter, markerColor);
+          }
+          
+          // Intermediate points: circle marker
+          return {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 7,
+            fillColor: "#ffc107", // yellow for stop
+            fillOpacity: 1,
+            strokeColor: "#ff9800",
+            strokeWeight: 2,
+          };
         }
-      });
-    })
-    .catch(err => {
-      console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
-    });
-}
+
+	        // Draw all points
+        let activeInfoWindow = null;
+
+        points.forEach((point, index) => {
+          const onRoute = isPointNearRoute(point.latitude, point.longitude, routePath, 5000);
+          const icon = getMarkerIcon(point, index, points.length);
+          
+          const isFirstOrLast = index === 0 || index === points.length - 1;
+
+          let marker = new google.maps.Marker({
+            position: new google.maps.LatLng(point.latitude, point.longitude),
+            map: map,
+            title: point.siteName || "Unknown",
+            icon,
+            zIndex: 1000 + index,
+            animation: isFirstOrLast ? google.maps.Animation.BOUNCE : google.maps.Animation.DROP,
+          });
+
+          estimatedMarkers.push(marker);
+
+          // Format date nicely
+          const formattedDate = point.date ? formatDate(point.date) : "";
+          const expectedText = point.needed
+            ? "Needed "
+            : point.expected
+            ? "Expected "
+            : "";
+          const dateDisplay = formattedDate ? `${point.type} : ${expectedText}${formattedDate}` : "";
+          const dateColor = point.expected ? '#dc3545' : '#28a745'; // red if expected, green if not
+
+          const infoWindow = new google.maps.InfoWindow({
+              content: `
+              <div style="
+                  font-family: Arial, sans-serif;
+                  font-size: 13px;
+                  max-width: 260px;
+                  border-radius: 8px;
+                  padding: 10px 12px;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                  background: #fff;
+              ">
+                  <h3 style="
+                      margin: 0 0 8px 0;
+                      font-size: 16px;
+                      color: #2c3e50;
+                      border-bottom: 1px solid #eee;
+                      padding-bottom: 6px;
+                  ">
+                      📍 ${point.siteName || "Unknown"}
+                  </h3>
+                  
+                  ${dateDisplay ? `
+                          <p style="margin: 6px 0; font-weight: bold;">
+                              <strong style="color: ${dateColor};">${dateDisplay}</strong>
+                          </p>` : ''}
+
+              </div>
+              `
+          });
+
+          marker.addListener("click", () => {
+            if (activeInfoWindow) activeInfoWindow.close();
+            infoWindow.open(map, marker);
+            activeInfoWindow = infoWindow;
+          });
+        });
+
+	      });
+	    })
+	    .catch(err => {
+	      console.error("Erreur lors du fetch de l'itinéraire estimé :", err);
+	    });
+	}
+
 
 function showDriverLocation() {
   const username = getUsernameFromURL();

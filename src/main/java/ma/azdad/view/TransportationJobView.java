@@ -99,7 +99,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	@Autowired
 	GoogleGeocodeService geocodeService;
-	
+
 	@Autowired
 	protected TransportationRequestHistoryService transportationRequestHistoryService;
 
@@ -292,7 +292,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 9:
 					// to complete1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(), Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
+					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),
+							Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
 					break;
 				}
 	}
@@ -492,13 +493,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public String getFirstTMUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_TM)).findFirst()
+				.orElse(null);
 	}
 
 	public String getFirstDriverUsername() {
 		if (transportationJob.getTransporter() == null)
 			return null;
-		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst().orElse(null);
+		return transportationJob.getTransporter().getUserList().stream().map(i -> i.getUsername()).filter(i -> userService.isHavingRole(i, Role.ROLE_ILOGISTICS_DRIVER)).findFirst()
+				.orElse(null);
 	}
 
 	public void generateStamp() {
@@ -602,13 +605,13 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		Double maxVehiculeWeight = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxWeight();
 		Double maxVehiculeVolume = vehicleService.findOne(this.transportationJob.getVehicleId()).getMaxVolume();
 		if (maxVehiculeVolume != null && maxCumulativeVolume != null && maxVehiculeVolume < maxCumulativeVolume) {
-			return FacesContextMessages
-					.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle," + " Please change the assigned vehicle.");
+			return FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle,"
+					+ " Please change the assigned vehicle.");
 
 		}
 		if (maxVehiculeWeight != null && maxCumulativeWeight != null && maxVehiculeWeight < maxCumulativeWeight) {
-			return FacesContextMessages
-					.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle," + " Please change the assigned vehicle.");
+			return FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle,"
+					+ " Please change the assigned vehicle.");
 
 		}
 		return true;
@@ -872,14 +875,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			double maxCumulativeVolume = simulatedList.stream().mapToDouble(TransportationJobCapacity::getCumulativeVolume).max().orElse(0d);
 
 			if (maxVehiculeVolume < maxCumulativeVolume) {
-				FacesContextMessages.ErrorMessages(
-						"This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle, " + "Please change the assigned vehicle.");
+				FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Volume of the vehicle, "
+						+ "Please change the assigned vehicle.");
 				return false;
 			}
 
 			if (maxVehiculeWeight < maxCumulativeWeight) {
-				FacesContextMessages.ErrorMessages(
-						"This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle, " + "Please change the assigned vehicle.");
+				FacesContextMessages.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle, "
+						+ "Please change the assigned vehicle.");
 				return false;
 			}
 		}
@@ -1061,12 +1064,14 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			FacesContextMessages.ErrorMessages("At same time, they can not be different sites");
 			return false;
 		}
-		Double maxCumulativeWeight = transportationJobCapacityRepos.findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		Double maxCumulativeWeight = transportationJobCapacityRepos.findMaxCumulativeWeightByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(),
+				"Real");
 		if (maxCumulativeWeight == null) {
 			maxCumulativeWeight = 0d;
 		}
 
-		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(), "Real");
+		Double maxCumulativeVolume = transportationJobCapacityRepos.findMaxCumulativeVolumeByTransportationJobIdAndType(transportationRequest.getTransportationJob().getId(),
+				"Real");
 		if (maxCumulativeVolume == null) {
 			maxCumulativeVolume = 0d;
 		}
@@ -1135,7 +1140,9 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	// DELETE TRANSPORTATIONJOB
 	public Boolean canDeleteTransportationJob() {
-		return Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED, TransportationJobStatus.STARTED)
+		return Arrays
+				.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2, TransportationJobStatus.ACCEPTED,
+						TransportationJobStatus.STARTED)
 				.contains(transportationJob.getStatus()) //
 				&& sessionView.isTM() //
 				&& sessionView.isTheConnectedUser(transportationJob.getUser1()) //
@@ -1159,7 +1166,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(), transportationJob);
+		TransportationJobFile transportationJobFile = new TransportationJobFile(file, transportationJobFileType, event.getFile().getFileName(), sessionView.getUser(),
+				transportationJob);
 		transportationJobFileService.save(transportationJobFile);
 		synchronized (TransportationJobView.class) {
 			refreshTransportationJob();
@@ -1192,24 +1200,36 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	}
 
 	public void calculateTrListCosts() {
-		if(transportationJob.getTransportationRequestList().stream().anyMatch(tr->deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()).equals(0.0))) {
+		if (transportationJob.getTransportationRequestList().stream().anyMatch(tr -> deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()).equals(0.0))) {
 			FacesContextMessages.ErrorMessages("TR gross weight equal to 0 !");
 			return;
-		}		
-		Boolean useRealDistance = !transportationJob.getTransportationRequestList().stream().anyMatch(tr->tr.getRealDistance()==null || tr.getRealDistance().equals(0.0));
-		Double total = transportationJob.getTransportationRequestList().stream().mapToDouble(tr -> deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance(useRealDistance)).sum();
-		transportationJob.getTransportationRequestList().forEach(tr -> {
-			Double proportion = deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance(useRealDistance) / total;
-			tr.setStartCost(proportion * transportationJob.getStartCost());
-			tr.setItineraryCost(proportion * transportationJob.getItineraryCost());
-			tr.setHandlingCost(proportion * transportationJob.getHandlingCost());
+		}
+		if (transportationJob.getTransportationRequestList().size() == 1) {
+			TransportationRequest tr = transportationJob.getTransportationRequestList().get(0);
+			tr.setStartCost(transportationJob.getStartCost());
+			tr.setItineraryCost(transportationJob.getItineraryCost());
+			tr.setHandlingCost(transportationJob.getHandlingCost());
 			tr.calculateCost();
-		});
+		} else { // else use proportion
+			Boolean useRealDistance = !transportationJob.getTransportationRequestList().stream().anyMatch(tr -> tr.getRealDistance() == null || tr.getRealDistance().equals(0.0));
+			Double total = transportationJob.getTransportationRequestList().stream().mapToDouble(tr -> deliveryRequestService.getVolume(tr.getDeliveryRequestId())
+					* deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId()) * tr.getDistance(useRealDistance)).sum();
+			transportationJob.getTransportationRequestList().forEach(tr -> {
+				Double proportion = deliveryRequestService.getVolume(tr.getDeliveryRequestId()) * deliveryRequestService.getGrossWeight(tr.getDeliveryRequestId())
+						* tr.getDistance(useRealDistance) / total;
+				tr.setStartCost(proportion * transportationJob.getStartCost());
+				tr.setItineraryCost(proportion * transportationJob.getItineraryCost());
+				tr.setHandlingCost(proportion * transportationJob.getHandlingCost());
+				tr.calculateCost();
+			});
+		}
+
 	}
 
 	public Boolean canRecalculateTrListCosts() {
 		return canEditCosts() //
-				&& ((UtilsFunctions.compareDoubles(transportationJob.getStartCost(), transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getStartCost()).sum()) != 0)
+				&& ((UtilsFunctions.compareDoubles(transportationJob.getStartCost(),
+						transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getStartCost()).sum()) != 0)
 						|| (UtilsFunctions.compareDoubles(transportationJob.getItineraryCost(),
 								transportationJob.getTransportationRequestList().stream().mapToDouble(i -> i.getItineraryCost()).sum()) != 0)
 						|| (UtilsFunctions.compareDoubles(transportationJob.getHandlingCost(),
@@ -1416,33 +1436,27 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.removeComment(comment);
 		transportationJob = service.saveAndRefresh(transportationJob);
 	}
-	//google adress
+
+	// google adress
 	public String getStartAddress() {
-	    Double lat = transportationJob.getPlannedStartLatitude() != null 
-	                    ? transportationJob.getPlannedStartLatitude() 
-	                    : transportationJob.getFirstLatitude();
-	    Double lng = transportationJob.getPlannedStartLongitude() != null 
-	                    ? transportationJob.getPlannedStartLongitude() 
-	                    : transportationJob.getFirstLongitude();
+		Double lat = transportationJob.getPlannedStartLatitude() != null ? transportationJob.getPlannedStartLatitude() : transportationJob.getFirstLatitude();
+		Double lng = transportationJob.getPlannedStartLongitude() != null ? transportationJob.getPlannedStartLongitude() : transportationJob.getFirstLongitude();
 
-	    String latlng = lat + "," + lng;
-	    return geocodeService.getAddress(latlng);
+		String latlng = lat + "," + lng;
+		return geocodeService.getAddress(latlng);
 	}
-	
+
 	public String getStartAddress2() {
-	    Double lat = transportationJob.getStartLatitude();
-	    Double lng = transportationJob.getStartLongitude();
+		Double lat = transportationJob.getStartLatitude();
+		Double lng = transportationJob.getStartLongitude();
 
-	    if (lat == null || lng == null) {
-	        return "No coordinates";
-	    }
+		if (lat == null || lng == null) {
+			return "No coordinates";
+		}
 
-	    String latlng = lat + "," + lng;
-	    return geocodeService.getAddress(latlng);
+		String latlng = lat + "," + lng;
+		return geocodeService.getAddress(latlng);
 	}
-
-
-
 
 	// GETTERS & SETTERS
 
@@ -1653,7 +1667,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setMapLongitude(Double mapLongitude) {
 		this.mapLongitude = mapLongitude;
 	}
-	
+
 	public TransportationJobComment getComment() {
 		return comment;
 	}

@@ -594,6 +594,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 10 Kg to add transport");
 			return null;
 		}
+		
+
+		if (deliveryRequest.getVolume() == null || deliveryRequest.getVolume() < 0.5) {
+			FacesContextMessages.ErrorMessages("Volume  must be greater than 0.5 m3 to add transport");
+			return null;
+		}
 
 		indexView.setSelectedMenu(3);
 		return addParameters("addEditTransportationRequest.xhtml", "faces-redirect=true", "deliveryRequestId=" + deliveryRequest.getId());

@@ -473,6 +473,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setUser3(connectedUser);
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
+			transportationJob.setVehiclePrice(transportationJob.getVehicle().getVehicleType().getPrice());
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
@@ -1053,6 +1054,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setUser2(null);
 		transportationJob.setDate3(null);
 		transportationJob.setUser3(null);
+		transportationJob.setTransporter(null);
+		transportationJob.setDriver(null);
+		transportationJob.setVehicle(null);
+		transportationJob.setVehiclePrice(0.0);
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
 		transportationJob.getTransportationRequestList().forEach(i -> {
 			i.setExpectedPickupDate(null);

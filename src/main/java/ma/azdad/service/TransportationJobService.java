@@ -406,10 +406,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.generateStopList();
 			transportationJob.generatePathList();
 			calculateTransportationRequestListCosts(transportationJob, setCost);
-			System.out.println("Stops in DB = " + transportationJob.getStopList().size() );
+			transportationJob.calculateEstimatedStartCost();
+			transportationJob.calculateEstimatedItineraryCost();
 			TransportationJob tj =save(transportationJob);
-			System.out.println("Stops in DB = " + tj.getStopList().size() );
-			               
 		}  catch (Exception e) {
 		    e.printStackTrace(); 
 		    FacesContextMessages.ErrorMessages(e.getMessage());

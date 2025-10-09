@@ -839,7 +839,6 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			// emailService.transportationRequestNotification(tr);
 			// smsService.sendSms(tr);
 		}
-
 		refreshTransportationJob();
 		updateCalculableFields();
 		capacityService.calculatePlannedCapacities(transportationJob.getId());

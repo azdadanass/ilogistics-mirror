@@ -515,13 +515,21 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	
 	
 	public void calculateEstimatedStartCost() {
-		this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
+		try {
+			this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		calculateEstimatedCost();
 	}
 
 	public void calculateEstimatedItineraryCost() {
 //		estimatedItineraryCost = getEstimatedDistance() * vehiclePrice;
-		this.estimatedItineraryCost = (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) * vehiclePrice;
+		try {
+			this.estimatedItineraryCost = (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) * vehiclePrice;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		calculateEstimatedCost();
 	}
 

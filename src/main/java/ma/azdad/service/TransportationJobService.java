@@ -475,6 +475,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
 			transportationJob.setVehiclePrice(transportationJob.getVehicle().getVehicleType().getPrice());
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
+			transportationJob.calculateEstimatedStartCost();
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setDriver(transportationJob.getDriver());

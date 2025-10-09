@@ -512,9 +512,16 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setItineratyMaxWeight(Double itineratyMaxWeight) {
 		this.itineratyMaxWeight = itineratyMaxWeight;
 	}
+	
+	
+	public void calculateEstimatedStartCost() {
+		this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
+		calculateEstimatedCost();
+	}
 
 	public void calculateEstimatedItineraryCost() {
-		estimatedItineraryCost = getEstimatedDistance() * vehiclePrice;
+//		estimatedItineraryCost = getEstimatedDistance() * vehiclePrice;
+		this.estimatedItineraryCost = (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) * vehiclePrice;
 		calculateEstimatedCost();
 	}
 

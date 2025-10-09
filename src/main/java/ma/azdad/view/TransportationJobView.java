@@ -845,6 +845,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
+	
 
 	public Boolean validateAssignTransportationRequestList() {
 		for (TransportationRequest tr : transportationRequestList3) {

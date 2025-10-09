@@ -391,7 +391,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
 		try {
-			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size() );
+			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size());
 
 			transportationJob.init();
 			transportationJob.calculateStartDate();
@@ -408,12 +408,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			calculateTransportationRequestListCosts(transportationJob, setCost);
 			transportationJob.calculateEstimatedStartCost();
 			transportationJob.calculateEstimatedItineraryCost();
-			TransportationJob tj =save(transportationJob);
-		}  catch (Exception e) {
-		    e.printStackTrace(); 
-		    FacesContextMessages.ErrorMessages(e.getMessage());
+			TransportationJob tj = save(transportationJob);
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContextMessages.ErrorMessages(e.getMessage());
 		}
-
 
 	}
 
@@ -545,6 +544,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		start(transportationJob, user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
+	}
+
+	public void calculateEstimatedCostsScript() {
+		repos.findWithoutEstimatedCost().forEach(tj -> {
+			tj.calculateEstimatedStartCost();
+			tj.calculateEstimatedItineraryCost();
+			System.out.println(tj.getReference() + " : " + tj.getEstimatedCost());
+			save(tj);
+		});
 	}
 
 	public void calculateAndSaveTrStartDistance(Integer jobId, Integer requestId) {
@@ -685,11 +693,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort requests by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort requests by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {
@@ -808,11 +813,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {
@@ -868,11 +870,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {

@@ -272,6 +272,12 @@ public class ScriptView {
 		deliveryRequestService.updateVolume();
 	}
 	
+	public void calculateEstimatedCostsScript() {
+		if (!canExecute)
+			return;
+		transportationJobService.calculateEstimatedCostsScript();
+	}
+	
 	
 
 	// GETTERS & SETTERS

@@ -345,17 +345,12 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	@Transient
 	public Double getPlannedStartingDistance() {
 		if (getStopList() != null && !getStopList().isEmpty()) {
-
 			Double startLat = (plannedStartLatitude != null) ? plannedStartLatitude : getFirstLatitude();
 			Double startLng = (plannedStartLongitude != null) ? plannedStartLongitude : getFirstLongitude();
-
 			Double stopLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude() : getStopList().get(0).getWarehouse().getLatitude();
-
 			Double stopLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude() : getStopList().get(0).getWarehouse().getLongitude();
-
 			return PathService.getDistance(startLat, startLng, stopLat, stopLng);
 		}
-
 		return 0d;
 	}
 
@@ -512,8 +507,7 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	public void setItineratyMaxWeight(Double itineratyMaxWeight) {
 		this.itineratyMaxWeight = itineratyMaxWeight;
 	}
-	
-	
+
 	public void calculateEstimatedStartCost() {
 		try {
 			this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
@@ -617,8 +611,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		}
 		stopList.clear();
 		for (Stop stop : map.values()) {
-		    stop.setTransportationJob(this); // extra safety in case ctor didn’t set it
-		    stopList.add(stop);
+			stop.setTransportationJob(this); // extra safety in case ctor didn’t set it
+			stopList.add(stop);
 		}
 		Collections.sort(stopList);
 		if (!stopList.isEmpty()) {

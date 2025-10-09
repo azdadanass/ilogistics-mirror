@@ -2,35 +2,39 @@ package ma.azdad;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
+import org.springframework.util.CollectionUtils;
 
 public class TestJava {
 
 	@Test
 	public void test() throws InterruptedException, IOException {
-
-		List<Integer> list = new ArrayList<Integer>();
-		
-		int key = 0;
-		switch (key) {
-		case 0:
-			
-			break;
-			
-
-		default:
-			break;
+		List<String> aaaaaaa;
+		if ((aaaaaaa = secondCondtion()) != null) {
+			System.out.println(aaaaaaa);
 		}
-		
 
 	}
-	
-	
-	
+
+	public List<String> secondCondtion() {
+		if (status())
+			return file();
+
+		return null;
+	}
+
+	public Boolean status() {
+		return true;
+	}
+
+	public List<String> file() {
+		List<String> result = new ArrayList<String>();
+		result.add("sdqgqsdgqsdg");
+		if (CollectionUtils.isEmpty(result))
+			return null;
+		return result;
+	}
 
 }

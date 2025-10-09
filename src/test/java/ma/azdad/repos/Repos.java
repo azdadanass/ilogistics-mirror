@@ -6,18 +6,19 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
+import ma.azdad.service.TransportationJobService;
 import ma.azdad.service.ZoneHeightService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	ZoneHeightService zoneHeightService;
+	TransportationJobService transportationJobService;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		zoneHeightService.updateFillPercentage(243);
+		transportationJobService.calculateEstimatedCostsScript();
 	}
 
 }

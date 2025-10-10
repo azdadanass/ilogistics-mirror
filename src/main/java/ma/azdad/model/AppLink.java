@@ -49,8 +49,30 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 	public AppLink() {
 		super();
 	}
-
+	
 	// c1
+		public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount,//
+				Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
+			super();
+			this.costType = costType;
+			this.revenueType = revenueType;
+			this.startDate = startDate;
+			this.endDate = endDate;
+			this.amount = amount;
+			this.acceptanceId = acceptanceId;
+			this.expensepaymentId = expensepaymentId;
+			this.madConversionRate = madConversionRate1 != null ? madConversionRate1 : madConversionRate2;
+			this.currency = currency1 != null ? currency1 : currency2;
+			this.supplierName = supplierName;
+			this.customerName = customerName;
+			this.idInvoice = idInvoice;
+			this.invoiceStatus = invoiceStatus;
+			this.invoiceDate = invoiceDate;
+			this.poNumeroIbuy = poNumeroIbuy;
+			this.poNumeroInvoice = poNumeroInvoice;
+		}
+
+	// c2
 	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount,//
 			String transportationRequestReference,TransportationRequestStatus transportationRequestStatus,Double transportationRequestCost,TransportationRequestPaymentStatus transportationRequestPaymentStatus,String transportationRequestProjectName, //
 			Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {

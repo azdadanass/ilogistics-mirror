@@ -886,7 +886,7 @@ label {
 	z-index: 2070 !important;
 }
 
-.ui-autocomplete-panel{
+.ui-autocomplete-panel {
 	z-index: 2070 !important;
 }
 
@@ -1307,5 +1307,12 @@ label {
 	color: white !important;
 	background: #a069c3 !important;
 }
+
+
+.ui-autocomplete-item.ui-autocomplete-row.ui-widget-content.ui-corner-all.ui-state-highlight {
+  /* background-color: red !important; */
+  color : #307ecc !important;
+}
+
 
 

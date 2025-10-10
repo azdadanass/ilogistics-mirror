@@ -12,6 +12,17 @@ import javax.persistence.Id;
 public class PartNumberIndustry extends GenericModel<Integer> implements Serializable {
 
 	private String name;
+	
+	
+
+	public PartNumberIndustry() {
+		super();
+	}
+
+	public PartNumberIndustry(Integer id,String name) {
+		super(id);
+		this.name = name;
+	}
 
 	@Override
 	public boolean filter(String query) {

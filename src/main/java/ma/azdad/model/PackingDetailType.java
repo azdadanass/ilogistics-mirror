@@ -15,11 +15,22 @@ public class PackingDetailType extends GenericModel<Integer> {
 	private String name;
 	private Boolean active = true;
 	private String image = "files/no-image.png";
-	
+
 	private PartNumberClass partNumberClass;
 
+	public PackingDetailType() {
+		super();
+	}
+
+	
+	// c1
+	public PackingDetailType(Integer id, String name) {
+		super(id);
+		this.name = name;
+	}
+
 	public boolean filter(String query) {
-		return contains(query, name,partNumberClass.getValue());
+		return contains(query, name, partNumberClass.getValue());
 	}
 
 	@Transient
@@ -65,7 +76,7 @@ public class PackingDetailType extends GenericModel<Integer> {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10, nullable = false)
 	public PartNumberClass getPartNumberClass() {

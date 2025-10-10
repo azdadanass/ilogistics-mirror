@@ -51,6 +51,7 @@ import ma.azdad.model.ProjectCross;
 import ma.azdad.model.ProjectTypes;
 import ma.azdad.model.Site;
 import ma.azdad.model.StockRow;
+import ma.azdad.model.StockRowDetail;
 import ma.azdad.model.StockRowStatus;
 import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
@@ -79,6 +80,7 @@ import ma.azdad.service.ProjectCrossService;
 import ma.azdad.service.ProjectService;
 import ma.azdad.service.SiteService;
 import ma.azdad.service.SmsService;
+import ma.azdad.service.StockRowDetailService;
 import ma.azdad.service.StockRowService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.ToNotifyService;
@@ -87,6 +89,7 @@ import ma.azdad.service.TransporterService;
 import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.WarehouseService;
+import ma.azdad.service.ZoneHeightService;
 import ma.azdad.utils.DeliveryRequestExcelFileException;
 import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.LabelValue;
@@ -201,6 +204,12 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	@Autowired
 	ProjectAssignmentService projectAssignmentService;
+
+	@Autowired
+	ZoneHeightService zoneHeightService;
+
+	@Autowired
+	StockRowDetailService stockRowDetailService;
 
 	private DeliveryRequest deliveryRequest = new DeliveryRequest();
 	private DeliveryRequestFile deliveryRequestFile;
@@ -581,8 +590,14 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			return null;
 		}
 
-		if (deliveryRequest.getGrossWeight() == null || deliveryRequest.getGrossWeight().equals(0.0)) {
-			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 0 to add transport");
+		if (deliveryRequest.getGrossWeight() == null || deliveryRequest.getGrossWeight() < 10.0) {
+			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 10 Kg to add transport");
+			return null;
+		}
+		
+
+		if (deliveryRequest.getVolume() == null || deliveryRequest.getVolume() < 0.5) {
+			FacesContextMessages.ErrorMessages("Volume  must be greater than 0.5 m3 to add transport");
 			return null;
 		}
 
@@ -593,10 +608,15 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 	/*
 	 * WM WIZARD OUTBOUND
 	 */
+	List<StockRowDetail> stockRowDetailListToUpdate = new ArrayList<StockRowDetail>();
+
 	public Boolean canPrepareOutboundDeliveryRequest() {
 		return DeliveryRequestType.OUTBOUND.equals(deliveryRequest.getType()) && cacheView.getWarehouseList().contains(deliveryRequest.getWarehouse().getId())
 				&& Arrays.asList(DeliveryRequestStatus.APPROVED2).contains(deliveryRequest.getStatus());
 	}
+
+	Map<Integer, Double> inboundStockRowDetailMap;
+	List<Integer> inboundStockRowDetailIdList;
 
 	public String preparationNextStep() {
 		switch (step) {
@@ -604,25 +624,91 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			System.out.println("step0");
 			step++;
 			preStep1();
+
+			if (!deliveryRequest.getStockRowList().stream().anyMatch(sr -> sr.getLocation().getZoning()))
+				step++;
+
 			break;
 		case 1:
 			System.out.println("step1");
+			stockRowDetailListToUpdate = new ArrayList<>();
+			List<Integer> inboundDeliveryRequestDetailIdList = deliveryRequest.getStockRowList().stream().map(i -> i.getInboundDeliveryRequestDetail().getId()).collect(Collectors.toList());
+			List<StockRowDetail> inboundStockRowDetailList = stockRowDetailService.findByDeliveryRequestDetailListAndNotFullyUsed(inboundDeliveryRequestDetailIdList);
+			inboundStockRowDetailIdList = inboundStockRowDetailList.stream().map(i -> i.getId()).collect(Collectors.toList());
+			inboundStockRowDetailMap = inboundStockRowDetailList.stream().collect(Collectors.toMap(StockRowDetail::getId, StockRowDetail::getUsedQuantity));
+
+			// zoning
+			for (StockRow stockRow : deliveryRequest.getStockRowList()) {
+				if (!stockRow.getLocation().getZoning())
+					continue;
+
+				for (PackingDetail packingDetail : stockRow.getPacking().getDetailList()) {
+					// quantity to prepare
+					Double quantity = -stockRow.getQuantity() * packingDetail.getQuantity() / stockRow.getPacking().getQuantity();
+					for (StockRowDetail inboundStockRowDetail : inboundStockRowDetailList) {
+						if (inboundStockRowDetail.getStockRow().getDeliveryRequestDetail().equals(stockRow.getInboundDeliveryRequestDetail()) && //
+								inboundStockRowDetail.getStockRow().getLocation().equals(stockRow.getLocation()) //
+								&& inboundStockRowDetail.getStockRow().getStatus().equals(stockRow.getStatus()) //
+								&& inboundStockRowDetail.getPackingDetail().equals(packingDetail) //
+								&& inboundStockRowDetail.getRemainingQuantity() > 0) {
+							Double newUsedQuantity;
+							if (quantity <= inboundStockRowDetail.getRemainingQuantity()) {
+								newUsedQuantity = inboundStockRowDetail.getUsedQuantity() + quantity;
+								inboundStockRowDetail.setUsedQuantity(newUsedQuantity);
+								stockRow.addDetail(new StockRowDetail(quantity, stockRow, inboundStockRowDetail.getInboundStockRow(), packingDetail, inboundStockRowDetail.getZoneHeight()));
+								stockRowDetailListToUpdate.add(inboundStockRowDetail);
+								System.out.println("a : " + stockRow.getDetailList().get(stockRow.getDetailList().size() - 1));
+								System.out.println("new used quantity : " + inboundStockRowDetail.getUsedQuantity());
+								break;
+							} else {
+								stockRow.addDetail(new StockRowDetail(inboundStockRowDetail.getRemainingQuantity(), stockRow, inboundStockRowDetail.getInboundStockRow(), packingDetail,
+										inboundStockRowDetail.getZoneHeight()));
+								quantity = quantity - inboundStockRowDetail.getRemainingQuantity();
+								inboundStockRowDetail.setUsedQuantity(inboundStockRowDetail.getQuantity());
+								stockRowDetailListToUpdate.add(inboundStockRowDetail);
+								System.out.println("b: " + stockRow.getDetailList().get(stockRow.getDetailList().size() - 1));
+								System.out.println("new used quantity : " + inboundStockRowDetail.getUsedQuantity());
+							}
+						}
+					}
+				}
+
+			}
+
+			deliveryRequest.initStockRowDetailList();
+
 			step++;
 			break;
 		case 2:
 			System.out.println("step2");
-			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			step++;
 			break;
 		case 3:
 			System.out.println("step3");
+			deliveryRequest.setToUser(userService.findOne(deliveryRequest.getToUserUsername()));
 			step++;
 			break;
 		case 4:
 			System.out.println("step4");
+			step++;
+			break;
+		case 5:
+			System.out.println("step5");
 			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
+			}
+
+			if (!inboundStockRowDetailMap.isEmpty()) {
+				
+				System.out.println("inboundStockRowDetailMap : "+inboundStockRowDetailMap);
+				System.out.println("stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList) : "+stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList));
+				
+				
+				if (!inboundStockRowDetailMap.equals(stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList))) {
+					FacesContextMessages.ErrorMessages("Page Expired, please to reload and try again !");
+					return null;
+				}
 			}
 
 			deliveryRequest.setStatus(DeliveryRequestStatus.DELIVRED);
@@ -630,6 +716,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.setUser4(sessionView.getUser());
 			deliveryRequest.addHistory(new DeliveryRequestHistory(DeliveryRequestStatus.DELIVRED.getValue(), sessionView.getUser()));
 			service.save(deliveryRequest);
+
+			stockRowDetailListToUpdate.forEach(stockRowDetail -> stockRowDetailService.save(stockRowDetail));
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
+
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
 
@@ -677,7 +767,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		System.out.println("generateStockRowFromOutboundDeliveryRequest");
 		potentialStockRowlist = stockRowService.generateStockRowFromOutboundDeliveryRequest(deliveryRequest);
 		potentialStockRowlist.stream().filter(i -> i.getPacking().getHasSerialnumber()).forEach(i -> {
-			System.out.println(i.getPartNumberName());
 			i.getPacking().getDetailList().stream().filter(j -> j.getHasSerialnumber()).forEach(j -> {
 				Integer quantity = -((int) (double) i.getQuantity()) * j.getQuantity() / i.getPacking().getQuantity();
 				List<DeliveryRequestSerialNumber> snList = deliveryRequestSerialNumberService.findHavingSerialNumberAndNoOutbound(i.getInboundDeliveryRequestDetail().getId(), i.getLocationId(),
@@ -694,6 +783,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SAVE BY STEPS
 	public void preparationPreviousStep() {
+		if(step==2 && deliveryRequest.getStockRowDetailList().isEmpty()) {
+			step = 0;
+			return;
+		}
+		
 		if (step > 1)
 			step--;
 	}
@@ -756,11 +850,24 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			if (!validateStorageStep5())
 				break;
 			step++;
+
+			// init zoning
+			deliveryRequest.generateStockRowDetailList();
+			deliveryRequest.initStockRowDetailList();
+
 			break;
 		case 6:
+			System.out.println("step6");
+			if (!validateStorageStep6())
+				break;
+			deliveryRequest.getStockRowDetailList().forEach(i -> i.setZoneHeight(zoneHeightService.findOneLight(i.getZoneHeightId())));
 			step++;
 			break;
 		case 7:
+			System.out.println("step7");
+			step++;
+			break;
+		case 8:
 			if (checkDatabaseStatus(deliveryRequest.getId(), DeliveryRequestStatus.DELIVRED)) {
 				FacesContextMessages.ErrorMessages("DN already Delivered !");
 				return null;
@@ -793,6 +900,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			stockRowService.updateOwnerId(deliveryRequest.getId());
 			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
+			
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
@@ -1006,6 +1115,42 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		return true;
 	}
 
+	private Boolean validateStorageStep6() {
+		HashSet<String> set = new HashSet<>();
+
+		deliveryRequest.getStockRowDetailList().forEach(i -> {
+			System.out.println(i.getStockRow().getPartNumberName());
+			System.out.println(i.getStockRow().getLocationName());
+			System.out.println(i.getPackingDetail().getName());
+			System.out.println(i.getStockRow().getQuantity());
+			System.out.println(i.getZoneHeightId());
+		});
+
+		int newItemsListSize = 0;
+		for (StockRowDetail row : deliveryRequest.getStockRowDetailList()) {
+			if (row.getId() != null)
+				continue;
+
+			newItemsListSize++;
+			if (UtilsFunctions.compareDoubles(row.getTmpQuantity(), row.getQuantity(), 4) != 0) {
+				FacesContextMessages.ErrorMessages("please compelte the from");
+				return false;
+			}
+			if (row.getZoneHeightId() == null) {
+				FacesContextMessages.ErrorMessages("Line/Column/Height should not be null");
+				return false;
+			}
+			set.add(row.getStockRow().getId() + ";" + row.getPackingDetail().getId() + ";" + row.getZoneHeightId());
+		}
+
+		if (set.size() != newItemsListSize) {
+			FacesContextMessages.ErrorMessages("The combination Part Number, Status,PackingDetail, Zone and Line/Column/Height must be unique");
+			return false;
+		}
+
+		return true;
+	}
+
 	public void initTmpQuantites() {
 		for (DeliveryRequestDetail detail : deliveryRequest.getDetailList())
 			detail.setTmpQuantity(detail.getRemainingQuantity());
@@ -1051,6 +1196,49 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void cancelStockRowQuantityChange(StockRow row) {
 		row.setQuantity(row.getTmpQuantity());
+	}
+
+	public void changeStockRowDetailQuantityListener(StockRowDetail stockRowDetail, int index) {
+		if (UtilsFunctions.compareDoubles(stockRowDetail.getQuantity(), 0.0, 4) <= 0)
+			FacesContextMessages.ErrorMessages("Quantity should be greather than 0");
+		else if (UtilsFunctions.compareDoubles(stockRowDetail.getTmpQuantity(), stockRowDetail.getQuantity(), 4) != 0) {
+			StockRow stockRow = stockRowDetail.getStockRow();
+			Double newQuantity = stockRowDetail.getTmpQuantity() - stockRowDetail.getQuantity();
+			StockRowDetail newStockRowDetail = new StockRowDetail(newQuantity, newQuantity, false, stockRow, stockRowDetail.getPackingDetail());
+			deliveryRequest.getStockRowDetailList().add(++index, newStockRowDetail);
+			stockRow.addDetail(newStockRowDetail);
+			stockRowDetail.setTmpQuantity(stockRowDetail.getQuantity());
+		}
+
+		System.out.println("changeStockRowDetailQuantityListener");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
+	}
+
+	public void cancelStockRowDetailQuantityChange(StockRowDetail row) {
+		row.setQuantity(row.getTmpQuantity());
+
+		System.out.println("cancelStockRowDetailQuantityChange");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
+	}
+
+	public void removeStockRowDetail(StockRowDetail row, int index) {
+		if (!row.getInitial()) {
+			if (deliveryRequest.getStockRowDetailList().stream().filter(i -> UtilsFunctions.compareDoubles(i.getQuantity(), i.getTmpQuantity(), 4) != 0).count() > 0)
+				return;
+			StockRow stockRow = row.getStockRow();
+			StockRowDetail previousRow = deliveryRequest.getStockRowDetailList().get(index - 1);
+			previousRow.setQuantity(previousRow.getQuantity() + row.getQuantity());
+			previousRow.setTmpQuantity(previousRow.getQuantity());
+
+			deliveryRequest.getStockRowDetailList().remove(index);
+			stockRow.removeDetail(row);
+		}
+
+		System.out.println("removeStockRowDetail");
+		System.out.println("deliveryRequest.getStockRowDetailList() : " + deliveryRequest.getStockRowDetailList());
+		System.out.println("calculated : " + deliveryRequest.getStockRowList().stream().flatMap(sr -> sr.getDetailList().stream()).collect(Collectors.toList()));
 	}
 
 	public void setSameLocation() {
@@ -2236,7 +2424,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			deliveryRequest.generateReference();
 
 		deliveryRequest.addHistory(new DeliveryRequestHistory(isAddPage ? "Created" : "Edited", sessionView.getUser()));
-		
+
 		deliveryRequest.calculateNumberOfItems();
 		deliveryRequest.calculateNetWeight();
 		deliveryRequest.calculateGrossWeight();
@@ -2382,6 +2570,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	public void generateStamp() {
 		downloadPath = service.generateStamp(deliveryRequest);
+	}
+
+	public void generatePackingDetailStamp(PackingDetail packingDetail) {
+		downloadPath = service.generateStamp(packingDetail, deliveryRequest);
 	}
 
 	// smsRef

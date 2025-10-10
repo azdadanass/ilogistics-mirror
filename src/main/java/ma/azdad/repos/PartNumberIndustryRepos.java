@@ -11,6 +11,8 @@ import ma.azdad.model.PartNumberIndustry;
 @Repository
 public interface PartNumberIndustryRepos extends JpaRepository<PartNumberIndustry, Integer> {
 
+	String c1 = "select new PartNumberIndustry(id,name) ";
+
 	public Long countByName(String name);
 
 	@Query("select count(*) from PartNumberIndustry where name = ?1 and id != ?2")
@@ -20,5 +22,8 @@ public interface PartNumberIndustryRepos extends JpaRepository<PartNumberIndustr
 	List<String> findNameList();
 
 	PartNumberIndustry findByName(String name);
+
+	@Query(c1 + "from PartNumberIndustry ")
+	List<PartNumberIndustry> find();
 
 }

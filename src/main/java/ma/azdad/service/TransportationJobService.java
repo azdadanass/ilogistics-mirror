@@ -391,7 +391,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
 		try {
-			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size() );
+			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size());
 
 			transportationJob.init();
 			transportationJob.calculateStartDate();
@@ -406,15 +406,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.generateStopList();
 			transportationJob.generatePathList();
 			calculateTransportationRequestListCosts(transportationJob, setCost);
-			System.out.println("Stops in DB = " + transportationJob.getStopList().size() );
-			TransportationJob tj =save(transportationJob);
-			System.out.println("Stops in DB = " + tj.getStopList().size() );
-			               
-		}  catch (Exception e) {
-		    e.printStackTrace(); 
-		    FacesContextMessages.ErrorMessages(e.getMessage());
+			transportationJob.calculateEstimatedStartCost();
+			transportationJob.calculateEstimatedItineraryCost();
+			TransportationJob tj = save(transportationJob);
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContextMessages.ErrorMessages(e.getMessage());
 		}
-
 
 	}
 
@@ -473,7 +471,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.setUser3(connectedUser);
 			transportationJob.setDriver(userService.findOneLight(driverUsername));
 			transportationJob.setVehicle(vehicleService.findOneLight(vehicleId));
+			transportationJob.setVehiclePrice(transportationJob.getVehicle().getVehicleType().getPrice());
 			transportationJob.setTransporter(transporterService.findOneLight(transportationJob.getDriver().getTransporterId()));
+			transportationJob.calculateEstimatedStartCost();
+			transportationJob.calculateEstimatedItineraryCost();
 			transportationJob.addHistory(new TransportationJobHistory("Assigned", connectedUser, "Assigned to driver <b class='green'>" + transportationJob.getDriverFullName() + "</b>"));
 			transportationJob.getTransportationRequestList().forEach(i -> {
 				i.setDriver(transportationJob.getDriver());
@@ -543,6 +544,15 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		start(transportationJob, user);
 		TransportationJobItinerary tItinerary = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, TransportationJobStatus.STARTED);
 		transportationJobItineraryRepos.save(tItinerary);
+	}
+
+	public void calculateEstimatedCostsScript() {
+		repos.findWithoutEstimatedCost().forEach(tj -> {
+			tj.calculateEstimatedStartCost();
+			tj.calculateEstimatedItineraryCost();
+			System.out.println(tj.getReference() + " : " + tj.getEstimatedCost());
+			save(tj);
+		});
 	}
 
 	public void calculateAndSaveTrStartDistance(Integer jobId, Integer requestId) {
@@ -637,7 +647,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		Double fromLng;
 
 		if (index == 0) {
-			// ✅ First TR → from job start or fallback
 			fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
 			fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
 		} else {
@@ -666,7 +675,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				fromLat = pickupLat;
 				fromLng = pickupLng;
 			} else {
-				// ✅ Normal case → use previous delivery location
 				fromLat = prevLat;
 				fromLng = prevLng;
 			}
@@ -684,11 +692,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort requests by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort requests by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {
@@ -735,7 +740,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				fromLat = pickupLat;
 				fromLng = pickupLng;
 			} else {
-				// ✅ Normal case → use previous planned delivery
 				fromLat = prevLat;
 				fromLng = prevLng;
 			}
@@ -774,7 +778,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		double startDistance;
 
 		if (index == 0) {
-			// ✅ First TR → from job start
 			double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
 			double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
 			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
@@ -792,7 +795,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
 				startDistance = 0d;
 			} else {
-				// ✅ Normal case → previous delivery
 				startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
 			}
 		}
@@ -809,11 +811,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {
@@ -834,7 +833,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		double startDistance;
 
 		if (index == 0) {
-			// ✅ First TR → from planned job start
 			double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
 			double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
 			startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
@@ -853,7 +851,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
 				startDistance = 0d;
 			} else {
-				// ✅ Normal case → use previous planned delivery
 				startDistance = PathService.getDistance(prevLat, prevLng, toLat, toLng);
 			}
 		}
@@ -870,11 +867,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			return null;
 		}
 
-	    // Sort by expected pickup date
-	    requests.sort(Comparator.comparing(
-	            tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(),
-	            Comparator.nullsLast(Comparator.naturalOrder())
-	    ));
+		// Sort by expected pickup date
+		requests.sort(Comparator.comparing(tr -> tr.getExpectedPickupDate() != null ? tr.getExpectedPickupDate() : tr.getNeededPickupDate(), Comparator.nullsLast(Comparator.naturalOrder())));
 
 		int index = -1;
 		for (int i = 0; i < requests.size(); i++) {
@@ -891,7 +885,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		String startDuration;
 
 		if (index == 0) {
-			// First TR → from planned job start
 			Date jobStart = job.getPlannedStartDate();
 			startDuration = UtilsFunctions.getDateDifferenceDaysHoursMinutes(jobStart, trPickup);
 		} else {
@@ -1057,6 +1050,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setUser2(null);
 		transportationJob.setDate3(null);
 		transportationJob.setUser3(null);
+		transportationJob.setTransporter(null);
+		transportationJob.setDriver(null);
+		transportationJob.setVehicle(null);
+		transportationJob.setVehiclePrice(0.0);
 		transportationJob.addHistory(new TransportationJobHistory("Unassign", connectedUser));
 		transportationJob.getTransportationRequestList().forEach(i -> {
 			i.setExpectedPickupDate(null);

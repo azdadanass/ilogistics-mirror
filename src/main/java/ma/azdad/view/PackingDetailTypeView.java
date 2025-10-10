@@ -65,7 +65,7 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 	}
 
 	public Boolean validate() {
-		if (service.countByNameAndClass(model.getName(),model.getPartNumberClass()) > 0)
+		if (service.countByNameAndClass(model.getName(), model.getPartNumberClass()) > 0)
 			return FacesContextMessages.ErrorMessages("Name already exists");
 		return true;
 	}
@@ -113,20 +113,24 @@ public class PackingDetailTypeView extends GenericView<Integer, PackingDetailTyp
 
 	public void handleImageUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		model.setImage("files/"+ getClassName2() + "/" + file.getName());
+		model.setImage("files/" + getClassName2() + "/" + file.getName());
 		synchronized (PackingDetailTypeView.class) {
 			model = service.save(model);
 			refreshList();
 		}
 	}
-	
+
 	// generic
-	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass){
+	public List<String> findNameListByClassAndActive(PartNumberClass partNumberClass) {
 		return service.findNameListByClassAndActive(partNumberClass);
 	}
-	
+
 	public String findImageByNameAndClass(String name, PartNumberClass partNumberClass) {
 		return service.findImageByNameAndClass(name, partNumberClass);
+	}
+
+	public List<PackingDetailType> findLight() {
+		return service.findLight();
 	}
 
 	// getters & setters

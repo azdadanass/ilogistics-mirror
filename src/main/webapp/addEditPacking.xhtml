@@ -101,10 +101,13 @@
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
 										<p:dataTable id="main_tab" value="#{packingView.packing.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
 											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
+											<p:column headerText="Name" width="100">
+												<p:inputText value="#{item.name}"  style="width:90px"/>
+											</p:column>
 											<p:column headerText="Type" width="100">
-												<h:selectOneMenu value="#{item.type}" style="width:90px" >
+												<h:selectOneMenu value="#{item.type}" style="width:90px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
-													<f:selectItems value="#{packingDetailTypeView.findNameListByClassAndActive(packingView.packing.partNumber.partNumberClass)}"/>
+													<f:selectItems value="#{packingDetailTypeView.findNameListByClassAndActive(packingView.packing.partNumber.partNumberClass)}" />
 												</h:selectOneMenu>
 											</p:column>
 											<p:column headerText="Quantity" width="60">
@@ -116,12 +119,21 @@
 													<f:setPropertyActionListener value="#{!item.hasSerialnumber}" target="#{item.hasSerialnumber}" />
 												</p:commandLink>
 											</p:column>
-											<p:column headerText="SN Type" width="50">
+											<p:column headerText="SN Type" width="100">
 												<h:selectOneMenu id="snType" value="#{item.snType}" disabled="#{!item.hasSerialnumber}" style="width:90px">
 													<f:selectItem itemLabel="---" noSelectionOption="true" />
 													<f:selectItem itemLabel="Numeric" itemValue="Numeric" />
 													<f:selectItem itemLabel="Bar Code" itemValue="Bar Code" />
 													<f:selectItem itemLabel="QR Code" itemValue="QR Code" />
+												</h:selectOneMenu>
+											</p:column>
+											<p:column headerText="Storage Factor" width="80">
+												<h:selectOneMenu value="#{item.storageFactor}" style="width:50px">
+													<f:selectItem itemLabel="---" noSelectionOption="true" />
+													<f:selectItem itemLabel="1" itemValue="1" />
+													<f:selectItem itemLabel="0.7" itemValue="0.7" />
+													<f:selectItem itemLabel="0.5" itemValue="0.5" />
+													<f:selectItem itemLabel="0.3" itemValue="0.3" />
 												</h:selectOneMenu>
 											</p:column>
 											<p:column headerText="Gross Weight" width="80">
@@ -131,14 +143,20 @@
 												<p:inputText value="#{item.netWeight}" placeholder="(KG)" style="width: 60px" />
 											</p:column>
 											<p:column headerText="Volume" width="80">
-												<p:inputText value="#{item.volume}" placeholder="(m3)" style="width: 60px" />
+												<p:inputText id="volume" value="#{item.volume}" placeholder="(m3)" style="width: 60px" />
 											</p:column>
 											<p:column headerText="length / Width / Height" width="130">
-												<p:inputText value="#{item.length}" placeholder="(m)" style="width: 40px" />
+												<p:inputText value="#{item.length}" placeholder="(m)" style="width: 40px">
+													<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+												</p:inputText>
 												&nbsp;
-												<p:inputText value="#{item.width}" placeholder="(m)" style="width: 40px" />
+												<p:inputText value="#{item.width}" placeholder="(m)" style="width: 40px">
+													<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+												</p:inputText>
 												&nbsp;
-												<p:inputText value="#{item.height}" placeholder="(m)" style="width: 40px" />
+												<p:inputText value="#{item.height}" placeholder="(m)" style="width: 40px">
+													<p:ajax event="keyup" listener="#{item.calculateVolume()}" update="volume" />
+												</p:inputText>
 											</p:column>
 											<p:column headerText="Fragile" width="50">
 												<p:commandLink id="fragile" update="fragile" partialSubmit="true" process="@this">

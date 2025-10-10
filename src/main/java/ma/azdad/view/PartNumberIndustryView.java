@@ -125,6 +125,11 @@ public class PartNumberIndustryView extends GenericView<Integer, PartNumberIndus
 		return partNumberIndustryService.findAll();
 	}
 
+	
+	public List<PartNumberIndustry> find(){
+		return service.find();
+	}
+	
 	// GETTERS & SETTERS
 	public PartNumberIndustry getPartNumberIndustry() {
 		return partNumberIndustry;

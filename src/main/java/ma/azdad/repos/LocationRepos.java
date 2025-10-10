@@ -26,13 +26,12 @@ public interface LocationRepos extends JpaRepository<Location, Integer> {
 			+ "and a.ownerType = ?3 "//
 			+ "and (a.company.id = ?4 or a.customer.id = ?4 or a.supplier.id = ?4)")
 	List<Location> findByWarehouseAndStockRowStateAndOwner(Integer warehouseId, StockRowState stockRowState, CompanyType ownerType, Integer ownerId);
-	
+
 	@Query("select new Location(id,name) from Location where warehouse.id = ?1")
 	List<Location> findLightByWarehouse(Integer warehouseId);
-	
-	
-	
+
 	@Query("from ZoneHeight where column.line.location.id = ?1")
 	List<ZoneHeight> findHeightListByLocation(Integer locationId);
 	
+
 }

@@ -26,6 +26,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.CompanyType" var="CompanyType" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -46,10 +47,19 @@
 							<i class="ace-icon fa fa-refresh bigger-230"></i>
 							<h:outputText value="Reload" />
 						</p:commandLink>
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditLocation.xhtml" rendered="#{locationView.canSave()}">
+							<i class="ace-icon fa fa-edit bigger-230"></i>
+							<h:outputText value="Edit" />
+							<f:param name="id" value="#{locationView.id}" />
+						</h:outputLink>
 						<h:outputLink styleClass="btn btn-app btn-sm hover aa-tooltip" title="Previous Page" value="javascript: window.history.go(-1)">
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
+						<p:commandLink title="Zoning" styleClass="btn btn-app btn-sm btn-purple hover aa-tooltip tooltip-purple" onclick="PF('generateZoningDlg').show()" rendered="#{locationView.canGenerateZoning()}">
+							<i class="ace-icon fa fa-th bigger-230"></i>
+							<h:outputText value="Zoning" />
+						</p:commandLink>
 					</div>
 				</div>
 			</div>
@@ -62,6 +72,38 @@
 						<a data-toggle="tab" href="#tab1">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<f:subview rendered="#{locationView.model.zoning}">
+						<li>
+							<a data-toggle="tab" href="#tab2">
+								<i class="purple ace-icon fa fa-th bigger-120"></i>
+								<h:outputText value=" Zoning" styleClass="hidden-xs" />
+							</a>
+						</li>
+					</f:subview>
+					<li>
+						<a data-toggle="tab" href="#tab3">
+							<i class="blue ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Indutries &amp; Categories" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab4">
+							<i class="pink ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Owner List" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab5">
+							<i class="orange ace-icon fa fa-list bigger-120"></i>
+							<h:outputText value=" Packing Types" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6">
+							<i class="orange ace-icon fa fa-gear bigger-120"></i>
+							<h:outputText value=" Options" styleClass="hidden-xs" />
 						</a>
 					</li>
 				</ul>
@@ -79,6 +121,27 @@
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Zoning" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.zoning?'Yes':'No'}" styleClass="badge #{locationView.model.zoning?'badge-success':''}" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Slot Size" />
+										</div>
+										<div class="profile-info-value purple">
+											<h:outputText value="#{locationView.model.slotSize}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3" rendered="#{locationView.model.slotSize!=null}" />
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -88,7 +151,32 @@
 											<h:outputText value="Surface" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{locationView.model.surface}" />
+											<h:outputText value="#{locationView.model.surface}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m2" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Volume" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.volume}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+											<h:outputText value=" m3" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Status Category" />
+										</div>
+										<div class="profile-info-value">
+											<h:outputText value="#{locationView.model.stockRowState.value}" styleClass="#{locationView.model.stockRowState.color.name}" />
+											<h:outputText value="Normal &amp; Faulty" rendered="#{locationView.model.stockRowState==null}" styleClass="blue" />
 											&nbsp;
 										</div>
 									</div>
@@ -96,18 +184,194 @@
 							</div>
 						</div>
 						<div class="space-16" />
-						<div id="zoningGird">
-						
-						</div>
 					</div>
 					<div id="tab2" class="tab-pane">
-						
-					
+						<p:remoteCommand name="initStockRowDetailDatatable" action="#{locationView.initStockRowDetailDatatable()}" update=":stockRowDetailListForm" oncomplete="PF('stockRowDetailListDlg').show()"></p:remoteCommand>
+						<!-- <p:commandLink onclick="testttttt([{name:'id', value:243}])">test</p:commandLink> -->
+						<div id="zoningGird"></div>
+					</div>
+					<div id="tab3" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Industry List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="industryList" value="#{locationView.model.industryList}" rowKey="#{item.id}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Name">
+											<h:outputText value="#{item.industryName}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink title="View Category List" update=":categoryListForm" oncomplete="PF('categoryListDlg').show()">
+													<i class="ace-icon fa fa-list bigger-130 blue" />
+													<f:setPropertyActionListener value="#{item}" target="#{locationView.industry}" />
+												</p:commandLink>
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deleteIndustry(item)}" rendered="#{locationView.canDeleteIndustry()}" update="industryList">
+													<i class="fa fa-trash-o red bigger-130" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add  Industry" oncomplete="PF('addIndustryDlg').show()" update=":addIndustryForm" rendered="#{locationView.canAddIndustry()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab4" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Owner List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="detailList" value="#{locationView.location.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Owner Type" width="100">
+											<h:outputText value="#{item.ownerType.value}" styleClass="#{item.ownerType.color.name}" rendered="#{!locationView.editDetailList}" />
+											<h:selectOneMenu value="#{item.ownerType}" rendered="#{locationView.editDetailList}">
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItem itemLabel="#{CompanyType.COMPANY.value}" itemValue="#{CompanyType.COMPANY}" />
+												<f:selectItem itemLabel="#{CompanyType.CUSTOMER.value}" itemValue="#{CompanyType.CUSTOMER}" />
+												<f:selectItem itemLabel="#{CompanyType.SUPPLIER.value}" itemValue="#{CompanyType.SUPPLIER}" />
+												<p:ajax update="owner" />
+											</h:selectOneMenu>
+										</p:column>
+										<p:column headerText="Owner">
+											<h:outputText value="#{item.ownerName}" rendered="#{!locationView.editDetailList}" />
+											<h:panelGroup id="owner">
+												<f:subview rendered="#{locationView.editDetailList}">
+													<p:selectOneMenu value="#{item.companyId}" rendered="#{CompanyType.COMPANY==item.ownerType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{companyView.findLight()}" var="company" itemLabel="#{company.name}" itemValue="#{company.id}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{item.customerId}" rendered="#{CompanyType.CUSTOMER==item.ownerType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{customerView.findLight()}" var="customer" itemLabel="#{customer.name}" itemValue="#{customer.id}" />
+													</p:selectOneMenu>
+													<p:selectOneMenu value="#{item.supplierId}" rendered="#{CompanyType.SUPPLIER==item.ownerType}">
+														<f:selectItem itemLabel="---" noSelectionOption="true" />
+														<f:selectItems value="#{supplierView.findLight()}" var="supplier" itemLabel="#{supplier.name}" itemValue="#{supplier.id}" />
+													</p:selectOneMenu>
+												</f:subview>
+											</h:panelGroup>
+										</p:column>
+										<p:column headerText="Actions" styleClass="center" width="100">
+											<div class="action-buttons center">
+												<p:commandLink title="Remove row" action="#{locationView.deleteDetail(item)}" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canDeleteDetail()}">
+													<i class="ace-icon fa fa-remove bigger-130 red" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSave() and !locationView.editDetailList}">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
+												</p:commandLink>
+												<p:commandLink title="Add New Item" action="#{locationView.addDetail()}" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canAddDetail()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+												<p:commandLink title="Save" action="#{locationView.saveDetailList()}" update="detailList,:main_form:messages" partialSubmit="true" process="detailList"
+													rendered="#{locationView.canSaveDetailList()}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab5" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Packing Type List" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="packingDetailTypeList" value="#{locationView.model.packingDetailTypeList}" rowKey="#{item.id}" var="item" rows="20" styleClass="table table-striped table-hover center"
+										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Name">
+											<h:outputText value="#{item.typeName}" styleClass="bolder blue" />
+										</p:column>
+										<p:column headerText="Actions" width="150" exportable="false">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-error" title="Delete Item" action="#{locationView.deletePackingDetailType(item)}" rendered="#{locationView.canDeletePackingDetailType()}" update="packingDetailTypeList">
+													<i class="fa fa-trash-o red bigger-130" />
+												</p:commandLink>
+											</div>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add Type" oncomplete="PF('addPackingDetailTypeDlg').show()" update=":addPackingDetailTypeForm" rendered="#{locationView.canAddPackingDetailType()}">
+													<i class="fa fa-plus green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="tab6" class="tab-pane">
+						<div class="row">
+							<div class="col-sm-offset-2 col-sm-8">
+								<div class="table-header col-sm-12 col-xs-12">
+									<i class="fa fa-list" />
+									<h:outputText value=" Options" />
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable id="optionList" value="#{locationView.location.options}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+										<p:column headerText="Name">
+											<h:outputText value="#{item.key}" />
+										</p:column>
+										<p:column headerText="Value">
+											<h:outputText value="#{item.value}" rendered="#{!locationView.editOptionList}" />
+											<h:selectOneMenu value="#{item.value}" rendered="#{locationView.editOptionList}" >
+												<f:selectItem itemLabel="All" itemValue="All" />
+												<f:selectItem itemLabel="Yes" itemValue="Yes"  />
+												<f:selectItem itemLabel="No" itemValue="No" />
+											</h:selectOneMenu>
+										</p:column>
+										<f:facet name="footer">
+											<div class="action-buttons center">
+												<p:commandLink title="Edit" update="optionList" partialSubmit="true" process="optionList" rendered="#{locationView.canSave() and !locationView.editOptionList}">
+													<i class="fa fa-edit orange" />
+													<f:setPropertyActionListener value="true" target="#{locationView.editOptionList}" />
+												</p:commandLink>
+												<p:commandLink title="Save" action="#{locationView.saveOptionList()}" update="optionList,:main_form:messages" partialSubmit="true" process="optionList"
+													rendered="#{locationView.editOptionList}">
+													<i class="fa fa-save green" />
+												</p:commandLink>
+											</div>
+										</f:facet>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</h:form>
-		<script src="/resources/js/zoning.js" />
+		<h:panelGroup id="zoningScriptsPanel">
+			<script src="/resources/js/zoning.js" />
+			<script type="text/javascript">
+				const warehouseData = #{locationView.heightListJson}
+				drawCells(warehouseData);
+			</script>
+		</h:panelGroup>
 		<f:event type="preRenderView" listener="#{locationView.redirect()}" />
 		<ui:include src="locationFooter.xhtml" />
 	</ui:define>

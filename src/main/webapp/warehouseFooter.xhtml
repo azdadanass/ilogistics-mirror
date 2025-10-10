@@ -71,7 +71,7 @@
 			<div class="modal-header" style="margin-bottom: 20px">
 				<h4 class="modal-title">
 					<i class="ace-icon fa fa-plus green" />
-					<h:outputText value=" Add New Location" />
+					<h:outputText value=" Add New Zone" />
 				</h4>
 			</div>
 			<div class="modal-body">
@@ -123,6 +123,16 @@
 									<f:selectItem itemLabel="Normal &amp; Faulty" itemValue="#{null}" />
 									<f:selectItems value="#{StockRowState.ALL_ENUM_VALUES}" />
 								</h:selectOneMenu>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<div class="form-group">
+							<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-warehousename">
+								<h:outputText value="Solt Size" />
+							</label>
+							<div class="col-xs-9 col-sm-9">
+								<p:inputNumber value="#{warehouseView.location.slotSize}" decimalSeparator="." thousandSeparator="" placeholder="(m3)"/>
 							</div>
 						</div>
 					</div>
@@ -201,7 +211,7 @@
 								</p:column>
 								<f:facet name="footer">
 									<div class="action-buttons center">
-										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSaveLocation() and !locationView.editDetailList}">
+										<p:commandLink title="Edit" update="detailList" partialSubmit="true" process="detailList" rendered="#{locationView.canSave() and !locationView.editDetailList}">
 											<i class="fa fa-edit orange" />
 											<f:setPropertyActionListener value="true" target="#{locationView.editDetailList}" />
 										</p:commandLink>

@@ -299,10 +299,22 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+
 
 	@Transient
 	public Double getDistance() {
-		return ObjectUtils.firstNonNull(realDistance, estimatedDistance, 0.0);
+		if (realDistance != null && realDistance > 0.0)
+			return realDistance;
+		return ObjectUtils.firstNonNull(estimatedDistance, 0.0);
+	}
+	
+	@Transient
+	public Double getDistance(Boolean useRealDistance) {
+		if(useRealDistance)
+			return realDistance;
+		else 
+			return estimatedDistance;
 	}
 
 	@Transient

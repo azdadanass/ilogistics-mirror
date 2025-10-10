@@ -133,6 +133,11 @@ public class StockRowService extends GenericService<Integer, StockRow, StockRowR
 			Double quantity = detail.getQuantity();
 
 			for (StockRow stockRow : stockRowList) {
+				
+				System.out.println(stockRow.getPartNumberName());
+				System.out.println(stockRow.getLocationId());
+				System.out.println("**********************************");
+				
 				Double newStockRowQuantity = UtilsFunctions.compareDoubles(quantity, stockRow.getQuantity(), 4) >= 0 ? stockRow.getQuantity() : quantity;
 				quantity -= newStockRowQuantity;
 				DeliveryRequestDetail inboundDeliveryRequestDetail = deliveryRequestDetailService

@@ -1,8 +1,11 @@
 package ma.azdad.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import ma.azdad.service.UtilsFunctions;
@@ -38,6 +42,8 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	private DeliveryRequestDetail deliveryRequestDetail;
 	private DeliveryRequest inboundDeliveryRequest;
 	private DeliveryRequestDetail inboundDeliveryRequestDetail; // case inbound/outbound stock row
+	
+	private List<StockRowDetail> detailList = new ArrayList<>();
 
 	// cache
 	private Integer companyId;
@@ -1791,6 +1797,24 @@ public class StockRow extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public void setReturnedQuantity(Double returnedQuantity) {
 		this.returnedQuantity = returnedQuantity;
+	}
+	
+	public void addDetail(StockRowDetail detail) {
+		detail.setStockRow(this);
+		detailList.add(detail);
+	}
+	public void removeDetail(StockRowDetail detail) {
+		detail.setStockRow(null);
+		detailList.remove(detail);
+	}
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "stockRow", cascade = CascadeType.ALL, orphanRemoval = true)
+	public List<StockRowDetail> getDetailList() {
+		return detailList;
+	}
+
+	public void setDetailList(List<StockRowDetail> detailList) {
+		this.detailList = detailList;
 	}
 
 }

@@ -385,7 +385,7 @@
 					</a></li>
 					<li><a data-toggle="tab" href="#tab4"> <i
 							class="red ace-icon fa fa-dollar bigger-120"></i> <h:outputText
-								value=" Associated Costs" />
+								value=" Costs" />
 					</a></li>
 					<li><a data-toggle="tab" href="#tab6"> <i
 							class="red ace-icon fa fa-comment-o bigger-120"></i> <h:outputText
@@ -1484,27 +1484,70 @@
 												rendered="#{item.expensepaymentId!=null}"
 												styleClass="bolder green" />
 										</p:column>
-										<p:column headerText="Actions" width="70">
-											<div class="action-buttons center">
-												<p:commandLink
-													action="#{acceptanceView.refreshAcceptance(item.acceptanceId)}"
-													update=":acceptanceForm"
-													oncomplete="PF('acceptanceDlg').show()"
-													title="Show details" styleClass="aa-tooltip tooltip-info"
-													rendered="#{item.acceptanceId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
-												<p:commandLink
-													action="#{expensepaymentView.refreshExpensepayment(item.expensepaymentId)}"
-													update=":expensepaymentForm"
-													oncomplete="PF('expensepaymentDlg').show()"
-													title="Show details" styleClass="aa-tooltip tooltip-info"
-													rendered="#{item.expensepaymentId!=null}">
-													<i class="ace-icon fa fa-list-alt bigger-130 blue" />
-												</p:commandLink>
-											</div>
-										</p:column>
+
 									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div class="space-16" />
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" TR Costs" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{transportationRequestView.costList}" var="item" rows="20"
+										paginator="true" paginatorAlwaysVisible="false"
+										paginatorPosition="bottom"
+										styleClass="table table-striped table-hover"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink} {PageLinks}">
+
+										<p:column headerText="Transportation Request" width="150">
+											<h:outputText value="#{item.transportationRequestReference}"
+												styleClass="green bolder" />
+										</p:column>
+
+										<p:column headerText="Start Date" width="100">
+											<h:outputText value="#{item.startDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="End Date" width="100">
+											<h:outputText value="#{item.endDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Start Cost" width="100">
+											<h:outputText value="#{item.startCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Itinerary Cost" width="120">
+											<h:outputText value="#{item.itineraryCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Handling Cost" width="120">
+											<h:outputText value="#{item.handlingCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Total Cost" width="120">
+											<h:outputText value="#{item.cost}" styleClass="bolder red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+									</p:dataTable>
+
 								</div>
 							</div>
 						</div>

@@ -26,6 +26,7 @@ import ma.azdad.model.ContactType;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.DeliveryRequestStatus;
 import ma.azdad.model.GenericPlace;
+import ma.azdad.model.TrCost;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestComment;
@@ -587,6 +588,16 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 			}
 		return addParameters(listPage, "faces-redirect=true");
 	}
+	//COSTS 
+	  public  List<TrCost> getCostList() {
+	        List<TrCost> list = new ArrayList<>();
+
+	        list.add(new TrCost(transportationRequest.getReference(), transportationRequest.getStartDate(), transportationRequest.getEndDate(), 
+	        		transportationRequest.getStartCost(), transportationRequest.getItineraryCost(), transportationRequest.getHandlingCost()));
+	       
+
+	        return list;
+	    }
 
 	// FILES MANAGEMENT
 	private String transportationRequestFileType;

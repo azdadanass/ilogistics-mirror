@@ -152,5 +152,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	
 	@Query("from TransportationJob where qrKey is null")
 	List<TransportationJob> findWithoutQrKey();
+	
+	
+	@Query("from TransportationJob where date3 is not null and (estimatedStartCost is null or estimatedStartCost = 0 or estimatedItineraryCost is null or estimatedItineraryCost = 0) ")
+	List<TransportationJob> findWithoutEstimatedCost();
 
 }

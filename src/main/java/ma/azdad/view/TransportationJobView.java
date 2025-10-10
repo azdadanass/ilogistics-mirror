@@ -611,6 +611,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					.ErrorMessages("This Transportation Job could not be assigned to this vehicle as you will be exceeding the max Weight of the vehicle," + " Please change the assigned vehicle.");
 
 		}
+		if (transportationJob.getStartLeadTime() < transportationJob.getAcceptLeadTime()) {
+			return FacesContextMessages
+					.ErrorMessages("Start Lead Time shouldn't be less than Accept Lead Time.");
+
+		}
 		return true;
 	}
 

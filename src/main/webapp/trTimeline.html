@@ -14,8 +14,10 @@
         }
 
         .transportation-timeline {
-            margin: 30px 0;
+            margin: 0px 0;
             position: relative;
+            overflow-x: auto;
+            padding-bottom: 20px;
         }
 
         .timeline {
@@ -23,8 +25,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin:5px 100px;
-            height: 0px;
+            margin: 5px 100px;
+            min-height: 180px; /* increased height for cards on top */
         }
 
         .timeline-line {
@@ -91,23 +93,10 @@
             animation: pulse 2s infinite;
         }
 
-        .step-icon.failed {
-            background: #f44336;
-            color: white;
-            border-color: #f44336;
-            box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.2);
-        }
-
         @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(33, 150, 243, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(33, 150, 243, 0); }
         }
 
         .truck {
@@ -116,83 +105,77 @@
             transform: translateY(-50%);
             font-size: 24px;
             z-index: 4;
-            transition: left 2s ease-in-out;
             color: #2196F3;
             filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
         }
 
         .info-card {
             position: absolute;
+            bottom: auto;
+            top: -80px; /* position above the step */
+            left: 50%;
+            margin-left: -100px; /* half width to center */
+            width: 200px;
             background: white;
             border: 1px solid #ddd;
             border-radius: 8px;
-            padding: 15px;
-            width: 250px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-size: 11px;
             z-index: 10;
-            top: 80px;
-            left: 50%;
-            margin-left: -125px;
-        }
-
-        .info-card.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
         }
 
         .info-card::before {
             content: '';
             position: absolute;
-            bottom: 100%;
+            bottom: -8px; /* arrow pointing down */
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) rotate(180deg);
             border: 8px solid transparent;
-            border-bottom-color: white;
+            border-top-color: white;
         }
 
         .info-item {
             display: flex;
-            align-items: center;
-            margin-bottom: 8px;
+            align-items: flex-start;
+            margin-bottom: 6px;
         }
 
-        .info-item:last-child {
-            margin-bottom: 0;
-        }
+        .info-item:last-child { margin-bottom: 0; }
 
         .info-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+            font-size: 11px;
         }
 
         .info-text {
             flex: 1;
-            font-size: 12px;
+            font-size: 11px;
             color: #333;
             word-wrap: break-word;
+            line-height: 1.3;
         }
 
-        .info-text a {
-            color: #2196F3;
-            text-decoration: none;
+        .info-text strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 12px;
         }
 
-        .info-text a:hover {
-            text-decoration: underline;
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            color: #666;
         }
 
-        .info-text .blue {
-            color: #2196F3;
-        }
+        .error { color: #f44336; }
 
         .red { color: #f44336; }
         .green { color: #4CAF50; }
@@ -200,120 +183,15 @@
     </style>
 </head>
 <body>
-    <div class="row">
-        <div class="col-sm-offset-1 col-sm-10">
-            <div class="widget-box transparent">
-                <div class="widget-body">
-                    <!-- Timeline Container -->
-                    <div class="transportation-timeline">
-                        <div class="timeline">
-                            <div class="timeline-line">
-                                <div class="timeline-progress" id="progress"></div>
-                            </div>
-
-                            <div class="truck" id="truck">🚛</div>
-
-                            <!-- Origin Step -->
-                            <div class="timeline-step" data-step="0">
-                                <div class="step-icon" id="step-0">
-                                    <i class="fa fa-map-marker" id="icon-0"></i>
-                                </div>
-                                <div class="info-card" id="card-0">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-building"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="origin-name">Origin Company</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-map-marker"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="origin-address">123 Origin Street, City, State</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-user"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="origin-contact">John Doe</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-phone"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="origin-phone">+1 (555) 123-4567</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Transit Step -->
-                            <div class="timeline-step" data-step="1">
-                                <div class="step-icon" id="step-1">
-                                    <i class="fa fa-truck" id="icon-1"></i>
-                                </div>
-                            </div>
-
-                            <!-- Destination Step -->
-                            <div class="timeline-step" data-step="2">
-                                <div class="step-icon" id="step-2">
-                                    <i class="fa fa-map-marker" id="icon-2"></i>
-                                </div>
-                                <div class="info-card" id="card-2">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-building"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="destination-name">Destination Company</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-map-marker"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="destination-address">456 Destination Ave, City, State</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-user"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="destination-contact">Jane Smith</span>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fa fa-phone"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <span id="destination-phone">+1 (555) 987-6543</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="transportation-timeline" id="timeline-container">
+        <div class="loading">Loading timeline data...</div>
     </div>
 
     <script>
-        // Global variables
         var truckAnimation;
-        var timelineData = {};
+        var itineraryData = [];
+        var requestId = null;
 
-        // Function to get URL parameters
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -321,238 +199,190 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Function to initialize data from URL parameters
-        function initializeData() {
-            timelineData = {
-                state: parseInt(getUrlParameter('state') || '1'),
-                originName: getUrlParameter('originName') || '',
-                originAddress: getUrlParameter('originAddress') || '',
-                originContact: getUrlParameter('originContact') || '',
-                originPhone: getUrlParameter('originPhone') || '',
-                destinationName: getUrlParameter('destinationName') || '',
-                destinationAddress: getUrlParameter('destinationAddress') || '',
-                destinationContact: getUrlParameter('destinationContact') || '',
-                destinationPhone: getUrlParameter('destinationPhone') || '',
-                originUrl: getUrlParameter('originUrl') || '',
-                destinationUrl: getUrlParameter('destinationUrl') || '',
-                isInbound: getUrlParameter('isInbound') === 'true',
-                isOutbound: getUrlParameter('isOutbound') === 'true',
-                isXbound: getUrlParameter('isXbound') === 'true',
-                warehouseName: getUrlParameter('warehouseName') || ''
-            };
-
-            // Populate the DOM elements
-            populateData();
+        function fetchItineraryData(reqId) {
+            var apiUrl = '/api/job/estimated-itinerary/tr/' + reqId;
+            fetch(apiUrl)
+                .then(response => { if (!response.ok) throw new Error('Network response was not ok'); return response.json(); })
+                .then(data => { itineraryData = data; renderTimeline(); })
+                .catch(error => {
+                    console.error('Error fetching itinerary:', error);
+                    document.getElementById('timeline-container').innerHTML =
+                        '<div class="error">Failed to load timeline data. Please try again.</div>';
+                });
         }
 
-        // Function to populate data in the DOM
-        function populateData() {
-            // Origin data
-            var originNameElement = document.getElementById('origin-name');
-            if (timelineData.isInbound || timelineData.isXbound) {
-                if (timelineData.originUrl) {
-                    originNameElement.innerHTML = '<a href="' + timelineData.originUrl + '" target="_blank">' + timelineData.originName + '</a>';
-                } else {
-                    originNameElement.textContent = timelineData.originName;
-                }
-            } else if (timelineData.isOutbound) {
-                originNameElement.innerHTML = '<span class="blue">' + timelineData.warehouseName + '</span>';
-            } else {
-                originNameElement.textContent = timelineData.originName;
+        function renderTimeline() {
+            if (!itineraryData || itineraryData.length === 0) {
+                document.getElementById('timeline-container').innerHTML = 
+                    '<div class="error">No itinerary data available.</div>';
+                return;
             }
 
-            document.getElementById('origin-address').textContent = timelineData.originAddress;
-            document.getElementById('origin-contact').textContent = timelineData.originContact;
-            document.getElementById('origin-phone').textContent = timelineData.originPhone;
+            var lastGreenIndex = -1;
+            for (var i = 0; i < itineraryData.length; i++) {
+                if (itineraryData[i].expected === false) lastGreenIndex = i;
+            }
+            if (lastGreenIndex === -1) lastGreenIndex = 0;
 
-            // Destination data
-            var destinationNameElement = document.getElementById('destination-name');
-            if (timelineData.isOutbound || timelineData.isXbound) {
-                if (timelineData.destinationUrl) {
-                    destinationNameElement.innerHTML = '<a href="' + timelineData.destinationUrl + '" target="_blank">' + timelineData.destinationName + '</a>';
-                } else {
-                    destinationNameElement.textContent = timelineData.destinationName;
-                }
-            } else if (timelineData.isInbound) {
-                destinationNameElement.innerHTML = '<span class="blue">' + timelineData.warehouseName + '</span>';
-            } else {
-                destinationNameElement.textContent = timelineData.destinationName;
+            var timelineHTML = '<div class="timeline">';
+            timelineHTML += '<div class="timeline-line"><div class="timeline-progress" id="progress"></div></div>';
+            timelineHTML += '<div class="truck" id="truck">🚛</div>';
+
+            for (var i = 0; i < itineraryData.length; i++) {
+                var point = itineraryData[i];
+                var isCompleted = (point.expected === false);
+                var isOrigin = i === 0;
+                var isDestination = i === itineraryData.length - 1;
+
+                timelineHTML += '<div class="timeline-step" data-step="' + i + '">';
+                var iconClass = 'step-icon';
+                if (isCompleted) iconClass += ' completed';
+
+                var icon = 'fa-circle';
+                if (isOrigin || isDestination) icon = 'fa-map-marker';
+                else if (point.type === 'PICKUP' || point.type === 'pickup') icon = 'fa-arrow-up';
+                else if (point.type === 'DELIVERY' || point.type === 'delivery') icon = 'fa-arrow-down';
+
+                timelineHTML += '<div class="' + iconClass + '" id="step-' + i + '">';
+                timelineHTML += '<i class="fa ' + icon + '" id="icon-' + i + '"></i></div>';
+
+                // Info card always visible above step
+                timelineHTML += '<div class="info-card" id="card-' + i + '">';
+                if (point.siteName) timelineHTML += '<div class="info-item"><div class="info-icon"><i class="fa fa-building"></i></div><div class="info-text"><strong>' + point.siteName + '</strong></div></div>';
+                if (point.duration) timelineHTML += '<div class="info-item"><div class="info-icon"><i class="fa fa-hourglass"></i></div><div class="info-text">Duration: ' + point.duration + ' min</div></div>';
+                timelineHTML += '</div>';
+
+                timelineHTML += '</div>';
             }
 
-            document.getElementById('destination-address').textContent = timelineData.destinationAddress;
-            document.getElementById('destination-contact').textContent = timelineData.destinationContact;
-            document.getElementById('destination-phone').textContent = timelineData.destinationPhone;
+            timelineHTML += '</div>';
+            document.getElementById('timeline-container').innerHTML = timelineHTML;
+
+            updateTimeline(lastGreenIndex);
+            updateTruckPosition(lastGreenIndex);
         }
 
-        function updateTimeline() {
+        function updateTimeline(lastGreenIndex) {
             var progress = document.getElementById('progress');
-            var currentStatus = timelineData.state;
-            
-            // Reset all steps
-            for (var i = 0; i <= 2; i++) {
+            var totalSteps = itineraryData.length - 1;
+            progress.style.width = totalSteps === 0 ? '0%' : (lastGreenIndex / totalSteps * 100) + '%';
+
+            for (var i = 0; i < itineraryData.length; i++) {
                 var step = document.getElementById('step-' + i);
                 var icon = document.getElementById('icon-' + i);
-                
-                step.className = 'step-icon';
-                
-                // Reset icons
-                if (i === 0) {
-                    icon.className = 'fa fa-map-marker';
-                } else if (i === 1) {
-                    icon.className = 'fa fa-truck';
+                if (!step || !icon) continue;
+
+                if (itineraryData[i].expected === false) {
+                    step.className = 'step-icon completed';
+                    icon.className = 'fa fa-check green';
                 } else {
-                    icon.className = 'fa fa-map-marker';
+                    step.className = 'step-icon';
+                    var isOrigin = i === 0;
+                    var isDestination = i === itineraryData.length - 1;
+                    if (isOrigin || isDestination) icon.className = 'fa fa-map-marker';
+                    else if (itineraryData[i].type === 'PICKUP' || itineraryData[i].type === 'pickup') icon.className = 'fa fa-arrow-up';
+                    else if (itineraryData[i].type === 'DELIVERY' || itineraryData[i].type === 'delivery') icon.className = 'fa fa-arrow-down';
+                    else icon.className = 'fa fa-circle';
                 }
             }
-            
-            // Update based on current status
-            if (currentStatus === -1) {
-                // Failed state
-                document.getElementById('step-0').className = 'step-icon failed';
-                document.getElementById('icon-0').className = 'fa fa-remove red';
-                progress.style.width = '0%';
-            } else if (currentStatus === 0) {
-                // Pending/Ready
-                document.getElementById('step-0').className = 'step-icon active';
-                document.getElementById('icon-0').className = 'fa fa-truck blue';
-                progress.style.width = '0%';
-            } else if (currentStatus === 1) {
-                // In transit
-                document.getElementById('step-0').className = 'step-icon completed';
-                document.getElementById('icon-0').className = 'fa fa-check green';
-                document.getElementById('step-1').className = 'step-icon active';
-                document.getElementById('icon-1').className = 'fa fa-truck blue';
-                progress.style.width = '50%';
-            } else if (currentStatus >= 2) {
-                // Delivered
-                document.getElementById('step-0').className = 'step-icon completed';
-                document.getElementById('icon-0').className = 'fa fa-check green';
-                document.getElementById('step-1').className = 'step-icon completed';
-                document.getElementById('icon-1').className = 'fa fa-check green';
-                document.getElementById('step-2').className = 'step-icon completed';
-                document.getElementById('icon-2').className = 'fa fa-check green';
-                progress.style.width = '100%';
-            }
         }
-        
-        function updateTruckPosition() {
+
+        function updateTruckPosition(lastGreenIndex) {
             var truck = document.getElementById('truck');
             var timeline = document.querySelector('.timeline');
-            var currentStatus = timelineData.state;
             
-            if (!timeline) return;
-            
-            var timelineWidth = timeline.offsetWidth - 50; // Account for truck width
-            
+            if (!timeline || !truck) {
+                console.log('Timeline or truck not found');
+                return;
+            }
+
             // Clear any existing animation
             if (truckAnimation) {
                 clearInterval(truckAnimation);
             }
-            
-            if (currentStatus === 0 || currentStatus === -1) {
-                // Stay at origin
-                truck.style.left = '0px';
-                truck.style.transform = 'translateY(-50%) scaleX(1)';
-            } else if (currentStatus === 1) {
-                // Animate continuously between origin and destination
-                animateTruckBetweenPoints(truck, 0, timelineWidth);
-            } else if (currentStatus >= 2) {
-                // Stay at destination
-                truck.style.left = timelineWidth + 'px';
-                truck.style.transform = 'translateY(-50%) scaleX(1)';
+
+            var steps = document.querySelectorAll('.timeline-step');
+            if (steps.length === 0) {
+                console.log('No steps found');
+                return;
             }
-        }
-        
-        function animateTruckBetweenPoints(truck, startPos, endPos) {
-            // Start from middle position to show immediate movement
-            var position = startPos + (endPos - startPos) * 0.3; // Start at 30% of the way
-            var direction = 1; // 1 for forward, -1 for backward
-            var speed = 1.5; // pixels per frame (slightly slower for better visibility)
+
+            console.log('Moving truck to step:', lastGreenIndex, 'of', steps.length);
+
+            // Get positions
+            var timelineRect = timeline.getBoundingClientRect();
+            var firstStep = steps[0];
+            var firstRect = firstStep.getBoundingClientRect();
+            var startPosition = firstRect.left - timelineRect.left + 25;
             
-            // Set initial position and direction
-            truck.style.left = position + 'px';
-            truck.style.transform = 'translateY(-50%) scaleX(1)';
+            var targetStep = steps[lastGreenIndex];
+            var targetRect = targetStep.getBoundingClientRect();
+            var targetPosition = targetRect.left - timelineRect.left + 25;
+            
+            console.log('Start position:', startPosition, 'Target position:', targetPosition);
+            
+            // Initialize truck at first position if not set
+            if (!truck.style.left || truck.style.left === '0px') {
+                truck.style.left = startPosition + 'px';
+                console.log('Initialized truck at:', startPosition);
+            }
+            
+            var currentLeft = parseFloat(truck.style.left) || startPosition;
+            console.log('Current truck position:', currentLeft);
+            
+            // Animate slowly to target position
+            animateTruckToPosition(truck, currentLeft, targetPosition);
+        }
+        function animateTruckToPosition(truck, startPos, endPos) {
+            var position = startPos;
+            var distance = endPos - startPos;
+            var direction = distance >= 0 ? 1 : -1;
+            var speed = 0.5; // Slow speed (0.5 pixels per frame)
+            
+            // Set truck direction
+            if (direction > 0) {
+                truck.style.transform = 'translateY(-50%) scaleX(1)';
+            } else {
+                truck.style.transform = 'translateY(-50%) scaleX(-1)';
+            }
             
             truckAnimation = setInterval(function() {
                 position += speed * direction;
                 
-                // Check boundaries and reverse direction
-                if (position >= endPos) {
+                // Check if reached destination
+                if ((direction > 0 && position >= endPos) || (direction < 0 && position <= endPos)) {
                     position = endPos;
-                    direction = -1;
-                    // Flip truck for reverse direction
-                    truck.style.transform = 'translateY(-50%) scaleX(-1)';
-                } else if (position <= startPos) {
-                    position = startPos;
-                    direction = 1;
-                    // Normal truck direction
-                    truck.style.transform = 'translateY(-50%) scaleX(1)';
+                    truck.style.left = position + 'px';
+                    clearInterval(truckAnimation);
+                    return;
                 }
                 
                 truck.style.left = position + 'px';
-            }, 20); // Slightly slower for smoother animation
+            }, 20);
         }
 
-        // Function to update timeline with new data (can be called from parent window)
-        function updateTimelineData(newData) {
-            timelineData = Object.assign(timelineData, newData);
-            populateData();
-            updateTimeline();
-            updateTruckPosition();
-        }
-
-        // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize data from URL parameters
-            initializeData();
+            requestId = getUrlParameter('requestId');
+            if (!requestId) {
+                document.getElementById('timeline-container').innerHTML =
+                    '<div class="error">No request ID provided. Please add ?requestId=YOUR_ID to the URL.</div>';
+                return;
+            }
 
-            // Hover effects for info cards
-            var timelineSteps = document.querySelectorAll('.timeline-step');
-            timelineSteps.forEach(function(step) {
-                var stepNumber = step.getAttribute('data-step');
-                var card = document.getElementById('card-' + stepNumber);
-                
-                if (card) {
-                    step.addEventListener('mouseenter', function() {
-                        card.classList.add('show');
-                    });
-                    
-                    step.addEventListener('mouseleave', function() {
-                        card.classList.remove('show');
-                    });
-                }
+            fetchItineraryData(requestId);
+
+            window.addEventListener('resize', () => {
+                if (truckAnimation) clearInterval(truckAnimation);
+                var lastGreenIndex = itineraryData.findIndex(p => p.expected === false);
+                lastGreenIndex = lastGreenIndex === -1 ? 0 : lastGreenIndex;
+                updateTruckPosition(lastGreenIndex);
             });
 
-            // Initialize timeline
-            updateTimeline();
-            updateTruckPosition();
-
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                // Clear animation and restart with new dimensions
-                if (truckAnimation) {
-                    clearInterval(truckAnimation);
-                }
-                updateTruckPosition();
-            });
-            
-            // Clean up animation when page is unloaded
-            window.addEventListener('beforeunload', function() {
-                if (truckAnimation) {
-                    clearInterval(truckAnimation);
-                }
-            });
-
-            // Listen for messages from parent window (for iframe communication)
-            window.addEventListener('message', function(event) {
-                if (event.data && event.data.type === 'updateTimeline') {
-                    updateTimelineData(event.data.data);
-                }
-            });
+            window.addEventListener('beforeunload', () => { if (truckAnimation) clearInterval(truckAnimation); });
         });
 
-        // Expose function to parent window for iframe communication
-        window.updateTimelineData = updateTimelineData;
+        function refreshTimeline() { if (requestId) fetchItineraryData(requestId); }
+        window.refreshTimeline = refreshTimeline;
     </script>
 </body>
 </html>

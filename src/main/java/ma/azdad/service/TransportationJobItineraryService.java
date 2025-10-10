@@ -110,7 +110,8 @@ public class TransportationJobItineraryService {
                         .contains(transportationRequest.getStatus())
                                 ? true
                                 : false,
-                StopType.PICKUP.getValue()));
+                StopType.PICKUP.getValue(),
+              transportationRequest.getPickupDuration2()));
 
         List<Stop> stops = stopRepos.findByTransportationJobIdOrderByDateAsc(
                 transportationRequest.getTransportationJob().getId());
@@ -138,7 +139,7 @@ public class TransportationJobItineraryService {
                             place.getName(),
                             stop.getExpected(),
                             false,
-                            StopType.STOP.getValue()));
+                            StopType.STOP.getValue(),stop.getDuration()));
                 }
             }
         }
@@ -163,7 +164,8 @@ public class TransportationJobItineraryService {
                         .contains(transportationRequest.getStatus())
                                 ? true
                                 : false,
-                StopType.DELIVERY.getValue()));
+                StopType.DELIVERY.getValue(),
+                transportationRequest.getDeliveryDuration2()));
 
         return locations;
     }

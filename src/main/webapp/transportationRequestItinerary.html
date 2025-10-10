@@ -15,13 +15,13 @@ html, body, #map {
 	z-index: 1000;
 	background: white;
 	border-radius: 8px;
-	box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 	user-select: none;
 	transition: all 0.3s ease;
 }
 
 .draggable-panel:hover {
-	box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+	box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
 }
 
 .panel-header {
@@ -44,7 +44,7 @@ html, body, #map {
 }
 
 .collapse-btn {
-	background: rgba(255,255,255,0.2);
+	background: rgba(255, 255, 255, 0.2);
 	border: none;
 	color: white;
 	width: 24px;
@@ -59,7 +59,7 @@ html, body, #map {
 }
 
 .collapse-btn:hover {
-	background: rgba(255,255,255,0.3);
+	background: rgba(255, 255, 255, 0.3);
 }
 
 .collapsed .panel-content {
@@ -85,7 +85,7 @@ html, body, #map {
 	left: 10px;
 	min-width: 220px;
 	display: flex;
-    flex-direction: column-reverse; 
+	flex-direction: column-reverse;
 }
 
 #controls label {
@@ -119,12 +119,12 @@ html, body, #map {
 	height: 3px;
 	margin-right: 12px;
 	border-radius: 2px;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .legend-icon {
 	margin-right: 12px;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .legend-driver {
@@ -132,7 +132,7 @@ html, body, #map {
 	height: 18px;
 	border-radius: 50%;
 	margin-right: 12px;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .panel-minimize {
@@ -146,7 +146,7 @@ html, body, #map {
 	padding: 10px;
 	border-radius: 50%;
 	cursor: pointer;
-	box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 	display: none;
 	z-index: 1001;
 	transition: all 0.3s ease;
@@ -167,7 +167,9 @@ html, body, #map {
 	width: 20px;
 	height: 20px;
 	cursor: se-resize;
-	background: linear-gradient(135deg, transparent 0%, transparent 30%, #ccc 30%, #ccc 35%, transparent 35%, transparent 65%, #ccc 65%, #ccc 70%, transparent 70%);
+	background: linear-gradient(135deg, transparent 0%, transparent 30%, #ccc 30%, #ccc
+		35%, transparent 35%, transparent 65%, #ccc 65%, #ccc 70%, transparent
+		70%);
 }
 
 .legend-section {
@@ -188,17 +190,15 @@ html, body, #map {
 	font-size: 13px;
 }
 
-@media (max-width: 768px) {
+@media ( max-width : 768px) {
 	.draggable-panel {
 		position: fixed !important;
 		max-width: 90vw;
 	}
-	
 	#controls {
 		top: 5px !important;
 		left: 5px !important;
 	}
-	
 	#legend {
 		bottom: 5px !important;
 		left: 5px !important;
@@ -210,80 +210,78 @@ html, body, #map {
 	<div id="map"></div>
 
 	<div id="controls" class="draggable-panel collapsed">
-    <div class="panel-header">
-        <span>🎛️ Controls</span>
-        <button class="collapse-btn" onclick="togglePanel('controls')">−</button>
-    </div>
-    <div class="panel-content">
-        <label>
-            <input type="checkbox" id="showActual" checked> 
-            <span>Actual Route</span>
-        </label>
-        <label>
-            <input type="checkbox" id="showEstimated" checked> 
-            <span>Estimated Route</span>
-        </label>
-        <label>
-            <input type="checkbox" id="showDriver" checked> 
-            <span>Driver Position</span>
-        </label>
-    </div>
-    <div class="resize-handle"></div>
-</div>
+		<div class="panel-header">
+			<span>🎛️ Controls</span>
+			<button class="collapse-btn" onclick="togglePanel('controls')">−</button>
+		</div>
+		<div class="panel-content">
+			<label> <input type="checkbox" id="showActual" checked>
+				<span>Actual Route</span>
+			</label> <label> <input type="checkbox" id="showEstimated" checked>
+				<span>Estimated Route</span>
+			</label> <label> <input type="checkbox" id="showDriver" checked>
+				<span>Driver Position</span>
+			</label>
+		</div>
+		<div class="resize-handle"></div>
+	</div>
 
-<div id="legend" class="draggable-panel collapsed">
-    <div class="panel-header">
-        <span>📍 Legend</span>
-        <button class="collapse-btn" onclick="togglePanel('legend')">−</button>
-    </div>
-    <div class="panel-content">
-        <div class="legend-section">
-            <div class="legend-title">Routes</div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #007bff;"></div>
-                <span>Actual Route</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background-color: #28a745;"></div>
-                <span>Estimated Route</span>
-            </div>
-        </div>
-        
-        <div class="legend-section">
-            <div class="legend-title">Stop Points</div>
-            <div class="legend-item">
-                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
-                <span>Actual Points</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-                <span>Estimated Arrived Sites</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-icon" style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
-                <span>Estimated Non-Arrived Sites</span>
-            </div>
-        </div>
-        
-        <div class="legend-section">
-            <div class="legend-title">Driver Position</div>
-            <div class="legend-item">
-                <div class="legend-driver" style="background: green;"></div>
-                <span>Driver GPS &lt; 24h</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-driver" style="background: blue;"></div>
-                <span>Driver GPS &lt; 48h</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-driver" style="background: red;"></div>
-                <span>Driver GPS &gt; 48h</span>
-            </div>
-        </div>
-    </div>
-   
-    <div class="resize-handle"></div>
-</div>
+	<div id="legend" class="draggable-panel collapsed">
+		<div class="panel-header">
+			<span>📍 Legend</span>
+			<button class="collapse-btn" onclick="togglePanel('legend')">−</button>
+		</div>
+		<div class="panel-content">
+			<div class="legend-section">
+				<div class="legend-title">Routes</div>
+				<div class="legend-item">
+					<div class="legend-color" style="background-color: #007bff;"></div>
+					<span>Actual Route</span>
+				</div>
+				<div class="legend-item">
+					<div class="legend-color" style="background-color: #28a745;"></div>
+					<span>Estimated Route</span>
+				</div>
+			</div>
+
+			<div class="legend-section">
+				<div class="legend-title">Stop Points</div>
+				<div class="legend-item">
+					<div class="legend-icon"
+						style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 50%;"></div>
+					<span>Actual Points</span>
+				</div>
+				<div class="legend-item">
+					<div class="legend-icon"
+						style="width: 16px; height: 16px; background-color: #28a745; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+					<span>Estimated Arrived Sites</span>
+				</div>
+				<div class="legend-item">
+					<div class="legend-icon"
+						style="width: 16px; height: 16px; background-color: #dc3545; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;">A</div>
+					<span>Estimated Non-Arrived Sites</span>
+				</div>
+			</div>
+
+			<div class="legend-section">
+				<div class="legend-title">Driver Position</div>
+				<div class="legend-item">
+					<div class="legend-driver" style="background: green;"></div>
+					<span>Driver GPS &lt; 24h</span>
+				</div>
+				<div class="legend-item">
+					<div class="legend-driver" style="background: blue;"></div>
+					<span>Driver GPS &lt; 48h</span>
+				</div>
+				<div class="legend-item">
+					<div class="legend-driver" style="background: red;"></div>
+					<span>Driver GPS &gt; 48h</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="resize-handle"></div>
+	</div>
 
 
 	<button id="restorePanels" class="panel-minimize">
@@ -514,6 +512,30 @@ function createAlphabetIcon(letter, color, size = 32) {
   };
 }
 
+function createStepIcon(stepNumber, color, size = 32) {
+	  const label = `S${stepNumber}`;
+	  return {
+	    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+	      <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+	        <rect x="2" y="2" width="${size - 4}" height="${size - 4}" rx="4" fill="${color}" stroke="#ffffff" stroke-width="2"/>
+	        <text 
+	          x="${size / 2}" 
+	          y="${size / 2 + 5}" 
+	          text-anchor="middle" 
+	          font-family="Arial, sans-serif" 
+	          font-size="12" 
+	          font-weight="bold" 
+	          fill="white">
+	          ${label}
+	        </text>
+	      </svg>
+	    `),
+	    scaledSize: new google.maps.Size(size, size),
+	    anchor: new google.maps.Point(size / 2, size)
+	  };
+	}
+
+
 function getBorderColor(dateString) {
   const now = new Date();
   const lastDate = new Date(dateString);
@@ -734,24 +756,21 @@ function showEstimatedItinerary() {
 
 	       
 	        // Function to select icon by point type
-        function getMarkerIcon(point, index, totalPoints) {
-          // First or last point: alphabetical marker
-          if (index === 0 || index === totalPoints - 1) {
-            const markerColor = (!point.expected) ? '#28a745' : '#dc3545';
-            const letter = getAlphabetLetter(index === 0 ? 0 : 1); // A for first, B for last
-            return createAlphabetIcon(letter, markerColor);
-          }
-          
-          // Intermediate points: circle marker
-          return {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 7,
-            fillColor: "#ffc107", // yellow for stop
-            fillOpacity: 1,
-            strokeColor: "#ff9800",
-            strokeWeight: 2,
-          };
-        }
+       // Function to select icon by point type
+function getMarkerIcon(point, index, totalPoints) {
+  // First or last point: alphabetical marker (A for first, B for last)
+  if (index === 0 || index === totalPoints - 1) {
+    const markerColor = (!point.expected) ? '#28a745' : '#dc3545';
+    const letter = getAlphabetLetter(index === 0 ? 0 : 1); // A for first, B for last
+    return createAlphabetIcon(letter, markerColor);
+  }
+
+  // Intermediate points: step markers (S1, S2, S3, ...)
+  const stepNumber = index; // or (index) if you want counting to start from S1 after the first
+  const stepColor = "#ffc107"; // yellow color like before
+  return createStepIcon(stepNumber, stepColor);
+}
+
 
 	        // Draw all points
         let activeInfoWindow = null;
@@ -780,38 +799,43 @@ function showEstimatedItinerary() {
             : point.expected
             ? "Expected "
             : "";
-          const dateDisplay = formattedDate ? `${point.type} : ${expectedText}${formattedDate}` : "";
+          const dateDisplay = formattedDate ? ` ${expectedText}${formattedDate}` : "";
           const dateColor = point.expected ? '#dc3545' : '#28a745'; // red if expected, green if not
 
           const infoWindow = new google.maps.InfoWindow({
-              content: `
-              <div style="
-                  font-family: Arial, sans-serif;
-                  font-size: 13px;
-                  max-width: 260px;
-                  border-radius: 8px;
-                  padding: 10px 12px;
-                  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                  background: #fff;
-              ">
-                  <h3 style="
-                      margin: 0 0 8px 0;
-                      font-size: 16px;
-                      color: #2c3e50;
-                      border-bottom: 1px solid #eee;
-                      padding-bottom: 6px;
-                  ">
-                      📍 ${point.siteName || "Unknown"}
-                  </h3>
-                  
-                  ${dateDisplay ? `
-                          <p style="margin: 6px 0; font-weight: bold;">
-                              <strong style="color: ${dateColor};">${dateDisplay}</strong>
-                          </p>` : ''}
+        	  content: `
+        	    <div style="
+        	        font-family: Arial, sans-serif;
+        	        font-size: 13px;
+        	        max-width: 260px;
+        	        border-radius: 8px;
+        	        padding: 10px 12px;
+        	        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        	        background: #fff;
+        	    ">
+        	        <h3 style="
+        	            margin: 0 0 8px 0;
+        	            font-size: 16px;
+        	            color: #2c3e50;
+        	            border-bottom: 1px solid #eee;
+        	            padding-bottom: 6px;
+        	        ">
+        	            📍${point.type} ${index} : ${point.siteName || "Unknown"}
+        	        </h3>
+        	        
+        	        ${dateDisplay ? `
+        	          <p style="margin: 6px 0; font-weight: bold;">
+        	              <strong style="color: ${dateColor};">${dateDisplay}</strong>
+        	          </p>` : ''}
 
-              </div>
-              `
-          });
+        	        ${point.duration ? `
+        	          <p style="margin: 6px 0;">
+        	              ⏱️ Duration: <strong>${point.duration} Min</strong>
+        	          </p>` : ''}
+        	    </div>
+        	  `
+        	});
+
 
           marker.addListener("click", () => {
             if (activeInfoWindow) activeInfoWindow.close();

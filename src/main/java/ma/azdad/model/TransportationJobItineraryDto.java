@@ -16,6 +16,7 @@ public class TransportationJobItineraryDto {
 	    private Boolean expected;
 	    private Boolean needed;
 	    private String type;
+	    private Integer duration;
 
 
 	    public TransportationJobItineraryDto() {}
@@ -42,6 +43,22 @@ public class TransportationJobItineraryDto {
 	        this.expected = expected;
 	        this.needed = needed;
 	        this.type = type;
+	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
+	    }
+	    
+	    public TransportationJobItineraryDto(Integer id,double latitude, double longitude, String username, Date date,String imageUrl,
+	    		String siteName,Boolean expected,Boolean needed,String type,Integer duration) {
+	        this.id = id;
+	    	this.latitude = latitude;
+	        this.longitude = longitude;
+	        this.username = username;
+	        this.date = date;
+	        this.imageUrl = imageUrl;
+	        this.siteName = siteName;
+	        this.expected = expected;
+	        this.needed = needed;
+	        this.type = type;
+	        this.duration = duration;
 	        this.imageUrlMobile = Public.getPublicUrl(imageUrl);
 	    }
 
@@ -134,6 +151,16 @@ public class TransportationJobItineraryDto {
 		public void setNeeded(Boolean needed) {
 			this.needed = needed;
 		}
+
+		public Integer getDuration() {
+			return duration;
+		}
+
+		public void setDuration(Integer duration) {
+			this.duration = duration;
+		}
+		
+		
 		
 		
 		

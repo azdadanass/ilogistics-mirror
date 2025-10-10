@@ -660,11 +660,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Double pickupLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
 			if (prev.getDeliveryDate() != null && request.getPickupDate() != null && prev.getDeliveryDate().after(request.getPickupDate())) {
-				// ⏰ Previous delivery happens later → fallback to job start
 				fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
 				fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
 			} else if (prevLat != null && prevLng != null && Double.compare(prevLat, pickupLat) == 0 && Double.compare(prevLng, pickupLng) == 0) {
-				// 📍 Same location → start = pickup point
 				fromLat = pickupLat;
 				fromLng = pickupLng;
 			} else {
@@ -731,11 +729,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Double pickupLng = request.getDeliveryRequest().getOrigin() != null ? request.getDeliveryRequest().getOrigin().getLongitude() : request.getDeliveryRequest().getWarehouse().getLongitude();
 
 			if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
-				// ⏰ Previous planned delivery happens later → fallback to planned job start
 				fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
 				fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
 			} else if (prevLat != null && prevLng != null && Double.compare(prevLat, pickupLat) == 0 && Double.compare(prevLng, pickupLng) == 0) {
-				// 📍 Same location → start = pickup
 				fromLat = pickupLat;
 				fromLng = pickupLng;
 			} else {
@@ -790,12 +786,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Double prevLng = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLongitude() : prev.getDeliveryRequest().getWarehouse().getLongitude();
 
 			if (prev.getDeliveryDate() != null && request.getPickupDate() != null && prev.getDeliveryDate().after(request.getPickupDate())) {
-				// ⏰ Previous delivery happens after this pickup → fallback to job start
 				double fromLat = job.getStartLatitude() != null ? job.getStartLatitude() : job.getFirstLatitude();
 				double fromLng = job.getStartLongitude() != null ? job.getStartLongitude() : job.getFirstLongitude();
 				startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
 			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
-				// 📍 Same point → distance = 0
 				startDistance = 0d;
 			} else {
 				// ✅ Normal case → previous delivery
@@ -852,13 +846,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			Double prevLng = prev.getDeliveryRequest().getDestination() != null ? prev.getDeliveryRequest().getDestination().getLongitude() : prev.getDeliveryRequest().getWarehouse().getLongitude();
 
 			if (prev.getExpectedDeliveryDate() != null && request.getExpectedPickupDate() != null && prev.getExpectedDeliveryDate().after(request.getExpectedPickupDate())) {
-				// ⏰ Previous planned delivery happens after this planned pickup → fallback to
 				// planned job start
 				double fromLat = job.getPlannedStartLatitude() != null ? job.getPlannedStartLatitude() : job.getFirstLatitude();
 				double fromLng = job.getPlannedStartLongitude() != null ? job.getPlannedStartLongitude() : job.getFirstLongitude();
 				startDistance = PathService.getDistance(fromLat, fromLng, toLat, toLng);
 			} else if (Double.compare(prevLat, toLat) == 0 && Double.compare(prevLng, toLng) == 0) {
-				// 📍 Same point → distance = 0
 				startDistance = 0d;
 			} else {
 				// ✅ Normal case → use previous planned delivery
@@ -1463,21 +1455,19 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			if (locations == null || locations.isEmpty()) {
 				DriverLocation userLocation = new DriverLocation(new Date(), lat, lng, user);
 				userLocation = driverLocationRepo.save(userLocation);
-				// hadi hiya li at3merlina les info de user si nexiste pas f base donnÃƒÆ’Ã‚Â©s
 				googleGeocodeService.updateGoogleGeocodeDataAsync(userLocation);
 
 			} else {
 				DriverLocation lastLocation = locations.get(locations.size() - 1);
 				double distanceKm = PathService.getDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-				if (distanceKm >= 5.0 || UtilsFunctions.getDateDifference(new Date(),lastLocation.getDate()) > 3) {
+				if (distanceKm >= 1.0 || UtilsFunctions.getDateDifference(new Date(),lastLocation.getDate()) > 1) {
 					lastLocation.setLatitude(lat);
 					lastLocation.setLongitude(lng);
-					// hadi adir mÃƒÂ¯Ã‚Â¿Ã‚Â½j les cordonnÃƒÆ’Ã‚Â©es si user exist dÃƒÆ’Ã‚Â©ja et
-					// distance > 5km
+					// distance > 1km
 					googleGeocodeService.updateGoogleGeocodeDataAsync(lastLocation);
 
 				} else {
-					System.out.println("Distance < 5km or Last Update < 3 days ÃƒÂ¯Ã‚Â¿Ã‚Â½ skipping update");
+					System.out.println("Distance < 1km or Last Update < 1 days  skipping update");
 				}
 			}
 	}
@@ -1492,7 +1482,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 				if (!locations.isEmpty()) {
 					TransportationJobItinerary lastLocation = locations.get(locations.size() - 1);
 					double distanceKm = haversineDistance(lastLocation.getLatitude(), lastLocation.getLongitude(), lat, lng);
-					if (distanceKm >= 5.0) {
+					if (distanceKm >= 1.0) {
 						List<TransportationRequest> list = transportationRequestRepos.findLightByJob(transportationJob.getId());
 						TransportationJobItinerary location = new TransportationJobItinerary(new Date(), lat, lng, transportationJob, transportationJob.getStatus());
 						if (!list.isEmpty()) {
@@ -1509,7 +1499,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 						transportationJobItineraryRepos.save(location);
 
 					} else {
-						System.out.println("Distance < 5km ÃƒÂ¯Ã‚Â¿Ã‚Â½ skipping update");
+						System.out.println("Distance < 1km  skipping update");
 					}
 				} else {
 					List<TransportationRequest> list = transportationRequestRepos.findLightByJob(transportationJob.getId());
@@ -1695,7 +1685,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 			if (lastLat != null && lastLng != null) {
 				double dist = PathService.getDistance(lastLat, lastLng, lat, lng);
-
 				if (loadCount == 0) { // only count as non-productive if carrying nothing
 					estimatedNonProd += dist;
 				}

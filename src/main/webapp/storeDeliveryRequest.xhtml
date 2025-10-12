@@ -357,7 +357,7 @@
 													<h:selectOneMenu value="#{item.location}" converter="#{genericSecuredConverter}" disabled="#{item.id!=null}">
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
 														<!-- <f:selectItems value="#{deliveryRequestView.deliveryRequest.warehouse.locationList}" var="location" itemLabel="#{location.name}" itemValue="#{location}" /> -->
-														<f:selectItems value="#{locationView.findByWarehouseAndStockRowStateAndOwner(deliveryRequestView.deliveryRequest)}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
+														<f:selectItems value="#{locationView.findAvailableLocationList(deliveryRequestView.deliveryRequest,item.packing)}" var="location" itemLabel="#{location.name}" itemValue="#{location}" />
 													</h:selectOneMenu>
 												</p:column>
 												<p:column headerText="Packing">

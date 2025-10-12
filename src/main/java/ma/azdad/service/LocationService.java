@@ -87,13 +87,13 @@ public class LocationService extends GenericService<Integer, Location, LocationR
 		for (Location location : list) {
 			if (!(location.getStockRowState() == null || location.getStockRowState().equals(stockRowState)))
 				continue;
-			if (!(location.getDetailList().isEmpty() || location.getDetailList().stream().filter(i -> i.getOwnerId().equals(ownerId) && i.getOwnerType().equals(ownerType)).count() > 0))
+			if (!(location.getDetailList().isEmpty() || location.getDetailList().stream().anyMatch(i -> i.getOwnerId().equals(ownerId) && i.getOwnerType().equals(ownerType))))
 				continue;
-			if (!(location.getIndustryIdStream().count() == 0 || location.getIndustryIdStream().filter(i -> i.equals(partNumberIndustryId)).count() > 0))
+			if (!(location.getIndustryIdStream().count() == 0 || location.getIndustryIdStream().anyMatch(i -> i.equals(partNumberIndustryId))))
 				continue;
-			if (!(location.getCategoryIdStream().count() == 0 || location.getCategoryIdStream().filter(i -> i.equals(partNumberCategoryId)).count() > 0))
+			if (!(location.getCategoryIdStream().count() == 0 || location.getCategoryIdStream().anyMatch(i -> i.equals(partNumberCategoryId))))
 				continue;
-			if (!(location.getTypeIdStream().count() == 0 || location.getTypeIdStream().filter(i -> i.equals(partNumberTypeId)).count() > 0))
+			if (!(location.getTypeIdStream().count() == 0 || location.getTypeIdStream().anyMatch(i -> i.equals(partNumberTypeId))))
 				continue;
 			if (!(location.getPackingDetailTypeList().isEmpty()
 					|| packingDetailTypeList.stream().allMatch(item -> location.getPackingDetailTypeList().stream().map(i -> i.getType().getName()).anyMatch(name -> name.equals(item)))))

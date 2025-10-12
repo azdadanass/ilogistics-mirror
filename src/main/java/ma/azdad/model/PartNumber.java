@@ -83,16 +83,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 
 	// tmp
 	private PartNumber relatedPartNumber;
-	private Integer industryId;
-	private Integer categoryId;
 	private List<Packing> tmpPackingList = new ArrayList<Packing>();
-
-	public void init() {
-		if (partNumberType != null) {
-			categoryId = partNumberType.getCategory().getId();
-			industryId = partNumberType.getCategory().getIndustry().getId();
-		}
-	}
 
 	public PartNumber() {
 		super();
@@ -689,23 +680,15 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	@Transient
-	public Integer getIndustryId() {
-		return industryId;
-	}
-
-	@Transient
-	public void setIndustryId(Integer industryId) {
-		this.industryId = industryId;
-	}
-
-	@Transient
 	public Integer getCategoryId() {
-		return categoryId;
+		return partNumberType != null ? partNumberType.getCategoryId() : null;
 	}
 
 	@Transient
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
+	public void setCategoryId(Integer partNumberCategoryId) {
+		if (partNumberType == null)
+			partNumberType = new PartNumberType();
+		partNumberType.setCategoryId(partNumberCategoryId);
 	}
 
 	public Boolean getHasPacking() {
@@ -785,6 +768,30 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 
 	public void setIndustryName(String industryName) {
 		this.industryName = industryName;
+	}
+
+	@Transient
+	public Integer getPartNumberTypeId() {
+		return partNumberType != null ? partNumberType.getId() : null;
+	}
+
+	@Transient
+	public void setPartNumberTypeId(Integer partNumberTypeId) {
+		if (partNumberType == null || !partNumberTypeId.equals(partNumberType.getId()))
+			partNumberType = new PartNumberType();
+		partNumberType.setId(partNumberTypeId);
+	}
+
+	@Transient
+	public Integer getIndustryId() {
+		return partNumberType != null ? partNumberType.getIndustryId() : null;
+	}
+
+	@Transient
+	public void setIndustryId(Integer industryId) {
+		if (partNumberType == null)
+			partNumberType = new PartNumberType();
+		partNumberType.setIndustryId(industryId);
 	}
 
 }

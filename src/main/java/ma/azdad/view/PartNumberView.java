@@ -96,7 +96,6 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 			refreshList();
 		else if (isEditPage) {
 			partNumber = partNumberService.findOne(id);
-			partNumber.init();
 			old = partNumber.copy();
 			partNumber.initDetailList();
 		} else if (isViewPage || "/partNumberReporting.xhtml".equals(currentPath))

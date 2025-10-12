@@ -3,6 +3,7 @@ package ma.azdad.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -259,6 +260,26 @@ public class Location extends GenericModel<Integer> implements Serializable {
 
 	public void setPackingDetailTypeList(List<ZonePackingDetailType> packingDetailTypeList) {
 		this.packingDetailTypeList = packingDetailTypeList;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	@Transient
+	public Stream<Integer> getIndustryIdStream() {
+		return industryList.stream().map(i -> i.getIndustry().getId());
+	}
+
+	@Transient
+	public Stream<Integer> getCategoryIdStream() {
+		return industryList.stream().flatMap(i -> i.getCategoryList().stream().map(j -> j.getCategory().getId()));
+	}
+
+	@Transient
+	public Stream<Integer> getTypeIdStream() {
+		return industryList.stream().flatMap(i -> i.getCategoryList().stream().flatMap(j -> j.getTypeList().stream().map(k -> k.getType().getId())));
 	}
 
 }

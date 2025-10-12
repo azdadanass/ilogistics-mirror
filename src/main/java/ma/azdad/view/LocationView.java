@@ -19,6 +19,7 @@ import com.google.gson.GsonBuilder;
 import ma.azdad.model.DeliveryRequest;
 import ma.azdad.model.Location;
 import ma.azdad.model.LocationDetail;
+import ma.azdad.model.Packing;
 import ma.azdad.model.StockRowDetail;
 import ma.azdad.model.ZoneCategory;
 import ma.azdad.model.ZoneIndustry;
@@ -434,6 +435,13 @@ public class LocationView extends GenericView<Integer, Location, LocationRepos, 
 	public List<Location> findByWarehouseAndStockRowStateAndOwner(DeliveryRequest deliveryRequest) {
 		return service.findByWarehouseAndStockRowStateAndOwner(deliveryRequest);
 	}
+	
+	
+	public List<Location> findAvailableLocationList(DeliveryRequest deliveryRequest,Packing packing) {
+		return service.findAvailableLocationList(deliveryRequest, packing);
+	}
+	
+	
 
 	public List<Location> findLightByWarehouse(Integer warehouseId) {
 		return service.findLightByWarehouse(warehouseId);

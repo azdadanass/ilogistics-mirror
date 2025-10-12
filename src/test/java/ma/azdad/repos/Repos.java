@@ -6,19 +6,31 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import ma.azdad.GenericTest;
-import ma.azdad.service.TransportationJobService;
-import ma.azdad.service.ZoneHeightService;
+import ma.azdad.model.DeliveryRequest;
+import ma.azdad.model.StockRowState;
+import ma.azdad.service.DeliveryRequestService;
+import ma.azdad.service.LocationService;
+import ma.azdad.service.PackingService;
 
 @Rollback(false)
 public class Repos extends GenericTest {
 
 	@Autowired
-	TransportationJobService transportationJobService;
+	LocationService locationService;
+	
+	@Autowired
+	DeliveryRequestService deliveryRequestService;
+	
+	@Autowired
+	PackingService packingService;
 
 	@Test
 	@Transactional
 	public void test() throws Exception {
-		transportationJobService.calculateEstimatedCostsScript();
+		DeliveryRequest dn =  deliveryRequestService.findOne(24879);
+		dn.setStockRowState(StockRowState.NORMAL);
+		
+		System.out.println(locationService.findAvailableLocationList(dn, packingService.findOne(46)));
 	}
 
 }

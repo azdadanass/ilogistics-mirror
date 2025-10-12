@@ -66,4 +66,17 @@ public class PartNumberCategory extends GenericModel<Integer> implements Seriali
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	@Transient
+	public Integer getIndustryId(){
+		return industry!=null?industry.getId():null;
+	}
+
+	@Transient
+	public void setIndustryId(Integer industryId){
+		if(industry==null || !industryId.equals(industry.getId()))
+			industry=new PartNumberIndustry();
+		industry.setId(industryId);
+	}
+
 }

@@ -1,10 +1,13 @@
 package ma.azdad.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import ma.azdad.model.Location;
 import ma.azdad.model.ZoneHeight;
 import ma.azdad.repos.ZoneHeightRepos;
 
@@ -29,11 +32,36 @@ public class ZoneHeightService extends GenericService<Integer, ZoneHeight, ZoneH
 		return repos.findIdListByDeliveryRequest(deliveryRequestId);
 	}
 
-	public void updateFillPercentage(Integer id) {
-		System.out.println("updateFillPercentage : "+id);
+	public void updateUsedVolumeAndFillPercentage(Integer id) {
+		System.out.println("updateUsedVolumeAndFillPercentage : " + id);
 		Double totalUsedVolume = repos.findTotalUsedVolume(id);
 		Double slotSize = repos.findSlotSize(id);
-		repos.updateFillPercentage(id, totalUsedVolume/slotSize);
+		repos.updateUsedVolume(id, totalUsedVolume);
+		repos.updateFillPercentage(id, totalUsedVolume / slotSize);
 	}
 
+	public String findReferenceById(Integer id) {
+		return repos.findReferenceById(id);
+	}
+
+	public List<ZoneHeight> findAvailableByLocation(Location location, Map<Integer, Double> tmpUsedVolumeMap, Double volume) {
+		List<ZoneHeight> result = new ArrayList<ZoneHeight>();
+		List<ZoneHeight> list = repos.findByLocation(location.getId());
+
+		System.out.println("map : " + tmpUsedVolumeMap);
+
+		for (ZoneHeight zoneHeight : list) {
+			Double usedVolume = zoneHeight.getUsedVolume();
+			Double tmpUsedVolume = tmpUsedVolumeMap.getOrDefault(zoneHeight.getId(), 0.0);
+			System.out.println("-------------------------------");
+			System.out.println(zoneHeight.getReference());
+			System.out.println("volume : " + volume);
+			System.out.println("usedVolume : " + usedVolume);
+			System.out.println("tmpUsedVolume : " + tmpUsedVolume);
+			if (location.getSlotSize() >= usedVolume + tmpUsedVolume + volume)
+				result.add(zoneHeight);
+		}
+
+		return result;
+	}
 }

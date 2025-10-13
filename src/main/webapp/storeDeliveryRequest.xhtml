@@ -417,7 +417,7 @@
 													<h:outputText value="#{item.packingDetail.name}" />
 												</p:column>
 												<p:column headerText="Quantity" width="180">
-													<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" readonly="#{item.id!=null}">
+													<p:inputNumber value="#{item.quantity}" maxValue="#{item.tmpQuantity}" minValue="0" readonly="#{item.id!=null or item.zoneHeightId!=null}">
 														<p:ajax update="action-buttons" />
 													</p:inputNumber>
 													<span class="action-buttons center">
@@ -432,13 +432,30 @@
 														</h:panelGroup>
 													</span>
 												</p:column>
+												<p:column headerText="Volume" width="100">
+													<h:outputText value="#{item.volume}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+													<h:outputText value=" m3" />
+												</p:column>
+												<p:column headerText="Real Volume" width="100">
+													<h:outputText value="#{item.realVolume}">
+														<f:convertNumber type="number" maxFractionDigits="2" />
+													</h:outputText>
+													<h:outputText value=" m3" />
+												</p:column>
 												<p:column headerText="Zone">
 													<h:outputText value="#{item.stockRow.location.name}" />
 												</p:column>
 												<p:column headerText="Line/Column/Height">
-													<p:selectOneMenu value="#{item.zoneHeightId}" filter="true" filterMatchMode="contains"  disabled="#{item.id!=null}">
+													<p:inputText value="#{zoneHeightView.findReferenceById(item.zoneHeightId)}" readonly="true" rendered="#{item.zoneHeightId!=null}" /> 
+													<p:selectOneMenu value="#{item.zoneHeightId}" filter="true" filterMatchMode="contains" disabled="#{item.id!=null}" rendered="#{item.zoneHeightId==null}" >
 														<f:selectItem itemLabel="---" noSelectionOption="true" />
-														<f:selectItems value="#{zoneHeightView.findByLocation(item.stockRow.location.id)}" var="h" itemLabel="#{h.reference}" itemValue="#{h.id}" />
+														<!-- <f:selectItems value="#{zoneHeightView.findByLocation(item.stockRow.location.id)}" var="h" itemLabel="#{h.reference}" itemValue="#{h.id}" /> -->
+														<f:selectItems value="#{deliveryRequestView.findAvailableZoneHeightListByLocation(item.stockRow.location,item.realVolume)}" var="h" itemLabel="#{h.reference}"
+															itemValue="#{h.id}" />
+														<!-- <p:ajax listener="#{deliveryRequestView.testtttt()}" oncomplete="aaaaaaaaaaaa()" process="stockRowDetailList"/> -->
+														<p:ajax update="stockRowDetailList"/>
 													</p:selectOneMenu>
 												</p:column>
 												<p:column headerText="Actions" styleClass="center" width="100">
@@ -450,7 +467,8 @@
 													</div>
 												</p:column>
 											</p:dataTable>
-										</div>
+											<p:remoteCommand name="aaaaaaaaaaaa" update="stockRowDetailList"/>
+										</div> 
 									</div>
 								</div>
 							</f:subview>

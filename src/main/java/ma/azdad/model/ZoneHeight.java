@@ -22,6 +22,8 @@ public class ZoneHeight extends GenericModel<Integer> implements Comparable<Zone
 	@Expose
 	private String reference;
 
+	private Double usedVolume = 0.0;
+
 	@Expose
 	private Double fillPercentage = 0.0;
 
@@ -102,6 +104,14 @@ public class ZoneHeight extends GenericModel<Integer> implements Comparable<Zone
 
 	public void setFillPercentage(Double fillPercentage) {
 		this.fillPercentage = fillPercentage;
+	}
+
+	public Double getUsedVolume() {
+		return usedVolume;
+	}
+
+	public void setUsedVolume(Double usedVolume) {
+		this.usedVolume = usedVolume;
 	}
 
 }

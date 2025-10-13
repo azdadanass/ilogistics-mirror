@@ -57,6 +57,7 @@ import ma.azdad.model.ToNotify;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.model.Warehouse;
+import ma.azdad.model.ZoneHeight;
 import ma.azdad.repos.DeliveryRequestRepos;
 import ma.azdad.service.AppLinkService;
 import ma.azdad.service.BoqService;
@@ -594,7 +595,6 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			FacesContextMessages.ErrorMessages("Gross Weight  must be greater than 10 Kg to add transport");
 			return null;
 		}
-		
 
 		if (deliveryRequest.getVolume() == null || deliveryRequest.getVolume() < 0.5) {
 			FacesContextMessages.ErrorMessages("Volume  must be greater than 0.5 m3 to add transport");
@@ -700,11 +700,10 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			}
 
 			if (!inboundStockRowDetailMap.isEmpty()) {
-				
-				System.out.println("inboundStockRowDetailMap : "+inboundStockRowDetailMap);
-				System.out.println("stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList) : "+stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList));
-				
-				
+
+				System.out.println("inboundStockRowDetailMap : " + inboundStockRowDetailMap);
+				System.out.println("stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList) : " + stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList));
+
 				if (!inboundStockRowDetailMap.equals(stockRowDetailService.findUsedQunantityMap(inboundStockRowDetailIdList))) {
 					FacesContextMessages.ErrorMessages("Page Expired, please to reload and try again !");
 					return null;
@@ -718,7 +717,7 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 			service.save(deliveryRequest);
 
 			stockRowDetailListToUpdate.forEach(stockRowDetail -> stockRowDetailService.save(stockRowDetail));
-			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId -> zoneHeightService.updateUsedVolumeAndFillPercentage(zoneHeightId));
 
 			emailService.deliveryRequestNotification(deliveryRequest);
 			smsService.sendSms(deliveryRequest);
@@ -783,11 +782,11 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 	// SAVE BY STEPS
 	public void preparationPreviousStep() {
-		if(step==2 && deliveryRequest.getStockRowDetailList().isEmpty()) {
+		if (step == 2 && deliveryRequest.getStockRowDetailList().isEmpty()) {
 			step = 0;
 			return;
 		}
-		
+
 		if (step > 1)
 			step--;
 	}
@@ -900,8 +899,8 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 
 			stockRowService.updateOwnerId(deliveryRequest.getId());
 			stockRowService.updateInboundOwnerId(deliveryRequest.getId());
-			
-			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId->zoneHeightService.updateFillPercentage(zoneHeightId));
+
+			zoneHeightService.findIdListByDeliveryRequest(deliveryRequest.getId()).forEach(zoneHeightId -> zoneHeightService.updateUsedVolumeAndFillPercentage(zoneHeightId));
 
 			deliveryRequest = service.findOne(deliveryRequest.getId());
 
@@ -949,6 +948,18 @@ public class DeliveryRequestView extends GenericView<Integer, DeliveryRequest, D
 		execJavascript("PF('nextButton').enable()");
 
 		return null;
+	}
+
+	public void testtttt() {
+		Map<Integer, Double> map = deliveryRequest.getStockRowDetailList().stream().filter(i -> i.getZoneHeightId() != null)
+				.collect(Collectors.groupingBy(StockRowDetail::getZoneHeightId, Collectors.summingDouble(StockRowDetail::getRealVolume)));
+		System.out.println("testtttt : " + map);
+	}
+
+	public List<ZoneHeight> findAvailableZoneHeightListByLocation(Location location, Double volume) {
+		Map<Integer, Double> map = deliveryRequest.getStockRowDetailList().stream().filter(i -> i.getZoneHeightId() != null)
+				.collect(Collectors.groupingBy(StockRowDetail::getZoneHeightId, Collectors.summingDouble(StockRowDetail::getRealVolume)));
+		return zoneHeightService.findAvailableByLocation(location, map, volume);
 	}
 
 	private void generateSerialNumberList() {

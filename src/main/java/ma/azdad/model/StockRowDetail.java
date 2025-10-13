@@ -84,6 +84,16 @@ public class StockRowDetail extends GenericModel<Integer> {
 	public String getIdentifierName() {
 		return this.getIdStr();
 	}
+	
+	@Transient
+	public Double getVolume() {
+		return quantity * packingDetail.getQuantity();
+	}
+	
+	@Transient
+	public Double getRealVolume() {
+		return getVolume() / packingDetail.getStorageFactor();
+	}
 
 	// getters & setters
 

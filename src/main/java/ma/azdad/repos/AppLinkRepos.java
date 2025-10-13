@@ -48,7 +48,7 @@ public interface AppLinkRepos extends JpaRepository<AppLink, Integer> {
 	@Query(c2 + "from AppLink a where a.transportationRequest.transportationJob.id = ?1")
 	public List<AppLink> findByTransportationJob(Integer transportationJobId);
 
-	@Query(c2 + "from AppLink a where a.warehouse.id = ?1")
+	@Query(c1 + "from AppLink a where a.warehouse.id = ?1")
 	public List<AppLink> findByWarehouse(Integer warehouseId);
 
 	@Modifying

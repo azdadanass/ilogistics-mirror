@@ -49,33 +49,36 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 	public AppLink() {
 		super();
 	}
-	
+
 	// c1
-		public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount,//
-				Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
-			super();
-			this.costType = costType;
-			this.revenueType = revenueType;
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.amount = amount;
-			this.acceptanceId = acceptanceId;
-			this.expensepaymentId = expensepaymentId;
-			this.madConversionRate = madConversionRate1 != null ? madConversionRate1 : madConversionRate2;
-			this.currency = currency1 != null ? currency1 : currency2;
-			this.supplierName = supplierName;
-			this.customerName = customerName;
-			this.idInvoice = idInvoice;
-			this.invoiceStatus = invoiceStatus;
-			this.invoiceDate = invoiceDate;
-			this.poNumeroIbuy = poNumeroIbuy;
-			this.poNumeroInvoice = poNumeroInvoice;
-		}
+	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount, //
+			Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName,
+			String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
+		super();
+		this.costType = costType;
+		this.revenueType = revenueType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.amount = amount;
+		this.acceptanceId = acceptanceId;
+		this.expensepaymentId = expensepaymentId;
+		this.madConversionRate = madConversionRate1 != null ? madConversionRate1 : madConversionRate2;
+		this.currency = currency1 != null ? currency1 : currency2;
+		this.supplierName = supplierName;
+		this.customerName = customerName;
+		this.idInvoice = idInvoice;
+		this.invoiceStatus = invoiceStatus;
+		this.invoiceDate = invoiceDate;
+		this.poNumeroIbuy = poNumeroIbuy;
+		this.poNumeroInvoice = poNumeroInvoice;
+	}
 
 	// c2
-	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount,//
-			String transportationRequestReference,TransportationRequestStatus transportationRequestStatus,Double transportationRequestCost,TransportationRequestPaymentStatus transportationRequestPaymentStatus,String transportationRequestProjectName, //
-			Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName, String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
+	public AppLink(CostType costType, RevenueType revenueType, Date startDate, Date endDate, Double amount, //
+			String transportationRequestReference, TransportationRequestStatus transportationRequestStatus, Double transportationRequestCost,
+			TransportationRequestPaymentStatus transportationRequestPaymentStatus, String transportationRequestProjectName, //
+			Double madConversionRate1, Double madConversionRate2, String currency1, String currency2, Integer acceptanceId, Integer expensepaymentId, String supplierName, String customerName,
+			String idInvoice, String invoiceStatus, Date invoiceDate, String poNumeroIbuy, String poNumeroInvoice) {
 		super();
 		this.costType = costType;
 		this.revenueType = revenueType;
@@ -284,64 +287,64 @@ public class AppLink extends GenericModel<Integer> implements Serializable {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	@Transient
-	public String getTransportationRequestReference(){
-		return transportationRequest!=null?transportationRequest.getReference():null;
+	public String getTransportationRequestReference() {
+		return transportationRequest != null ? transportationRequest.getReference() : null;
 	}
 
 	@Transient
-	public void setTransportationRequestReference(String transportationRequestReference){
-		if(transportationRequest==null)
-			transportationRequest=new TransportationRequest();
+	public void setTransportationRequestReference(String transportationRequestReference) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
 		transportationRequest.setReference(transportationRequestReference);
 	}
-	
+
 	@Transient
-	public TransportationRequestStatus getTransportationRequestStatus(){
-		return transportationRequest!=null?transportationRequest.getStatus():null;
+	public TransportationRequestStatus getTransportationRequestStatus() {
+		return transportationRequest != null ? transportationRequest.getStatus() : null;
 	}
 
 	@Transient
-	public void setTransportationRequestStatus(TransportationRequestStatus transportationRequestStatus){
-		if(transportationRequest==null)
-			transportationRequest=new TransportationRequest();
+	public void setTransportationRequestStatus(TransportationRequestStatus transportationRequestStatus) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
 		transportationRequest.setStatus(transportationRequestStatus);
 	}
-	
+
 	@Transient
-	public Double getTransportationRequestCost(){
-		return transportationRequest!=null?transportationRequest.getCost():null;
+	public Double getTransportationRequestCost() {
+		return transportationRequest != null ? transportationRequest.getCost() : null;
 	}
 
 	@Transient
-	public void setTransportationRequestCost(Double transportationRequestCost){
-		if(transportationRequest==null)
-			transportationRequest=new TransportationRequest();
+	public void setTransportationRequestCost(Double transportationRequestCost) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
 		transportationRequest.setCost(transportationRequestCost);
 	}
 
 	@Transient
-	public TransportationRequestPaymentStatus getTransportationRequestPaymentStatus(){
-		return transportationRequest!=null?transportationRequest.getPaymentStatus():null;
+	public TransportationRequestPaymentStatus getTransportationRequestPaymentStatus() {
+		return transportationRequest != null ? transportationRequest.getPaymentStatus() : null;
 	}
 
 	@Transient
-	public void setTransportationRequestPaymentStatus(TransportationRequestPaymentStatus transportationRequestPaymentStatus){
-		if(transportationRequest==null)
-			transportationRequest=new TransportationRequest();
+	public void setTransportationRequestPaymentStatus(TransportationRequestPaymentStatus transportationRequestPaymentStatus) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
 		transportationRequest.setPaymentStatus(transportationRequestPaymentStatus);
 	}
 
 	@Transient
-	public String getTransportationRequestProjectName(){
-		return transportationRequest!=null?transportationRequest.getProjectName():null;
+	public String getTransportationRequestProjectName() {
+		return transportationRequest != null ? transportationRequest.getProjectName() : null;
 	}
 
 	@Transient
-	public void setTransportationRequestProjectName(String projectName){
-		if(transportationRequest==null)
-			transportationRequest=new TransportationRequest();
+	public void setTransportationRequestProjectName(String projectName) {
+		if (transportationRequest == null)
+			transportationRequest = new TransportationRequest();
 		transportationRequest.setProjectName(projectName);
 	}
 

@@ -548,9 +548,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public void calculateEstimatedCostsScript() {
 		repos.findWithoutEstimatedCost().forEach(tj -> {
+			tj = initCalculableFields(tj);
 			tj.calculateEstimatedStartCost();
 			tj.calculateEstimatedItineraryCost();
-			System.out.println(tj.getReference() + " : " + tj.getEstimatedCost());
+			System.out.println(tj.getReference() + " : " + tj.getEstimatedStartCost()+"\t"+tj.getEstimatedItineraryCost());
 			save(tj);
 		});
 	}

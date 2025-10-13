@@ -406,6 +406,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationJob.generateStopList();
 			transportationJob.generatePathList();
 			calculateTransportationRequestListCosts(transportationJob, setCost);
+			
+			initCalculableFields(transportationJob);
 			transportationJob.calculateEstimatedStartCost();
 			transportationJob.calculateEstimatedItineraryCost();
 			TransportationJob tj = save(transportationJob);

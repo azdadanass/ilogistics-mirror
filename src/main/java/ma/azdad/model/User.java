@@ -998,7 +998,7 @@ public class User extends GenericModel<String> implements Serializable {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
-
+	
 	public Long getReactivity() {
 		return reactivity;
 	}

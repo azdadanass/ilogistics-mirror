@@ -3,6 +3,7 @@ package ma.azdad.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,6 +41,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
+import ma.azdad.model.Priority;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.TransportationJob;
@@ -1065,29 +1067,148 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	// reactivity & performance
 
+	private Long computeAcceptPerformance(List<Object[]> results) {
+	    if (results.isEmpty()) return 0L;
+
+	    long totalTR = 0L;
+	    long withinDeadlineTR = 0L;
+
+	    for (Object[] row : results) {
+	        TransportationJob job = (TransportationJob) row[0];
+	        Long trCount = (Long) row[1];
+
+	        if (job.getDate3() == null || job.getDate4() == null || job.getAcceptLeadTime() == null || trCount == null || trCount == 0)
+	            continue;
+
+	        totalTR += trCount;
+
+	        long deadlineMillis = job.getDate3().getTime() + Math.round(job.getAcceptLeadTime() * 3600_000L);
+	        if (!job.getDate4().after(new Date(deadlineMillis))) {
+	            withinDeadlineTR += trCount;
+	        }
+	    }
+
+	    if (totalTR == 0) return 0L;
+	    return withinDeadlineTR * 100 / totalTR;
+	}
+	
 	public Long getAcceptPerformance(String username) {
-		Long countAcceptedWithinDeadLine = ObjectUtils.firstNonNull(repos.countAcceptedWithinDeadLineByDriver(username), 0l);
-		Long countAccepted = ObjectUtils.firstNonNull(repos.countAcceptedByDriver(username), 0l);
-		if (countAccepted == 0)
-			return 0l;
-		return countAcceptedWithinDeadLine * 100 / countAccepted;
+	    return computeAcceptPerformance(
+	        repos.findAcceptedJobsWithCount(username,
+	            Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2))
+	    );
 	}
 
-	public Long getStartPerformance(String username) {
-		Long countStartedWithinDeadLine = ObjectUtils.firstNonNull(repos.countStartedWithinDeadLineByDriver(username), 0l);
-		Long countStarted = ObjectUtils.firstNonNull(repos.countStartedByDriver(username), 0l);
-		if (countStarted == 0)
-			return 0l;
-		return countStartedWithinDeadLine * 100 / countStarted;
+	public Long getAcceptPerformanceByTransporter(Integer transporterId) {
+	    return computeAcceptPerformance(
+	        repos.findAcceptedJobsWithCountByTransporter(transporterId,
+	            Arrays.asList(TransportationJobStatus.EDITED, TransportationJobStatus.ASSIGNED1, TransportationJobStatus.ASSIGNED2))
+	    );
 	}
+
+
+
+
+
+
+
+	public Long getStartPerformance(String username) {
+	   
+
+	    return 0l;
+	}
+	
+	private Long computeCompletePerformance(List<TransportationRequest> trs) {
+	    if (trs.isEmpty()) return 100L;
+
+	    double weightedSum = 0.0;
+	    int total = 0;
+
+	    for (TransportationRequest tr : trs) {
+	        Date deliverDate = tr.getDeliveryDate();
+	        Date plannedDeliverDate = tr.getPlannedDeliveryDate();
+	        Priority prio = tr.getPriority();
+
+	        if (deliverDate == null || plannedDeliverDate == null || prio == null)
+	            continue;
+
+	        double delayHours = (deliverDate.getTime() - plannedDeliverDate.getTime()) / 3600_000.0;
+
+	        int weight;
+	        switch (prio) {
+	            case MINOR:
+	                weight = 1;
+	                break;
+	            case MEDIUM:
+	                weight = 2;
+	                break;
+	            case HIGH:
+	                weight = 3;
+	                break;
+	            case CRITICAL:
+	                weight = 4;
+	                break;
+	            default:
+	                throw new IllegalArgumentException("Unknown priority: " + prio);
+	        }
+
+	        weightedSum += delayHours * weight;
+	        total++;
+	    }
+
+	    if (total == 0) return 100L;
+
+	    double Y = weightedSum / total;
+	    double performance = (Y <= 0) ? 100.0 : Math.max(0, (24 - Y) / 24) * 100;
+
+	    return Math.round(performance);
+	}
+	
+	public Long getCompletePerformance(String username) {
+	    return computeCompletePerformance(
+	        transportationRequestRepos.findDeliveredOrAcknowledgedByDriver(
+	            username,
+	            Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED))
+	    );
+	}
+
+	public Long getCompletePerformanceByTransporter(Integer transporterId) {
+	    return computeCompletePerformance(
+	        transportationRequestRepos.findDeliveredOrAcknowledgedByTransporter(
+	            transporterId,
+	            Arrays.asList(TransportationRequestStatus.DELIVERED, TransportationRequestStatus.ACKNOWLEDGED))
+	    );
+	}
+
+
+
 
 	public Long getReactivity(String username) {
 		return getReactivity(getAcceptPerformance(username), getStartPerformance(username));
+	}
+	
+	public Long getTransporterReactivity(Integer id) {
+		return getReactivity(getAcceptPerformanceByTransporter(id), 0l);
 	}
 
 	public Long getReactivity(Long acceptPerfomance, Long startPerfomance) {
 		return (acceptPerfomance + startPerfomance) / 2;
 	}
+	
+	public Long getPerformance(String username) {
+	    Long reactivity = getReactivity(username);
+	    Long complete = getCompletePerformance(username);
+
+	    return Math.round((reactivity + complete) / 2.0);
+	}
+	
+	public Long getTransporterPerformance(Integer id) {
+	    Long reactivity = getTransporterReactivity(id);
+	    Long complete = getCompletePerformanceByTransporter(id);
+
+	    return Math.round((reactivity + complete) / 2.0);
+	}
+
 
 	public void generateQrKeyScript() {
 		repos.findWithoutQrKey().forEach(i -> {
@@ -1095,6 +1216,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			save(i);
 		});
 	}
+	
+	@SafeVarargs
+	private static <T> T firstNonNull(T... values) {
+	    for (T val : values) {
+	        if (val != null)
+	            return val;
+	    }
+	    return null;
+	}
+
 
 	public String generateStamp(TransportationJob transportationJob) {
 		String downloadPath = "temp/stamp_" + transportationJob.getReference() + ".pdf";

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -75,7 +77,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected UserService userService;
-	
+
 	@Autowired
 	protected VehicleBrandTypeService vehicleBrandTypeService;
 
@@ -85,6 +87,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	private Vehicle vehicle;
 	private User user;
 	private Boolean active = true;
+	private String sortBy = "Pending TR";
 
 	@Override
 	@PostConstruct
@@ -103,6 +106,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public void refreshList() {
 		if (isListPage)
 			list2 = list1 = transporterService.findLight(active);
+
 	}
 
 	public void refreshTransporter() {
@@ -120,13 +124,38 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			cacheView.accessDenied();
 	}
 
+	public void sort() {
+		System.out.println("sort");
+		Collections.sort(list2, new Comparator<Transporter>() {
+			@Override
+			public int compare(Transporter o1, Transporter o2) {
+				switch (sortBy) {
+				case "Pending TR":
+					if (o1.getCountPendingTr() == null)
+						return -1;
+					if (o2.getCountPendingTr() == null)
+						return 1;
+					return o1.getCountPendingTr().compareTo(o2.getCountPendingTr());
+				case "Reactivity":
+					return o1.getReactivity().compareTo(o2.getReactivity());
+				case "Performance":
+					return o1.getPerformance().compareTo(o2.getPerformance());
+				}
+				return 1;
+			}
+		});
+		Collections.reverse(list2);
+
+	}
+
 	// Vehicle MANAGEMENT
 	public void initVehicle() {
 		vehicle = new Vehicle(transporter);
 	}
 
 	public Boolean canSaveVehicle() {
-		return sessionView.isInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
+		return sessionView.isInternalTrAdmin()
+				|| (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
 	}
 
 	public void saveVehicle() {
@@ -134,8 +163,7 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			return;
 		if (vehicle.getFromMyTools())
 			vehicle.setTool(toolService.findOne(vehicle.getToolId()));
-		
-		
+
 		vehicle.setBrandType(vehicleBrandTypeService.findOneLight(vehicle.getBrandTypeId()));
 		vehicleService.save(vehicle);
 		refreshTransporter();
@@ -159,10 +187,10 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	// Driver MANAGEMENT
 	public Boolean canAddUser() {
-		return sessionView.isInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
+		return sessionView.isInternalTrAdmin()
+				|| (sessionView.getIsExternalTrAdmin() && transporter.equals(sessionView.getUser().getTransporter()));
 	}
-	
-	
+
 	public void addUser() {
 		if (!transporter.getUserList().contains(user)) {
 			user = userService.findOneLight(user.getUsername());
@@ -176,11 +204,14 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public List<User> getUserSelectionList() {
 		switch (transporter.getType()) {
 		case INTERNAL:
-			return userService.findActiveAndHaveAnyRole(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), true);
+			return userService.findActiveAndHaveAnyRole(
+					Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), true);
 		case PRIVATE:
-			return userService.findActiveAndHaveAnyRole(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), false);
+			return userService.findActiveAndHaveAnyRole(
+					Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), false);
 		case SUPPLIER:
-			return userService.findActiveAndHaveAnyRoleAndSupplier(Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), transporter.getSupplierId());
+			return userService.findActiveAndHaveAnyRoleAndSupplier(
+					Arrays.asList(Role.ROLE_ILOGISTICS_DRIVER, Role.ROLE_ILOGISTICS_TM), transporter.getSupplierId());
 		default:
 			return new ArrayList<User>();
 		}
@@ -230,11 +261,13 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	}
 
 	public void formatPrivateCin() {
-		transporter.setPrivateCin(UtilsFunctions.cleanString(transporter.getPrivateCin()).replace(" ", "").toUpperCase());
+		transporter
+				.setPrivateCin(UtilsFunctions.cleanString(transporter.getPrivateCin()).replace(" ", "").toUpperCase());
 	}
 
 	public void formatPrivateEmail() {
-		transporter.setPrivateEmail(UtilsFunctions.cleanString(transporter.getPrivateEmail()).replace(" ", "").toLowerCase());
+		transporter.setPrivateEmail(
+				UtilsFunctions.cleanString(transporter.getPrivateEmail()).replace(" ", "").toLowerCase());
 	}
 
 	// toggle status
@@ -272,7 +305,8 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, getClassName2());
-		TransporterFile transporterFile = new TransporterFile(file, transporterFileType, event.getFile().getFileName(), sessionView.getUser(), transporter);
+		TransporterFile transporterFile = new TransporterFile(file, transporterFileType, event.getFile().getFileName(),
+				sessionView.getUser(), transporter);
 		transporterFileService.save(transporterFile);
 		synchronized (TransporterView.class) {
 			refreshTransporter();
@@ -374,7 +408,13 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
-	
+
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
 
 }

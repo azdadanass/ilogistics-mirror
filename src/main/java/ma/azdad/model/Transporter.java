@@ -40,6 +40,9 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 	private String privatePhone;
 
 	// tmp
+	private Long countPendingTr;
+	private Long reactivity;
+	private Long performance;
 
 	private List<TransporterFile> fileList = new ArrayList<>();
 	private List<TransporterHistory> historyList = new ArrayList<>();
@@ -321,6 +324,32 @@ public class Transporter extends GenericModel<Integer> implements Serializable {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+	@Transient
+	public Long getReactivity() {
+		return reactivity;
+	}
+
+	public void setReactivity(Long reactivity) {
+		this.reactivity = reactivity;
+	}
+	@Transient
+	public Long getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(Long performance) {
+		this.performance = performance;
+	}
+	
+	@Transient
+	public Long getCountPendingTr() {
+		return countPendingTr;
+	}
+
+	@Transient
+	public void setCountPendingTr(Long countPendingTr) {
+		this.countPendingTr = countPendingTr;
 	}
 
 }

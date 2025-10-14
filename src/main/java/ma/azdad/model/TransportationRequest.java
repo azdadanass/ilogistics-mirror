@@ -127,6 +127,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private String approverFullName;
 	private String requesterUsername;
 	private String requesterFullName;
+	private Priority priority;
 
 	private List<TransportationRequestFile> fileList = new ArrayList<>();
 	private List<TransportationRequestHistory> historyList = new ArrayList<>();
@@ -279,6 +280,17 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.originId = originId;
 		this.destinationId = destinationId;
 		this.warehouseId = warehouseId;
+	}
+	
+	
+	
+	
+
+	public TransportationRequest(Date neededDeliveryDate, Date deliveryDate,Priority priority) {
+		super();
+		this.neededDeliveryDate = neededDeliveryDate;
+		this.deliveryDate = deliveryDate;
+		this.priority = priority;
 	}
 
 	public void calculateCost() {
@@ -1150,8 +1162,16 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	@Transient
 	public Priority getPriority() {
-		return deliveryRequest != null ? deliveryRequest.getPriority() : null;
+	    if (priority != null) {
+	        return priority;
+	    }
+	    if (deliveryRequest != null && deliveryRequest.getPriority() != null) {
+	        return deliveryRequest.getPriority();
+	    }
+	    return null;
 	}
+
+
 
 	@Transient
 	public void setPriority(Priority deliveryRequestPriority) {

@@ -53,14 +53,17 @@ public class DashboardView {
 		
 		this.acceptPerfomance = transportationJobService.getAcceptPerformance(sessionView.getUsername());
 		this.startPerfomance = transportationJobService.getStartPerformance(sessionView.getUsername());
+		this.completePerfomance = transportationJobService.getCompletePerformance(sessionView.getUsername());
 	}
 
 	public Long getReactivity() {
 		return transportationJobService.getReactivity(sessionView.getUsername());
 	}
+	
+	
 
 	public Long getPerformance() {
-		return 0l;
+		return transportationJobService.getPerformance(sessionView.getUsername());
 	}
 
 	public String getColor(Long percentage) {

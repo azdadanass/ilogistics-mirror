@@ -240,9 +240,24 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	}
 
 	public Long countPendingByDriver(String username) {
-		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.EDITED, TransportationRequestStatus.REQUESTED, TransportationRequestStatus.APPROVED,
-				TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
+		return countByDriverAndStatus(username, Arrays.asList(TransportationRequestStatus.ASSIGNED, TransportationRequestStatus.PICKEDUP));
 	}
+	
+	@Cacheable("transportationRequestService.countByTransporterAndStatus")
+	public Long countByTransporterAndStatus(Integer transporterId, List<TransportationRequestStatus> statusList) {
+	    return repos.countByTransporterAndStatus(transporterId, statusList);
+	}
+
+	public Long countPendingByTransporter(Integer transporterId) {
+	    return countByTransporterAndStatus(
+	        transporterId,
+	        Arrays.asList(
+	            TransportationRequestStatus.ASSIGNED,
+	            TransportationRequestStatus.PICKEDUP
+	        )
+	    );
+	}
+
 
 	public List<TransportationRequest> findLight(String username, TransportationRequestState state, List<Integer> assignedProjectList, Boolean isTM) {
 		if (state == null)

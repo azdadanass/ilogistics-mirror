@@ -535,11 +535,20 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			switch (transportationJob.getAssignmentType()) {
 			case TRANSPORTER:
 				transporterView.initLists(transporterService.findLight(true));
+				transporterView.getList2().forEach(u -> {
+					u.setCountPendingTr(transportationRequestService.countPendingByTransporter(u.getId()));
+					u.setReactivity(transportationJobService.getTransporterReactivity(u.getId()));
+					u.setPerformance(transportationJobService.getTransporterPerformance(u.getId()));
+					
+				});
+				transporterView.sort();
 				break;
 			case INTERNAL_DRIVER:
 				userView.initLists(userService.findActiveDriverList(true));
-				userView.getList1().forEach(u -> {
+				userView.getList2().forEach(u -> {
 					u.setCountPendingTr(transportationRequestService.countPendingByDriver(u.getUsername()));
+					u.setReactivity(transportationJobService.getReactivity(u.getUsername()));
+					u.setPerformance(transportationJobService.getPerformance(u.getUsername()));
 					DriverLocation driverLocation = driverLocationService.getLastLocation(u.getUsername());
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
@@ -547,6 +556,7 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 						u.setDistance(PathService.getDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
+				userView.sort();
 				refreshMapModel();
 				break;
 			case EXTERNAL_DRIVER:
@@ -560,14 +570,18 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 				default:
 					break;
 				}
-				userView.getList1().forEach(u -> {
+				userView.getList2().forEach(u -> {
 					u.setCountPendingTr(transportationRequestService.countPendingByDriver(u.getUsername()));
+					u.setReactivity(transportationJobService.getReactivity(u.getUsername()));
+					u.setPerformance(transportationJobService.getPerformance(u.getUsername()));
 					DriverLocation driverLocation = driverLocationService.getLastLocation(u.getUsername());
 					if (driverLocation != null) {
 						u.setLatitude(driverLocation.getLatitude());
 						u.setLongitude(driverLocation.getLongitude());
+						u.setDistance(PathService.getDistance(u.getLatitude(), u.getLongitude(), transportationJob.getFirstLatitude(), transportationJob.getFirstLongitude()));
 					}
 				});
+				userView.sort();
 				refreshMapModel();
 				break;
 			default:

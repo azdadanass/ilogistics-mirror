@@ -134,10 +134,27 @@
 										<div class="row">
 											<div class="col-sm-12">
 												<div class="table-header col-sm-12 col-xs-12">
-													<div class="col-sm-10 hidden-xs">
-														<i class="fa fa-list" />
+													<div class="col-sm-6 hidden-xs">
+														<i class="fa fa-truck" />
 														<h:outputText value=" Select Transporter" />
 													</div>
+													<div class="col-sm-4 hidden-xs">
+														<i class="fa fa-list" />
+														<h:outputText value=" Sort By " style="margin-right:20px" />
+														<h:selectOneMenu value="#{transporterView.sortBy}">
+													
+																<f:selectItem itemLabel="Reactivity"
+																itemValue="Reactivity" />
+																<f:selectItem itemLabel="Performance"
+																itemValue="Performance" />
+															<f:selectItem itemLabel="Pending TR"
+																itemValue="Pending TR" />
+															
+															
+															<p:ajax listener="#{transporterView.sort()}" update="transporterList" />
+														</h:selectOneMenu>
+													</div>
+													
 													<div class="col-sm-2 col-xs-4">
 														<div class="nav-search minimized">
 															<span class="input-icon"> <p:inputText
@@ -181,6 +198,25 @@
 															<h:outputText value="#{item.phone}"
 																styleClass="bolder light-green" />
 														</p:column>
+														<p:column headerText="Pending TR"
+															styleClass="#{transporterView.sortBy=='Pending TR'?'aa-background-blue':''}">
+															<h:outputText value="#{item.countPendingTr}"
+																styleClass="bolder" />
+														</p:column>
+														<p:column headerText="Reactivity"
+															styleClass="#{utransporterView.sortBy=='Reactivity'?'aa-background-blue':''}">
+															<h:outputText value="#{item.reactivity}">
+																<f:convertNumber type="number" maxFractionDigits="0" />
+															</h:outputText>
+															<h:outputText value=" %" />
+														</p:column>
+														<p:column headerText="Performance"
+															styleClass="#{transporterView.sortBy=='Performance'?'aa-background-blue':''}">
+															<h:outputText value="#{item.performance}">
+																<f:convertNumber type="number" maxFractionDigits="0" />
+															</h:outputText>
+															<h:outputText value=" %" />
+														</p:column>
 													</p:dataTable>
 												</div>
 											</div>
@@ -201,12 +237,16 @@
 														<i class="fa fa-list" />
 														<h:outputText value=" Sort By " style="margin-right:20px" />
 														<h:selectOneMenu value="#{userView.sortBy}">
+														<f:selectItem itemLabel="Distance to site"
+																itemValue="Distance to site" />
+																<f:selectItem itemLabel="Reactivity"
+																itemValue="Reactivity" />
+																<f:selectItem itemLabel="Performance"
+																itemValue="Performance" />
 															<f:selectItem itemLabel="Pending TR"
 																itemValue="Pending TR" />
-															<f:selectItem itemLabel="Reactivity"
-																itemValue="Reactivity" />
-															<f:selectItem itemLabel="Distance to site"
-																itemValue="Distance to site" />
+															
+															
 															<p:ajax listener="#{userView.sort()}" update="driverList" />
 														</h:selectOneMenu>
 													</div>
@@ -269,6 +309,13 @@
 														<p:column headerText="Reactivity"
 															styleClass="#{userView.sortBy=='Reactivity'?'aa-background-blue':''}">
 															<h:outputText value="#{item.reactivity}">
+																<f:convertNumber type="number" maxFractionDigits="0" />
+															</h:outputText>
+															<h:outputText value=" %" />
+														</p:column>
+														<p:column headerText="Performance"
+															styleClass="#{userView.sortBy=='Performance'?'aa-background-blue':''}">
+															<h:outputText value="#{item.performance}">
 																<f:convertNumber type="number" maxFractionDigits="0" />
 															</h:outputText>
 															<h:outputText value=" %" />

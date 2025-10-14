@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.DeliveryRequestStatus;
@@ -40,6 +41,7 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 			+ ") ";
 
 	String c2 = "select new TransportationRequest(a.id,a.reference,a.status,a.pickupDate,a.deliveryDate,a.deliveryRequest.type," + originName + "," + destinationName + "," + warehouseName + ")";
+	String c3 = "select new TransportationRequest(tr.deliveryDate,tr.plannedDeliveryDate,tr.deliveryRequest.priority) ";
 
 	String select1 = "select new TransportationRequest(a.id,a.reference,a.status,a.deliveryRequest.id,a.deliveryRequest.reference,a.deliveryRequest.type,a.deliveryRequest.smsRef,a.deliveryRequest.requester.username,a.deliveryRequest.requester.fullName,a.neededPickupDate,a.neededDeliveryDate,a.deliveryDate,"
 			+ originName + "," + destinationName + ", " + warehouseName + "," + transporterType + "," + transporterPrivateFirstName + "," + transporterPrivateLastName + "," + transporterSupplierName
@@ -155,6 +157,21 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	public List<TransportationRequest> findAssociatedWithSite(Integer siteId);
 
 	public Integer countByTransportationJob(TransportationJob transportationJob);
+	
+	@Query(c3+"  FROM TransportationRequest tr WHERE tr.transportationJob.driver.username = :username or tr.transportationJob.user1.username = :username"
+			+ " AND tr.status IN (:statuses)")
+		List<TransportationRequest> findDeliveredOrAcknowledgedByDriver(
+		    @Param("username") String username,
+		    @Param("statuses") List<TransportationRequestStatus> statuses);
+	
+	@Query(c3 + " FROM TransportationRequest tr "
+		     + "WHERE tr.transportationJob.transporter.id = :transporterId "
+		     + "AND tr.status IN (:statuses)")
+		List<TransportationRequest> findDeliveredOrAcknowledgedByTransporter(
+		    @Param("transporterId") Integer transporterId,
+		    @Param("statuses") List<TransportationRequestStatus> statuses);
+
+
 
 	// TR PAYMENT LISTS
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 ")
@@ -236,8 +253,16 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query("select a.id from TransportationRequest a where a.transportationJob.status = ?1")
 	public List<Integer> findIdList(TransportationJobStatus transportationJobStatus);
 
-	@Query("select count(*) from TransportationRequest a where a.driver.username = ?1 and a.status in (?2)")
+	@Query("select count(*) from TransportationRequest a where (a.driver.username = ?1or a.transportationJob.driver.username = ?1) and a.status in (?2)")
 	Long countByDriverAndStatus(String username, List<TransportationRequestStatus> statusList);
+	
+	@Query("SELECT COUNT(*) FROM TransportationRequest a "
+		     + "WHERE a.transportationJob.transporter.id = :transporterId "
+		     + "AND a.status IN :statusList")
+		Long countByTransporterAndStatus(
+		    @Param("transporterId") Integer transporterId,
+		    @Param("statusList") List<TransportationRequestStatus> statusList);
+
 
 	@Query("from TransportationRequest where qrKey is null")
 	List<TransportationRequest> findWithoutQrKey();

@@ -98,7 +98,7 @@ public class UserView {
 		isEditPage = ("/" + addEditPage).equals(currentPath) && username != null;
 		isViewPage = ("/" + viewPage).equals(currentPath);
 
-		if (isListPage)
+		if (isListPage || ("/assignTransportationJob.xhtml").equals(currentPath))
 			refreshList();
 		else if (isEditPage)
 			user = userService.findOne(username);
@@ -130,11 +130,13 @@ public class UserView {
 					return o1.getDistance().compareTo(o2.getDistance());
 				case "Reactivity":
 					return o1.getReactivity().compareTo(o2.getReactivity());
+				case "Performance":
+					return o1.getPerformance().compareTo(o2.getPerformance());
 				}
 				return 1;
 			}
 		});
-
+		Collections.reverse(list2);
 	}
 
 	public void initLists(List<User> list) {
@@ -154,7 +156,11 @@ public class UserView {
 
 	public void refreshList() {
 		if (isListPage)
-			list2 = list1 = filterByUser ? userService.findLightByUser(false, sessionView.getUsername()) : userService.findLight(false);
+			list2 = list1 = filterByUser ? userService.findLightByUser(false, sessionView.getUsername())
+					: userService.findLight(false);
+		if (("/assignTransportationJob.xhtml").equals(currentPath))
+			sort();
+
 	}
 
 	public void refreshList(List<User> list) {
@@ -327,7 +333,8 @@ public class UserView {
 
 	public void handleFileUpload(FileUploadEvent event) throws IOException {
 		File file = fileUploadView.handleFileUpload(event, "user");
-		UserFile userFile = new UserFile(file, userFileType, event.getFile().getFileName(), user, sessionView.getUser());
+		UserFile userFile = new UserFile(file, userFileType, event.getFile().getFileName(), user,
+				sessionView.getUser());
 		user.addFile(userFile);
 		userService.save(user);
 		synchronized (UserView.class) {
@@ -350,11 +357,13 @@ public class UserView {
 	}
 
 	public Boolean canEditVehicleList() {
-		return !editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
+		return !editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin()
+				&& sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public Boolean canAddVehicle() {
-		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin()
+				&& sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public void addVehicle() {
@@ -363,7 +372,8 @@ public class UserView {
 	}
 
 	public Boolean canDeleteVehicle() {
-		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin()
+				&& sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	public void deleteVehicle(UserVehicle userVehicle) {
@@ -372,7 +382,8 @@ public class UserView {
 	}
 
 	public Boolean canSaveVehicleList() {
-		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin() && sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
+		return editVehicleList && (sessionView.getIsInternalTrAdmin() || (sessionView.getIsExternalTrAdmin()
+				&& sessionView.getUser().getTransporterId().equals(user.getTransporterId())));
 	}
 
 	private Boolean validateVehicleList() {
@@ -408,7 +419,8 @@ public class UserView {
 		return userService.findLight2();
 	}
 
-	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId, Integer supplierId) {
+	public List<User> findActiveByCompanyType(CompanyType companyType, Integer companyId, Integer customerId,
+			Integer supplierId) {
 		return userService.findActiveByCompanyType(companyType, companyId, customerId, supplierId);
 	}
 

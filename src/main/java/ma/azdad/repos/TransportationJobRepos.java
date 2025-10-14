@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ma.azdad.model.Priority;
@@ -139,12 +140,39 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	// reactivity and performance
 	@Query("select count(*) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) and date4 is not null")
 	Long countAcceptedByDriver(String driverUsername);
+	
+	@Query("from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) and  a.status not in (?2) and date4 is not null")
+	 List<TransportationJob> findAcceptedByDriver(String driverUsername,List<TransportationJobStatus> status);
+	
+	@Query(" SELECT a, COUNT(tr) FROM TransportationJob a LEFT JOIN a.transportationRequestList tr WHERE "
+			+ "(a.driver.username = :username OR a.user1.username = :username) AND a.status NOT IN :excludedStatuses AND a.date4 IS NOT NULL GROUP BY a")
+		List<Object[]> findAcceptedJobsWithCount(
+		        @Param("username") String username,
+		        @Param("excludedStatuses") List<TransportationJobStatus> excludedStatuses);
+		
+		@Query("SELECT a, COUNT(tr) FROM TransportationJob a LEFT JOIN a.transportationRequestList tr "
+			     + "WHERE a.transporter.id = :transporterId "
+			     + "AND a.status NOT IN :excludedStatuses "
+			     + "AND a.date4 IS NOT NULL "
+			     + "GROUP BY a")
+			List<Object[]> findAcceptedJobsWithCountByTransporter(
+			    @Param("transporterId") Integer transporterId,
+			    @Param("excludedStatuses") List<TransportationJobStatus> excludedStatuses);
 
-	@Query("select count(*) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) and date4 is not null and date4 < maxAcceptDate")
-	Long countAcceptedWithinDeadLineByDriver(String driverUsername);
+
+
+	/*@Query("select count(a) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) "
+		     + "and a.date4 is not null and a.date4 <= function('DATE_ADD', a.date3, interval a.acceptLeadTime hour)")
+		Long countAcceptedWithinDeadLineByDriver(String driverUsername);*/
+	
+	
+
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and date5 is not null")
 	Long countStartedByDriver(String driverUsername);
+	
+	@Query(" from TransportationJob a where a.driver.username = ?1 and  a.status not in (?2) and date5 is not null")
+	List<TransportationJob> findStartedByDriver(String driverUsername,List<TransportationJobStatus> status);
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1  and date5 is not null and date5 < maxStartDate")
 	Long countStartedWithinDeadLineByDriver(String driverUsername);

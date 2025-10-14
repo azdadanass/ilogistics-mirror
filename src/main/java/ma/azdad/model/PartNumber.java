@@ -57,6 +57,7 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	private String unitType;
 	private Boolean spare = false;
 	private Boolean hasPacking = false;
+	private Double avgStorageDuration;
 	private String image = "files/no-image.png";
 
 	// performance
@@ -111,7 +112,8 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		List<String> excludeList = Arrays.asList("remainingFileds");
 
 		List<Field> fileds = Arrays.stream(PartNumber.class.getDeclaredFields())
-				.filter(f -> typeList.contains(f.getType().getSimpleName()) && !excludeList.contains(f.getName()) && !Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
+				.filter(f -> typeList.contains(f.getType().getSimpleName()) && !excludeList.contains(f.getName()) && !Modifier.isStatic(f.getModifiers()))
+				.collect(Collectors.toList());
 
 		String result = "";
 		try {
@@ -313,8 +315,8 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	}
 
 	public void calculateState() {
-		if (name == null || name.isEmpty() || description == null || description.isEmpty() || partNumberType == null || grossWeight == null || netWeight == null || length == null || width == null
-				|| height == null || volume == null)
+		if (name == null || name.isEmpty() || description == null || description.isEmpty() || partNumberType == null || grossWeight == null || netWeight == null || length == null
+				|| width == null || height == null || volume == null)
 			state = PartNumberState.DRAFT;
 		else
 			state = PartNumberState.CONFIRMED;
@@ -792,6 +794,14 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 		if (partNumberType == null)
 			partNumberType = new PartNumberType();
 		partNumberType.setIndustryId(industryId);
+	}
+
+	public Double getAvgStorageDuration() {
+		return avgStorageDuration;
+	}
+
+	public void setAvgStorageDuration(Double avgStorageDuration) {
+		this.avgStorageDuration = avgStorageDuration;
 	}
 
 }

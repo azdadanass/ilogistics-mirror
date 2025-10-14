@@ -68,26 +68,47 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(select2 + "from TransportationRequest a where a.status = ?1 order by a.neededPickupDate")
 	public Long count(TransportationRequestStatus status);
 
-	@Query(c1 + "from TransportationRequest a where a.status = 'APPROVED' order by a.neededPickupDate")
-	public List<TransportationRequest> findToAssign();
+	@Query(c1 + "from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'APPROVED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAssign(String username);
+	
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'APPROVED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAssignByTransporter(Integer id);
 
-	@Query("select count(*) from TransportationRequest a where a.status = 'APPROVED' order by a.neededPickupDate")
-	public Long countToAssign();
+	@Query("select count(*) from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'APPROVED' order by a.neededPickupDate")
+	public Long countToAssign(String username);
+	
+	@Query("select count(*) from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'APPROVED' order by a.neededPickupDate")
+	public Long countToAssignByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED' order by a.neededPickupDate")
 	public List<TransportationRequest> findToPickup(String username);
+	
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'ASSIGNED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToPickupByTransporter(Integer id);
 
 	@Query("select count(*) from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED' order by a.neededPickupDate")
 	public Long countToPickup(String username);
+	
+	@Query("select count(*) from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'ASSIGNED' order by a.neededPickupDate")
+	public Long countToPickupByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'PICKEDUP' order by a.neededPickupDate")
 	public List<TransportationRequest> findToDeliver(String username);
 
 	@Query(" select count(*)from TransportationRequest a where (a.transportationJob.user1.username = ?1 or a.driver.username = ?1) and a.status = 'PICKEDUP' order by a.neededPickupDate")
 	public Long countToDeliver(String username);
+	
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'PICKEDUP' order by a.neededPickupDate")
+	public List<TransportationRequest> findToDeliverByTranporter(Integer id);
 
-	@Query(c1 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	@Query(" select count(*)from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'PICKEDUP' order by a.neededPickupDate")
+	public Long countToDeliverByTranporter(Integer id);
+
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
 	public List<TransportationRequest> findToAcknowledge(String username);
+	
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	public List<TransportationRequest> findToAcknowledgeByTranporter(Integer id);
 
 	@Query(c2 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
 	public List<TransportationRequest> findToAcknowledge2(String username);
@@ -97,6 +118,9 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 	@Query("select count(*) from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
 	public Long countToAcknowledge(String username);
+	
+	@Query("select count(*) from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status = 'DELIVERED' order by a.neededPickupDate")
+	public Long countToAcknowledgeByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationRequest a where a.status in (?1) order by a.neededPickupDate")
 	public List<TransportationRequest> findLight(List<TransportationRequestStatus> status);
@@ -132,10 +156,10 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 	@Query(c1 + "from TransportationRequest a where a.driver.username = ?1 and a.status in (?2) order by a.neededPickupDate")
 	public List<TransportationRequest> findByDriver(String driverUsername, List<TransportationRequestStatus> statusList);
 
-	@Query(c1 + "from TransportationRequest a where a.transporter.id = ?1 order by a.neededPickupDate")
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 order by a.neededPickupDate")
 	public List<TransportationRequest> findByTransporter(Integer transporterId);
 
-	@Query(c1 + "from TransportationRequest a where a.transporter.id = ?1 and a.status in (?2) order by a.neededPickupDate")
+	@Query(c1 + "from TransportationRequest a where a.transportationJob.transporter.id = ?1 and a.status in (?2) order by a.neededPickupDate")
 	public List<TransportationRequest> findByTransporter(Integer transporterId, List<TransportationRequestStatus> statusList);
 
 	@Query(select2 + "from TransportationRequest a where a.deliveryRequest.requester.username = ?1 and a.status = ?2 order by a.neededPickupDate")

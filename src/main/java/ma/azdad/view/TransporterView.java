@@ -28,6 +28,8 @@ import ma.azdad.service.CompanyService;
 import ma.azdad.service.ExternalResourceService;
 import ma.azdad.service.SupplierService;
 import ma.azdad.service.ToolService;
+import ma.azdad.service.TransportationJobService;
+import ma.azdad.service.TransportationRequestService;
 import ma.azdad.service.TransporterFileService;
 import ma.azdad.service.TransporterHistoryService;
 import ma.azdad.service.TransporterService;
@@ -35,6 +37,7 @@ import ma.azdad.service.UserService;
 import ma.azdad.service.UtilsFunctions;
 import ma.azdad.service.VehicleBrandTypeService;
 import ma.azdad.service.VehicleService;
+import ma.azdad.utils.Color;
 import ma.azdad.utils.FacesContextMessages;
 
 @ManagedBean
@@ -80,6 +83,25 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 
 	@Autowired
 	protected VehicleBrandTypeService vehicleBrandTypeService;
+	
+	@Autowired
+	private TransportationJobService transportationJobService;
+
+	@Autowired
+	private TransportationRequestService transportationRequestService;
+
+	private Long countTjToAssign = 0l;
+	private Long countTjToAccept = 0l;
+	private Long countTjToStart = 0l;
+	private Long countTjToComplete = 0l;
+	private Long countTrToAssign = 0l;
+	private Long countTrToPickup = 0l;
+	private Long countTrToDeliver = 0l;
+	private Long countTrToAcknowledge = 0l;
+
+	private Long acceptPerfomance = 0l;
+	private Long startPerfomance = 0l;
+	private Long completePerfomance = 0l;
 
 	private Transporter transporter = new Transporter();
 	private TransporterFile transporterFile;
@@ -97,10 +119,24 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 			refreshList();
 		else if (isEditPage)
 			transporter = transporterService.findOne(id);
-		else if (isViewPage)
+		else if (isViewPage) {
 			transporter = transporterService.findOne(id);
+			this.countTjToAssign = transportationJobService.countToAssign2(id);
+			this.countTjToAccept = transportationJobService.countToAcceptByTransporter(id);
+			this.countTjToStart = transportationJobService.countToStartByTransporter(id);
+			this.countTjToComplete = transportationJobService.countToCompleteByTransporter(id);
+			this.countTrToAssign = transportationRequestService.countToAssignByTransporter(id);
+			this.countTrToPickup = transportationRequestService.countToPickupByTransporter(id);
+			this.countTrToDeliver = transportationRequestService.countToDeliverByTransporter(id);
+			this.countTrToAcknowledge = transportationRequestService.countToAcknowledgeByTransporter(id);
+			
+			this.acceptPerfomance = transportationJobService.getAcceptPerformanceByTransporter(id);
+			this.startPerfomance = transportationJobService.getStartPerformanceByTransporter(id);
+			this.completePerfomance = transportationJobService.getCompletePerformanceByTransporter(id);}
 
 	}
+	
+
 
 	@Override
 	public void refreshList() {
@@ -146,6 +182,30 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 		});
 		Collections.reverse(list2);
 
+	}
+	
+	//Performance
+	
+	public String getColor(Long percentage) {
+		if (percentage == null)
+			return null;
+		if (percentage >= 80)
+			return Color.GREEN.getColorCode();
+		if (percentage >= 50)
+			return Color.L_BLUE.getColorCode();
+		if (percentage >= 30)
+			return Color.ORANGE.getColorCode();
+		return Color.RED.getColorCode();
+	}
+	
+	public Long getReactivity() {
+		return transportationJobService.getTransporterReactivity(id);
+	}
+	
+	
+
+	public Long getPerformance() {
+		return transportationJobService.getTransporterPerformance(id);
 	}
 
 	// Vehicle MANAGEMENT
@@ -416,5 +476,95 @@ public class TransporterView extends GenericView<Integer, Transporter, Transport
 	public void setSortBy(String sortBy) {
 		this.sortBy = sortBy;
 	}
+
+	public Long getCountTjToAssign() {
+		return countTjToAssign;
+	}
+
+	public void setCountTjToAssign(Long countTjToAssign) {
+		this.countTjToAssign = countTjToAssign;
+	}
+
+	public Long getCountTjToAccept() {
+		return countTjToAccept;
+	}
+
+	public void setCountTjToAccept(Long countTjToAccept) {
+		this.countTjToAccept = countTjToAccept;
+	}
+
+	public Long getCountTjToStart() {
+		return countTjToStart;
+	}
+
+	public void setCountTjToStart(Long countTjToStart) {
+		this.countTjToStart = countTjToStart;
+	}
+
+	public Long getCountTjToComplete() {
+		return countTjToComplete;
+	}
+
+	public void setCountTjToComplete(Long countTjToComplete) {
+		this.countTjToComplete = countTjToComplete;
+	}
+
+	public Long getCountTrToAssign() {
+		return countTrToAssign;
+	}
+
+	public void setCountTrToAssign(Long countTrToAssign) {
+		this.countTrToAssign = countTrToAssign;
+	}
+
+	public Long getCountTrToPickup() {
+		return countTrToPickup;
+	}
+
+	public void setCountTrToPickup(Long countTrToPickup) {
+		this.countTrToPickup = countTrToPickup;
+	}
+
+	public Long getCountTrToDeliver() {
+		return countTrToDeliver;
+	}
+
+	public void setCountTrToDeliver(Long countTrToDeliver) {
+		this.countTrToDeliver = countTrToDeliver;
+	}
+
+	public Long getCountTrToAcknowledge() {
+		return countTrToAcknowledge;
+	}
+
+	public void setCountTrToAcknowledge(Long countTrToAcknowledge) {
+		this.countTrToAcknowledge = countTrToAcknowledge;
+	}
+
+	public Long getAcceptPerfomance() {
+		return acceptPerfomance;
+	}
+
+	public void setAcceptPerfomance(Long acceptPerfomance) {
+		this.acceptPerfomance = acceptPerfomance;
+	}
+
+	public Long getStartPerfomance() {
+		return startPerfomance;
+	}
+
+	public void setStartPerfomance(Long startPerfomance) {
+		this.startPerfomance = startPerfomance;
+	}
+
+	public Long getCompletePerfomance() {
+		return completePerfomance;
+	}
+
+	public void setCompletePerfomance(Long completePerfomance) {
+		this.completePerfomance = completePerfomance;
+	}
+	
+	
 
 }

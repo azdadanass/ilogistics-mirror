@@ -69,21 +69,40 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 
 	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED2' order by a.id desc")
 	public List<TransportationJob> findToAccept(String username);
+	
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED2' order by a.id desc")
+	public List<TransportationJob> findToAcceptByTransporter(Integer id);
 
 	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ASSIGNED2' order by a.id desc")
 	public Long countToAccept(String username);
+	
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ASSIGNED2' order by a.id desc")
+	public Long countToAcceptByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ACCEPTED' order by a.id desc")
 	public List<TransportationJob> findToStart(String username);
+	
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1  and a.status = 'ACCEPTED' order by a.id desc")
+	public List<TransportationJob> findToStartByTransporter(Integer id);
+
 
 	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status = 'ACCEPTED' order by a.id desc")
 	public Long countToStart(String username);
+	
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status = 'ACCEPTED' order by a.id desc")
+	public Long countToStartByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
 	public List<TransportationJob> findToComplete(String username);
+	
+	@Query(c1 + "from TransportationJob a where a.transporter.id = ?1 and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
+	public List<TransportationJob> findToCompleteByTransporter(Integer id);
 
 	@Query("select count(*) from TransportationJob a where (a.user1.username = ?1 or a.driver.username = ?1) and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
 	public Long countToComplete(String username);
+	
+	@Query("select count(*) from TransportationJob a where a.transporter.id = ?1 and a.status in ('STARTED','IN_PROGRESS') order by a.id desc")
+	public Long countToCompleteByTransporter(Integer id);
 
 	@Query(c1 + "from TransportationJob a where a.user1.username = ?1 and a.status = ?2 order by a.id desc")
 	public List<TransportationJob> findByUser1AndStatus(String user1Username, TransportationJobStatus transportationJobStatus);

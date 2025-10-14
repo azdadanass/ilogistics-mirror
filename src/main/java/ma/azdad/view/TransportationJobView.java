@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
@@ -195,6 +196,8 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	private Double mapLongitude;
 
 	private String downloadPath;
+	
+	private Integer transporterId ;
 
 	@Override
 	@PostConstruct
@@ -231,6 +234,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	protected void initParameters() {
 		super.initParameters();
 		status = TransportationJobStatus.get(UtilsFunctions.getIntegerParameter("status"));
+		try {
+			transporterId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("transporterId"));
+		} catch (Exception e) {
+			transporterId = null;
+		}
 		state = TransportationJobState.get(UtilsFunctions.getIntegerParameter("state"));
 		key = UtilsFunctions.getParameter("key");
 	}
@@ -250,10 +258,12 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 
 	@Override
 	public void refreshList() {
-		if (isListPage)
+		if (isListPage  )
 			if (pageIndex == null)
 				list2 = list1 = transportationJobService.find();
 			else
+				if(transporterId == null) {
+					
 				switch (pageIndex) {
 				case 1:
 					if (sessionView.getIsInternalTM()) {
@@ -292,9 +302,27 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 					break;
 				case 9:
 					// to complete1
-					initLists(transportationJobService.findByUser1AndStatus(sessionView.getUsername(),
-							Arrays.asList(TransportationJobStatus.STARTED, TransportationJobStatus.IN_PROGRESS)));
+					initLists(transportationJobService.findToComplete(sessionView.getUsername()));
 					break;
+				}
+				}else {
+					switch (pageIndex) {
+			
+					case 5:
+						initLists(transportationJobService.findToAssign2(transporterId));
+						break;
+					
+					case 7:
+						initLists(transportationJobService.findToAcceptByTransporter(transporterId));
+						break;
+					case 8:
+						initLists(transportationJobService.findToStartByTransporter(transporterId));
+						break;
+					case 9:
+						// to complete1
+						initLists(transportationJobService.findToCompleteByTransporter(transporterId));
+						break;
+					}
 				}
 	}
 
@@ -1693,5 +1721,15 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 	public void setComment(TransportationJobComment comment) {
 		this.comment = comment;
 	}
+
+	public Integer getTransporterId() {
+		return transporterId;
+	}
+
+	public void setTransporterId(Integer transporterId) {
+		this.transporterId = transporterId;
+	}
+	
+	
 
 }

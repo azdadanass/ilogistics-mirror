@@ -202,12 +202,20 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 
 	}
 
-	public List<TransportationRequest> findToAssign() {
-		return repos.findToAssign();
+	public List<TransportationRequest> findToAssign(String username) {
+		return repos.findToAssign(username);
 	}
-
-	public Long countToAssign() {
-		return repos.countToAssign();
+	
+	public Long countToAssign(String username) {
+		return repos.countToAssign(username);
+	}
+	
+	public List<TransportationRequest> findToAssignByTransporter(Integer id) {
+		return repos.findToAssignByTransporter(id);
+	}
+	
+	public Long countToAssignByTransporter(Integer id) {
+		return repos.countToAssignByTransporter(id);
 	}
 
 	public List<TransportationRequest> findToPickup(String username) {
@@ -217,6 +225,14 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countToPickup(String username) {
 		return repos.countToPickup(username);
 	}
+	
+	public List<TransportationRequest> findToPickupByTransporter(Integer id) {
+		return repos.findToPickupByTransporter(id);
+	}
+
+	public Long countToPickupByTransporter(Integer id) {
+		return repos.countToPickupByTransporter(id);
+	}
 
 	public List<TransportationRequest> findToDeliver(String username) {
 		return repos.findToDeliver(username);
@@ -225,7 +241,23 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 	public Long countToDeliver(String username) {
 		return repos.countToDeliver(username);
 	}
+	
+	public List<TransportationRequest> findToDeliverByTransporter(Integer id) {
+		return repos.findToDeliverByTranporter(id);
+	}
 
+	public Long countToDeliverByTransporter(Integer id) {
+		return repos.countToDeliverByTranporter(id);
+	}
+
+	public List<TransportationRequest> findToAcknowledgeByTransporter(Integer id) {
+		return repos.findToAcknowledgeByTranporter(id);
+	}
+
+	public Long countToAcknowledgeByTransporter(Integer id) {
+		return repos.countToAcknowledgeByTransporter(id);
+	}
+	
 	public List<TransportationRequest> findToAcknowledge(String username) {
 		return repos.findToAcknowledge(username);
 	}

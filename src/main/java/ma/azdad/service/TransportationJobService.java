@@ -212,12 +212,27 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public List<TransportationJob> findToAccept(String username) {
 		return repos.findToAccept(username);
 	}
+	
+	@Cacheable(value = "transportationJobService.findToAcceptByTransporter")
+	public List<TransportationJob> findToAcceptByTransporter(Integer id) {
+		return repos.findToAcceptByTransporter(id);
+	}
 
 	@Cacheable(value = "transportationJobService.countToAccept")
 	public Long countToAccept(String username) {
 		return repos.countToAccept(username);
 	}
+	
+	@Cacheable(value = "transportationJobService.countToAcceptByTransporter")
+	public Long countToAcceptByTransporter(Integer id) {
+		return repos.countToAcceptByTransporter(id);
+	}
 
+	@Cacheable(value = "transportationJobService.findToStartByTransporter")
+	public List<TransportationJob> findToStartByTransporter(Integer id) {
+		return repos.findToStartByTransporter(id);
+	}
+	
 	@Cacheable(value = "transportationJobService.findToStart")
 	public List<TransportationJob> findToStart(String username) {
 		return repos.findToStart(username);
@@ -227,15 +242,30 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public Long countToStart(String username) {
 		return repos.countToStart(username);
 	}
+	
+	@Cacheable(value = "transportationJobService.countToStartByTransporter")
+	public Long countToStartByTransporter(Integer id) {
+		return repos.countToStartByTransporter(id);
+	}
 
 	@Cacheable(value = "transportationJobService.findToComplete")
 	public List<TransportationJob> findToComplete(String username) {
 		return repos.findToComplete(username);
 	}
+	
+	@Cacheable(value = "transportationJobService.findToCompleteByTransporter")
+	public List<TransportationJob> findToCompleteByTransporter(Integer id) {
+		return repos.findToCompleteByTransporter(id);
+	}
 
 	@Cacheable(value = "transportationJobService.countToComplete")
 	public Long countToComplete(String username) {
 		return repos.countToComplete(username);
+	}
+	
+	@Cacheable(value = "transportationJobService.countToCompleteByTransporter")
+	public Long countToCompleteByTransporter(Integer id) {
+		return repos.countToCompleteByTransporter(id);
 	}
 
 	@Cacheable(value = "transportationJobService.findByUser1AndStatus")
@@ -1117,6 +1147,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	public Long getStartPerformance(String username) {
 	   
+
+	    return 0l;
+	}
+	
+	public Long getStartPerformanceByTransporter(Integer id) {
+		   
 
 	    return 0l;
 	}

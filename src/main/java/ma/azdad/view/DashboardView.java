@@ -46,7 +46,7 @@ public class DashboardView {
 		this.countTjToStart = transportationJobService.countToStart(sessionView.getUsername());
 		this.countTjToComplete = transportationJobService.countToComplete(sessionView.getUsername());
 		if (sessionView.getInternal())
-			this.countTrToAssign = transportationRequestService.countToAssign();
+			this.countTrToAssign = transportationRequestService.countToAssign(sessionView.getUsername());
 		this.countTrToPickup = transportationRequestService.countToPickup(sessionView.getUsername());
 		this.countTrToDeliver = transportationRequestService.countToDeliver(sessionView.getUsername());
 		this.countTrToAcknowledge = transportationRequestService.countToAcknowledge(sessionView.getUsername());

@@ -7,6 +7,9 @@
 	</ui:define>
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
+		<script src="resources/templates/highcharts/highcharts.js"></script>
+		<script src="resources/templates/highcharts/modules/series-label.js"></script>
+		<script src="resources/templates/highcharts/modules/exporting.js"></script>
 	</ui:define>
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
@@ -87,6 +90,12 @@
 						<a data-toggle="tab" href="#tab1">
 							<i class="green ace-icon fa fa-list-alt bigger-120"></i>
 							<h:outputText value=" Informations" styleClass="hidden-xs" />
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#tab6">
+							<i class="purple ace-icon fa fa-bolt bigger-120"></i>
+							<h:outputText value=" Performance" />
 						</a>
 					</li>
 					<li>
@@ -187,6 +196,253 @@
 							</div>
 						</div>
 						<div class="space-16" />
+					</div>
+					<div id="tab6" class="tab-pane">
+						<div class="row">
+				<div class="col-sm-offset-2 col-xs-8">
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-small header-color-blue2">
+							<h4 class="smaller">
+								<i class="icon-lightbulb bigger-120"></i>
+								<h:outputText value=" Current Situation" />
+							</h4>
+						</div>
+						<div class="widget-body">
+							<div class="widget-main padding-16">
+								<div class="clearfix">
+									<div class="grid4 center">
+										<div class="easy-pie-chart percentage" data-percent="100" data-color="#438eb9">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTjToAssign}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationJobList.xhtml">
+											<h:outputText value="TJ to assign" />
+											<f:param name="pageIndex" value="#{sessionView.isInternalTM?'4':'5'}" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#59A84B">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTjToAccept}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationJobList.xhtml">
+											<h:outputText value="TJ To Accept" />
+											<f:param name="pageIndex" value="7" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#a069c3">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTjToStart}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationJobList.xhtml">
+											<h:outputText value="TJ To Start" />
+											<f:param name="pageIndex" value="8" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#f79263">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTjToComplete}" />
+												
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationJobList.xhtml">
+											<h:outputText value="TJ To Complete" />
+											<f:param name="pageIndex" value="9" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+								</div>
+								<hr/>
+								<div class="clearfix">
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#892e65">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTrToAssign}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Assign" />
+											<f:param name="pageIndex" value="4" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#ffb752">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTrToPickup}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Pickup" />
+											<f:param name="pageIndex" value="5" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+											
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#d54c7e">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTrToDeliver}" />
+												
+												
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Deliver" />
+											<f:param name="pageIndex" value="6" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+											
+										</h:outputLink>
+									</div>
+									<div class="grid4 center">
+										<div class="center easy-pie-chart percentage" data-percent="100" data-color="#fee188">
+											<span class="percent">
+												<h:outputText value="#{transporterView.countTrToAcknowledge}" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputLink value="transportationRequestList.xhtml">
+											<h:outputText value="TR To Acknowledge" />
+											<f:param name="pageIndex" value="2" />
+											<f:param name="transporterId" value="#{transporterView.id}" />
+										</h:outputLink>
+									</div>
+								</div>
+								<div class="hr hr-16"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-offset-2 col-xs-8">
+					<div class="widget-box transparent">
+						<div class="widget-header widget-header-small header-color-blue2">
+							<h4 class="smaller">
+								<i class="icon-lightbulb bigger-120"></i>
+								<h:outputText value=" Performance" />
+							</h4>
+						</div>
+						<div class="widget-body">
+							<div class="widget-main padding-16">
+								<div class="clearfix">
+									<div class="grid3 center">
+										<div class="easy-pie-chart percentage" data-percent="#{transporterView.acceptPerfomance}" data-color="#{transporterView.getColor(transporterView.acceptPerfomance)}">
+											<span class="percent">
+												<h:outputText value="#{transporterView.acceptPerfomance} %" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputText value="Accept Performance" />
+									</div>
+									<div class="grid3 center">
+										<div class="easy-pie-chart percentage" data-percent="#{transporterView.startPerfomance}" data-color="#{transporterView.getColor(transporterView.startPerfomance)}">
+											<span class="percent">
+												<h:outputText value="#{transporterView.startPerfomance} %" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputText value="Start Performance" />
+									</div>
+									<div class="grid3 center">
+										<div class="easy-pie-chart percentage" data-percent="#{transporterView.completePerfomance}" data-color="#{transporterView.getColor(transporterView.completePerfomance)}">
+											<span class="percent">
+												<h:outputText value="#{transporterView.completePerfomance} %" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputText value="Complete Performance" />
+									</div>
+								</div>
+								<div class="hr hr-16"></div>
+								<div class="clearfix">
+									<div class="grid2 center">
+										<div class="easy-pie-chart percentage" data-percent="#{transporterView.reactivity}" data-color="#{transporterView.getColor(transporterView.reactivity)}">
+											<span class="percent">
+												<h:outputText value="#{transporterView.reactivity} %" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputText value="Reactivity" />
+									</div>
+									<div class="grid2 center">
+										<div class="easy-pie-chart percentage" data-percent="#{transporterView.performance}" data-color="#{transporterView.getColor(transporterView.performance)}">
+											<span class="percent">
+												<h:outputText value="#{transporterView.performance} %" />
+											</span>
+										</div>
+										<div class="space-2"></div>
+										<h:outputText value="Performance" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="space-16" />
+			<script src="/resources/ace_template/assets/js/jquery.easypiechart.js" />
+			<h:panelGroup id="easy-pie-chart-script">
+				<script>
+					var oldie = /msie\s*(8|7|6)/.test(navigator.userAgent
+							.toLowerCase());
+					$('.easy-pie-chart.percentage')
+							.each(
+									function() {
+										var $box = $(this).closest('.infobox');
+										var barColor = $(this).data('color')
+												|| (!$box
+														.hasClass('infobox-dark') ? $box
+														.css('color')
+														: 'rgba(255,255,255,0.95)');
+										var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)'
+												: '#E2E2E2';
+										var size = parseInt($(this)
+												.data('size')) || 50;
+										$(this)
+												.easyPieChart(
+														{
+															barColor : barColor,
+															trackColor : trackColor,
+															scaleColor : false,
+															lineCap : 'butt',
+															lineWidth : parseInt(size / 10),
+															animate : ace.vars['old_ie'] ? false
+																	: 1000,
+															size : size
+														});
+									});
+				</script>
+				<script>
+					$('.easy-pie-chart.percentage').each(function() {
+						var barColor = $(this).data('color') || '#555';
+						var trackColor = '#E2E2E2';
+						var size = parseInt($(this).data('size')) || 72;
+						$(this).easyPieChart({
+							barColor : barColor,
+							trackColor : trackColor,
+							scaleColor : false,
+							lineCap : 'butt',
+							lineWidth : parseInt(size / 10),
+							animate : false,
+							size : size
+						}).css('color', barColor);
+					});
+				</script>
+			</h:panelGroup>
 					</div>
 					<div id="tab2" class="tab-pane">
 						<div class="row">

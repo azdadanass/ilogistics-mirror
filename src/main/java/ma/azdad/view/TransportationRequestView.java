@@ -118,6 +118,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	private TransportationRequestState state;
 	private TransportationRequestPaymentStatus paymentStatus;
+	private Integer transporterId ;
 
 	private String downloadPath;
 
@@ -158,6 +159,12 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		} catch (Exception e) {
 			deliveryRequestId = null;
 		}
+		
+		try {
+			transporterId = Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("transporterId"));
+		} catch (Exception e) {
+			transporterId = null;
+		}
 
 		try {
 			state = TransportationRequestState.values()[Integer.valueOf(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("state"))];
@@ -175,7 +182,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 	@Override
 	public void refreshList() {
-		if (isListPage)
+		if (isListPage && transporterId == null)
 			switch (pageIndex) {
 			case 1:
 				if (sessionView.getIsInternalTM()) {
@@ -206,7 +213,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 				break;
 			case 4:
 				if (sessionView.getIsInternalTM())
-					initLists(service.findToAssign());
+					initLists(service.findToAssign(sessionView.getUsername()));
 				break;
 			case 5:
 				initLists(service.findToPickup(sessionView.getUsername()));
@@ -216,6 +223,25 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 				break;
 			case 7:
 				list2 = list1 = transportationRequestService.findByPaymentStatus(paymentStatus, sessionView.isTM(), sessionView.getUsername());
+			default:
+				break;
+			}
+		if (isListPage && transporterId != null)
+			switch (pageIndex) {
+			
+			case 2:
+				initLists(service.findToAcknowledgeByTransporter(transporterId));
+				break;
+			case 4:
+					initLists(service.findToAssignByTransporter(transporterId));
+				break;
+			case 5:
+				initLists(service.findToPickupByTransporter(transporterId));
+				break;
+			case 6:
+				initLists(service.findToDeliverByTransporter(transporterId));
+				break;
+			
 			default:
 				break;
 			}
@@ -731,7 +757,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	// generic
 
 	public Long countToAssign() {
-		return transportationRequestService.countToAssign();
+		return transportationRequestService.countToAssign(sessionView.getUsername());
 	}
 
 	public Long countToPickup() {
@@ -1022,5 +1048,15 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	public void setComment(TransportationRequestComment comment) {
 		this.comment = comment;
 	}
+
+	public Integer getTransporterId() {
+		return transporterId;
+	}
+
+	public void setTransporterId(Integer transporterId) {
+		this.transporterId = transporterId;
+	}
+	
+	
 
 }

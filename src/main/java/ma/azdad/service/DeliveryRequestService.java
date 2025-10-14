@@ -1368,7 +1368,7 @@ public class DeliveryRequestService extends GenericService<Integer, DeliveryRequ
 			// owner/project/ref/g weight/volume cell
 			phrase = new Phrase(10f);
 			phrase.add(new Chunk("# Of Items : ", boldFont));
-			phrase.add(new Chunk(String.valueOf(deliveryRequest.getNumberOfItems()), normalFont));
+			phrase.add(new Chunk(String.valueOf(packingDetail.getTmpQuantity()), normalFont));
 			phrase.add(new Chunk("\nPacking Type : ", boldFont));
 			phrase.add(new Chunk(packingDetail.getType(), normalFont));
 			phrase.add(new Chunk("\nPart Number : ", boldFont));

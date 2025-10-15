@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +28,8 @@ public interface WarehouseRepos extends JpaRepository<Warehouse, Integer> {
 
 	@Query("select a.user from WarehouseManager a where a.warehouse.id = ?1")
 	List<User> findManagerList(Integer id);
+	
+	@Modifying
+	@Query("update Warehouse a set a.image = (select min(b.link) from WarehouseFile b where b.parent.id = a.id and b.extension in ('png','gif','jpg','jpeg') ) where a.id = ?1")
+	public void updateImage(Integer id);
 }

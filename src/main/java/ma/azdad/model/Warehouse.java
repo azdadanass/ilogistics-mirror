@@ -29,6 +29,7 @@ public class Warehouse extends GenericPlace implements Serializable {
 	private Double volume;
 	private WarehouseStatus status = WarehouseStatus.ACTIVE;
 	private WorkingTime workingTime;
+	private String image = "files/no-image.png";
 
 //	private User manager;
 	private Customer customer;
@@ -43,6 +44,7 @@ public class Warehouse extends GenericPlace implements Serializable {
 	private String managerUsername;
 	private LabelValue owner;
 	private Boolean hasStock;
+	private WarehouseFile selectedPhoto;
 
 	public Warehouse(Integer id, String name) {
 		super(id, name);
@@ -252,6 +254,40 @@ public class Warehouse extends GenericPlace implements Serializable {
 
 	public void setWorkingTime(WorkingTime workingTime) {
 		this.workingTime = workingTime;
+	}
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
+	@Transient
+	public List<WarehouseFile> getPhotoList() {
+		List<WarehouseFile> result = new ArrayList<>();
+		for (WarehouseFile file : fileList)
+			if (file.getIsImage())
+				result.add(file);
+		return result;
+	}
+	
+	@Transient
+	public WarehouseFile getSelectedPhoto() {
+		if (selectedPhoto == null)
+			try {
+				return getPhotoList().get(0);
+			} catch (Exception e) {
+				return new WarehouseFile();
+			}
+		return selectedPhoto;
+	}
+	
+
+	@Transient
+	public void setSelectedPhoto(WarehouseFile selectedPhoto) {
+		this.selectedPhoto = selectedPhoto;
 	}
 
 }

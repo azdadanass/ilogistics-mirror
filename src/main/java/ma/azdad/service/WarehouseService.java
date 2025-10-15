@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.User;
@@ -58,4 +59,9 @@ public class WarehouseService extends GenericService<Integer, Warehouse, Warehou
 		return warehouseRepos.findManagerList(id);
 	}
 
+	@Async
+	public void updateImage(Integer id) {
+		repos.updateImage(id);
+		evictCache();
+	}
 }

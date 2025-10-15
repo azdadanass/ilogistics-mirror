@@ -68,6 +68,7 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 	private Warehouse warehouse = new Warehouse();
 	private WarehouseFile warehouseFile;
 	private Location location;
+	private WarehouseFile selectedPhoto;
 
 	private MapModel mapModel;
 
@@ -219,6 +220,8 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 		synchronized (WarehouseView.class) {
 			refreshWarehouse();
 		}
+		
+		warehouseService.updateImage(warehouse.getId());
 	}
 
 	public void deleteWarehouseFile() {
@@ -342,6 +345,14 @@ public class WarehouseView extends GenericView<Integer, Warehouse, WarehouseRepo
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+	
+	public WarehouseFile getSelectedPhoto() {
+		return selectedPhoto;
+	}
+
+	public void setSelectedPhoto(WarehouseFile selectedPhoto) {
+		this.selectedPhoto = selectedPhoto;
 	}
 
 }

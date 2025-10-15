@@ -26,6 +26,7 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<p:importEnum type="ma.azdad.model.WorkingTime" var="WorkingTime" allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="page-header hidden-xs">
 				<h1>
@@ -134,6 +135,22 @@
 										</label>
 										<div class="col-xs-9 col-sm-9">
 											<p:inputText value="#{warehouseView.warehouse.fax}" />
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-basename">
+											<h:outputText value="Working Time" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{warehouseView.warehouse.workingTime}" required="true" requiredMessage="Working Time should not be null" >
+												<f:selectItem itemLabel="---" noSelectionOption="true" />
+												<f:selectItems value="#{WorkingTime.ALL_ENUM_VALUES}" />
+											</h:selectOneMenu>
 										</div>
 									</div>
 								</div>

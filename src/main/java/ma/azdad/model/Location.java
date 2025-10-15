@@ -25,6 +25,8 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	private Double volume;
 	private Boolean zoning = false;
 	private Double slotSize;
+	private Integer exitFactor = 1;
+	private Integer floor = 1;
 
 	// null --> ALL values
 	private StockRowState stockRowState;
@@ -280,6 +282,22 @@ public class Location extends GenericModel<Integer> implements Serializable {
 	@Transient
 	public Stream<Integer> getTypeIdStream() {
 		return industryList.stream().flatMap(i -> i.getCategoryList().stream().flatMap(j -> j.getTypeList().stream().map(k -> k.getType().getId())));
+	}
+
+	public Integer getExitFactor() {
+		return exitFactor;
+	}
+
+	public void setExitFactor(Integer exitFactor) {
+		this.exitFactor = exitFactor;
+	}
+
+	public Integer getFloor() {
+		return floor;
+	}
+
+	public void setFloor(Integer floor) {
+		this.floor = floor;
 	}
 
 }

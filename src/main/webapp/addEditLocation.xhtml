@@ -135,6 +135,36 @@
 									</div>
 								</div>
 							</div>
+							<div class="space-4" />
+							<div class="row">
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-warehousename">
+											<h:outputText value="Exit Factor" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<p:inputNumber value="#{locationView.model.exitFactor}" minValue="1" maxValue="100"/>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-6">
+									<div class="form-group">
+										<label class="col-xs-3 col-sm-3 control-label no-padding-right" for="form-field-warehousename">
+											<h:outputText value="Floor" />
+										</label>
+										<div class="col-xs-9 col-sm-9">
+											<h:selectOneMenu value="#{locationView.model.floor}">
+												<f:selectItem itemLabel="---" noSelectionOption="true"/>
+												<f:selectItem itemLabel="1" itemValue="1"/>
+												<f:selectItem itemLabel="2" itemValue="2"/>
+												<f:selectItem itemLabel="3" itemValue="3"/>
+												<f:selectItem itemLabel="4" itemValue="4"/>
+												<f:selectItem itemLabel="5" itemValue="5"/>
+											</h:selectOneMenu>
+										</div>
+									</div>
+								</div>
+							</div>
 							<div class="space-16" />
 						</div>
 						<div class="row"></div>

@@ -28,6 +28,7 @@ public class Warehouse extends GenericPlace implements Serializable {
 	private Double surface;
 	private Double volume;
 	private WarehouseStatus status = WarehouseStatus.ACTIVE;
+	private WorkingTime workingTime;
 
 //	private User manager;
 	private Customer customer;
@@ -242,6 +243,15 @@ public class Warehouse extends GenericPlace implements Serializable {
 	@Transient
 	public void setHasStock(Boolean hasStock) {
 		this.hasStock = hasStock;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public WorkingTime getWorkingTime() {
+		return workingTime;
+	}
+
+	public void setWorkingTime(WorkingTime workingTime) {
+		this.workingTime = workingTime;
 	}
 
 }

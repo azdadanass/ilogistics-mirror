@@ -142,6 +142,15 @@
 											&nbsp;
 										</div>
 									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Exit Factor" />
+										</div>
+										<div class="profile-info-value bolder">
+											<h:outputText value="#{locationView.model.exitFactor}" />
+											&nbsp;
+										</div>
+									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
@@ -175,8 +184,17 @@
 											<h:outputText value="Status Category" />
 										</div>
 										<div class="profile-info-value">
-											<h:outputText value="#{locationView.model.stockRowState.value}" styleClass="#{locationView.model.stockRowState.color.name}" />
+											<h:outputText value="#{locationView.model.stockRowState.value}" styleClass="#{locationView.model.stockRowState.color.name}" rendered="#{locationView.model.stockRowState!=null}"/>
 											<h:outputText value="Normal &amp; Faulty" rendered="#{locationView.model.stockRowState==null}" styleClass="blue" />
+											&nbsp;
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">
+											<h:outputText value="Floor" />
+										</div>
+										<div class="profile-info-value orange">
+											<h:outputText value="#{locationView.model.floor}" />
 											&nbsp;
 										</div>
 									</div>

@@ -617,10 +617,8 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 			result.add(x);
 
 		});
-		
-		
-		
-		Collections.sort(result,new Comparator<PackingDetail>() {
+
+		Collections.sort(result, new Comparator<PackingDetail>() {
 
 			@Override
 			public int compare(PackingDetail o1, PackingDetail o2) {
@@ -679,14 +677,15 @@ public class DeliveryRequest extends GenericModel<Integer> implements Comparable
 		if (getIsInbound())
 			return inboundType.getValue();
 		else if (getIsOutbound())
-			switch (outboundType) {
-			case NORMAL:
-				return "Normal";
-			case TRANSFER:
-				return "Transfer to Inbound";
-			case PLANNED_RETURN:
-				return "Planned return (" + returnReason + ")";
-			}
+			if (outboundType != null)
+				switch (outboundType) {
+				case NORMAL:
+					return "Normal";
+				case TRANSFER:
+					return "Transfer to Inbound";
+				case PLANNED_RETURN:
+					return "Planned return (" + returnReason + ")";
+				}
 		return null;
 	}
 

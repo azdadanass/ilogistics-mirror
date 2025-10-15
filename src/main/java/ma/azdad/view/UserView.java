@@ -507,6 +507,14 @@ public class UserView {
 	public Boolean hasRoleIlogistics(String username) {
 		return hasRole(username, Role.ROLE_ILOGISTICS_USER);
 	}
+	
+	public Boolean hasRoleIlogisticsAccess(String username) {
+		return hasRole(username, Role.ROLE_ILOGISTICS);
+	}
+	
+	public Boolean hasRoleWarehouseManager(String username) {
+		return hasRole(username, Role.ROLE_ILOGISTICS_WM);
+	}
 
 	public Boolean hasRoleTeamLeader(String username) {
 		return hasRole(username, Role.ROLE_SDM_TEAM_LEADER);

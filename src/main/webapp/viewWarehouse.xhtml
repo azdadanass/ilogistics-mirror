@@ -339,6 +339,12 @@
 										<p:column headerText="Phone">
 											<h:outputText value="#{item.user.phone}" styleClass="orange" />
 										</p:column>
+										<p:column headerText="Access">
+											<i class="ace-icon fa #{userView.hasRoleIlogisticsAccess(item.user.username)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
+										<p:column headerText="Role WM">
+											<i class="ace-icon fa #{userView.hasRoleWarehouseManager(item.user.username)?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+										</p:column>
 									</p:dataTable>
 								</div>
 							</div>

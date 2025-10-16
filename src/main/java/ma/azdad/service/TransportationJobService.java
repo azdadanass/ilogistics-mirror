@@ -497,7 +497,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		});
 	}
 	
-	@Scheduled(cron = "0 36 0 * * *") // Every day at 12:32 AM
+	@Scheduled(cron = "0 39 0 * * *") // Every day at 12:32 AM
 	@Transactional
 	public void generateGeneralScript() {
 		repos.findAll().forEach(i -> {

@@ -192,6 +192,13 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		transportationJob.setNonEffectiveTraveledDistance(calculateRealNonProductiveDist(transportationJob.getId()));
 		transportationJob.setItineratyMaxVolume(maxCumulativeVolume != null ? maxCumulativeVolume : 0d);
 		transportationJob.setItineratyMaxWeight(maxCumulativeWeight != null ? maxCumulativeWeight : 0d);
+		if(!Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1).
+				contains(transportationJob.getStatus())) {
+			transportationJob.calculateEstimatedStartCost();
+			transportationJob.calculateEstimatedItineraryCost();
+		}
+		
+		
 
 		return transportationJob;
 
@@ -399,6 +406,10 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public void calculateTransportationRequestListCosts(TransportationJob transportationJob, Boolean setCost) {
 		Double total1 = 0.0, total2 = 0.0;
 		Boolean test = true;
+		transportationJob.setPlannedEffectiveDistance(calculateEstimatedProductiveDist(transportationJob.getId()));
+		transportationJob.setPlannedNonEffectiveDistance(calculateEstimatedNonProductiveDist(transportationJob.getId()));
+		transportationJob.calculateEstimatedItineraryCost();
+		
 		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 			Double grossWeight = deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
 			Double estimatedDistance = tr.getEstimatedDistance();
@@ -414,7 +425,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		for (TransportationRequest tr : transportationJob.getTransportationRequestList()) {
 			Double grossWeight = deliveryRequestService.getGrossWeight(tr.getDeliveryRequest().getId());
 			Double estimatedDistance = tr.getEstimatedDistance();
-			tr.setEstimatedCost(transportationJob.getEstimatedCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+			tr.setEstimatedStartCost(transportationJob.getEstimatedStartCost() * (test ? calculatePlannedTrStartDistance(tr.getTransportationJob().getId(),tr.getId()) * grossWeight / total1 
+					: calculatePlannedTrStartDistance(tr.getTransportationJob().getId(),tr.getId()) / total2));
+			tr.setEstimatedItineraryCost(transportationJob.getEstimatedItineraryCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
+			tr.setEstimatedCost(tr.getEstimatedStartCost() + tr.getEstimatedItineraryCost());
+
+
 			if (setCost)
 				tr.setCost(transportationJob.getCost() * (test ? estimatedDistance * grossWeight / total1 : estimatedDistance / total2));
 			transportationRequestService.save(tr);
@@ -440,8 +456,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			calculateTransportationRequestListCosts(transportationJob, setCost);
 			
 			initCalculableFields(transportationJob);
-			transportationJob.calculateEstimatedStartCost();
-			transportationJob.calculateEstimatedItineraryCost();
+			
+			
 			TransportationJob tj = save(transportationJob);
 		} catch (Exception e) {
 			e.printStackTrace();

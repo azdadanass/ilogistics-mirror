@@ -509,23 +509,30 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	public void calculateEstimatedStartCost() {
-		try {
-			this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		calculateEstimatedCost();
+	    try {
+	        this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
+
+	    } catch (Exception e) {
+	        System.err.println("Error in calculateEstimatedStartCost: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    calculateEstimatedCost();
 	}
 
 	public void calculateEstimatedItineraryCost() {
-//		estimatedItineraryCost = getEstimatedDistance() * vehiclePrice; // old
-		try {
-			this.estimatedItineraryCost = (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) * vehiclePrice;
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-		calculateEstimatedCost();
+	    try {
+	    
+	        this.estimatedItineraryCost = 
+	            (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) 
+	            * vehiclePrice;
+
+	    } catch (Exception e) {
+	        System.err.println("Error in calculateEstimatedItineraryCost: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    calculateEstimatedCost();
 	}
+
 
 	@Transient
 	public Double getPaidCost() {

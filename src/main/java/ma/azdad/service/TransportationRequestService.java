@@ -143,6 +143,8 @@ public class TransportationRequestService extends GenericService<Integer, Transp
 			}
 
 			Hibernate.initialize(transportationRequest.getTransportationJob().getDriver());
+			Hibernate.initialize(transportationRequest.getTransportationJob().getTransportationRequestList());
+			Hibernate.initialize(transportationRequest.getTransportationJob().getStopList());
 			Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter());
 			if (transportationRequest.getTransportationJob().getTransporter() != null) {
 				Hibernate.initialize(transportationRequest.getTransportationJob().getTransporter().getSupplier());

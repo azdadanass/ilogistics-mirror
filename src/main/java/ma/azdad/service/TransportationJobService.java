@@ -497,10 +497,12 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		});
 	}
 	
-	@Scheduled(cron = "0 32 0 * * *") // Every day at 12:32 AM
+	@Scheduled(cron = "0 36 0 * * *") // Every day at 12:32 AM
 	@Transactional
 	public void generateGeneralScript() {
 		repos.findAll().forEach(i -> {
+			Hibernate.initialize(i.getTransportationRequestList());
+
 			if(!Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1).
 					contains(i.getStatus())) {
 				calculateTransportationRequestListCosts(i, true);

@@ -20,6 +20,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -496,6 +497,8 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		});
 	}
 	
+	@Scheduled(cron = "0 0 1 * * *") // Every day at 01:00 AM
+	@Transactional
 	public void generateGeneralScript() {
 		repos.findAll().forEach(i -> {
 			if(!Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1).

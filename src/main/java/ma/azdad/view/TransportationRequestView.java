@@ -145,6 +145,13 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 
 		else if (isViewPage) {
 			transportationRequest = transportationRequestService.findOne(id);
+			//costs updates
+			if(!Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,TransportationRequestStatus.APPROVED).
+					contains(transportationRequest.getStatus())) {
+				transportationJobService.calculateTransportationRequestListCosts(transportationRequest.getTransportationJob(), true);
+				transportationRequest = transportationRequestService.findOne(id);
+			}
+			
 			transportationRequest.init();
 			generateMap(transportationRequest);
 		}
@@ -618,12 +625,35 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 	  public  List<TrCost> getCostList() {
 	        List<TrCost> list = new ArrayList<>();
 
-	        list.add(new TrCost(transportationRequest.getReference(), transportationRequest.getStartDate(), transportationRequest.getEndDate(), 
+	        list.add(new TrCost(transportationRequest.getReference(), transportationRequest.getPickupDate(), transportationRequest.getDeliveryDate(), 
 	        		transportationRequest.getStartCost(), transportationRequest.getItineraryCost(), transportationRequest.getHandlingCost()));
 	       
 
 	        return list;
 	    }
+	  
+	  public List<TrCost> getPlannedCostList() {
+		    List<TrCost> list = new ArrayList<>();
+
+		    Date pickupDate = transportationRequest.getExpectedPickupDate() != null
+		            ? transportationRequest.getExpectedPickupDate()
+		            : transportationRequest.getPlannedPickupDate();
+
+		    Date deliveryDate = transportationRequest.getExpectedDeliveryDate() != null
+		            ? transportationRequest.getExpectedDeliveryDate()
+		            : transportationRequest.getPlannedDeliveryDate();
+
+		    list.add(new TrCost(
+		            transportationRequest.getReference(),
+		            pickupDate,
+		            deliveryDate,
+		            transportationRequest.getEstimatedStartCost(),
+		            transportationRequest.getEstimatedItineraryCost(),
+		            transportationRequest.getEstimateHandlingCost()
+		    ));
+
+		    return list;
+		}
 
 	// FILES MANAGEMENT
 	private String transportationRequestFileType;

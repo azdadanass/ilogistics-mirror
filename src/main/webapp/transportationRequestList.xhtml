@@ -160,8 +160,11 @@
 							<p:column headerText="Reference" width="90">
 								<h:outputText value="#{item.reference}" styleClass="bolder purple" />
 							</p:column>
-							<p:column headerText="REF">
+							<p:column headerText="REF" rendered="#{transportationRequestView.pageIndex!=7}">
 								<h:outputText value="#{item.deliveryRequestSmsRef}" />
+							</p:column>
+							<p:column headerText="Status" width="90">
+								<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
 							</p:column>
 							<p:column headerText="DN" width="90" exportable="false">
 								<h:outputLink value="viewDeliveryRequest.xhtml" target="blank">
@@ -171,6 +174,9 @@
 							</p:column>
 							<p:column headerText="DN" styleClass="hide">
 								<h:outputText value="#{item.deliveryRequestReference}" />
+							</p:column>
+								<p:column headerText="Project" rendered="#{transportationRequestView.pageIndex==7}">
+								<h:outputText value="#{item.destinationProjectName}" />
 							</p:column>
 							<p:column headerText="Origin Name" rendered="#{transportationRequestView.pageIndex!=7}">
 								<h:outputText value="#{item.originName}" styleClass="purple" />
@@ -254,45 +260,49 @@
 									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Transporter" styleClass="hide">
+							<p:column headerText="Transporter" rendered="#{transportationRequestView.pageIndex==7}">
 								<h:outputText value="#{item.transporterName}" styleClass=" purple" />
 							</p:column>
-							<p:column headerText="Status" width="120">
-								<h:outputText value="#{item.status.value}" styleClass="#{item.status.color}" />
+							<p:column headerText="Estimated Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
+								<h:outputText value="#{item.estimatedCost}">
+									<f:convertNumber type="number" maxFractionDigits="2" />
+								</h:outputText>
+								<h:outputText value=" MAD" />
 							</p:column>
-							<p:column headerText="Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
+							<p:column headerText="Estimated Cost" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
+								<h:outputText value="#{item.estimatedCost}" />
+							</p:column>
+							<p:column headerText="Actual Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
 								<h:outputText value="#{item.cost}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" />
 							</p:column>
-							<p:column headerText="Cost" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
+							<p:column headerText="Actual Cost" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
 								<h:outputText value="#{item.cost}" />
 							</p:column>
-							<p:column headerText="Mapped Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
+							<p:column headerText="Paid Cost" rendered="#{transportationRequestView.pageIndex==7}" exportable="false">
 								<h:outputText value="#{item.totalAppLinkCost}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" />
 							</p:column>
-							<p:column headerText="Mapped Cost" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
+							<p:column headerText="Paid Cost" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
 								<h:outputText value="#{item.totalAppLinkCost}" />
 							</p:column>
-							<p:column headerText="Remainder" rendered="#{transportationRequestView.pageIndex==7}">
+							<p:column headerText="Remaining" rendered="#{transportationRequestView.pageIndex==7}">
 								<h:outputText value="#{item.remainder}">
 									<f:convertNumber type="number" maxFractionDigits="2" />
 								</h:outputText>
 								<h:outputText value=" MAD" />
 							</p:column>
-							<p:column headerText="Remainder" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
+							<p:column headerText="Remaining" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
 								<h:outputText value="#{item.remainder}" />
 							</p:column>
 							<p:column headerText="Currency" rendered="#{transportationRequestView.pageIndex==7}" styleClass="hide">
 								<h:outputText value="MAD" />
 							</p:column>
-							<p:column headerText="Destination Project" rendered="#{transportationRequestView.pageIndex==7}">
-								<h:outputText value="#{item.destinationProjectName}" />
-							</p:column>
+						
 							<p:column headerText="Payment Status" rendered="#{transportationRequestView.pageIndex==7}">
 								<h:outputText value="#{item.paymentStatus.value}" styleClass="#{item.paymentStatus.color}" />
 							</p:column>

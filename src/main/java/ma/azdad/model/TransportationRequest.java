@@ -221,7 +221,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 			String deliveryRequestSmsRef, String requesterUsername, String requesterFullName, //
 			Date neededPickupDate, Date neededDeliveryDate, Date deliveryDate, String originName, String destinationName, String warehouseName, //
 			TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName, //
-			String approverFullName, Double cost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
+			String approverFullName, Double cost,Double estimatedCost, Double totalAppLinkCost, TransportationRequestPaymentStatus paymentStatus, String destinationProjectName) {
 		super(id);
 		this.reference = reference;
 		this.status = status;
@@ -246,6 +246,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 		this.setTransporterSupplierName(transporterSupplierName);
 
 		this.cost = cost;
+		this.estimatedCost = estimatedCost;
 		this.totalAppLinkCost = totalAppLinkCost;
 		this.paymentStatus = paymentStatus;
 		this.approverFullName = approverFullName;

@@ -164,6 +164,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
+		generateGeneralScript();
 		return transportationJob;
 	}
 
@@ -492,6 +493,16 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	public void generateReferenceScript() {
 		repos.findAll().forEach(i -> {
 			i.generateReference();
+			save(i);
+		});
+	}
+	
+	public void generateGeneralScript() {
+		repos.findAll().forEach(i -> {
+			if(!Arrays.asList(TransportationJobStatus.EDITED,TransportationJobStatus.ASSIGNED1).
+					contains(i.getStatus())) {
+				calculateTransportationRequestListCosts(i, true);
+			}
 			save(i);
 		});
 	}

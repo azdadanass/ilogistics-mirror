@@ -12,6 +12,9 @@ import ma.azdad.utils.File;
 
 @Repository
 public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
+	
+	@Query("select id from PartNumber")
+	List<Integer> findIdList();
 
 	@Query("select concat('\"',concat(name,'\"')) from PartNumber group by name")
 	public List<String> getAllNames();
@@ -83,6 +86,10 @@ public interface PartNumberRepos extends JpaRepository<PartNumber, Integer> {
 	@Modifying
 	@Query("update PartNumber a set a.industryName = ?2 where a.partNumberType.category.industry.id = ?1")
 	void updateIndustryName(Integer industryId, String industryName);
+	
+	@Modifying
+	@Query("update PartNumber a set a.avgStorageDuration = ?2 where a.id = ?1")
+	void updateAvgStorageDuration(Integer id, Double avgStorageDuration);
 	
 	@Query("select new ma.azdad.utils.File('Part Number',a.parent.name,a.id,a.date,a.link,a.extension,a.type,a.size,a.name,user) from PartNumberFile a where a.parent.id in (select distinct b.partNumber.id from Boq b where b.podetails.po.id = ?1) order by a.parent.id")
 	public List<File> findFileListByPo(Integer poId);

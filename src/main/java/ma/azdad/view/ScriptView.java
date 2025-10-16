@@ -279,6 +279,13 @@ public class ScriptView {
 	}
 	
 	
+	public void calculateAvgStorageDurationForAll() {
+		if (!canExecute)
+			return;
+		partNumberService.calculateAvgStorageDurationForAll();
+	}
+	
+	
 
 	// GETTERS & SETTERS
 	public Integer getInboundDeliveryRequestId() {

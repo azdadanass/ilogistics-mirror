@@ -42,7 +42,7 @@ public class JobService {
 
 	@Autowired
 	EmailService emailService;
-	
+
 	@Autowired
 	UserService userService;
 
@@ -129,7 +129,7 @@ public class JobService {
 	public void sendDeliveryRequestPendingAcknowledgementNotification() {
 		emailService.sendDeliveryRequestPendingAcknowledgementNotification();
 	}
-	
+
 	@Scheduled(cron = "00 00 06 * * *")
 	public void calculateStorageOverdueScript() {
 		deliveryRequestService.calculateStorageOverdueScript();
@@ -139,26 +139,30 @@ public class JobService {
 //	public void automaticFillOutboundSerialNumberScript() {
 //		deliveryRequestSerialNumberService.automaticFillOutboundSerialNumberScript(200);
 //	}
-	
+
 	@Scheduled(cron = "00 10 05 * * *")
 	public void updateReactivityScript() {
 		log.info("updateReactivityScript Script");
 		userService.updateReactivityScript();
 	}
-	
+
 	@Scheduled(cron = "00 30 06 * * *")
 	public void sendPendingAckNotification() {
 		log.info("sendPendingAckNotification");
 		transportationRequestService.sendPendingAckNotification();
 	}
-	
-	
+
 	@Scheduled(cron = "00 35 00 * * *")
 	public void updateDeliveryRequestPackingQuantities() {
 		deliveryRequestService.updateNumberOfItems();
 		deliveryRequestService.updateGrossWeight();
 		deliveryRequestService.updateNetWeight();
 		deliveryRequestService.updateVolume();
+	}
+
+	@Scheduled(cron = "00 40 00 * * *")
+	public void calculateAvgStorageDuration() {
+		partNumberService.calculateAvgStorageDurationForAll();
 	}
 
 }

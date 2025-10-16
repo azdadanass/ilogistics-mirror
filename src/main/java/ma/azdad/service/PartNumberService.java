@@ -4,9 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumber;
 import ma.azdad.repos.PartNumberRepos;
+import ma.azdad.repos.StockRowRepos;
 import ma.azdad.utils.FacesContextMessages;
 import ma.azdad.utils.File;
 import ma.azdad.utils.PartNumberExcelFileException;
@@ -44,13 +50,15 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 
 	@Autowired
 	protected PartNumberCategoryService partNumberCategoryService;
-	
 
 	@Autowired
 	protected PackingDetailService packingDetailService;
 
 	@Autowired
 	PartNumberBrandService brandService;
+
+	@Autowired
+	StockRowRepos stockRowRepos;
 
 	public List<PartNumber> find(Boolean all, String username) {
 		if (all)
@@ -145,7 +153,8 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 					String description = getString("Description", row.getCell(1));
 					String industry = getString("Industry", row.getCell(2), partNumberIndustryService.findNameList());
 					String category = getString("Category", row.getCell(3), partNumberCategoryService.findNameList(partNumberIndustryService.findByName(industry).getId()));
-					String type = getString("Type", row.getCell(4), partNumberTypeService.findNameList(partNumberCategoryService.findByName(partNumberIndustryService.findByName(industry).getId(), category).getId()));
+					String type = getString("Type", row.getCell(4),
+							partNumberTypeService.findNameList(partNumberCategoryService.findByName(partNumberIndustryService.findByName(industry).getId(), category).getId()));
 					String brand = getString("Brand", row.getCell(5), brandService.findNameList());
 					String partialDelivery = getString("Partial Delivery", row.getCell(6), Arrays.asList("Yes", "No"));
 					String unitType = getString("Unit Type", row.getCell(7), textService.findValueListByBeanNameAndType("partNumber", "unitType"));
@@ -154,7 +163,8 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 					PartNumber partNumber = new PartNumber();
 					partNumber.setName(name);
 					partNumber.setDescription(description);
-					partNumber.setPartNumberType(partNumberTypeService.findByName(partNumberCategoryService.findByName(partNumberIndustryService.findByName(industry).getId(), category).getId(), type));
+					partNumber
+							.setPartNumberType(partNumberTypeService.findByName(partNumberCategoryService.findByName(partNumberIndustryService.findByName(industry).getId(), category).getId(), type));
 					partNumber.setBrand(brandService.findByName(brand));
 					partNumber.setPartialDelivery("yes".equalsIgnoreCase(partialDelivery));
 					partNumber.setUnitType(unitType);
@@ -180,7 +190,8 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 			throw new PartNumberExcelFileException(field + " should not be null");
 		if (valueList == null)
 			return string;
-		return valueList.stream().distinct().filter(i -> i.equalsIgnoreCase(string)).findFirst().orElseThrow(() -> new PartNumberExcelFileException(field + " : " + string + " should be one of these : " + valueList));
+		return valueList.stream().distinct().filter(i -> i.equalsIgnoreCase(string)).findFirst()
+				.orElseThrow(() -> new PartNumberExcelFileException(field + " : " + string + " should be one of these : " + valueList));
 	}
 
 	@Async
@@ -195,9 +206,9 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 		repos.updateImage(id);
 		evictCache();
 	}
-	
+
 	public Boolean hasSerialNumber(Integer id) {
-		return packingDetailService.countByPartNumberAndHasSerialnumber(id)>0;
+		return packingDetailService.countByPartNumberAndHasSerialnumber(id) > 0;
 	}
 
 	public void updateHasPacking(Integer id) {
@@ -238,10 +249,81 @@ public class PartNumberService extends GenericService<Integer, PartNumber, PartN
 	}
 
 	public List<File> findFileListByPo(Integer poId) {
-		return repos.findFileListByPo(poId).stream().filter(i->!i.getIsImage()).collect(Collectors.toList());
+		return repos.findFileListByPo(poId).stream().filter(i -> !i.getIsImage()).collect(Collectors.toList());
 	}
-	
-	public List<File> findFileListByDeliveryRequest(Integer deliveryRequestId){
-		return repos.findFileListByDeliveryRequest(deliveryRequestId).stream().filter(i->!i.getIsImage()).collect(Collectors.toList());
+
+	public List<File> findFileListByDeliveryRequest(Integer deliveryRequestId) {
+		return repos.findFileListByDeliveryRequest(deliveryRequestId).stream().filter(i -> !i.getIsImage()).collect(Collectors.toList());
 	}
+
+	public void calculateAvgStorageDuration(Integer partNumberId) {
+		System.out.println("---------------------------------------------------");
+		log.info("calculateAvgStorageDuration : "+partNumberId);
+		List<Object[]> data = stockRowRepos.calculateAvgStorageDurationQuery(partNumberId);
+		if(data.isEmpty()) // means pn used only in xbound
+			return;
+		List<Pair<Double, Long>> result = new ArrayList<Pair<Double, Long>>(); // list qty / age
+		Map<Integer, Pair<List<PairQuantityDate>, List<PairQuantityDate>>> map = new HashMap<>();
+		for (Object[] o : data) {
+			Double quantity = (Double) o[0];
+			Integer inboundDrdId = (Integer) o[1];
+			Date creationDate = (Date) o[2];
+			map.putIfAbsent(inboundDrdId, Pair.of(new ArrayList<PairQuantityDate>(), new ArrayList<PairQuantityDate>()));
+			if (quantity > 0)
+				map.get(inboundDrdId).getLeft().add(new PairQuantityDate(quantity, creationDate));
+			else
+				map.get(inboundDrdId).getRight().add(new PairQuantityDate(-quantity, creationDate));
+		}
+		for (Integer inboundDrdId : map.keySet()) {
+			Pair<List<PairQuantityDate>, List<PairQuantityDate>> pair = map.get(inboundDrdId);
+//			System.out.println(inboundDrdId);
+			for (PairQuantityDate in : pair.getLeft()) {
+//				System.out.println("\t" + in.quantity + "(" + in.date + ")");
+				for (PairQuantityDate out : pair.getRight()) {
+//					System.out.println("\t\t" + out.quantity + "(" + out.date + ")");
+					if (out.quantity.equals(0.0))
+						continue;
+					if (in.quantity >= out.quantity) {
+//						System.out.println("\t\t" + "a");
+						result.add(Pair.of(out.quantity, UtilsFunctions.getDateDifference(out.date, in.date)));
+						in.quantity = in.quantity - out.quantity;
+						out.quantity = 0.0;
+					} else {
+//						System.out.println("\t\t" + "b");
+						result.add(Pair.of(in.quantity, UtilsFunctions.getDateDifference(out.date, in.date)));
+						out.quantity = out.quantity - in.quantity;
+						in.quantity = 0.0;
+					}
+					if (in.quantity.equals(0.0))
+						break;
+				}
+				if (in.quantity > 0)
+					result.add(Pair.of(in.quantity, UtilsFunctions.getDateDifference(new Date(), in.date)));
+			}
+
+//			System.out.println("----------------------------------------");
+		}
+//		System.out.println("result : "+result);
+		Double avgStorageDuration = result.stream().mapToDouble(p -> p.getLeft() * p.getRight()).sum() / result.stream().mapToDouble(Pair::getLeft).sum();
+		System.out.println(avgStorageDuration);
+		repos.updateAvgStorageDuration(partNumberId, avgStorageDuration);
+		evictCache();
+	}
+
+	public void calculateAvgStorageDurationForAll() {
+		repos.findIdList().forEach(this::calculateAvgStorageDuration);
+	}
+
+}
+
+class PairQuantityDate {
+	Double quantity;
+	Date date;
+
+	public PairQuantityDate(Double quantity, Date date) {
+		super();
+		this.quantity = quantity;
+		this.date = date;
+	}
+
 }

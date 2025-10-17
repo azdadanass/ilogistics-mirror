@@ -76,6 +76,7 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 	private Double estimatedItineraryCost = 0.0;
 	private Double estimatedStartCost = 0.0;
 	private Double estimateHandlingCost = 0.0;
+	private Double factor;
 
 
 	private Double cost = 0.0; // = startCost+itineraryCost+handlingCost
@@ -1484,6 +1485,15 @@ public class TransportationRequest extends GenericModel<Integer> implements Seri
 
 	public void setHandlingCost(Double handlingCost) {
 		this.handlingCost = handlingCost;
+	}
+	
+	@Transient
+	public Double getFactor() {
+		return factor;
+	}
+
+	public void setFactor(Double factor) {
+		this.factor = factor;
 	}
 
 	public Double getRealDistance() {

@@ -1,69 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" template="template/template.xhtml"
+<ui:composition xmlns="http://www.w3c.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	template="template/template.xhtml"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 	<ui:define name="title">
 		<h:outputText value="#{staticView.applicationName}" />
 	</ui:define>
 	<ui:define name="header">
 		<ui:include src="template/header.xhtml" />
-		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css" rel="stylesheet" />
+		<link href="resources/css/bootstrap-nav/bootstrap-nav-wizard.css"
+			rel="stylesheet" />
 	</ui:define>
 	<ui:define name="sider">
 		<ui:include src="template/sider.xhtml" />
 	</ui:define>
 	<ui:define name="navigator">
 		<ul class="breadcrumb">
-			<li>
-				<i class="ace-icon fa fa-home" />
-				<a href="#">
-					<h:outputText value="Main Menu" />
-				</a>
-			</li>
-			<li class="active">
-				<h:outputText value="#{transportationJobView.id == null?'Add New':'Edit'} Issue" />
+			<li><i class="ace-icon fa fa-home" /> <a href="#"> <h:outputText
+						value="Main Menu" />
+			</a></li>
+			<li class="active"><h:outputText
+					value="#{transportationJobView.id == null?'Add New':'Edit'} Issue" />
 			</li>
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-		<p:importEnum type="ma.azdad.model.Priority" var="Priority" allSuffix="ALL_ENUM_VALUES" />
+		<p:importEnum type="ma.azdad.model.Priority" var="Priority"
+			allSuffix="ALL_ENUM_VALUES" />
 		<h:form id="main_form">
 			<div class="widget-box">
 				<div class="widget-header widget-header-blue widget-header-flat">
 					<h4 class="widget-title lighter">
-						<i class="ace-icon fa #{transportationJobView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
-						<h:outputText value=" #{transportationJobView.id == null?'Add New':'Edit'} SR" />
+						<i
+							class="ace-icon fa #{transportationJobView.id == null?'fa-plus green':'fa-edit orange'} bigger-110"></i>
+						<h:outputText
+							value=" #{transportationJobView.id == null?'Add New':'Edit'} SR" />
 					</h4>
 				</div>
 				<div class="widget-body">
 					<div class="widget-main">
 						<h:panelGroup id="nav-wizard">
 							<ul class="nav nav-wizard">
-								<li class="#{transportationJobView.step==1?'active':''}">
-									<a href="#">
-										<h:outputText value="General Informations" />
-									</a>
-								</li>
-								<li class="#{transportationJobView.step==2?'active':''}">
-									<a href="#">
-										<h:outputText value="Planning" />
-									</a>
-								</li>
-								<li class="#{transportationJobView.step==3?'active':''}">
-									<a href="#">
-										<h:outputText value="Budgeting" />
-									</a>
-								</li>
-								<li class="#{transportationJobView.step==4?'active':''}">
-									<a href="#">
-										<h:outputText value="Notification list" />
-									</a>
-								</li>
-								<li class="#{transportationJobView.step==5?'active':''}">
-									<a href="#">
-										<h:outputText value="Summary" />
-									</a>
-								</li>
+								<li class="#{transportationJobView.step==1?'active':''}"><a
+									href="#"> <h:outputText value="General Informations" />
+								</a></li>
+								<li class="#{transportationJobView.step==2?'active':''}"><a
+									href="#"> <h:outputText value="Planning" />
+								</a></li>
+								<li class="#{transportationJobView.step==3?'active':''}"><a
+									href="#"> <h:outputText value="Budgeting" />
+								</a></li>
+								<li class="#{transportationJobView.step==4?'active':''}"><a
+									href="#"> <h:outputText value="Notification list" />
+								</a></li>
+								<li class="#{transportationJobView.step==5?'active':''}"><a
+									href="#"> <h:outputText value="Summary" />
+								</a></li>
 							</ul>
 						</h:panelGroup>
 						<hr />
@@ -76,13 +73,16 @@
 								</h3>
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="REF" />
+										<label class="control-label pull-right"> <h:outputText
+												value="REF" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputText value="#{transportationJobView.transportationJob.ref}" required="true" requiredMessage="REF should not be null" styleClass="col-xs-12 col-sm-6" />
+											<p:inputText
+												value="#{transportationJobView.transportationJob.ref}"
+												required="true" requiredMessage="REF should not be null"
+												styleClass="col-xs-12 col-sm-6" />
 											<br />
 										</div>
 									</div>
@@ -90,13 +90,16 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Priority" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Priority" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<h:selectOneMenu value="#{transportationJobView.transportationJob.priority}" styleClass="col-xs-12 col-sm-6" required="true" requiredMessage="Severity should not be null">
+											<h:selectOneMenu
+												value="#{transportationJobView.transportationJob.priority}"
+												styleClass="col-xs-12 col-sm-6" required="true"
+												requiredMessage="Severity should not be null">
 												<f:selectItem itemLabel="---" noSelectionOption="true" />
 												<f:selectItems value="#{Priority.ALL_ENUM_VALUES}" />
 											</h:selectOneMenu>
@@ -107,15 +110,19 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Important" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Important" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:commandLink id="important" update="important" partialSubmit="true" process="@this">
-												<i class="ace-icon fa #{transportationJobView.transportationJob.important?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-												<f:setPropertyActionListener value="#{!transportationJobView.transportationJob.important}" target="#{transportationJobView.transportationJob.important}" />
+											<p:commandLink id="important" update="important"
+												partialSubmit="true" process="@this">
+												<i
+													class="ace-icon fa #{transportationJobView.transportationJob.important?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+												<f:setPropertyActionListener
+													value="#{!transportationJobView.transportationJob.important}"
+													target="#{transportationJobView.transportationJob.important}" />
 											</p:commandLink>
 											<br />
 										</div>
@@ -124,13 +131,15 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Description" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Description" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputTextarea value="#{transportationJobView.transportationJob.comment}" styleClass="col-xs-12 col-sm-6" />
+											<p:inputTextarea
+												value="#{transportationJobView.transportationJob.comment}"
+												styleClass="col-xs-12 col-sm-6" />
 											<br />
 										</div>
 									</div>
@@ -145,31 +154,39 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Planned Start Date" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Planned Start Date" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:calendar value="#{transportationJobView.transportationJob.plannedStartDate}" pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+											<p:calendar id="plannedStartDate"
+												value="#{transportationJobView.transportationJob.plannedStartDate}"
+												pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+												mindate="#{transportationJobView.now}"
 												requiredMessage="Planned Start Date should not be null">
 												<p:ajax event="dateSelect" update="plannedEndDate" />
 											</p:calendar>
 											<br />
 										</div>
 									</div>
+
 								</div>
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Planned End Date" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Planned End Date" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:calendar id="plannedEndDate" value="#{transportationJobView.transportationJob.plannedEndDate}" mindate="#{transportationJobView.transportationJob.plannedStartDate}"
-												pattern="yyyy-MM-dd HH:mm" navigator="true" required="true" requiredMessage="Planned End Date should not be null" />
+											<p:calendar id="plannedEndDate"
+												value="#{transportationJobView.transportationJob.plannedEndDate}"
+												mindate="#{transportationJobView.transportationJob.plannedStartDate}"
+												pattern="yyyy-MM-dd HH:mm" navigator="true" required="true"
+												mindate="#{transportationJobView.now}"
+												requiredMessage="Planned End Date should not be null" />
 											<br />
 										</div>
 									</div>
@@ -183,13 +200,15 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Planned Staring cost" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Planned Staring cost" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputNumber value="#{transportationJobView.transportationJob.plannedStartCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<p:inputNumber
+												value="#{transportationJobView.transportationJob.plannedStartCost}"
+												decimalSeparator="." thousandSeparator="" minValue="0" />
 											<br />
 										</div>
 									</div>
@@ -197,13 +216,15 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Planned Itinerary cost" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Planned Itinerary cost" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputNumber value="#{transportationJobView.transportationJob.plannedItineraryCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<p:inputNumber
+												value="#{transportationJobView.transportationJob.plannedItineraryCost}"
+												decimalSeparator="." thousandSeparator="" minValue="0" />
 											<br />
 										</div>
 									</div>
@@ -211,13 +232,15 @@
 								<div class="space-8" />
 								<div class="row">
 									<div class="col-xs-12 col-sm-3">
-										<label class="control-label pull-right">
-											<h:outputText value="Planned Handling cost" />
+										<label class="control-label pull-right"> <h:outputText
+												value="Planned Handling cost" />
 										</label>
 									</div>
 									<div class="col-xs-12 col-sm-9">
 										<div class="clearfix">
-											<p:inputNumber value="#{transportationJobView.transportationJob.plannedHandlingCost}" decimalSeparator="." thousandSeparator="" minValue="0" />
+											<p:inputNumber
+												value="#{transportationJobView.transportationJob.plannedHandlingCost}"
+												decimalSeparator="." thousandSeparator="" minValue="0" />
 											<br />
 										</div>
 									</div>
@@ -237,53 +260,82 @@
 											<h:outputText value=" Notification List" />
 										</div>
 										<div class="col-sm-12 col-xs-12 aa-datatable-container">
-											<p:dataTable id="notification_tab" value="#{transportationJobView.transportationJob.toNotifyList}" var="item" styleClass="table table-striped table-hover center"
-												paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
-												<p:column headerText="Photo" width="5%" styleClass="hidden-xs" exportable="false">
-													<p:graphicImage value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+											<p:dataTable id="notification_tab"
+												value="#{transportationJobView.transportationJob.toNotifyList}"
+												var="item"
+												styleClass="table table-striped table-hover center"
+												paginatorAlwaysVisible="false" paginator="true"
+												paginatorPosition="bottom"
+												paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
+												rowIndexVar="rowIndexVar">
+												<p:column headerText="Photo" width="5%"
+													styleClass="hidden-xs" exportable="false">
+													<p:graphicImage value="#{fileUploadView.stream}"
+														styleClass="img-circle aa-datatable-photo">
 														<f:param name="fileName" value="#{item.photo}" />
 													</p:graphicImage>
 												</p:column>
 												<p:column headerText="Full Name">
-													<h:outputText value="#{item.fullName}" styleClass="green bolder" />
+													<h:outputText value="#{item.fullName}"
+														styleClass="green bolder" />
 												</p:column>
 												<p:column headerText="Type" width="100">
-													<h:outputText value="#{item.internalResource.internal?'Internal':'External'}" styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
+													<h:outputText
+														value="#{item.internalResource.internal?'Internal':'External'}"
+														styleClass="badge #{item.internalResource.internal?'badge-success':'badge-warning'}" />
 												</p:column>
 												<p:column headerText="Entity">
-													<h:outputText value="#{userView.findCompanyType(item.internalResource.username).value}" styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
+													<h:outputText
+														value="#{userView.findCompanyType(item.internalResource.username).value}"
+														styleClass="#{userView.findCompanyType(item.internalResource.username).color.name}" />
 													<h:outputText value=" / " />
-													<h:outputText value="#{userView.findEntityName(item.internalResource)}" styleClass="bolder #{userView.findCompanyType(item.internalResource.username).color.name}" />
+													<h:outputText
+														value="#{userView.findEntityName(item.internalResource)}"
+														styleClass="bolder #{userView.findCompanyType(item.internalResource.username).color.name}" />
 												</p:column>
 												<p:column headerText="Email">
 													<h:outputText value="#{item.email}" styleClass="light-blue" />
 												</p:column>
 												<p:column headerText="Phone">
-													<h:outputText value="#{item.phone}" styleClass="orange bolder" />
+													<h:outputText value="#{item.phone}"
+														styleClass="orange bolder" />
 												</p:column>
 												<p:column headerText="Notify By Email ?">
-													<p:commandLink id="notifyByEmail" update="notifyByEmail" partialSubmit="true" process="@this">
-														<i class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-														<f:setPropertyActionListener value="#{!item.notifyByEmail}" target="#{item.notifyByEmail}" />
+													<p:commandLink id="notifyByEmail" update="notifyByEmail"
+														partialSubmit="true" process="@this">
+														<i
+															class="ace-icon fa #{item.notifyByEmail?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener
+															value="#{!item.notifyByEmail}"
+															target="#{item.notifyByEmail}" />
 													</p:commandLink>
 												</p:column>
 												<p:column headerText="Notify By SMS ?">
-													<p:commandLink id="notifyBySms" update="notifyBySms" partialSubmit="true" process="@this">
-														<i class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
-														<f:setPropertyActionListener value="#{!item.notifyBySms}" target="#{item.notifyBySms}" />
+													<p:commandLink id="notifyBySms" update="notifyBySms"
+														partialSubmit="true" process="@this">
+														<i
+															class="ace-icon fa #{item.notifyBySms?'fa-toggle-on green':'fa-toggle-off grey'} bigger-200" />
+														<f:setPropertyActionListener value="#{!item.notifyBySms}"
+															target="#{item.notifyBySms}" />
 													</p:commandLink>
 												</p:column>
-												<p:column headerText="Actions" styleClass="center" width="100">
+												<p:column headerText="Actions" styleClass="center"
+													width="100">
 													<div class="action-buttons center">
-														<p:commandLink title="Remove row" action="#{transportationJobView.removeToNotifyItem(rowIndexVar)}" update="notification_tab" partialSubmit="true" process="notification_tab">
+														<p:commandLink title="Remove row"
+															action="#{transportationJobView.removeToNotifyItem(rowIndexVar)}"
+															update="notification_tab" partialSubmit="true"
+															process="notification_tab">
 															<i class="ace-icon fa fa-remove bigger-130 red" />
 														</p:commandLink>
 													</div>
 												</p:column>
 												<f:facet name="footer">
 													<div class="action-buttons center">
-														<p:commandLink styleClass="aa-tooltip tooltip-success" title="Add New Item" update=":addToNotifyItemForm" oncomplete="PF('addToNotifyItemDlg').show()" partialSubmit="true"
-															process="notification_tab">
+														<p:commandLink styleClass="aa-tooltip tooltip-success"
+															title="Add New Item" update=":addToNotifyItemForm"
+															oncomplete="PF('addToNotifyItemDlg').show()"
+															partialSubmit="true" process="notification_tab">
 															<i class="fa fa-plus green" />
 														</p:commandLink>
 													</div>
@@ -306,7 +358,9 @@
 													<h:outputText value="Reference" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.reference}" styleClass="bolder blue" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.reference}"
+														styleClass="bolder blue" />
 													&nbsp;
 												</div>
 											</div>
@@ -315,7 +369,9 @@
 													<h:outputText value="Priority" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.priority.value}" styleClass="#{transportationJobView.transportationJob.priority.color}" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.priority.value}"
+														styleClass="#{transportationJobView.transportationJob.priority.color}" />
 													&nbsp;
 												</div>
 											</div>
@@ -324,7 +380,9 @@
 													<h:outputText value="Transporter" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.transporter.name} " styleClass="bolder green" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.transporter.name} "
+														styleClass="bolder green" />
 													&nbsp;
 												</div>
 											</div>
@@ -333,9 +391,14 @@
 													<h:outputText value="Driver" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText id="driver" value="#{transportationJobView.transportationJob.driver.fullName} " styleClass="bolder green" />
-													<p:overlayPanel for="driver" style="text-align: left;width:350px" showEvent="mouseover" hideEvent="mouseout">
-														<h:outputText escape="false" value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.driver.username)}" />
+													<h:outputText id="driver"
+														value="#{transportationJobView.transportationJob.driver.fullName} "
+														styleClass="bolder green" />
+													<p:overlayPanel for="driver"
+														style="text-align: left;width:350px" showEvent="mouseover"
+														hideEvent="mouseout">
+														<h:outputText escape="false"
+															value="#{htmlView.generateOverlayPanelContent(transportationJobView.transportationJob.driver.username)}" />
 													</p:overlayPanel>
 													&nbsp;
 												</div>
@@ -345,7 +408,9 @@
 													<h:outputText value="Planned Start Date" />
 												</div>
 												<div class="profile-info-value light-blue">
-													<h:outputText value="#{transportationJobView.transportationJob.plannedStartDate}" styleClass="bolder">
+													<h:outputText
+														value="#{transportationJobView.transportationJob.plannedStartDate}"
+														styleClass="bolder">
 														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 													</h:outputText>
 													&nbsp;
@@ -356,7 +421,9 @@
 													<h:outputText value="Planned End Date" />
 												</div>
 												<div class="profile-info-value light-blue">
-													<h:outputText value="#{transportationJobView.transportationJob.plannedEndDate}" styleClass="bolder">
+													<h:outputText
+														value="#{transportationJobView.transportationJob.plannedEndDate}"
+														styleClass="bolder">
 														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 													</h:outputText>
 													&nbsp;
@@ -371,7 +438,9 @@
 													<h:outputText value="REF" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.ref}" styleClass="bolder blue" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.ref}"
+														styleClass="bolder blue" />
 													&nbsp;
 												</div>
 											</div>
@@ -380,7 +449,9 @@
 													<h:outputText value="Important" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.important?'Yes':'No'}" styleClass="#{transportationJobView.transportationJob.important?'green':'grey'}" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.important?'Yes':'No'}"
+														styleClass="#{transportationJobView.transportationJob.important?'green':'grey'}" />
 													&nbsp;
 												</div>
 											</div>
@@ -389,7 +460,9 @@
 													<h:outputText value="Transporter Type" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText value="#{transportationJobView.transportationJob.transporter.type.value} " styleClass="#{transportationJobView.transportationJob.transporter.type.color}" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.transporter.type.value} "
+														styleClass="#{transportationJobView.transportationJob.transporter.type.color}" />
 													&nbsp;
 												</div>
 											</div>
@@ -398,36 +471,39 @@
 													<h:outputText value="Vehicle" />
 												</div>
 												<div class="profile-info-value">
-													<h:outputText id="vehicle" value=" #{transportationJobView.transportationJob.vehicle.correctMatricule}" styleClass="bolder orange" />
-													<p:overlayPanel for="vehicle" style="text-align: left;width:400px;" showEvent="mouseover" hideEvent="mouseout">
+													<h:outputText id="vehicle"
+														value=" #{transportationJobView.transportationJob.vehicle.correctMatricule}"
+														styleClass="bolder orange" />
+													<p:overlayPanel for="vehicle"
+														style="text-align: left;width:400px;"
+														showEvent="mouseover" hideEvent="mouseout">
 														<div class="col-xs-4 center">
-															<p:graphicImage value="#{fileUploadView.stream}" styleClass="grid_images">
-																<f:param name="fileName" value="#{transportationJobView.transportationJob.vehicle.vehicleType.image}" />
+															<p:graphicImage value="#{fileUploadView.stream}"
+																styleClass="grid_images">
+																<f:param name="fileName"
+																	value="#{transportationJobView.transportationJob.vehicle.vehicleType.image}" />
 															</p:graphicImage>
-															<br />
-															<span class="bolder green smaller-80">
-																<h:outputText value="#{transportationJobView.transportationJob.vehicle.correctMatricule}" />
+															<br /> <span class="bolder green smaller-80"> <h:outputText
+																	value="#{transportationJobView.transportationJob.vehicle.correctMatricule}" />
 															</span>
 														</div>
 														<div class="col-xs-8">
-															<i class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
-															<span class="bolder blue">
-																<h:outputText value="Brand : #{transportationJobView.transportationJob.vehicle.brandType.brand.name}" />
-															</span>
-															<br />
-															<i class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
-															<span class="pink">
-																<h:outputText value="Brand Type : #{transportationJobView.transportationJob.vehicle.brandType.name}" />
-															</span>
-															<br />
-															<i class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
-															<span class="green">
-																<h:outputText value="Max Weight : #{transportationJobView.transportationJob.vehicle.vehicleType.maxWeight} Kg" />
-															</span>
-															<br />
-															<i class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
-															<span class="orange">
-																<h:outputText value="Max Volume : #{transportationJobView.transportationJob.vehicle.vehicleType.maxVolume} m3" />
+															<i
+																class="ace-icon fa fa-caret-right middle bigger-120 blue"></i>
+															<span class="bolder blue"> <h:outputText
+																	value="Brand : #{transportationJobView.transportationJob.vehicle.brandType.brand.name}" />
+															</span> <br /> <i
+																class="ace-icon fa fa-caret-right middle bigger-120 pink"></i>
+															<span class="pink"> <h:outputText
+																	value="Brand Type : #{transportationJobView.transportationJob.vehicle.brandType.name}" />
+															</span> <br /> <i
+																class="ace-icon fa fa-caret-right middle bigger-120 green"></i>
+															<span class="green"> <h:outputText
+																	value="Max Weight : #{transportationJobView.transportationJob.vehicle.vehicleType.maxWeight} Kg" />
+															</span> <br /> <i
+																class="ace-icon fa fa-caret-right middle bigger-120 orange"></i>
+															<span class="orange"> <h:outputText
+																	value="Max Volume : #{transportationJobView.transportationJob.vehicle.vehicleType.maxVolume} m3" />
 															</span>
 															<hr />
 														</div>
@@ -440,8 +516,11 @@
 													<h:outputText value="Start Date" />
 												</div>
 												<div class="profile-info-value light-blue">
-													<h:outputText value="Expected to start on " rendered="#{transportationJobView.transportationJob.expectedToStart}" />
-													<h:outputText value="#{transportationJobView.transportationJob.startDate}" styleClass="bolder">
+													<h:outputText value="Expected to start on "
+														rendered="#{transportationJobView.transportationJob.expectedToStart}" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.startDate}"
+														styleClass="bolder">
 														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 													</h:outputText>
 													&nbsp;
@@ -452,8 +531,11 @@
 													<h:outputText value="End Date" />
 												</div>
 												<div class="profile-info-value light-green">
-													<h:outputText value="Expected to end on " rendered="#{transportationJobView.transportationJob.expectedToEnd}" />
-													<h:outputText value="#{transportationJobView.transportationJob.endDate}" styleClass="bolder">
+													<h:outputText value="Expected to end on "
+														rendered="#{transportationJobView.transportationJob.expectedToEnd}" />
+													<h:outputText
+														value="#{transportationJobView.transportationJob.endDate}"
+														styleClass="bolder">
 														<f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
 													</h:outputText>
 													&nbsp;
@@ -467,9 +549,16 @@
 						</h:panelGroup>
 						<hr />
 						<div class="wizard-actions">
-							<p:commandButton value="Back" action="#{transportationJobView.savePreviousStep()}" update="messages,nav-wizard,steps" styleClass="btn btn-prev" icon="fa fa-arrow-left" />
-							<p:commandButton id="next" widgetVar="nextButton" value="#{transportationJobView.step==5?'Finish':'Next'}" action="#{transportationJobView.saveNextStep()}"
-								update="messages,nav-wizard,steps,next" styleClass="btn btn-success btn-next" icon="fa fa-arrow-right" onclick="PF('nextButton').disable()" />
+							<p:commandButton value="Back"
+								action="#{transportationJobView.savePreviousStep()}"
+								update="messages,nav-wizard,steps" styleClass="btn btn-prev"
+								icon="fa fa-arrow-left" />
+							<p:commandButton id="next" widgetVar="nextButton"
+								value="#{transportationJobView.step==5?'Finish':'Next'}"
+								action="#{transportationJobView.saveNextStep()}"
+								update="messages,nav-wizard,steps,next"
+								styleClass="btn btn-success btn-next" icon="fa fa-arrow-right"
+								onclick="PF('nextButton').disable()" />
 							<p:ajaxStatus>
 								<f:facet name="start">
 									<i class="ace-icon fa fa-spinner fa-spin orange bigger-125" />
@@ -485,8 +574,10 @@
 			</div>
 		</h:form>
 		<h:form id="addToNotifyItemForm">
-			<p:dialog widgetVar="addToNotifyItemDlg" modal="true" closable="false" resizable="false" showHeader="false">
-				<button type="button" class="bootbox-close-button close" onclick="PF('addToNotifyItemDlg').hide()">
+			<p:dialog widgetVar="addToNotifyItemDlg" modal="true"
+				closable="false" resizable="false" showHeader="false">
+				<button type="button" class="bootbox-close-button close"
+					onclick="PF('addToNotifyItemDlg').hide()">
 					<h:outputText value="x" />
 				</button>
 				<div class="modal-header">
@@ -498,16 +589,22 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-xs-12 col-sm-3">
-							<label class="control-label pull-right">
-								<h:outputText value="To Notify Resource " />
+							<label class="control-label pull-right"> <h:outputText
+									value="To Notify Resource " />
 							</label>
 						</div>
 						<div class="col-xs-12 col-sm-9">
 							<div class="clearfix">
-								<p:selectOneMenu value="#{transportationJobView.toNotifyUserUsername}" style="width:200px" filter="true" filterMatchMode="contains" required="true"
-									requiredMessage="To notify item should not be null" converter="#{genericSecuredConverter}">
+								<p:selectOneMenu
+									value="#{transportationJobView.toNotifyUserUsername}"
+									style="width:200px" filter="true" filterMatchMode="contains"
+									required="true"
+									requiredMessage="To notify item should not be null"
+									converter="#{genericSecuredConverter}">
 									<f:selectItem itemLabel="---" noSelectionOption="true" />
-									<f:selectItems value="#{userView.findLightAndActive()}" var="item" itemLabel="#{item.fullName}" itemValue="#{item.username}" />
+									<f:selectItems value="#{userView.findLightAndActive()}"
+										var="item" itemLabel="#{item.fullName}"
+										itemValue="#{item.username}" />
 								</p:selectOneMenu>
 								<br />
 							</div>
@@ -515,13 +612,18 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<p:commandButton onclick="PF('addToNotifyItemDlg').hide()" value="Hide" styleClass="btn btn-warning" />
-					<p:commandButton action="#{transportationJobView.addToNotifyItem()}" value="Add" styleClass="btn btn-success" oncomplete="PF('addToNotifyItemDlg').hide()"
+					<p:commandButton onclick="PF('addToNotifyItemDlg').hide()"
+						value="Hide" styleClass="btn btn-warning" />
+					<p:commandButton
+						action="#{transportationJobView.addToNotifyItem()}" value="Add"
+						styleClass="btn btn-success"
+						oncomplete="PF('addToNotifyItemDlg').hide()"
 						update=":main_form:step4:notification_tab,:main_form:messages" />
 				</div>
 			</p:dialog>
 		</h:form>
-		<f:event type="preRenderView" listener="#{transportationJobView.redirect()}" />
+		<f:event type="preRenderView"
+			listener="#{transportationJobView.redirect()}" />
 		<ui:include src="transportationJobFooter.xhtml" />
 	</ui:define>
 </ui:composition>

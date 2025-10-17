@@ -198,18 +198,18 @@ public interface TransportationRequestRepos extends JpaRepository<Transportation
 
 
 	// TR PAYMENT LISTS
-	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 order by a.deliveryDate desc")
+	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.cost > 0 order by a.deliveryDate desc")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus);
 
 	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and (a.deliveryRequest.requester.username = ?2 or a.deliveryRequest.project.manager.username = ?2) ")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, String username);
 
-	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2 order by a.deliveryDate desc")
+	@Query(select1 + "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2 and a.cost > 0 order by a.deliveryDate desc")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, TransportationRequestPaymentStatus paymentStatus);
 
 	@Query(select1
 			+ "from TransportationRequest a where a.transportationJob.status = ?1 and a.paymentStatus = ?2  and (a.deliveryRequest.requester.username = ?3"
-			+ " or a.deliveryRequest.project.manager.username = ?3) order by a.deliveryDate desc")
+			+ " or a.deliveryRequest.project.manager.username = ?3) and a.cost > 0 order by a.deliveryDate desc")
 	public List<TransportationRequest> findByPaymentStatus(TransportationJobStatus transportationJobStatus, TransportationRequestPaymentStatus paymentStatus, String username);
 
 	// @Query(select1 + "from TransportationRequest a where

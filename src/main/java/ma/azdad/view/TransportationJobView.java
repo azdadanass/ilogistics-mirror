@@ -888,8 +888,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 			// smsService.sendSms(tr);
 		}
 		refreshTransportationJob();
+		service.initCalculableFields(transportationJob);
 		updateCalculableFields();
 		capacityService.calculatePlannedCapacities(transportationJob.getId());
+		
 
 		return addParameters(viewPage, "faces-redirect=true", "id=" + transportationJob.getId());
 	}
@@ -899,6 +901,10 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		for (TransportationRequest tr : transportationRequestList3) {
 			if (tr.getPlannedPickupDate() == null || tr.getPlannedDeliveryDate() == null) {
 				FacesContextMessages.ErrorMessages("Planned Pickup/Delivery Time should not be null");
+				return false;
+			}
+			if (tr.getPlannedPickupDuration() == null || tr.getPlannedDeliveryDuration() == null) {
+				FacesContextMessages.ErrorMessages("Planned Pickup/Delivery Duration should not be null");
 				return false;
 			}
 			if (tr.getPlannedPickupDate().compareTo(tr.getPlannedDeliveryDate()) >= 0) {
@@ -1483,6 +1489,11 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		transportationJob.removeComment(comment);
 		transportationJob = service.saveAndRefresh(transportationJob);
 	}
+	
+	public Date getNow() {
+	    return new Date();
+	}
+
 
 	// google adress
 	public String getStartAddress() {

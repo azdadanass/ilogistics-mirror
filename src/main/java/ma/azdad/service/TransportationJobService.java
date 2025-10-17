@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.Hibernate;
 import org.primefaces.event.FileUploadEvent;
@@ -456,26 +458,33 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			transportationRequestService.save(tr);
 		}
 	}
+	
+	@Autowired
+	EntityManager entityManager;
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
 		try {
 			System.out.println("i'm in the calculate = " + transportationJob.getStopList().size());
-
-			transportationJob.init();
-			transportationJob.calculateStartDate();
-			transportationJob.calculateEndDate();
-			transportationJob.calculateStatus();
 			for (Stop stop : transportationJob.getStopList())
 				stopService.delete(stop);
 			for (Path path : transportationJob.getPathList())
 				pathService.delete(path);
 			transportationJob.getPathList().clear();
 			transportationJob.getStopList().clear();
+			entityManager.detach(transportationJob);
+			transportationJob = findOne(transportationJob.getId());
+			transportationJob.init();
+			transportationJob.calculateStartDate();
+			transportationJob.calculateEndDate();
+			transportationJob.calculateStatus();
+			
 			transportationJob.generateStopList();
 			transportationJob.generatePathList();
+			
 			calculateTransportationRequestListCosts(transportationJob, setCost);
 
 			initCalculableFields(transportationJob);
+			transportationJob.calculateEstimatedItineraryCost();
 
 			TransportationJob tj = save(transportationJob);
 		} catch (Exception e) {

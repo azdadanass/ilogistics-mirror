@@ -667,8 +667,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			path.setTransportationJob(this);
 			pathList.add(path);
 		}
-
-		calculateEstimatedItineraryCost();
+		
+		
 
 	}
 

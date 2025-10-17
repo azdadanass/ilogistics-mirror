@@ -128,9 +128,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c1
-	public TransportationJob(Integer id, String reference, String ref, Priority priority, Date plannedStartDate, Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status,
-			Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
-			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
+	public TransportationJob(Integer id, String reference, String ref, Priority priority, Date plannedStartDate,
+			Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost,
+			Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+			String user1Photo, Integer transporterId, TransporterType transporterType,
+			String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String transporterCompanyName) {
 		super(id);
 		this.reference = reference;
@@ -155,9 +157,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	// c2
-	public TransportationJob(Integer id, String reference, String ref, Priority priority, Date plannedStartDate, Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status,
-			Double cost, Double estimatedCost, Double firstLatitude, Double firstLongitude, //
-			String user1Photo, Integer transporterId, TransporterType transporterType, String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
+	public TransportationJob(Integer id, String reference, String ref, Priority priority, Date plannedStartDate,
+			Date plannedEndDate, Date startDate, Date endDate, TransportationJobStatus status, Double cost,
+			Double estimatedCost, Double firstLatitude, Double firstLongitude, //
+			String user1Photo, Integer transporterId, TransporterType transporterType,
+			String transporterPrivateFirstName, String transporterPrivateLastName, String transporterSupplierName,
 			String driverUsername, String vehicleMatricule) {
 		super(id);
 		this.reference = reference;
@@ -253,22 +257,26 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 
 	@Transient
 	public Double getGrossWeight() {
-		return transportationRequestList.stream().filter(i -> i.getGrossWeight() != null).mapToDouble(i -> i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getGrossWeight() != null)
+				.mapToDouble(i -> i.getGrossWeight()).sum();
 	}
 
 	@Transient
 	public Double getNetWeight() {
-		return transportationRequestList.stream().filter(i -> i.getNetWeight() != null).mapToDouble(i -> i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getNetWeight() != null)
+				.mapToDouble(i -> i.getNetWeight()).sum();
 	}
 
 	@Transient
 	public Double getVolume() {
-		return transportationRequestList.stream().filter(i -> i.getVolume() != null).mapToDouble(i -> i.getGrossWeight()).sum();
+		return transportationRequestList.stream().filter(i -> i.getVolume() != null)
+				.mapToDouble(i -> i.getVolume()).sum();
 	}
 
 	@Transient
 	public Integer getNumberOfItems() {
-		return transportationRequestList.stream().filter(i -> i.getNumberOfItems() != null).mapToInt(i -> i.getNumberOfItems()).sum();
+		return transportationRequestList.stream().filter(i -> i.getNumberOfItems() != null)
+				.mapToInt(i -> i.getNumberOfItems()).sum();
 	}
 
 	@Transient
@@ -278,9 +286,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			Double startLat = (plannedStartLatitude != null) ? plannedStartLatitude : getFirstLatitude();
 			Double startLng = (plannedStartLongitude != null) ? plannedStartLongitude : getFirstLongitude();
 
-			Double stopLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude() : getStopList().get(0).getWarehouse().getLatitude();
+			Double stopLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude()
+					: getStopList().get(0).getWarehouse().getLatitude();
 
-			Double stopLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude() : getStopList().get(0).getWarehouse().getLongitude();
+			Double stopLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude()
+					: getStopList().get(0).getWarehouse().getLongitude();
 
 			return PathService.getDuration(startLat, startLng, stopLat, stopLng);
 		}
@@ -293,15 +303,21 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		if (getStopList() != null && getStopList().size() > 1) {
 			try {
 				// first stop
-				Double firstLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude() : getStopList().get(0).getWarehouse().getLatitude();
+				Double firstLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude()
+						: getStopList().get(0).getWarehouse().getLatitude();
 
-				Double firstLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude() : getStopList().get(0).getWarehouse().getLongitude();
+				Double firstLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude()
+						: getStopList().get(0).getWarehouse().getLongitude();
 
 				// last stop
 				int lastIndex = getStopList().size() - 1;
-				Double lastLat = getStopList().get(lastIndex).getSite() != null ? getStopList().get(lastIndex).getSite().getLatitude() : getStopList().get(lastIndex).getWarehouse().getLatitude();
+				Double lastLat = getStopList().get(lastIndex).getSite() != null
+						? getStopList().get(lastIndex).getSite().getLatitude()
+						: getStopList().get(lastIndex).getWarehouse().getLatitude();
 
-				Double lastLng = getStopList().get(lastIndex).getSite() != null ? getStopList().get(lastIndex).getSite().getLongitude() : getStopList().get(lastIndex).getWarehouse().getLongitude();
+				Double lastLng = getStopList().get(lastIndex).getSite() != null
+						? getStopList().get(lastIndex).getSite().getLongitude()
+						: getStopList().get(lastIndex).getWarehouse().getLongitude();
 
 				// use path service to compute duration
 				return PathService.getDuration(firstLat, firstLng, lastLat, lastLng);
@@ -347,8 +363,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 		if (getStopList() != null && !getStopList().isEmpty()) {
 			Double startLat = (plannedStartLatitude != null) ? plannedStartLatitude : getFirstLatitude();
 			Double startLng = (plannedStartLongitude != null) ? plannedStartLongitude : getFirstLongitude();
-			Double stopLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude() : getStopList().get(0).getWarehouse().getLatitude();
-			Double stopLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude() : getStopList().get(0).getWarehouse().getLongitude();
+			Double stopLat = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLatitude()
+					: getStopList().get(0).getWarehouse().getLatitude();
+			Double stopLng = getStopList().get(0).getSite() != null ? getStopList().get(0).getSite().getLongitude()
+					: getStopList().get(0).getWarehouse().getLongitude();
 			return PathService.getDistance(startLat, startLng, stopLat, stopLng);
 		}
 		return 0d;
@@ -509,30 +527,28 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 	}
 
 	public void calculateEstimatedStartCost() {
-	    try {
-	        this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
+		try {
+			this.estimatedStartCost = getPlannedStartingDistance() * 0.5 * vehiclePrice;
 
-	    } catch (Exception e) {
-	        System.err.println("Error in calculateEstimatedStartCost: " + e.getMessage());
-	        e.printStackTrace();
-	    }
-	    calculateEstimatedCost();
+		} catch (Exception e) {
+			System.err.println("Error in calculateEstimatedStartCost: " + e.getMessage());
+			e.printStackTrace();
+		}
+		calculateEstimatedCost();
 	}
 
 	public void calculateEstimatedItineraryCost() {
-	    try {
-	    
-	        this.estimatedItineraryCost = 
-	            (plannedEffectiveDistance + 0.5 * (plannedNonEffectiveDistance - getPlannedStartingDistance())) 
-	            * vehiclePrice;
+		try {
 
-	    } catch (Exception e) {
-	        System.err.println("Error in calculateEstimatedItineraryCost: " + e.getMessage());
-	        e.printStackTrace();
-	    }
-	    calculateEstimatedCost();
+			this.estimatedItineraryCost = (plannedEffectiveDistance
+					+ 0.5 * ((plannedNonEffectiveDistance + getPlannedStartingDistance()) - getPlannedStartingDistance())) * vehiclePrice;
+
+		} catch (Exception e) {
+			System.err.println("Error in calculateEstimatedItineraryCost: " + e.getMessage());
+			e.printStackTrace();
+		}
+		calculateEstimatedCost();
 	}
-
 
 	@Transient
 	public Double getPaidCost() {
@@ -557,8 +573,10 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			Stop s1 = map.get(tr.getStartDate());
 			Stop s2 = map.get(tr.getEndDate());
 
-			StopType type1 = s1 == null || StopType.PICKUP.equals(s1.getType()) ? StopType.PICKUP : StopType.DELIVERY_AND_PICKUP;
-			StopType type2 = s2 == null || StopType.DELIVERY.equals(s1.getType()) ? StopType.DELIVERY : StopType.DELIVERY_AND_PICKUP;
+			StopType type1 = s1 == null || StopType.PICKUP.equals(s1.getType()) ? StopType.PICKUP
+					: StopType.DELIVERY_AND_PICKUP;
+			StopType type2 = s2 == null || StopType.DELIVERY.equals(s1.getType()) ? StopType.DELIVERY
+					: StopType.DELIVERY_AND_PICKUP;
 
 			Boolean expected1 = s1 == null ? tr.getExpectedToStart() : tr.getExpectedToStart() && s1.getExpected();
 			Boolean expected2 = s2 == null ? tr.getExpectedToEnd() : tr.getExpectedToEnd() && s2.getExpected();
@@ -581,8 +599,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			if (siteId != null && siteId.equals(s1.getPlace().id())) {
 				// filter requests that match by destination or warehouse
 				int totalDuration = transportationRequestList.stream().filter(req -> {
-					Integer destId = (req.getDeliveryRequest().getOrigin() != null) ? req.getDeliveryRequest().getOrigin().getId()
-							: (req.getDeliveryRequest().getWarehouse() != null ? req.getDeliveryRequest().getWarehouse().getId() : null);
+					Integer destId = (req.getDeliveryRequest().getOrigin() != null)
+							? req.getDeliveryRequest().getOrigin().getId()
+							: (req.getDeliveryRequest().getWarehouse() != null
+									? req.getDeliveryRequest().getWarehouse().getId()
+									: null);
 					return destId != null && destId.equals(siteId);
 				}).mapToInt(req -> {
 					Integer d = req.getPickupDuration2();
@@ -603,8 +624,11 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 			if (siteId2 != null && siteId2.equals(s2.getPlace().id())) {
 				// filter requests that match by destination or warehouse
 				int totalDuration = transportationRequestList.stream().filter(req -> {
-					Integer destId = (req.getDeliveryRequest().getDestination() != null) ? req.getDeliveryRequest().getDestination().getId()
-							: (req.getDeliveryRequest().getWarehouse() != null ? req.getDeliveryRequest().getWarehouse().getId() : null);
+					Integer destId = (req.getDeliveryRequest().getDestination() != null)
+							? req.getDeliveryRequest().getDestination().getId()
+							: (req.getDeliveryRequest().getWarehouse() != null
+									? req.getDeliveryRequest().getWarehouse().getId()
+									: null);
 					return destId != null && destId.equals(siteId2);
 				}).mapToInt(req -> {
 					Integer d = req.getDeliveryDuration2();
@@ -737,7 +761,8 @@ public class TransportationJob extends GenericModel<Integer> implements Serializ
 //			user8 = null;
 		}
 
-		if (transportationRequestList.stream().filter(i -> !TransportationRequestStatus.ACKNOWLEDGED.equals(i.getStatus())).count() == 0) {
+		if (transportationRequestList.stream()
+				.filter(i -> !TransportationRequestStatus.ACKNOWLEDGED.equals(i.getStatus())).count() == 0) {
 			status = TransportationJobStatus.ACKNOWLEDGED;
 			if (date8 == null)
 				date8 = new Date();

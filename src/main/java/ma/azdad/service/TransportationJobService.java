@@ -173,6 +173,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
+		generateScript();
 		return transportationJob;
 	}
 
@@ -1367,26 +1368,48 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 		});
 	}
 	
-	public void generateCostsScript() {
-		Pageable pageable = PageRequest.of(0, 500);
+	public void generateScript() {
+	    List<TransportationJob> jobList = repos.findByStatus(TransportationJobStatus.ACKNOWLEDGED);
 
-		Page<TransportationJob> jobs = repos.findJobsWithZeroEstimatedCost(pageable);
+	    for (TransportationJob job : jobList) {
+	        Hibernate.initialize(job.getTransportationRequestList());
 
-		  for (TransportationJob job : jobs.getContent()) {
-	            try {
-	                Hibernate.initialize(job.getTransportationRequestList());
-	                for (TransportationRequest tr : job.getTransportationRequestList()) {
-	                    Hibernate.initialize(tr.getDeliveryRequest());
-	                }
-	                calculateTransportationRequestListCosts(job, true);
-	                repos.save(job);
-	                System.out.println(" Success calculating job ID " + job.getId() );
-	            } catch (Exception e) {
-	                System.err.println(" Error calculating job ID " + job.getId() + ": " + e.getMessage());
-	            }
-	        }
-	    
+	        List<TransportationRequest> requests = job.getTransportationRequestList();
+	        if (requests == null || requests.isEmpty()) continue;
+
+	        // Compute the earliest pickup and latest delivery & acknowledge
+	        Date firstPickup = requests.stream()
+	                .map(TransportationRequest::getPickupDate)
+	                .filter(Objects::nonNull)
+	                .min(Date::compareTo)
+	                .orElse(null);
+
+	        Date lastDelivery = requests.stream()
+	                .map(TransportationRequest::getDeliveryDate)
+	                .filter(Objects::nonNull)
+	                .max(Date::compareTo)
+	                .orElse(null);
+
+	        Date lastAcknowledge = requests.stream()
+	                .map(TransportationRequest::getDate7)
+	                .filter(Objects::nonNull)
+	                .max(Date::compareTo)
+	                .orElse(null);
+
+	        // Fill only if null
+	        if (job.getDate6() == null && firstPickup != null)
+	            job.setDate6(firstPickup);
+
+	        if (job.getDate7() == null && lastDelivery != null)
+	            job.setDate7(lastDelivery);
+
+	        if (job.getDate8() == null && lastAcknowledge != null)
+	            job.setDate8(lastAcknowledge);
+
+	        repos.save(job);
+	    }
 	}
+
 
 	@SafeVarargs
 	private static <T> T firstNonNull(T... values) {

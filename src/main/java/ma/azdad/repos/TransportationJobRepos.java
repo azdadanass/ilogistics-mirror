@@ -203,7 +203,9 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	@Query("from TransportationJob where date3 is not null and (estimatedStartCost is null or estimatedStartCost = 0 or estimatedItineraryCost is null or estimatedItineraryCost = 0) ")
 	List<TransportationJob> findWithoutEstimatedCost();
 	
-	@Query(" SELECT j FROM TransportationJob j WHERE j.status = 'ACKNOWLEDGED' and ( j.estimatedCost = 0    OR EXISTS (  SELECT tr FROM TransportationRequest tr  WHERE tr.transportationJob = j AND tr.estimatedCost = 0 ))")
-	Page<TransportationJob> findJobsWithZeroEstimatedCost(Pageable pageable);
+	@Query("FROM TransportationJob j WHERE j.status = ?1 ")
+	List<TransportationJob> findByStatus(TransportationJobStatus status);
+	
+	
 
 }

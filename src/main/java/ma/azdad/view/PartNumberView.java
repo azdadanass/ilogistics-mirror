@@ -186,6 +186,12 @@ public class PartNumberView extends GenericView<Integer, PartNumber, PartNumberR
 			return FacesContextMessages.ErrorMessages("Detail List should not be null");
 		return true;
 	}
+	
+	public  void changeCategoryListener() {
+		partNumber.setCategory(partNumberCategoryService.findOne(partNumber.getCategoryId()));
+	}
+	
+	
 
 	// ADD FROM EXCEL
 	public void uploadExcelFile(FileUploadEvent event) throws IOException {

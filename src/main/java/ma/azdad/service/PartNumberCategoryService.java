@@ -29,6 +29,10 @@ public class PartNumberCategoryService extends GenericService<Integer, PartNumbe
 	public List<PartNumberCategory> findByIndustry(Integer industryId) {
 		return partNumberCategoryRepos.findByIndustry(industryId);
 	}
+	
+	public List<PartNumberCategory> findLightByIndustry(Integer industryId){
+		return repos.findLightByIndustry(industryId);
+	}
 
 	public List<String> findNameList(Integer industryId) {
 		return partNumberCategoryRepos.findNameList(industryId);

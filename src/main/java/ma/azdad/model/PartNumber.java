@@ -680,6 +680,20 @@ public class PartNumber extends GenericModel<Integer> implements Serializable {
 	public void setPartNumberType(PartNumberType partNumberType) {
 		this.partNumberType = partNumberType;
 	}
+	
+	
+	@Transient
+	public PartNumberCategory getCategory(){
+		return partNumberType!=null?partNumberType.getCategory():null;
+	}
+
+	@Transient
+	public void setCategory(PartNumberCategory partNumberTypeCategory){
+		if(partNumberType==null)
+			partNumberType=new PartNumberType();
+		partNumberType.setCategory(partNumberTypeCategory);
+	}
+
 
 	@Transient
 	public Integer getCategoryId() {

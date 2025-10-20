@@ -13,6 +13,9 @@ public interface PartNumberCategoryRepos extends JpaRepository<PartNumberCategor
 
 	@Query("from PartNumberCategory where industry.id = ?1")
 	public List<PartNumberCategory> findByIndustry(Integer industryId);
+	
+	@Query("select new PartNumberCategory(id,name) from PartNumberCategory where industry.id = ?1")
+	public List<PartNumberCategory> findLightByIndustry(Integer industryId);
 
 	@Query("select count(*) from PartNumberCategory where name = ?1 and industry.id = ?2")
 	public Long countByNameAndIndustry(String name, Integer industryId);

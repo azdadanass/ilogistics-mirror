@@ -6,11 +6,11 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ma.azdad.model.PartNumberCategory;
-import ma.azdad.model.PartNumberType;
 import ma.azdad.repos.PartNumberCategoryRepos;
 import ma.azdad.service.PartNumberCategoryService;
 import ma.azdad.utils.FacesContextMessages;
@@ -122,8 +122,15 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 		return partNumberCategoryService.findAll();
 	}
 
+	@Cacheable("partNumberCategoryView.findByIndustry")
 	public List<PartNumberCategory> findByIndustry(Integer industryId) {
+		System.out.println("findByIndustry : "+industryId);
 		return partNumberCategoryService.findByIndustry(industryId);
+	}
+
+	@Cacheable("partNumberCategoryView.findLightByIndustry")
+	public List<PartNumberCategory> findLightByIndustry(Integer industryId) {
+		return partNumberCategoryService.findLightByIndustry(industryId);
 	}
 
 	// GETTERS & SETTERS
@@ -134,7 +141,7 @@ public class PartNumberCategoryView extends GenericView<Integer, PartNumberCateg
 	public void setPartNumberCategory(PartNumberCategory partNumberCategory) {
 		this.partNumberCategory = partNumberCategory;
 	}
-	
+
 	public PartNumberCategory getModel() {
 		return model;
 	}

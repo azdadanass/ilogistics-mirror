@@ -18,6 +18,15 @@ public class PartNumberCategory extends GenericModel<Integer> implements Seriali
 
 	private PartNumberIndustry industry;
 
+	public PartNumberCategory() {
+		super();
+	}
+
+	public PartNumberCategory(Integer id, String name) {
+		super(id);
+		this.name = name;
+	}
+
 	@Override
 	public boolean filter(String query) {
 		boolean result = super.filter(query);
@@ -66,16 +75,16 @@ public class PartNumberCategory extends GenericModel<Integer> implements Seriali
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
+
 	@Transient
-	public Integer getIndustryId(){
-		return industry!=null?industry.getId():null;
+	public Integer getIndustryId() {
+		return industry != null ? industry.getId() : null;
 	}
 
 	@Transient
-	public void setIndustryId(Integer industryId){
-		if(industry==null || !industryId.equals(industry.getId()))
-			industry=new PartNumberIndustry();
+	public void setIndustryId(Integer industryId) {
+		if (industry == null || !industryId.equals(industry.getId()))
+			industry = new PartNumberIndustry();
 		industry.setId(industryId);
 	}
 

@@ -22,6 +22,9 @@ import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,6 +82,9 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 	@Value("#{'${spring.profiles.active}'.replaceAll('-dev','')}")
 	private String erp;
+	
+	@Autowired
+	EntityManager entityManager;
 
 	private final TransportationRequestRepos transportationRequestRepos;
 
@@ -167,6 +173,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
+		generateCostsScript();
 		return transportationJob;
 	}
 
@@ -456,11 +463,11 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			}
 			// Save the TR
 			transportationRequestService.save(tr);
+			 System.out.println(" Success calculating request ID " + tr.getId() );
 		}
 	}
 	
-	@Autowired
-	EntityManager entityManager;
+	
 
 	public void updateCalculableFields(TransportationJob transportationJob, Boolean setCost) {
 		try {
@@ -1359,6 +1366,27 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 			i.setQrKey(UtilsFunctions.generateQrKey());
 			save(i);
 		});
+	}
+	
+	public void generateCostsScript() {
+		Pageable pageable = PageRequest.of(0, 500);
+
+		Page<TransportationJob> jobs = repos.findJobsWithZeroEstimatedCost(pageable);
+
+		  for (TransportationJob job : jobs.getContent()) {
+	            try {
+	                Hibernate.initialize(job.getTransportationRequestList());
+	                for (TransportationRequest tr : job.getTransportationRequestList()) {
+	                    Hibernate.initialize(tr.getDeliveryRequest());
+	                }
+	                calculateTransportationRequestListCosts(job, true);
+	                repos.save(job);
+	                System.out.println(" Success calculating job ID " + job.getId() );
+	            } catch (Exception e) {
+	                System.err.println(" Error calculating job ID " + job.getId() + ": " + e.getMessage());
+	            }
+	        }
+	    
 	}
 
 	@SafeVarargs

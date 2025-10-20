@@ -3,6 +3,8 @@ package ma.azdad.repos;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -179,13 +181,10 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 			    @Param("excludedStatuses") List<TransportationJobStatus> excludedStatuses);
 
 
-
 	/*@Query("select count(a) from TransportationJob a where (a.driver.username = ?1 or a.user1.username = ?1) "
 		     + "and a.date4 is not null and a.date4 <= function('DATE_ADD', a.date3, interval a.acceptLeadTime hour)")
 		Long countAcceptedWithinDeadLineByDriver(String driverUsername);*/
 	
-	
-
 
 	@Query("select count(*) from TransportationJob a where a.driver.username = ?1 and date5 is not null")
 	Long countStartedByDriver(String driverUsername);
@@ -203,5 +202,8 @@ public interface TransportationJobRepos extends JpaRepository<TransportationJob,
 	
 	@Query("from TransportationJob where date3 is not null and (estimatedStartCost is null or estimatedStartCost = 0 or estimatedItineraryCost is null or estimatedItineraryCost = 0) ")
 	List<TransportationJob> findWithoutEstimatedCost();
+	
+	@Query(" SELECT j FROM TransportationJob j WHERE j.status = 'ACKNOWLEDGED' and ( j.estimatedCost = 0    OR EXISTS (  SELECT tr FROM TransportationRequest tr  WHERE tr.transportationJob = j AND tr.estimatedCost = 0 ))")
+	Page<TransportationJob> findJobsWithZeroEstimatedCost(Pageable pageable);
 
 }

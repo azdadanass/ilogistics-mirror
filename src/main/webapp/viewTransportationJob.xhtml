@@ -1427,8 +1427,14 @@
 					<f:subview id="costsSubview" rendered="#{sessionView.isTrPayment}">
 						<div id="tab3" class="tab-pane">
 							<p:messages id="costs_messages" closable="true" />
-							<div class="row">
-								<table width="100%" style="margin: 10px"
+							<div class="row"
+								style="display: flex; justify-content: center; align-items: flex-start; margin: 10px 0;">
+
+								<!-- Left empty space -->
+								<table width="4%" style="margin: 10px;"></table>
+
+								<!-- Center main table -->
+								<table width="93%" style="margin: 10px;"
 									class="table table-bordered">
 									<tr>
 										<th colspan="4" style="background: #438eb9; color: white">
@@ -1465,7 +1471,12 @@
 											</h:outputText></td>
 									</tr>
 								</table>
+
+								<!-- Right empty space -->
+								<table width="3%" style="margin: 10px;"></table>
+
 							</div>
+
 							<div class="row">
 								<table width="100%" style="margin: 10px">
 									<tr>

@@ -144,14 +144,7 @@ public class TransportationRequestView extends GenericView<Integer, Transportati
 		}
 
 		else if (isViewPage) {
-			transportationRequest = transportationRequestService.findOne(id);
-			//costs updates
-			if(!Arrays.asList(TransportationRequestStatus.EDITED,TransportationRequestStatus.REQUESTED,TransportationRequestStatus.APPROVED).
-					contains(transportationRequest.getStatus())) {
-				transportationJobService.calculateTransportationRequestListCosts(transportationRequest.getTransportationJob(), true);
-				transportationRequest = transportationRequestService.findOne(id);
-			}
-			
+			transportationRequest = transportationRequestService.findOne(id);		
 			transportationRequest.init();
 			generateMap(transportationRequest);
 		}

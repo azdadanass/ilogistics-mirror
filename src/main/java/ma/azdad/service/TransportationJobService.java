@@ -3,6 +3,8 @@ package ma.azdad.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +49,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import ma.azdad.mobile.model.Vehicule;
 import ma.azdad.model.DriverLocation;
 import ma.azdad.model.Path;
+import ma.azdad.model.PaymentStatus;
 import ma.azdad.model.Priority;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
@@ -60,6 +63,7 @@ import ma.azdad.model.TransportationJobState;
 import ma.azdad.model.TransportationJobStatus;
 import ma.azdad.model.TransportationRequest;
 import ma.azdad.model.TransportationRequestHistory;
+import ma.azdad.model.TransportationRequestPaymentStatus;
 import ma.azdad.model.TransportationRequestStatus;
 import ma.azdad.model.User;
 import ma.azdad.repos.DriverLocationRepo;
@@ -173,6 +177,7 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
+		generateScript();
 		return transportationJob;
 	}
 
@@ -1368,45 +1373,57 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 	}
 	
 	public void generateScript() {
-	    List<TransportationJob> jobList = repos.findByStatus(TransportationJobStatus.ACKNOWLEDGED);
+		// Step 1: get all TRs with ACKNOWLEDGED + PENDING payment
+	    List<TransportationRequest> trList = transportationRequestRepos
+	            .findByPaymentStatus(TransportationJobStatus.ACKNOWLEDGED, TransportationRequestPaymentStatus.PENDING);
 
-	    for (TransportationJob job : jobList) {
+	    int count = 0;
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	    Date limitDate = null;
+		try {
+			limitDate = sdf.parse("31/12/2023");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	    for (TransportationRequest tr : trList) {
+	    	
+	        if (tr.getDate7() == null || tr.getDate7().after(limitDate))
+	            continue; // skip if date is after the limit
+	       
+
+	        TransportationJob job = tr.getTransportationJob();
+	        Hibernate.initialize(job);
+	        System.out.println("size" + job.getTransportationRequestList().size() + " (TR: " + tr.getReference() + ")");
+	        if (job == null)
+	            continue;
+
 	        Hibernate.initialize(job.getTransportationRequestList());
+	       
+	        // only if job has exactly 1 TR
+	        if (job.getTransportationRequestList().size() == 1) {
+	            System.out.println("Resetting cost for job " + job.getReference() + " (TR: " + tr.getReference() + ")");
 
-	        List<TransportationRequest> requests = job.getTransportationRequestList();
-	        if (requests == null || requests.isEmpty()) continue;
+	            // reset TR costs
+	            tr.setStartCost(0.0);
+	            tr.setHandlingCost(0.0);
+	            tr.setItineraryCost(0.0);
+	            tr.setCost(0.0);
 
-	        // Compute the earliest pickup and latest delivery & acknowledge
-	        Date firstPickup = requests.stream()
-	                .map(TransportationRequest::getPickupDate)
-	                .filter(Objects::nonNull)
-	                .min(Date::compareTo)
-	                .orElse(null);
+	            // reset TJ costs
+	            job.setCost(0.0);
+	            job.setStartCost(0.0);
+	            job.setHandlingCost(0.0);
+	            job.setItineraryCost(0.0);
 
-	        Date lastDelivery = requests.stream()
-	                .map(TransportationRequest::getDeliveryDate)
-	                .filter(Objects::nonNull)
-	                .max(Date::compareTo)
-	                .orElse(null);
+	            // persist both
+	            transportationRequestRepos.save(tr);
+	            repos.save(job);
 
-	        Date lastAcknowledge = requests.stream()
-	                .map(TransportationRequest::getDate7)
-	                .filter(Objects::nonNull)
-	                .max(Date::compareTo)
-	                .orElse(null);
-
-	        // Fill only if null
-	        if (job.getDate6() == null && firstPickup != null)
-	            job.setDate6(firstPickup);
-
-	        if (job.getDate7() == null && lastDelivery != null)
-	            job.setDate7(lastDelivery);
-
-	        if (job.getDate8() == null && lastAcknowledge != null)
-	            job.setDate8(lastAcknowledge);
-
-	        repos.save(job);
+	            count++;
+	        }
 	    }
+
+	    System.out.println( count + " TransportationJobs updated with cost reset.");
 	}
 
 

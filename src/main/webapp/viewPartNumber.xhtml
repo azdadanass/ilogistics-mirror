@@ -33,9 +33,7 @@
 				<h1>
 					<i class="ace-icon fa fa-list-alt bigger-110 green"></i>
 					<h:outputText value=" View PartNumber" />
-					<small>
-						<i class="ace-icon fa fa-angle-double-right"></i>
-						<h:outputText value=" #{partNumberView.partNumber.idStr}" />
+					<small> <i class="ace-icon fa fa-angle-double-right"></i> <h:outputText value=" #{partNumberView.partNumber.idStr}" />
 					</small>
 				</h1>
 			</div>
@@ -54,14 +52,12 @@
 							<i class="ace-icon fa fa-undo bigger-230"></i>
 							<h:outputText value="Back" />
 						</h:outputLink>
-						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditPartNumber.xhtml"
-							rendered="#{partNumberView.canSavePartNumber()}">
+						<h:outputLink styleClass="btn btn-app btn-sm btn-warning hover aa-tooltip tooltip-warning" title="Edit" value="addEditPartNumber.xhtml" rendered="#{partNumberView.canSavePartNumber()}">
 							<i class="ace-icon fa fa-edit bigger-230"></i>
 							<h:outputText value="Edit" />
 							<f:param name="id" value="#{partNumberView.id}" />
 						</h:outputLink>
-						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()"
-							rendered="#{partNumberView.canDeletePartNumber()}">
+						<p:commandLink title="Delete" styleClass="btn btn-app btn-sm btn-danger hover aa-tooltip tooltip-error" onclick="PF('deleteDlg').show()" rendered="#{partNumberView.canDeletePartNumber()}">
 							<i class="ace-icon fa fa-trash-o bigger-230"></i>
 							<h:outputText value="Delete" />
 						</p:commandLink>
@@ -77,8 +73,7 @@
 					<div class=" col-sm-2 infobox-container">
 						<div class="infobox infobox-blue2">
 							<div class="infobox-progress">
-								<div class="easy-pie-chart percentage" data-percent="#{(16-partNumberView.partNumber.remainingFields.size())*100.0/16.0}" data-size="45"
-									style="height: 46px; width: 46px; line-height: 45px;">
+								<div class="easy-pie-chart percentage" data-percent="#{(16-partNumberView.partNumber.remainingFields.size())*100.0/16.0}" data-size="45" style="height: 46px; width: 46px; line-height: 45px;">
 									<span class="percent">
 										<h:outputText value="#{(16-partNumberView.partNumber.remainingFields.size())/16.0}">
 											<f:convertNumber type="percent" maxFractionDigits="0" />
@@ -245,8 +240,7 @@
 										</div>
 										<div class="profile-info-value">
 											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder blue" />
-											<i
-												class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
+											<i class="red ace-icon fa fa-exclamation-triangle bigger-120 aa-tooltip tooltip-error #{partNumberView.partNumber.name==null or partNumberView.partNumber.name.isEmpty()?'':'hide'}"
 												title="Must be filled" />
 											&nbsp;
 										</div>
@@ -603,8 +597,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{partNumberView.partNumber.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable value="#{partNumberView.partNumber.detailList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Number">
 											<h:outputText value="#{item.number}" styleClass="bolder blue" />
 										</p:column>
@@ -639,8 +633,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="files_table" value="#{partNumberView.partNumber.fileList2}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="files_table" value="#{partNumberView.partNumber.fileList2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Phase" width="150" styleClass="center">
 											<h:outputText value="#{item.parentModelName}" styleClass="#{item.parentModelStyleClass}" />
 										</p:column>
@@ -700,8 +694,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="partNumberhistoryList" value="#{partNumberView.partNumber.historyList}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable id="partNumberhistoryList" value="#{partNumberView.partNumber.historyList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Action" width="80" styleClass="center">
 											<span class="badge #{item.statusStyleClass}">
 												<h:outputText value="#{item.status}" styleClass="bolder" />
@@ -739,8 +733,8 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable value="#{partNumberView.partNumber.equivalenceList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
+									<p:dataTable value="#{partNumberView.partNumber.equivalenceList}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+										paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}">
 										<p:column headerText="Part Number">
 											<h:outputText value="#{partNumberView.partNumber.name}" styleClass="bolder blue" />
 										</p:column>
@@ -785,18 +779,20 @@
 									</div>
 								</div>
 								<div class="col-sm-12 col-xs-12 aa-datatable-container">
-									<p:dataTable id="relatedPartNumberList" value="#{relatedPartNumberView.list1}" var="item" rows="20" styleClass="table table-striped table-hover"
-										paginatorAlwaysVisible="false" paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
-										rowIndexVar="rowIndexVar">
+									<p:dataTable id="relatedPartNumberList" value="#{relatedPartNumberView.list1}" var="item" rows="20" styleClass="table table-striped table-hover center" paginatorAlwaysVisible="false"
+										paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rowIndexVar="rowIndexVar">
 										<p:column headerText="Photo" width="100">
-											<p:graphicImage id="image" value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo">
+											<p:graphicImage id="image" value="#{fileUploadView.stream}" styleClass="img-circle aa-datatable-photo" rendered="#{item.tmpPartNumber.image!=null}">
 												<f:param name="fileName" value="#{item.tmpPartNumber.image}" />
 											</p:graphicImage>
 										</p:column>
-										<p:column headerText="Part Number">
-											<h:outputText value="#{item.tmpPartNumber.name}" rendered="#{!relatedPartNumberView.editMode}" />
-											<p:autoComplete value="#{item.tmpPartNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn"
-												itemLabel="#{pn.name}" itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{relatedPartNumberView.editMode}">
+										<p:column headerText="Part Number" width="200">
+											<h:outputLink value="viewPartNumber.xhtml" styleClass="bolder purple">
+												<h:outputText value="#{item.tmpPartNumber.name}" rendered="#{!relatedPartNumberView.editMode}" />
+												<f:param name="id" value="#{item.tmpPartNumber.id}"/>
+											</h:outputLink>
+											<p:autoComplete value="#{item.tmpPartNumber}" size="30" maxResults="10" style="width:100%" completeMethod="#{partNumberView.completePartNumber1}" var="pn" itemLabel="#{pn.name}"
+												itemValue="#{pn}" converter="#{genericSecuredConverter}" forceSelection="true" rendered="#{relatedPartNumberView.editMode}">
 												<p:column>
 													<h:outputText value="#{pn.name}" />
 												</p:column>
@@ -909,12 +905,11 @@
 										</div>
 									</div>
 									<div class="col-sm-12 col-xs-12 aa-datatable-container">
-										<p:dataTable id="packingList" value="#{packingView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false"
-											paginator="true" paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}"
-											rendered="#{!packingView.showPackingDetail}">
+										<p:dataTable id="packingList" value="#{packingView.list2}" var="item" rows="20" styleClass="table table-striped table-hover" paginatorAlwaysVisible="false" paginator="true"
+											paginatorPosition="bottom" paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink}  {PageLinks}" rendered="#{!packingView.showPackingDetail}">
 											<p:column headerText="Name" width="300">
-												<p:inplace editor="true" styleClass="bolder blue #{packingView.canUpdateName(partNumberView.partNumber)?'editable-click':''}" saveLabel="save" cancelLabel="cancel"
-													effect="none" emptyLabel="None" disabled="#{!packingView.canUpdateName(partNumberView.partNumber)}">
+												<p:inplace editor="true" styleClass="bolder blue #{packingView.canUpdateName(partNumberView.partNumber)?'editable-click':''}" saveLabel="save" cancelLabel="cancel" effect="none"
+													emptyLabel="None" disabled="#{!packingView.canUpdateName(partNumberView.partNumber)}">
 													<p:inputText value="#{item.name}" styleClass="" />
 													<p:ajax event="save" listener="#{packingView.updateName(item.id,item.name)}" update="packingList" />
 													<p:ajax event="cancel" />
@@ -944,8 +939,7 @@
 														<i class="ace-icon fa fa-trash-o bigger-130 red" />
 														<f:setPropertyActionListener value="#{item}" target="#{packingView.packing}" />
 													</p:commandLink>
-													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Show details" action="#{packingView.refreshPacking()}" update=":viewPackingForm"
-														oncomplete="PF('viewPackingDlg').show()">
+													<p:commandLink styleClass="aa-tooltip tooltip-primary" title="Show details" action="#{packingView.refreshPacking()}" update=":viewPackingForm" oncomplete="PF('viewPackingDlg').show()">
 														<i class="ace-icon fa fa-tasks bigger-130 blue" />
 														<f:setPropertyActionListener value="#{item}" target="#{packingView.packing}" />
 													</p:commandLink>
@@ -960,8 +954,8 @@
 												</div>
 											</f:facet>
 										</p:dataTable>
-										<p:dataTable id="packingDetailList" var="item" value="#{packingDetailView.findByPartNumber(partNumberView.partNumber.id)}"
-											styleClass="table table-striped table-hover center" sortBy="#{item.parent.name}" expandableRowGroups="true" rendered="#{packingView.showPackingDetail}">
+										<p:dataTable id="packingDetailList" var="item" value="#{packingDetailView.findByPartNumber(partNumberView.partNumber.id)}" styleClass="table table-striped table-hover center"
+											sortBy="#{item.parent.name}" expandableRowGroups="true" rendered="#{packingView.showPackingDetail}">
 											<p:headerRow>
 												<p:column colspan="17" styleClass="center">
 													<h:outputText value="#{item.parent.name}" />

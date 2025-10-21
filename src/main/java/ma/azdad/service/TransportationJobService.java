@@ -177,7 +177,6 @@ public class TransportationJobService extends GenericService<Integer, Transporta
 
 		Hibernate.initialize(transportationJob.getVehicle());
 		Hibernate.initialize(transportationJob.getDriver());
-		generateScript();
 		return transportationJob;
 	}
 

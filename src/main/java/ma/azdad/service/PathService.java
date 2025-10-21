@@ -24,9 +24,6 @@ public class PathService extends GenericService<Integer, Path, PathRepos> {
 	}
 
 	public static List<String> apiKeys = Arrays.asList(
-			"AIzaSyBal3DsAyYIl1UN_oEy9NuaPXg2qqTiiyQ",
-			"AIzaSyCAPkjARiuD8taQUr_gxd2zuWFNJxnxHO4",
-			"AIzaSyCsA6hQ1C8D6IIeB_r2WDEEgPelvpUWIf8",
 			"AIzaSyCyNTc451BOCfr7mSXaEKGtNBMFepsxT3I"
 		);
 		

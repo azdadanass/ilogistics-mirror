@@ -26,7 +26,7 @@
             justify-content: space-between;
             align-items: center;
             margin: 5px 100px;
-            min-height: 180px; /* increased height for cards on top */
+            min-height: 180px;
         }
 
         .timeline-line {
@@ -78,6 +78,21 @@
             color: #888;
         }
 
+        .step-icon.intermediate {
+            width: 35px;
+            height: 35px;
+            font-size: 14px;
+            background: #e8f0ff;
+            border-color: #b3d1ff;
+            color: #2196F3;
+        }
+
+        .step-icon.intermediate.completed {
+            background: #c8e6c9;
+            border-color: #81c784;
+            color: #4CAF50;
+        }
+
         .step-icon.completed {
             background: #4CAF50;
             color: white;
@@ -112,9 +127,9 @@
         .info-card {
             position: absolute;
             bottom: auto;
-            top: -80px; /* position above the step */
+            top: -80px;
             left: 50%;
-            margin-left: -100px; /* half width to center */
+            margin-left: -100px;
             width: 200px;
             background: white;
             border: 1px solid #ddd;
@@ -123,12 +138,25 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             font-size: 11px;
             z-index: 10;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .info-card.intermediate {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .timeline-step:hover .info-card.intermediate {
+            opacity: 1;
+            visibility: visible;
         }
 
         .info-card::before {
             content: '';
             position: absolute;
-            bottom: -8px; /* arrow pointing down */
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%) rotate(180deg);
             border: 8px solid transparent;
@@ -233,9 +261,11 @@
                 var isCompleted = (point.expected === false);
                 var isOrigin = i === 0;
                 var isDestination = i === itineraryData.length - 1;
+                var isIntermediate = !isOrigin && !isDestination;
 
                 timelineHTML += '<div class="timeline-step" data-step="' + i + '">';
                 var iconClass = 'step-icon';
+                if (isIntermediate) iconClass += ' intermediate';
                 if (isCompleted) iconClass += ' completed';
 
                 var icon = 'fa-circle';
@@ -246,8 +276,9 @@
                 timelineHTML += '<div class="' + iconClass + '" id="step-' + i + '">';
                 timelineHTML += '<i class="fa ' + icon + '" id="icon-' + i + '"></i></div>';
 
-                // Info card always visible above step
-                timelineHTML += '<div class="info-card" id="card-' + i + '">';
+                var cardClass = 'info-card';
+                if (isIntermediate) cardClass += ' intermediate';
+                timelineHTML += '<div class="' + cardClass + '" id="card-' + i + '">';
                 if (point.siteName) timelineHTML += '<div class="info-item"><div class="info-icon"><i class="fa fa-building"></i></div><div class="info-text"><strong>' + point.siteName + '</strong></div></div>';
                 if (point.duration) timelineHTML += '<div class="info-item"><div class="info-icon"><i class="fa fa-hourglass"></i></div><div class="info-text">Duration: ' + point.duration + ' min</div></div>';
                 timelineHTML += '</div>';
@@ -272,13 +303,17 @@
                 var icon = document.getElementById('icon-' + i);
                 if (!step || !icon) continue;
 
+                var isOrigin = i === 0;
+                var isDestination = i === itineraryData.length - 1;
+                var isIntermediate = !isOrigin && !isDestination;
+
                 if (itineraryData[i].expected === false) {
                     step.className = 'step-icon completed';
+                    if (isIntermediate) step.className += ' intermediate';
                     icon.className = 'fa fa-check green';
                 } else {
                     step.className = 'step-icon';
-                    var isOrigin = i === 0;
-                    var isDestination = i === itineraryData.length - 1;
+                    if (isIntermediate) step.className += ' intermediate';
                     if (isOrigin || isDestination) icon.className = 'fa fa-map-marker';
                     else if (itineraryData[i].type === 'PICKUP' || itineraryData[i].type === 'pickup') icon.className = 'fa fa-arrow-up';
                     else if (itineraryData[i].type === 'DELIVERY' || itineraryData[i].type === 'delivery') icon.className = 'fa fa-arrow-down';
@@ -296,7 +331,6 @@
                 return;
             }
 
-            // Clear any existing animation
             if (truckAnimation) {
                 clearInterval(truckAnimation);
             }
@@ -309,7 +343,6 @@
 
             console.log('Moving truck to step:', lastGreenIndex, 'of', steps.length);
 
-            // Get positions
             var timelineRect = timeline.getBoundingClientRect();
             var firstStep = steps[0];
             var firstRect = firstStep.getBoundingClientRect();
@@ -321,7 +354,6 @@
             
             console.log('Start position:', startPosition, 'Target position:', targetPosition);
             
-            // Initialize truck at first position if not set
             if (!truck.style.left || truck.style.left === '0px') {
                 truck.style.left = startPosition + 'px';
                 console.log('Initialized truck at:', startPosition);
@@ -330,16 +362,15 @@
             var currentLeft = parseFloat(truck.style.left) || startPosition;
             console.log('Current truck position:', currentLeft);
             
-            // Animate slowly to target position
             animateTruckToPosition(truck, currentLeft, targetPosition);
         }
+
         function animateTruckToPosition(truck, startPos, endPos) {
             var position = startPos;
             var distance = endPos - startPos;
             var direction = distance >= 0 ? 1 : -1;
-            var speed = 0.5; // Slow speed (0.5 pixels per frame)
+            var speed = 0.5;
             
-            // Set truck direction
             if (direction > 0) {
                 truck.style.transform = 'translateY(-50%) scaleX(1)';
             } else {
@@ -349,7 +380,6 @@
             truckAnimation = setInterval(function() {
                 position += speed * direction;
                 
-                // Check if reached destination
                 if ((direction > 0 && position >= endPos) || (direction < 0 && position <= endPos)) {
                     position = endPos;
                     truck.style.left = position + 'px';

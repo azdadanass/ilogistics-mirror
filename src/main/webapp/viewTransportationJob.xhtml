@@ -1427,6 +1427,10 @@
 					<f:subview id="costsSubview" rendered="#{sessionView.isTrPayment}">
 						<div id="tab3" class="tab-pane">
 							<p:messages id="costs_messages" closable="true" />
+							<h4 class="header blue bolder smaller">
+							<i class="ace-icon fa fa-dollar"></i>
+							<h:outputText value=" TJ Cost" />
+						</h4>
 							<div class="row"
 								style="display: flex; justify-content: center; align-items: flex-start; margin: 10px 0;">
 
@@ -1655,7 +1659,76 @@
 									</div>
 								</div>
 							</div> -->
-							<div class="space-16" />
+							<h4 class="header blue bolder smaller">
+							<i class="ace-icon fa fa-list"></i>
+							<h:outputText value=" TR Cost" />
+						</h4>
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<div class="table-header col-sm-12 col-xs-12">
+									<div class="col-sm-9 hidden-xs">
+										<i class="fa fa-list" />
+										<h:outputText value=" TR Cost" />
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 aa-datatable-container">
+									<p:dataTable value="#{transportationJobView.costList}" var="item" rows="20"
+										paginator="true" paginatorAlwaysVisible="false"
+										paginatorPosition="bottom"
+										styleClass="table table-striped table-hover center"
+										paginatorTemplate="{JumpToPageDropdown} {LastPageLink} {FirstPageLink} {PageLinks}">
+
+										<p:column headerText="Transportation Request" width="150">
+											<h:outputText value="#{item.transportationRequestReference}"
+												styleClass="green bolder" />
+										</p:column>
+
+										<p:column headerText="Pickup Date" width="100">
+											<h:outputText value="#{item.startDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Delivery Date" width="100">
+											<h:outputText value="#{item.endDate}">
+												<f:convertDateTime pattern="yyyy-MM-dd" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Start Cost" width="100">
+											<h:outputText value="#{item.startCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Itinerary Cost" width="120">
+											<h:outputText value="#{item.itineraryCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Handling Cost" width="120">
+											<h:outputText value="#{item.handlingCost}">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+										<p:column headerText="Total Cost" width="120">
+											<h:outputText value="#{item.cost}" styleClass="bolder red">
+												<f:convertNumber type="number" maxFractionDigits="2" />
+											</h:outputText>
+										</p:column>
+
+									</p:dataTable>
+
+								</div>
+							</div>
+						</div>
+							<div class="space-8" />
+							<h4 class="header blue bolder smaller">
+							<i class="ace-icon fa fa-list"></i>
+							<h:outputText value=" Paid Cost" />
+						</h4>
 							<div class="row">
 								<div class="col-sm-offset-1 col-sm-10">
 									<div class="table-header col-sm-12 col-xs-12">

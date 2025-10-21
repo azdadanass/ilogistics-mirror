@@ -36,6 +36,7 @@ import ma.azdad.model.Path;
 import ma.azdad.model.Role;
 import ma.azdad.model.Stop;
 import ma.azdad.model.ToNotify;
+import ma.azdad.model.TrCost;
 import ma.azdad.model.TransportationJob;
 import ma.azdad.model.TransportationJobAssignmentType;
 import ma.azdad.model.TransportationJobCapacity;
@@ -1462,6 +1463,18 @@ public class TransportationJobView extends GenericView<Integer, TransportationJo
 		}
 		return null;
 	}
+	
+	//COSTS 
+	  public  List<TrCost> getCostList() {
+	        List<TrCost> list = new ArrayList<>();
+	        List<TransportationRequest> trs = transportationJob.getTransportationRequestList();
+	        for (TransportationRequest transportationRequest : trs) {
+	        	 list.add(new TrCost(transportationRequest.getReference(), transportationRequest.getPickupDate(), transportationRequest.getDeliveryDate(), 
+	 	        		transportationRequest.getStartCost(), transportationRequest.getItineraryCost(), transportationRequest.getHandlingCost()));
+			}
+	       
+	        return list;
+	    }
 
 	// comments
 	private TransportationJobComment comment = new TransportationJobComment();
